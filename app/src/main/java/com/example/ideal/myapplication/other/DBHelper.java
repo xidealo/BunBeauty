@@ -15,10 +15,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_WORKING_DAYS = "working_days";
     public static final String TABLE_WORKING_TIME = "working_time";
     public static final String TABLE_DIALOGS = "dialogs";
-    public static final String TABLE_MESSAGE_ORDERS = "messages";
-    public static final String TABLE_MESSAGE_REVIEWS = "message_reviews";
-    public static final String TABLE_REVIEWS_FOR_SERVICE = "reviews_for_service";
-    public static final String TABLE_REVIEWS_FOR_USERS = "reviews_for_users";
+    public static final String TABLE_MESSAGES = "messages";
+    public static final String TABLE_ORDERS = "orders";
+    public static final String TABLE_REVIEWS = "reviews";
 
     //for all
     public  static final  String KEY_ID = "_id";
@@ -52,28 +51,21 @@ public class DBHelper extends SQLiteOpenHelper {
     public  static final  String KEY_FIRST_USER_ID_DIALOGS = "first_phone";
     public  static final  String KEY_SECOND_USER_ID_DIALOGS = "second_phone";
 
-    // messages_orders
+    //messages
+    public  static final  String KEY_MESSAGE_TIME_MESSAGES = "second_phone";
     public  static final  String KEY_DIALOG_ID_MESSAGES = "dialog_id";
-    public  static final  String KEY_MESSAGE_TIME_MESSAGES = "message_time";
-    public  static final  String KEY_IS_CANCELED_MESSAGE_ORDERS = "is_canceled";
-    public  static final  String KEY_TIME_ID_MESSAGES = "time_id";
 
-    //message_reviews
-    public  static final  String KEY_IS_RATE_BY_USER_MESSAGE_REVIEWS = "is_rate_by_user";
-    public  static final  String KEY_IS_RATE_BY_WORKER_MESSAGE_REVIEWS = "is_rate_by_worker";
+    //reviews
+    public  static final  String KEY_REVIEW_REVIEWS = "review";
+    public  static final  String KEY_RATING_REVIEWS = "rating";
+    public  static final  String KEY_TYPE_REVIEWS = "type";
+    public  static final  String KEY_MESSAGE_ID_REVIEWS = "message_id";
+    public  static final  String KEY_WORKING_TIME_ID_REVIEWS = "working_time_id";
 
-    //reviews for service
-    public  static final  String KEY_REVIEW_REVIEWS_FOR_SERVICE = "review";
-    public  static final  String KEY_RATING_REVIEWS_FOR_SERVICE = "rating";
-    public  static final  String KEY_SERVICE_ID_REVIEWS_FOR_SERVICE = "rating";
-    public  static final  String KEY_VALUING_PHONE_REVIEWS_FOR_SERVICE = "valuing_phone";
-
-
-    //reviews for user
-    public  static final  String KEY_VALUING_PHONE_REVIEWS_FOR_USER = "valuing_phone";
-    public  static final  String KEY_ESTIMATED_PHONE_REVIEWS_FOR_USER = "estimated_phone";
-    public  static final  String KEY_REVIEW_REVIEWS_FOR_USER = "review";
-    public  static final  String KEY_RATING_REVIEWS_FOR_USER = "rating";
+    //orders
+    public  static final  String KEY_IS_CANCELED_ORDERS = "is_canceled";
+    public  static final  String KEY_MESSAGE_ID_ORDERS = "message_id";
+    public  static final  String KEY_WORKING_TIME_ID_ORDERS = "working_time_id";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -121,44 +113,29 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_FIRST_USER_ID_DIALOGS + " text,"
                 + KEY_SECOND_USER_ID_DIALOGS + " text"
                 + ")";
-        String messagesOrders = "create table "+ TABLE_MESSAGE_ORDERS
-                + "("
-                + KEY_ID + " text primary key,"
-                + KEY_DIALOG_ID_MESSAGES + " text,"
-                + KEY_IS_CANCELED_MESSAGE_ORDERS + " text,"
-                + KEY_TIME_ID_MESSAGES + " text,"
-                + KEY_MESSAGE_TIME_MESSAGES + " text"
-                + ")";
-
-        String messagesReviews = "create table "+ TABLE_MESSAGE_REVIEWS
-                + "("
-                + KEY_ID + " text primary key,"
-                + KEY_DIALOG_ID_MESSAGES + " text,"
-                + KEY_IS_RATE_BY_USER_MESSAGE_REVIEWS + " text,"
-                + KEY_IS_RATE_BY_WORKER_MESSAGE_REVIEWS+ " text,"
-                + KEY_TIME_ID_MESSAGES + " text,"
-                + KEY_MESSAGE_TIME_MESSAGES + " text"
-                + ")";
-
-        String reviewsForService = "create table "+ TABLE_REVIEWS_FOR_SERVICE
+        String messages = "create table "+ TABLE_MESSAGES
                 + "("
                 + KEY_ID + " text primary key,"
                 + KEY_MESSAGE_TIME_MESSAGES + " text,"
-                + KEY_VALUING_PHONE_REVIEWS_FOR_SERVICE + " text,"
-                + KEY_REVIEW_REVIEWS_FOR_SERVICE + " text,"
-                + KEY_RATING_REVIEWS_FOR_SERVICE + " text"
+                + KEY_DIALOG_ID_MESSAGES + " text"
                 + ")";
 
-        String reviewsForUser = "create table "+ TABLE_REVIEWS_FOR_USERS
+        String reviews = "create table "+ TABLE_REVIEWS
+                + "(" + KEY_ID + " text primary key,"
+                + KEY_REVIEW_REVIEWS + " text,"
+                + KEY_RATING_REVIEWS + " text,"
+                + KEY_TYPE_REVIEWS + " text,"
+                + KEY_MESSAGE_ID_REVIEWS + " text,"
+                + KEY_WORKING_TIME_ID_REVIEWS + " text"
+                + ")";
+
+        String orders = "create table "+ TABLE_ORDERS
                 + "("
                 + KEY_ID + " text primary key,"
-                + KEY_MESSAGE_TIME_MESSAGES + " text,"
-                + KEY_VALUING_PHONE_REVIEWS_FOR_USER + " text,"
-                + KEY_ESTIMATED_PHONE_REVIEWS_FOR_USER + " text,"
-                + KEY_REVIEW_REVIEWS_FOR_USER + " text,"
-                + KEY_RATING_REVIEWS_FOR_USER + " text"
+                + KEY_IS_CANCELED_ORDERS + " text,"
+                + KEY_MESSAGE_ID_ORDERS + " text,"
+                + KEY_WORKING_TIME_ID_ORDERS + " integer"
                 + ")";
-
         // create users table
         db.execSQL(users);
 
@@ -174,17 +151,15 @@ public class DBHelper extends SQLiteOpenHelper {
         //create dialogs
         db.execSQL(dialogs);
 
-        //create messages_orders
-        db.execSQL(messagesOrders);
+        //create messages
+        db.execSQL(messages);
 
-        //create messages_reviews
-        db.execSQL(messagesReviews);
+        //create reviews
+        db.execSQL(reviews);
 
-        //create reviews for service
-        db.execSQL(reviewsForService);
+        //create orders
+        db.execSQL(orders);
 
-        //create reviews for user
-        db.execSQL(reviewsForUser);
     }
 
     @Override
@@ -194,11 +169,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists " + TABLE_WORKING_DAYS);
         db.execSQL("drop table if exists " + TABLE_WORKING_TIME);
         db.execSQL("drop table if exists " + TABLE_DIALOGS);
-        db.execSQL("drop table if exists " + TABLE_MESSAGE_ORDERS);
-        db.execSQL("drop table if exists " + TABLE_MESSAGE_REVIEWS);
-        db.execSQL("drop table if exists " + TABLE_REVIEWS_FOR_SERVICE);
-        db.execSQL("drop table if exists " + TABLE_REVIEWS_FOR_USERS);
+        db.execSQL("drop table if exists " + TABLE_MESSAGES);
+        db.execSQL("drop table if exists " + TABLE_ORDERS);
+        db.execSQL("drop table if exists " + TABLE_REVIEWS);
 
+        //ss
         onCreate(db);
     }
 }
