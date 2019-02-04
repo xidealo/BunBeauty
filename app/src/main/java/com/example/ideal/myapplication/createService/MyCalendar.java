@@ -183,14 +183,14 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     // проверяет имеется ли у данного пользователя запись на данную услугу
     private void checkOrder(){
         //Если пользователь записан на какой-то день выделить только его
-        date = getOrderDate();
+        date = getOrderDate(); // дата YYYY-mm-dd
         if(!date.equals("")) {
             String[] arrDate = date.split("-");
-            String orderDate = arrDate[0] + " " + monthToString(Integer.valueOf(arrDate[1]));
+            String orderDate = arrDate[2] + " " + monthToString(arrDate[1]);
 
             for (int i = 0; i < WEEKS_COUNT; i++) {
                 for (int j = 0; j < DAYS_COUNT; j++) {
-                    if(orderDate.equals(dayBtns[i][j].getText().toString()) && arrDate[2].equals(dayBtns[i][j].getTag(R.string.yearId).toString())) {
+                    if(orderDate.equals(dayBtns[i][j].getText().toString()) && arrDate[0].equals(dayBtns[i][j].getTag(R.string.yearId).toString())) {
                         dayBtns[i][j].setBackgroundResource(R.drawable.selected_day_button);
                         dayBtns[i][j].setTag(R.string.selectedId, true);
                     } else {
@@ -261,8 +261,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         int height = display.getHeight();
 
         int dayOfWeek = (calendar.get(Calendar.DAY_OF_WEEK)+5)%DAYS_COUNT;
-        int dayOfMonth, month, year;
-        String stringMonth;
+        int dayOfMonth, year;
+        String stringMonth, month;
 
         //Создание календаря
         calendar.add(Calendar.DATE, -dayOfWeek);
@@ -283,7 +283,10 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
 
                 //надпись
                 dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                month = calendar.get(Calendar.MONTH)+1;
+                month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+                if (month.length()==1) {
+                    month = "0" + month;
+                }
                 stringMonth = monthToString(month);
                 dayBtns[i][j].setTextSize(11);
                 dayBtns[i][j].setText(dayOfMonth + " " + stringMonth);
@@ -375,9 +378,13 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     // Преобразует дату в формат БД
     private String convertDate(String dayAndMonth, String year) {
         String[] arrDate = dayAndMonth.split(" ");
-        int month = monthToInt(arrDate[1]);
+        String day = arrDate[0];
+        if(day.length() == 1) {
+            day = "0" + day;
+        }
+        String month = monthToNumber(arrDate[1]);
 
-        String convertedDate = arrDate[0] + "-" + month + "-" + year;
+        String convertedDate = year + "-" + month + "-" + day;
 
         return convertedDate;
     }
@@ -470,64 +477,64 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         startActivity(intent);
     }
 
-    private String monthToString(int month) {
+    private String monthToString(String month) {
         switch (month) {
-            case 1:
+            case "01":
                 return "янв";
-            case 2:
+            case "02":
                 return "фев";
-            case 3:
+            case "03":
                 return "мар";
-            case 4:
+            case "04":
                 return "апр";
-            case 5:
+            case "05":
                 return "май";
-            case 6:
+            case "06":
                 return "июнь";
-            case 7:
+            case "07":
                 return "июль";
-            case 8:
+            case "08":
                 return "авг";
-            case 9:
+            case "09":
                 return "сен";
-            case 10:
+            case "10":
                 return "окт";
-            case 11:
+            case "11":
                 return "ноя";
-            case 12:
+            case "12":
                 return "дек";
         }
 
         return "";
     }
 
-    private int monthToInt(String month) {
+    private String monthToNumber(String month) {
         switch (month) {
             case "янв":
-                return 1;
+                return "01";
             case "фев":
-                return 2;
+                return "02";
             case "мар":
-                return 3;
+                return "03";
             case "апр":
-                return 4;
+                return "04";
             case "май":
-                return 5;
+                return "05";
             case "июнь":
-                return 6;
+                return "06";
             case "июль":
-                return 7;
+                return "07";
             case "авг":
-                return 8;
+                return "08";
             case "сен":
-                return 9;
+                return "09";
             case "окт":
-                return 10;
+                return "10";
             case "ноя":
-                return 11;
+                return "11";
             case "дек":
-                return 12;
+                return "12";
         }
-        return -1;
+        return "";
     }
 }

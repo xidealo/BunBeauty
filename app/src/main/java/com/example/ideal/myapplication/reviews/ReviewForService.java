@@ -16,12 +16,16 @@ import com.example.ideal.myapplication.other.DBHelper;
 
 public class ReviewForService extends AppCompatActivity {
 
+    private static final String TAG = "DBInf";
+
     private static final String SERVICE_ID = "service id";
 
     private String serviceId;
 
     private DBHelper dbHelper;
+
     private FragmentManager manager;
+
     private LinearLayout ratingLayout;
 
     @Override
@@ -40,11 +44,11 @@ public class ReviewForService extends AppCompatActivity {
 
 
     private void createReviews() {
-        //get data and add it on screen
+        //получаем данные и добавляем их на экран
 
-        //get: everything about user and about his review for service
-        //tables: users, review for service
-        //connect tables by phone number, find reviews by serviceId
+        //получить: все о пользователе и об его review for service
+        // таблицы: users, review for service
+        // связь таблиц по номеру телефона, находим reviews по serviceId
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -57,9 +61,11 @@ public class ReviewForService extends AppCompatActivity {
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
 
+
+        Log.d(TAG, "createReviews: " + serviceId);
         if (cursor.moveToFirst()) {
             do {
-                //everything about user
+                //получаем все о юзере
                 int indexNameUser = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
                 int indexCityUser = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
                 int indexPhoneUser = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
@@ -67,8 +73,9 @@ public class ReviewForService extends AppCompatActivity {
                 user.setName(cursor.getString(indexNameUser));
                 user.setCity(cursor.getString(indexCityUser));
                 user.setPhone(cursor.getString(indexPhoneUser));
+                Log.d(TAG, "createReviews: " + user.getPhone());
+                Log.d(TAG, "createReviews: " + user.getName());
 
-                //get everything about review
                 int indexReviewReview = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS_FOR_SERVICE);
                 int indexRatingReview = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS_FOR_SERVICE);
                 int indexMessageTimeReview = cursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_MESSAGES);
@@ -77,6 +84,7 @@ public class ReviewForService extends AppCompatActivity {
                 ratingReview.setRating(cursor.getString(indexRatingReview));
                 ratingReview.setMessageTime(cursor.getString(indexMessageTimeReview));
 
+                // получаем все о самом отзыве
                 addToScreen(user, ratingReview);
             } while (cursor.moveToNext());
         }
@@ -85,6 +93,7 @@ public class ReviewForService extends AppCompatActivity {
     }
 
     private void addToScreen(User user, RatingReview review) {
+        Log.d(TAG, "addToScreen: ");
         ReviewForServiceElement fElement = new ReviewForServiceElement(user,review);
 
         FragmentTransaction transaction = manager.beginTransaction();
