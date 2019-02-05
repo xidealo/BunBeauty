@@ -22,13 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Review extends AppCompatActivity implements View.OnClickListener {
-
-    private static final String TAG = "DBInf";
-
-    private static final String PHONE_NUMBER = "Phone number";
-
+    //tables
     private static final String REVIEWS_FOR_SERVICE = "reviews for service";
     private static final String REVIEWS_FOR_USER = "reviews for user";
+    //table elements
+    private static final String PHONE_NUMBER = "Phone number";
     private static final String SERVICE_ID = "service id";
     private static final String VALUING_PHONE = "valuing phone";
     private static final String ESTIMATED_PHONE = "estimated phone";
@@ -37,43 +35,39 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
     private static final String MESSAGE_REVIEWS = "message reviews";
     private static final String MESSAGE_ID = "message id";
     private static final String MESSAGE_TIME = "message time";
-
-
     private static final String FILE_NAME = "Info";
-
     private static final String STATUS_USER_BY_RATE = "user status";
-
     private static final String IS_RATE_BY_USER = "is rate by user" ;
     private static final String IS_RATE_BY_WORKER = "is rate by worker" ;
-
-
+    //local variables
     private float myRating;
     private String serviceId;
     private boolean isUser;
-    String dateNow;
-
+    private String dateNow;
+    private String messageId;
+    //views
     private EditText reviewInput;
-
     private RatingBar ratingBar;
+
     private DBHelper dbHelper;
-    String messageId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.review);
-
+        //find views
         Button rateReviewBtn = findViewById(R.id.rateReviewBtn);
         reviewInput = findViewById(R.id.reviewReviewInput);
         ratingBar = findViewById(R.id.ratingBarReview);
         messageId = getIntent().getStringExtra(MESSAGE_ID);
+        //set values
         myRating = 0;
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         String status = getIntent().getStringExtra(STATUS_USER_BY_RATE);
         isUser = status.equals("user");
 
         dbHelper = new DBHelper(this);
-
+        //add local utilities
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
         dateNow = workWithTimeApi.getCurDateInFormatHMS();
 
@@ -83,32 +77,32 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-
-        // Проверяем оценку
+        //here everything goes consistently, we don't use onDataChange
+        // check rating
         if(myRating!=0){
-            // Оценка поставлена
+            // rated
 
-            // Берём оценку
+            // take this rating
             String review = reviewInput.getText().toString();
 
-            // Загружаем оценку в Firebase в зависимости от статуса человека
+            // load rating in Firebase with give status
             if(isUser) {
-                //юзер оценивает сервис
+                //user estimate service
                 createReviewForService(review);
             }
             else {
-                //воркер оценивает юзера
+                //worker estimate user
                 createReviewForUser(review);
             }
-            // Обновляем атрибут "is rate" в таблице "message review"
+            //refresh value "is rate" in table "message review"
             updateMessageReview();
 
-            // Возвращаемся в диалоги
+            // return in dialogs
             goToMessages();
 
         }
         else {
-            // Оценка не поставлена
+            // not rated
             attentionRatingIsNull();
         }
     }
@@ -119,21 +113,23 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
         DatabaseReference myRef = database.getReference(MESSAGE_REVIEWS).child(messageId);
 
         Map<String,Object> items = new HashMap<>();
+        //if it rate by user we will establish value true only for user
         if(isUser) {
             items.put(IS_RATE_BY_USER, true);
         }
         else {
+            // we will establish only for worker
             items.put(IS_RATE_BY_WORKER, true);
         }
         myRef.updateChildren(items);
     }
 
     private void createReviewForService(String review) {
-        //оценка юзером
+        //rate by user
+        // here we will create review for service which was left by user
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(REVIEWS_FOR_SERVICE);
         String myPhoneNumber = getUserId();
-
 
         Map<String,Object> items = new HashMap<>();
         items.put(SERVICE_ID, serviceId);
@@ -149,7 +145,8 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void createReviewForUser(String review) {
-        //оценка воркером
+        //rate by worker
+        // here we will create review for user which was left by worker
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(REVIEWS_FOR_USER);
         String myPhoneNumber = getUserId();
@@ -168,7 +165,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void updateMessageReviewInLocalStorage() {
-
+        // here we update our local storage, we need this for check dialogs
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -187,12 +184,12 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
     }
 
     private Object getEstimatedPhone() {
-        //получить номера из диалога, к которому принадлежит этот messageId
+        //get phone number from dialog, which has this messageId and it isn't me
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        // Получает телефоны из диалога
-        // Таблицы: dialogs, message_reviews
-        // Условия: уточняем id message_reviews и связываем диалоги с message_reviews
+        // Get phone number from dialog
+        // Tables: dialogs, message_reviews
+        // Condition: specify by id message_reviews and connect dialogs with message_reviews
         String sqlQuery =
                 "SELECT "
                         + DBHelper.KEY_FIRST_USER_ID_DIALOGS + ", "
@@ -229,11 +226,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
         return "0";
     }
 
-
-    //Описываем работу слушателя изменения состояний RatingReview Bar:
     public void addListenerOnRatingBar() {
-        //При смене значения рейтинга в нашем элементе RatingReview Bar,
-        //это изменение будет сохраняться в myRating
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             public void onRatingChanged(RatingBar ratingBar, float rating,
                                         boolean fromUser) {

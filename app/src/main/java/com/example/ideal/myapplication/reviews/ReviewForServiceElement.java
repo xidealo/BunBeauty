@@ -21,9 +21,6 @@ import com.example.ideal.myapplication.fragments.objects.User;
 
 public class ReviewForServiceElement extends Fragment {
 
-    //возможно стоит размести поверх этого еще один layout на который можно будет кликнуть и перейти в комментарии
-    private static final String TAG = "DBInf";
-
     private TextView reviewText;
     private TextView userNameText;
 
@@ -46,10 +43,6 @@ public class ReviewForServiceElement extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-        Log.d(TAG, "onViewCreated: " + userName);
-        Log.d(TAG, "onViewCreated: " + review);
-
         userNameText = view.findViewById(R.id.nameReviewForServiceElementText);
         reviewText = view.findViewById(R.id.reviewReviewForServiceElementText);
 
