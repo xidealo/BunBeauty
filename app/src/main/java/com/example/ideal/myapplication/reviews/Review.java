@@ -1,10 +1,9 @@
 package com.example.ideal.myapplication.reviews;
 
 import android.content.ContentValues;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -13,10 +12,14 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
+import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,36 +30,22 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
 
     private static final String PHONE_NUMBER = "Phone number";
 
-    private static final String REVIEWS_FOR_SERVICE = "reviews for service";
-    private static final String REVIEWS_FOR_USER = "reviews for user";
-    private static final String SERVICE_ID = "service id";
-    private static final String VALUING_PHONE = "valuing phone";
-    private static final String ESTIMATED_PHONE = "estimated phone";
+    private static final String MESSAGE_ID = "message id";
+    private static final String REVIEWS = "reviews";
     private static final String REVIEW = "review";
     private static final String RATING = "rating";
-    private static final String MESSAGE_REVIEWS = "message reviews";
-    private static final String MESSAGE_ID = "message id";
-    private static final String MESSAGE_TIME = "message time";
-
+    private static final String TYPE = "type";
 
     private static final String FILE_NAME = "Info";
 
-    private static final String STATUS_USER_BY_RATE = "user status";
-
-    private static final String IS_RATE_BY_USER = "is rate by user" ;
-    private static final String IS_RATE_BY_WORKER = "is rate by worker" ;
-
-
     private float myRating;
-    private String serviceId;
-    private boolean isUser;
-    String dateNow;
 
     private EditText reviewInput;
 
     private RatingBar ratingBar;
     private DBHelper dbHelper;
-    String messageId;
+    private String messageId;
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,15 +56,10 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
         reviewInput = findViewById(R.id.reviewReviewInput);
         ratingBar = findViewById(R.id.ratingBarReview);
         messageId = getIntent().getStringExtra(MESSAGE_ID);
+        type = getIntent().getStringExtra(TYPE);
         myRating = 0;
-        serviceId = getIntent().getStringExtra(SERVICE_ID);
-        String status = getIntent().getStringExtra(STATUS_USER_BY_RATE);
-        isUser = status.equals("user");
 
         dbHelper = new DBHelper(this);
-
-        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
-        dateNow = workWithTimeApi.getCurDateInFormatHMS();
 
         addListenerOnRatingBar();
         rateReviewBtn.setOnClickListener(this);
@@ -83,29 +67,10 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-
         // Проверяем оценку
         if(myRating!=0){
             // Оценка поставлена
-
-            // Берём оценку
-            String review = reviewInput.getText().toString();
-
-            // Загружаем оценку в Firebase в зависимости от статуса человека
-            if(isUser) {
-                //юзер оценивает сервис
-                createReviewForService(review);
-            }
-            else {
-                //воркер оценивает юзера
-                createReviewForUser(review);
-            }
-            // Обновляем атрибут "is rate" в таблице "message review"
-            updateMessageReview();
-
-            // Возвращаемся в диалоги
-            goToMessages();
-
+            setReview();
         }
         else {
             // Оценка не поставлена
@@ -113,122 +78,66 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void updateMessageReview() {
+    private void setReview() {
+        final String leftBehindReview = reviewInput.getText().toString();
+        final SQLiteDatabase localDatabase = dbHelper.getReadableDatabase();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(MESSAGE_REVIEWS).child(messageId);
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        Map<String,Object> items = new HashMap<>();
-        if(isUser) {
-            items.put(IS_RATE_BY_USER, true);
-        }
-        else {
-            items.put(IS_RATE_BY_WORKER, true);
-        }
-        myRef.updateChildren(items);
+        Query query = database.getReference(REVIEWS)
+                .orderByChild(MESSAGE_ID)
+                .equalTo(messageId);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot reviews) {
+                for(DataSnapshot review: reviews.getChildren()) {
+                    // Берём оценку
+                    // Загружаем оценку в Firebase в зависимости от того, принадлежит ли сервис человеку
+                    String fReviewId = review.getKey();
+                    String fMessageType = String.valueOf(review.child(TYPE).getValue());
+                    if (fMessageType.equals(type)) {
+                        //оставляется отзыв в ревью, в котором свободные поля
+                        RatingReview ratingReview = new RatingReview();
+                        ratingReview.setId(fReviewId);
+                        ratingReview.setReview(leftBehindReview);
+                        ratingReview.setRating(String.valueOf(myRating));
+                        Map<String,Object> items = new HashMap<>();
+
+                        items.put(RATING, myRating);
+                        items.put(REVIEW, leftBehindReview);
+                        DatabaseReference myRef = database.getReference(REVIEWS).child(fReviewId);
+                        myRef.updateChildren(items);
+                        updateReviewLocalStorage(ratingReview);
+                    } else {
+                        //ситуация невозможна, потмоу что сюда нельзя придти,
+                        // тк в messages не должно быть кнопки "оценить"
+                    }
+
+                    // Возвращаемся в диалоги
+                    goToMessages();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
-    private void createReviewForService(String review) {
-        //оценка юзером
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(REVIEWS_FOR_SERVICE);
-        String myPhoneNumber = getUserId();
-
-
-        Map<String,Object> items = new HashMap<>();
-        items.put(SERVICE_ID, serviceId);
-        items.put(VALUING_PHONE, myPhoneNumber);
-        items.put(MESSAGE_TIME, dateNow);
-        items.put(REVIEW, review);
-        items.put(RATING, myRating);
-
-        String reviewId =  myRef.push().getKey();
-        myRef = database.getReference(REVIEWS_FOR_SERVICE).child(reviewId);
-        myRef.updateChildren(items);
-        updateMessageReviewInLocalStorage();
-    }
-
-    private void createReviewForUser(String review) {
-        //оценка воркером
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(REVIEWS_FOR_USER);
-        String myPhoneNumber = getUserId();
-
-        Map<String,Object> items = new HashMap<>();
-        items.put(VALUING_PHONE, myPhoneNumber); // кто оценивает
-        items.put(ESTIMATED_PHONE, getEstimatedPhone()); // кого оцениваем
-        items.put(MESSAGE_TIME, dateNow);
-        items.put(REVIEW, review);
-        items.put(RATING, myRating);
-
-        String reviewId =  myRef.push().getKey();
-        myRef = database.getReference(REVIEWS_FOR_USER).child(reviewId);
-        myRef.updateChildren(items);
-        updateMessageReviewInLocalStorage();
-    }
-
-    private void updateMessageReviewInLocalStorage() {
+    private void updateReviewLocalStorage(RatingReview ratingReview) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-
-        if(isUser) {
-            contentValues.put(DBHelper.KEY_IS_RATE_BY_USER_MESSAGE_REVIEWS, "true");
-        }
-        else {
-            contentValues.put(DBHelper.KEY_IS_RATE_BY_WORKER_MESSAGE_REVIEWS, "true");
-        }
-
-        database.update(DBHelper.TABLE_MESSAGE_REVIEWS, contentValues,
+        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, ratingReview.getReview());
+        contentValues.put(DBHelper.KEY_RATING_REVIEWS, ratingReview.getRating());
+        //update
+        database.update(DBHelper.TABLE_REVIEWS, contentValues,
                 DBHelper.KEY_ID + " = ?",
-                new String[]{String.valueOf(messageId)});
-
+                new String[]{String.valueOf(ratingReview.getId())});
     }
-
-    private Object getEstimatedPhone() {
-        //получить номера из диалога, к которому принадлежит этот messageId
-
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        // Получает телефоны из диалога
-        // Таблицы: dialogs, message_reviews
-        // Условия: уточняем id message_reviews и связываем диалоги с message_reviews
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_FIRST_USER_ID_DIALOGS + ", "
-                        + DBHelper.KEY_SECOND_USER_ID_DIALOGS
-                        + " FROM "
-                        + DBHelper.TABLE_DIALOGS + ", "
-                        + DBHelper.TABLE_MESSAGE_REVIEWS
-                        + " WHERE "
-                        + DBHelper.TABLE_DIALOGS +"."+DBHelper.KEY_ID
-                        + " = "
-                        + DBHelper.KEY_DIALOG_ID_MESSAGES
-                        + " AND "
-                        + DBHelper.TABLE_MESSAGE_REVIEWS +"." + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{messageId});
-
-        if(cursor.moveToFirst()){
-
-            int indexFirstPhone = cursor.getColumnIndex(DBHelper.KEY_FIRST_USER_ID_DIALOGS);
-            String firstPhone = cursor.getString(indexFirstPhone);
-
-            int indexSecondPhone = cursor.getColumnIndex(DBHelper.KEY_SECOND_USER_ID_DIALOGS);
-            String secondPhone = cursor.getString(indexSecondPhone);
-
-            if(firstPhone.equals(getUserId())){
-                cursor.close();
-                return secondPhone;
-            }
-            else {
-                cursor.close();
-                return  firstPhone;
-            }
-        }
-        return "0";
-    }
-
 
     //Описываем работу слушателя изменения состояний RatingReview Bar:
     public void addListenerOnRatingBar() {
@@ -240,12 +149,6 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
                 myRating = rating;
             }
         });
-    }
-
-    private String getUserId(){
-        SharedPreferences sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-
-        return sPref.getString(PHONE_NUMBER, "-");
     }
 
     private void attentionRatingIsNull() {

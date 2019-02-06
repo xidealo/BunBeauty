@@ -21,11 +21,7 @@ public class notification_no_canceled_element extends Fragment {
 
     @SuppressLint("ValidFragment")
     public notification_no_canceled_element (Message message) {
-        text = "  Вы успешно записались к " + message.getUserName()
-                + ". Запись на "
-                + message.getDate()
-                + " в " + message.getOrderTime()
-                + " на услугу " + message.getServiceName();
+
     }
 
     @Override

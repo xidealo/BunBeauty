@@ -49,15 +49,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     @SuppressLint("ValidFragment")
     public MessageOrderElement(Message message) {
-        messageId = message.getId();
-        messageDateOfDay = message.getDate();
-        messageTimeOfDay = message.getOrderTime();
-        messageTimeId = message.getTimeId();
-        messageIsCanceled = message.getIsCanceled();
-        messageDialogId = message.getDialogId();
-            text = "Добрый день, на " + messageDateOfDay + " в " + messageTimeOfDay
-                    + " к вам записался пользователь " + message.getUserName() + " на услугу "
-                    + message.getServiceName() + ". Вы можете отказаться, указав причину.";
+
     }
 
     @Override

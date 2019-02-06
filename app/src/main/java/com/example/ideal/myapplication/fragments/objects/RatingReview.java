@@ -6,10 +6,10 @@ public class RatingReview {
     private float avgRating;
     private String id;
     private String review;
-    private String serviceId;
     private String rating;
-    private String valuingPhone;
-    private String messageTime;
+    private String workingTimeId;
+    private String messageId;
+    private String type;
 
     public void setCountOfRates(String _countOfRates) {
         countOfRates = Integer.valueOf(_countOfRates);
@@ -23,17 +23,17 @@ public class RatingReview {
     public void setId(String _id){
         id=_id;
     }
-    public void setServiceId(String _serviceId){
-        serviceId = _serviceId;
+    public void setWorkingTimeId(String _workingTimeId){
+        workingTimeId=_workingTimeId;
     }
-    public void setValuingPhone(String _valuingPhone){
-        valuingPhone=_valuingPhone;
-    }
-    public void setMessageTime(String _messageTime){
-        messageTime=_messageTime;
+    public void setMessageId(String _messageId){
+        messageId=_messageId;
     }
     public void setRating(String _rating){
         rating=_rating;
+    }
+    public void setType(String _type){
+        type = _type;
     }
 
     public int getCountOfRates() {
@@ -48,16 +48,12 @@ public class RatingReview {
         return review;
     }
 
-    public String getServiceId() {
-        return serviceId;
+    public String getWorkingTimeId() {
+        return workingTimeId;
     }
 
-    public String getValuingPhone() {
-        return valuingPhone;
-    }
-
-    public String getMessageTime() {
-        return messageTime;
+    public String getMessageId() {
+        return messageId;
     }
 
     public String getRating() {
@@ -66,5 +62,9 @@ public class RatingReview {
 
     public String getId() {
         return id;
+    }
+
+    public String getType() {
+        return type;
     }
 }

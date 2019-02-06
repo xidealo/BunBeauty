@@ -393,9 +393,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                     ratingReview.setId(String.valueOf(rate.getKey()));
                     ratingReview.setReview(String.valueOf(rate.child(REVIEW).getValue()));
                     ratingReview.setRating(String.valueOf(rate.child(RATING).getValue()));
-                    ratingReview.setValuingPhone(String.valueOf(rate.child(VALUING_PHONE).getValue()));
-                    ratingReview.setServiceId(String.valueOf(rate.child(SERVICE_ID).getValue()));
-                    ratingReview.setMessageTime(String.valueOf(rate.child(MESSAGE_TIME).getValue()));
                     addReviewForServiceInLocalStorage(ratingReview);
                 }
                 ratingReview.setAvgRating(String.valueOf(sumRates / countOfRates));
@@ -409,33 +406,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addReviewForServiceInLocalStorage(RatingReview ratingReview) {
-
-        SQLiteDatabase database= dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_REVIEWS_FOR_SERVICE
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{ratingReview.getId()});
-
-        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS_FOR_SERVICE,ratingReview.getReview());
-        contentValues.put(DBHelper.KEY_RATING_REVIEWS_FOR_SERVICE,ratingReview.getRating());
-        contentValues.put(DBHelper.KEY_VALUING_PHONE_REVIEWS_FOR_SERVICE,ratingReview.getValuingPhone());
-        contentValues.put(DBHelper.KEY_SERVICE_ID_REVIEWS_FOR_SERVICE,ratingReview.getServiceId());
-        contentValues.put(DBHelper.KEY_MESSAGE_TIME_MESSAGES,ratingReview.getMessageTime());
-
-        if (cursor.moveToFirst()) {
-            database.update(DBHelper.TABLE_REVIEWS_FOR_SERVICE, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{String.valueOf(ratingReview.getId())});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, ratingReview.getId());
-            database.insert(DBHelper.TABLE_REVIEWS_FOR_SERVICE, null, contentValues);
-        }
-        cursor.close();
-        getUserFromReviewForService(ratingReview.getValuingPhone());
 
     }
 
@@ -481,43 +451,16 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
                     DBHelper.KEY_USER_ID + " = ?",
                     new String[]{String.valueOf(localUser.getPhone())});
-            chechDb(localUser.getPhone());
         } else {
             // если только тут кладжешь, то в update пропадает keyId?
             contentValues.put(DBHelper.KEY_USER_ID, localUser.getPhone());
             Log.d(TAG, "addUserInLocalStorage: " + localUser.getPhone());
             database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
-            chechDb(localUser.getPhone());
         }
         cursor.close();
 
     }
 
-    private void chechDb(String phone) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_CONTACTS_USERS
-                + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{phone});
-        Log.d(TAG, "chechDb: " + phone);
-        if(cursor.moveToFirst()){
-            Log.d(TAG, "chechDb: ");
-            int indexNameUser = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
-            int indexCityUser = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
-            int indexPhoneUser = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
-            User user = new User();
-            user.setName(cursor.getString(indexNameUser));
-            user.setCity(cursor.getString(indexCityUser));
-            user.setPhone(cursor.getString(indexPhoneUser));
-            Log.d(TAG, "createReviews: " + user.getPhone());
-            Log.d(TAG, "createReviews: " + user.getName());
-        }
-        cursor.close();
-
-    }
 
     private void addToScreen(RatingReview ratingReview) {
         RatingBarForServiceElement fElement = new RatingBarForServiceElement(ratingReview);
