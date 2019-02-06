@@ -580,7 +580,7 @@ public class Dialogs extends AppCompatActivity {
 
                         for(DataSnapshot time: dataSnapshot.getChildren()) {
                             final String timeId = String.valueOf(time.getKey());
-
+git
                             DatabaseReference myRef = database.getReference(WORKING_TIME)
                                     .child(timeId)
                                     .child(USER_ID);
