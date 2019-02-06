@@ -34,6 +34,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+import static android.provider.Telephony.BaseMmsColumns.MESSAGE_ID;
+
 public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
     private static final String FILE_NAME = "Info";
@@ -44,7 +46,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     private static final String SERVICES = "services";
 
     private static final String DIALOGS = "dialogs";
-    private static final String MESSAGES = "message orders";
+    private static final String MESSAGES = "messages";
     private static final String USER_ID = "user id";
 
     private static final String SERVICE_ID = "service id";
@@ -58,6 +60,11 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
     private static final int ROWS_COUNT = 6;
     private static final int COLUMNS_COUNT = 4;
+    private static final String WORKING_TIME_ID = "working time id";
+    private static final String ORDERS = "orders";
+    private static final String IS_CANCELED = "is canceled";
+    private static final String MESSAGE_ID = "message id";
+    private static final String DIALOG_ID = "dialog id";
 
     private String statusUser;
     private String userId;
@@ -422,8 +429,9 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         }
         return "";
     }
-    // Позволяет получать id
-    private void makeOrder(){
+
+    // Записаться на данное время
+    private void makeOrder() {
         workingDaysId = getIntent().getStringExtra(WORKING_DAYS_ID);
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         //получаю время кнопки, на которую нажал
@@ -441,15 +449,16 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                     if(String.valueOf(time.child("time").getValue()).equals(timeBtn)) {
                         String timeId = String.valueOf(time.getKey());
 
-                        //возвращает все дни определенного сервиса
+                        // Вписываем телефон в working time (firebase)
                         DatabaseReference myRef = database.getReference(WORKING_TIME).child(timeId);
-
                         Map<String, Object> items = new HashMap<>();
                         items.put(USER_ID, userId);
-
                         myRef.updateChildren(items);
+
+                        // Вписываем телефон в working time (localStorage)
                         updateLocalStorageTime();
-                        // DatabaseReference myRef = database.getReference(WORKING_TIME + timeId);
+
+                        // Создаём диалог
                         createDialog(workingDaysId);
                         checkCurrentTimes();
                     }
@@ -569,22 +578,36 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
     private void createMessage(final String dialogId) {
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        DatabaseReference myRef = database.getReference(MESSAGES);
+        DatabaseReference messageRef = database.getReference(MESSAGES);
         Map<String, Object> items = new HashMap<>();
 
         String dateNow = workWithTimeApi.getCurDateInFormatHMS();
 
-        items.put("dialog id", dialogId);
+        items.put(DIALOG_ID, dialogId);
         items.put(MESSAGE_TIME, dateNow);
-        items.put("time id", timeId);
-        items.put("is canceled", false);
 
-        String messageId =  myRef.push().getKey();
-        myRef = database.getReference(MESSAGES).child(messageId);
-        myRef.updateChildren(items);
+        String messageId =  messageRef.push().getKey();
+        messageRef = database.getReference(MESSAGES).child(messageId);
+        messageRef.updateChildren(items);
 
+        createOrder(messageId);
+    }
+
+    private void createOrder(String messageId) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference orderRef = database.getReference(ORDERS);
+        Map<String, Object> items = new HashMap<>();
+
+        items.put(IS_CANCELED, false);
+        items.put(WORKING_TIME_ID, timeId);
+        items.put(MESSAGE_ID, messageId);
+
+        String orderId =  orderRef.push().getKey();
+        orderRef = database.getReference(ORDERS).child(orderId);
+        orderRef.updateChildren(items);
     }
 
     private void updateLocalStorageTime() {
