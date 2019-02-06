@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.ideal.myapplication">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/BunBeauty"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".reviews.ReviewForService"></activity>
+        <activity android:name=".reviews.Review" />
+        <activity android:name=".chat.Messages" />
+        <activity android:name=".chat.Dialogs" />
+        <activity android:name=".logIn.Registration" />
+        <activity android:name=".logIn.Authorization">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".other.Profile" />
+        <activity android:name=".other.SearchService" />
+        <activity android:name=".createService.AddService" />
+        <activity android:name=".other.GuestService" />
+        <activity android:name=".other.MainScreen" />
+        <activity android:name=".createService.MyTime" />
+        <activity android:name=".createService.MyCalendar" />
+        <activity android:name=".editing.EditService" />
+        <activity android:name=".editing.EditProfile" />
+        <activity android:name=".logIn.Confirmation" />
+    </application>
+
+</manifest>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical"
+    tools:context=".logIn.Authorization">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/phoneAuthorizationInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/bun_beauty" />
+
+    <EditText
+        android:id="@+id/phoneAuthorizationInput"
+        android:layout_gravity="center"
+        android:layout_marginTop="125dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/lightText"
+        android:ems="10"
+        android:hint="@string/phone"
+        android:visibility="invisible"
+        android:inputType="phone"
+        android:textColor="@color/white"
+        android:textColorHint="@color/lightText" />
+
+    <EditText
+        android:id="@+id/passAuthorizationInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:ems="10"
+        android:textColor="@color/white"
+        android:textColorHint="@color/lightText"
+        android:backgroundTint="@color/lightText"
+        android:visibility="invisible"
+        android:hint="@string/passwordRegistration"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/logInAuthorizationBtn"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/log_in" />
+
+    <Button
+        android:id="@+id/registrationAuthorizationBtn"
+        android:layout_gravity="center"
+        android:layout_width="108dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="23dp"
+        android:background="@drawable/registration"
+        android:visibility="invisible" />
+
+</LinearLayout>
