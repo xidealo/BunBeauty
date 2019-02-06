@@ -169,6 +169,9 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists " + TABLE_WORKING_DAYS);
         db.execSQL("drop table if exists " + TABLE_WORKING_TIME);
         db.execSQL("drop table if exists " + TABLE_DIALOGS);
+        db.execSQL("drop table if exists " + TABLE_MESSAGES);
+        db.execSQL("drop table if exists " + TABLE_ORDERS);
+        db.execSQL("drop table if exists " + TABLE_REVIEWS);
 
         onCreate(db);
     }
