@@ -33,7 +33,6 @@ public class ReviewForServiceElement extends Fragment {
     public ReviewForServiceElement(User user, RatingReview ratingReview) {
         userName = user.getName();
         review = ratingReview.getReview();
-
     }
 
     @Override

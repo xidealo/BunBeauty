@@ -18,7 +18,7 @@ public class WorkWithTimeApi {
 
     public Long getMillisecondsStringDate(String date){
 
-        SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
             Date orderDate;
             orderDate = formatForDateNow.parse(date);

@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -103,12 +104,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             ownerId = userId;
         }
 
+        // Добавляем данные о пользователе
+        updateProfileData(userId);
+
         // Проверяем совпадают id пользователя и владельца
         if(userId.equals(ownerId)){
-            // Совпадают - это мой сервис
+            // Совпадают - это мой профиль
 
-            // Добавляем данные о пользователе
-            createProfileData(userId);
             servicesLayout.setVisibility(View.INVISIBLE);
             servicesScroll.setVisibility(View.INVISIBLE);
 
@@ -133,15 +135,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             addServicesBtn.setOnClickListener(this);
             editProfileBtn.setOnClickListener(this);
         } else {
-            // Не совпадаю - чужой профиль
+            // Не совпадает - чужой профиль
 
             // Скрываем функционал
             servicesOrOrdersSwitch.setVisibility(View.INVISIBLE);
             addServicesBtn.setVisibility(View.INVISIBLE);
             editProfileBtn.setVisibility(View.INVISIBLE);
-
-            // Подгружаем данные о владельце
-            createProfileData(ownerId);
 
             // Отображаем все сервисы пользователя
             ordersLayout.setVisibility(View.INVISIBLE);
@@ -192,7 +191,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         return userId;
     }
     // получаем данные о пользователе и отображаем в прфоиле
-    private void createProfileData(String userId){
+    private void updateProfileData(String userId){
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
@@ -233,6 +232,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             // если это мой сервис
             updateOrdersList(userId);
             updateServicesList(userId);
+            updateProfileData(userId);
         }
     }
 
@@ -318,14 +318,18 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " AND "
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
                         + " AND "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_USER_ID + " = ?";
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_USER_ID + " = ?"
+                        + " AND "
+                        + " STRFTIME('%s', " + DBHelper.KEY_DATE_WORKING_DAYS
+                        //+ "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                        + ")>=STRFTIME('%s', DATE('now'))";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
 
-        int irrelevantCount = 0;
         int cursorCount = cursor.getCount();
+
         //если есть новые записи
-        if(cursorCount > irrelevantCount + visibleCount) {
+        if(cursorCount > visibleCount) {
             //Идём с конца
             if(cursor.moveToLast()){
                 int indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID);
@@ -333,26 +337,17 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
                 int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
 
-                int countOfNewOrders = 0;
-
                 do{
                     String foundId = cursor.getString(indexServiceId);
                     String foundName = cursor.getString(indexServiceName);
                     String foundDate = cursor.getString(indexDate);
                     String foundTime = cursor.getString(indexTime);
 
-                    Long sysdateLong = workWithTimeApi.getSysdateLong();
-                    Long orderDateLong = workWithTimeApi.getMillisecondsStringDate(foundDate+" "+foundTime);
-                    //проверяет, актуальность ордера
-                    if(orderDateLong-sysdateLong>0) {
-                        addOrderToScreen(foundId, foundName, foundDate, foundTime);
-                        countOfNewOrders++;
-                    } else {
-                        irrelevantCount++;
-                    }
+                    addOrderToScreen(foundId, foundName, foundDate, foundTime);
+                    visibleCount++;
 
                     //пока в курсоре есть строки и есть новые записи
-                }while (cursor.moveToPrevious() && countOfNewOrders<(cursorCount - irrelevantCount - visibleCount));
+                }while (cursor.moveToPrevious() && (cursorCount > visibleCount));
             }
         }
         cursor.close();

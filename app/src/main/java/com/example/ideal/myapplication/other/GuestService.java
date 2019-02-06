@@ -544,6 +544,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+
+
     }
 
     private void attentionThisScheduleIsEmpty() {

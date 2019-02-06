@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class EditProfile extends AppCompatActivity implements View.OnClickListener {
+
     //изменяет номер телефона во всех таблицах, где используется
     private final String TAG = "DBInf";
 
@@ -54,11 +55,18 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private static final String USER_ID = "user id";
 
     private static final String PHONE_NUMBER = "Phone number";
+    private static final String OWNER_ID = "owner id";
     private static final String FILE_NAME = "Info";
     private static final String FIRST_PHONE = "first phone";
     private static final String SECOND_PHONE = "second phone";
 
+    private static final String REVIEWS_FOR_SERVICE = "reviews for service";
+    private static final String REVIEWS_FOR_USER = "reviews for user";
+    private static final String VALUING_PHONE = "valuing phone";
+    private static final String ESTIMATED_PHONE = "estimated phone";
+
     private String oldPhone;
+    private String phone;
 
     Button editBtn;
     Button verifyButton;
@@ -116,8 +124,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             nameInput.setText(cursor.getString(indexName));
             cityInput.setText(cursor.getString(indexCity));
             phoneInput.setText(cursor.getString(indexPhone));
-            cursor.close();
         }
+        cursor.close();
+
         editBtn.setOnClickListener(this);
         resendButton.setOnClickListener(this);
         verifyButton.setOnClickListener(this);
@@ -128,19 +137,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         switch (v.getId()) {
 
             case R.id.editProfileEditProfileBtn:
-
-                String phone = convertPhoneToNormalView(phoneInput.getText().toString());
-
-                user.setName(nameInput.getText().toString().toLowerCase());
-                user.setCity(cityInput.getText().toString().toLowerCase());
-                //Проверка изменённого номеа
-                if (phone.length() > 0) {
-
-                    updateInfoInFireBase(user, phone);
-
-                } else {
-                    Toast.makeText(this, getString(R.string.empty_phone_field), Toast.LENGTH_SHORT).show();
-                }
+                checkPhone();
                 break;
 
             case R.id.verifyProfileEditProfileBtn:
@@ -161,43 +158,61 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void updateInfoInFireBase(User user, final String phone) {
-        //можно объеденить ссылки?
+    private void checkPhone() {
+        int phoneLength = String.valueOf(phoneInput.getText()).length();
+        if (phoneLength > 0) {
+            phone = convertPhoneToNormalView(String.valueOf(phoneInput.getText()));
+
+            user.setName(nameInput.getText().toString().toLowerCase());
+            user.setCity(cityInput.getText().toString().toLowerCase());
+
+            //можно объеденить ссылки?
+            DatabaseReference reference = FirebaseDatabase
+                    .getInstance()
+                    .getReference(USERS).child(phone);
+
+            // Сравниваем телефон в поле ввода и уже имеющийся
+            if (phone.equals(oldPhone)) {
+                // Номер не изменился
+
+                updateInfo();
+                goToProfile();
+            } else {
+                // Номер изменился
+
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        //такого номера нет
+                        if (dataSnapshot.getChildrenCount() == 0) {
+                            sendCode(phone);
+                        } else {
+                            attentionThisUserAlreadyReg();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        attentionBadConnection();
+                    }
+                });
+            }
+        } else {
+            attentionEmptyPhoneNumberField();
+        }
+    }
+
+    private void updateInfo() {
         DatabaseReference reference = FirebaseDatabase
                 .getInstance()
-                .getReference(USERS).child(getUserPhone());
+                .getReference(USERS).child(oldPhone);
 
         Map<String, Object> items = new HashMap<>();
         if (user.getName() != null) items.put(USER_NAME, user.getName());
         if (user.getCity() != null) items.put(USER_CITY, user.getCity());
         reference.updateChildren(items);
 
-        updateInfoInLocalDataBase(user);
-
-        if(!phone.equals(getUserPhone())) {
-            final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference(USERS).child(phone);
-
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    //такого номера нет
-                    if (dataSnapshot.getChildrenCount() == 0) {
-                        sendCode(phone);
-                    } else {
-                        attentionThisUserAlreadyReg();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    attentionBadConnection();
-                }
-            });
-        }
-        else {
-            goToAuthorization();
-        }
+        updateInfoInLocalStorage();
     }
 
     private void sendCode(String phoneNumber) {
@@ -237,8 +252,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
                         if (e instanceof FirebaseAuthInvalidCredentialsException) {
                             // Invalid request
-                            Log.d(TAG, "Invalid credential: "
-                                    + e.getLocalizedMessage());
+                            attentionInvalidPhoneNumber();
                         } else if (e instanceof FirebaseTooManyRequestsException) {
                             // SMS quota exceeded
                             Log.d(TAG, "SMS Quota exceeded.");
@@ -266,14 +280,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "onComplete: ");
                         //если введенный код совпадает с присланным кодом
                         if (task.isSuccessful()) {
-                            String phone = phoneInput.getText().toString();
-                            phone = convertPhoneToNormalView(phone);
-                            updatePhone(phone);
+                            updatePhone();
+
                             //сохраняем его в лок данные
-                            savePhone(phone);
+                            savePhone();
                         } else {
                             if (task.getException() instanceof
                                     FirebaseAuthInvalidCredentialsException) {
@@ -285,61 +297,67 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 });
     }
 
-    private void updatePhone(String phone) {
+    private void updatePhone() {
 
         //я не знаю, как сделать update id, поэтому я ксоздаю нового пользователя и удаляю старого
-        deleteOldPhoneNumber(phone);
-        createNewPhoneNumber(phone);
-        savePhone(phone);
-        updateOtherPlaceWithPhone(phone);
+        deleteOldPhoneNumber();
+        createNewPhoneNumber();
+        savePhone();
+        updateOtherPlaceWithPhone();
         //добавить обновление локальной бд
         //не буду менять локальнгый бд, просто выкину его с финишом на авторизацию
         //там перезайдет и подгрузим все данные
     }
 
-    private void deleteOldPhoneNumber(String phone){
+    //удаляем старый телефон в таблице юзер
+    private void deleteOldPhoneNumber(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users/" + oldPhone );
-        //удаляем старый телефон в таблице юзер
-        Map<String,Object> items = new HashMap<>();
-        items.put("name", null);
-        items.put("city", null);
-        items.put("password",null);
-        myRef.updateChildren(items);
+
+        myRef.removeValue();
     }
 
-    private void createNewPhoneNumber(String phone) {
+    private void createNewPhoneNumber() {
         //создаем новый номер и данные с ним в таблице юзер
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference  myRef = database.getReference("users/"+phone);
+        DatabaseReference  myRef = database.getReference("users/" + phone);
         Map<String,Object> items = new HashMap<>();
         items.put("name", user.getName());
         items.put("city", user.getCity());
         items.put("password", getUserPass());
         myRef.updateChildren(items);
     }
-    private void updateOtherPlaceWithPhone(final String phone) {
-        //делаем update номера в service, и working time, если есть запись
+
+    private void updateOtherPlaceWithPhone() {
+        updateWorkingTime();
+        updateServices();
+        updateDialogs();
+        updateReviewForService();
+        updateReviewForUser();
+        goToAuthorization();
+    }
+
+    private void updateWorkingTime() {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        //update в working time
-        final Query query = database.getReference(WORKING_TIME)
+        Query query = database.getReference(WORKING_TIME)
                 .orderByChild(USER_ID)
                 .equalTo(oldPhone);
         //находим id времени по телефону и меняем в нем телефон
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot time: dataSnapshot.getChildren()){
+                for(DataSnapshot timeSnapshot: dataSnapshot.getChildren()){
 
-                    DatabaseReference myRef = database.getReference(WORKING_TIME).child(time.getKey());
+                    String timeId = timeSnapshot.getKey();
+
+                    DatabaseReference myRef = database.getReference(WORKING_TIME).child(timeId);
                     Map<String,Object> items = new HashMap<>();
                     items.put(USER_ID, phone);
                     myRef.updateChildren(items);
+
+                    updateWorkingTimeInLocalStorage(timeId);
                 }
-                //update в service
-                updateServices(phone);
-                updateDialogs(phone);
             }
 
             @Override
@@ -349,7 +367,18 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         });
     }
 
-    private void updateServices(final String phone) {
+    private void updateWorkingTimeInLocalStorage(String timeId) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_USER_ID, phone);
+
+        database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{String.valueOf(timeId)});
+    }
+
+    private void updateServices() {
         //аналогично с working days
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -360,14 +389,17 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot service: dataSnapshot.getChildren()){
+                for(DataSnapshot serviceSnapshot: dataSnapshot.getChildren()){
 
-                    DatabaseReference myRef = database.getReference(SERVICE).child(service.getKey());
+                    String serviceId = serviceSnapshot.getKey();
+
+                    DatabaseReference myRef = database.getReference(SERVICE).child(serviceId);
                     Map<String,Object> items = new HashMap<>();
                     items.put(USER_ID, phone);
                     myRef.updateChildren(items);
-                }
 
+                    updateServiceInLocalStorage(serviceId);
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -376,40 +408,36 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         });
     }
 
-    private void updateDialogs(final String phone) {
+    private void updateServiceInLocalStorage(String serviceId) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
 
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_USER_ID, phone);
+
+        database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{String.valueOf(serviceId)});
+    }
+
+    private void updateDialogs() {
+        checkFirstPhone();
+        checkSecondPhone();
+    }
+
+    private void checkFirstPhone() {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        final Query firstPhoneQuery = database.getReference(DIALOGS)
+        Query firstPhoneQuery = database.getReference(DIALOGS)
                 .orderByChild(FIRST_PHONE)
                 .equalTo(oldPhone);
         firstPhoneQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dialogs) {
-                String secondPhone;
-                String dialogId ="";
-
-                for (DataSnapshot dialog : dialogs.getChildren()) {
-                    secondPhone = String.valueOf(dialog.child(FIRST_PHONE).getValue());
-
-                    if (secondPhone.equals(oldPhone)) {
-                        dialogId = dialog.getKey();
-                        //поменять в диалоге номер
-
-                        DatabaseReference myRef = database.getReference(DIALOGS).child(dialogId);
-                        Map<String, Object> items = new HashMap<>();
-                        items.put(FIRST_PHONE, phone);
-                        myRef.updateChildren(items);
-
-                    }
-                }
-                //ищем по second phone
-
-                if(dialogId.isEmpty()) {
-                    checkSecondPhone(phone);
-                }
-                else {
-                    goToAuthorization();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dialogSnapshot: dataSnapshot.getChildren()) {
+                    DatabaseReference myRef = database.getReference(DIALOGS).child(dialogSnapshot.getKey());
+                    Map<String, Object> items = new HashMap<>();
+                    items.put(FIRST_PHONE, phone);
+                    myRef.updateChildren(items);
                 }
             }
 
@@ -418,33 +446,101 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 attentionBadConnection();
             }
         });
-
     }
 
-    private void checkSecondPhone(final String phone){
+    private void checkSecondPhone(){
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        Query secondPhoneQuery = database.getReference(DIALOGS)
+        Query firstPhoneQuery = database.getReference(DIALOGS)
                 .orderByChild(SECOND_PHONE)
                 .equalTo(oldPhone);
-        secondPhoneQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        firstPhoneQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dialogs) {
-                String secondPhone;
-                String dialogId;
-
-                for(DataSnapshot dialog:dialogs.getChildren()) {
-                    secondPhone = String.valueOf(dialog.child(SECOND_PHONE).getValue());
-                    if(secondPhone.equals(oldPhone)) {
-                        dialogId = dialog.getKey();
-
-                        DatabaseReference myRef = database.getReference(DIALOGS).child(dialogId);
-                        Map<String, Object> items = new HashMap<>();
-                        items.put(SECOND_PHONE, phone);
-                        myRef.updateChildren(items);
-                    }
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dialogSnapshot: dataSnapshot.getChildren()) {
+                    DatabaseReference myRef = database.getReference(DIALOGS).child(dialogSnapshot.getKey());
+                    Map<String, Object> items = new HashMap<>();
+                    items.put(SECOND_PHONE, phone);
+                    myRef.updateChildren(items);
                 }
-                goToAuthorization();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                attentionBadConnection();
+            }
+        });
+    }
+
+    private void updateReviewForService() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        Query query = database.getReference(REVIEWS_FOR_SERVICE)
+                .orderByChild(VALUING_PHONE)
+                .equalTo(oldPhone);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot reviewSnapshot: dataSnapshot.getChildren()) {
+                    DatabaseReference myRef = database.getReference(REVIEWS_FOR_SERVICE).child(reviewSnapshot.getKey());
+                    Map<String, Object> items = new HashMap<>();
+                    items.put(VALUING_PHONE, phone);
+                    myRef.updateChildren(items);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                attentionBadConnection();
+            }
+        });
+    }
+
+
+    private void updateReviewForUser() {
+        checkValuingPhone();
+        checkEstimatedPhone();
+    }
+
+    private void checkEstimatedPhone() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        Query query = database.getReference(REVIEWS_FOR_USER)
+                .orderByChild(ESTIMATED_PHONE)
+                .equalTo(oldPhone);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot reviewSnapshot: dataSnapshot.getChildren()) {
+                    DatabaseReference myRef = database.getReference(REVIEWS_FOR_USER).child(reviewSnapshot.getKey());
+                    Map<String, Object> items = new HashMap<>();
+                    items.put(ESTIMATED_PHONE, phone);
+                    myRef.updateChildren(items);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                attentionBadConnection();
+            }
+        });
+    }
+
+    private void checkValuingPhone() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        Query query = database.getReference(REVIEWS_FOR_USER)
+                .orderByChild(VALUING_PHONE)
+                .equalTo(oldPhone);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot reviewSnapshot: dataSnapshot.getChildren()) {
+                    DatabaseReference myRef = database.getReference(REVIEWS_FOR_USER).child(reviewSnapshot.getKey());
+                    Map<String, Object> items = new HashMap<>();
+                    items.put(VALUING_PHONE, phone);
+                    myRef.updateChildren(items);
+                }
             }
 
             @Override
@@ -455,7 +551,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     //Обновление информации в БД
-    private void updateInfoInLocalDataBase(User user) {
+    private void updateInfoInLocalStorage() {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -505,6 +601,20 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 Toast.LENGTH_SHORT).show();
     }
 
+    private void attentionInvalidPhoneNumber(){
+        Toast.makeText(
+                this,
+                "Неправильный номер",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void attentionEmptyPhoneNumberField() {
+        Toast.makeText(
+                this,
+                "Поле с номером телефона не зполнено",
+                Toast.LENGTH_SHORT).show();
+    }
+
     private void attentionThisCodeWasWrong(){
         Toast.makeText(
                 this,
@@ -512,10 +622,11 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void savePhone(String phone) {
+    private void savePhone() {
         sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sPref.edit();
         editor.putString(PHONE_NUMBER, phone);
+        editor.putString(OWNER_ID, phone);
         editor.apply();
     }
 
@@ -528,6 +639,10 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         Intent intent = new Intent(EditProfile.this, Authorization.class);
         startActivity(intent);
         finish();
+    }
+
+    private void goToProfile() {
+        super.onBackPressed();
     }
 
     private void attentionBadConnection() {
