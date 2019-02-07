@@ -17,6 +17,7 @@ import com.example.ideal.myapplication.fragments.chatElements.DialogElement;
 import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.UtilitiesApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.utilities.Utilities;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -350,8 +352,7 @@ public class Dialogs extends AppCompatActivity {
                         database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
                     }
                     cursor.close();
-                    //updateWorkingTimeInLocalStorage(messageId);
-
+                    updateWorkingTimeInLocalStorage(orderId);
                 }
             }
             @Override
@@ -486,7 +487,6 @@ public class Dialogs extends AppCompatActivity {
                         if (time.child(TIME_ID).getValue().equals(order.getWorkingTimeId())){ // и не оценено?
                             countEqualTimes++;
                         }
-
                     }
                     if(countEqualTimes == 0){
                         createReview(order);
@@ -503,19 +503,64 @@ public class Dialogs extends AppCompatActivity {
 
     private void createReview(Order order){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
+        UtilitiesApi utilities = new UtilitiesApi();
+        SQLiteDatabase localDatabase = dbHelper.getReadableDatabase();
         DatabaseReference myRef = database.getReference(REVIEWS);
         Map<String,Object> items = new HashMap<>();
 
+        String serviceId = getServiceIdByTimeId(order.getWorkingTimeId());
+        String myPhone = getUserPhone();
+        // нужно узнать, чей сервис через тайм айди (скопировать isMyService?)
+        //можно проверять просто: есть ли такие поля в фб?
         items.put(RATING, "");
         items.put(REVIEW, "");
-        items.put(TYPE, ""); // нужно узнать, чей сервис через тайм айди (скопировать isMyService?)
+        if(utilities.isMyService(serviceId,myPhone,localDatabase)) {
+            // если мой сервис то тип reviewForUser
+            items.put(TYPE, "reviewForUser");
+        }else {
+            //иначе reviewForService
+            items.put(TYPE, "reviewForService");
+        }
         items.put(MESSAGE_ID, order.getMessageId());
         items.put(WORKING_TIME_ID, order.getWorkingTimeId());
 
         String messageId =  myRef.push().getKey();
         myRef = database.getReference(REVIEWS).child(messageId);
         myRef.updateChildren(items);
+    }
+
+    private String getServiceIdByTimeId(String workingTimeId) {
+        String serviceId;
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        //Возвращает serviceId, использую workingTimeId
+        //таблицы working time, working days, services
+        //связь таблиц, уточнение по workingTimeId
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.TABLE_CONTACTS_SERVICES +"."+ DBHelper.KEY_ID
+                        + " FROM "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
+                        + DBHelper.TABLE_WORKING_DAYS + ", "
+                        + DBHelper.TABLE_WORKING_TIME
+                        + " WHERE "
+                        + DBHelper.TABLE_WORKING_TIME + "."+DBHelper.KEY_ID + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + " = "
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
+                        + " = "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID ;
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingTimeId});
+        if(cursor.moveToFirst()){
+            int indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            serviceId = cursor.getString(indexServiceId);
+        }
+        else {
+            serviceId = "0";
+        }
+        return serviceId;
     }
 
     private void loadServiceInLocalStorage(final String serviceId) {
@@ -556,14 +601,13 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void updateWorkingTimeInLocalStorage(String messageId) {
-        //ZOCHEM???
+    private void updateWorkingTimeInLocalStorage(String ordersId) {
         //получить id message
         //получить date (id working days)
         //сделать query по date в working time и получить id времени
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(ORDERS)
-                .child(messageId)
+                .child(ordersId)
                 .child(WORKING_TIME_ID);
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -580,7 +624,6 @@ public class Dialogs extends AppCompatActivity {
 
                         for(DataSnapshot time: dataSnapshot.getChildren()) {
                             final String timeId = String.valueOf(time.getKey());
-git
                             DatabaseReference myRef = database.getReference(WORKING_TIME)
                                     .child(timeId)
                                     .child(USER_ID);
