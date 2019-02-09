@@ -35,7 +35,6 @@ public class RatingBarForServiceElement extends Fragment implements View.OnClick
     public RatingBarForServiceElement(RatingReview ratingReview) {
         countOfRates = ratingReview.getCountOfRates();
         avgRates = ratingReview.getAvgRating();
-        serviceId = ratingReview.getServiceId();
     }
 
     @Override

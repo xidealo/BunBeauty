@@ -47,9 +47,6 @@ public class ReviewForServiceElement extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        Log.d(TAG, "onViewCreated: " + userName);
-        Log.d(TAG, "onViewCreated: " + review);
-
         userNameText = view.findViewById(R.id.nameReviewForServiceElementText);
         reviewText = view.findViewById(R.id.reviewReviewForServiceElementText);
 

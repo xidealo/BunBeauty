@@ -45,15 +45,6 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
 
     @SuppressLint("ValidFragment")
     public MessageReviewElement(Message message, String _serviceId, String _status) {
-        messageId = message.getId();
-        messageName = message.getUserName();
-        messageServiceName = message.getServiceName();
-        messageDateOfDay = message.getDate();
-        messageTime = message.getOrderTime();
-        messageIsRateByUser = message.getIsRateByUser();
-        messageIsRateByWorker = message.getIsRateByWorker();
-        isUser = _status.equals("user");
-        serviceId = _serviceId;
 
         //письмо для юзера
         if(isUser) {

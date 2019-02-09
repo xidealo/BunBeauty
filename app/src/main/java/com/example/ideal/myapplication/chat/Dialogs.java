@@ -10,12 +10,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.chatElements.DialogElement;
 import com.example.ideal.myapplication.fragments.objects.Message;
+import com.example.ideal.myapplication.fragments.objects.Order;
+import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.UtilitiesApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.utilities.Utilities;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,29 +49,33 @@ public class Dialogs extends AppCompatActivity {
     private static final String NAME = "name";
     private static final String CITY = "city";
 
-    private static final String MESSAGE_ORDERS = "message orders";
+    private static final String MESSAGES = "messages";
+    private static final String ORDERS = "orders";
+    private static final String REVIEWS = "reviews";
+    private static final String RATING = "rating";
+    private static final String REVIEW = "review";
     private static final String MESSAGE_TIME = "message time";
-    private static final String DATE = "date";
     private static final String DIALOG_ID = "dialog id";
     private static final String IS_CANCELED = "is canceled";
 
-    private static final String WORKING_TIME = "working time";
-    private static final String WORKING_DAYS_ID = "working day id";
-    private static final String TIME = "time";
+    private static final String WORKING_TIME= "working time";
+
+    private static final String WORKING_TIME_ID = "working time id";
+    private static final String WORKING_DAY_ID = "working day id";
+    private static final String TYPE = "type";
+    private static final String MESSAGE_ID = "message id";
 
     private static final String WORKING_DAYS = "working days";
     private static final String SERVICE_ID = "service id";
 
     private static final String SERVICES = "services";
-    private static final String MESSAGE_REVIEWS = "message reviews" ;
-    private static final String IS_RATE_BY_USER = "is rate by user" ;
-    private static final String IS_RATE_BY_WORKER = "is rate by worker" ;
-    private static final String TIME_ID = "time id";
+    private static final String TIME = "time";
 
     WorkWithTimeApi workWithTimeApi;
     SharedPreferences sPref;
     DBHelper dbHelper;
 
+    LinearLayout resultLayout;
     DialogElement dElement;
     FragmentManager manager;
     FragmentTransaction transaction;
@@ -79,25 +88,21 @@ public class Dialogs extends AppCompatActivity {
         manager = getSupportFragmentManager();
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
+        resultLayout = findViewById(R.id.mainDialogsLayout);
+
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        database.delete(DBHelper.TABLE_MESSAGE_ORDERS, null, null);
-        database.delete(DBHelper.TABLE_MESSAGE_REVIEWS, null, null);
-
-        database.delete(DBHelper.TABLE_DIALOGS, null, null);
-
     }
 
     // Подгружает все мои диалоги и всё что с ними связано из Firebase
     private void loadDialogs() {
-
         // Загрузка диалогов, где мой номер стоит на 1-м месте
-        loadDialogsByFirsPhone();
+        loadDialogsByFirstPhone();
 
         // Загрузка диалогов, где мой номер стоит на 2-м месте
         loadDialogsBySecondPhone();
     }
 
-    private void loadDialogsByFirsPhone() {
+    private void loadDialogsByFirstPhone() {
         final String myPhone = getUserPhone();
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -114,7 +119,7 @@ public class Dialogs extends AppCompatActivity {
                     // Добавляет(обновляет) диалог в LocalStorage и возвращает true если это диалог новый
                     boolean isNew = addDialogInLocalStorage(dialogId, myPhone, secondPhone);
 
-                    loadInterlocutor(secondPhone, dialogId, isNew);
+                    loadInterlocutor(secondPhone, dialogId);
                 }
             }
 
@@ -141,7 +146,7 @@ public class Dialogs extends AppCompatActivity {
 
                     boolean isNew = addDialogInLocalStorage(dialogId, firstPhone, myPhone);
 
-                    loadInterlocutor(firstPhone, dialogId, isNew);
+                    loadInterlocutor(firstPhone, dialogId);
                 }
             }
 
@@ -152,7 +157,7 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void loadInterlocutor(final String phone, final String dialogId, final boolean isNew) {
+    private void loadInterlocutor(final String phone, final String dialogId) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference(USERS).child(phone);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -170,9 +175,8 @@ public class Dialogs extends AppCompatActivity {
 
                 addMessagesInLocalStorage(dialogId);
 
-                if(isNew) {
-                    addToScreen(dialogId, name);
-                }
+                addToScreen(dialogId, name);
+
             }
 
             @Override
@@ -240,14 +244,8 @@ public class Dialogs extends AppCompatActivity {
 
     private void addMessagesInLocalStorage(final String dialogId) {
         //если разница между timeId 24 часа и у message isCanceled не отменено, мы генерим 2 ревью
-        loadMessageOrders(dialogId);
-
-        loadMessageReviews(dialogId);
-    }
-
-    private void loadMessageOrders(final String dialogId){
         //message_orders
-        Query messagesQuery = FirebaseDatabase.getInstance().getReference(MESSAGE_ORDERS)
+        Query messagesQuery = FirebaseDatabase.getInstance().getReference(MESSAGES)
                 .orderByChild(DIALOG_ID)
                 .equalTo(dialogId);
 
@@ -258,7 +256,7 @@ public class Dialogs extends AppCompatActivity {
 
                 // берем всю информацию из таблицы MR, чтобы либо сделать update, либо insert
                 String sqlQuery = "SELECT * FROM "
-                        + DBHelper.TABLE_MESSAGE_ORDERS
+                        + DBHelper.TABLE_MESSAGES
                         + " WHERE "
                         + DBHelper.KEY_ID + " = ?";
                 Cursor cursor;
@@ -268,17 +266,11 @@ public class Dialogs extends AppCompatActivity {
                     Message myMessage = new Message();
 
                     String messageId = message.getKey();
-                    String messageTimeId = String.valueOf(message.child(TIME_ID).getValue());
-                    String isCanceled = String.valueOf(message.child(IS_CANCELED).getValue());
-                    String time = String.valueOf(message.child(TIME).getValue());
+                    String time = String.valueOf(message.child(MESSAGE_TIME).getValue());
 
                     myMessage.setId(messageId); // для отладки
-                    myMessage.setTimeId(messageTimeId);
-                    myMessage.setIsCanceled(Boolean.valueOf(isCanceled));
+                    myMessage.setMessageTime(time);
                     myMessage.setDialogId(dialogId);
-
-                    // подргужаем время, потом день и сам сервис этого сообщения
-                    addTimeInLocalStorage(myMessage);
 
                     cursor = database.rawQuery(sqlQuery, new String[] {messageId});
 
@@ -286,22 +278,19 @@ public class Dialogs extends AppCompatActivity {
 
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(DBHelper.KEY_DIALOG_ID_MESSAGES, dialogId);
-                    contentValues.put(DBHelper.KEY_TIME_ID_MESSAGES, messageTimeId);
-                    contentValues.put(DBHelper.KEY_IS_CANCELED_MESSAGE_ORDERS, isCanceled);
                     contentValues.put(DBHelper.KEY_MESSAGE_TIME_MESSAGES, time);
 
                     // update || insert
                     if(cursor.moveToFirst()) {
-                        database.update(DBHelper.TABLE_MESSAGE_ORDERS, contentValues,
+                        database.update(DBHelper.TABLE_MESSAGES, contentValues,
                                 DBHelper.KEY_ID + " = ?",
                                 new String[]{String.valueOf(messageId)});
                     } else {
                         contentValues.put(DBHelper.KEY_ID, messageId);
-                        database.insert(DBHelper.TABLE_MESSAGE_ORDERS, null, contentValues);
+                        database.insert(DBHelper.TABLE_MESSAGES, null, contentValues);
                     }
                     cursor.close();
-                    updateWorkingTimeInLocalStorage(messageId);
-
+                    addOrdersInLocalStorage(messageId);
                 }
             }
 
@@ -311,62 +300,57 @@ public class Dialogs extends AppCompatActivity {
             }
         });
     }
-
-    private void loadMessageReviews(final String dialogId) {
+    private void addOrdersInLocalStorage(final String messageId) {
         //загружаем message reviews
         //делаем запрос в fireBase по dialogId, который получаем при загрузке страницы
-        Query messagesQuery = FirebaseDatabase.getInstance().getReference(MESSAGE_REVIEWS)
-                .orderByChild(DIALOG_ID)
-                .equalTo(dialogId);
+        Query messagesQuery = FirebaseDatabase.getInstance().getReference(ORDERS)
+                .orderByChild(MESSAGE_ID)
+                .equalTo(messageId);
 
         messagesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot messages) {
+            public void onDataChange(@NonNull DataSnapshot orders) {
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
                 // берем всю информацию из таблицы MR, чтобы либо сделать update, либо insert
                 String sqlQuery = "SELECT * FROM "
-                        + DBHelper.TABLE_MESSAGE_REVIEWS
+                        + DBHelper.TABLE_ORDERS
                         + " WHERE "
                         + DBHelper.KEY_ID + " = ?";
                 Cursor cursor;
-                for(DataSnapshot message:messages.getChildren()){
+                for(DataSnapshot order:orders.getChildren()){
                     // идем по всем сообщениям
-                    Message myMessage = new Message();
-                    String messageId = message.getKey();
-                    String messageTimeId = String.valueOf(message.child(TIME_ID).getValue());
-                    String isRateByUser = String.valueOf(message.child(IS_RATE_BY_USER).getValue());
-                    String isRateByWorker = String.valueOf(message.child(IS_RATE_BY_WORKER).getValue());
-                    String time = String.valueOf(message.child(TIME).getValue());
+                    Order myOrder = new Order();
+                    String orderId = order.getKey();
+                    String isCanceled = String.valueOf(order.child(IS_CANCELED).getValue());
+                    String workingTimeId = String.valueOf(order.child(WORKING_TIME_ID).getValue());
 
-                    myMessage.setId(messageId); // для отладки
-                    myMessage.setTimeId(messageTimeId);
-                    myMessage.setIsCanceled(true);
-                    myMessage.setDialogId(dialogId);
+                    myOrder.setId(orderId); // для отладки
+                    myOrder.setMessageId(messageId);
+                    myOrder.setIsCanceled(Boolean.valueOf(isCanceled));
+                    myOrder.setWorkingTimeId(workingTimeId);
 
                     // подргужаем время, потом день и сам сервис этого сообщения
-                    addTimeInLocalStorage(myMessage);
+                    addTimeInLocalStorage(myOrder);
 
-                    cursor = database.rawQuery(sqlQuery, new String[] {messageId});
+                    cursor = database.rawQuery(sqlQuery, new String[] {orderId});
 
                     ContentValues contentValues = new ContentValues();
-                    contentValues.put(DBHelper.KEY_DIALOG_ID_MESSAGES, dialogId);
-                    contentValues.put(DBHelper.KEY_TIME_ID_MESSAGES, messageTimeId);
-                    contentValues.put(DBHelper.KEY_IS_RATE_BY_USER_MESSAGE_REVIEWS, isRateByUser);
-                    contentValues.put(DBHelper.KEY_IS_RATE_BY_WORKER_MESSAGE_REVIEWS, isRateByWorker);
-                    contentValues.put(DBHelper.KEY_MESSAGE_TIME_MESSAGES, time);
+                    contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, myOrder.getIsCanceled());
+                    contentValues.put(DBHelper.KEY_MESSAGE_ID_ORDERS, myOrder.getMessageId());
+                    contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, myOrder.getWorkingTimeId());
 
                     // update || insert
                     if(cursor.moveToFirst()) {
-                        database.update(DBHelper.TABLE_MESSAGE_REVIEWS, contentValues,
+                        database.update(DBHelper.TABLE_ORDERS, contentValues,
                                 DBHelper.KEY_ID + " = ?",
-                                new String[]{String.valueOf(messageId)});
+                                new String[]{String.valueOf(myOrder.getId())});
                     } else {
-                        contentValues.put(DBHelper.KEY_ID, messageId);
-                        database.insert(DBHelper.TABLE_MESSAGE_REVIEWS, null, contentValues);
+                        contentValues.put(DBHelper.KEY_ID, myOrder.getId());
+                        database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
                     }
                     cursor.close();
-                    updateWorkingTimeInLocalStorage(messageId);
-
+                    updateWorkingTimeInLocalStorage(orderId);
+                    getReviewAndPutInLocalStorage(myOrder);
                 }
             }
             @Override
@@ -374,12 +358,70 @@ public class Dialogs extends AppCompatActivity {
                 attentionBadConnection();
             }
         });
-
     }
 
-    private void addTimeInLocalStorage(final Message message) {
+    private void getReviewAndPutInLocalStorage(final Order order) {
+        //загружаем все ревью в local storage, чтобы быстрее работало
+        //получаем на вход ордер, а из него берем messageId & workingTimeId
+        Query reviewsQuery = FirebaseDatabase.getInstance().getReference(REVIEWS)
+                .orderByChild(MESSAGE_ID)
+                .equalTo(order.getMessageId());
+
+        reviewsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot reviews) {
+                for(DataSnapshot review: reviews.getChildren()){
+                    RatingReview ratingReview = new RatingReview();
+
+                    ratingReview.setId(review.getKey());
+                    ratingReview.setReview(String.valueOf(review.child(REVIEW).getValue()));
+                    ratingReview.setReview(String.valueOf(review.child(RATING).getValue()));
+                    ratingReview.setType(String.valueOf(review.child(TYPE).getValue()));
+                    ratingReview.setMessageId(order.getMessageId());
+                    ratingReview.setWorkingTimeId(order.getWorkingTimeId());
+
+                    addReviewInLocalStorage(ratingReview);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void addReviewInLocalStorage(RatingReview ratingReview) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        String sqlQuery = "SELECT * FROM "
+                + DBHelper.TABLE_REVIEWS
+                + " WHERE "
+                + DBHelper.KEY_ID + " = ?";
+        Cursor cursor = database.rawQuery(sqlQuery, new String[] {ratingReview.getId()});
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, ratingReview.getReview());
+        contentValues.put(DBHelper.KEY_RATING_REVIEWS, ratingReview.getRating());
+        contentValues.put(DBHelper.KEY_MESSAGE_ID_REVIEWS, ratingReview.getMessageId());
+        contentValues.put(DBHelper.KEY_WORKING_TIME_ID_REVIEWS, ratingReview.getWorkingTimeId());
+        contentValues.put(DBHelper.KEY_TYPE_REVIEWS, ratingReview.getType());
+
+        // update || insert
+        if(cursor.moveToFirst()) {
+            database.update(DBHelper.TABLE_REVIEWS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{String.valueOf(ratingReview.getId())});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, ratingReview.getId());
+            database.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
+        }
+        cursor.close();
+    }
+
+    private void addTimeInLocalStorage(final Order order) {
         //берем время из fireBase и сохраняем его в sqlLite
-        final String timeId =  message.getTimeId();
+        final String timeId =  order.getWorkingTimeId();
 
         DatabaseReference timeRef = FirebaseDatabase.getInstance().
                 getReference(WORKING_TIME)
@@ -388,6 +430,7 @@ public class Dialogs extends AppCompatActivity {
         timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot time) {
+                //кладем в локальную бд время, которое есть в ордере
                 final SQLiteDatabase database = dbHelper.getWritableDatabase();
                 final ContentValues contentValues = new ContentValues();
 
@@ -398,14 +441,14 @@ public class Dialogs extends AppCompatActivity {
 
                 Cursor cursor = database.rawQuery(sqlQuery, new String[]{timeId});
 
-                String myTime = String.valueOf(time.child("time").getValue());
-                String userId = String.valueOf(time.child("user id").getValue());
-                String dayId = String.valueOf(time.child("working day id").getValue());
+                String myTime = String.valueOf(time.child(TIME).getValue());
+                String userId = String.valueOf(time.child(USER_ID).getValue());
+                String dayId = String.valueOf(time.child(WORKING_DAY_ID).getValue());
 
-                message.setOrderTime(myTime);
+                order.setOrderTime(myTime);
 
                 // получаем день этого сообщения
-                addDayInLocalStorage(dayId,message);
+                addDayInLocalStorage(dayId,order);
 
                 contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, myTime);
                 contentValues.put(DBHelper.KEY_USER_ID, userId);
@@ -427,7 +470,7 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void addDayInLocalStorage(final String dayId, final Message message) {
+    private void addDayInLocalStorage(final String dayId, final Order order) {
 
         // загружаем дни, которые связаны с сообщением
         DatabaseReference dayRef = FirebaseDatabase.getInstance().getReference(WORKING_DAYS)
@@ -449,12 +492,12 @@ public class Dialogs extends AppCompatActivity {
                 String serviceId = String.valueOf(day.child(SERVICE_ID).getValue());
 
                 long sysdate = workWithTimeApi.getSysdateLong();
-                long orderDate =  workWithTimeApi.getMillisecondsStringDate(date + " "+ message.getOrderTime());
+                long orderDate =  workWithTimeApi.getMillisecondsStringDate(date + " "+ order.getOrderTime());
                 long dayLong = 86400000;
-                Log.d(TAG, "ID: " + message.getId());
+
                 //если не отменено и прошел день, то мы проверяем есть ли такие ревью уже
-                if(!message.getIsCanceled() && (sysdate-orderDate>dayLong)){
-                    checkMessageReview(message);
+                if(!order.getIsCanceled() && (sysdate-orderDate>dayLong)){
+                    checkReview(order);
                 }
                 loadServiceInLocalStorage(serviceId);
 
@@ -479,46 +522,54 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void checkMessageReview(final Message message) {
+    private void checkReview(final Order order) {
 
-        //делаем запрос по диалог id этого order, но так как у них они одинаковые с review
-        //то он найдет также и review из таблицы review
+        //делаем запрос по working time id этого order, только у 2х ревью может быть такой timeId
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        Query query = database.getReference(MESSAGE_REVIEWS)
-                .orderByChild("dialog id")
-                .equalTo(message.getDialogId());
+        Query query = database.getReference(REVIEWS)
+                .orderByChild(WORKING_TIME_ID)
+                .equalTo(order.getWorkingTimeId());
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot times) {
-                //если  = 0, значит ревью точно нету, все хорошо
-                int countEqualTimes = 0;
+
+                //если  = 0, значит ревью нету, мы их создаем
                 if (times.getChildrenCount() == 0) {
-                    createMessageReview(message);
-                    loadMessageReviews(message.getDialogId());
-                } else {//проверить на сравнение времени!
-                    for (DataSnapshot time : times.getChildren()) {
-                        //если ни разу время не совпало (countEqualTimes = 0), то такого ревью нету и можно добавить
-                        if (time.child("time id").getValue().equals(message.getTimeId())){ // и не оценено?
-                            countEqualTimes++;
-                        }
-
-                    }
-
-                    if(countEqualTimes == 0){
-                        createMessageReview(message);
-                        loadMessageReviews(message.getDialogId());
-                    }
-
+                    createReview(order, "review for service");
+                    createReview(order, "review for user");
                 }
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
             }
         });
+    }
+
+    private void createReview(Order order, String type){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(REVIEWS);
+        Map<String,Object> items = new HashMap<>();
+
+        items.put(RATING, "0");
+        items.put(REVIEW, "");
+        items.put(TYPE, type);
+        items.put(MESSAGE_ID, order.getMessageId());
+        items.put(WORKING_TIME_ID, order.getWorkingTimeId());
+
+        String reviewId =  myRef.push().getKey();
+        myRef = database.getReference(REVIEWS).child(reviewId);
+        myRef.updateChildren(items);
+
+        RatingReview ratingReview = new RatingReview();
+        ratingReview.setId(reviewId);
+        ratingReview.setRating("0");
+        ratingReview.setReview("");
+        ratingReview.setType(type);
+        ratingReview.setMessageId(order.getMessageId());
+        ratingReview.setWorkingTimeId(order.getWorkingTimeId());
+        addReviewInLocalStorage(ratingReview);
     }
 
     private void loadServiceInLocalStorage(final String serviceId) {
@@ -559,21 +610,21 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void updateWorkingTimeInLocalStorage(String messageId) {
+    private void updateWorkingTimeInLocalStorage(String ordersId) {
         //получить id message
         //получить date (id working days)
         //сделать query по date в working time и получить id времени
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(MESSAGE_ORDERS)
-                .child(messageId)
-                .child(DATE);
+        DatabaseReference myRef = database.getReference(ORDERS)
+                .child(ordersId)
+                .child(WORKING_TIME_ID);
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dateId) {
                 String date = String.valueOf(dateId.getValue());
 
                 Query query = database.getReference(WORKING_TIME)
-                        .orderByChild(WORKING_DAYS_ID)
+                        .orderByChild(WORKING_DAY_ID)
                         .equalTo(date);
 
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -582,7 +633,6 @@ public class Dialogs extends AppCompatActivity {
 
                         for(DataSnapshot time: dataSnapshot.getChildren()) {
                             final String timeId = String.valueOf(time.getKey());
-
                             DatabaseReference myRef = database.getReference(WORKING_TIME)
                                     .child(timeId)
                                     .child(USER_ID);
@@ -629,29 +679,10 @@ public class Dialogs extends AppCompatActivity {
         return  sPref.getString(PHONE_NUMBER, "-");
     }
 
-    private void createMessageReview(Message message){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference myRef = database.getReference(MESSAGE_REVIEWS);
-        Map<String,Object> items = new HashMap<>();
-
-        String dateNow = workWithTimeApi.getCurDateInFormatHMS();
-
-        items.put(DIALOG_ID, message.getDialogId());
-        items.put(MESSAGE_TIME, dateNow);
-        items.put(TIME_ID, message.getTimeId());
-        items.put(IS_RATE_BY_USER, false);
-        items.put(IS_RATE_BY_WORKER, false);
-
-        String messageId =  myRef.push().getKey();
-        myRef = database.getReference(MESSAGE_REVIEWS).child(messageId);
-        myRef.updateChildren(items);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-
+        resultLayout.removeAllViews();
         loadDialogs();
     }
 
