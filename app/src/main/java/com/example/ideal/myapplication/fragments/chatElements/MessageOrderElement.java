@@ -20,36 +20,100 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.provider.Telephony.BaseMmsColumns.MESSAGE_ID;
+
 
 public class MessageOrderElement extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
-    private static final String WORKING_TIME = "working time/";
-    private static final String MESSAGE_REVIEWS = "message reviews";
+
+    private static final String ORDERS = "orders";
+    private static final String IS_CANCELED = "is canceled";
+
+    private static final String MESSAGES = "messages";
     private static final String MESSAGE_TIME = "message time";
     private static final String DIALOG_ID = "dialog id";
-    private static final String IS_RATE_BY_USER = "is rate by user" ;
-    private static final String IS_RATE_BY_WORKER = "is rate by worker" ;
+
+    private static final String REVIEWS = "reviews";
+    private static final String RATING = "rating";
+    private static final String MESSAGE_ID = "message id";
     private static final String TIME_ID = "time id";
 
-    String messageId;
-    String messageDateOfDay;
-    String messageTimeOfDay;
-    String messageDialogId;
-    String messageTimeId;
+    private static final String WORKING_TIME = "working time";
+    private static final String USER_ID = "user id";
+
+    String text;
+
+    String messageTime;
     Boolean messageIsCanceled;
+    Boolean messageIsMyService;
+    String messageDate;
+    String messageOrderTime;
+    String messageServiceName;
+    String messageUserName;
+    String messageWorkingTimeId;
+    String messageOrderId;
+    String messageDialogId;
+
     WorkWithTimeApi workWithTimeApi;
 
     TextView messageText;
     Button canceledBtn;
-
-    String text;
 
     public MessageOrderElement() { }
 
     @SuppressLint("ValidFragment")
     public MessageOrderElement(Message message) {
 
+        messageTime = message.getMessageTime();
+        messageIsCanceled = message.getIsCanceled();
+        messageIsMyService = message.getIsMyService();
+        messageDate = message.getDate();
+        messageOrderTime = message.getOrderTime();
+        messageServiceName = message.getServiceName();
+        messageUserName = message.getUserName();
+        messageWorkingTimeId = message.getTimeId();
+        messageOrderId = message.getOrderId();
+        messageDialogId = message.getDialogId();
+
+        if(messageIsCanceled) {
+            if (messageIsMyService) {
+                text = "Вы отказали пользователю " + messageUserName
+                        + " в предоставлении услуги " + messageServiceName
+                        + ". Сеанс на " + messageDate
+                        + " в " + messageOrderTime + "отменён."
+                        + "\n (" + messageTime + ")";
+                    /*Вы отказали пользователю  userName в предоставлении услуги serviceName
+		            Сеанс на date в time отменён.*/
+            } else {
+                text = "Пользователь " + messageUserName
+                        + " отказал Вам в придоставлении услуги " + messageServiceName
+                        + ". Сеанс на " + messageDate
+                        + " в " + messageOrderTime + "отменён."
+                        + "\n (" + messageTime + ")";
+                    /*Пользователь userName отказал Вам в придоставлении услуги serviceName
+                    Сеанс на date в time отменён.*/
+            }
+        } else {
+            if (messageIsMyService) {
+                text = "Пользователь " + messageUserName
+                        + " записался на услугу " + messageServiceName
+                        + ". Сеанс состоится " + messageDate
+                        + " в " + messageOrderTime
+                        + ". Вы можете отказаться, указав причину, однако, если вы сделаете это слишком поздно, у пользователя будет возможность оценить Ваш сервис."
+                        + "\n (" + messageTime + ")";
+                    /*Пользователь userName записался на услугу serviceName
+		            Сеанс состоится date в time.*/
+            } else {
+                text = "Вы записались к " + messageUserName
+                        + " на услугу " + messageServiceName
+                        + ". Сеанс состоится " + messageDate
+                        + " в " + messageOrderTime
+                        + "\n (" + messageTime + ")";
+                    /*Вы записались к userName на услугу serviceName
+                    Сеанс состоится date в time.*/
+            }
+        }
     }
 
     @Override
@@ -65,12 +129,12 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         canceledBtn.setOnClickListener(this);
         workWithTimeApi = new WorkWithTimeApi();
 
-        if(!isRelevance()){
+        if((!isRelevance()) || (!messageIsMyService)){
             canceledBtn.setVisibility(View.INVISIBLE);
-        }
-
-        if(messageIsCanceled) {
-            canceledBtn.setEnabled(false);
+        } else {
+            if(messageIsCanceled) {
+                canceledBtn.setEnabled(false);
+            }
         }
 
         setData();
@@ -78,13 +142,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     @SuppressLint("SetTextI18n")
     private void setData() {
-        if(!beforeOneHour()) {
-            messageText.setText(text);
-        }
-        else {
-            messageText.setText(text + " Если вы сделаете это за час до назначенного времени,"
-                    + " пользователь получит возможность оставить о вас комментарий") ;
-        }
+        messageText.setText(text);
     }
 
     @Override
@@ -96,62 +154,72 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         //Отказываем юзеру в услуге за ЧАС до ее исполнения
         //Иначе даем возможность написать ревью
 
-        //если разница между заказом и временем, которое сейчас меньше часа, отмена без review
-        //isRelevance нужен, чтобы пользователь, как прошло время, не смог отменить заказ,
+        // если разница между заказом и временем, которое сейчас меньше часа, отмена без review
+        // isRelevance нужен, чтобы пользователь, как прошло время, не смог отменить заказ,
         // будучи на активити
 
         if(isRelevance()) {
+            cancel();
             //за час до
-            if (!beforeOneHour()) {
-                cancel();
-            } else {
-                cancel();
-                //отправляем возможность написать ревью
-                // заполняю firebase тут, а в мессаджах обрабатываю уже ,есть ли ривью
-                createMessageReview();
+            if (beforeOneHour()) {
+                // создаём сообщение с возможность написать ревью
+                createMessage();
             }
         }
     }
 
     private boolean isRelevance() {
-        String commonDate = messageDateOfDay + " " + messageTimeOfDay;
+        String commonDate = messageDate + " " + messageOrderTime;
 
         Long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate);
         Long sysdateLong = workWithTimeApi.getSysdateLong();
 
-        return orderDateLong - sysdateLong > 0;
+        return orderDateLong > sysdateLong;
     }
 
     private  void cancel(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message orders/" + messageId);
+        DatabaseReference myRef = database.getReference(ORDERS).child(messageOrderId);
         Map<String, Object> items = new HashMap<>();
-        items.put("is canceled", true);
+
+        items.put(IS_CANCELED, true);
         myRef.updateChildren(items);
         clearPhone();
     }
 
-    private void createMessageReview(){
+    private void createMessage() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference myRef = database.getReference(MESSAGE_REVIEWS);
+        DatabaseReference myRef = database.getReference(MESSAGES);
         Map<String,Object> items = new HashMap<>();
 
         String dateNow = workWithTimeApi.getCurDateInFormatHMS();
 
-        items.put(DIALOG_ID, messageDialogId);
         items.put(MESSAGE_TIME, dateNow);
-        items.put(TIME_ID, messageTimeId);
-        items.put(IS_RATE_BY_USER, false);
-        items.put(IS_RATE_BY_WORKER, true);
+        items.put(DIALOG_ID, messageDialogId);
 
         String messageId =  myRef.push().getKey();
-        myRef = database.getReference(MESSAGE_REVIEWS).child(messageId);
+        createReview(messageId);
+        myRef = database.getReference(MESSAGES).child(messageId);
         myRef.updateChildren(items);
     }
-    private boolean beforeOneHour() {
 
-        String commonDate = messageDateOfDay + " " + messageTimeOfDay;
+    private void createReview(String messageId){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference myRef = database.getReference(REVIEWS);
+        Map<String,Object> items = new HashMap<>();
+
+        items.put(RATING, "0");
+        items.put(MESSAGE_ID, messageId);
+        items.put(TIME_ID, messageWorkingTimeId);
+
+        String reviewId =  myRef.push().getKey();
+        myRef = database.getReference(REVIEWS).child(reviewId);
+        myRef.updateChildren(items);
+    }
+
+    private boolean beforeOneHour() {
+        String commonDate = messageDate + " " + messageOrderTime;
         Long sysdateLong = workWithTimeApi.getSysdateLong();
         Long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate);
 
@@ -165,10 +233,10 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database
                 .getReference(WORKING_TIME)
-                .child(messageTimeId);
+                .child(messageWorkingTimeId);
 
         Map<String, Object> items = new HashMap<>();
-        items.put("user id", "0");
+        items.put(USER_ID, "0");
         myRef.updateChildren(items);
 
         canceledBtn.setEnabled(false);

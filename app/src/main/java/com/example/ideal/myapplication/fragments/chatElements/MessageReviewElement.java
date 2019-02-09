@@ -21,21 +21,28 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
 
     private static final String TAG = "DBInf";
 
-    private static final String SERVICE_ID = "service id";
+    //private static final String SERVICE_ID = "service id";
     private static final String MESSAGE_ID = "message id";
-    private static final String STATUS_USER_BY_RATE = "user status";
+    private static final String TYPE = "type";
+    //private static final String IS_MY_SERVICE = "is my service";
+
+    private static final String REVIEW_FOR_USER = "review for user";
+
 
     String text;
-    String messageId;
-    String messageName;
-    String messageServiceName;
-    String messageDateOfDay;
+
     String messageTime;
-    String serviceId;
-    boolean messageIsRateByUser;
-    boolean messageIsRateByWorker;
-    boolean isUser;
-    String status;
+    //Boolean messageIsMyService;
+    Boolean messageIsCanceled;
+    Boolean messageIsRate;
+    String messageType;
+    String messageDate;
+    String messageOrderTime;
+    String messageServiceName;
+    String messageUserName;
+
+    //String serviceId;
+    String messageId;
 
     TextView messageText;
     Button reviewBtn;
@@ -44,35 +51,49 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
     }
 
     @SuppressLint("ValidFragment")
-    public MessageReviewElement(Message message, String _serviceId, String _status) {
+    public MessageReviewElement(Message message) {
+        messageTime = message.getMessageTime();
+        //messageIsMyService = message.getIsMyService();
+        messageIsCanceled = message.getIsCanceled();
+        messageIsRate = message.getIsRate();
+        messageType = message.getType();
+        messageDate = message.getDate();
+        messageOrderTime = message.getOrderTime();
+        messageServiceName = message.getServiceName();
+        messageUserName = message.getUserName();
 
-        //письмо для юзера
-        if(isUser) {
+        //serviceId = message.getServiceId();
+        messageId = message.getId();
 
-              text = "Работник " + messageName
-                    + " предоставлял услугу "
-                    + messageServiceName
-                    + " на "
-                    + messageDateOfDay
-                      + ".\nПожалуйста, оставьте отзыв о нем, чтобы улучшить качество сервиса."
-                      + " Вы также сможете увидеть отзыв, о себе,"
-                      + " как только пользователь оставит его или пройдет 72 часа.";
-
-        }
-        else {
-            //письмо для воркера
-            text = "Вы оказывали услугу " + messageServiceName
-                    + " пользователю "
-                    + messageName
-                    + " на "
-                    + messageDateOfDay
-                    + " в "
-                    + messageTime
-                    + ".\nПожалуйста, оставьте отзыв о нем, чтобы улучшить качество сервиса."
+        if(messageType.equals(REVIEW_FOR_USER)) {
+            text =
+                    messageDate + " в " + messageOrderTime
+                    + " Вы предоставляли услугу " + messageServiceName
+                    + " пользователю " + messageUserName
+                    + ".\nПожалуйста, оставьте отзыв об этом пользователе, чтобы улучшить качество сервиса."
                     + " Вы также сможете увидеть отзыв, о себе,"
-                    + " как только пользователь оставит его или пройдет 72 часа.";
+                    + " как только пользователь оставит его или пройдет 72 часа."
+                    + "\n (" + messageTime + ")";
+        } else {
+            if(messageIsCanceled) {
+                text =
+                        "Пользователь " + messageUserName
+                        + " отказал Вам в придоставлении услуги " + messageServiceName
+                        + " в последний момент. Сеанс на " + messageDate
+                        + " в " + messageOrderTime
+                        + " отменён. Вы можете оценить качество данного сервиса."
+                        + "\n (" + messageTime + ")";
+            } else {
+                text =
+                        messageDate + " в " + messageOrderTime
+                        + " Вы получали услугу " + messageServiceName
+                        + " у пользователя " + messageUserName
+                        + ".\nПожалуйста, оставьте отзыв о данной услуге, чтобы улучшить качество сервиса."
+                        + " Вы также сможете увидеть отзыв, о себе,"
+                        + " как только пользователь оставит его или пройдет 72 часа."
+                        + "\n (" + messageTime + ")";
+            }
         }
-
     }
 
     @Override
@@ -84,23 +105,14 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         messageText = view.findViewById(R.id.messageMessageReviewElementText);
         reviewBtn = view.findViewById(R.id.reviewMessageReviewElementBtn);
-        // Проверяем стоит ли оценка и это юзер? Чтобы устанвоить статус и в ревью отметить поле
-        if(isUser) {
-            if (!messageIsRateByUser) {
-                reviewBtn.setOnClickListener(this);
-                status = "user";
-            } else {
-                reviewBtn.setEnabled(false);
-            }
+
+        // Проверяем стоит ли оценка
+        if(messageIsRate) {
+            reviewBtn.setEnabled(false);
+        } else {
+            reviewBtn.setOnClickListener(this);
         }
-        else {
-            if (!messageIsRateByWorker) {
-                reviewBtn.setOnClickListener(this);
-                status = "worker";
-            } else {
-                reviewBtn.setEnabled(false);
-            }
-        }
+
         setData();
     }
 
@@ -115,9 +127,8 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
 
     private void goToReview() {
         Intent intent = new Intent(this.getContext(), Review.class);
-        intent.putExtra(SERVICE_ID, serviceId);
+        intent.putExtra(TYPE, messageType);
         intent.putExtra(MESSAGE_ID, messageId);
-        intent.putExtra(STATUS_USER_BY_RATE, status);
         startActivity(intent);
     }
 }
