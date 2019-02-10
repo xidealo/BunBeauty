@@ -406,6 +406,8 @@ public class Dialogs extends AppCompatActivity {
                 + DBHelper.KEY_ID + " = ?";
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {ratingReview.getId()});
 
+        Log.d(TAG, "addReviewInLocalStorage: " + cursor.getCount());
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, ratingReview.getReview());
         contentValues.put(DBHelper.KEY_RATING_REVIEWS, ratingReview.getRating());
