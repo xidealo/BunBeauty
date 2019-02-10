@@ -264,7 +264,7 @@ public class Dialogs extends AppCompatActivity {
 
                     addMessagesInLocalStorage(myMessage);
                     addOrdersInLocalStorage(myMessage);
-                    getReviewAndPutInLocalStorage(myMessage);
+                    getReviewAndPutInLocalStorage(myOrder);
                 }
             }
             @Override
@@ -364,12 +364,12 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void getReviewAndPutInLocalStorage(final Message message) {
+    private void getReviewAndPutInLocalStorage(final Order order) {
         //загружаем все ревью в local storage, чтобы быстрее работало
         //получаем на вход ордер, а из него берем messageId & workingTimeId
         Query reviewsQuery = FirebaseDatabase.getInstance().getReference(REVIEWS)
                 .orderByChild(MESSAGE_ID)
-                .equalTo(message.getId());
+                .equalTo(order.getMessageId());
 
         reviewsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -381,8 +381,8 @@ public class Dialogs extends AppCompatActivity {
                     ratingReview.setReview(String.valueOf(review.child(REVIEW).getValue()));
                     ratingReview.setReview(String.valueOf(review.child(RATING).getValue()));
                     ratingReview.setType(String.valueOf(review.child(TYPE).getValue()));
-                    ratingReview.setMessageId(message.getId());
-                    ratingReview.setWorkingTimeId(String.valueOf(review.child(WORKING_TIME_ID).getValue()));
+                    ratingReview.setMessageId(order.getMessageId());
+                    ratingReview.setWorkingTimeId(order.getWorkingTimeId());
 
                     addReviewInLocalStorage(ratingReview);
                 }
