@@ -19,7 +19,6 @@ import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
-import com.example.ideal.myapplication.helpApi.UtilitiesApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +27,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.core.utilities.Utilities;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -266,6 +264,7 @@ public class Dialogs extends AppCompatActivity {
 
                     addMessagesInLocalStorage(myMessage);
                     addOrdersInLocalStorage(myMessage);
+                    getReviewAndPutInLocalStorage(myMessage);
                 }
             }
             @Override
@@ -278,7 +277,7 @@ public class Dialogs extends AppCompatActivity {
     private void addMessagesInLocalStorage(final Message message) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-
+        Log.d(TAG, "addMessagesInLocalStorage: ");
         // берем всю информацию из таблицы MR, чтобы либо сделать update, либо insert
         String sqlQuery = "SELECT * FROM "
                 + DBHelper.TABLE_MESSAGES
@@ -356,7 +355,6 @@ public class Dialogs extends AppCompatActivity {
                     }
                     cursor.close();
                     updateWorkingTimeInLocalStorage(orderId);
-                    getReviewAndPutInLocalStorage(myOrder);
                 }
             }
             @Override
@@ -366,12 +364,12 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void getReviewAndPutInLocalStorage(final Order order) {
+    private void getReviewAndPutInLocalStorage(final Message message) {
         //загружаем все ревью в local storage, чтобы быстрее работало
         //получаем на вход ордер, а из него берем messageId & workingTimeId
         Query reviewsQuery = FirebaseDatabase.getInstance().getReference(REVIEWS)
                 .orderByChild(MESSAGE_ID)
-                .equalTo(order.getMessageId());
+                .equalTo(message.getId());
 
         reviewsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -383,8 +381,8 @@ public class Dialogs extends AppCompatActivity {
                     ratingReview.setReview(String.valueOf(review.child(REVIEW).getValue()));
                     ratingReview.setReview(String.valueOf(review.child(RATING).getValue()));
                     ratingReview.setType(String.valueOf(review.child(TYPE).getValue()));
-                    ratingReview.setMessageId(order.getMessageId());
-                    ratingReview.setWorkingTimeId(order.getWorkingTimeId());
+                    ratingReview.setMessageId(message.getId());
+                    ratingReview.setWorkingTimeId(String.valueOf(review.child(WORKING_TIME_ID).getValue()));
 
                     addReviewInLocalStorage(ratingReview);
                 }
@@ -598,6 +596,7 @@ public class Dialogs extends AppCompatActivity {
         message.setDate(dateNow);
         message.setId(messageId);
 
+        Log.d(TAG, "createMessage: ");
         addMessagesInLocalStorage(message);
 
         return messageId;
