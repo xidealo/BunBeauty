@@ -173,7 +173,7 @@ public class Dialogs extends AppCompatActivity {
 
                 addUserInLocalStorage(user);
 
-                addMessagesInLocalStorage(dialogId);
+                getAndPutMessagesInLocalStorage(dialogId);
 
                 addToScreen(dialogId, name);
 
@@ -242,7 +242,7 @@ public class Dialogs extends AppCompatActivity {
         }
     }
 
-    private void addMessagesInLocalStorage(final String dialogId) {
+    private void getAndPutMessagesInLocalStorage(final String dialogId) {
         //если разница между timeId 24 часа и у message isCanceled не отменено, мы генерим 2 ревью
         //message_orders
         Query messagesQuery = FirebaseDatabase.getInstance().getReference(MESSAGES)
@@ -252,14 +252,6 @@ public class Dialogs extends AppCompatActivity {
         messagesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot messages) {
-                SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-                // берем всю информацию из таблицы MR, чтобы либо сделать update, либо insert
-                String sqlQuery = "SELECT * FROM "
-                        + DBHelper.TABLE_MESSAGES
-                        + " WHERE "
-                        + DBHelper.KEY_ID + " = ?";
-                Cursor cursor;
 
                 for(DataSnapshot message:messages.getChildren()){
                     // идем по всем сообщениям
@@ -272,24 +264,7 @@ public class Dialogs extends AppCompatActivity {
                     myMessage.setMessageTime(time);
                     myMessage.setDialogId(dialogId);
 
-                    cursor = database.rawQuery(sqlQuery, new String[] {messageId});
-
-                    //метод, который добавляет ревью в firebase, если !isCanceled и sysdate - timeId + date > 24h
-
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(DBHelper.KEY_DIALOG_ID_MESSAGES, dialogId);
-                    contentValues.put(DBHelper.KEY_MESSAGE_TIME_MESSAGES, time);
-
-                    // update || insert
-                    if(cursor.moveToFirst()) {
-                        database.update(DBHelper.TABLE_MESSAGES, contentValues,
-                                DBHelper.KEY_ID + " = ?",
-                                new String[]{String.valueOf(messageId)});
-                    } else {
-                        contentValues.put(DBHelper.KEY_ID, messageId);
-                        database.insert(DBHelper.TABLE_MESSAGES, null, contentValues);
-                    }
-                    cursor.close();
+                    addMessagesInLocalStorage(myMessage);
                     addOrdersInLocalStorage(myMessage);
                 }
             }
@@ -299,6 +274,38 @@ public class Dialogs extends AppCompatActivity {
             }
         });
     }
+
+    private void addMessagesInLocalStorage(final Message message) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        // берем всю информацию из таблицы MR, чтобы либо сделать update, либо insert
+        String sqlQuery = "SELECT * FROM "
+                + DBHelper.TABLE_MESSAGES
+                + " WHERE "
+                + DBHelper.KEY_ID + " = ?";
+        Cursor cursor;
+
+        cursor = database.rawQuery(sqlQuery, new String[] {message.getId()});
+
+        //метод, который добавляет ревью в firebase, если !isCanceled и sysdate - timeId + date > 24h
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_DIALOG_ID_MESSAGES, message.getDialogId());
+        contentValues.put(DBHelper.KEY_MESSAGE_TIME_MESSAGES, message.getMessageTime());
+
+        // update || insert
+        if(cursor.moveToFirst()) {
+            database.update(DBHelper.TABLE_MESSAGES, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{String.valueOf(message.getId())});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, message.getId());
+            database.insert(DBHelper.TABLE_MESSAGES, null, contentValues);
+        }
+        cursor.close();
+    }
+
     private void addOrdersInLocalStorage(final Message message) {
         //загружаем message reviews
         //делаем запрос в fireBase по dialogId, который получаем при загрузке страницы
@@ -586,6 +593,13 @@ public class Dialogs extends AppCompatActivity {
         String messageId =  myRef.push().getKey();
         myRef = database.getReference(MESSAGES).child(messageId);
         myRef.updateChildren(items);
+        Message message = new Message();
+        message.setDialogId(dialogId);
+        message.setDate(dateNow);
+        message.setId(messageId);
+
+        addMessagesInLocalStorage(message);
+
         return messageId;
     }
 
