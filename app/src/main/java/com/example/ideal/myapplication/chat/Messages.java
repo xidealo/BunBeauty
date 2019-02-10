@@ -7,15 +7,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.chatElements.MessageOrderElement;
 import com.example.ideal.myapplication.fragments.chatElements.MessageReviewElement;
-import com.example.ideal.myapplication.fragments.chatElements.notification_canceled_element;
-import com.example.ideal.myapplication.fragments.chatElements.notification_no_canceled_element;
+import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.other.DBHelper;
 
 public class Messages extends AppCompatActivity {
