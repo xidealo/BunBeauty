@@ -290,22 +290,21 @@ public class Dialogs extends AppCompatActivity {
                         database.insert(DBHelper.TABLE_MESSAGES, null, contentValues);
                     }
                     cursor.close();
-                    addOrdersInLocalStorage(messageId);
+                    addOrdersInLocalStorage(myMessage);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
             }
         });
     }
-    private void addOrdersInLocalStorage(final String messageId) {
+    private void addOrdersInLocalStorage(final Message message) {
         //загружаем message reviews
         //делаем запрос в fireBase по dialogId, который получаем при загрузке страницы
         Query messagesQuery = FirebaseDatabase.getInstance().getReference(ORDERS)
                 .orderByChild(MESSAGE_ID)
-                .equalTo(messageId);
+                .equalTo(message.getId());
 
         messagesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -325,12 +324,12 @@ public class Dialogs extends AppCompatActivity {
                     String workingTimeId = String.valueOf(order.child(WORKING_TIME_ID).getValue());
 
                     myOrder.setId(orderId); // для отладки
-                    myOrder.setMessageId(messageId);
+                    myOrder.setMessageId(message.getId());
                     myOrder.setIsCanceled(Boolean.valueOf(isCanceled));
                     myOrder.setWorkingTimeId(workingTimeId);
 
                     // подргужаем время, потом день и сам сервис этого сообщения
-                    addTimeInLocalStorage(myOrder);
+                    addTimeInLocalStorage(myOrder, message.getDialogId());
 
                     cursor = database.rawQuery(sqlQuery, new String[] {orderId});
 
@@ -419,7 +418,7 @@ public class Dialogs extends AppCompatActivity {
         cursor.close();
     }
 
-    private void addTimeInLocalStorage(final Order order) {
+    private void addTimeInLocalStorage(final Order order, final String dialogId) {
         //берем время из fireBase и сохраняем его в sqlLite
         final String timeId =  order.getWorkingTimeId();
 
@@ -448,7 +447,7 @@ public class Dialogs extends AppCompatActivity {
                 order.setOrderTime(myTime);
 
                 // получаем день этого сообщения
-                addDayInLocalStorage(dayId,order);
+                addDayInLocalStorage(dayId,order, dialogId);
 
                 contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, myTime);
                 contentValues.put(DBHelper.KEY_USER_ID, userId);
@@ -470,7 +469,7 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void addDayInLocalStorage(final String dayId, final Order order) {
+    private void addDayInLocalStorage(final String dayId, final Order order, final String dialogId) {
 
         // загружаем дни, которые связаны с сообщением
         DatabaseReference dayRef = FirebaseDatabase.getInstance().getReference(WORKING_DAYS)
@@ -497,7 +496,7 @@ public class Dialogs extends AppCompatActivity {
 
                 //если не отменено и прошел день, то мы проверяем есть ли такие ревью уже
                 if(!order.getIsCanceled() && (sysdate-orderDate>dayLong)){
-                    checkReview(order);
+                    checkReview(order,dialogId);
                 }
                 loadServiceInLocalStorage(serviceId);
 
@@ -522,7 +521,7 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void checkReview(final Order order) {
+    private void checkReview(final Order order, final String dialogId) {
 
         //делаем запрос по working time id этого order, только у 2х ревью может быть такой timeId
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -536,8 +535,9 @@ public class Dialogs extends AppCompatActivity {
 
                 //если  = 0, значит ревью нету, мы их создаем
                 if (times.getChildrenCount() == 0) {
-                    createReview(order, "review for service");
-                    createReview(order, "review for user");
+                    String messageId = createMessage(dialogId);
+                    createReview(order, "review for service", messageId);
+                    createReview(order, "review for user", messageId);
                 }
             }
             @Override
@@ -547,15 +547,16 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void createReview(Order order, String type){
+    private void createReview(Order order, String type, String messageId){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         DatabaseReference myRef = database.getReference(REVIEWS);
         Map<String,Object> items = new HashMap<>();
 
         items.put(RATING, "0");
         items.put(REVIEW, "");
         items.put(TYPE, type);
-        items.put(MESSAGE_ID, order.getMessageId());
+        items.put(MESSAGE_ID, messageId);
         items.put(WORKING_TIME_ID, order.getWorkingTimeId());
 
         String reviewId =  myRef.push().getKey();
@@ -570,6 +571,22 @@ public class Dialogs extends AppCompatActivity {
         ratingReview.setMessageId(order.getMessageId());
         ratingReview.setWorkingTimeId(order.getWorkingTimeId());
         addReviewInLocalStorage(ratingReview);
+    }
+
+    private String createMessage(String dialogId) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(MESSAGES);
+        Map<String,Object> items = new HashMap<>();
+
+        String dateNow = workWithTimeApi.getCurDateInFormatHMS();
+
+        items.put(MESSAGE_TIME, dateNow);
+        items.put(DIALOG_ID, dialogId);
+
+        String messageId =  myRef.push().getKey();
+        myRef = database.getReference(MESSAGES).child(messageId);
+        myRef.updateChildren(items);
+        return messageId;
     }
 
     private void loadServiceInLocalStorage(final String serviceId) {
