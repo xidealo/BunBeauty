@@ -268,7 +268,6 @@ public class Dialogs extends AppCompatActivity {
                     addMessagesInLocalStorage(myMessage);
                     getAndPutOrderInLocalStorage(myMessage);
                     getAndPutReviewInLocalStorage(myMessage);
-                    //getReviewAndPutInLocalStorage(myMessage);
                 }
             }
             @Override
@@ -281,7 +280,6 @@ public class Dialogs extends AppCompatActivity {
     private void addMessagesInLocalStorage(final Message message) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        Log.d(TAG, "addMessagesInLocalStorage: ");
         // берем всю информацию из таблицы MR, чтобы либо сделать update, либо insert
         String sqlQuery = "SELECT * FROM "
                 + DBHelper.TABLE_MESSAGES
@@ -310,8 +308,6 @@ public class Dialogs extends AppCompatActivity {
     }
 
     private void getAndPutOrderInLocalStorage(final Message message) {
-        //загружаем message reviews
-        //делаем запрос в fireBase по dialogId, который получаем при загрузке страницы
         Query messagesQuery = FirebaseDatabase.getInstance().getReference(ORDERS)
                 .orderByChild(MESSAGE_ID)
                 .equalTo(message.getId());
@@ -399,7 +395,6 @@ public class Dialogs extends AppCompatActivity {
                             + DBHelper.KEY_ID + " = ?";
 
                     Cursor cursor = database.rawQuery(sqlQuery, new String[] {workingTimeId});
-                    Log.d(TAG, "onDataChange: " + cursor.getCount());
 
                     if(cursor.moveToFirst()) {
                         int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
@@ -435,8 +430,6 @@ public class Dialogs extends AppCompatActivity {
                 + " WHERE "
                 + DBHelper.KEY_ID + " = ?";
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {ratingReview.getId()});
-
-        Log.d(TAG, "addReviewInLocalStorage: " + cursor.getCount());
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, ratingReview.getReview());
@@ -630,7 +623,6 @@ public class Dialogs extends AppCompatActivity {
         message.setDate(dateNow);
         message.setId(messageId);
 
-        Log.d(TAG, "createMessage: ");
         addMessagesInLocalStorage(message);
 
         return messageId;
