@@ -390,7 +390,7 @@ public class Dialogs extends AppCompatActivity {
                     String workingTimeId = String.valueOf(review.child(WORKING_TIME_ID).getValue());
                     ratingReview.setWorkingTimeId(workingTimeId);
 
-                    addTimeInLocalStorage(null, review, message.getDialogId());
+                    addTimeInLocalStorage(null, ratingReview, message.getDialogId());
 
                     SQLiteDatabase database = dbHelper.getWritableDatabase();
                     String sqlQuery = "SELECT "
@@ -419,6 +419,7 @@ public class Dialogs extends AppCompatActivity {
                             }
                         }
                     }
+                    cursor.close();
                 }
             }
 
