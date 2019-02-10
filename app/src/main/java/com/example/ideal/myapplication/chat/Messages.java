@@ -136,15 +136,14 @@ public class Messages extends AppCompatActivity {
 
             // Цикл по всем сообщениям в диалоге пользователя
             do {
+                String messageId = messageCursor.getString(indexMessageId);
                 String messageTime = messageCursor.getString(indexMessageTime);
                 message.setMessageTime(messageTime);
                 message.setDialogId(dialogId);
+                message.setId(messageId);
 
                 // Проверяем какую информацию содержит сообщение (запись или ревью)
                 if(!isThisMessageContainsOrder(message)){
-                    String messageId = messageCursor.getString(indexMessageId);
-                    message.setId(messageId);
-
                     isThisMessageContainsReview(message);
                 }
             } while (messageCursor.moveToNext());
@@ -254,7 +253,7 @@ public class Messages extends AppCompatActivity {
                 "SELECT "
                         + DBHelper.KEY_DATE_WORKING_DAYS
                         + " FROM "
-                        + DBHelper.TABLE_WORKING_DAYS
+                        + DBHelper.TABLE_WORKING_DAYS + ", "
                         + DBHelper.TABLE_WORKING_TIME
                         + " WHERE "
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = ? "
@@ -264,8 +263,13 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID;
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{timeId});
-        String date = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS));
 
+        String date = "";
+        if(cursor.moveToFirst()) {
+            date = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS));
+        }
+
+        cursor.close();
         return date;
     }
 
@@ -283,8 +287,13 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.KEY_ID + " = ? ";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{timeId});
-        String time = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME));
 
+        String time = "";
+        if(cursor.moveToFirst()) {
+            time = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME));
+        }
+
+        cursor.close();
         return time;
     }
 
@@ -298,8 +307,8 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
                         + " AS " + SERVICE_ID
                         + " FROM "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
-                        + DBHelper.TABLE_WORKING_DAYS
+                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
+                        + DBHelper.TABLE_WORKING_DAYS + ", "
                         + DBHelper.TABLE_WORKING_TIME
                         + " WHERE "
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = ? "
@@ -312,8 +321,12 @@ public class Messages extends AppCompatActivity {
                         + " = "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID;
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{timeId, myPhone});
-        String serviceId = cursor.getString(cursor.getColumnIndex(SERVICE_ID));
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{timeId});
+
+        String serviceId = "";
+        if(cursor.moveToFirst()) {
+            serviceId = cursor.getString(cursor.getColumnIndex(SERVICE_ID));
+        }
 
         return serviceId;
     }
@@ -332,7 +345,11 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.KEY_ID + " = ? ";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{timeId});
-        String phone = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_USER_ID));
+
+        String phone = "";
+        if(cursor.moveToFirst()) {
+            phone = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_USER_ID));
+        }
 
         return phone.equals("0");
     }
@@ -374,7 +391,6 @@ public class Messages extends AppCompatActivity {
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
 
         if(cursor.moveToFirst()){
-
             int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
 
             return cursor.getString(indexName);
