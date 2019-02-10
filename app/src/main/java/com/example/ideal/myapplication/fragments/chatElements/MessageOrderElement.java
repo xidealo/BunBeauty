@@ -42,6 +42,8 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
     private static final String WORKING_TIME = "working time";
     private static final String USER_ID = "user id";
 
+    private static final String REVIEW_FOR_SERVICE = "review for service";
+
     String text;
 
     String messageTime;
@@ -210,6 +212,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         Map<String,Object> items = new HashMap<>();
 
         items.put(RATING, "0");
+        items.put(RATING, REVIEW_FOR_SERVICE);
         items.put(MESSAGE_ID, messageId);
         items.put(TIME_ID, messageWorkingTimeId);
 

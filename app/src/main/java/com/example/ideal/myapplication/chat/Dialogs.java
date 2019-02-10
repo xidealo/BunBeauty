@@ -21,6 +21,7 @@ import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.reviews.Review;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -68,6 +69,9 @@ public class Dialogs extends AppCompatActivity {
 
     private static final String SERVICES = "services";
     private static final String TIME = "time";
+
+    private static final String REVIEW_FOR_SERVICE = "review for service";
+    private static final String REVIEW_FOR_USER = "review for user";
 
     WorkWithTimeApi workWithTimeApi;
     SharedPreferences sPref;
@@ -263,8 +267,8 @@ public class Dialogs extends AppCompatActivity {
                     myMessage.setDialogId(dialogId);
 
                     addMessagesInLocalStorage(myMessage);
-                    addOrdersInLocalStorage(myMessage);
-                    getReviewAndPutInLocalStorage(myOrder);
+                    getAndPutOrderInLocalStorage(myMessage);
+                    getAndPutReviewInLocalStorage(myMessage);
                 }
             }
             @Override
@@ -305,7 +309,7 @@ public class Dialogs extends AppCompatActivity {
         cursor.close();
     }
 
-    private void addOrdersInLocalStorage(final Message message) {
+    private void getAndPutOrderInLocalStorage(final Message message) {
         //загружаем message reviews
         //делаем запрос в fireBase по dialogId, который получаем при загрузке страницы
         Query messagesQuery = FirebaseDatabase.getInstance().getReference(ORDERS)
@@ -335,7 +339,7 @@ public class Dialogs extends AppCompatActivity {
                     myOrder.setWorkingTimeId(workingTimeId);
 
                     // подргужаем время, потом день и сам сервис этого сообщения
-                    addTimeInLocalStorage(myOrder, message.getDialogId());
+                    addTimeInLocalStorage(myOrder, null, message.getDialogId());
 
                     cursor = database.rawQuery(sqlQuery, new String[] {orderId});
 
@@ -364,12 +368,12 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void getReviewAndPutInLocalStorage(final Order order) {
+    private void getAndPutReviewInLocalStorage(final Message message) {
         //загружаем все ревью в local storage, чтобы быстрее работало
         //получаем на вход ордер, а из него берем messageId & workingTimeId
         Query reviewsQuery = FirebaseDatabase.getInstance().getReference(REVIEWS)
                 .orderByChild(MESSAGE_ID)
-                .equalTo(order.getMessageId());
+                .equalTo(message.getId());
 
         reviewsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -380,11 +384,41 @@ public class Dialogs extends AppCompatActivity {
                     ratingReview.setId(review.getKey());
                     ratingReview.setReview(String.valueOf(review.child(REVIEW).getValue()));
                     ratingReview.setReview(String.valueOf(review.child(RATING).getValue()));
-                    ratingReview.setType(String.valueOf(review.child(TYPE).getValue()));
-                    ratingReview.setMessageId(order.getMessageId());
-                    ratingReview.setWorkingTimeId(order.getWorkingTimeId());
+                    String type = String.valueOf(review.child(TYPE).getValue());
+                    ratingReview.setType(type);
+                    ratingReview.setMessageId(message.getId());
+                    String workingTimeId = String.valueOf(review.child(WORKING_TIME_ID).getValue());
+                    ratingReview.setWorkingTimeId(workingTimeId);
 
-                    addReviewInLocalStorage(ratingReview);
+                    addTimeInLocalStorage(null, review, message.getDialogId());
+
+                    SQLiteDatabase database = dbHelper.getWritableDatabase();
+                    String sqlQuery = "SELECT "
+                            + DBHelper.KEY_USER_ID
+                            + " FROM "
+                            + DBHelper.TABLE_WORKING_TIME
+                            + " WHERE "
+                            + DBHelper.KEY_ID + " = ?";
+
+                    Cursor cursor = database.rawQuery(sqlQuery, new String[] {workingTimeId});
+                    Log.d(TAG, "onDataChange: " + cursor.getCount());
+
+                    if(cursor.moveToFirst()) {
+                        int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+                        String userId = cursor.getString(indexUserId);
+
+                        String myPhone = getUserPhone();
+
+                        if((myPhone.equals("0") || myPhone.equals(userId))) {
+                            if(type.equals(REVIEW_FOR_SERVICE)) {
+                                addReviewInLocalStorage(ratingReview);
+                            }
+                        } else {
+                            if(type.equals(REVIEW_FOR_USER)) {
+                                addReviewInLocalStorage(ratingReview);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -403,6 +437,8 @@ public class Dialogs extends AppCompatActivity {
                 + " WHERE "
                 + DBHelper.KEY_ID + " = ?";
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {ratingReview.getId()});
+
+        Log.d(TAG, "addReviewInLocalStorage: " + cursor.getCount());
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, ratingReview.getReview());
@@ -423,9 +459,17 @@ public class Dialogs extends AppCompatActivity {
         cursor.close();
     }
 
-    private void addTimeInLocalStorage(final Order order, final String dialogId) {
+    private void addTimeInLocalStorage(final Order order, final RatingReview review, final String dialogId) {
         //берем время из fireBase и сохраняем его в sqlLite
-        final String timeId =  order.getWorkingTimeId();
+
+        final boolean isOrder = (review == null);
+        final String timeId;
+        if(isOrder) {
+            timeId = order.getWorkingTimeId();
+        }
+        else {
+            timeId = review.getWorkingTimeId();
+        }
 
         DatabaseReference timeRef = FirebaseDatabase.getInstance().
                 getReference(WORKING_TIME)
@@ -452,8 +496,12 @@ public class Dialogs extends AppCompatActivity {
                 order.setOrderTime(myTime);
 
                 // получаем день этого сообщения
-                addDayInLocalStorage(dayId,order, dialogId);
-
+                if(isOrder) {
+                    addDayInLocalStorage(dayId,order, null, dialogId);
+                }
+                else{
+                    addDayInLocalStorage(dayId,null, review, dialogId);
+                }
                 contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, myTime);
                 contentValues.put(DBHelper.KEY_USER_ID, userId);
                 contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, dayId);
@@ -474,12 +522,13 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void addDayInLocalStorage(final String dayId, final Order order, final String dialogId) {
-
+    private void addDayInLocalStorage(final String dayId, final Order order,
+                                      final RatingReview review, final String dialogId) {
         // загружаем дни, которые связаны с сообщением
+        final boolean isOrder = (review == null);
+
         DatabaseReference dayRef = FirebaseDatabase.getInstance().getReference(WORKING_DAYS)
                 .child(dayId);
-
 
         dayRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -495,14 +544,17 @@ public class Dialogs extends AppCompatActivity {
                 String date = String.valueOf(day.child("data").getValue());
                 String serviceId = String.valueOf(day.child(SERVICE_ID).getValue());
 
-                long sysdate = workWithTimeApi.getSysdateLong();
-                long orderDate =  workWithTimeApi.getMillisecondsStringDate(date + " "+ order.getOrderTime());
-                long dayLong = 86400000;
+                if(isOrder) {
+                    long sysdate = workWithTimeApi.getSysdateLong();
+                    long orderDate = workWithTimeApi.getMillisecondsStringDate(date + " " + order.getOrderTime());
+                    long dayLong = 86400000;
 
-                //если не отменено и прошел день, то мы проверяем есть ли такие ревью уже
-                if(!order.getIsCanceled() && (sysdate-orderDate>dayLong)){
-                    checkReview(order,dialogId);
+                    //если не отменено и прошел день, то мы проверяем есть ли такие ревью уже
+                    if (!order.getIsCanceled() && (sysdate - orderDate > dayLong)) {
+                        checkReview(order, dialogId);
+                    }
                 }
+
                 loadServiceInLocalStorage(serviceId);
 
                 ContentValues contentValues = new ContentValues();
