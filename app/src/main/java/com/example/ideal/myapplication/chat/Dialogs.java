@@ -69,6 +69,9 @@ public class Dialogs extends AppCompatActivity {
     private static final String SERVICES = "services";
     private static final String TIME = "time";
 
+    private static final String REVIEW_FOR_SERVICE = "review for service";
+    private static final String REVIEW_FOR_USER = "review for user";
+
     WorkWithTimeApi workWithTimeApi;
     SharedPreferences sPref;
     DBHelper dbHelper;
@@ -263,8 +266,9 @@ public class Dialogs extends AppCompatActivity {
                     myMessage.setDialogId(dialogId);
 
                     addMessagesInLocalStorage(myMessage);
-                    addOrdersInLocalStorage(myMessage);
-                    getReviewAndPutInLocalStorage(myMessage);
+                    getAndPutOrderInLocalStorage(myMessage);
+                    getAndPutReviewInLocalStorage(myMessage);
+                    //getReviewAndPutInLocalStorage(myMessage);
                 }
             }
             @Override
@@ -305,7 +309,7 @@ public class Dialogs extends AppCompatActivity {
         cursor.close();
     }
 
-    private void addOrdersInLocalStorage(final Message message) {
+    private void getAndPutOrderInLocalStorage(final Message message) {
         //загружаем message reviews
         //делаем запрос в fireBase по dialogId, который получаем при загрузке страницы
         Query messagesQuery = FirebaseDatabase.getInstance().getReference(ORDERS)
@@ -364,7 +368,7 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void getReviewAndPutInLocalStorage(final Message message) {
+    private void getAndPutReviewInLocalStorage(final Message message) {
         //загружаем все ревью в local storage, чтобы быстрее работало
         //получаем на вход ордер, а из него берем messageId & workingTimeId
         Query reviewsQuery = FirebaseDatabase.getInstance().getReference(REVIEWS)
@@ -380,11 +384,39 @@ public class Dialogs extends AppCompatActivity {
                     ratingReview.setId(review.getKey());
                     ratingReview.setReview(String.valueOf(review.child(REVIEW).getValue()));
                     ratingReview.setReview(String.valueOf(review.child(RATING).getValue()));
-                    ratingReview.setType(String.valueOf(review.child(TYPE).getValue()));
+                    String type = String.valueOf(review.child(TYPE).getValue());
+                    ratingReview.setType(type);
                     ratingReview.setMessageId(message.getId());
-                    ratingReview.setWorkingTimeId(String.valueOf(review.child(WORKING_TIME_ID).getValue()));
+                    String workingTimeId = String.valueOf(review.child(WORKING_TIME_ID).getValue());
+                    ratingReview.setWorkingTimeId(workingTimeId);
 
-                    addReviewInLocalStorage(ratingReview);
+                    SQLiteDatabase database = dbHelper.getWritableDatabase();
+                    String sqlQuery = "SELECT "
+                            + DBHelper.KEY_USER_ID
+                            + " FROM "
+                            + DBHelper.TABLE_WORKING_TIME
+                            + " WHERE "
+                            + DBHelper.KEY_ID + " = ?";
+
+                    Cursor cursor = database.rawQuery(sqlQuery, new String[] {workingTimeId});
+                    Log.d(TAG, "onDataChange: " + cursor.getCount());
+
+                    if(cursor.moveToFirst()) {
+                        int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+                        String userId = cursor.getString(indexUserId);
+
+                        String myPhone = getUserPhone();
+
+                        if((myPhone.equals("0") || myPhone.equals(userId))) {
+                            if(type.equals(REVIEW_FOR_SERVICE)) {
+                                addReviewInLocalStorage(ratingReview);
+                            }
+                        } else {
+                            if(type.equals(REVIEW_FOR_USER)) {
+                                addReviewInLocalStorage(ratingReview);
+                            }
+                        }
+                    }
                 }
             }
 
