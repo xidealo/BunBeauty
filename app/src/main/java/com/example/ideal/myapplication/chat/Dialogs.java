@@ -21,6 +21,7 @@ import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.reviews.Review;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -335,7 +336,7 @@ public class Dialogs extends AppCompatActivity {
                     myOrder.setWorkingTimeId(workingTimeId);
 
                     // подргужаем время, потом день и сам сервис этого сообщения
-                    addTimeInLocalStorage(myOrder, message.getDialogId());
+                    addTimeInLocalStorage(myOrder, null, message.getDialogId());
 
                     cursor = database.rawQuery(sqlQuery, new String[] {orderId});
 
@@ -386,6 +387,8 @@ public class Dialogs extends AppCompatActivity {
                     String workingTimeId = String.valueOf(review.child(WORKING_TIME_ID).getValue());
                     ratingReview.setWorkingTimeId(workingTimeId);
 
+                    addTimeInLocalStorage(null, ratingReview, message.getDialogId());
+
                     SQLiteDatabase database = dbHelper.getWritableDatabase();
                     String sqlQuery = "SELECT "
                             + DBHelper.KEY_USER_ID
@@ -412,6 +415,7 @@ public class Dialogs extends AppCompatActivity {
                             }
                         }
                     }
+                    cursor.close();
                 }
             }
 
@@ -450,9 +454,17 @@ public class Dialogs extends AppCompatActivity {
         cursor.close();
     }
 
-    private void addTimeInLocalStorage(final Order order, final String dialogId) {
+    private void addTimeInLocalStorage(final Order order, final RatingReview review, final String dialogId) {
         //берем время из fireBase и сохраняем его в sqlLite
-        final String timeId =  order.getWorkingTimeId();
+
+        final boolean isOrder = (review == null);
+        final String timeId;
+        if(isOrder) {
+            timeId = order.getWorkingTimeId();
+        }
+        else {
+            timeId = review.getWorkingTimeId();
+        }
 
         DatabaseReference timeRef = FirebaseDatabase.getInstance().
                 getReference(WORKING_TIME)
@@ -479,8 +491,12 @@ public class Dialogs extends AppCompatActivity {
                 order.setOrderTime(myTime);
 
                 // получаем день этого сообщения
-                addDayInLocalStorage(dayId,order, dialogId);
-
+                if(isOrder) {
+                    addDayInLocalStorage(dayId,order, null, dialogId);
+                }
+                else{
+                    addDayInLocalStorage(dayId,null, review, dialogId);
+                }
                 contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, myTime);
                 contentValues.put(DBHelper.KEY_USER_ID, userId);
                 contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, dayId);
@@ -501,12 +517,13 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void addDayInLocalStorage(final String dayId, final Order order, final String dialogId) {
-
+    private void addDayInLocalStorage(final String dayId, final Order order,
+                                      final RatingReview review, final String dialogId) {
         // загружаем дни, которые связаны с сообщением
+        final boolean isOrder = (review == null);
+
         DatabaseReference dayRef = FirebaseDatabase.getInstance().getReference(WORKING_DAYS)
                 .child(dayId);
-
 
         dayRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -522,14 +539,17 @@ public class Dialogs extends AppCompatActivity {
                 String date = String.valueOf(day.child("data").getValue());
                 String serviceId = String.valueOf(day.child(SERVICE_ID).getValue());
 
-                long sysdate = workWithTimeApi.getSysdateLong();
-                long orderDate =  workWithTimeApi.getMillisecondsStringDate(date + " "+ order.getOrderTime());
-                long dayLong = 86400000;
+                if(isOrder) {
+                    long sysdate = workWithTimeApi.getSysdateLong();
+                    long orderDate = workWithTimeApi.getMillisecondsStringDate(date + " " + order.getOrderTime());
+                    long dayLong = 86400000;
 
-                //если не отменено и прошел день, то мы проверяем есть ли такие ревью уже
-                if(!order.getIsCanceled() && (sysdate-orderDate>dayLong)){
-                    checkReview(order,dialogId);
+                    //если не отменено и прошел день, то мы проверяем есть ли такие ревью уже
+                    if (!order.getIsCanceled() && (sysdate - orderDate > dayLong)) {
+                        checkReview(order, dialogId);
+                    }
                 }
+
                 loadServiceInLocalStorage(serviceId);
 
                 ContentValues contentValues = new ContentValues();
