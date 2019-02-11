@@ -51,23 +51,23 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     private static final String REVIEW_FOR_SERVICE = "review for service";
 
-    String text;
+    private String text;
 
-    String messageTime;
-    Boolean messageIsCanceled;
-    Boolean messageIsMyService;
-    String messageDate;
-    String messageOrderTime;
-    String messageServiceName;
-    String messageUserName;
-    String messageWorkingTimeId;
-    String messageOrderId;
-    String messageDialogId;
+    private String messageTime;
+    private Boolean messageIsCanceled;
+    private Boolean messageIsMyService;
+    private String messageDate;
+    private String messageOrderTime;
+    private String messageServiceName;
+    private String messageUserName;
+    private String messageWorkingTimeId;
+    private String messageOrderId;
+    private String messageDialogId;
 
-    WorkWithTimeApi workWithTimeApi;
+    private WorkWithTimeApi workWithTimeApi;
 
-    TextView messageText;
-    Button canceledBtn;
+    private TextView messageText;
+    private Button canceledBtn;
 
     public MessageOrderElement() { }
 

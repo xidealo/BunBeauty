@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -91,6 +92,7 @@ public class Dialogs extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
         resultLayout = findViewById(R.id.mainDialogsLayout);
+        resultLayout.setVisibility(View.INVISIBLE);
     }
 
     // Подгружает все мои диалоги и всё что с ними связано из Firebase
@@ -422,6 +424,8 @@ public class Dialogs extends AppCompatActivity {
             database.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
         }
         cursor.close();
+
+        resultLayout.setVisibility(View.VISIBLE);
     }
 
     private void addTimeInLocalStorage(final Order order, final RatingReview review, final String dialogId) {
