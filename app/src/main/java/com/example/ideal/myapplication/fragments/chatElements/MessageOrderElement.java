@@ -209,7 +209,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         Map<String,Object> items = new HashMap<>();
 
         items.put(RATING, "0");
-        items.put(RATING, REVIEW_FOR_SERVICE);
+        items.put(TYPE, REVIEW_FOR_SERVICE);
         items.put(MESSAGE_ID, messageId);
         items.put(TIME_ID, messageWorkingTimeId);
 
