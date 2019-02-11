@@ -373,6 +373,7 @@ public class Dialogs extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot reviews) {
                 for(DataSnapshot review: reviews.getChildren()){
                     RatingReview ratingReview = new RatingReview();
+                    Log.d(TAG, "getAndPutReviewInLocalStorage: " + message.getId());
 
                     String workingTimeId = String.valueOf(review.child(WORKING_TIME_ID).getValue());
 
