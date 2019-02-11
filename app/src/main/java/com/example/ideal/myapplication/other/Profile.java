@@ -105,7 +105,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
 
         // Добавляем данные о пользователе
-        updateProfileData(userId);
+        updateProfileData(ownerId);
 
         // Проверяем совпадают id пользователя и владельца
         if(userId.equals(ownerId)){
