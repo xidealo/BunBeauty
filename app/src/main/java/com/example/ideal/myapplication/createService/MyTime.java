@@ -1,6 +1,5 @@
 package com.example.ideal.myapplication.createService;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -27,14 +26,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimeZone;
-
-import static android.provider.Telephony.BaseMmsColumns.MESSAGE_ID;
 
 public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 

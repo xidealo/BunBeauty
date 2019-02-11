@@ -35,7 +35,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     private static final String WORKING_DAYS_ID = "working day id";
     private static final String STATUS_USER_BY_SERVICE = "status User";
     private static final String DATE = "data";
-    private static final String USER = "User";
+    private static final String USER = "user";
     private static final String WORKER = "worker";
 
     private static final int WEEKS_COUNT = 4;
