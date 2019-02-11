@@ -373,6 +373,7 @@ public class Dialogs extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot reviews) {
                 for(DataSnapshot review: reviews.getChildren()){
                     RatingReview ratingReview = new RatingReview();
+                    Log.d(TAG, "getAndPutReviewInLocalStorage: " + message.getId());
 
                     String workingTimeId = String.valueOf(review.child(WORKING_TIME_ID).getValue());
 
@@ -385,34 +386,6 @@ public class Dialogs extends AppCompatActivity {
 
                     addTimeInLocalStorage(null, ratingReview, message.getDialogId());
 
-                    // Перенести в метод и засугуть onDataChange в addTimeInLocalStorage
-                   /* SQLiteDatabase database = dbHelper.getWritableDatabase();
-                    String sqlQuery = "SELECT "
-                            + DBHelper.KEY_USER_ID
-                            + " FROM "
-                            + DBHelper.TABLE_WORKING_TIME
-                            + " WHERE "
-                            + DBHelper.KEY_ID + " = ?";
-
-                    Cursor cursor = database.rawQuery(sqlQuery, new String[] {workingTimeId});
-
-                    if(cursor.moveToFirst()) {
-                        int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
-                        String userId = cursor.getString(indexUserId);
-
-                        String myPhone = getUserPhone();
-
-                        if((myPhone.equals("0") || myPhone.equals(userId))) {
-                            if(type.equals(REVIEW_FOR_SERVICE)) {
-                                addReviewInLocalStorage(ratingReview);
-                            }
-                        } else {
-                            if(type.equals(REVIEW_FOR_USER)) {
-                                addReviewInLocalStorage(ratingReview);
-                            }
-                        }
-                    }
-                    cursor.close();*/
                 }
             }
 
