@@ -85,16 +85,12 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
                         + ". Сеанс на " + messageDate
                         + " в " + messageOrderTime + "отменён."
                         + "\n (" + messageTime + ")";
-                    /*Вы отказали пользователю  userName в предоставлении услуги serviceName
-		            Сеанс на date в time отменён.*/
             } else {
                 text = "Пользователь " + messageUserName
                         + " отказал Вам в придоставлении услуги " + messageServiceName
                         + ". Сеанс на " + messageDate
                         + " в " + messageOrderTime + "отменён."
                         + "\n (" + messageTime + ")";
-                    /*Пользователь userName отказал Вам в придоставлении услуги serviceName
-                    Сеанс на date в time отменён.*/
             }
         } else {
             if (messageIsMyService) {
@@ -104,16 +100,12 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
                         + " в " + messageOrderTime
                         + ". Вы можете отказаться, указав причину, однако, если вы сделаете это слишком поздно, у пользователя будет возможность оценить Ваш сервис."
                         + "\n (" + messageTime + ")";
-                    /*Пользователь userName записался на услугу serviceName
-		            Сеанс состоится date в time.*/
             } else {
                 text = "Вы записались к " + messageUserName
                         + " на услугу " + messageServiceName
                         + ". Сеанс состоится " + messageDate
                         + " в " + messageOrderTime
                         + "\n (" + messageTime + ")";
-                    /*Вы записались к userName на услугу serviceName
-                    Сеанс состоится date в time.*/
             }
         }
     }

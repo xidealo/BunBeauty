@@ -25,7 +25,7 @@ public class WorkWithTimeApi {
             return orderDate.getTime();
         }
         catch (Exception e){
-            Log.d(TAG, "getMillisecondsStringDate: " + e );
+            Log.d(TAG, "getMillisecondsStringDate error: " + e );
         }
         return 0L;
     }

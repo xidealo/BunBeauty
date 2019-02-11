@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.R;
@@ -24,6 +25,9 @@ public class Messages extends AppCompatActivity {
     private static final String DIALOG_ID = "dialog id";
 
     private static final String SERVICE_ID = "service_id";
+
+    private static final String REVIEW_FOR_SERVICE = "review for service";
+    private static final String REVIEW_FOR_USER = "review for user";
 
     private String myPhone;
     private String dialogId;
@@ -127,6 +131,24 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.KEY_MESSAGE_TIME_MESSAGES;
         Cursor messageCursor = database.rawQuery(messageQuery, new String[]{dialogId});
 
+        String checkQuery =
+                "SELECT * FROM "
+                        + DBHelper.TABLE_REVIEWS;
+        Cursor checkCursor = database.rawQuery(checkQuery, null);
+
+        if(checkCursor.moveToFirst()) {
+            int indexId = checkCursor.getColumnIndex(DBHelper.KEY_ID);
+            int indexType = checkCursor.getColumnIndex(DBHelper.KEY_TYPE_REVIEWS);
+            int indexMessageId = checkCursor.getColumnIndex(DBHelper.KEY_MESSAGE_ID_REVIEWS);
+            int indexWorkingTimeId = checkCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_REVIEWS);
+            do {
+                Log.d(TAG, "id:" + checkCursor.getString(indexId)
+                        + "   type:" + checkCursor.getString(indexType)
+                        + "   mesId:" + checkCursor.getString(indexMessageId)
+                        + "   timeId:" + checkCursor.getString(indexWorkingTimeId));
+            } while (checkCursor.moveToNext());
+        }
+
         if (messageCursor.moveToFirst()) {
             int indexMessageId = messageCursor.getColumnIndex(DBHelper.KEY_ID);
             int indexMessageTime = messageCursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_MESSAGES);
@@ -138,6 +160,8 @@ public class Messages extends AppCompatActivity {
                 message.setMessageTime(messageTime);
                 message.setDialogId(dialogId);
                 message.setId(messageId);
+
+                Log.d(TAG, "createMessages: " + messageTime);
 
                 // Проверяем какую информацию содержит сообщение (запись или ревью)
                 if(!isThisMessageContainsOrder(message)){
@@ -205,36 +229,38 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.KEY_MESSAGE_ID_REVIEWS + " = ?";
         Cursor reviewCursor = database.rawQuery(reviewQuery, new String[]{message.getId()});
 
+        Log.d(TAG, "reviewCursor " + reviewCursor.getCount());
+
         if (reviewCursor.moveToFirst()) {
             //int indexReview = reviewCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_REVIEWS);
-            int indexRating = reviewCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_REVIEWS);
-            int indexType = reviewCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_REVIEWS);
+            int indexRating = reviewCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+            int indexType = reviewCursor.getColumnIndex(DBHelper.KEY_TYPE_REVIEWS);
             int indexTimeId = reviewCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_REVIEWS);
 
             do{
-                boolean isRate = reviewCursor.getString(indexRating).equals("-");
-                String type = reviewCursor.getString(indexType);
                 String timeId = reviewCursor.getString(indexTimeId);
-
-                boolean isCanceled = getIsCanceled(timeId);
-                String time = getTime(timeId);
-                String date = getDate(timeId);
                 String serviceId = getServiceId(timeId);
-                //boolean isMyService = isMyService(serviceId);
-                String serviceName = getServiceName(serviceId);
-                String senderName = getSenderName(senderPhone);
+                boolean isMyService = isMyService(serviceId);
+                String type = reviewCursor.getString(indexType);
 
-                //message.setIsMyService(isMyService);
-                message.setIsCanceled(isCanceled);
-                message.setIsRate(isRate);
-                message.setType(type);
-                message.setOrderTime(time);
-                message.setDate(date);
-                message.setServiceName(serviceName);
-                message.setUserName(senderName);
-                //message.setServiceId(serviceId);
+                if((type.equals(REVIEW_FOR_USER) && isMyService) || (type.equals(REVIEW_FOR_SERVICE) && !isMyService)) {
+                    boolean isRate = !reviewCursor.getString(indexRating).equals("0");
+                    boolean isCanceled = getIsCanceled(timeId);
+                    String time = getTime(timeId);
+                    String date = getDate(timeId);
+                    String serviceName = getServiceName(serviceId);
+                    String senderName = getSenderName(senderPhone);
 
-                addMessageReviewToScreen(message);
+                    message.setIsCanceled(isCanceled);
+                    message.setIsRate(isRate);
+                    message.setType(type);
+                    message.setOrderTime(time);
+                    message.setDate(date);
+                    message.setServiceName(serviceName);
+                    message.setUserName(senderName);
+
+                    addMessageReviewToScreen(message);
+                }
             } while (reviewCursor.moveToNext());
         }
 
