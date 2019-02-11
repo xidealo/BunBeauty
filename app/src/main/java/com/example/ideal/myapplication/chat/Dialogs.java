@@ -57,7 +57,7 @@ public class Dialogs extends AppCompatActivity {
     private static final String DIALOG_ID = "dialog id";
     private static final String IS_CANCELED = "is canceled";
 
-    private static final String WORKING_TIME= "working time";
+    private static final String WORKING_TIME = "working time";
 
     private static final String WORKING_TIME_ID = "working time id";
     private static final String WORKING_DAY_ID = "working day id";
@@ -384,35 +384,6 @@ public class Dialogs extends AppCompatActivity {
                     ratingReview.setWorkingTimeId(workingTimeId);
 
                     addTimeInLocalStorage(null, ratingReview, message.getDialogId());
-
-                    // Перенести в метод и засугуть onDataChange в addTimeInLocalStorage
-                   /* SQLiteDatabase database = dbHelper.getWritableDatabase();
-                    String sqlQuery = "SELECT "
-                            + DBHelper.KEY_USER_ID
-                            + " FROM "
-                            + DBHelper.TABLE_WORKING_TIME
-                            + " WHERE "
-                            + DBHelper.KEY_ID + " = ?";
-
-                    Cursor cursor = database.rawQuery(sqlQuery, new String[] {workingTimeId});
-
-                    if(cursor.moveToFirst()) {
-                        int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
-                        String userId = cursor.getString(indexUserId);
-
-                        String myPhone = getUserPhone();
-
-                        if((myPhone.equals("0") || myPhone.equals(userId))) {
-                            if(type.equals(REVIEW_FOR_SERVICE)) {
-                                addReviewInLocalStorage(ratingReview);
-                            }
-                        } else {
-                            if(type.equals(REVIEW_FOR_USER)) {
-                                addReviewInLocalStorage(ratingReview);
-                            }
-                        }
-                    }
-                    cursor.close();*/
                 }
             }
 
@@ -495,7 +466,6 @@ public class Dialogs extends AppCompatActivity {
 
                     String type = review.getType();
                     String myPhone = getUserPhone();
-
 
                     if((userId.equals("0") || userId.equals(myPhone))) {
                         if(type.equals(REVIEW_FOR_SERVICE)) {

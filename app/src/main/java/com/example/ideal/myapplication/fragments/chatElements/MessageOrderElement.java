@@ -40,9 +40,11 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
     private static final String DIALOG_ID = "dialog id";
 
     private static final String REVIEWS = "reviews";
+    private static final String REVIEW = "review";
     private static final String RATING = "rating";
     private static final String MESSAGE_ID = "message id";
     private static final String TIME_ID = "time id";
+    private static final String TYPE = "type";
 
     private static final String WORKING_TIME = "working time";
     private static final String USER_ID = "user id";
@@ -210,6 +212,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
         items.put(RATING, "0");
         items.put(TYPE, REVIEW_FOR_SERVICE);
+        items.put(REVIEW, "");
         items.put(MESSAGE_ID, messageId);
         items.put(TIME_ID, messageWorkingTimeId);
 

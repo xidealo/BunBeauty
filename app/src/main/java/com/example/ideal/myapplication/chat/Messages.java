@@ -209,8 +209,6 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.KEY_MESSAGE_ID_REVIEWS + " = ?";
         Cursor reviewCursor = database.rawQuery(reviewQuery, new String[]{message.getId()});
 
-        Log.d(TAG, "reviewCursor " + reviewCursor.getCount());
-
         if (reviewCursor.moveToFirst()) {
             //int indexReview = reviewCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_REVIEWS);
             int indexRating = reviewCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
