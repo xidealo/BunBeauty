@@ -30,13 +30,13 @@ import com.example.ideal.myapplication.reviews.Review;
 
 public class Profile extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "DBInf";
     private static final String PHONE_NUMBER = "Phone number";
     private static final String OWNER_ID = "owner id";
     private static final String FILE_NAME = "Info";
     private static final String STATUS = "status";
     private static final String USER_NAME = "my name";
     private static final String USER_CITY = "my city";
+    private static final String TAG = "DBInf";
 
     private  Button logOutBtn;
     private  Button findServicesBtn;
@@ -57,7 +57,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private  SharedPreferences sPref;
     private  DBHelper dbHelper;
-    String ownerId;
+    private  String ownerId;
     private WorkWithTimeApi workWithTimeApi;
 
     private foundServiceProfileElement fServiceElement;
@@ -97,7 +97,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         // Получаем id владельца профиля
         ownerId = getIntent().getStringExtra(OWNER_ID);
-
         // Проверяем id владельца профиля
         if(ownerId == null) {
             // Если null значит пользователь только что вошёл и это его сервис
@@ -204,7 +203,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + DBHelper.TABLE_CONTACTS_USERS
                         + " WHERE "
                         + DBHelper.KEY_USER_ID + " = ?";
-
         Cursor cursor = database.rawQuery(sqlQuery,new String[] {userId});
 
         if(cursor.moveToFirst()){
