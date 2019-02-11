@@ -1,10 +1,14 @@
 package com.example.ideal.myapplication.fragments.chatElements;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +18,7 @@ import android.widget.TextView;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
+import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -66,7 +71,6 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     @SuppressLint("ValidFragment")
     public MessageOrderElement(Message message) {
-
         messageTime = message.getMessageTime();
         messageIsCanceled = message.getIsCanceled();
         messageIsMyService = message.getIsMyService();
@@ -171,7 +175,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         return orderDateLong > sysdateLong;
     }
 
-    private  void cancel(){
+    private void cancel(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(ORDERS).child(messageOrderId);
         Map<String, Object> items = new HashMap<>();
@@ -179,6 +183,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         items.put(IS_CANCELED, true);
         myRef.updateChildren(items);
         clearPhone();
+        updateLocalStorage();
     }
 
     private void createMessage() {
@@ -235,5 +240,26 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         myRef.updateChildren(items);
 
         canceledBtn.setEnabled(false);
+    }
+
+    private void updateLocalStorage() {
+        // isCancled
+        DBHelper dbHelper = new DBHelper(this.getContext());
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, "true");
+
+        database.update(DBHelper.TABLE_ORDERS, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{String.valueOf(messageOrderId)});
+        contentValues.clear();
+
+        // userId
+        contentValues.put(DBHelper.KEY_USER_ID, "0");
+        database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{String.valueOf(messageWorkingTimeId)});
+
     }
 }

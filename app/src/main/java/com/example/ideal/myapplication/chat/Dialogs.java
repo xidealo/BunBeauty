@@ -339,7 +339,7 @@ public class Dialogs extends AppCompatActivity {
                     cursor = database.rawQuery(sqlQuery, new String[] {orderId});
 
                     ContentValues contentValues = new ContentValues();
-                    contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, myOrder.getIsCanceled());
+                    contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, String.valueOf(myOrder.getIsCanceled()));
                     contentValues.put(DBHelper.KEY_MESSAGE_ID_ORDERS, myOrder.getMessageId());
                     contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, myOrder.getWorkingTimeId());
 

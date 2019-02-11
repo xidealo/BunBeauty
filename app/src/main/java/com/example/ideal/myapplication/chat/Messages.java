@@ -131,24 +131,6 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.KEY_MESSAGE_TIME_MESSAGES;
         Cursor messageCursor = database.rawQuery(messageQuery, new String[]{dialogId});
 
-        String checkQuery =
-                "SELECT * FROM "
-                        + DBHelper.TABLE_REVIEWS;
-        Cursor checkCursor = database.rawQuery(checkQuery, null);
-
-        if(checkCursor.moveToFirst()) {
-            int indexId = checkCursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexType = checkCursor.getColumnIndex(DBHelper.KEY_TYPE_REVIEWS);
-            int indexMessageId = checkCursor.getColumnIndex(DBHelper.KEY_MESSAGE_ID_REVIEWS);
-            int indexWorkingTimeId = checkCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_REVIEWS);
-            do {
-                Log.d(TAG, "id:" + checkCursor.getString(indexId)
-                        + "   type:" + checkCursor.getString(indexType)
-                        + "   mesId:" + checkCursor.getString(indexMessageId)
-                        + "   timeId:" + checkCursor.getString(indexWorkingTimeId));
-            } while (checkCursor.moveToNext());
-        }
-
         if (messageCursor.moveToFirst()) {
             int indexMessageId = messageCursor.getColumnIndex(DBHelper.KEY_ID);
             int indexMessageTime = messageCursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_MESSAGES);
@@ -160,8 +142,6 @@ public class Messages extends AppCompatActivity {
                 message.setMessageTime(messageTime);
                 message.setDialogId(dialogId);
                 message.setId(messageId);
-
-                Log.d(TAG, "createMessages: " + messageTime);
 
                 // Проверяем какую информацию содержит сообщение (запись или ревью)
                 if(!isThisMessageContainsOrder(message)){
