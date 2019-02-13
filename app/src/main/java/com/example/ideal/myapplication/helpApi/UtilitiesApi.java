@@ -72,4 +72,23 @@ public class UtilitiesApi {
         cursor.close();
         return serviceId;
     }
+
+    public boolean hasSomeDataWithThisTableInThisId(String tableName, String id){
+
+        String sqlQuery = "SELECT * FROM "
+                + tableName
+                + " WHERE "
+                + DBHelper.KEY_ID + " = ?";
+
+        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{id});
+
+        if(cursor.moveToFirst()){
+            cursor.close();
+            return true;
+        }
+        else {
+            cursor.close();
+            return false;
+        }
+    }
 }
