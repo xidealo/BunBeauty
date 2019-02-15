@@ -2,8 +2,6 @@ package com.example.ideal.myapplication.fragments.objects;
 
 public class RatingReview {
 
-    private int countOfRates;
-    private float avgRating;
     private String id;
     private String review;
     private String rating;
@@ -11,12 +9,6 @@ public class RatingReview {
     private String messageId;
     private String type;
 
-    public void setCountOfRates(String _countOfRates) {
-        countOfRates = Integer.valueOf(_countOfRates);
-    }
-    public void setAvgRating(String _avgRating) {
-        avgRating = Float.valueOf(_avgRating);
-    }
     public void setReview(String _review){
         review=_review;
     }
@@ -34,14 +26,6 @@ public class RatingReview {
     }
     public void setType(String _type){
         type = _type;
-    }
-
-    public int getCountOfRates() {
-        return countOfRates;
-    }
-
-    public float getAvgRating() {
-        return avgRating;
     }
 
     public String getReview() {

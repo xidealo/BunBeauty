@@ -100,9 +100,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init(){
-
-        haveTime = false;
-
         nameText = findViewById(R.id.nameGuestServiceText);
         costText = findViewById(R.id.costGuestServiceText);
         descriptionText = findViewById(R.id.descriptionGuestServiceText);
@@ -240,7 +237,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                         //если прошли по всем дням, идем в календарь
-                        if ((cursorWorkingTime.getCount() == countOfDate)) {
+                        if ((cursorWorkingDay.getCount() == countOfDate)) {
                             if (status.equals(WORKER)) {
                                 goToMyCalendar(WORKER);
                             }
@@ -320,6 +317,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         long twoHours = 2 * 60 * 60 * 1000;
         long sysdateLong = workWithTimeApi.getSysdateLong();
         long currentLong = workWithTimeApi.getMillisecondsStringDate(date + " " + time);
+
 
         return currentLong - sysdateLong >= twoHours;
     }
@@ -426,8 +424,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                     ratingReview.setRating(String.valueOf(rate.child(RATING).getValue()));
                     addReviewForServiceInLocalStorage(ratingReview);
                 }
-                ratingReview.setAvgRating(String.valueOf(sumRates / countOfRates));
-                ratingReview.setCountOfRates(String.valueOf(countOfRates));
+                //ratingReview.setAvgRating(String.valueOf(sumRates / countOfRates));
+                //ratingReview.setCountOfRates(String.valueOf(countOfRates));
                 addToScreen(ratingReview);
             }
 
@@ -486,13 +484,12 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     }
 
-
     private void addToScreen(RatingReview ratingReview) {
-        RatingBarForServiceElement fElement = new RatingBarForServiceElement(ratingReview);
+        //RatingBarForServiceElement fElement = new RatingBarForServiceElement(ratingReview);
 
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.resultGuestServiceLayout, fElement);
-        transaction.commit();
+        //FragmentTransaction transaction = manager.beginTransaction();
+        //transaction.add(R.id.resultGuestServiceLayout, fElement);
+        //transaction.commit();
     }
 
     @Override

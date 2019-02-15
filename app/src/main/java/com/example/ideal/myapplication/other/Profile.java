@@ -1,9 +1,11 @@
 package com.example.ideal.myapplication.other;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -21,12 +23,24 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Dialogs;
 import com.example.ideal.myapplication.createService.AddService;
 import com.example.ideal.myapplication.editing.EditProfile;
+import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
+import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
+import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
 import com.example.ideal.myapplication.reviews.Review;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import static android.provider.Telephony.BaseMmsColumns.DATE;
+import static android.provider.Telephony.BaseMmsColumns.MESSAGE_ID;
 
 public class Profile extends AppCompatActivity implements View.OnClickListener {
 
@@ -37,6 +51,32 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String USER_NAME = "my name";
     private static final String USER_CITY = "my city";
     private static final String TAG = "DBInf";
+
+    private static final String WORKING_TIME = "working time";
+    private static final String USER_ID = "user id";
+    private static final String TIME = "time";
+    private static final String WORKING_DAY_ID = "working day id";
+
+    private static final String REVIEWS = "reviews";
+    private static final String WORKING_TIME_ID = "working time id";
+    private static final String RATING = "rating";
+    private static final String REVIEW = "review";
+    private static final String TYPE = "type";
+    private static final String REVIEW_FOR_USER = "review for user";
+    private static final String MESSAGE_ID = "message id";
+
+    private static final String WORKING_DAYS = "working days";
+    private static final String SERVICE_ID = "service id";
+    private static final String DATE = "data";
+
+    private static final String SERVICES = "services";
+    private static final String NAME = "name";
+
+    private static final String USERS = "users";
+
+
+    private float sumRates;
+    private long countOfRates;
 
     private  Button logOutBtn;
     private  Button findServicesBtn;
@@ -52,13 +92,14 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private  ScrollView ordersScroll;
     private  LinearLayout servicesLayout;
     private  LinearLayout ordersLayout;
+    private  LinearLayout ratingLayout;
 
     private  SwitchCompat servicesOrOrdersSwitch;
 
     private  SharedPreferences sPref;
     private  DBHelper dbHelper;
     private  String ownerId;
-    private WorkWithTimeApi workWithTimeApi;
+    private  WorkWithTimeApi workWithTimeApi;
 
     private foundServiceProfileElement fServiceElement;
     private foundOrderElement fOrderElement;
@@ -83,13 +124,16 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         ordersScroll = findViewById(R.id.orderProfileScroll);
         servicesLayout = findViewById(R.id.servicesProfileLayout);
         ordersLayout = findViewById(R.id.ordersProfileLayout);
+        ratingLayout = findViewById(R.id.ratingLayout);
 
         nameText = findViewById(R.id.nameProfileText);
         cityText = findViewById(R.id.cityProfileText);
 
+        countOfRates = 0;
+        sumRates = 0;
+
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
-
         manager = getSupportFragmentManager();
 
         //получаем id пользователя
@@ -221,10 +265,306 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    private void loadTimeForReviews() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        Query query = database.getReference(WORKING_TIME)
+                .orderByChild(USER_ID)
+                .equalTo(ownerId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot workingTimeSnapshot:dataSnapshot.getChildren()){
+                    String timeId = String.valueOf(workingTimeSnapshot.getKey());
+                    String time = String.valueOf(workingTimeSnapshot.child(TIME).getValue());
+                    String timeUserId = String.valueOf(workingTimeSnapshot.child(USER_ID).getValue());
+                    String timeWorkingDayId = String.valueOf(workingTimeSnapshot.child(WORKING_DAY_ID).getValue());
+
+                    addTimeInLocalStorage(timeId, time, timeUserId, timeWorkingDayId);
+                }
+                // Подгружает оценки
+                loadRating();
+                // Подгружаем дни по времени >> сервисы по дням >> авторов ревью по сервисам
+                loadDaysByTime();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+    }
+
+    private void loadDaysByTime() {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        String sqlQuery = "SELECT DISTINCT "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME
+                + " WHERE "
+                + DBHelper.KEY_USER_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{ownerId});
+
+        if (cursor.moveToFirst()) {
+            int indexDayId = cursor.getColumnIndex(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME);
+
+            do {
+                final String dayId = cursor.getString(indexDayId);
+
+                DatabaseReference dayRef = FirebaseDatabase.getInstance().getReference(WORKING_DAYS).child(dayId);
+                dayRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot workingDaySnapshot) {
+                        String date = String.valueOf(workingDaySnapshot.child(DATE).getValue());
+                        String serviceId = String.valueOf(workingDaySnapshot.child(SERVICE_ID).getValue());
+                        addDayInLocalStorage(dayId, date, serviceId);
+
+                        // Подгружаем сервисы по дням >> авторов ревью по сервисам
+                        loadServiceByWorkingDay(serviceId);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+            } while (cursor.moveToNext());
+        }
+    }
+
+    private void loadServiceByWorkingDay(final String serviceId) {
+        DatabaseReference serviceRef = FirebaseDatabase.getInstance().getReference(SERVICES).child(serviceId);
+        serviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot serviceSnapshot) {
+                String userId = String.valueOf(serviceSnapshot.child(USER_ID).getValue());
+                String name = String.valueOf(serviceSnapshot.child(NAME).getValue());
+                addServiceInLocalStorage(serviceId, userId, name);
+
+                // Подгружаем авторов ревью по сервисам
+                loadUserByService(userId);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void loadUserByService(final String userId) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(USERS).child(userId);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                String name = String.valueOf(userSnapshot.child(NAME).getValue());
+
+                addUserInLocalStorage(userId, name);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void addUserInLocalStorage(String userId, String name) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        String sqlQuery = "SELECT * FROM "
+                + DBHelper.TABLE_CONTACTS_USERS
+                + " WHERE "
+                + DBHelper.KEY_USER_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_NAME_USERS, name);
+
+        if (cursor.moveToFirst()) {
+            database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
+                    DBHelper.KEY_USER_ID + " = ?",
+                    new String[]{String.valueOf(userId)});
+        } else {
+            contentValues.put(DBHelper.KEY_USER_ID, userId);
+            database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
+        }
+
+        cursor.close();
+    }
+
+    private void addServiceInLocalStorage(String serviceId, String userId, String name) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        String sqlQuery = "SELECT * FROM "
+                + DBHelper.TABLE_CONTACTS_SERVICES
+                + " WHERE "
+                + DBHelper.KEY_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_USER_ID, userId);
+        contentValues.put(DBHelper.KEY_NAME_SERVICES, name);
+
+        if (cursor.moveToFirst()) {
+            database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{String.valueOf(serviceId)});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, serviceId);
+            database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
+        }
+
+        cursor.close();
+    }
+
+    private void addDayInLocalStorage(String dayId, String date, String serviceId) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        String sqlQuery = "SELECT * FROM "
+                + DBHelper.TABLE_WORKING_DAYS
+                + " WHERE "
+                + DBHelper.KEY_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId});
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
+        contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
+
+        if (cursor.moveToFirst()) {
+            database.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{String.valueOf(dayId)});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, dayId);
+            database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
+        }
+
+        cursor.close();
+    }
+
+    private void addTimeInLocalStorage(String id, String time,
+                                       String userId, String workingDayId) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        String sqlQuery = "SELECT * FROM "
+                + DBHelper.TABLE_WORKING_TIME
+                + " WHERE "
+                + DBHelper.KEY_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{id});
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, time);
+        contentValues.put(DBHelper.KEY_USER_ID, userId);
+        contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
+
+        if (cursor.moveToFirst()) {
+            database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{String.valueOf(id)});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, id);
+            database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
+        }
+        cursor.close();
+    }
+
+    private void loadRating() {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        String sqlQuery = "SELECT "
+                + DBHelper.KEY_ID + ", "
+                + DBHelper.KEY_USER_ID
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME
+                + " WHERE "
+                + DBHelper.KEY_USER_ID + " = ?";
+
+        final Cursor cursor = database.rawQuery(sqlQuery, new String[]{ownerId});
+
+
+        if(cursor.moveToFirst()) {
+            int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
+
+            sumRates = 0;
+            countOfRates = 0;
+            do{
+                final String workingTimeid = cursor.getString(indexId);
+                Query query = FirebaseDatabase.getInstance().getReference(REVIEWS)
+                        .orderByChild(WORKING_TIME_ID)
+                        .equalTo(workingTimeid);
+
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        RatingReview ratingReview = new RatingReview();
+
+                        for (DataSnapshot reviewSnapshot : dataSnapshot.getChildren()) {
+                            String type = String.valueOf(reviewSnapshot.child(TYPE).getValue());
+                            float rating = Float.valueOf(String.valueOf(reviewSnapshot.child(RATING).getValue()));
+
+                            if(type.equals(REVIEW_FOR_USER) && rating>0) {
+                                countOfRates++;
+                                sumRates += rating;
+                                ratingReview.setId(String.valueOf(reviewSnapshot.getKey()));
+                                ratingReview.setReview(String.valueOf(reviewSnapshot.child(REVIEW).getValue()));
+                                ratingReview.setRating(String.valueOf(reviewSnapshot.child(RATING).getValue()));
+                                ratingReview.setType(String.valueOf(reviewSnapshot.child(TYPE).getValue()));
+                                ratingReview.setWorkingTimeId(workingTimeid);
+                                ratingReview.setMessageId(String.valueOf(reviewSnapshot.child(MESSAGE_ID).getValue()));
+
+                                addReviewInLocalStorage(ratingReview);
+                                if(cursor.isAfterLast()) {
+                                    addRatingToScreen();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+
+            } while (cursor.moveToNext());
+        }
+    }
+
+    private void addReviewInLocalStorage(RatingReview ratingReview) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        String sqlQuery = "SELECT * FROM "
+                + DBHelper.TABLE_REVIEWS
+                + " WHERE "
+                + DBHelper.KEY_ID + " = ?";
+
+        String reviewId = ratingReview.getId();
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{reviewId});
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, ratingReview.getReview());
+        contentValues.put(DBHelper.KEY_RATING_REVIEWS, ratingReview.getRating());
+        contentValues.put(DBHelper.KEY_TYPE_REVIEWS, ratingReview.getType());
+        contentValues.put(DBHelper.KEY_WORKING_TIME_ID_REVIEWS, ratingReview.getWorkingTimeId());
+
+        if (cursor.moveToFirst()) {
+            database.update(DBHelper.TABLE_REVIEWS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{String.valueOf(reviewId)});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, reviewId);
+            database.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
+        }
+        cursor.close();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         String userId = getUserId();
+
+        addRatingToScreen();
+        loadTimeForReviews();
 
         if(userId.equals(ownerId)){
             // если это мой сервис
@@ -349,6 +689,16 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             }
         }
         cursor.close();
+    }
+
+    private void addRatingToScreen() {
+        ratingLayout.removeAllViews();
+        float avgRating = sumRates/countOfRates;
+        RatingBarForServiceElement ratingElement = new RatingBarForServiceElement(avgRating, countOfRates);
+
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(R.id.ratingLayout, ratingElement);
+        transaction.commit();
     }
 
     private void addServiceToScreen(Service service) {
