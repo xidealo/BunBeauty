@@ -190,13 +190,31 @@
         android:id="@+id/ratingLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/black"
         android:layout_marginStart="40dp"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="16dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/orderProfileScroll"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/orderProfileScroll">
+
+        <Button
+            android:id="@+id/ratingProfileBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Комменты" />
+
+        <RatingBar
+            android:id="@+id/profileRatingBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"/>
+
+        <TextView
+            android:id="@+id/ratingProfileText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Оценок пока нет" />
+    </LinearLayout>
 
 
 </android.support.constraint.ConstraintLayout>

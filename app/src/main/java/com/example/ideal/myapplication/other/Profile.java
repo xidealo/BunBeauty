@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfi
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
+import com.example.ideal.myapplication.reviews.Comments;
 import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
 import com.example.ideal.myapplication.reviews.Review;
 import com.google.firebase.database.DataSnapshot;
@@ -38,6 +40,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.security.cert.TrustAnchor;
 
 import static android.provider.Telephony.BaseMmsColumns.DATE;
 import static android.provider.Telephony.BaseMmsColumns.MESSAGE_ID;
@@ -50,6 +54,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String STATUS = "status";
     private static final String USER_NAME = "my name";
     private static final String USER_CITY = "my city";
+    private static final String ID = "id";
     private static final String TAG = "DBInf";
 
     private static final String WORKING_TIME = "working time";
@@ -75,8 +80,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String USERS = "users";
 
 
+
     private float sumRates;
     private long countOfRates;
+    private boolean isAddToScreen;
 
     private  Button logOutBtn;
     private  Button findServicesBtn;
@@ -84,6 +91,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private  Button mainScreenBtn;
     private  Button editProfileBtn;
     private  Button dialogsBtn;
+    private  Button raitingBtn;
 
     private  TextView nameText;
     private  TextView cityText;
@@ -93,6 +101,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private  LinearLayout servicesLayout;
     private  LinearLayout ordersLayout;
     private  LinearLayout ratingLayout;
+
+    private  TextView ratingText;
+    private  RatingBar ratingBar;
 
     private  SwitchCompat servicesOrOrdersSwitch;
 
@@ -117,6 +128,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         mainScreenBtn = findViewById(R.id.mainScreenProfileBtn);
         editProfileBtn = findViewById(R.id.editProfileBtn);
         dialogsBtn = findViewById(R.id.dialogsProfileBtn);
+        raitingBtn = findViewById(R.id.ratingProfileBtn);
 
         servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
 
@@ -125,6 +137,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         servicesLayout = findViewById(R.id.servicesProfileLayout);
         ordersLayout = findViewById(R.id.ordersProfileLayout);
         ratingLayout = findViewById(R.id.ratingLayout);
+
+        ratingText = findViewById(R.id.ratingProfileText);
+        ratingBar = findViewById(R.id.profileRatingBar);
+
+        ratingText.setVisibility(View.VISIBLE);
+        ratingBar.setVisibility(View.VISIBLE);
 
         nameText = findViewById(R.id.nameProfileText);
         cityText = findViewById(R.id.cityProfileText);
@@ -196,6 +214,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         findServicesBtn.setOnClickListener(this);
         mainScreenBtn.setOnClickListener(this);
         dialogsBtn.setOnClickListener(this);
+        raitingBtn.setOnClickListener(this);
     }
 
     @Override
@@ -219,6 +238,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 break;
             case R.id.dialogsProfileBtn:
                 goToDialogs(); // DIALOGS
+                break;
+            case R.id.ratingProfileBtn:
+                goToComments();
                 break;
             default:
                 break;
@@ -294,6 +316,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void loadDaysByTime() {
+        isAddToScreen = false;
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         String sqlQuery = "SELECT DISTINCT "
@@ -321,6 +344,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
                         // Подгружаем сервисы по дням >> авторов ревью по сервисам
                         loadServiceByWorkingDay(serviceId);
+
+                        if(!isAddToScreen) {
+                            isAddToScreen = true;
+                            addRatingToScreen();
+                        }
                     }
 
                     @Override
@@ -474,15 +502,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         String sqlQuery = "SELECT "
-                + DBHelper.KEY_ID + ", "
-                + DBHelper.KEY_USER_ID
+                + DBHelper.KEY_ID
                 + " FROM "
                 + DBHelper.TABLE_WORKING_TIME
                 + " WHERE "
                 + DBHelper.KEY_USER_ID + " = ?";
 
         final Cursor cursor = database.rawQuery(sqlQuery, new String[]{ownerId});
-
 
         if(cursor.moveToFirst()) {
             int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
@@ -515,9 +541,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                                 ratingReview.setMessageId(String.valueOf(reviewSnapshot.child(MESSAGE_ID).getValue()));
 
                                 addReviewInLocalStorage(ratingReview);
-                                if(cursor.isAfterLast()) {
-                                    addRatingToScreen();
-                                }
                             }
                         }
                     }
@@ -563,7 +586,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         super.onResume();
         String userId = getUserId();
 
-        addRatingToScreen();
         loadTimeForReviews();
 
         if(userId.equals(ownerId)){
@@ -692,7 +714,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void addRatingToScreen() {
-        ratingLayout.removeAllViews();
+        ratingBar.setVisibility(View.GONE);
+        ratingText.setVisibility(View.GONE);
         float avgRating = sumRates/countOfRates;
         RatingBarForServiceElement ratingElement = new RatingBarForServiceElement(avgRating, countOfRates);
 
@@ -754,6 +777,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private void goToDialogs() {
         Intent intent = new Intent(this, Dialogs.class);
+        startActivity(intent);
+    }
+
+    private void goToComments() {
+        Intent intent = new Intent(this, Comments.class);
+        intent.putExtra(ID, ownerId);
+        intent.putExtra(TYPE, REVIEW_FOR_USER);
         startActivity(intent);
     }
 
