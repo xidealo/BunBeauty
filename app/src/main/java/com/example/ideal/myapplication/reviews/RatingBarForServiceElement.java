@@ -19,22 +19,20 @@ import com.example.ideal.myapplication.fragments.objects.RatingReview;
 public class RatingBarForServiceElement extends Fragment implements View.OnClickListener {
 
     //возможно стоит размести поверх этого еще один layout на который можно будет кликнуть и перейти в комментарии
-    private static final String SERVICE_ID = "service id";
 
     private TextView countOfRatesText;
     private TextView avgRatesText;
     private RatingBar ratingBar;
 
-    private int countOfRates;
+    private long countOfRates;
     private float avgRates;
-    private String serviceId;
 
     public RatingBarForServiceElement() { }
 
     @SuppressLint("ValidFragment")
-    public RatingBarForServiceElement(RatingReview ratingReview) {
-        countOfRates = ratingReview.getCountOfRates();
-        avgRates = ratingReview.getAvgRating();
+    public RatingBarForServiceElement(float _avgRating, Long _countOfRates) {
+        countOfRates = _countOfRates;
+        avgRates = _avgRating;
     }
 
     @Override
@@ -58,7 +56,6 @@ public class RatingBarForServiceElement extends Fragment implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        goToReviewForService();
     }
     private void setData(){
         if(countOfRates>0) {
@@ -66,15 +63,6 @@ public class RatingBarForServiceElement extends Fragment implements View.OnClick
             avgRatesText.setText(String.valueOf(avgRates));
             ratingBar.setRating(avgRates);
         }
-        else {
-            countOfRatesText.setText("Оценок еще нет.");
-        }
     }
 
-    private void goToReviewForService() {
-        Intent intent = new Intent(this.getContext(), ReviewForService.class);
-        intent.putExtra(SERVICE_ID, serviceId);
-
-        startActivity(intent);
-    }
 }

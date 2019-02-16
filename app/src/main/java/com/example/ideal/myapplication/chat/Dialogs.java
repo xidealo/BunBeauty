@@ -575,8 +575,8 @@ public class Dialogs extends AppCompatActivity {
                 //если  = 0, значит ревью нету, мы их создаем
                 if (times.getChildrenCount() == 0) {
                     String messageId = createMessage(dialogId);
-                    createReview(order, "review for service", messageId);
-                    createReview(order, "review for user", messageId);
+                    createReview(order, REVIEW_FOR_SERVICE, messageId);
+                    createReview(order, REVIEW_FOR_USER, messageId);
                 }
             }
             @Override
