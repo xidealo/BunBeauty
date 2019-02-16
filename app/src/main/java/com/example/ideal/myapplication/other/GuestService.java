@@ -116,8 +116,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void init() {
-
+    private void init(){
         nameText = findViewById(R.id.nameGuestServiceText);
         costText = findViewById(R.id.costGuestServiceText);
         descriptionText = findViewById(R.id.descriptionGuestServiceText);
@@ -358,6 +357,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         long sysdateLong = workWithTimeApi.getSysdateLong();
         long currentLong = workWithTimeApi.getMillisecondsStringDate(date + " " + time);
 
+
         return currentLong - sysdateLong >= twoHours;
     }
 
@@ -594,7 +594,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
-
     private void addToScreen() {
         float avgRating = sumRates / countOfRates;
 
@@ -603,7 +602,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         RatingBarForServiceElement fElement = new RatingBarForServiceElement(avgRating, countOfRates);
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.resultGuestServiceLayout, fElement);
-        transaction.commit();
+        transaction.commit()
     }
 
     @Override

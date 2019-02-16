@@ -57,6 +57,7 @@ public class RatingBarForServiceElement extends Fragment implements View.OnClick
     @Override
     public void onClick(View v) {
     }
+
     private void setData(){
         if(countOfRates>0) {
             countOfRatesText.setText(String.valueOf(countOfRates));
@@ -64,5 +65,3 @@ public class RatingBarForServiceElement extends Fragment implements View.OnClick
             ratingBar.setRating(avgRates);
         }
     }
-
-}

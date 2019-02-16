@@ -58,7 +58,7 @@ public class Dialogs extends AppCompatActivity {
     private static final String DIALOG_ID = "dialog id";
     private static final String IS_CANCELED = "is canceled";
 
-    private static final String WORKING_TIME= "working time";
+    private static final String WORKING_TIME = "working time";
 
     private static final String WORKING_TIME_ID = "working time id";
     private static final String WORKING_DAY_ID = "working day id";
@@ -387,7 +387,6 @@ public class Dialogs extends AppCompatActivity {
                     ratingReview.setWorkingTimeId(workingTimeId);
 
                     addTimeInLocalStorage(null, ratingReview, message.getDialogId());
-
                 }
             }
 
@@ -472,7 +471,6 @@ public class Dialogs extends AppCompatActivity {
 
                     String type = review.getType();
                     String myPhone = getUserPhone();
-
 
                     if((userId.equals("0") || userId.equals(myPhone))) {
                         if(type.equals(REVIEW_FOR_SERVICE)) {
