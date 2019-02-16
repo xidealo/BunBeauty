@@ -375,7 +375,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, dayDate);
         contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
-        Log.d(TAG, "addScheduleInLocalStorage: " + dayDate);
         if (cursor.moveToFirst()) {
             database.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
                     DBHelper.KEY_ID + " = ?",
@@ -599,10 +598,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         ratingLayout.removeAllViews();
 
-        RatingBarForServiceElement fElement = new RatingBarForServiceElement(avgRating, countOfRates);
+        RatingBarForServiceElement fElement
+                = new RatingBarForServiceElement(avgRating, countOfRates, serviceId, REVIEW_FOR_SERVICE);
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.resultGuestServiceLayout, fElement);
-        transaction.commit()
+        transaction.commit();
     }
 
     @Override

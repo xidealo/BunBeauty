@@ -208,16 +208,12 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
                     String serviceName = String.valueOf(service.child(NAME).getValue());
                     String serviceDescription = String.valueOf(service.child(DESCRIPTION).getValue());
                     String serviceCost = String.valueOf(service.child(COST).getValue());
-                    String serviceRating = String.valueOf(service.child(RATING).getValue());
-                    String serviceCountOfRates = String.valueOf(service.child(COUNT_OF_RATES).getValue());
 
                     Service newService = new Service();
                     newService.setId(serviceId);
                     newService.setName(serviceName);
                     newService.setDescription(serviceDescription);
                     newService.setCost(serviceCost);
-                    newService.setRating(serviceRating);
-                    newService.setCountOfRates(serviceCountOfRates);
                     newService.setUserId(myPhoneNumber);
 
                     addUserServicesInLocalStorage(newService);
@@ -297,8 +293,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
                 String serviceName = String.valueOf(service.child(NAME).getValue());
                 String serviceDescription = String.valueOf(service.child(DESCRIPTION).getValue());
                 String serviceCost = String.valueOf(service.child(COST).getValue());
-                String serviceRating = String.valueOf(service.child(RATING).getValue());
-                String serviceCountOfRates = String.valueOf(service.child(COUNT_OF_RATES).getValue());
                 String serviceUserId = String.valueOf(service.child(USER_ID).getValue());
 
                 Service newService = new Service();
@@ -306,8 +300,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
                 newService.setName(serviceName);
                 newService.setDescription(serviceDescription);
                 newService.setCost(serviceCost);
-                newService.setRating(serviceRating);
-                newService.setCountOfRates(serviceCountOfRates);
                 newService.setUserId(serviceUserId);
 
                 addUserServicesInLocalStorage(newService);
@@ -362,8 +354,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
-        contentValues.put(DBHelper.KEY_RATING_SERVICES, service.getRating());
-        contentValues.put(DBHelper.KEY_COUNT_OF_RATES_SERVICES, service.getCountOfRates());
 
         // Добавляем данный сервис в SQLite
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);

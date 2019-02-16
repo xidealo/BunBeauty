@@ -141,8 +141,6 @@ public class MainScreen extends AppCompatActivity {
                                 service.setUserId(userId);
                                 service.setCost(serviceCost);
                                 service.setDescription(serviceDescription);
-                                service.setRating(serviceRating);
-                                service.setCountOfRates(serviceCountOfRates);
 
                                 updateServicesInLocalStorage(service);
                                 addToScreen(service, user);
@@ -203,8 +201,6 @@ public class MainScreen extends AppCompatActivity {
         contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
-        contentValues.put(DBHelper.KEY_RATING_SERVICES, service.getRating());
-        contentValues.put(DBHelper.KEY_COUNT_OF_RATES_SERVICES, service.getCountOfRates());
 
         // Проверка есть ли такой сервис в SQLite
         if(cursor.moveToFirst()) {

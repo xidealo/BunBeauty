@@ -91,7 +91,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private  Button mainScreenBtn;
     private  Button editProfileBtn;
     private  Button dialogsBtn;
-    private  Button raitingBtn;
 
     private  TextView nameText;
     private  TextView cityText;
@@ -128,7 +127,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         mainScreenBtn = findViewById(R.id.mainScreenProfileBtn);
         editProfileBtn = findViewById(R.id.editProfileBtn);
         dialogsBtn = findViewById(R.id.dialogsProfileBtn);
-        raitingBtn = findViewById(R.id.ratingProfileBtn);
 
         servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
 
@@ -214,7 +212,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         findServicesBtn.setOnClickListener(this);
         mainScreenBtn.setOnClickListener(this);
         dialogsBtn.setOnClickListener(this);
-        raitingBtn.setOnClickListener(this);
     }
 
     @Override
@@ -238,9 +235,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 break;
             case R.id.dialogsProfileBtn:
                 goToDialogs(); // DIALOGS
-                break;
-            case R.id.ratingProfileBtn:
-                goToComments();
                 break;
             default:
                 break;
@@ -609,9 +603,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         String sqlQuery =
                 "SELECT "
                         + DBHelper.KEY_ID + ", "
-                        + DBHelper.KEY_NAME_SERVICES + ", "
-                        + DBHelper.KEY_RATING_SERVICES + ", "
-                        + DBHelper.KEY_COUNT_OF_RATES_SERVICES
+                        + DBHelper.KEY_NAME_SERVICES
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_SERVICES
                         + " WHERE "
@@ -628,21 +620,14 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             if(cursor.moveToLast()){
                 int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
                 int indexNameService = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
-                int indexRatingService = cursor.getColumnIndex(DBHelper.KEY_RATING_SERVICES);
-                int indexCountOfRatesService = cursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_SERVICES);
                 int newServicesCount = 0;
 
                 do{
                     String foundId = cursor.getString(indexId);
                     String foundNameService = cursor.getString(indexNameService);
-                    String foundRatingService = cursor.getString(indexRatingService);
-                    String foundCountOfRatesService = cursor.getString(indexCountOfRatesService);
-
                     Service service = new Service();
                     service.setId(foundId);
                     service.setName(foundNameService);
-                    service.setRating(foundRatingService);
-                    service.setCountOfRates(foundCountOfRatesService);
 
                     addServiceToScreen(service);
                     newServicesCount++;
@@ -714,10 +699,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void addRatingToScreen() {
-        ratingBar.setVisibility(View.GONE);
-        ratingText.setVisibility(View.GONE);
+        ratingLayout.removeAllViews();
+        /*ratingBar.setVisibility(View.GONE);
+        ratingText.setVisibility(View.GONE);*/
+
         float avgRating = sumRates/countOfRates;
-        RatingBarForServiceElement ratingElement = new RatingBarForServiceElement(avgRating, countOfRates);
+        RatingBarForServiceElement ratingElement
+                = new RatingBarForServiceElement(avgRating, countOfRates, ownerId, REVIEW_FOR_USER);
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.ratingLayout, ratingElement);
@@ -780,16 +768,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         startActivity(intent);
     }
 
-    private void goToComments() {
+    /*private void goToComments() {
         Intent intent = new Intent(this, Comments.class);
         intent.putExtra(ID, ownerId);
         intent.putExtra(TYPE, REVIEW_FOR_USER);
         startActivity(intent);
-    }
-
-    private void goToReview(){
-        Intent intent = new Intent(this, Review.class);
-        startActivity(intent);
-    }
+    }*/
 
 }

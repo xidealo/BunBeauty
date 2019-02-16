@@ -25,7 +25,6 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String FILE_NAME = "Info";
     private static final String PHONE_NUMBER = "Phone number";
 
-
     private static final String SERVICE_ID = "service id";
     private static final String STATUS_USER_BY_SERVICE = "status User";
 
@@ -34,8 +33,6 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String COST = "cost";
     private static final String DESCRIPTION = "description";
     private static final String USER_ID = "user id";
-    private static final String COUNT_OF_RATES = "count of rates";
-    private static final String RATING = "rating";
 
     Button addServicesBtn;
 
@@ -108,8 +105,6 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         items.put(COST,service.getCost());
         items.put(DESCRIPTION,service.getDescription());
         items.put(USER_ID,userId);
-        items.put(COUNT_OF_RATES, 0);
-        items.put(RATING, 5);
         String serviceId =  myRef.push().getKey();
         myRef = database.getReference(SERVICES).child(serviceId);
         myRef.updateChildren(items);
@@ -129,8 +124,6 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName().toLowerCase());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
-        contentValues.put(DBHelper.KEY_COUNT_OF_RATES_SERVICES,0);
-        contentValues.put(DBHelper.KEY_RATING_SERVICES,5);
         contentValues.put(DBHelper.KEY_USER_ID, userId);
 
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES,null,contentValues);

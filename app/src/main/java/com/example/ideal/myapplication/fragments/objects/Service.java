@@ -6,9 +6,7 @@ public class Service {
     private String name;
     private String description;
     private String cost;
-    private Float rating;
     private String userId;
-    private Long countOfRates;
 
     public boolean setName(String _name){
         if(isCorrectData(_name)) {
@@ -32,23 +30,15 @@ public class Service {
         }
         return false;
     }
-    public void setRating(String _rating){
-        rating = Float.valueOf(_rating);
-    }
     public void setUserId(String _userId){
         userId = _userId;
-    }
-    public void setCountOfRates(String _countOfRates){
-        countOfRates = Long.valueOf(_countOfRates);
     }
 
     public String getId(){return id;}
     public String getName(){return name;}
     public String getDescription(){return description;}
     public String getCost(){return cost;}
-    public Float getRating(){return rating;}
     public String getUserId(){return userId;}
-    public Long getCountOfRates(){return countOfRates;}
 
     protected boolean isCorrectData(String data){
 
