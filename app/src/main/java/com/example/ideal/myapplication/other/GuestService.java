@@ -1,5 +1,6 @@
 package com.example.ideal.myapplication.other;
 
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +22,9 @@ import android.widget.Toast;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.editing.EditService;
+import com.example.ideal.myapplication.fragments.objects.Message;
+import com.example.ideal.myapplication.helpApi.UtilitiesApi;
+import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.UtilitiesApi;
@@ -64,6 +68,14 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private static final String REVIEW_FOR_SERVICE = "review for service";
     private static final String MESSAGE_ID = "message id";
+
+    private static final String MESSAGES = "messages";
+    private static final String MESSAGE_TIME = "message time";
+    private static final String DIALOG_ID = "dialog id";
+
+    private static final String DIALOGS = "dialogs";
+    private static final String FIRST_PHONE = "first phone";
+    private static final String SECOND_PHONE = "second phone";
 
     private long currentCountOfDays;
 
@@ -485,16 +497,25 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                     // только ревью для сервисов
                                     countOfRates++;
                                     sumRates += Float.valueOf(String.valueOf(rate.child(RATING).getValue()));
+
+                                    String messageId = String.valueOf(rate.child(MESSAGE_ID).getValue());
+
                                     ratingReview.setId(String.valueOf(rate.getKey()));
                                     ratingReview.setReview(String.valueOf(rate.child(REVIEW).getValue()));
                                     ratingReview.setRating(rating);
-                                    ratingReview.setMessageId(String.valueOf(rate.child(MESSAGE_ID).getValue()));
+                                    ratingReview.setMessageId(messageId);
                                     ratingReview.setType(type);
                                     ratingReview.setWorkingTimeId(workingTimeId);
                                     //добавление ревью в локальную бд
                                     addReviewForServiceInLocalStorage(ratingReview);
+
                                     // загружать инфу о пользователе
-                                    getUserFromReviewForService(userId);
+                                    if(userId.equals("0")) {
+                                        loadMessageById(messageId);
+                                    } else {
+                                        loadUserForThisReview(userId);
+                                    }
+
                                 }
                             }
                             counter++;
@@ -505,6 +526,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
+                            attentionBadConnection();
                         }
                     });
 
@@ -514,8 +536,111 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         cursor.close();
     }
 
+    private void loadMessageById(final String messageId) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference messageRef = database.getReference(MESSAGES).child(messageId);
+        messageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot messageSnapshot) {
+                String messageTime = String.valueOf(messageSnapshot.child(MESSAGE_TIME).getValue());
+                String dialogId = String.valueOf(messageSnapshot.child(DIALOG_ID).getValue());
+
+                Message message = new Message();
+
+                message.setId(messageId);
+                message.setMessageTime(messageTime);
+                message.setDialogId(dialogId);
+                addMessageInLocalStorage(message);
+
+                loadDialogById(dialogId);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                attentionBadConnection();
+            }
+        });
+    }
+
+    private void loadDialogById(final String dialogId) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference messageRef = database.getReference(DIALOGS).child(dialogId);
+        messageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dialogSnapshot) {
+                String firstPhone = String.valueOf(dialogSnapshot.child(FIRST_PHONE).getValue());
+                String secondPhone = String.valueOf(dialogSnapshot.child(SECOND_PHONE).getValue());
+
+                addDialogInLocalStorage(dialogId, firstPhone, secondPhone);
+
+                if(firstPhone != ownerId) {
+                    loadUserForThisReview(firstPhone);
+                }
+
+                if(secondPhone != ownerId) {
+                    loadUserForThisReview(firstPhone);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                attentionBadConnection();
+            }
+        });
+    }
+
+    private void addDialogInLocalStorage(String dialogId, String firstPhone, String secondPhone) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_FIRST_USER_ID_DIALOGS, firstPhone);
+        contentValues.put(DBHelper.KEY_SECOND_USER_ID_DIALOGS, secondPhone);
+
+        //для проверки на update || insert в таблицу
+        UtilitiesApi utilitiesApi = new UtilitiesApi(database);
+
+        boolean isUpdate =  utilitiesApi
+                .hasSomeDataWithThisTableInThisId(DBHelper.TABLE_DIALOGS, dialogId);
+        if(isUpdate){
+            database.update(DBHelper.TABLE_DIALOGS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{String.valueOf(dialogId)});
+        }
+        else {
+            contentValues.put(DBHelper.KEY_ID, dialogId);
+            database.insert(DBHelper.TABLE_DIALOGS, null, contentValues);
+        }
+    }
+
+    private void addMessageInLocalStorage(Message message) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_MESSAGE_TIME_MESSAGES, message.getMessageTime());
+        contentValues.put(DBHelper.KEY_DIALOG_ID_MESSAGES, message.getDialogId());
+
+        //для проверки на update || insert в таблицу
+        UtilitiesApi utilitiesApi = new UtilitiesApi(database);
+
+        boolean isUpdate =  utilitiesApi
+                .hasSomeDataWithThisTableInThisId(DBHelper.TABLE_MESSAGES, message.getId());
+        if(isUpdate){
+            database.update(DBHelper.TABLE_MESSAGES, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{String.valueOf(message.getId())});
+        }
+        else {
+            contentValues.put(DBHelper.KEY_ID, message.getId());
+            database.insert(DBHelper.TABLE_MESSAGES, null, contentValues);
+        }
+    }
+
     private void addReviewForServiceInLocalStorage(RatingReview ratingReview) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
@@ -567,7 +692,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         cursor.close();
     }
 
-    private void getUserFromReviewForService(final String valuingPhone) {
+    private void loadUserForThisReview(final String valuingPhone) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(USERS)
                 .child(valuingPhone);
@@ -590,6 +715,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
+
     private void addToScreen() {
         float avgRating = sumRates / countOfRates;
 
