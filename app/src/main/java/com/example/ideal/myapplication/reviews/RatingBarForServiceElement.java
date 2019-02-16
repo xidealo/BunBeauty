@@ -56,8 +56,8 @@ public class RatingBarForServiceElement extends Fragment implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        goToReviewForService();
     }
+
     private void setData(){
         if(countOfRates>0) {
             countOfRatesText.setText(String.valueOf(countOfRates));
@@ -67,11 +67,5 @@ public class RatingBarForServiceElement extends Fragment implements View.OnClick
         else {
             countOfRatesText.setText("Оценок еще нет.");
         }
-    }
-
-    private void goToReviewForService() {
-        Intent intent = new Intent(this.getContext(), ReviewForService.class);
-
-        startActivity(intent);
     }
 }
