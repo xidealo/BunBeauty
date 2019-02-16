@@ -60,22 +60,17 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private static final String FIRST_PHONE = "first phone";
     private static final String SECOND_PHONE = "second phone";
 
-    private static final String REVIEWS_FOR_SERVICE = "reviews for service";
-    private static final String REVIEWS_FOR_USER = "reviews for user";
-    private static final String VALUING_PHONE = "valuing phone";
-    private static final String ESTIMATED_PHONE = "estimated phone";
-
     private String oldPhone;
     private String phone;
 
-    Button editBtn;
-    Button verifyButton;
-    Button resendButton;
+    private Button editBtn;
+    private Button verifyButton;
+    private Button resendButton;
 
-    EditText nameInput;
-    EditText cityInput;
-    EditText phoneInput;
-    EditText codeInput;
+    private EditText nameInput;
+    private EditText cityInput;
+    private EditText phoneInput;
+    private EditText codeInput;
 
     private String phoneVerificationId;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks
@@ -332,8 +327,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         updateWorkingTime();
         updateServices();
         updateDialogs();
-        updateReviewForService();
-        updateReviewForUser();
         goToAuthorization();
     }
 
@@ -461,84 +454,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                     DatabaseReference myRef = database.getReference(DIALOGS).child(dialogSnapshot.getKey());
                     Map<String, Object> items = new HashMap<>();
                     items.put(SECOND_PHONE, phone);
-                    myRef.updateChildren(items);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
-    private void updateReviewForService() {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        Query query = database.getReference(REVIEWS_FOR_SERVICE)
-                .orderByChild(VALUING_PHONE)
-                .equalTo(oldPhone);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot reviewSnapshot: dataSnapshot.getChildren()) {
-                    DatabaseReference myRef = database.getReference(REVIEWS_FOR_SERVICE).child(reviewSnapshot.getKey());
-                    Map<String, Object> items = new HashMap<>();
-                    items.put(VALUING_PHONE, phone);
-                    myRef.updateChildren(items);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
-
-    private void updateReviewForUser() {
-        checkValuingPhone();
-        checkEstimatedPhone();
-    }
-
-    private void checkEstimatedPhone() {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        Query query = database.getReference(REVIEWS_FOR_USER)
-                .orderByChild(ESTIMATED_PHONE)
-                .equalTo(oldPhone);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot reviewSnapshot: dataSnapshot.getChildren()) {
-                    DatabaseReference myRef = database.getReference(REVIEWS_FOR_USER).child(reviewSnapshot.getKey());
-                    Map<String, Object> items = new HashMap<>();
-                    items.put(ESTIMATED_PHONE, phone);
-                    myRef.updateChildren(items);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
-    private void checkValuingPhone() {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        Query query = database.getReference(REVIEWS_FOR_USER)
-                .orderByChild(VALUING_PHONE)
-                .equalTo(oldPhone);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot reviewSnapshot: dataSnapshot.getChildren()) {
-                    DatabaseReference myRef = database.getReference(REVIEWS_FOR_USER).child(reviewSnapshot.getKey());
-                    Map<String, Object> items = new HashMap<>();
-                    items.put(VALUING_PHONE, phone);
                     myRef.updateChildren(items);
                 }
             }

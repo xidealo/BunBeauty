@@ -41,6 +41,7 @@
     <string name="canceled">Отказаться</string>
     <string name="Dialogs">Диалоги</string>
     <string name="rate">Оценить</string>
+    <string name="deleteService">Удалить</string>
 
     //array for spinner
     <string-array name="cities">

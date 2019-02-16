@@ -28,15 +28,11 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
 
-    private static final String PHONE_NUMBER = "Phone number";
-
     private static final String MESSAGE_ID = "message id";
     private static final String REVIEWS = "reviews";
     private static final String REVIEW = "review";
     private static final String RATING = "rating";
     private static final String TYPE = "type";
-
-    private static final String FILE_NAME = "Info";
 
     private float myRating;
 
@@ -80,7 +76,6 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
 
     private void setReview() {
         final String leftBehindReview = reviewInput.getText().toString();
-        final SQLiteDatabase localDatabase = dbHelper.getReadableDatabase();
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 

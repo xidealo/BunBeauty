@@ -5,31 +5,27 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.Rating;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.editing.EditService;
-import com.example.ideal.myapplication.helpApi.UtilitiesApi;
-import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.UtilitiesApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
+import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,9 +52,10 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String TYPE = "type";
 
     private static final String WORKING_DAYS = "working days";
+    private static final String DATA = "data";
+
     private static final String WORKING_TIME = "working time";
     private static final String WORKING_TIME_ID = "working time id";
-    private static final String DATA = "data";
     private static final String WORKING_DAY_ID = "working day id";
     private static final String RATING = "rating";
 
