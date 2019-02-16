@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".reviews.Comments"></activity>
-        <activity android:name=".reviews.ReviewForService" />
         <activity android:name=".reviews.Review" />
         <activity android:name=".chat.Messages" />
         <activity android:name=".chat.Dialogs" />

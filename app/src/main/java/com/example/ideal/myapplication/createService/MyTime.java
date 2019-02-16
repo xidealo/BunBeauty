@@ -577,7 +577,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         DatabaseReference messageRef = database.getReference(MESSAGES);
         Map<String, Object> items = new HashMap<>();
 
-        String dateNow = workWithTimeApi.getCurDateInFormatHMS();
+        String dateNow = workWithTimeApi.getCurDateInFormatYMDHMS();
 
         items.put(DIALOG_ID, dialogId);
         items.put(MESSAGE_TIME, dateNow);

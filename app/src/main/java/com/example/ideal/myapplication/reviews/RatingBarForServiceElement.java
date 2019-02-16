@@ -64,8 +64,4 @@ public class RatingBarForServiceElement extends Fragment implements View.OnClick
             avgRatesText.setText(String.valueOf(avgRates));
             ratingBar.setRating(avgRates);
         }
-        else {
-            countOfRatesText.setText("Оценок еще нет.");
-        }
     }
-}

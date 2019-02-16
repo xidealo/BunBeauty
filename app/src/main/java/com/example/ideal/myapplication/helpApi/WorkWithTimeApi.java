@@ -29,10 +29,10 @@ public class WorkWithTimeApi {
         }
         return 0L;
     }
-    //возвращает время в формате HH:mm:ss
-    public String getCurDateInFormatHMS() {
+    //возвращает время в формате yyyy-MM-dd HH:mm:ss
+    public String getCurDateInFormatYMDHMS() {
         Date dateNow = new Date();
-        SimpleDateFormat formatForDateNow = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
         return formatForDateNow.format(dateNow);
     }
