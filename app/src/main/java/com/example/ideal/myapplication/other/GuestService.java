@@ -511,7 +511,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                     addReviewForServiceInLocalStorage(ratingReview);
 
                                     // загружать инфу о пользователе
-                                    if(userId == null) {
+                                    if(userId.equals("0")) {
                                         loadMessageById(messageId);
                                     } else {
                                         loadUserForThisReview(userId);
@@ -593,7 +593,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addDialogInLocalStorage(String dialogId, String firstPhone, String secondPhone) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
@@ -617,7 +617,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addMessageInLocalStorage(Message message) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
@@ -641,7 +641,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addReviewForServiceInLocalStorage(RatingReview ratingReview) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
@@ -716,6 +716,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
+
     private void addToScreen() {
         float avgRating = sumRates / countOfRates;
 
