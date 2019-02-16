@@ -617,7 +617,7 @@ public class Dialogs extends AppCompatActivity {
         DatabaseReference myRef = database.getReference(MESSAGES);
         Map<String,Object> items = new HashMap<>();
 
-        String dateNow = workWithTimeApi.getCurDateInFormatHMS();
+        String dateNow = workWithTimeApi.getCurDateInFormatYMDHMS();
 
         items.put(MESSAGE_TIME, dateNow);
         items.put(DIALOG_ID, dialogId);
