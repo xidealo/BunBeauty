@@ -204,8 +204,6 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
                                 String serviceName = String.valueOf(snapshot.child(NAME).getValue());
                                 String serviceCost = String.valueOf(snapshot.child(COST).getValue());
                                 String serviceDescription = String.valueOf(snapshot.child(DESCRIPTION).getValue());
-                                String serviceRating = String.valueOf(snapshot.child(RATING).getValue());
-                                String serviceCountOfRates = String.valueOf(snapshot.child(COUNT_OF_RATES).getValue());
 
                                 Service service = new Service();
                                 service.setId(serviceId);
