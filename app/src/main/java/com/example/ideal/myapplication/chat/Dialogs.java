@@ -93,6 +93,7 @@ public class Dialogs extends AppCompatActivity {
         workWithTimeApi = new WorkWithTimeApi();
         resultLayout = findViewById(R.id.mainDialogsLayout);
         resultLayout.setVisibility(View.INVISIBLE);
+
     }
 
     // Подгружает все мои диалоги и всё что с ними связано из Firebase
@@ -373,6 +374,11 @@ public class Dialogs extends AppCompatActivity {
         reviewsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot reviews) {
+
+                if(reviews.getChildrenCount()== 0 ){
+                    resultLayout.setVisibility(View.VISIBLE);
+                }
+
                 for(DataSnapshot review: reviews.getChildren()){
                     RatingReview ratingReview = new RatingReview();
 
