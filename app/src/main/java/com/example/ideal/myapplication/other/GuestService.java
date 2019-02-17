@@ -113,7 +113,12 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.editScheduleGuestServiceBtn:
                 // если мой сервис, то иду, как воркер
-                checkScheduleAndGoToProfile();
+                if (status.equals(WORKER)) {
+                    goToMyCalendar(WORKER);
+                } else {
+                    checkScheduleAndGoToProfile();
+                }
+
                 break;
             case R.id.editServiceGuestServiceBtn:
                 goToEditService();
@@ -231,10 +236,10 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
                             for (DataSnapshot workingTimeSnapshot : workingTimesSnapshot.getChildren()) {
                                 String timeId = String.valueOf(workingTimeSnapshot.getKey());
-                                String timeDate = String.valueOf(workingTimeSnapshot.child(TIME).getValue());
+                                String time = String.valueOf(workingTimeSnapshot.child(TIME).getValue());
                                 String timeUserId = String.valueOf(workingTimeSnapshot.child(USER_ID).getValue());
                                 String timeWorkingDayId = String.valueOf(workingTimeSnapshot.child(WORKING_DAY_ID).getValue());
-                                addTimeInLocalStorage(timeId, timeDate, timeUserId, timeWorkingDayId);
+                                addTimeInLocalStorage(timeId, time, timeUserId, timeWorkingDayId);
                             }
                             currentCountOfDays++;
 
@@ -254,8 +259,43 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
     private void checkScheduleAndGoToProfile(){
-        int countOfDate = 0;
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        String sqlQuery = "SELECT " + DBHelper.KEY_TIME_WORKING_TIME
+                + " FROM "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
+                + DBHelper.TABLE_WORKING_TIME
+                + " WHERE "
+                + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND ((("
+                + DBHelper.KEY_USER_ID + " = 0)"
+                + " AND ("
+                + "(STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ") <= 0)"
+                + ") OR (("
+                + DBHelper.KEY_USER_ID + " = ?"
+                + ") AND ("
+                + "(STRFTIME('%s', 'now')+3*60*60) - (STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ")) <= 0)))";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[] {serviceId, userId});
+
+        if (cursor.moveToFirst()) {
+            goToMyCalendar(USER);
+        } else {
+            attentionThisScheduleIsEmpty();
+        }
+
+        /*int countOfDate = 0;
         boolean haveTime = false;
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String sqlQuery = "SELECT * FROM "
@@ -311,9 +351,10 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             }
             if(status.equals(USER)){
                 attentionThisScheduleIsEmpty();
+                attentionThisScheduleIsEmpty();
             }
         }
-        cursorWorkingDay.close();
+        cursorWorkingDay.close();*/
     }
 
     // Возвращает есть ли в рабочем дне рабочие часы

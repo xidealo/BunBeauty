@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import java.util.Map;
 
 public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
+    private static final String TAG = "DBInf";
     private static final String FILE_NAME = "Info";
     private static final String PHONE_NUMBER = "Phone number";
     private static final String WORKING_DAYS_ID = "working day id";
@@ -168,6 +170,9 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             default:
                 Button btn = (Button) v;
                 String btnText = btn.getText().toString();
+                if(btnText.length() == 4) {
+                    btnText = "0" + btnText;
+                }
                 // Проверка мой ли это сервис (я - worker)
                 if(statusUser.equals(WORKER)){
                     // Это мой сервис (я - worker)
@@ -272,6 +277,9 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         for (int i = 0; i < ROWS_COUNT; i++) {
             for (int j = 0; j < COLUMNS_COUNT; j++) {
                 String time = (String) timeBtns[i][j].getText();
+                if (time.length() == 4) {
+                    time = "0" + time;
+                }
 
                 //Проверка является ли данное время рабочим
                 if (checkTimeForWorker(cursor, time)) {
@@ -295,6 +303,9 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         for (int i = 0; i < ROWS_COUNT; i++) {
             for (int j = 0; j < COLUMNS_COUNT; j++) {
                 String time = (String) timeBtns[i][j].getText();
+                if(time.length() == 4) {
+                    time = "0" + time;
+                }
 
 
                 //Проверка на наличие записи на данный день
@@ -417,7 +428,13 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             do {
                 if(cursor.getString(indexUserId).equals(userId)) {
                     String orderTime = cursor.getString(indexTime);
-                    return orderTime;
+
+                    long sysdateLong = workWithTimeApi.getSysdateLong();
+                    long currentLong = workWithTimeApi.getMillisecondsStringDate(date + " " + orderTime);
+
+                    if(sysdateLong<currentLong) {
+                        return orderTime;
+                    }
                 }
             } while (cursor.moveToNext());
         }
@@ -429,7 +446,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         workingDaysId = getIntent().getStringExtra(WORKING_DAYS_ID);
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         //получаю время кнопки, на которую нажал
-        final String timeBtn = workingHours.get(0);
+        final String pickedTime = workingHours.get(0);
 
         //получаем все время этого дня
         final Query query = database.getReference(WORKING_TIME)
@@ -440,7 +457,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //делаем запрос по такому дню, такому времени
                 for (DataSnapshot time : dataSnapshot.getChildren()) {
-                    if(String.valueOf(time.child("time").getValue()).equals(timeBtn)) {
+                    if(String.valueOf(time.child("time").getValue()).equals(pickedTime)) {
                         String timeId = String.valueOf(time.getKey());
 
                         // Вписываем телефон в working time (firebase)
