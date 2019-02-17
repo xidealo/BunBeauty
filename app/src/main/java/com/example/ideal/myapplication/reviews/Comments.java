@@ -24,6 +24,9 @@ public class Comments extends AppCompatActivity {
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String REVIEW_FOR_SERVICE = "review for service";
 
+    private static final String ORDER_ID = "order_id";
+    private static final String OWNER_ID = "owner_id";
+
     private LinearLayout mainLayout;
 
     private  DBHelper dbHelper;
@@ -57,15 +60,16 @@ public class Comments extends AppCompatActivity {
 
     private void loadCommentsForService(String _serviceId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        String sqlQuery = "SELECT "
+        String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
-                + DBHelper.KEY_NAME_USERS
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_USER_ID + " AS " + ORDER_ID + ", "
+                + DBHelper.KEY_MESSAGE_ID_REVIEWS + ", "
+                + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID
                 + " FROM "
                 + DBHelper.TABLE_WORKING_TIME + ", "
                 + DBHelper.TABLE_REVIEWS + ", "
                 + DBHelper.TABLE_WORKING_DAYS + ", "
-                + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                + DBHelper.TABLE_CONTACTS_USERS
+                + DBHelper.TABLE_CONTACTS_SERVICES
                 + " WHERE "
                 + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = ?"
                 + " AND "
@@ -74,26 +78,79 @@ public class Comments extends AppCompatActivity {
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                 + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
                 + " AND "
-                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_USER_ID
-                + " = " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_USER_ID
-                + " AND "
                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                 + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
                 + " AND "
                 + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
                 + " = " + DBHelper.KEY_SERVICE_ID_WORKING_DAYS;
 
-        final Cursor cursor = database.rawQuery(sqlQuery, new String[]{_serviceId, REVIEW_FOR_SERVICE});
+        String chatSqlQuery = "SELECT "
+                + DBHelper.KEY_FIRST_USER_ID_DIALOGS + ", "
+                + DBHelper.KEY_SECOND_USER_ID_DIALOGS
+                + " FROM "
+                + DBHelper.TABLE_MESSAGES + ", "
+                + DBHelper.TABLE_DIALOGS
+                + " WHERE "
+                + DBHelper.TABLE_MESSAGES + "." + DBHelper.KEY_ID + " = ?"
+                + " AND "
+                + DBHelper.TABLE_DIALOGS + "." + DBHelper.KEY_ID
+                + " = " + DBHelper.KEY_DIALOG_ID_MESSAGES;
 
-        if(cursor.moveToFirst()) {
-            int reviewIndex = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
-            int nameIndex = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
+        String userSqlQuery = "SELECT "
+                + DBHelper.KEY_NAME_USERS
+                + " FROM "
+                + DBHelper.TABLE_CONTACTS_USERS
+                + " WHERE "
+                + DBHelper.KEY_USER_ID + " = ?";
+
+        Cursor mainCursor = database.rawQuery(mainSqlQuery, new String[]{_serviceId, REVIEW_FOR_SERVICE});
+
+        if(mainCursor.moveToFirst()) {
+            int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
+            int orderIdIndex = mainCursor.getColumnIndex(ORDER_ID);
+            int messageIdIndex = mainCursor.getColumnIndex(DBHelper.KEY_MESSAGE_ID_REVIEWS);
+            int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
 
             do {
-                String name = cursor.getString(nameIndex);
-                String review = cursor.getString(reviewIndex);
+                String name = "";
+                String orderId = mainCursor.getString(orderIdIndex);
+                String review = mainCursor.getString(reviewIndex);
+
+                Log.d(TAG, "loadCommentsForService: " + orderId);
+                if(orderId.equals("0")) {
+                    String messageId = mainCursor.getString(messageIdIndex);
+                    String ownerId = mainCursor.getString(ownerIdIndex);
+
+                    Log.d(TAG, "loadCommentsForService: " + messageId);
+                    Cursor chatCursor = database.rawQuery(chatSqlQuery, new String[]{messageId});
+
+                    if(chatCursor.moveToFirst()) {
+                        String firstPhone = chatCursor.getString(
+                                chatCursor.getColumnIndex(DBHelper.KEY_FIRST_USER_ID_DIALOGS));
+                        String secondPhone = chatCursor.getString(
+                                chatCursor.getColumnIndex(DBHelper.KEY_SECOND_USER_ID_DIALOGS));
+
+                        Cursor userCursor;
+                        if(firstPhone != ownerId) {
+                            userCursor = database.rawQuery(userSqlQuery, new String[]{firstPhone});
+                        } else {
+                            userCursor = database.rawQuery(userSqlQuery, new String[]{secondPhone});
+                        }
+
+                        if(userCursor.moveToFirst()) {
+                            name = userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
+                        }
+                    }
+                } else {
+                    Cursor userCursor = database.rawQuery(userSqlQuery, new String[]{orderId});
+
+                    if(userCursor.moveToFirst()) {
+                        name = userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
+                    }
+                }
+
                 addCommentToScreen(name, review);
-            } while (cursor.moveToNext());
+            } while (mainCursor.moveToNext());
         }
     }
 

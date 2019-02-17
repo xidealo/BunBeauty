@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final  int DATABASE_VERSION = 73;
+    public static final  int DATABASE_VERSION = 74;
     public static final String DATABASE_NAME = "MyFirstDB";
 
     //tables name
@@ -50,7 +50,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public  static final  String KEY_SECOND_USER_ID_DIALOGS = "second_phone";
 
     //messages
-    public  static final  String KEY_MESSAGE_TIME_MESSAGES = "second_phone";
+    public  static final  String KEY_MESSAGE_TIME_MESSAGES = "message_time";
     public  static final  String KEY_DIALOG_ID_MESSAGES = "dialog_id";
 
     //reviews
