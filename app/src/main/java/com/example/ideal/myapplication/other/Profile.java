@@ -545,6 +545,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
             } while (cursor.moveToNext());
         }
+        cursor.close();
     }
 
     private void addReviewInLocalStorage(RatingReview ratingReview) {

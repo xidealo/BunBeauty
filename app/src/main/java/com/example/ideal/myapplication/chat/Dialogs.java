@@ -93,7 +93,6 @@ public class Dialogs extends AppCompatActivity {
         workWithTimeApi = new WorkWithTimeApi();
         resultLayout = findViewById(R.id.mainDialogsLayout);
         resultLayout.setVisibility(View.INVISIBLE);
-
     }
 
     // Подгружает все мои диалоги и всё что с ними связано из Firebase
@@ -256,6 +255,7 @@ public class Dialogs extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot messages) {
 
+                Log.d(TAG, "COUNT MES" + messages.getChildrenCount());
                 for(DataSnapshot message:messages.getChildren()){
                     // идем по всем сообщениям
                     Message myMessage = new Message();
@@ -266,7 +266,6 @@ public class Dialogs extends AppCompatActivity {
                     myMessage.setId(messageId); // для отладки
                     myMessage.setMessageTime(time);
                     myMessage.setDialogId(dialogId);
-
                     addMessagesInLocalStorage(myMessage);
                     getAndPutOrderInLocalStorage(myMessage);
                     getAndPutReviewInLocalStorage(myMessage);
@@ -390,7 +389,7 @@ public class Dialogs extends AppCompatActivity {
                     ratingReview.setType(String.valueOf(review.child(TYPE).getValue()));
                     ratingReview.setMessageId(message.getId());
                     ratingReview.setWorkingTimeId(workingTimeId);
-
+                    Log.d(TAG, "REVIEW " + ratingReview.getId() );
                     addTimeInLocalStorage(null, ratingReview, message.getDialogId());
                 }
             }
@@ -465,6 +464,8 @@ public class Dialogs extends AppCompatActivity {
                 String myTime = String.valueOf(time.child(TIME).getValue());
                 String userId = String.valueOf(time.child(USER_ID).getValue());
                 String dayId = String.valueOf(time.child(WORKING_DAY_ID).getValue());
+
+                Log.d(TAG, "TIME " + myTime );
 
                 // получаем день этого сообщения
                 if(isOrder) {
