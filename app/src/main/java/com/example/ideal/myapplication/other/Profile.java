@@ -5,13 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -24,27 +23,20 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Dialogs;
 import com.example.ideal.myapplication.createService.AddService;
 import com.example.ideal.myapplication.editing.EditProfile;
-import com.example.ideal.myapplication.fragments.objects.RatingReview;
-import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
-import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.fragments.objects.RatingReview;
+import com.example.ideal.myapplication.fragments.objects.Service;
+import com.example.ideal.myapplication.helpApi.UtilitiesApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
-import com.example.ideal.myapplication.reviews.Comments;
 import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
-import com.example.ideal.myapplication.reviews.Review;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.security.cert.TrustAnchor;
-
-import static android.provider.Telephony.BaseMmsColumns.DATE;
-import static android.provider.Telephony.BaseMmsColumns.MESSAGE_ID;
 
 public class Profile extends AppCompatActivity implements View.OnClickListener {
 
@@ -110,6 +102,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private  DBHelper dbHelper;
     private  String ownerId;
     private  WorkWithTimeApi workWithTimeApi;
+    private UtilitiesApi utilitiesApi;
 
     private foundServiceProfileElement fServiceElement;
     private foundOrderElement fOrderElement;
@@ -150,8 +143,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
-        manager = getSupportFragmentManager();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        utilitiesApi = new UtilitiesApi(database);
 
+        manager = getSupportFragmentManager();
         //получаем id пользователя
         String userId = getUserId();
 
@@ -278,6 +273,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                     + cursor.getString(indexCity).substring(1);
             nameText.setText(name);
             cityText.setText(city);
+            cursor.close();
         }
     }
 
@@ -351,6 +347,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 });
             } while (cursor.moveToNext());
         }
+        cursor.close();
     }
 
     private void loadServiceByWorkingDay(final String serviceId) {
@@ -391,105 +388,86 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private void addUserInLocalStorage(String userId, String name) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_CONTACTS_USERS
-                + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_NAME_USERS, name);
 
-        if (cursor.moveToFirst()) {
+        boolean isUpdate = utilitiesApi
+                .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
+                        userId);
+
+        if (isUpdate) {
             database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
                     DBHelper.KEY_USER_ID + " = ?",
-                    new String[]{String.valueOf(userId)});
+                    new String[]{userId});
         } else {
             contentValues.put(DBHelper.KEY_USER_ID, userId);
             database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
-
-        cursor.close();
     }
 
     private void addServiceInLocalStorage(String serviceId, String userId, String name) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_CONTACTS_SERVICES
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_NAME_SERVICES, name);
 
-        if (cursor.moveToFirst()) {
+        boolean isUpdate = utilitiesApi
+                .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES,
+                        serviceId);
+
+        if (isUpdate) {
             database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
                     DBHelper.KEY_ID + " = ?",
-                    new String[]{String.valueOf(serviceId)});
+                    new String[]{serviceId});
         } else {
             contentValues.put(DBHelper.KEY_ID, serviceId);
             database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
-
-        cursor.close();
     }
 
     private void addDayInLocalStorage(String dayId, String date, String serviceId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_WORKING_DAYS
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId});
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
         contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
 
-        if (cursor.moveToFirst()) {
+        boolean isUpdate = utilitiesApi
+                .hasSomeData(DBHelper.TABLE_WORKING_DAYS,
+                        dayId);
+
+        if (isUpdate) {
             database.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
                     DBHelper.KEY_ID + " = ?",
-                    new String[]{String.valueOf(dayId)});
+                    new String[]{dayId});
         } else {
             contentValues.put(DBHelper.KEY_ID, dayId);
             database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
         }
-
-        cursor.close();
     }
 
-    private void addTimeInLocalStorage(String id, String time,
+    private void addTimeInLocalStorage(String timeId, String time,
                                        String userId, String workingDayId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_WORKING_TIME
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{id});
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, time);
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
 
-        if (cursor.moveToFirst()) {
+        boolean isUpdate = utilitiesApi
+                .hasSomeData(DBHelper.TABLE_WORKING_TIME,
+                        timeId);
+
+        if (isUpdate) {
             database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
                     DBHelper.KEY_ID + " = ?",
-                    new String[]{String.valueOf(id)});
+                    new String[]{timeId});
         } else {
-            contentValues.put(DBHelper.KEY_ID, id);
+            contentValues.put(DBHelper.KEY_ID, timeId);
             database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
         }
-        cursor.close();
     }
 
     private void loadRating() {
@@ -551,13 +529,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private void addReviewInLocalStorage(RatingReview ratingReview) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_REVIEWS
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-
         String reviewId = ratingReview.getId();
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{reviewId});
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, ratingReview.getReview());
@@ -565,15 +537,18 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_TYPE_REVIEWS, ratingReview.getType());
         contentValues.put(DBHelper.KEY_WORKING_TIME_ID_REVIEWS, ratingReview.getWorkingTimeId());
 
-        if (cursor.moveToFirst()) {
+        boolean isUpdate = utilitiesApi
+                .hasSomeData(DBHelper.TABLE_REVIEWS,
+                        reviewId);
+
+        if (isUpdate) {
             database.update(DBHelper.TABLE_REVIEWS, contentValues,
                     DBHelper.KEY_ID + " = ?",
-                    new String[]{String.valueOf(reviewId)});
+                    new String[]{reviewId});
         } else {
             contentValues.put(DBHelper.KEY_ID, reviewId);
             database.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
         }
-        cursor.close();
     }
 
     @Override
@@ -768,12 +743,5 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         Intent intent = new Intent(this, Dialogs.class);
         startActivity(intent);
     }
-
-    /*private void goToComments() {
-        Intent intent = new Intent(this, Comments.class);
-        intent.putExtra(ID, ownerId);
-        intent.putExtra(TYPE, REVIEW_FOR_USER);
-        startActivity(intent);
-    }*/
 
 }

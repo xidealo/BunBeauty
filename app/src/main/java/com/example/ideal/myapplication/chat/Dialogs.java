@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -20,9 +19,9 @@ import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.UtilitiesApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
-import com.example.ideal.myapplication.reviews.Review;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -75,6 +74,7 @@ public class Dialogs extends AppCompatActivity {
     private static final String REVIEW_FOR_USER = "review for user";
 
     WorkWithTimeApi workWithTimeApi;
+    UtilitiesApi utilitiesApi;
     SharedPreferences sPref;
     DBHelper dbHelper;
 
@@ -91,6 +91,8 @@ public class Dialogs extends AppCompatActivity {
         manager = getSupportFragmentManager();
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        utilitiesApi = new UtilitiesApi(database);
         resultLayout = findViewById(R.id.mainDialogsLayout);
         resultLayout.setVisibility(View.INVISIBLE);
     }
@@ -193,53 +195,43 @@ public class Dialogs extends AppCompatActivity {
         ContentValues contentValues = new ContentValues();
         String phone = user.getPhone();
 
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_CONTACTS_USERS
-                + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {phone});
-
         contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
 
-        if(cursor.moveToFirst()) {
+        boolean isUpdate = utilitiesApi
+               .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
+                       phone);
+        if(isUpdate) {
             database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
                     DBHelper.KEY_USER_ID + " = ?",
-                    new String[]{String.valueOf(phone)});
+                    new String[]{phone});
         } else {
             contentValues.put(DBHelper.KEY_USER_ID, phone);
             database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
-        cursor.close();
     }
 
     private boolean addDialogInLocalStorage(String dialogId, String firstPhone, String secondPhone) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_DIALOGS
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {dialogId});
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_FIRST_USER_ID_DIALOGS, firstPhone);
         contentValues.put(DBHelper.KEY_SECOND_USER_ID_DIALOGS, secondPhone);
 
-        if(cursor.moveToFirst()) {
+        boolean isUpdate = utilitiesApi
+                .hasSomeData(DBHelper.TABLE_DIALOGS,
+                        dialogId);
+
+        if(isUpdate) {
             database.update(DBHelper.TABLE_DIALOGS,
                     contentValues,
                     DBHelper.KEY_ID + " = ?",
                     new String[]{String.valueOf(dialogId)});
-            cursor.close();
             return false;
         } else {
             contentValues.put(DBHelper.KEY_ID, dialogId);
             database.insert(DBHelper.TABLE_DIALOGS, null, contentValues);
-            cursor.close();
             return true;
         }
     }
@@ -255,7 +247,6 @@ public class Dialogs extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot messages) {
 
-                Log.d(TAG, "COUNT MES" + messages.getChildrenCount());
                 for(DataSnapshot message:messages.getChildren()){
                     // идем по всем сообщениям
                     Message myMessage = new Message();
@@ -281,14 +272,6 @@ public class Dialogs extends AppCompatActivity {
     private void addMessagesInLocalStorage(final Message message) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        // берем всю информацию из таблицы MR, чтобы либо сделать update, либо insert
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_MESSAGES
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-        Cursor cursor;
-
-        cursor = database.rawQuery(sqlQuery, new String[] {message.getId()});
 
         //метод, который добавляет ревью в firebase, если !isCanceled и sysdate - timeId + date > 24h
 
@@ -296,8 +279,12 @@ public class Dialogs extends AppCompatActivity {
         contentValues.put(DBHelper.KEY_DIALOG_ID_MESSAGES, message.getDialogId());
         contentValues.put(DBHelper.KEY_MESSAGE_TIME_MESSAGES, message.getMessageTime());
 
+        boolean isUpdate = utilitiesApi
+                .hasSomeData(DBHelper.TABLE_MESSAGES,
+                        message.getId());
+
         // update || insert
-        if(cursor.moveToFirst()) {
+        if(isUpdate) {
             database.update(DBHelper.TABLE_MESSAGES, contentValues,
                     DBHelper.KEY_ID + " = ?",
                     new String[]{String.valueOf(message.getId())});
@@ -305,7 +292,6 @@ public class Dialogs extends AppCompatActivity {
             contentValues.put(DBHelper.KEY_ID, message.getId());
             database.insert(DBHelper.TABLE_MESSAGES, null, contentValues);
         }
-        cursor.close();
     }
 
     private void getAndPutOrderInLocalStorage(final Message message) {
@@ -317,12 +303,6 @@ public class Dialogs extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot orders) {
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
-                // берем всю информацию из таблицы MR, чтобы либо сделать update, либо insert
-                String sqlQuery = "SELECT * FROM "
-                        + DBHelper.TABLE_ORDERS
-                        + " WHERE "
-                        + DBHelper.KEY_ID + " = ?";
-                Cursor cursor;
                 for(DataSnapshot order:orders.getChildren()){
                     // идем по всем сообщениям
                     Order myOrder = new Order();
@@ -338,15 +318,16 @@ public class Dialogs extends AppCompatActivity {
                     // подргужаем время, потом день и сам сервис этого сообщения
                     addTimeInLocalStorage(myOrder, null, message.getDialogId());
 
-                    cursor = database.rawQuery(sqlQuery, new String[] {orderId});
-
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, String.valueOf(myOrder.getIsCanceled()));
                     contentValues.put(DBHelper.KEY_MESSAGE_ID_ORDERS, myOrder.getMessageId());
                     contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, myOrder.getWorkingTimeId());
 
+                    boolean isUpdate = utilitiesApi
+                            .hasSomeData(DBHelper.TABLE_ORDERS,
+                            myOrder.getId());
                     // update || insert
-                    if(cursor.moveToFirst()) {
+                    if(isUpdate) {
                         database.update(DBHelper.TABLE_ORDERS, contentValues,
                                 DBHelper.KEY_ID + " = ?",
                                 new String[]{String.valueOf(myOrder.getId())});
@@ -354,7 +335,6 @@ public class Dialogs extends AppCompatActivity {
                         contentValues.put(DBHelper.KEY_ID, myOrder.getId());
                         database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
                     }
-                    cursor.close();
                     updateWorkingTimeInLocalStorage(orderId);
                 }
             }
@@ -389,7 +369,6 @@ public class Dialogs extends AppCompatActivity {
                     ratingReview.setType(String.valueOf(review.child(TYPE).getValue()));
                     ratingReview.setMessageId(message.getId());
                     ratingReview.setWorkingTimeId(workingTimeId);
-                    Log.d(TAG, "REVIEW " + ratingReview.getId() );
                     addTimeInLocalStorage(null, ratingReview, message.getDialogId());
                 }
             }
@@ -404,11 +383,6 @@ public class Dialogs extends AppCompatActivity {
     private void addReviewInLocalStorage(RatingReview ratingReview) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_REVIEWS
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {ratingReview.getId()});
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, ratingReview.getReview());
@@ -417,8 +391,12 @@ public class Dialogs extends AppCompatActivity {
         contentValues.put(DBHelper.KEY_WORKING_TIME_ID_REVIEWS, ratingReview.getWorkingTimeId());
         contentValues.put(DBHelper.KEY_TYPE_REVIEWS, ratingReview.getType());
 
+        boolean isUpdate = utilitiesApi
+                .hasSomeData(DBHelper.TABLE_REVIEWS,
+                        ratingReview.getId());
+
         // update || insert
-        if(cursor.moveToFirst()) {
+        if(isUpdate) {
             database.update(DBHelper.TABLE_REVIEWS, contentValues,
                     DBHelper.KEY_ID + " = ?",
                     new String[]{String.valueOf(ratingReview.getId())});
@@ -426,7 +404,6 @@ public class Dialogs extends AppCompatActivity {
             contentValues.put(DBHelper.KEY_ID, ratingReview.getId());
             database.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
         }
-        cursor.close();
 
         resultLayout.setVisibility(View.VISIBLE);
     }
@@ -454,18 +431,9 @@ public class Dialogs extends AppCompatActivity {
                 final SQLiteDatabase database = dbHelper.getWritableDatabase();
                 final ContentValues contentValues = new ContentValues();
 
-                String sqlQuery = "SELECT * FROM "
-                        + DBHelper.TABLE_WORKING_TIME
-                        + " WHERE "
-                        + DBHelper.KEY_ID + " = ?";
-
-                Cursor cursor = database.rawQuery(sqlQuery, new String[]{timeId});
-
                 String myTime = String.valueOf(time.child(TIME).getValue());
                 String userId = String.valueOf(time.child(USER_ID).getValue());
                 String dayId = String.valueOf(time.child(WORKING_DAY_ID).getValue());
-
-                Log.d(TAG, "TIME " + myTime );
 
                 // получаем день этого сообщения
                 if(isOrder) {
@@ -491,7 +459,12 @@ public class Dialogs extends AppCompatActivity {
                 contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, myTime);
                 contentValues.put(DBHelper.KEY_USER_ID, userId);
                 contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, dayId);
-                if (cursor.moveToFirst()) {
+
+                boolean isUpdate = utilitiesApi
+                        .hasSomeData(DBHelper.TABLE_WORKING_TIME,
+                                timeId);
+
+                if (isUpdate) {
                     database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
                             DBHelper.KEY_ID + " = ?",
                             new String[]{String.valueOf(timeId)});
@@ -499,7 +472,6 @@ public class Dialogs extends AppCompatActivity {
                     contentValues.put(DBHelper.KEY_ID, timeId);
                     database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
                 }
-                cursor.close();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -521,12 +493,6 @@ public class Dialogs extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot day) {
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-                String sqlQuery = "SELECT * FROM "
-                        + DBHelper.TABLE_WORKING_DAYS
-                        + " WHERE "
-                        + DBHelper.KEY_ID + " = ?";
-                Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId});
-
                 String date = String.valueOf(day.child("data").getValue());
                 String serviceId = String.valueOf(day.child(SERVICE_ID).getValue());
 
@@ -546,7 +512,12 @@ public class Dialogs extends AppCompatActivity {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
                 contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
-                if (cursor.moveToFirst()) {
+
+                boolean isUpdate = utilitiesApi
+                        .hasSomeData(DBHelper.TABLE_WORKING_DAYS,
+                                dayId);
+
+                if (isUpdate) {
                     database.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
                             DBHelper.KEY_ID + " = ?",
                             new String[]{String.valueOf(dayId)});
@@ -554,7 +525,6 @@ public class Dialogs extends AppCompatActivity {
                     contentValues.put(DBHelper.KEY_ID, dayId);
                     database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
                 }
-                cursor.close();
             }
 
             @Override
@@ -649,18 +619,16 @@ public class Dialogs extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot service) {
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-                String sqlQuery = "SELECT * FROM "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
-                        + " WHERE "
-                        + DBHelper.KEY_ID + " = ?";
-                Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
-
                 String name = String.valueOf(service.child(NAME).getValue());
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DBHelper.KEY_NAME_SERVICES, name);
 
-                if (cursor.moveToFirst()) {
+                boolean isUpdate = utilitiesApi
+                        .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES,
+                                serviceId);
+
+                if (isUpdate) {
                     database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
                             DBHelper.KEY_ID + " = ?",
                             new String[]{String.valueOf(serviceId)});
@@ -668,7 +636,6 @@ public class Dialogs extends AppCompatActivity {
                     contentValues.put(DBHelper.KEY_ID, serviceId);
                     database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
                 }
-                cursor.close();
             }
 
             @Override

@@ -1,8 +1,6 @@
 package com.example.ideal.myapplication.reviews;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.fragments.objects.RatingReview;
-import com.example.ideal.myapplication.fragments.objects.User;
 
 public class CommentElement extends Fragment {
 
