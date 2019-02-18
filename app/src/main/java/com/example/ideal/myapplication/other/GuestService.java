@@ -24,16 +24,13 @@ import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.UtilitiesApi;
-import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
-import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
+import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.sql.SQLData;
 
 public class GuestService extends AppCompatActivity implements View.OnClickListener {
 
@@ -279,6 +276,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + " AND ((("
                 + DBHelper.KEY_USER_ID + " = 0)"
                 + " AND ("
+                // 3 часа - разница с Гринвичем
+                // 2 часа - минимум времени до сеанса, чтобы за писаться
                 + "(STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
                 + DBHelper.KEY_DATE_WORKING_DAYS
                 + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
@@ -441,7 +440,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                     } else {
                                         loadUserForThisReview(userId);
                                     }
-
                                 }
                             }
                             counter++;
@@ -637,8 +635,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         ratingLayout.removeAllViews();
 
-        RatingBarForServiceElement fElement
-                = new RatingBarForServiceElement(avgRating, countOfRates, serviceId, REVIEW_FOR_SERVICE);
+        RatingBarElement fElement
+                = new RatingBarElement(avgRating, countOfRates, serviceId, REVIEW_FOR_SERVICE);
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.resultGuestServiceLayout, fElement);
         transaction.commit();
