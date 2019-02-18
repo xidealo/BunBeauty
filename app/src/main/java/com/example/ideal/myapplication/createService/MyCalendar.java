@@ -42,7 +42,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     private static final int DAYS_COUNT = 7;
 
 
-
     String statusUser;
     String date;
     String serviceId;

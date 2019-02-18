@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +32,7 @@ import java.util.Map;
 public class EditService extends AppCompatActivity implements View.OnClickListener {
 
     private final String SERVICE_ID = "service id";
+    private final String TAG = "DBInf";
 
     //services
     private final String SERVICES = "services";
@@ -89,6 +91,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         serviceId = getIntent().getStringExtra(SERVICE_ID);
 
         dbHelper = new DBHelper(this);
+
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery = "SELECT "
                 + DBHelper.KEY_NAME_SERVICES + ", "
@@ -147,7 +150,12 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 break;
 
             case R.id.deleteServiceEditServiceBtn:
-                deleteThisServiceFromEverywhere();
+                if(withoutOrders()) {
+                    deleteThisServiceFromEverywhere();
+                }
+                else {
+                    attentionItHasOrders();
+                }
                 break;
 
             default:
@@ -155,8 +163,48 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void deleteThisServiceFromEverywhere() {
+    private boolean withoutOrders() {
+        //если есть записи на этот сервис, мы не даем его удалить
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.TABLE_WORKING_TIME +"."+ DBHelper.KEY_USER_ID
+                        + " FROM "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
+                        + DBHelper.TABLE_WORKING_DAYS + ", "
+                        + DBHelper.TABLE_WORKING_TIME
+                        + " WHERE "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "."+DBHelper.KEY_ID + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + " = "
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
+                        + " = "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + " (STRFTIME('%s', 'now')+3*60*60)-(STRFTIME('%s', " + DBHelper.KEY_DATE_WORKING_DAYS
+                        + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                        + ")) <= 0";
 
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
+
+        if(cursor.moveToFirst()){
+            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+            do{
+                Log.d(TAG, "withoutOrders: ");
+                String userId = cursor.getString(indexUserId);
+                if(!userId.equals("0")){
+                    return false;
+                }
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        return true;
+    }
+
+    private void deleteThisServiceFromEverywhere() {
         deleteThisServiceFromServices();
     }
 
@@ -365,7 +413,10 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         reference.updateChildren(items);
     }
 
-
+    private void attentionItHasOrders() {
+        Toast.makeText(this,"Нельзя удалить сервис, на который есть записи",
+                Toast.LENGTH_SHORT).show();
+    }
     private void goToService() {
         super.onBackPressed();
         finish();
@@ -376,4 +427,6 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         startActivity(intent);
         finish();
     }
+
+
 }

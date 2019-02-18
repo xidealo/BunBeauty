@@ -73,12 +73,31 @@ public class UtilitiesApi {
         return serviceId;
     }
 
-    public boolean hasSomeDataWithThisTableInThisId(String tableName, String id){
+    public boolean hasSomeData(String tableName, String id){
 
         String sqlQuery = "SELECT * FROM "
                 + tableName
                 + " WHERE "
                 + DBHelper.KEY_ID + " = ?";
+
+        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{id});
+
+        if(cursor.moveToFirst()){
+            cursor.close();
+            return true;
+        }
+        else {
+            cursor.close();
+            return false;
+        }
+    }
+
+    public boolean hasSomeDataForUsers(String tableName, String id){
+
+        String sqlQuery = "SELECT * FROM "
+                + tableName
+                + " WHERE "
+                + DBHelper.KEY_USER_ID + " = ?";
 
         Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{id});
 

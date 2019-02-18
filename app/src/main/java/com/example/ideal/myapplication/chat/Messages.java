@@ -351,7 +351,7 @@ public class Messages extends AppCompatActivity {
         if(cursor.moveToFirst()) {
             phone = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_USER_ID));
         }
-
+        cursor.close();
         return phone.equals("0");
     }
 
@@ -401,19 +401,22 @@ public class Messages extends AppCompatActivity {
     }
 
     private void addMessageOrderToScreen(Message message) {
-        MessageOrderElement fElement = new MessageOrderElement(message);
 
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.resultsMessageLayout, fElement);
-        transaction.commit();
+            MessageOrderElement fElement = new MessageOrderElement(message);
+
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.add(R.id.resultsMessageLayout, fElement);
+            transaction.commit();
     }
 
     private void addMessageReviewToScreen(Message message) {
-        MessageReviewElement fElement = new MessageReviewElement(message);
+        if (!message.getServiceName().isEmpty() && !message.getServiceName().equals("null")) {
+            MessageReviewElement fElement = new MessageReviewElement(message);
 
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.resultsMessageLayout, fElement);
-        transaction.commit();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.add(R.id.resultsMessageLayout, fElement);
+            transaction.commit();
+        }
     }
 
     private String getUserId(){

@@ -336,10 +336,15 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     private void clearSQLite() {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
+
         database.delete(DBHelper.TABLE_CONTACTS_USERS,null,null);
         database.delete(DBHelper.TABLE_CONTACTS_SERVICES, null, null);
         database.delete(DBHelper.TABLE_WORKING_DAYS,null,null);
         database.delete(DBHelper.TABLE_WORKING_TIME,null,null);
+
+        database.delete(DBHelper.TABLE_MESSAGES, null,null);
+        database.delete(DBHelper.TABLE_REVIEWS, null,null);
+        database.delete(DBHelper.TABLE_ORDERS, null,null);
     }
 
     // Добавляет информацию о сервисах данного пользователя в SQLite

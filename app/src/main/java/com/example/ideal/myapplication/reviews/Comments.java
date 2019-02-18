@@ -2,17 +2,14 @@ package com.example.ideal.myapplication.reviews;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.fragments.chatElements.MessageReviewElement;
 import com.example.ideal.myapplication.other.DBHelper;
 
 public class Comments extends AppCompatActivity {

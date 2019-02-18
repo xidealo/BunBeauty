@@ -17,12 +17,12 @@ import com.example.ideal.myapplication.chat.Messages;
 @SuppressLint("ValidFragment")
 public class DialogElement extends Fragment implements View.OnClickListener {
 
-    final String DIALOG_ID = "dialog id";
+    private final String DIALOG_ID = "dialog id";
 
-    TextView nameText;
+    private TextView nameText;
 
-    String idString;
-    String nameString;
+    private String idString;
+    private String nameString;
 
     @SuppressLint("ValidFragment")
     public DialogElement(String id, String name) {
