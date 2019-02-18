@@ -272,6 +272,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + " AND ((("
                 + DBHelper.KEY_USER_ID + " = 0)"
                 + " AND ("
+                // 3 часа - разница с Гринвичем
+                // 2 часа - минимум времени до сеанса, чтобы за писаться
                 + "(STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
                 + DBHelper.KEY_DATE_WORKING_DAYS
                 + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
@@ -328,7 +330,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         contentValues.put(DBHelper.KEY_USER_ID, timeUserId);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, timeWorkingDayId);
 
-        boolean isUpdate =  utilitiesApi
+        boolean isUpdate =  gutilitiesApi
                 .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
 
         if (isUpdate) {
