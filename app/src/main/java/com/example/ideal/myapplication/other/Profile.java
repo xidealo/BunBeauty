@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -30,7 +30,7 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.UtilitiesApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
-import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
+import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,7 +46,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String STATUS = "status";
     private static final String USER_NAME = "my name";
     private static final String USER_CITY = "my city";
-    private static final String ID = "id";
     private static final String TAG = "DBInf";
 
     private static final String WORKING_TIME = "working time";
@@ -75,33 +74,26 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private float sumRates;
     private long countOfRates;
+    private long counter;
     private boolean isAddToScreen;
 
-    private  Button logOutBtn;
-    private  Button findServicesBtn;
-    private  Button addServicesBtn;
-    private  Button mainScreenBtn;
-    private  Button editProfileBtn;
-    private  Button dialogsBtn;
+    private TextView nameText;
+    private TextView cityText;
+    private TextView withoutRatingText;
+    private ProgressBar progressBar;
 
-    private  TextView nameText;
-    private  TextView cityText;
-
-    private  ScrollView servicesScroll;
-    private  ScrollView ordersScroll;
-    private  LinearLayout servicesLayout;
-    private  LinearLayout ordersLayout;
-    private  LinearLayout ratingLayout;
-
-    private  TextView ratingText;
-    private  RatingBar ratingBar;
+    private ScrollView servicesScroll;
+    private ScrollView ordersScroll;
+    private LinearLayout servicesLayout;
+    private LinearLayout ordersLayout;
+    private LinearLayout ratingLayout;
 
     private  SwitchCompat servicesOrOrdersSwitch;
 
-    private  SharedPreferences sPref;
-    private  DBHelper dbHelper;
-    private  String ownerId;
-    private  WorkWithTimeApi workWithTimeApi;
+    private SharedPreferences sPref;
+    private DBHelper dbHelper;
+    private String ownerId;
+    private WorkWithTimeApi workWithTimeApi;
     private UtilitiesApi utilitiesApi;
 
     private foundServiceProfileElement fServiceElement;
@@ -113,13 +105,16 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
+        //ratingBar
+        withoutRatingText = findViewById(R.id.withoutRatingProfileText);
+        progressBar = findViewById(R.id.progressBarProfile);
 
-        logOutBtn = findViewById(R.id.logOutProfileBtn);
-        findServicesBtn = findViewById(R.id.findServicesProfileBtn);
-        addServicesBtn = findViewById(R.id.addServicesProfileBtn);
-        mainScreenBtn = findViewById(R.id.mainScreenProfileBtn);
-        editProfileBtn = findViewById(R.id.editProfileBtn);
-        dialogsBtn = findViewById(R.id.dialogsProfileBtn);
+        Button logOutBtn = findViewById(R.id.logOutProfileBtn);
+        Button findServicesBtn = findViewById(R.id.findServicesProfileBtn);
+        Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
+        Button mainScreenBtn = findViewById(R.id.mainScreenProfileBtn);
+        Button editProfileBtn = findViewById(R.id.editProfileBtn);
+        Button dialogsBtn = findViewById(R.id.dialogsProfileBtn);
 
         servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
 
@@ -129,17 +124,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         ordersLayout = findViewById(R.id.ordersProfileLayout);
         ratingLayout = findViewById(R.id.ratingLayout);
 
-        ratingText = findViewById(R.id.ratingProfileText);
-        ratingBar = findViewById(R.id.profileRatingBar);
-
-        ratingText.setVisibility(View.VISIBLE);
-        ratingBar.setVisibility(View.VISIBLE);
-
         nameText = findViewById(R.id.nameProfileText);
         cityText = findViewById(R.id.cityProfileText);
 
         countOfRates = 0;
         sumRates = 0;
+        counter =0;
 
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
@@ -286,18 +276,21 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() == 0){
+                    setWithoutRating();
+                }
+
                 for(DataSnapshot workingTimeSnapshot:dataSnapshot.getChildren()){
                     String timeId = String.valueOf(workingTimeSnapshot.getKey());
                     String time = String.valueOf(workingTimeSnapshot.child(TIME).getValue());
                     String timeUserId = String.valueOf(workingTimeSnapshot.child(USER_ID).getValue());
                     String timeWorkingDayId = String.valueOf(workingTimeSnapshot.child(WORKING_DAY_ID).getValue());
 
+
                     addTimeInLocalStorage(timeId, time, timeUserId, timeWorkingDayId);
                 }
                 // Подгружает оценки
                 loadRating();
-                // Подгружаем дни по времени >> сервисы по дням >> авторов ревью по сервисам
-                loadDaysByTime();
             }
 
             @Override
@@ -495,10 +488,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot reviewsSnapshot) {
+
                         RatingReview ratingReview = new RatingReview();
 
-                        for (DataSnapshot reviewSnapshot : dataSnapshot.getChildren()) {
+                        for (DataSnapshot reviewSnapshot : reviewsSnapshot.getChildren()) {
                             String type = String.valueOf(reviewSnapshot.child(TYPE).getValue());
                             float rating = Float.valueOf(String.valueOf(reviewSnapshot.child(RATING).getValue()));
 
@@ -513,7 +507,15 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                                 ratingReview.setMessageId(String.valueOf(reviewSnapshot.child(MESSAGE_ID).getValue()));
 
                                 addReviewInLocalStorage(ratingReview);
+
+                                // Подгружаем дни по времени >> сервисы по дням >> авторов ревью по сервисам
+                                loadDaysByTime();
                             }
+                        }
+
+                        counter++;
+                        if(counter==cursor.getCount() && (countOfRates==0)){
+                            setWithoutRating();
                         }
                     }
 
@@ -677,8 +679,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         ratingLayout.removeAllViews();
 
         float avgRating = sumRates/countOfRates;
-        RatingBarForServiceElement ratingElement
-                = new RatingBarForServiceElement(avgRating, countOfRates, ownerId, REVIEW_FOR_USER);
+        RatingBarElement ratingElement
+                = new RatingBarElement(avgRating, countOfRates, ownerId, REVIEW_FOR_USER);
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.ratingLayout, ratingElement);
@@ -714,6 +716,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         startActivity(intent);
         finish();
     }
+
+    private void setWithoutRating(){
+        progressBar.setVisibility(View.GONE);
+        withoutRatingText.setVisibility(View.VISIBLE);
+    }
+
     private void goToAddService() {
         Intent intent = new Intent(this, AddService.class);
         startActivity(intent);

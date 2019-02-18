@@ -16,6 +16,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
+import com.example.ideal.myapplication.helpApi.UtilitiesApi;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -179,29 +180,22 @@ public class MainScreen extends AppCompatActivity {
 
     // Добавляет информацию о сервисах в SQLite
     private void updateServicesInLocalStorage(Service service) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
         String serviceId = service.getId();
 
-        // Данные из тыблицы Service
-        // По номеру id
-        String sqlQuery =
-                "SELECT * "
-                        + " FROM "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
-                        + " WHERE "
-                        + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
-
+        ContentValues contentValues = new ContentValues();
         // Заполняем contentValues информацией о данном сервисе
         contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName());
         contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
 
+        UtilitiesApi utilitiesApi = new UtilitiesApi(database);
+        boolean isUpdate =  utilitiesApi
+                .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
+
         // Проверка есть ли такой сервис в SQLite
-        if(cursor.moveToFirst()) {
+        if(isUpdate) {
             // Данный сервис уже есть
             // Обновляем информацию о нём
             database.update(
@@ -213,11 +207,9 @@ public class MainScreen extends AppCompatActivity {
             // Данного сервиса нет
             // Добавляем serviceId в contentValues
             contentValues.put(DBHelper.KEY_ID, serviceId);
-
             // Добавляем данный сервис в SQLite
             database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
-        cursor.close();
     }
 
     private  String getUserId(){

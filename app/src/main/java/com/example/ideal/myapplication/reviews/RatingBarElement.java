@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 
-public class RatingBarForServiceElement extends Fragment implements View.OnClickListener {
+public class RatingBarElement extends Fragment implements View.OnClickListener {
     private static final String ID = "id";
     private static final String TYPE = "type";
 
@@ -28,11 +28,11 @@ public class RatingBarForServiceElement extends Fragment implements View.OnClick
     private String id;
     private String type;
 
-    public RatingBarForServiceElement() {
+    public RatingBarElement() {
     }
 
     @SuppressLint("ValidFragment")
-    public RatingBarForServiceElement(float _avgRating, long _countOfRates, String _id, String _type) {
+    public RatingBarElement(float _avgRating, long _countOfRates, String _id, String _type) {
         countOfRates = _countOfRates;
         avgRates = _avgRating;
         id = _id;
@@ -41,7 +41,7 @@ public class RatingBarForServiceElement extends Fragment implements View.OnClick
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.rating_bar_for_service_element, null);
+        return inflater.inflate(R.layout.rating_bar_element, null);
     }
 
     @Override
