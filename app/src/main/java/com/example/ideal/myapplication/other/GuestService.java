@@ -501,11 +501,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
                 addDialogInLocalStorage(dialogId, firstPhone, secondPhone);
 
-                if(firstPhone != ownerId) {
+                if(!firstPhone.equals(ownerId)) {
                     loadUserForThisReview(firstPhone);
                 }
 
-                if(secondPhone != ownerId) {
+                if(!secondPhone.equals(ownerId) ) {
                     loadUserForThisReview(firstPhone);
                 }
             }
