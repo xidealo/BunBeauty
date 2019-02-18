@@ -95,7 +95,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private TextView withoutRatingText;
     private ProgressBar progressBar;
     private TextView descriptionText;
-    private WorkWithTimeApi workWithTimeApi;
 
     private FragmentManager manager;
     private LinearLayout ratingLayout;
@@ -112,10 +111,13 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.editScheduleGuestServiceBtn:
-                // если мой сервис, то иду, как воркер
                 if (status.equals(WORKER)) {
+                    // если мой сервис, я - воркер
+                    // сразу идём редактировать расписание
                     goToMyCalendar(WORKER);
                 } else {
+                    // если не мой сервис, я - юзер
+                    // проверяем какие дни мне доступны
                     checkScheduleAndGoToProfile();
                 }
 
@@ -146,7 +148,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         ratingLayout = findViewById(R.id.resultGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
-        workWithTimeApi = new WorkWithTimeApi();
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         //получаем данные о сервисе
         getDataAboutService(serviceId);
@@ -262,6 +263,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private void checkScheduleAndGoToProfile(){
 
+        // Получаем всё время данного сервиса, которое доступно данному юзеру
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String sqlQuery = "SELECT " + DBHelper.KEY_TIME_WORKING_TIME
                 + " FROM "
@@ -294,121 +296,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         } else {
             attentionThisScheduleIsEmpty();
         }
-
-        /*int countOfDate = 0;
-        boolean haveTime = false;
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_WORKING_DAYS
-                + " WHERE "
-                + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?";
-
-        Cursor cursorWorkingDay = database.rawQuery(sqlQuery, new String[] {serviceId});
-        if(cursorWorkingDay.moveToFirst()){
-            do{
-                int indexWorkingDayId = cursorWorkingDay.getColumnIndex(DBHelper.KEY_ID);
-                String workingDayId = cursorWorkingDay.getString(indexWorkingDayId);
-
-                String sqlQueryWorkingTime = "SELECT * FROM "
-                        + DBHelper.TABLE_WORKING_TIME
-                        + " WHERE "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?";
-
-                Cursor cursorWorkingTime = database.rawQuery(sqlQueryWorkingTime, new String[] {workingDayId});
-                //проверяем часы работы (фича с 2 часами и тд)
-                if(cursorWorkingTime.moveToFirst()){
-                    do {
-                        countOfDate++;
-                        if (status.equals(USER) && !haveTime) {
-                            if (hasSomeTime(workingDayId)) {
-                                haveTime = true;
-                            }
-                        }
-                        //если прошли по всем дням, идем в календарь
-                        if ((cursorWorkingDay.getCount() == countOfDate)) {
-                            if (status.equals(WORKER)) {
-                                goToMyCalendar(WORKER);
-                            }
-
-                            if (status.equals(USER)) {
-                                if (haveTime) {
-                                    goToMyCalendar(USER);
-                                } else {
-                                    attentionThisScheduleIsEmpty();
-                                }
-                            }
-                        }
-                    }while (cursorWorkingTime.moveToNext());
-                }
-
-                cursorWorkingTime.close();
-            }while (cursorWorkingDay.moveToNext());
-        }
-        else {
-            //если воркер и нет расписания
-            if(status.equals(WORKER)){
-                goToMyCalendar(status);
-            }
-            if(status.equals(USER)){
-                attentionThisScheduleIsEmpty();
-                attentionThisScheduleIsEmpty();
-            }
-        }
-        cursorWorkingDay.close();*/
-    }
-
-    // Возвращает есть ли в рабочем дне рабочие часы
-    private boolean hasSomeTime(String dayId) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-        // Получает id рабочего дня
-        // Таблицы: рабочие время
-        // Условия: уточняем id рабочего дня
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_TIME_WORKING_TIME + ", "
-                        + DBHelper.KEY_DATE_WORKING_DAYS
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_WORKING_DAYS
-                        + " WHERE "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ? "
-                        + " AND ("
-                        + DBHelper.KEY_USER_ID + " = 0"
-                        + " OR "
-                        + DBHelper.KEY_USER_ID + " = ?)";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId, userId});
-
-        if (cursor.moveToFirst()) {
-            int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
-            int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
-            String date, time;
-
-            do {
-                date = cursor.getString(indexDate);
-                time = cursor.getString(indexTime);
-                if (hasMoreThenTwoHours(date, time)) {
-                    cursor.close();
-                    return true;
-                }
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        return false;
-    }
-
-    private boolean hasMoreThenTwoHours(String date, String time) {
-        long twoHours = 2 * 60 * 60 * 1000;
-        long sysdateLong = workWithTimeApi.getSysdateLong();
-        long currentLong = workWithTimeApi.getMillisecondsStringDate(date + " " + time);
-
-
-        return currentLong - sysdateLong >= twoHours;
     }
 
     private void addScheduleInLocalStorage(String dayId, String dayDate) {
