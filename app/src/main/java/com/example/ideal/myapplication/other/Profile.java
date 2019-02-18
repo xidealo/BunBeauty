@@ -642,7 +642,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_USER_ID + " = ?"
                         + " AND "
                         + " STRFTIME('%s', " + DBHelper.KEY_DATE_WORKING_DAYS
-                        //+ "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                         + ")>=STRFTIME('%s', DATE('now'))";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});

@@ -232,12 +232,23 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         // Таблицы: рабочии дни, рабочие время
         // Условия: связываем таблицы по id рабочего дня; уточняем id сервиса и id пользователя
         String sqlQuery =
-                "SELECT " + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_DATE_WORKING_DAYS
-                        + " FROM " + DBHelper.TABLE_WORKING_TIME + ", " + DBHelper.TABLE_WORKING_DAYS
-                        + " WHERE " + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? AND "
+                "SELECT "
+                        + DBHelper.KEY_DATE_WORKING_DAYS
+                        + " FROM "
+                        + DBHelper.TABLE_WORKING_TIME + ", "
+                        + DBHelper.TABLE_WORKING_DAYS
+                        + " WHERE "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
+                        + " AND "
                         + DBHelper.KEY_USER_ID + " = ? "
                         + " AND "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME;
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                        + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + " AND ("
+                        + "(STRFTIME('%s', 'now')+3*60*60) - (STRFTIME('%s',"
+                        + DBHelper.KEY_DATE_WORKING_DAYS
+                        + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                        + ")) <= 0)";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {String.valueOf(serviceId), userId});
 
