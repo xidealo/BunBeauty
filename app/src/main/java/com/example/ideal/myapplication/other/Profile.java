@@ -675,8 +675,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private void addRatingToScreen() {
         ratingLayout.removeAllViews();
-        /*ratingBar.setVisibility(View.GONE);
-        ratingText.setVisibility(View.GONE);*/
 
         float avgRating = sumRates/countOfRates;
         RatingBarForServiceElement ratingElement

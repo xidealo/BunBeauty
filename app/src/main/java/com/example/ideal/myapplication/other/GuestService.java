@@ -337,7 +337,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         contentValues.put(DBHelper.KEY_USER_ID, timeUserId);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, timeWorkingDayId);
 
-        boolean isUpdate =  gutilitiesApi
+        boolean isUpdate =  utilitiesApi
                 .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
 
         if (isUpdate) {

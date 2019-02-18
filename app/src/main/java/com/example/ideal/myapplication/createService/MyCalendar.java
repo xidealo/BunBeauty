@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 public class MyCalendar extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "DBInf";
     private static final String FILE_NAME = "Info";
     private static final String PHONE_NUMBER = "Phone number";
     private static final String REF = "working days";
@@ -59,6 +61,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_calendar);
+
         mainLayout = findViewById(R.id.mainMyCalendarLayout);
         nextBtn = findViewById(R.id.continueMyCalendarBtn2);
         dayBtns = new Button[WEEKS_COUNT][DAYS_COUNT];
@@ -73,14 +76,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         // создаём календарь
         createCalendar();
 
-        // проверяем имеется ли у данного пользователя запись на данную услугу
-        if(statusUser.equals(USER)){
-            checkOrder();
-        }
-        else {
-            //если worker
-            selectWorkingDayWithTime();
-        }
         nextBtn.setOnClickListener(this);
     }
 
@@ -186,12 +181,16 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         if(!date.equals("")) {
             String[] arrDate = date.split("-");
             String orderDate = arrDate[2] + " " + monthToString(arrDate[1]);
+            if(orderDate.charAt(0) == '0') {
+                orderDate = orderDate.substring(1);
+            }
 
             for (int i = 0; i < WEEKS_COUNT; i++) {
                 for (int j = 0; j < DAYS_COUNT; j++) {
                     if(orderDate.equals(dayBtns[i][j].getText().toString()) && arrDate[0].equals(dayBtns[i][j].getTag(R.string.yearId).toString())) {
                         dayBtns[i][j].setBackgroundResource(R.drawable.selected_day_button);
                         dayBtns[i][j].setTag(R.string.selectedId, true);
+                        dayBtns[i][j].setClickable(false);
                     } else {
                         dayBtns[i][j].setTag(R.string.selectedId, false);
                         dayBtns[i][j].setEnabled(false);
@@ -470,6 +469,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
+
+        // проверяем имеется ли у данного пользователя запись на данную услугу
         if(statusUser.equals(USER)){
             checkOrder();
         }
