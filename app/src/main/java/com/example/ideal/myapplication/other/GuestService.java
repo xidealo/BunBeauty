@@ -33,6 +33,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.SQLData;
+
 public class GuestService extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
@@ -94,6 +96,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private FragmentManager manager;
     private LinearLayout ratingLayout;
 
+    private UtilitiesApi utilitiesApi;
+
     private DBHelper dbHelper;
 
     @Override
@@ -143,6 +147,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         ratingLayout = findViewById(R.id.resultGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        utilitiesApi = new UtilitiesApi(database);
+
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         //получаем данные о сервисе
         getDataAboutService(serviceId);
