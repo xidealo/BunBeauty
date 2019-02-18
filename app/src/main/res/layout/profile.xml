@@ -201,8 +201,8 @@
             android:id="@+id/profileRatingBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:isIndicator="true"/>
-
+            android:isIndicator="true"
+            />
         <TextView
             android:id="@+id/ratingProfileText"
             android:layout_width="match_parent"

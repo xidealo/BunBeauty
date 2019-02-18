@@ -1,6 +1,5 @@
 package com.example.ideal.myapplication.other;
 
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -23,8 +21,6 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.editing.EditService;
 import com.example.ideal.myapplication.fragments.objects.Message;
-import com.example.ideal.myapplication.helpApi.UtilitiesApi;
-import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.UtilitiesApi;
@@ -95,7 +91,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private TextView withoutRatingText;
     private ProgressBar progressBar;
     private TextView descriptionText;
-
     private FragmentManager manager;
     private LinearLayout ratingLayout;
 
@@ -328,27 +323,23 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                        String timeUserId, String timeWorkingDayId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_WORKING_TIME
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{timeId});
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, timeDate);
         contentValues.put(DBHelper.KEY_USER_ID, timeUserId);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, timeWorkingDayId);
 
-        if (cursor.moveToFirst()) {
+        boolean isUpdate =  utilitiesApi
+                .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
+
+        if (isUpdate) {
             database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
                     DBHelper.KEY_ID + " = ?",
-                    new String[]{String.valueOf(timeId)});
+                    new String[]{timeId});
         } else {
             contentValues.put(DBHelper.KEY_ID, timeId);
             database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
         }
-        cursor.close();
+
     }
 
     private void loadProfileData() {
@@ -528,10 +519,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         contentValues.put(DBHelper.KEY_SECOND_USER_ID_DIALOGS, secondPhone);
 
         //для проверки на update || insert в таблицу
-        UtilitiesApi utilitiesApi = new UtilitiesApi(database);
-
         boolean isUpdate =  utilitiesApi
-                .hasSomeDataWithThisTableInThisId(DBHelper.TABLE_DIALOGS, dialogId);
+                .hasSomeData(DBHelper.TABLE_DIALOGS, dialogId);
         if(isUpdate){
             database.update(DBHelper.TABLE_DIALOGS, contentValues,
                     DBHelper.KEY_ID + " = ?",
@@ -552,10 +541,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         contentValues.put(DBHelper.KEY_DIALOG_ID_MESSAGES, message.getDialogId());
 
         //для проверки на update || insert в таблицу
-        UtilitiesApi utilitiesApi = new UtilitiesApi(database);
-
         boolean isUpdate =  utilitiesApi
-                .hasSomeDataWithThisTableInThisId(DBHelper.TABLE_MESSAGES, message.getId());
+                .hasSomeData(DBHelper.TABLE_MESSAGES, message.getId());
         if(isUpdate){
             database.update(DBHelper.TABLE_MESSAGES, contentValues,
                     DBHelper.KEY_ID + " = ?",
@@ -579,10 +566,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         contentValues.put(DBHelper.KEY_MESSAGE_ID_REVIEWS, ratingReview.getMessageId());
 
         //для проверки на update || insert в таблицу
-        UtilitiesApi utilitiesApi = new UtilitiesApi(database);
-
         boolean isUpdate =  utilitiesApi
-               .hasSomeDataWithThisTableInThisId(DBHelper.TABLE_REVIEWS,
+               .hasSomeData(DBHelper.TABLE_REVIEWS,
                        ratingReview.getId());
         if(isUpdate){
             database.update(DBHelper.TABLE_REVIEWS, contentValues,
@@ -599,17 +584,14 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         SQLiteDatabase database= dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_CONTACTS_USERS
-                + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{localUser.getPhone()});
-
         contentValues.put(DBHelper.KEY_NAME_USERS,localUser.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS,localUser.getCity());
 
-        if (cursor.moveToFirst()) {
+        boolean isUpdate = utilitiesApi
+                .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
+                        localUser.getPhone());
+
+        if (isUpdate) {
             database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
                     DBHelper.KEY_USER_ID + " = ?",
                     new String[]{String.valueOf(localUser.getPhone())});
@@ -617,7 +599,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             contentValues.put(DBHelper.KEY_USER_ID, localUser.getPhone());
             database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
-        cursor.close();
     }
 
     private void loadUserForThisReview(final String valuingPhone) {
