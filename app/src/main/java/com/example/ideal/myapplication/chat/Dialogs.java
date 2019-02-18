@@ -2,7 +2,6 @@ package com.example.ideal.myapplication.chat;
 
 import android.content.ContentValues;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,7 +18,7 @@ import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
-import com.example.ideal.myapplication.helpApi.UtilitiesApi;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
@@ -74,7 +73,7 @@ public class Dialogs extends AppCompatActivity {
     private static final String REVIEW_FOR_USER = "review for user";
 
     WorkWithTimeApi workWithTimeApi;
-    UtilitiesApi utilitiesApi;
+    WorkWithLocalStorageApi utilitiesApi;
     SharedPreferences sPref;
     DBHelper dbHelper;
 
@@ -92,7 +91,7 @@ public class Dialogs extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        utilitiesApi = new UtilitiesApi(database);
+        utilitiesApi = new WorkWithLocalStorageApi(database);
         resultLayout = findViewById(R.id.mainDialogsLayout);
         resultLayout.setVisibility(View.INVISIBLE);
     }

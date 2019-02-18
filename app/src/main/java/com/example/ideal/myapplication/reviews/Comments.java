@@ -59,6 +59,7 @@ public class Comments extends AppCompatActivity {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
+                + DBHelper.KEY_RATING_REVIEWS + ", "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_USER_ID + " AS " + ORDER_ID + ", "
                 + DBHelper.KEY_MESSAGE_ID_REVIEWS + ", "
                 + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID
@@ -104,6 +105,7 @@ public class Comments extends AppCompatActivity {
 
         if(mainCursor.moveToFirst()) {
             int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
+            int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
             int orderIdIndex = mainCursor.getColumnIndex(ORDER_ID);
             int messageIdIndex = mainCursor.getColumnIndex(DBHelper.KEY_MESSAGE_ID_REVIEWS);
             int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
@@ -112,8 +114,8 @@ public class Comments extends AppCompatActivity {
                 String name = "";
                 String orderId = mainCursor.getString(orderIdIndex);
                 String review = mainCursor.getString(reviewIndex);
+                float raiting = Float.valueOf(mainCursor.getString(ratingIndex));
 
-                Log.d(TAG, "loadCommentsForService: " + orderId);
                 if(orderId.equals("0")) {
                     String messageId = mainCursor.getString(messageIdIndex);
                     String ownerId = mainCursor.getString(ownerIdIndex);
@@ -146,7 +148,7 @@ public class Comments extends AppCompatActivity {
                     }
                 }
 
-                addCommentToScreen(name, review);
+                addCommentToScreen(name, review, raiting);
             } while (mainCursor.moveToNext());
         }
     }
@@ -155,6 +157,7 @@ public class Comments extends AppCompatActivity {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String sqlQuery = "SELECT "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
+                + DBHelper.KEY_RATING_REVIEWS + ", "
                 + DBHelper.KEY_NAME_USERS
                 + " FROM "
                 + DBHelper.TABLE_WORKING_TIME + ", "
@@ -183,18 +186,20 @@ public class Comments extends AppCompatActivity {
 
         if(cursor.moveToFirst()) {
             int reviewIndex = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
+            int ratingIndex = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
             int nameIndex = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
 
             do {
                 String name = cursor.getString(nameIndex);
                 String review = cursor.getString(reviewIndex);
-                addCommentToScreen(name, review);
+                float rating = Float.valueOf(cursor.getString(ratingIndex));
+                addCommentToScreen(name, review, rating);
             } while (cursor.moveToNext());
         }
     }
 
-    private void addCommentToScreen(String name, String review) {
-        CommentElement cElement = new CommentElement(name, review);
+    private void addCommentToScreen(String name, String review, float rating) {
+        CommentElement cElement = new CommentElement(name, review, rating);
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.mainCommentsLayout, cElement);

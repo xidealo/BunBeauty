@@ -27,7 +27,7 @@ import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
-import com.example.ideal.myapplication.helpApi.UtilitiesApi;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
@@ -102,7 +102,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private  DBHelper dbHelper;
     private  String ownerId;
     private  WorkWithTimeApi workWithTimeApi;
-    private UtilitiesApi utilitiesApi;
+    private WorkWithLocalStorageApi utilitiesApi;
 
     private foundServiceProfileElement fServiceElement;
     private foundOrderElement fOrderElement;
@@ -144,7 +144,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        utilitiesApi = new UtilitiesApi(database);
+        utilitiesApi = new WorkWithLocalStorageApi(database);
 
         manager = getSupportFragmentManager();
         //получаем id пользователя
