@@ -1,6 +1,7 @@
 package com.example.ideal.myapplication.reviews;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,24 +14,33 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.chat.Messages;
 
-public class CommentElement extends Fragment {
+public class CommentElement extends Fragment implements View.OnClickListener{
 
     private static final String TAG = "DBInf";
+
+    private static final String USER_ID = "user id";
+    private static final String USER_NAME = "user name";
+    private static final String REVIEW = "review";
+    private static final String RATING = "rating";
 
     private TextView reviewText;
     private TextView userNameText;
     private RatingBar ratingBar;
 
+    private String userId;
+    private String userName;
     private String review;
     private float rating;
-    private String userName;
+
 
     public CommentElement() {
     }
 
     @SuppressLint("ValidFragment")
-    public CommentElement(String _userName, String _review, float _rating) {
+    public CommentElement(String _userId, String _userName, String _review, float _rating) {
+        userId = _userId;
         userName = _userName;
         review = _review;
         rating = _rating;
@@ -48,12 +58,31 @@ public class CommentElement extends Fragment {
         reviewText = view.findViewById(R.id.reviewCommentElementText);
         ratingBar = view.findViewById(R.id.ratingCommentElementBar);
 
+        userNameText.setOnClickListener(this);
+        reviewText.setOnClickListener(this);
+
         setData();
     }
 
     private void setData() {
+        String abbreviatedReview = review.substring(0, 2) + "...";
+
         userNameText.setText(userName);
-        reviewText.setText(review);
+        reviewText.setText(abbreviatedReview);
         ratingBar.setRating(rating);
+    }
+
+    @Override
+    public void onClick(View v) {
+        goToThisComment();
+    }
+
+    private void goToThisComment() {
+        Intent intent = new Intent(this.getContext(), PickedComment.class);
+        intent.putExtra(USER_ID, userId);
+        intent.putExtra(USER_NAME, userName);
+        intent.putExtra(REVIEW, review);
+        intent.putExtra(RATING, rating);
+        startActivity(intent);
     }
 }

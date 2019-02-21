@@ -70,7 +70,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String NAME = "name";
 
     private static final String USERS = "users";
-
+    private static final String CITY = "city";
 
 
     private float sumRates;
@@ -294,6 +294,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
                     addTimeInLocalStorage(timeId, time, timeUserId, timeWorkingDayId);
                 }
+
                 // Подгружает оценки
                 loadRating();
                 // Подгружаем дни по времени >> сервисы по дням >> авторов ревью по сервисам
@@ -375,8 +376,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 String name = String.valueOf(userSnapshot.child(NAME).getValue());
+                String city = String.valueOf(userSnapshot.child(CITY).getValue());
 
-                addUserInLocalStorage(userId, name);
+                addUserInLocalStorage(userId, name, city);
             }
 
             @Override
@@ -385,11 +387,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         });
     }
 
-    private void addUserInLocalStorage(String userId, String name) {
+    private void addUserInLocalStorage(String userId, String name, String city) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_NAME_USERS, name);
+        contentValues.put(DBHelper.KEY_CITY_USERS, city);
 
         boolean isUpdate = utilitiesApi
                 .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
