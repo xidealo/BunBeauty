@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.fragments.foundElements;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.media.Rating;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
@@ -21,24 +23,29 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
 
     final String SERVICE_ID = "service id";
 
-    TextView nameUserText;
-    TextView city;
-    TextView nameServiceText;
-    TextView costText;
+    private TextView nameUserText;
+    private TextView city;
+    private TextView nameServiceText;
+    private TextView costText;
+    private RatingBar ratingBar;
 
-    String idString;
-    String nameUserString;
-    String cityString;
-    String nameServiceString;
-    String costString;
+    private float avgRating;
+
+    private String idString;
+    private String nameUserString;
+    private String cityString;
+    private String nameServiceString;
+    private String costString;
 
     @SuppressLint("ValidFragment")
-    public foundServiceElement(Service service, User user) {
+    public foundServiceElement(Float _avgRating, Service service, User user) {
         idString = service.getId();
         nameUserString = user.getName();
         cityString = user.getCity();
         nameServiceString = service.getName();
-        costString = service.getCost().toString();
+        costString = service.getCost();
+
+        avgRating = _avgRating;
     }
 
     @Override
@@ -53,6 +60,7 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         city = view.findViewById(R.id.cityFoundServiceElementText);
         nameServiceText = view.findViewById(R.id.serviceNameFoundServiceElementText);
         costText = view.findViewById(R.id.costFoundServiceElementText);
+        ratingBar = view.findViewById(R.id.ratingBarFondServiceElement);
 
         nameUserText.setOnClickListener(this);
         city.setOnClickListener(this);
@@ -66,6 +74,7 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         city.setText(cityString);
         nameServiceText.setText(nameServiceString);
         costText.setText(costString);
+        ratingBar.setRating(avgRating);
     }
 
     @Override

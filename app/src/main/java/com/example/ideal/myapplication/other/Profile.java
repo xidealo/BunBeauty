@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -24,12 +25,12 @@ import com.example.ideal.myapplication.chat.Dialogs;
 import com.example.ideal.myapplication.createService.AddService;
 import com.example.ideal.myapplication.editing.EditProfile;
 import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement;
-import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
-import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.UtilitiesApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
+import com.example.ideal.myapplication.reviews.DownloadServiceData;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -69,8 +70,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String NAME = "name";
 
     private static final String USERS = "users";
-    private static final String CITY = "city";
-
 
     private float sumRates;
     private long countOfRates;
@@ -88,24 +87,18 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout ordersLayout;
     private LinearLayout ratingLayout;
 
-    private  SwitchCompat servicesOrOrdersSwitch;
-
     private SharedPreferences sPref;
     private DBHelper dbHelper;
     private String ownerId;
     private WorkWithTimeApi workWithTimeApi;
-    private WorkWithLocalStorageApi workWithLocalStorageApi;
+    private UtilitiesApi utilitiesApi;
 
-    private foundServiceProfileElement fServiceElement;
-    private foundOrderElement fOrderElement;
     private FragmentManager manager;
-    private FragmentTransaction transaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
-        //ratingBar
         withoutRatingText = findViewById(R.id.withoutRatingProfileText);
         progressBar = findViewById(R.id.progressBarProfile);
 
@@ -116,7 +109,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         Button editProfileBtn = findViewById(R.id.editProfileBtn);
         Button dialogsBtn = findViewById(R.id.dialogsProfileBtn);
 
-        servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
+        SwitchCompat servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
 
         servicesScroll = findViewById(R.id.servicesProfileScroll);
         ordersScroll = findViewById(R.id.orderProfileScroll);
@@ -134,7 +127,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+        utilitiesApi = new UtilitiesApi(database);
 
         manager = getSupportFragmentManager();
         //получаем id пользователя
@@ -226,14 +219,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    //получить id-phone пользователя
-    private String getUserId(){
-        // возваращает id текущего пользователя
-        sPref = getSharedPreferences(FILE_NAME,MODE_PRIVATE);
-        String userId = String.valueOf(sPref.getString(PHONE_NUMBER, "0"));
-
-        return userId;
-    }
     // получаем данные о пользователе и отображаем в прфоиле
     private void updateProfileData(String userId){
 
@@ -286,17 +271,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                     String timeUserId = String.valueOf(workingTimeSnapshot.child(USER_ID).getValue());
                     String timeWorkingDayId = String.valueOf(workingTimeSnapshot.child(WORKING_DAY_ID).getValue());
 
-
                     addTimeInLocalStorage(timeId, time, timeUserId, timeWorkingDayId);
                 }
-
                 // Подгружает оценки
-                loadRating();
+                loadRatingForUser();
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
+            public void onCancelled(@NonNull DatabaseError databaseError) { }});
     }
 
     private void loadDaysByTime() {
@@ -369,9 +350,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 String name = String.valueOf(userSnapshot.child(NAME).getValue());
-                String city = String.valueOf(userSnapshot.child(CITY).getValue());
 
-                addUserInLocalStorage(userId, name, city);
+                addUserInLocalStorage(userId, name);
             }
 
             @Override
@@ -380,14 +360,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         });
     }
 
-    private void addUserInLocalStorage(String userId, String name, String city) {
+    private void addUserInLocalStorage(String userId, String name) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_NAME_USERS, name);
-        contentValues.put(DBHelper.KEY_CITY_USERS, city);
 
-        boolean isUpdate = workWithLocalStorageApi
+        boolean isUpdate = utilitiesApi
                 .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
                         userId);
 
@@ -408,7 +387,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_NAME_SERVICES, name);
 
-        boolean isUpdate = workWithLocalStorageApi
+        boolean isUpdate = utilitiesApi
                 .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES,
                         serviceId);
 
@@ -429,7 +408,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
         contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
 
-        boolean isUpdate = workWithLocalStorageApi
+        boolean isUpdate = utilitiesApi
                 .hasSomeData(DBHelper.TABLE_WORKING_DAYS,
                         dayId);
 
@@ -452,7 +431,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
 
-        boolean isUpdate = workWithLocalStorageApi
+        boolean isUpdate = utilitiesApi
                 .hasSomeData(DBHelper.TABLE_WORKING_TIME,
                         timeId);
 
@@ -466,7 +445,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void loadRating() {
+    private void loadRatingForUser() {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         String sqlQuery = "SELECT "
@@ -484,10 +463,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             sumRates = 0;
             countOfRates = 0;
             do{
-                final String workingTimeid = cursor.getString(indexId);
+                final String workingTimeId = cursor.getString(indexId);
                 Query query = FirebaseDatabase.getInstance().getReference(REVIEWS)
                         .orderByChild(WORKING_TIME_ID)
-                        .equalTo(workingTimeid);
+                        .equalTo(workingTimeId);
 
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -506,7 +485,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                                 ratingReview.setReview(String.valueOf(reviewSnapshot.child(REVIEW).getValue()));
                                 ratingReview.setRating(String.valueOf(reviewSnapshot.child(RATING).getValue()));
                                 ratingReview.setType(String.valueOf(reviewSnapshot.child(TYPE).getValue()));
-                                ratingReview.setWorkingTimeId(workingTimeid);
+                                ratingReview.setWorkingTimeId(workingTimeId);
                                 ratingReview.setMessageId(String.valueOf(reviewSnapshot.child(MESSAGE_ID).getValue()));
 
                                 addReviewInLocalStorage(ratingReview);
@@ -542,7 +521,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_TYPE_REVIEWS, ratingReview.getType());
         contentValues.put(DBHelper.KEY_WORKING_TIME_ID_REVIEWS, ratingReview.getWorkingTimeId());
 
-        boolean isUpdate = workWithLocalStorageApi
+        boolean isUpdate = utilitiesApi
                 .hasSomeData(DBHelper.TABLE_REVIEWS,
                         reviewId);
 
@@ -566,16 +545,18 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         if(userId.equals(ownerId)){
             // если это мой сервис
             updateOrdersList(userId);
-            updateServicesList(userId);
             updateProfileData(userId);
+            updateServicesList(userId);
+        }
+        else{
+            updateServicesList(ownerId);
         }
     }
 
-    //добавляет вновь добавленный сервис (обновление serviceList)
+    //подгрузка сервисов на serviceList
     private void updateServicesList(String userId) {
         //количество сервисов отображаемых на данный момент(старых)
-        int visibleCount = servicesLayout.getChildCount();
-
+        servicesLayout.removeAllViews();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         // Возвращает id, название, рэйтинг и количество оценивших
@@ -591,18 +572,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + DBHelper.KEY_USER_ID + " = ? ";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
-
-        // Реальное кол-во сервисов
-        int cursorCount = cursor.getCount();
-
-        //Проверка на наличие вновь добавленных сервисов
-        if(cursorCount > visibleCount) {
-            //Идём с конца
-            if(cursor.moveToLast()){
+        //Идём с конца
+            if(cursor.moveToFirst()){
                 int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
                 int indexNameService = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
-                int newServicesCount = 0;
-
                 do{
                     String foundId = cursor.getString(indexId);
                     String foundNameService = cursor.getString(indexNameService);
@@ -610,13 +583,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                     service.setId(foundId);
                     service.setName(foundNameService);
 
-                    addServiceToScreen(service);
-                    newServicesCount++;
+                    DownloadServiceData downloadServiceData = new DownloadServiceData();
+                    downloadServiceData.loadSchedule(service.getId(),database,
+                            "Profile",manager);
 
                     //пока в курсоре есть строки и есть новые сервисы
-                }while (cursor.moveToPrevious() && newServicesCount<(cursorCount - visibleCount));
+                }while (cursor.moveToNext());
             }
-        }
         cursor.close();
     }
 
@@ -690,18 +663,19 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         transaction.commit();
     }
 
-    private void addServiceToScreen(Service service) {
-        fServiceElement = new foundServiceProfileElement(service);
+    //получить id-phone пользователя
+    private String getUserId(){
+        // возваращает id текущего пользователя
+        sPref = getSharedPreferences(FILE_NAME,MODE_PRIVATE);
+        String userId = String.valueOf(sPref.getString(PHONE_NUMBER, "0"));
 
-        transaction = manager.beginTransaction();
-        transaction.add(R.id.servicesProfileLayout, fServiceElement);
-        transaction.commit();
+        return userId;
     }
 
     private void addOrderToScreen(String id, String name, String date, String time) {
-        fOrderElement = new foundOrderElement(id, name, date, time);
+        foundOrderElement fOrderElement = new foundOrderElement(id, name, date, time);
 
-        transaction = manager.beginTransaction();
+        FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.ordersProfileLayout, fOrderElement);
         transaction.commit();
     }

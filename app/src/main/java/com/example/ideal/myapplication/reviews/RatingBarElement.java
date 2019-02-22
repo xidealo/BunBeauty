@@ -25,17 +25,17 @@ public class RatingBarElement extends Fragment implements View.OnClickListener {
     private long countOfRates;
     private float avgRates;
 
-    private String id;
+    private String serviceId;
     private String type;
 
     public RatingBarElement() {
     }
 
     @SuppressLint("ValidFragment")
-    public RatingBarElement(float _avgRating, long _countOfRates, String _id, String _type) {
+    public RatingBarElement(float _avgRating, long _countOfRates, String _serviceId, String _type) {
         countOfRates = _countOfRates;
         avgRates = _avgRating;
-        id = _id;
+        serviceId = _serviceId;
         type = _type;
     }
 
@@ -65,7 +65,7 @@ public class RatingBarElement extends Fragment implements View.OnClickListener {
 
     private void goToComments() {
         Intent intent = new Intent(getContext(), Comments.class);
-        intent.putExtra(ID, id);
+        intent.putExtra(ID, serviceId);
         intent.putExtra(TYPE, type);
         startActivity(intent);
     }

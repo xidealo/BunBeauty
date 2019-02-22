@@ -1,22 +1,17 @@
 package com.example.ideal.myapplication.other;
 
-import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
-import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
-import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.reviews.DownloadServiceData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,17 +32,10 @@ public class MainScreen extends AppCompatActivity {
 
     private static final String SERVICES = "services";
     private static final String USER_ID = "user id";
-    private static final String DESCRIPTION = "description";
-    private static final String COST = "cost";
-    private static final String RATING = "rating";
-    private static final String COUNT_OF_RATES = "count of rates";
 
-    int countOfService = 0;
+    private int countOfService = 0;
 
-    DBHelper dbHelper;
-    SharedPreferences sPref;
-
-    LinearLayout resultLayout;
+    private DBHelper dbHelper;
 
     private FragmentManager manager;
 
@@ -56,8 +44,6 @@ public class MainScreen extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
-
-        resultLayout = findViewById(R.id.resultsMainScreenLayout);
 
         manager = getSupportFragmentManager();
 
@@ -104,6 +90,8 @@ public class MainScreen extends AppCompatActivity {
 
     private  void getServicesInThisCity(final String userCity){
 
+        final SQLiteDatabase database = dbHelper.getReadableDatabase();
+
         final int limitOfService = 6;
         //возвращение всех пользователей из контретного города
         Query userQuery = FirebaseDatabase.getInstance().getReference(USERS)
@@ -130,27 +118,18 @@ public class MainScreen extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 String serviceId = snapshot.getKey();
-                                String serviceName = String.valueOf(snapshot.child(NAME).getValue());
-                                String serviceCost = String.valueOf(snapshot.child(COST).getValue());
-                                String serviceDescription = String.valueOf(snapshot.child(DESCRIPTION).getValue());
 
-                                Service service = new Service();
-                                service.setId(serviceId);
-                                service.setName(serviceName);
-                                service.setUserId(userId);
-                                service.setCost(serviceCost);
-                                service.setDescription(serviceDescription);
+                                DownloadServiceData downloadServiceData = new DownloadServiceData();
+                                downloadServiceData.loadSchedule(serviceId,database,
+                                        "MainScreen",manager);
 
-                                updateServicesInLocalStorage(service);
-                                addToScreen(service, user);
                                 countOfService++;
+                                //количество возможных предложений на mainScreen
                                 if(countOfService == limitOfService) {
                                     return;
                                 }
                             }
                         }
-
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             attentionBadConnection();
@@ -166,58 +145,14 @@ public class MainScreen extends AppCompatActivity {
                 attentionBadConnection();
             }
         });
-
         countOfService = 0;
     }
 
-    private void addToScreen(Service service, User user) {
-        foundServiceElement fElement = new foundServiceElement(service, user);
-
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.resultsMainScreenLayout, fElement);
-        transaction.commit();
-    }
-
-    // Добавляет информацию о сервисах в SQLite
-    private void updateServicesInLocalStorage(Service service) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        String serviceId = service.getId();
-
-        ContentValues contentValues = new ContentValues();
-        // Заполняем contentValues информацией о данном сервисе
-        contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName());
-        contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
-        contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
-        contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
-
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-        boolean isUpdate =  workWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
-
-        // Проверка есть ли такой сервис в SQLite
-        if(isUpdate) {
-            // Данный сервис уже есть
-            // Обновляем информацию о нём
-            database.update(
-                    DBHelper.TABLE_CONTACTS_SERVICES,
-                    contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{serviceId});
-        } else {
-            // Данного сервиса нет
-            // Добавляем serviceId в contentValues
-            contentValues.put(DBHelper.KEY_ID, serviceId);
-            // Добавляем данный сервис в SQLite
-            database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
-        }
-    }
-
     private  String getUserId(){
-        sPref = getSharedPreferences(FILE_NAME,MODE_PRIVATE);
+        SharedPreferences sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
 
         return sPref.getString(PHONE_NUMBER, "-");
     }
-
 
     private void attentionBadConnection() {
         Toast.makeText(this,"Плохое соединение",Toast.LENGTH_SHORT).show();
