@@ -5,11 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.ideal.myapplication.other.DBHelper;
 
-public class UtilitiesApi {
+public class WorkWithLocalStorageApi {
 
     private SQLiteDatabase localDatabase;
 
-    public UtilitiesApi(SQLiteDatabase database){
+    public WorkWithLocalStorageApi(SQLiteDatabase database){
         localDatabase = database;
     }
 

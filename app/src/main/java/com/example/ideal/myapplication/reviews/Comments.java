@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.objects.Comment;
 import com.example.ideal.myapplication.other.DBHelper;
 
 public class Comments extends AppCompatActivity {
@@ -59,6 +60,7 @@ public class Comments extends AppCompatActivity {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
+                + DBHelper.KEY_RATING_REVIEWS + ", "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_USER_ID + " AS " + ORDER_ID + ", "
                 + DBHelper.KEY_MESSAGE_ID_REVIEWS + ", "
                 + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID
@@ -104,6 +106,7 @@ public class Comments extends AppCompatActivity {
 
         if(mainCursor.moveToFirst()) {
             int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
+            int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
             int orderIdIndex = mainCursor.getColumnIndex(ORDER_ID);
             int messageIdIndex = mainCursor.getColumnIndex(DBHelper.KEY_MESSAGE_ID_REVIEWS);
             int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
@@ -112,8 +115,8 @@ public class Comments extends AppCompatActivity {
                 String name = "";
                 String orderId = mainCursor.getString(orderIdIndex);
                 String review = mainCursor.getString(reviewIndex);
+                float rating = Float.valueOf(mainCursor.getString(ratingIndex));
 
-                Log.d(TAG, "loadCommentsForService: " + orderId);
                 if(orderId.equals("0")) {
                     String messageId = mainCursor.getString(messageIdIndex);
                     String ownerId = mainCursor.getString(ownerIdIndex);
@@ -129,8 +132,10 @@ public class Comments extends AppCompatActivity {
 
                         Cursor userCursor;
                         if(firstPhone != ownerId) {
+                            orderId = firstPhone;
                             userCursor = database.rawQuery(userSqlQuery, new String[]{firstPhone});
                         } else {
+                            orderId = secondPhone;
                             userCursor = database.rawQuery(userSqlQuery, new String[]{secondPhone});
                         }
 
@@ -146,7 +151,13 @@ public class Comments extends AppCompatActivity {
                     }
                 }
 
-                addCommentToScreen(name, review);
+                Comment comment = new Comment();
+                comment.setUserId(orderId);
+                comment.setUserName(name);
+                comment.setReview(review);
+                comment.setRating(rating);
+
+                addCommentToScreen(comment);
             } while (mainCursor.moveToNext());
         }
     }
@@ -154,8 +165,10 @@ public class Comments extends AppCompatActivity {
     private void loadCommentsForUser(String _userId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String sqlQuery = "SELECT "
+                + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_USER_ID + ", "
+                + DBHelper.KEY_NAME_USERS + ", "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
-                + DBHelper.KEY_NAME_USERS
+                + DBHelper.KEY_RATING_REVIEWS
                 + " FROM "
                 + DBHelper.TABLE_WORKING_TIME + ", "
                 + DBHelper.TABLE_REVIEWS + ", "
@@ -182,19 +195,30 @@ public class Comments extends AppCompatActivity {
         final Cursor cursor = database.rawQuery(sqlQuery, new String[]{_userId, REVIEW_FOR_USER});
 
         if(cursor.moveToFirst()) {
-            int reviewIndex = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
+            int userIdIndex = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
             int nameIndex = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
+            int reviewIndex = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
+            int ratingIndex = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
 
             do {
+                String userId = cursor.getString(userIdIndex);
                 String name = cursor.getString(nameIndex);
                 String review = cursor.getString(reviewIndex);
-                addCommentToScreen(name, review);
+                float rating = Float.valueOf(cursor.getString(ratingIndex));
+
+                Comment comment = new Comment();
+                comment.setUserId(userId);
+                comment.setUserName(name);
+                comment.setReview(review);
+                comment.setRating(rating);
+
+                addCommentToScreen(comment);
             } while (cursor.moveToNext());
         }
     }
 
-    private void addCommentToScreen(String name, String review) {
-        CommentElement cElement = new CommentElement(name, review);
+    private void addCommentToScreen(Comment comment) {
+        CommentElement cElement = new CommentElement(comment);
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.mainCommentsLayout, cElement);

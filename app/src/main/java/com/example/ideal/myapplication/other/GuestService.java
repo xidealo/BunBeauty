@@ -23,6 +23,8 @@ import com.example.ideal.myapplication.editing.EditService;
 import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
 import com.example.ideal.myapplication.helpApi.UtilitiesApi;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.database.DataSnapshot;
@@ -93,7 +95,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private FragmentManager manager;
     private LinearLayout ratingLayout;
 
-    private UtilitiesApi utilitiesApi;
+    private WorkWithLocalStorageApi utilitiesApi;
 
     private DBHelper dbHelper;
 
@@ -145,7 +147,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        utilitiesApi = new UtilitiesApi(database);
+        utilitiesApi = new WorkWithLocalStorageApi(database);
 
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         //получаем данные о сервисе
@@ -499,11 +501,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
                 addDialogInLocalStorage(dialogId, firstPhone, secondPhone);
 
-                if(firstPhone != ownerId) {
+                if(!firstPhone.equals(ownerId)) {
                     loadUserForThisReview(firstPhone);
                 }
 
-                if(secondPhone != ownerId) {
+                if(!secondPhone.equals(ownerId)) {
                     loadUserForThisReview(firstPhone);
                 }
             }
