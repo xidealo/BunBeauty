@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Messages;
+import com.example.ideal.myapplication.fragments.objects.Comment;
 
 public class CommentElement extends Fragment implements View.OnClickListener{
 
@@ -39,11 +40,11 @@ public class CommentElement extends Fragment implements View.OnClickListener{
     }
 
     @SuppressLint("ValidFragment")
-    public CommentElement(String _userId, String _userName, String _review, float _rating) {
-        userId = _userId;
-        userName = _userName;
-        review = _review;
-        rating = _rating;
+    public CommentElement(Comment comment) {
+        userId = comment.getUserId();
+        userName = comment.getUserName();
+        review = comment.getReview();
+        rating = comment.getRating();
     }
 
     @Override

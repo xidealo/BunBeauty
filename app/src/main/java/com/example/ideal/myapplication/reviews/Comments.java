@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.objects.Comment;
 import com.example.ideal.myapplication.other.DBHelper;
 
 public class Comments extends AppCompatActivity {
@@ -114,7 +115,7 @@ public class Comments extends AppCompatActivity {
                 String name = "";
                 String orderId = mainCursor.getString(orderIdIndex);
                 String review = mainCursor.getString(reviewIndex);
-                float raiting = Float.valueOf(mainCursor.getString(ratingIndex));
+                float rating = Float.valueOf(mainCursor.getString(ratingIndex));
 
                 if(orderId.equals("0")) {
                     String messageId = mainCursor.getString(messageIdIndex);
@@ -150,7 +151,13 @@ public class Comments extends AppCompatActivity {
                     }
                 }
 
-                addCommentToScreen(orderId, name, review, raiting);
+                Comment comment = new Comment();
+                comment.setUserId(orderId);
+                comment.setUserName(name);
+                comment.setReview(review);
+                comment.setRating(rating);
+
+                addCommentToScreen(comment);
             } while (mainCursor.moveToNext());
         }
     }
@@ -199,13 +206,19 @@ public class Comments extends AppCompatActivity {
                 String review = cursor.getString(reviewIndex);
                 float rating = Float.valueOf(cursor.getString(ratingIndex));
 
-                addCommentToScreen(userId, name, review, rating);
+                Comment comment = new Comment();
+                comment.setUserId(userId);
+                comment.setUserName(name);
+                comment.setReview(review);
+                comment.setRating(rating);
+
+                addCommentToScreen(comment);
             } while (cursor.moveToNext());
         }
     }
 
-    private void addCommentToScreen(String userId, String name, String review, float rating) {
-        CommentElement cElement = new CommentElement(userId, name, review, rating);
+    private void addCommentToScreen(Comment comment) {
+        CommentElement cElement = new CommentElement(comment);
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.mainCommentsLayout, cElement);
