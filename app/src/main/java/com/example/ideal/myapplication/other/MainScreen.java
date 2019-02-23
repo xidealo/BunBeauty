@@ -16,7 +16,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
-import com.example.ideal.myapplication.helpApi.UtilitiesApi;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -190,8 +190,8 @@ public class MainScreen extends AppCompatActivity {
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
 
-        UtilitiesApi utilitiesApi = new UtilitiesApi(database);
-        boolean isUpdate =  utilitiesApi
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+        boolean isUpdate =  workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
 
         // Проверка есть ли такой сервис в SQLite

@@ -24,8 +24,6 @@ import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
-import com.example.ideal.myapplication.helpApi.UtilitiesApi;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
