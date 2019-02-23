@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:theme="@style/allPages"
-    tools:context=".reviews.RatingBarForServiceElement">
+    tools:context=".reviews.RatingBarElement">
 
     <RatingBar
         android:id="@+id/ratingBarRatingBarForService"
@@ -13,6 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:isIndicator="true"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
         />
     <TextView
         android:id="@+id/avgRatingRatingBarElementText"
