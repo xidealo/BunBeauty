@@ -25,6 +25,8 @@ import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.reviews.RatingBarForServiceElement;
+import com.example.ideal.myapplication.helpApi.UtilitiesApi;
+import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -440,7 +442,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                     } else {
                                         loadUserForThisReview(userId);
                                     }
-
                                 }
                             }
                             counter++;
@@ -636,8 +637,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         ratingLayout.removeAllViews();
 
-        RatingBarForServiceElement fElement
-                = new RatingBarForServiceElement(avgRating, countOfRates, serviceId, REVIEW_FOR_SERVICE);
+        RatingBarElement fElement
+                = new RatingBarElement(avgRating, countOfRates, serviceId, REVIEW_FOR_SERVICE);
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.resultGuestServiceLayout, fElement);
         transaction.commit();
