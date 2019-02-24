@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DatabaseReference;
@@ -63,7 +66,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         setContentView(R.layout.my_calendar);
 
         mainLayout = findViewById(R.id.mainMyCalendarLayout);
-        nextBtn = findViewById(R.id.continueMyCalendarBtn2);
+        nextBtn = findViewById(R.id.continueMyCalendarBtn);
         dayBtns = new Button[WEEKS_COUNT][DAYS_COUNT];
 
         dbHelper = new DBHelper(this);
@@ -72,6 +75,11 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         // получаем статус, чтобы определить, кто зашел, worker or User
         statusUser = getIntent().getStringExtra(STATUS_USER_BY_SERVICE);
         serviceId = getIntent().getStringExtra(SERVICE_ID);
+
+        FragmentManager manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder(this);
+        panelBuilder.buildFooter(manager, R.id.footerMyCalendarLayout);
+        panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyCalendarLayout);
 
         // создаём календарь
         createCalendar();
@@ -82,7 +90,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.continueMyCalendarBtn2:
+            case R.id.continueMyCalendarBtn:
                 if(statusUser.equals(WORKER)){
                     if(isDaySelected()) {
                         addWorkingDay();

@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Service;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -52,6 +55,11 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         nameServiceInput = findViewById(R.id.nameAddServiceInput);
         costAddServiceInput = findViewById(R.id.costAddServiceInput);
         descriptionServiceInput = findViewById(R.id.descriptionAddServiceInput);
+
+        FragmentManager manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder(this);
+        panelBuilder.buildFooter(manager, R.id.footerAddServiceLayout);
+        panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerAddServiceLayout);
 
         dbHelper = new DBHelper(this);
 

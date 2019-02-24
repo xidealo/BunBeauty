@@ -6,9 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".reviews.Comments">
 
-    <LinearLayout
-        android:id="@+id/mainCommentsLayout"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"></LinearLayout>
+        app:layout_constraintBottom_toTopOf="@+id/footerCommentsLayout"
+        app:layout_constraintTop_toBottomOf="@+id/headerCommentsLayout">
+
+        <LinearLayout
+            android:id="@+id/mainCommentsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/headerCommentsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/footerCommentsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </android.support.constraint.ConstraintLayout>

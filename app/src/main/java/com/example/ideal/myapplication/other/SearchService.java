@@ -23,6 +23,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -77,6 +78,13 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
         findBtn = findViewById(R.id.findServiceSearchServiceBtn);
 
+        dbHelper = new DBHelper(this);
+
+        manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder(this);
+        panelBuilder.buildFooter(manager, R.id.footerSearchServiceLayout);
+        panelBuilder.buildHeader(manager, "Поиск", R.id.headerSearchServiceLayout);
+
         //создаём выпадающее меню на основе массива городов
         citySpinner = findViewById(R.id.citySearchServiceSpinner);
         citySpinner.setPrompt("Город");
@@ -91,9 +99,6 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
         searchLineInput = findViewById(R.id.searchLineSearchServiceInput);
 
         resultLayout = findViewById(R.id.resultSearchServiceLayout);
-
-        dbHelper = new DBHelper(this);
-        manager = getSupportFragmentManager();
 
         showServicesInHomeTown();
 
@@ -462,10 +467,10 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
     // Вывод фрагмента сервиса на экран
     private void addToScreen(Service service, User user) {
-        foundServiceElement fElement = new foundServiceElement(service, user);
+        /*foundServiceElement fElement = new foundServiceElement(service, user);
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.resultSearchServiceLayout, fElement);
-        transaction.commit();
+        transaction.commit();*/
     }
 
     private void attentionNothingFound() {

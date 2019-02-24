@@ -1,83 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".createService.AddService"
+    tools:context=".editing.EditProfile"
     android:theme="@style/allPages">
 
     <EditText
         android:id="@+id/nameEditProfileInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="33dp"
-        android:layout_marginBottom="24dp"
         android:ems="10"
         android:hint="@string/nameAddServiceTB"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/cityEditProfileInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <EditText
         android:id="@+id/cityEditProfileInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="26dp"
         android:ems="10"
+        android:hint="@string/cityRegistration"
         android:inputType="textPersonName"
-        android:hint="@string/cityRegistration"/>
+        app:layout_constraintBottom_toTopOf="@+id/phoneEditProfileInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <EditText
         android:id="@+id/phoneEditProfileInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="26dp"
         android:ems="10"
         android:hint="@string/phone"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/editProfileEditProfileBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <Button
         android:id="@+id/editProfileEditProfileBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/edit" />
+        android:text="@string/edit"
+        app:layout_constraintBottom_toTopOf="@+id/codeEditProfileInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <EditText
         android:id="@+id/codeEditProfileInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="24dp"
-        android:visibility="invisible"
-        android:layout_marginBottom="26dp"
         android:ems="10"
         android:hint="@string/enterCode"
-        android:inputType="number" />
+        android:inputType="number"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/verifyProfileEditProfileBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
+
     <Button
         android:id="@+id/verifyProfileEditProfileBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/verifyCode"
         android:visibility="invisible"
-        android:layout_gravity="center"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/verifyCode" />
+        app:layout_constraintBottom_toTopOf="@+id/resendProfileEditProfileBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
+
     <Button
         android:id="@+id/resendProfileEditProfileBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:text="@string/resendCode"
         android:visibility="invisible"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/resendCode" />
+        app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/headerEditProfileLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/footerEditProfileLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
