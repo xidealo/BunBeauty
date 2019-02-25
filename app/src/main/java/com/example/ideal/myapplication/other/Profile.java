@@ -27,7 +27,7 @@ import com.example.ideal.myapplication.editing.EditProfile;
 import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
-import com.example.ideal.myapplication.helpApi.UtilitiesApi;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.reviews.DownloadServiceData;
@@ -91,7 +91,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private DBHelper dbHelper;
     private String ownerId;
     private WorkWithTimeApi workWithTimeApi;
-    private UtilitiesApi utilitiesApi;
+    private WorkWithLocalStorageApi workWithLocalStorageApi;
 
     private FragmentManager manager;
 
@@ -127,7 +127,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        utilitiesApi = new UtilitiesApi(database);
+        workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
         manager = getSupportFragmentManager();
         //получаем id пользователя
@@ -366,7 +366,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_NAME_USERS, name);
 
-        boolean isUpdate = utilitiesApi
+        boolean isUpdate = workWithLocalStorageApi
                 .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
                         userId);
 
@@ -387,7 +387,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_NAME_SERVICES, name);
 
-        boolean isUpdate = utilitiesApi
+        boolean isUpdate = workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES,
                         serviceId);
 
@@ -408,7 +408,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
         contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
 
-        boolean isUpdate = utilitiesApi
+        boolean isUpdate = workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_WORKING_DAYS,
                         dayId);
 
@@ -431,7 +431,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
 
-        boolean isUpdate = utilitiesApi
+        boolean isUpdate = workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_WORKING_TIME,
                         timeId);
 
@@ -521,7 +521,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_TYPE_REVIEWS, ratingReview.getType());
         contentValues.put(DBHelper.KEY_WORKING_TIME_ID_REVIEWS, ratingReview.getWorkingTimeId());
 
-        boolean isUpdate = utilitiesApi
+        boolean isUpdate = workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_REVIEWS,
                         reviewId);
 

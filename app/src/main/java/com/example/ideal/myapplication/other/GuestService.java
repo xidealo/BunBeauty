@@ -21,7 +21,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.editing.EditService;
 import com.example.ideal.myapplication.fragments.objects.User;
-import com.example.ideal.myapplication.helpApi.UtilitiesApi;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,7 +61,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private FragmentManager manager;
     private LinearLayout ratingLayout;
 
-    private UtilitiesApi utilitiesApi;
+    private WorkWithLocalStorageApi workWithLocalStorageApi;
 
     private DBHelper dbHelper;
 
@@ -113,7 +113,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        utilitiesApi = new UtilitiesApi(database);
+        workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         //получаем данные о сервисе
@@ -264,7 +264,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         contentValues.put(DBHelper.KEY_NAME_USERS,localUser.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS,localUser.getCity());
 
-        boolean isUpdate = utilitiesApi
+        boolean isUpdate = workWithLocalStorageApi
                 .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
                         localUser.getPhone());
 

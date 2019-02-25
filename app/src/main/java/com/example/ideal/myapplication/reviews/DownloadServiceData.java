@@ -15,7 +15,8 @@ import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
-import com.example.ideal.myapplication.helpApi.UtilitiesApi;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,7 +62,7 @@ public class DownloadServiceData {
     private static final String SECOND_PHONE = "second phone";
 
     private long currentCountOfDays;
-    private UtilitiesApi utilitiesApi;
+    private WorkWithLocalStorageApi workWithLocalStorageApi;
     private SQLiteDatabase localDatabase;
 
     private String ownerId;
@@ -83,7 +84,7 @@ public class DownloadServiceData {
 
         manager = _manager;
 
-        utilitiesApi = new UtilitiesApi(localDatabase);
+        workWithLocalStorageApi = new WorkWithLocalStorageApi(localDatabase);
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         service = new Service();
@@ -260,7 +261,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, dayDate);
         contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
 
-        boolean isUpdate = utilitiesApi
+        boolean isUpdate = workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_WORKING_DAYS, dayId);
 
         if (isUpdate) {
@@ -280,9 +281,8 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, timeDate);
         contentValues.put(DBHelper.KEY_USER_ID, timeUserId);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, timeWorkingDayId);
-        UtilitiesApi utilitiesApi = new UtilitiesApi(localDatabase);
 
-        boolean isUpdate = utilitiesApi
+        boolean isUpdate = workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
 
         if (isUpdate) {
@@ -306,7 +306,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_MESSAGE_ID_REVIEWS, ratingReview.getMessageId());
 
         //для проверки на update || insert в таблицу
-        boolean isUpdate =  utilitiesApi
+        boolean isUpdate =  workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_REVIEWS,
                         ratingReview.getId());
         if(isUpdate){
@@ -403,7 +403,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_DIALOG_ID_MESSAGES, message.getDialogId());
 
         //для проверки на update || insert в таблицу
-        boolean isUpdate =  utilitiesApi
+        boolean isUpdate =  workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_MESSAGES, message.getId());
         if(isUpdate){
             localDatabase.update(DBHelper.TABLE_MESSAGES, contentValues,
@@ -450,7 +450,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_NAME_USERS,localUser.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS,localUser.getCity());
 
-        boolean isUpdate = utilitiesApi
+        boolean isUpdate = workWithLocalStorageApi
                 .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
                         localUser.getPhone());
 
@@ -473,7 +473,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_SECOND_USER_ID_DIALOGS, secondPhone);
 
         //для проверки на update || insert в таблицу
-        boolean isUpdate =  utilitiesApi
+        boolean isUpdate =  workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_DIALOGS, dialogId);
         if(isUpdate){
             localDatabase.update(DBHelper.TABLE_DIALOGS, contentValues,
@@ -495,8 +495,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
 
-        UtilitiesApi utilitiesApi = new UtilitiesApi(localDatabase);
-        boolean isUpdate =  utilitiesApi
+        boolean isUpdate =  workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
 
         // Проверка есть ли такой сервис в SQLite
