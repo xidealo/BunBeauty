@@ -102,7 +102,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
         switch (v.getId()){
             case  R.id.logInAuthorizationBtn:
-
                 if(isFullInputs()) {
                     logInBtn.setClickable(false);
                     String myPhoneNumber = convertPhoneToNormalView(String.valueOf(phoneInput.getText()));
