@@ -462,10 +462,10 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
     // Вывод фрагмента сервиса на экран
     private void addToScreen(Service service, User user) {
-        foundServiceElement fElement = new foundServiceElement(service, user);
+        /*foundServiceElement fElement = new foundServiceElement(service, user);
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.resultSearchServiceLayout, fElement);
-        transaction.commit();
+        transaction.commit();*/
     }
 
     private void attentionNothingFound() {

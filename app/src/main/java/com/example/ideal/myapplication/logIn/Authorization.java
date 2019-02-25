@@ -18,6 +18,7 @@ import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithViewApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.Profile;
+import com.example.ideal.myapplication.reviews.DownloadServiceData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,8 +46,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     private static final String USER_ID = "user id";
     private static final String DESCRIPTION = "description";
     private static final String COST = "cost";
-    private static final String RATING = "rating";
-    private static final String COUNT_OF_RATES = "count of rates";
 
     private static final String WORKING_TIME = "working time";
     private static final String WORKING_DAY_ID = "working day id";
@@ -102,7 +101,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
         switch (v.getId()){
             case  R.id.logInAuthorizationBtn:
-
                 if(isFullInputs()) {
                     logInBtn.setClickable(false);
                     String myPhoneNumber = convertPhoneToNormalView(String.valueOf(phoneInput.getText()));
@@ -189,6 +187,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     }
 
     private void loadServiceByUserPhone(final String myPhoneNumber, final String myPassword) {
+        final SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
         Query query = FirebaseDatabase.getInstance().getReference(SERVICES).
                 orderByChild(USER_ID).
                 equalTo(myPhoneNumber);
@@ -205,21 +204,12 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
                 for (DataSnapshot service : dataSnapshot.getChildren()) {
                     String serviceId = String.valueOf(service.getKey());
-                    String serviceName = String.valueOf(service.child(NAME).getValue());
-                    String serviceDescription = String.valueOf(service.child(DESCRIPTION).getValue());
-                    String serviceCost = String.valueOf(service.child(COST).getValue());
 
-                    Service newService = new Service();
-                    newService.setId(serviceId);
-                    newService.setName(serviceName);
-                    newService.setDescription(serviceDescription);
-                    newService.setCost(serviceCost);
-                    newService.setUserId(myPhoneNumber);
-
-                    addUserServicesInLocalStorage(newService);
-
+                    DownloadServiceData downloadServiceData = new DownloadServiceData();
+                    downloadServiceData.loadSchedule(serviceId, localDatabase,
+                            "Authorization", null);
                     serviceCounter++;
-                    if(serviceCounter==servicesCount) {
+                    if (serviceCounter == servicesCount) {
                         loadTimeByUserPhone(myPhoneNumber, myPassword);
                     }
                 }

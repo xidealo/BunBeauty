@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
@@ -20,15 +21,18 @@ public class foundServiceProfileElement extends Fragment implements View.OnClick
 
     final String SERVICE_ID = "service id";
 
-    TextView nameText;
+    private TextView nameText;
+    private RatingBar ratingBar;
 
-    String idString;
-    String nameString;
+    private String idString;
+    private String nameString;
+    private float avgRating;
 
     @SuppressLint("ValidFragment")
-    public foundServiceProfileElement(Service service) {
+    public foundServiceProfileElement(float _avgRating,Service service) {
         idString = service.getId();
         nameString = service.getName();
+        avgRating = _avgRating;
     }
 
     @Override
@@ -40,12 +44,14 @@ public class foundServiceProfileElement extends Fragment implements View.OnClick
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         nameText = view.findViewById(R.id.serviceNameFoundServiceProfileElementText);
+        ratingBar = view.findViewById(R.id.ratingBarFondServiceProfileElement);
         nameText.setOnClickListener(this);
         setData();
     }
 
     private void setData() {
         nameText.setText(nameString);
+        ratingBar.setRating(avgRating);
     }
 
     @Override
