@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Service;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.GuestService;
@@ -81,11 +83,15 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.edit_service);
 
         Button editServicesBtn = findViewById(R.id.editServiceEditServiceBtn);
-        Button deleteServiceBtn = findViewById(R.id.deleteServiceEditServiceBtn);
 
         nameServiceInput = findViewById(R.id.nameEditServiceInput);
         costServiceInput = findViewById(R.id.costEditServiceInput);
         descriptionServiceInput = findViewById(R.id.descriptionEditServiceInput);
+
+        FragmentManager manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder(this);
+        panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
+        panelBuilder.buildHeader(manager, "Настройки", R.id.headerEditServiceLayout);
 
         // Получаем id сервиса
         serviceId = getIntent().getStringExtra(SERVICE_ID);
@@ -113,7 +119,6 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         cursor.close();
         editServicesBtn.setOnClickListener(this);
-        deleteServiceBtn.setOnClickListener(this);
     }
 
     @Override
@@ -149,17 +154,17 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 goToService();
                 break;
 
-            case R.id.deleteServiceEditServiceBtn:
-                if(withoutOrders()) {
-                    deleteThisServiceFromEverywhere();
-                }
-                else {
-                    attentionItHasOrders();
-                }
-                break;
-
             default:
                 break;
+        }
+    }
+
+    public void deleteThisService() {
+        if(withoutOrders()) {
+            deleteThisServiceFromEverywhere();
+        }
+        else {
+            attentionItHasOrders();
         }
     }
 

@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.reviews.DownloadServiceData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,6 +51,10 @@ public class MainScreen extends AppCompatActivity {
         manager = getSupportFragmentManager();
 
         dbHelper = new DBHelper(this);
+
+        PanelBuilder panelBuilder = new PanelBuilder(this);
+        panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
+        panelBuilder.buildHeader(manager, "Главная", R.id.headerMainScreenLayout);
 
         createMainScreen();
     }

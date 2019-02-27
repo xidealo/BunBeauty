@@ -13,5 +13,6 @@
     <color name="disabledButton">#7fffffff</color>
     <color name="selectedButton">#ffd646</color>
     <color name="dayWithTimes">#0091B7</color>
+    <color name="mainColor">#0091FF</color>
 
 </resources>

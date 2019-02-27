@@ -1,52 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".createService.AddService"
-    android:theme="@style/allPages">
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".createService.AddService"
+        android:theme="@style/allPages">
 
     <EditText
         android:id="@+id/nameAddServiceInput"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="33dp"
-        android:layout_marginBottom="24dp"
-        android:inputType="textPersonName|textCapWords"
-        android:ems="10"
         android:hint="@string/nameAddServiceTB"
-        android:layout_gravity="center" />
+        android:inputType="textPersonName|textCapWords"
+        app:layout_constraintBottom_toTopOf="@+id/costAddServiceInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <EditText
         android:id="@+id/costAddServiceInput"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="26dp"
+        android:layout_gravity="center"
         android:ems="10"
-        android:inputType="number"
         android:hint="@string/costAddServiceTB"
-        android:layout_gravity="center" />
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionAddServiceInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <EditText
         android:id="@+id/descriptionAddServiceInput"
-        android:inputType="textMultiLine"
-        android:layout_width="312dp"
-        android:layout_height="233dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginBottom="17dp"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
-        android:ems="10" />
+        android:ems="10"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toTopOf="@+id/addServiceAddServiceBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <Button
         android:id="@+id/addServiceAddServiceBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="5dp"
         android:layout_gravity="center"
-        android:text="@string/addServices" />
+        android:text="@string/addServices"
+        app:layout_constraintBottom_toTopOf="@+id/footerAddServiceLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.90"
+        tools:ignore="MissingConstraints" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/headerAddServiceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/footerAddServiceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

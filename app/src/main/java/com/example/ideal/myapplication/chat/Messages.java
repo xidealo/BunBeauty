@@ -14,6 +14,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.chatElements.MessageOrderElement;
 import com.example.ideal.myapplication.fragments.chatElements.MessageReviewElement;
 import com.example.ideal.myapplication.fragments.objects.Message;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.other.DBHelper;
 
 public class Messages extends AppCompatActivity {
@@ -32,6 +33,7 @@ public class Messages extends AppCompatActivity {
     private String myPhone;
     private String dialogId;
     private String senderPhone;
+    private String senderName;
     private DBHelper dbHelper;
 
     private FragmentManager manager;
@@ -43,16 +45,21 @@ public class Messages extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messages);
 
-        dialogId = getIntent().getStringExtra(DIALOG_ID);
-        myPhone = getUserId();
-
-        manager = getSupportFragmentManager();
         dbHelper = new DBHelper(this);
 
-        messagesLayout = findViewById(R.id.resultsMessageLayout);
-
+        dialogId = getIntent().getStringExtra(DIALOG_ID);
+        myPhone = getUserId();
         // получаем телефон нашего собеседеника
         senderPhone = getSenderPhone(dialogId);
+        senderName = getSenderName(senderPhone);
+
+        manager = getSupportFragmentManager();
+
+        PanelBuilder panelBuilder = new PanelBuilder(this);
+        panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
+        panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderPhone);
+
+        messagesLayout = findViewById(R.id.resultsMessagesLayout);
     }
 
     private String getSenderPhone(String dialogId) {
@@ -175,7 +182,6 @@ public class Messages extends AppCompatActivity {
             String serviceId = getServiceId(timeId);
             boolean isMyService = isMyService(serviceId);
             String serviceName = getServiceName(serviceId);
-            String senderName = getSenderName(senderPhone);
             String orderId = orderCursor.getString(orderCursor.getColumnIndex(DBHelper.KEY_ID));
 
             message.setIsCanceled(isCanceled);
@@ -227,7 +233,6 @@ public class Messages extends AppCompatActivity {
                     String time = getTime(timeId);
                     String date = getDate(timeId);
                     String serviceName = getServiceName(serviceId);
-                    String senderName = getSenderName(senderPhone);
 
                     message.setIsCanceled(isCanceled);
                     message.setIsRate(isRate);
@@ -405,7 +410,7 @@ public class Messages extends AppCompatActivity {
             MessageOrderElement fElement = new MessageOrderElement(message);
 
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.resultsMessageLayout, fElement);
+            transaction.add(R.id.resultsMessagesLayout, fElement);
             transaction.commit();
     }
 
@@ -414,7 +419,7 @@ public class Messages extends AppCompatActivity {
             MessageReviewElement fElement = new MessageReviewElement(message);
 
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.resultsMessageLayout, fElement);
+            transaction.add(R.id.resultsMessagesLayout, fElement);
             transaction.commit();
         }
     }

@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Comment;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.other.DBHelper;
 
 public class Comments extends AppCompatActivity {
@@ -39,6 +40,10 @@ public class Comments extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
         manager = getSupportFragmentManager();
+
+        PanelBuilder panelBuilder = new PanelBuilder(this);
+        panelBuilder.buildFooter(manager, R.id.footerCommentsLayout);
+        panelBuilder.buildHeader(manager, "Отзывы", R.id.headerCommentsLayout);
 
         loadComments();
     }
