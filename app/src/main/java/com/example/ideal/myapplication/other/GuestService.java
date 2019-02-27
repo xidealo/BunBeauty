@@ -19,8 +19,10 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
-import com.example.ideal.myapplication.editing.EditService;
+import com.example.ideal.myapplication.fragments.objects.Message;
+import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.database.DataSnapshot;
@@ -43,15 +45,19 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String USERS = "users";
 
     private static final String STATUS_USER_BY_SERVICE = "status User";
-    private static final String OWNER_ID = "owner id";
 
     private static final String REVIEW_FOR_SERVICE = "review for service";
 
     private String status;
+    private float sumRates;
+    private int counter;
+    private long countOfRates;
+    private boolean addToScreen;
 
     private String userId;
     private String serviceId;
     private String ownerId;
+    private String serviceName;
 
     private TextView nameText;
     private TextView costText;
@@ -69,6 +75,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.guest_service);
+
+        init();
     }
 
     @Override
@@ -86,11 +94,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 }
 
                 break;
-            case R.id.editServiceGuestServiceBtn:
-                goToEditService();
-                break;
-            case R.id.profileGuestServiceBtn:
-                goToProfile();
+
             default:
                 break;
         }
@@ -105,8 +109,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         progressBar = findViewById(R.id.progressBarGuestService);
 
         Button editScheduleBtn = findViewById(R.id.editScheduleGuestServiceBtn);
-        Button editServiceBtn = findViewById(R.id.editServiceGuestServiceBtn);
-        Button profileBtn = findViewById(R.id.profileGuestServiceBtn);
         manager = getSupportFragmentManager();
 
         ratingLayout = findViewById(R.id.resultGuestServiceLayout);
@@ -129,19 +131,19 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         // мой сервис или нет?
         boolean isMyService = userId.equals(ownerId);
 
+        PanelBuilder panelBuilder = new PanelBuilder(this);
+        panelBuilder.buildHeader(manager, serviceName, R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
+        panelBuilder.buildFooter(manager, R.id.footerGuestServiceLayout);
+
         if (isMyService) {
             status = WORKER;
             editScheduleBtn.setText("Редактировать расписание");
-            editServiceBtn.setVisibility(View.VISIBLE);
-            editServiceBtn.setText("Редактировать сервис");
         } else {
             status = USER;
             editScheduleBtn.setText("Расписание");
         }
 
         editScheduleBtn.setOnClickListener(this);
-        editServiceBtn.setOnClickListener(this);
-        profileBtn.setOnClickListener(this);
     }
 
     private void getDataAboutService(String serviceId) {
@@ -183,7 +185,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
 
             ownerId = cursor.getString(indexUserId);
-            nameText.setText(cursor.getString(indexName));
+            serviceName = cursor.getString(indexName);
+
+            nameText.setText(serviceName);
             costText.setText(cursor.getString(indexMinCost));
             descriptionText.setText(cursor.getString(indexDescription));
             do {
@@ -321,8 +325,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-
-        init();
         loadProfileData();
     }
 
@@ -364,20 +366,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private void setWithoutRating(){
         progressBar.setVisibility(View.GONE);
         withoutRatingText.setVisibility(View.VISIBLE);
-    }
-
-    private void goToEditService() {
-        Intent intent = new Intent(this, EditService.class);
-        intent.putExtra(SERVICE_ID, serviceId);
-
-        startActivity(intent);
-    }
-
-    private void goToProfile() {
-        Intent intent = new Intent(this, Profile.class);
-        intent.putExtra(OWNER_ID, ownerId);
-
-        startActivity(intent);
     }
 
     private void attentionBadConnection() {

@@ -27,6 +27,7 @@ import com.example.ideal.myapplication.editing.EditProfile;
 import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
@@ -103,11 +104,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         progressBar = findViewById(R.id.progressBarProfile);
 
         Button logOutBtn = findViewById(R.id.logOutProfileBtn);
-        Button findServicesBtn = findViewById(R.id.findServicesProfileBtn);
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
-        Button mainScreenBtn = findViewById(R.id.mainScreenProfileBtn);
-        Button editProfileBtn = findViewById(R.id.editProfileBtn);
-        Button dialogsBtn = findViewById(R.id.dialogsProfileBtn);
 
         SwitchCompat servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
 
@@ -141,6 +138,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             ownerId = userId;
         }
 
+        PanelBuilder panelBuilder = new PanelBuilder(this, ownerId);
+        panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
+        panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
+
         // Добавляем данные о пользователе
         updateProfileData(ownerId);
 
@@ -170,14 +171,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 }
             });
             addServicesBtn.setOnClickListener(this);
-            editProfileBtn.setOnClickListener(this);
         } else {
             // Не совпадает - чужой профиль
 
             // Скрываем функционал
             servicesOrOrdersSwitch.setVisibility(View.INVISIBLE);
             addServicesBtn.setVisibility(View.INVISIBLE);
-            editProfileBtn.setVisibility(View.INVISIBLE);
 
             // Отображаем все сервисы пользователя
             ordersLayout.setVisibility(View.INVISIBLE);
@@ -187,9 +186,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
 
         logOutBtn.setOnClickListener(this);
-        findServicesBtn.setOnClickListener(this);
-        mainScreenBtn.setOnClickListener(this);
-        dialogsBtn.setOnClickListener(this);
     }
 
     @Override
@@ -198,22 +194,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             case R.id.addServicesProfileBtn:
                 goToAddService();
                 break;
-            case R.id.findServicesProfileBtn:
-                goToSearchService();
-                break;
             case R.id.logOutProfileBtn:
                 annulStatus();
                 goToLogIn();
                 break;
-            case R.id.mainScreenProfileBtn:
-                goToMainScreen();
-                break;
-            case R.id.editProfileBtn:
-                goToEditProfile();
-                break;
-            case R.id.dialogsProfileBtn:
-                goToDialogs(); // DIALOGS
-                break;
+
             default:
                 break;
         }

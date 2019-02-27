@@ -189,7 +189,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
 
         // главная
         if (currentClass == MainScreen.class) {
-            goToSerachService();
+            goToSearchService();
         }
 
         // редактирование сервиса
@@ -221,7 +221,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
         startActivity(intent);
     }
 
-    private void goToSerachService() {
+    private void goToSearchService() {
         Intent intent = new Intent(getContext(), SearchService.class);
         startActivity(intent);
     }
