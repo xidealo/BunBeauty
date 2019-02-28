@@ -39,14 +39,16 @@ public class WorkWithLocalStorageApi {
         return isMyService;
     }
 
-    public String getServiceIdByTimeId(String workingTimeId) {
-        String serviceId;
+    public Cursor getServiceCursorByTimeId(String workingTimeId) {
         //Возвращает serviceId, использую workingTimeId
         //таблицы working time, working days, services
         //связь таблиц, уточнение по workingTimeId
         String sqlQuery =
                 "SELECT "
-                        + DBHelper.TABLE_CONTACTS_SERVICES +"."+ DBHelper.KEY_ID
+                        + DBHelper.TABLE_CONTACTS_SERVICES +"."+ DBHelper.KEY_ID + ", "
+                        + DBHelper.KEY_NAME_SERVICES + ", "
+                        + DBHelper.KEY_DATE_WORKING_DAYS + ", "
+                        + DBHelper.KEY_TIME_WORKING_TIME
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_SERVICES + ", "
                         + DBHelper.TABLE_WORKING_DAYS + ", "
@@ -62,15 +64,8 @@ public class WorkWithLocalStorageApi {
                         + " = "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID ;
         Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{workingTimeId});
-        if(cursor.moveToFirst()){
-            int indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID);
-            serviceId = cursor.getString(indexServiceId);
-        }
-        else {
-            serviceId = "0";
-        }
-        cursor.close();
-        return serviceId;
+
+        return cursor;
     }
 
     public boolean hasSomeData(String tableName, String id){

@@ -2,12 +2,15 @@ package com.example.ideal.myapplication.fragments.chatElements;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -145,9 +148,27 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         messageText.setText(text);
     }
 
+    public void confirm(Context context) {
+        AlertDialog dialog = new AlertDialog.Builder(context).create();
+        dialog.setTitle("Удалить услугу");
+        dialog.setMessage("Удалить услугу?");
+        dialog.setCancelable(false);
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Да", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int buttonId) {
+                setIsCanceled();
+            }
+        });
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Нет", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int buttonId) {
+            }
+        });
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        dialog.show();
+    }
+
     @Override
     public void onClick(View v) {
-        setIsCanceled();
+        confirm(getContext());
     }
 
     private void setIsCanceled() {

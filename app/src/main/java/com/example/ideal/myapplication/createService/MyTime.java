@@ -1,12 +1,14 @@
 package com.example.ideal.myapplication.createService;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.Display;
@@ -18,7 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
@@ -68,6 +70,9 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     private String workingDaysId;
     private String date;
     private String timeId;
+    private String serviceName;
+    private String time;
+    private String dataDay;
     private int width;
     private int height;
     private String dialogId = "";
@@ -166,8 +171,9 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                 }
                 else {
                     if (workingHours.size() == 1) {
-                        makeOrder();
                         // Обновляем id пользователя в таблице рабочего времени
+                        loadCurrentTimeId();
+                      
                         Toast.makeText(this, "Вы записались на услугу!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -221,6 +227,68 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                     }
                 }
                 break;
+        }
+    }
+
+    public void confirm(Context context) {
+        AlertDialog dialog = new AlertDialog.Builder(context).create();
+        dialog.setTitle("Запись на услугу");
+        dialog.setMessage("Записаться на услугу " + serviceName + " " + dataDay + " числа в " + time);
+        dialog.setCancelable(false);
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Да", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int buttonId) {
+                makeOrder();
+            }
+        });
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Нет", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int buttonId) {
+            }
+        });
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        dialog.show();
+    }
+
+    private void loadCurrentTimeId(){
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //получаем все время этого дня и кнопки на которую нажал
+        final Query query = database.getReference(WORKING_TIME)
+                .orderByChild(WORKING_DAYS_ID)
+                .equalTo(workingDaysId);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot workingTimeSnapshot) {
+                //делаем запрос по такому дню, такому времени
+                for (DataSnapshot time : workingTimeSnapshot.getChildren()) {
+                    if(String.valueOf(time.child("time").getValue()).equals(workingHours.get(0))) {
+                        timeId = String.valueOf(time.getKey());
+
+                        loadInformationAboutService(timeId);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                attentionBadConnection();
+            }
+        });
+    }
+
+    private void loadInformationAboutService(String workingTimeId) {
+
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
+
+        Cursor cursor = workWithLocalStorageApi.getServiceCursorByTimeId(workingTimeId);
+
+        if(cursor.moveToFirst()){
+            int indexNameService = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
+            int indexDateDay = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
+            int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
+
+            serviceName = cursor.getString(indexNameService);
+            dataDay = cursor.getString(indexDateDay);
+            time = cursor.getString(indexTime);
+            confirm(this);
         }
     }
 
@@ -448,44 +516,24 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     }
 
     // Записаться на данное время
+
     private void makeOrder() {
-        workingDaysId = getIntent().getStringExtra(WORKING_DAYS_ID);
+
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        //получаю время кнопки, на которую нажал
-        final String pickedTime = workingHours.get(0);
 
-        //получаем все время этого дня
-        final Query query = database.getReference(WORKING_TIME)
-                .orderByChild(WORKING_DAYS_ID)
-                .equalTo(workingDaysId);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //делаем запрос по такому дню, такому времени
-                for (DataSnapshot time : dataSnapshot.getChildren()) {
-                    if(String.valueOf(time.child("time").getValue()).equals(pickedTime)) {
-                        String timeId = String.valueOf(time.getKey());
+        // Вписываем телефон в working time (localStorage)
+        // До того onDataChange
+        updateLocalStorageTime();
 
-                        // Вписываем телефон в working time (firebase)
-                        DatabaseReference myRef = database.getReference(WORKING_TIME).child(timeId);
-                        Map<String, Object> items = new HashMap<>();
-                        items.put(USER_ID, userId);
-                        myRef.updateChildren(items);
+        // Вписываем телефон в working time (firebase)
+        DatabaseReference myRef = database.getReference(WORKING_TIME).child(timeId);
+        Map<String, Object> items = new HashMap<>();
+        items.put(USER_ID, getUserId());
+        myRef.updateChildren(items);
 
-                        // Вписываем телефон в working time (localStorage)
-                        updateLocalStorageTime();
-
-                        // Создаём диалог
-                        createDialog(workingDaysId);
-                        checkCurrentTimes();
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
+        // Создаём диалог
+        createDialog(workingDaysId);
+        //не очень хорошо, тк может записать в локалку но не записать в фб? (пропал инет)
     }
 
     private void createDialog(final String workingDaysId) {
