@@ -1,11 +1,14 @@
 package com.example.ideal.myapplication.editing;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -151,7 +154,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
             case R.id.deleteServiceEditServiceBtn:
                 if(withoutOrders()) {
-                    deleteThisServiceFromEverywhere();
+                    confirm(this);
                 }
                 else {
                     attentionItHasOrders();
@@ -202,6 +205,24 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         }
         cursor.close();
         return true;
+    }
+
+    public void confirm(Context context) {
+        AlertDialog dialog = new AlertDialog.Builder(context).create();
+        dialog.setTitle("Удалить услугу");
+        dialog.setMessage("Удалить услугу?");
+        dialog.setCancelable(false);
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Да", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int buttonId) {
+                deleteThisServiceFromServices();
+            }
+        });
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Нет", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int buttonId) {
+            }
+        });
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        dialog.show();
     }
 
     private void deleteThisServiceFromEverywhere() {
