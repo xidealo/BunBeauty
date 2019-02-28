@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -96,6 +98,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         editBtn = findViewById(R.id.editProfileEditProfileBtn);
         resendButton = findViewById(R.id.resendProfileEditProfileBtn);
         verifyButton = findViewById(R.id.verifyProfileEditProfileBtn);
+
+        FragmentManager manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder(this);
+        panelBuilder.buildFooter(manager, R.id.footerEditProfileLayout);
+        panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerEditProfileLayout);
+        Log.d(TAG, " R.id.footerAddServiceLayout: " +  R.id.footerAddServiceLayout);
 
         fbAuth = FirebaseAuth.getInstance();
         user = new User();

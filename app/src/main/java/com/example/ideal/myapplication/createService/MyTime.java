@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,6 +104,11 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
         SwitchCompat amOrPmMyTimeSwitch = findViewById(R.id.amOrPmMyTimeSwitch);
 
+        FragmentManager manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder(this);
+        panelBuilder.buildFooter(manager, R.id.footerMyTimeLayout);
+        panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyTimeLayout);
+
         //инициализация буферов
         workingHours = new ArrayList<>();
         removedHours = new ArrayList<>();
@@ -169,6 +173,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                     if (workingHours.size() == 1) {
                         // Обновляем id пользователя в таблице рабочего времени
                         loadCurrentTimeId();
+                      
                         Toast.makeText(this, "Вы записались на услугу!", Toast.LENGTH_SHORT).show();
                     }
                 }

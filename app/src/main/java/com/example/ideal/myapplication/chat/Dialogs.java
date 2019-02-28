@@ -20,6 +20,7 @@ import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -95,6 +96,11 @@ public class Dialogs extends AppCompatActivity {
         setContentView(R.layout.dialogs);
 
         manager = getSupportFragmentManager();
+
+        PanelBuilder panelBuilder = new PanelBuilder(this);
+        panelBuilder.buildFooter(manager, R.id.footerDialogsLayout);
+        panelBuilder.buildHeader(manager, "Диалоги", R.id.headerDialogsLayout);
+
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
         SQLiteDatabase database = dbHelper.getReadableDatabase();

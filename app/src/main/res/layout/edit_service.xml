@@ -1,60 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".createService.AddService"
+    tools:context=".editing.EditService"
     android:theme="@style/allPages">
 
     <EditText
         android:id="@+id/nameEditServiceInput"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="33dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
+        android:hint="@string/nameAddServiceTB"
         android:inputType="textPersonName"
-        android:hint="@string/nameAddServiceTB" />
+        app:layout_constraintBottom_toTopOf="@+id/costEditServiceInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <EditText
         android:id="@+id/costEditServiceInput"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="26dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
+        android:hint="@string/costAddServiceTB"
         android:inputType="textPersonName"
-        android:hint="@string/costAddServiceTB" />
+        app:layout_constraintBottom_toTopOf="@+id/descriptionEditServiceInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <EditText
         android:id="@+id/descriptionEditServiceInput"
-        android:layout_width="312dp"
-        android:layout_height="233dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="13dp"
-        android:layout_marginBottom="17dp"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
         android:ems="10"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toTopOf="@+id/editServiceEditServiceBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <Button
         android:id="@+id/editServiceEditServiceBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="5dp"
         android:layout_gravity="center"
-        android:text="@string/edit" />
+        android:text="@string/edit"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditServiceLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
-    <Button
-        android:id="@+id/deleteServiceEditServiceBtn"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="5dp"
-        android:layout_gravity="center"
-        android:text="@string/deleteService" />
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/nameEditServiceInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/headerEditServiceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/footerEditServiceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+
+</android.support.constraint.ConstraintLayout>
