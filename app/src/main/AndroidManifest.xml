@@ -9,21 +9,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".fragments.panelElements.TopPanel"></activity>
+        <activity android:name=".test.VerifyPhoneActivity"></activity>
+        <activity android:name=".test.ProfileActivity" />
+        <activity android:name=".test.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".fragments.panelElements.TopPanel" />
         <activity
             android:name=".reviews.PickedComment"
-            android:theme="@style/Theme.AppCompat.Dialog"></activity>
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity android:name=".reviews.Comments" />
         <activity android:name=".reviews.Review" />
         <activity android:name=".chat.Messages" />
         <activity android:name=".chat.Dialogs" />
         <activity android:name=".logIn.Registration" />
         <activity android:name=".logIn.Authorization">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".other.Profile" />
         <activity android:name=".other.SearchService" />
