@@ -7,9 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -19,6 +23,19 @@ import com.example.ideal.myapplication.helpApi.WorkWithViewApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.Profile;
 import com.example.ideal.myapplication.reviews.DownloadServiceData;
+import com.example.ideal.myapplication.test.ProfileActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskExecutors;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.FirebaseTooManyRequestsException;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,12 +46,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.TimeUnit;
 
 
 public class Authorization extends AppCompatActivity implements View.OnClickListener {
 
     private static final String FILE_NAME = "Info";
-    private static final String STATUS = "status";
     private static final String PHONE_NUMBER = "Phone number";
     private static final String PASS = "password";
 
@@ -56,16 +73,25 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     private static final String DATE = "data";
     private static final String TAG = "DBInf";
 
+    private Button logInBtn;
+    private Button verifyCodeBtn;
+    private Button resendCodeBtn;
+
+    private EditText phoneInput;
+    private EditText codeInput;
+
+    private Spinner codeSpinner;
 
     private long orderCounter;
-    Button logInBtn;
-    Button registrateBtn;
-
-    EditText phoneInput;
-    EditText passInput;
+    private String myPhoneNumber;
 
     DBHelper dbHelper;
     SharedPreferences sPref; //класс для работы с записью в файлы
+    FirebaseAuth fbAuth;
+    private String phoneVerificationId;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks verificationCallbacks;
+    private PhoneAuthProvider.ForceResendingToken resendToken;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,23 +99,26 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.authorization);
 
         dbHelper = new DBHelper(this);
-        boolean status = getStatus();
+        fbAuth = FirebaseAuth.getInstance();
 
-        logInBtn = findViewById(R.id.logInAuthorizationBtn);
-        registrateBtn = findViewById(R.id.registrationAuthorizationBtn);
+        logInBtn = findViewById(R.id.logInAuthBtn);
+        verifyCodeBtn = findViewById(R.id.verifyAuthBtn);
+        resendCodeBtn = findViewById(R.id.resendAuthBtn);
 
-        phoneInput = findViewById(R.id.phoneAuthorizationInput);
-        passInput = findViewById(R.id.passAuthorizationInput);
+        phoneInput = findViewById(R.id.phoneAuthInput);
+        codeInput = findViewById(R.id.codeAuthInput);
+
+        codeSpinner = findViewById(R.id.codeAuthSpinner);
+        codeSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, CountryCodes.countryNames));
 
         logInBtn.setOnClickListener(this);
-        registrateBtn.setOnClickListener(this);
+        verifyCodeBtn.setOnClickListener(this);
+        resendCodeBtn.setOnClickListener(this);
 
-        if(status) {
-            // получаем с локальных записей логин и пароль
-            String myPhoneNumber = getUserPhone();
-            String myPassword = getUserPass();
-
-            isAuthorizedUser(myPhoneNumber, myPassword);
+        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (fbUser != null) {
+            myPhoneNumber = fbUser.getPhoneNumber();
+            authorizeUser();
         } else {
             showViewsOnScreen();
         }
@@ -100,82 +129,150 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
 
         switch (v.getId()){
-            case  R.id.logInAuthorizationBtn:
-                if(isFullInputs()) {
+            case  R.id.logInAuthBtn:
+                myPhoneNumber = phoneInput.getText().toString();
+                if(isPhoneCorrect()) {
                     logInBtn.setClickable(false);
-                    String myPhoneNumber = convertPhoneToNormalView(String.valueOf(phoneInput.getText()));
-                    String myPassword = String.valueOf(passInput.getText());
-                    // Хэшируем пароль (для правильного сравнения)
-                    myPassword = encryptThisStringSHA512(myPassword);
-                    // Авторизируем пользователя
-                    isAuthorizedUser(myPhoneNumber, myPassword);
+                    String countryCode = CountryCodes.codes[codeSpinner.getSelectedItemPosition()];
+                    myPhoneNumber = countryCode + phoneInput.getText().toString();
+
+                    setUpVerificationCallbacks();
+                    sendVerificationCode();
                 }
                 break;
-            case R.id.registrationAuthorizationBtn:
-                goToConfirmation();
+
+            case R.id.verifyAuthBtn:
+                String code = codeInput.getText().toString();
+
+                if(code.trim().length() >= 6) {
+                    // подтверждаем код и если все хорошо, создаем юзера
+                    verifyCode(code);
+                } else {
+                    codeInput.setError("Неправильный код");
+                    codeInput.requestFocus();
+                }
+                break;
+
+            case R.id.resendAuthBtn:
+                resendVerificationCode();
             default:
                 break;
         }
     }
 
-    private void isAuthorizedUser(final String myPhoneNumber, final String myPassword) {
+    private void setUpVerificationCallbacks() {
+
+        verificationCallbacks =
+                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+
+                    @Override
+                    public void onVerificationCompleted(PhoneAuthCredential credential) {
+                        //вызывается, если номер подтвержден
+                        codeInput.setText("");
+                    }
+
+                    @Override
+                    public void onVerificationFailed(FirebaseException e) {
+
+                        if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                            // Invalid request
+                            Log.d(TAG, "Invalid credential: "
+                                    + e.getLocalizedMessage());
+                        } else if (e instanceof FirebaseTooManyRequestsException) {
+                            // SMS quota exceeded
+                            Log.d(TAG, "SMS Quota exceeded.");
+                        }
+                    }
+
+                    @Override
+                    public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken token) {
+                        //происходит, когда отослали код
+                        phoneVerificationId = verificationId;
+                        resendToken = token;
+
+                        codeInput.setVisibility(View.VISIBLE);
+                        verifyCodeBtn.setVisibility(View.VISIBLE);
+                        resendCodeBtn.setVisibility(View.VISIBLE);
+                    }
+                };
+    }
+
+    private void sendVerificationCode() {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                myPhoneNumber,
+                60,
+                TimeUnit.SECONDS,
+                TaskExecutors.MAIN_THREAD,
+                verificationCallbacks
+        );
+    }
+
+    private void resendVerificationCode() {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                myPhoneNumber,        // Phone number to verify
+                60,                 // Timeout duration
+                TimeUnit.SECONDS,   // Unit of timeout
+                this,               // Activity (for callback binding)
+                verificationCallbacks,         // OnVerificationStateChangedCallbacks
+                resendToken);             // ForceResendingToken from callbacks
+    }
+
+    public void verifyCode(String code) {
+        //получаем ответ гугл
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(phoneVerificationId, code);
+        //заходим с айфоном и токеном
+        signInWithPhoneAuthCredential(credential);
+    }
+
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+        //входим
+        fbAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        //если введен верный код
+                        if (task.isSuccessful()) {
+                            authorizeUser();
+                        } else {
+                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                codeInput.setError("Неправильный код");
+                                codeInput.requestFocus();
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void authorizeUser() {
+        // скарываем Views и запукаем прогресс бар
+        hideViewsOfScreen();
 
         final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(USERS).child(myPhoneNumber);
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                // Получаем пароль из Firebase
-                Object passObj = userSnapshot.child(PASS).getValue();
-                if (passObj != null) {
-                    String truePassword = passObj.toString();
-
-                    // Проверка на правильность пароля
-                    if (myPassword.equals(truePassword)) {
-                        // Пароль правильный
-
-                        // скарываем Views и запукаем прогресс бар
-                        hideViewsOfScreen();
-
-                        // Получаем остальные данные о пользователе
-                        Object name = userSnapshot.child(NAME).getValue();
-                        if(name == null) {
-                            // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
-                            goToRegistration(myPhoneNumber);
-                        } else {
-                            String city = String.valueOf(userSnapshot.child(CITY).getValue());
-
-                            User user = new User();
-                            user.setPhone(String.valueOf(myPhoneNumber));
-                            user.setName(String.valueOf(name));
-                            user.setCity(city);
-
-                            // Очищаем LocalStorage
-                            clearSQLite();
-
-                            // Добавляем все данные о пользователе в SQLite
-                            addUserInfoInLocalStorage(user);
-
-                            // Загружаем сервисы пользователя из FireBase
-                            loadServiceByUserPhone(myPhoneNumber, myPassword);
-                        }
-                    } else{
-                        logInBtn.setClickable(true);
-                        // Пароль - неверный
-                        // Показываем все вью
-                        showViewsOnScreen();
-                        // Проверяем поля ввода
-                        checkInputs();
-                        // Обновляем статус
-                        saveStatus(false);
-                    }
+                // Получаем остальные данные о пользователе
+                Object name = userSnapshot.child(NAME).getValue();
+                if (name == null) {
+                    // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
+                    goToRegistration(myPhoneNumber);
                 } else {
-                    logInBtn.setClickable(true);
-                    // Такого пользователя вообще нет в Firebase
-                    // Показываем все вью
-                    showViewsOnScreen();
-                    // Проверяем поля ввода
-                    checkInputs();
+                    String city = String.valueOf(userSnapshot.child(CITY).getValue());
+
+                    User user = new User();
+                    user.setPhone(myPhoneNumber);
+                    user.setName(String.valueOf(name));
+                    user.setCity(city);
+
+                    // Очищаем LocalStorage
+                    clearSQLite();
+
+                    // Добавляем все данные о пользователе в SQLite
+                    addUserInfoInLocalStorage(user);
+
+                    // Загружаем сервисы пользователя из FireBase
+                    loadServiceByUserPhone();
                 }
             }
 
@@ -186,7 +283,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private void loadServiceByUserPhone(final String myPhoneNumber, final String myPassword) {
+    private void loadServiceByUserPhone() {
         final SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
         Query query = FirebaseDatabase.getInstance().getReference(SERVICES).
                 orderByChild(USER_ID).
@@ -197,7 +294,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
                 long servicesCount = dataSnapshot.getChildrenCount();
 
                 if(servicesCount==0){
-                    loadTimeByUserPhone(myPhoneNumber, myPassword);
+                    loadTimeByUserPhone();
                     return;
                 }
                 long serviceCounter = 0;
@@ -210,7 +307,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
                             "Authorization", null);
                     serviceCounter++;
                     if (serviceCounter == servicesCount) {
-                        loadTimeByUserPhone(myPhoneNumber, myPassword);
+                        loadTimeByUserPhone();
                     }
                 }
             }
@@ -222,7 +319,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private void loadTimeByUserPhone(final String myPhoneNumber, final String myPassword) {
+    private void loadTimeByUserPhone() {
         Query timeQuery = FirebaseDatabase.getInstance().getReference(WORKING_TIME)
                 .orderByChild(USER_ID)
                 .equalTo(myPhoneNumber);
@@ -231,7 +328,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 final long ordersCount = dataSnapshot.getChildrenCount();
                 if(ordersCount==0){
-                    logIn(myPhoneNumber, myPassword);
+                    goToProfile();
                     return;
                 }
                 orderCounter = 0;
@@ -242,7 +339,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
                     addTimeInLocalStorage(timeId, time, myPhoneNumber, timeWorkingDayId);
 
-                    loadWorkingDayById(timeWorkingDayId, ordersCount, myPhoneNumber, myPassword);
+                    loadWorkingDayById(timeWorkingDayId, ordersCount);
                 }
             }
             @Override
@@ -252,8 +349,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private void loadWorkingDayById(String workingDayId, final long ordersCount,
-                                    final String myPhoneNumber, final String myPassword) {
+    private void loadWorkingDayById(String workingDayId, final long ordersCount) {
         DatabaseReference dayReference = FirebaseDatabase.getInstance().getReference(WORKING_DAYS).child(workingDayId);
         dayReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -264,7 +360,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
                 addWorkingDayInLocalStorage(dayId, dayDate, dayServiceId);
 
-                loadServiceById(dayServiceId, ordersCount, myPhoneNumber, myPassword);
+                loadServiceById(dayServiceId, ordersCount);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -273,8 +369,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private void loadServiceById(String serviceId, final long ordersCount,
-                                 final String myPhoneNumber, final String myPassword) {
+    private void loadServiceById(String serviceId, final long ordersCount) {
         DatabaseReference serviceReference = FirebaseDatabase.getInstance().getReference(SERVICES).child(serviceId);
         serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -297,7 +392,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
                 if((orderCounter == ordersCount)) {
                     // Выполняем вход
-                    logIn(myPhoneNumber, myPassword);
+                    goToProfile();
                 }
             }
 
@@ -383,37 +478,27 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
     private void showViewsOnScreen(){
         logInBtn.setVisibility(View.VISIBLE);
-        registrateBtn.setVisibility(View.VISIBLE);
         phoneInput.setVisibility(View.VISIBLE);
-        passInput.setVisibility(View.VISIBLE);
     }
 
     private void hideViewsOfScreen(){
-        registrateBtn.setVisibility(View.INVISIBLE);
         logInBtn.setVisibility(View.INVISIBLE);
-        passInput.setVisibility(View.INVISIBLE);
+        verifyCodeBtn.setVisibility(View.INVISIBLE);
+        resendCodeBtn.setVisibility(View.INVISIBLE);
+
         phoneInput.setVisibility(View.INVISIBLE);
+        codeInput.setVisibility(View.INVISIBLE);
+
+        codeSpinner.setVisibility(View.INVISIBLE);
     }
 
-    private void logIn(String phone, String pass){
-        //сохраняем статус
-        saveStatus(true);
-        //сохраяем номер пользователя и пароль
-        saveIdAndPass(phone,pass);
-        //переходим в профиль
-        goToProfile();
-    }
-
-    private String convertPhoneToNormalView(String phone) {
-        if(phone.charAt(0)=='8'){
-            phone = "+7" + phone.substring(1);
+    protected Boolean isPhoneCorrect(){
+        if(myPhoneNumber.length() < 9 || myPhoneNumber.length() > 10) {
+            phoneInput.setError("Некорректный номер");
+            phoneInput.requestFocus();
+            return false;
         }
-        return phone;
-    }
 
-    protected Boolean isFullInputs(){
-        if(phoneInput.getText().toString().isEmpty()) return false;
-        if(passInput.getText().toString().isEmpty()) return false;
         return  true;
     }
 
@@ -429,12 +514,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private boolean getStatus() {
-        sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-
-        return  sPref.getBoolean(STATUS, false);
-    }
-
     //получить номер телефона для проверки
     private String getUserPhone() {
         sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
@@ -446,13 +525,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     private String getUserPass() {
         sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
         return  sPref.getString(PASS, "-");
-    }
-
-    private void saveStatus(boolean statusValue) {
-        sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putBoolean(STATUS, statusValue);
-        editor.apply();
     }
 
     private void saveIdAndPass(String phone, String pass) {
@@ -497,10 +569,11 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
     private void goToRegistration(String phone) {
         Intent intent = new Intent(this, Registration.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(PHONE_NUMBER,phone);
         startActivity(intent);
-        finish();
     }
+
     private void goToConfirmation() {
         Intent intent = new Intent(this, Confirmation.class);
         startActivity(intent);
@@ -509,6 +582,12 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
     private void goToProfile(){
         Intent intent = new Intent(this, Profile.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    private void goToRecoveryPassword() {
+        Intent intent = new Intent(this, PasswordRecovery.class);
         startActivity(intent);
         finish();
     }

@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -49,12 +51,16 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
     private Button verifyButton;
     private Button resendButton;
 
-    private EditText phoneText;
-    private EditText passwordText;
-    private EditText repeatPasswordText;
+    private EditText phoneInput;
+    private EditText passwordInput;
+    private EditText repeatpasswordInput;
     private EditText codeText;
+
+    private Spinner codeSpinner;
+
     SharedPreferences sPref;
 
+    private String phone;
     private String phoneVerificationId;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks
             verificationCallbacks;
@@ -70,11 +76,15 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
         registrationButton = findViewById(R.id.registrationConfirmationBtn);
         verifyButton = findViewById(R.id.verifyConfirmationBtn);
         resendButton = findViewById(R.id.resendConfirmationBtn);
+
         //получаем id inputs
-        phoneText = findViewById(R.id.phoneConfirmationInput);
-        passwordText = findViewById(R.id.passConfirmationInput);
-        repeatPasswordText = findViewById(R.id.repeatPassConfirmationInput);
+        phoneInput = findViewById(R.id.phoneConfirmationInput);
+        passwordInput = findViewById(R.id.passConfirmationInput);
+        repeatpasswordInput = findViewById(R.id.repeatPassConfirmationInput);
         codeText = findViewById(R.id.codeConfirmationInput);
+
+        codeSpinner = findViewById(R.id.codeConfirmationSpinner);
+        codeSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, CountryCodes.countryNames));
 
         fbAuth = FirebaseAuth.getInstance();
 
@@ -85,18 +95,25 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        //получаем данные
-        String phone = phoneText.getText().toString();
-        String password = passwordText.getText().toString();
-        String repeatPassword = repeatPasswordText.getText().toString();
-
         WorkWithViewApi.hideKeyboard(this);
 
         switch (v.getId()) {
             case R.id.registrationConfirmationBtn:
+                //получаем данные
+                phone = phoneInput.getText().toString().trim();
+                String password = passwordInput.getText().toString();
+                String repeatPassword = repeatpasswordInput.getText().toString();
+
                 //проверка на заполенность полей
                 if(isFullInputs()){
-                    phone = convertPhoneToNormalView(phone);
+                    if (phone.isEmpty() || phone.length() < 9) {
+                        phoneInput.setError("Valid number is required");
+                        phoneInput.requestFocus();
+                        return;
+                    }
+
+                    String countryCode = CountryCodes.codes[codeSpinner.getSelectedItemPosition()];
+                    phone = countryCode + phone;
                     // проверка на надежность пароля
                     if(isStrongPassword(password)) {
                         // проверка на совпадение паролей
@@ -118,6 +135,7 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
                     }
                 }
                 break;
+
             case R.id.verifyConfirmationBtn:
                 String code = codeText.getText().toString();
 
@@ -126,20 +144,19 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
                     verifyCode(code);
                 }
                 break;
+
             case R.id.resendConfirmationBtn:
-                resendCode(phone);
+                if(resendToken != null) {
+                    resendVerificationCode(resendToken);
+                    Log.d(TAG, "resendToken: " + resendToken.toString());
+                }
                 break;
+
             default:
                 break;
         }
     }
 
-    private String convertPhoneToNormalView(String phone) {
-        if(phone.charAt(0)=='8'){
-            phone = "+7" + phone.substring(1);
-        }
-        return phone;
-    }
     private void createNewUser(String phoneNumber, String pass) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -162,9 +179,9 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getChildrenCount()==0) {
                     setUpVerificationCallbacks();
-                    phoneText.setEnabled(false);
-                    passwordText.setVisibility(View.GONE);
-                    repeatPasswordText.setVisibility(View.GONE);
+                    phoneInput.setEnabled(false);
+                    passwordInput.setVisibility(View.GONE);
+                    repeatpasswordInput.setVisibility(View.GONE);
                     registrationButton.setVisibility(View.GONE);
                     sendingCode(phoneNumber);
                 }
@@ -179,6 +196,7 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
         });
 
     }
+
     private void sendingCode(String phoneNumber){
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
@@ -187,6 +205,17 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
                 this,               // Activity (for callback binding)
                 verificationCallbacks);
     }
+
+    private void resendVerificationCode(PhoneAuthProvider.ForceResendingToken token) {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phone,        // Phone number to verify
+                60,                 // Timeout duration
+                TimeUnit.SECONDS,   // Unit of timeout
+                this,               // Activity (for callback binding)
+                verificationCallbacks,         // OnVerificationStateChangedCallbacks
+                token);             // ForceResendingToken from callbacks
+    }
+
 
 
     private void setUpVerificationCallbacks() {
@@ -219,6 +248,7 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
                         phoneVerificationId = verificationId;
                         resendToken = token;
 
+
                         codeText.setVisibility(View.VISIBLE);
                         verifyButton.setVisibility(View.VISIBLE);
                         resendButton.setVisibility(View.VISIBLE);
@@ -233,11 +263,6 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
         signInWithPhoneAuthCredential(credential);
     }
 
-    public void resendCode(String phone) {
-        setUpVerificationCallbacks();
-        sendingCode(phone);
-    }
-
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         //входим
         fbAuth.signInWithCredential(credential)
@@ -246,16 +271,13 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         //если введенный код совпадает с присланным кодом
                         if (task.isSuccessful()) {
-
-                            String phone = phoneText.getText().toString();
-                            String password = passwordText.getText().toString();
-                            phone  = convertPhoneToNormalView(phone);
-
+                            String password = passwordInput.getText().toString();
                             password = encryptThisStringSHA512(password);
                             //создаем пользователя
                             createNewUser(phone, password);
+
                             //сохраняем его в лок данные
-                            saveIdAndPass(phone,password);
+                            saveIdAndPass(phone, password);
 
                         } else {
                             if (task.getException() instanceof
@@ -301,21 +323,15 @@ public class Confirmation extends AppCompatActivity implements View.OnClickListe
     }
 
     protected Boolean isFullInputs(){
-        if(phoneText.getText().toString().isEmpty()) return false;
-        if(passwordText.getText().toString().isEmpty()) return false;
-        if(repeatPasswordText.getText().toString().isEmpty()) return false;
+        if(phoneInput.getText().toString().isEmpty()) return false;
+        if(passwordInput.getText().toString().isEmpty()) return false;
+        if(repeatpasswordInput.getText().toString().isEmpty()) return false;
         return  true;
     }
     protected boolean isStrongPassword(String myPass) {
         if(!myPass.matches(".*[a-z].*")) return  false;
         if(!myPass.matches(".*[0-9].*")) return  false;
         if(myPass.length()<=5) return false;
-        return true;
-    }
-    protected boolean isRealPhone(String phone){
-        //^((8|+7))?((?\d{3})?[- ]?)?[\d- ]{7,10}$
-        // if(!phone.matches("^((8|\\+7))?((?\\d{3})?[-]?)?[\\d- ]{7,10}$\n"))
-
         return true;
     }
 

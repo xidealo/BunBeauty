@@ -57,7 +57,6 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                 verifyCode(code);
             }
         });
-
     }
 
     private void verifyCode(String code) {
@@ -73,7 +72,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
                             Intent intent = new Intent(VerifyPhoneActivity.this, ProfileActivity.class);
-                            //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                             startActivity(intent);
 
