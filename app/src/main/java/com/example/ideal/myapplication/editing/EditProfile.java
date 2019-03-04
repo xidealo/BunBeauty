@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,14 +16,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
@@ -35,9 +42,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class EditProfile extends AppCompatActivity implements View.OnClickListener {
@@ -48,6 +61,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private static final String USER_NAME = "name";
     private static final String PASS = "password";
     private static final String USER_CITY = "city";
+
+    private static final String AVATAR = "avatar";
+    private static final String PHOTOS = "photos";
+    private static final String PHOTO_LINK = "photo link";
+
+    private final int PICK_IMAGE_REQUEST = 71;
 
     private static final String DIALOGS = "dialogs";
     private static final String USERS = "users";
@@ -83,6 +102,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private SharedPreferences sPref;
     private User user;
 
+    private ImageView avatarImage;
+
     private FirebaseAuth fbAuth;
 
     @Override
@@ -99,11 +120,13 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         resendButton = findViewById(R.id.resendProfileEditProfileBtn);
         verifyButton = findViewById(R.id.verifyProfileEditProfileBtn);
 
+        //для работы с картинкой
+        avatarImage = findViewById(R.id.avatarEditProfileImage);
+
         FragmentManager manager = getSupportFragmentManager();
         PanelBuilder panelBuilder = new PanelBuilder(this);
         panelBuilder.buildFooter(manager, R.id.footerEditProfileLayout);
-        panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerEditProfileLayout);
-        Log.d(TAG, " R.id.footerAddServiceLayout: " +  R.id.footerAddServiceLayout);
+        panelBuilder.buildHeader(manager, "Редактирование профиля", R.id.headerEditProfileLayout);
 
         fbAuth = FirebaseAuth.getInstance();
         user = new User();
@@ -133,6 +156,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         editBtn.setOnClickListener(this);
         resendButton.setOnClickListener(this);
         verifyButton.setOnClickListener(this);
+        avatarImage.setOnClickListener(this);
     }
 
     @Override
@@ -154,6 +178,10 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
             case R.id.resendConfirmationBtn:
                 resendCode();
+                break;
+
+            case R.id.avatarEditProfileImage:
+                chooseImage();
                 break;
 
             default:
@@ -523,6 +551,98 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 "Данный пользователь уже зарегестрирован.",
                 Toast.LENGTH_SHORT).show();
     }
+
+    private void chooseImage() {
+
+        //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        //Тип получаемых объектов - image:
+        photoPickerIntent.setType("image/*");
+        //Запускаем переход с ожиданием обратного результата в виде информации об изображении:
+        startActivityForResult(photoPickerIntent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null )
+        {
+            Uri filePath = data.getData();
+            try {
+                //установка картинки на activity
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                avatarImage.setImageBitmap(bitmap);
+                //загрузка картинки в fireStorage
+                uploadImage(filePath);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void uploadImage(Uri filePath) {
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        if(filePath != null)
+        {
+            final StorageReference storageReference = firebaseStorage.getReference(AVATAR +"/"+UUID.randomUUID().toString());
+
+            storageReference.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            updatePhotos(uri.toString());
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+        }
+    }
+
+    private void updatePhotos(String storageReference) {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(PHOTOS);
+
+        Map<String,Object> items = new HashMap<>();
+        items.put(PHOTO_LINK,storageReference);
+        items.put(OWNER_ID,oldPhone);
+        String photoId =  myRef.push().getKey();
+        myRef = database.getReference(PHOTOS).child(photoId);
+
+        myRef.updateChildren(items);
+
+        Photo photo = new Photo();
+        photo.setPhotoId(photoId);
+        photo.setPhotoLink(storageReference);
+        photo.setPhotoOwnerId(oldPhone);
+
+        addPhotoInLocalStorage(photo);
+    }
+
+    private void addPhotoInLocalStorage(Photo photo) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+
+        database.insert(DBHelper.TABLE_PHOTOS,null,contentValues);
+    }
+
 
     private void attentionInvalidPhoneNumber(){
         Toast.makeText(

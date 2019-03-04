@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.reviews;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,12 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Messages;
 import com.example.ideal.myapplication.fragments.objects.Comment;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.other.DBHelper;
 
 public class CommentElement extends Fragment implements View.OnClickListener{
 
@@ -28,6 +32,7 @@ public class CommentElement extends Fragment implements View.OnClickListener{
 
     private TextView reviewText;
     private TextView userNameText;
+    private ImageView avatarImage;
     private RatingBar ratingBar;
 
     private String userId;
@@ -58,6 +63,7 @@ public class CommentElement extends Fragment implements View.OnClickListener{
         userNameText = view.findViewById(R.id.nameCommentElementText);
         reviewText = view.findViewById(R.id.reviewCommentElementText);
         ratingBar = view.findViewById(R.id.ratingCommentElementBar);
+        avatarImage = view.findViewById(R.id.avatarCommentElementImage);
 
         userNameText.setOnClickListener(this);
         reviewText.setOnClickListener(this);
@@ -71,6 +77,13 @@ public class CommentElement extends Fragment implements View.OnClickListener{
         userNameText.setText(userName);
         reviewText.setText(abbreviatedReview);
         ratingBar.setRating(rating);
+
+        DBHelper dbHelper = new DBHelper(getContext());
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+
+        workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage);
     }
 
     @Override

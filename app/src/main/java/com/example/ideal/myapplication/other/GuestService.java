@@ -11,7 +11,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,6 +32,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class GuestService extends AppCompatActivity implements View.OnClickListener {
 
@@ -49,10 +52,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String REVIEW_FOR_SERVICE = "review for service";
 
     private String status;
-    private float sumRates;
-    private int counter;
-    private long countOfRates;
-    private boolean addToScreen;
 
     private String userId;
     private String serviceId;
@@ -66,6 +65,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private TextView descriptionText;
     private FragmentManager manager;
     private LinearLayout ratingLayout;
+    private LinearLayout imageFeed;
 
     private WorkWithLocalStorageApi workWithLocalStorageApi;
 
@@ -92,7 +92,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                     // проверяем какие дни мне доступны
                     checkScheduleAndGoToProfile();
                 }
-
                 break;
 
             default:
@@ -112,6 +111,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         manager = getSupportFragmentManager();
 
         ratingLayout = findViewById(R.id.resultGuestServiceLayout);
+        imageFeed = findViewById(R.id.feedGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -143,7 +143,10 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             editScheduleBtn.setText("Расписание");
         }
 
+        setPhotoFeed(serviceId);
+
         editScheduleBtn.setOnClickListener(this);
+
     }
 
     private void getDataAboutService(String serviceId) {
@@ -320,6 +323,38 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             attentionThisScheduleIsEmpty();
         }
         cursor.close();
+    }
+    private void setPhotoFeed(String serviceId) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        //получаем имя, фамилию и город пользователя по его id
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_PHOTO_LINK_PHOTOS
+                        + " FROM "
+                        + DBHelper.TABLE_PHOTOS
+                        + " WHERE "
+                        + DBHelper.KEY_OWNER_ID_PHOTOS + " = ?";
+        Cursor cursor = database.rawQuery(sqlQuery,new String[] {serviceId});
+
+        if(cursor.moveToFirst()){
+            do {
+                int indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS);
+
+                String photoLink = cursor.getString(indexPhotoLink);
+
+                ImageView serviceImage = new ImageView(getApplicationContext());
+                serviceImage.setLayoutParams(new ViewGroup.LayoutParams(250,250));
+                imageFeed.addView(serviceImage);
+
+                //установка аватарки
+                Picasso.get()
+                        .load(photoLink)
+                        .into(serviceImage);
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+
     }
 
     @Override

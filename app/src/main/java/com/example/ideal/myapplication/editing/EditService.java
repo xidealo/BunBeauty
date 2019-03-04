@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -156,24 +157,15 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 goToService();
                 break;
 
-            case R.id.deleteServiceEditServiceBtn:
-                if(withoutOrders()) {
-                    confirm(this);
-                }
-                else {
-                    attentionItHasOrders();
-                }
-                break;
             default:
                 break;
         }
     }
 
     public void deleteThisService() {
-        if(withoutOrders()) {
-            deleteThisServiceFromEverywhere();
-        }
-        else {
+        if (withoutOrders()) {
+            confirm(this);
+        } else {
             attentionItHasOrders();
         }
     }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithViewApi;
@@ -37,6 +39,10 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     private static final String STATUS = "status";
     private static final String PHONE_NUMBER = "Phone number";
     private static final String PASS = "password";
+    //PHOTOS
+    private static final String PHOTOS = "photos";
+    private static final String PHOTO_LINK = "photo link";
+    private static final String OWNER_ID = "owner id";
 
     private static final String USERS = "users";
     private static final String NAME = "name";
@@ -158,6 +164,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
                             // Загружаем сервисы пользователя из FireBase
                             loadServiceByUserPhone(myPhoneNumber, myPassword);
+                            loadPhotosByPhoneNumber(myPhoneNumber);
                         }
                     } else{
                         logInBtn.setClickable(true);
@@ -184,6 +191,49 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
                 attentionBadConnection();
             }
         });
+    }
+
+    private void loadPhotosByPhoneNumber(String myPhoneNumber) {
+
+        Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
+                .orderByChild(OWNER_ID)
+                .equalTo(myPhoneNumber);
+        photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
+
+                for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
+
+                    Photo photo = new Photo();
+
+                    photo.setPhotoId(fPhoto.getKey());
+                    photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
+                    photo.setPhotoOwnerId(String.valueOf(fPhoto.child(OWNER_ID).getValue()));
+
+                    addPhotoInLocalStorage(photo);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void addPhotoInLocalStorage(Photo photo) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+
+        database.insert(DBHelper.TABLE_PHOTOS,null,contentValues);
     }
 
     private void loadServiceByUserPhone(final String myPhoneNumber, final String myPassword) {

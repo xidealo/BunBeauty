@@ -8,7 +8,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="441dp"
         app:layout_constraintBottom_toTopOf="@+id/footerCommentsLayout"
         app:layout_constraintTop_toBottomOf="@+id/headerCommentsLayout">
 
@@ -16,7 +16,7 @@
             android:id="@+id/mainCommentsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
     </ScrollView>
 
     <LinearLayout

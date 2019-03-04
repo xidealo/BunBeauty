@@ -38,7 +38,7 @@ public class Messages extends AppCompatActivity {
 
     private FragmentManager manager;
 
-    LinearLayout messagesLayout;
+    private LinearLayout messagesLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

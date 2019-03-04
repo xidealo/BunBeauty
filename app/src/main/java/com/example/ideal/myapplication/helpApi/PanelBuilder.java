@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 
 import com.example.ideal.myapplication.fragments.panelElements.BottomPanel;
 import com.example.ideal.myapplication.fragments.panelElements.TopPanel;
@@ -17,7 +16,6 @@ public class PanelBuilder {
     private static final String PHONE_NUMBER = "Phone number";
     private static final String FILE_NAME = "Info";
 
-    private static final String TAG = "DBInf";
 
     private Context context;
     private SharedPreferences sPref;

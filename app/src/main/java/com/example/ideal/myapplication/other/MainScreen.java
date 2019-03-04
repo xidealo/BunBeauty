@@ -1,5 +1,6 @@
 package com.example.ideal.myapplication.other;
 
+import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -32,6 +34,11 @@ public class MainScreen extends AppCompatActivity {
     private static final String USERS = "users";
     private static final String NAME = "name";
     private static final String CITY = "city";
+
+    //PHOTOS
+    private static final String PHOTOS = "photos";
+    private static final String PHOTO_LINK = "photo link";
+    private static final String OWNER_ID = "owner id";
 
     private static final String SERVICES = "services";
     private static final String USER_ID = "user id";
@@ -113,6 +120,7 @@ public class MainScreen extends AppCompatActivity {
                     final String userId = snapshot.getKey();
 
                     final User user = new User();
+                    user.setPhone(userId);
                     user.setName(userName);
                     user.setCity(userCity);
 
@@ -129,7 +137,7 @@ public class MainScreen extends AppCompatActivity {
                                 DownloadServiceData downloadServiceData = new DownloadServiceData();
                                 downloadServiceData.loadSchedule(serviceId,database,
                                         "MainScreen",manager);
-
+                                loadPhotosByServiceId(serviceId);
                                 countOfService++;
                                 //количество возможных предложений на mainScreen
                                 if(countOfService == limitOfService) {
@@ -153,6 +161,46 @@ public class MainScreen extends AppCompatActivity {
             }
         });
         countOfService = 0;
+    }
+
+    private void loadPhotosByServiceId(String serviceId) {
+
+        Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
+                .orderByChild(OWNER_ID)
+                .equalTo(serviceId);
+        photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
+
+                for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
+
+                    Photo photo = new Photo();
+
+                    photo.setPhotoId(fPhoto.getKey());
+                    photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
+                    photo.setPhotoOwnerId(String.valueOf(fPhoto.child(OWNER_ID).getValue()));
+
+                    addPhotoInLocalStorage(photo);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void addPhotoInLocalStorage(Photo photo) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+
+        database.insert(DBHelper.TABLE_PHOTOS,null,contentValues);
     }
 
     private  String getUserId(){

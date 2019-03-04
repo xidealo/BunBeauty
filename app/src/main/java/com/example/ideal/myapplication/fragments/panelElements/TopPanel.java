@@ -123,6 +123,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
                 if(getContext().getClass() == Messages.class) {
                     // Если это диалог
                     multiBtn.setText("Собеседник");
+                    multiBtn.setVisibility(View.GONE);
                     titleText.setOnClickListener(this);
                 // Если это не диалог
                 } else {

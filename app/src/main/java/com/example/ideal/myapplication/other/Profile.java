@@ -5,7 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -39,6 +44,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
 
 public class Profile extends AppCompatActivity implements View.OnClickListener {
 
@@ -46,9 +54,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String OWNER_ID = "owner id";
     private static final String FILE_NAME = "Info";
     private static final String STATUS = "status";
-    private static final String USER_NAME = "my name";
-    private static final String USER_CITY = "my city";
-    private static final String TAG = "DBInf";
+
+    private final int PICK_IMAGE_REQUEST = 71;
 
     private static final String WORKING_TIME = "working time";
     private static final String USER_ID = "user id";
@@ -91,8 +98,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private SharedPreferences sPref;
     private DBHelper dbHelper;
     private String ownerId;
-    private WorkWithTimeApi workWithTimeApi;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
+    private ImageView avatarImage;
+
+    private final String TAG = "DBInf";
 
     private FragmentManager manager;
 
@@ -105,8 +114,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         Button logOutBtn = findViewById(R.id.logOutProfileBtn);
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
+        avatarImage = findViewById(R.id.avatarProfileImage);
 
         SwitchCompat servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
+
 
         servicesScroll = findViewById(R.id.servicesProfileScroll);
         ordersScroll = findViewById(R.id.orderProfileScroll);
@@ -122,7 +133,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         counter =0;
 
         dbHelper = new DBHelper(this);
-        workWithTimeApi = new WorkWithTimeApi();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
@@ -143,7 +153,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
 
         // Добавляем данные о пользователе
-        updateProfileData(ownerId);
+        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
+
+        //установка аватарки
+        loadServiceByWorkingDay(ownerId);
 
         // Проверяем совпадают id пользователя и владельца
         if(userId.equals(ownerId)){
@@ -186,6 +199,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
 
         logOutBtn.setOnClickListener(this);
+        avatarImage.setOnClickListener(this);
+
     }
 
     @Override
@@ -648,6 +663,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         transaction.commit();
     }
 
+
     //получить id-phone пользователя
     private String getUserId(){
         // возваращает id текущего пользователя
@@ -689,26 +705,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         startActivity(intent);
     }
 
-    private void goToSearchService() {
-        Intent intent = new Intent(this, SearchService.class);
-        startActivity(intent);
-    }
 
-    private void goToMainScreen() {
-        Intent intent = new Intent(this, MainScreen.class);
-        startActivity(intent);
-    }
-
-    private void goToEditProfile() {
-        Intent intent = new Intent(this, EditProfile.class);
-        intent.putExtra(USER_NAME, nameText.getText());
-        intent.putExtra(USER_CITY, cityText.getText());
-        startActivity(intent);
-    }
-
-    private void goToDialogs() {
-        Intent intent = new Intent(this, Dialogs.class);
-        startActivity(intent);
-    }
 
 }

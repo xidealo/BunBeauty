@@ -41,8 +41,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Dialogs extends AppCompatActivity {
 
-    private static final String TAG = "DBInf";
-
     private static final String FILE_NAME = "Info";
     private static final String PHONE_NUMBER = "Phone number";
 
@@ -192,7 +190,7 @@ public class Dialogs extends AppCompatActivity {
 
                 getAndPutMessagesInLocalStorage(dialogId);
 
-                addToScreen(dialogId, name);
+                addToScreen(dialogId, user);
 
             }
 
@@ -734,8 +732,8 @@ public class Dialogs extends AppCompatActivity {
         loadDialogs();
     }
 
-    private void addToScreen(String dialogId, String name) {
-        dElement = new DialogElement(dialogId, name);
+    private void addToScreen(String dialogId, User user) {
+        dElement = new DialogElement(dialogId, user);
         transaction = manager.beginTransaction();
         transaction.add(R.id.mainDialogsLayout, dElement);
         transaction.commit();

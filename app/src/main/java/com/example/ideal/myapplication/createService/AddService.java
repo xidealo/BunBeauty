@@ -4,24 +4,40 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class AddService extends AppCompatActivity implements View.OnClickListener {
 
@@ -37,13 +53,24 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String DESCRIPTION = "description";
     private static final String USER_ID = "user id";
 
-    Button addServicesBtn;
+    private static final int PICK_IMAGE_REQUEST = 71;
+    private static final String SERVICE_PHOTO = "service photo";
+    private static final String PHOTOS = "photos";
+    private static final String PHOTO_LINK = "photo link";
+    private static final String OWNER_ID = "owner id";
 
-    EditText nameServiceInput;
-    EditText costAddServiceInput;
-    EditText descriptionServiceInput;
+    private Button addServicesBtn;
 
-    DBHelper dbHelper;
+    private EditText nameServiceInput;
+    private EditText costAddServiceInput;
+    private EditText descriptionServiceInput;
+    //храним ссылки на картинки в хранилище
+    private ArrayList<String> picturesLink;
+
+    private ImageView serviceImage;
+    private LinearLayout imageFeed;
+
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +82,8 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         nameServiceInput = findViewById(R.id.nameAddServiceInput);
         costAddServiceInput = findViewById(R.id.costAddServiceInput);
         descriptionServiceInput = findViewById(R.id.descriptionAddServiceInput);
+        serviceImage = findViewById(R.id.servicePhotoAddServiceImage);
+        imageFeed = findViewById(R.id.feedAddServiceLayout);
 
         FragmentManager manager = getSupportFragmentManager();
         PanelBuilder panelBuilder = new PanelBuilder(this);
@@ -62,8 +91,10 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerAddServiceLayout);
 
         dbHelper = new DBHelper(this);
+        picturesLink = new ArrayList<>();
 
         addServicesBtn.setOnClickListener(this);
+        serviceImage.setOnClickListener(this);
     }
 
     @Override
@@ -96,7 +127,9 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                     Toast.makeText(this, getString(R.string.empty_field), Toast.LENGTH_SHORT).show();
                 }
                 break;
-
+                case R.id.servicePhotoAddServiceImage:
+                        chooseImage();
+                    break;
             default:
                 break;
         }
@@ -119,6 +152,10 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
         service.setId(serviceId);
         addServiceInLocalStorage(service);
+
+        for(String link: picturesLink){
+            updatePhotos(link,serviceId);
+        }
     }
 
     private void addServiceInLocalStorage(Service service){
@@ -145,6 +182,102 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         if(costAddServiceInput.getText().toString().isEmpty()) return false;
 
         return  true;
+    }
+
+    private void chooseImage() {
+
+        //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        //Тип получаемых объектов - image:
+        photoPickerIntent.setType("image/*");
+        //Запускаем переход с ожиданием обратного результата в виде информации об изображении:
+        startActivityForResult(photoPickerIntent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null )
+        {
+            Uri filePath = data.getData();
+            try {
+                //установка картинки на activity
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+
+                ImageView serviceImage = new ImageView(getApplicationContext());
+                serviceImage.setImageBitmap(bitmap);
+                serviceImage.setLayoutParams(new ViewGroup.LayoutParams(250,250));
+                imageFeed.addView(serviceImage);
+
+                serviceImage.setImageBitmap(bitmap);
+                //загрузка картинки в fireStorage
+                uploadImage(filePath);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void uploadImage(Uri filePath) {
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        if(filePath != null)
+        {
+            final StorageReference storageReference = firebaseStorage.getReference(SERVICE_PHOTO +"/"+ UUID.randomUUID().toString());
+
+            storageReference.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            picturesLink.add(uri.toString());
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+        }
+    }
+
+    private void updatePhotos(String storageReference, String serviceId) {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(PHOTOS);
+
+        Map<String,Object> items = new HashMap<>();
+        items.put(PHOTO_LINK,storageReference);
+        items.put(OWNER_ID,serviceId);
+        String photoId =  myRef.push().getKey();
+        myRef = database.getReference(PHOTOS).child(photoId);
+
+        myRef.updateChildren(items);
+
+        Photo photo = new Photo();
+        photo.setPhotoId(photoId);
+        photo.setPhotoLink(storageReference);
+        photo.setPhotoOwnerId(serviceId);
+
+        addPhotoInLocalStorage(photo);
+    }
+
+    private void addPhotoInLocalStorage(Photo photo) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+
+        database.insert(DBHelper.TABLE_PHOTOS,null,contentValues);
     }
 
     private String getUserId(){
