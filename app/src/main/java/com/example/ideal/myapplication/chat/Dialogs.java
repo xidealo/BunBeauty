@@ -78,21 +78,22 @@ public class Dialogs extends AppCompatActivity {
     private static final String REVIEW_FOR_SERVICE = "review for service";
     private static final String REVIEW_FOR_USER = "review for user";
 
-    WorkWithTimeApi workWithTimeApi;
-    WorkWithLocalStorageApi utilitiesApi;
-    SharedPreferences sPref;
-    DBHelper dbHelper;
+    private WorkWithTimeApi workWithTimeApi;
+    private WorkWithLocalStorageApi utilitiesApi;
+    private DBHelper dbHelper;
 
-    LinearLayout resultLayout;
-    DialogElement dElement;
-    FragmentManager manager;
-    FragmentTransaction transaction;
+    private LinearLayout resultLayout;
+    private FragmentManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialogs);
 
+        init();
+    }
+
+    private  void init(){
         manager = getSupportFragmentManager();
 
         PanelBuilder panelBuilder = new PanelBuilder(this);
@@ -105,9 +106,7 @@ public class Dialogs extends AppCompatActivity {
         utilitiesApi = new WorkWithLocalStorageApi(database);
         resultLayout = findViewById(R.id.mainDialogsLayout);
         resultLayout.setVisibility(View.INVISIBLE);
-
     }
-
     // Подгружает все мои диалоги и всё что с ними связано из Firebase
     private void loadDialogs() {
         // Загрузка диалогов, где мой номер стоит на 1-м месте
@@ -137,7 +136,6 @@ public class Dialogs extends AppCompatActivity {
                     loadInterlocutor(secondPhone, dialogId);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -720,7 +718,7 @@ public class Dialogs extends AppCompatActivity {
     }
 
     private String getUserPhone() {
-        sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        SharedPreferences sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
 
         return  sPref.getString(PHONE_NUMBER, "-");
     }
@@ -733,8 +731,8 @@ public class Dialogs extends AppCompatActivity {
     }
 
     private void addToScreen(String dialogId, User user) {
-        dElement = new DialogElement(dialogId, user);
-        transaction = manager.beginTransaction();
+        DialogElement dElement = new DialogElement(dialogId, user);
+        FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.mainDialogsLayout, dElement);
         transaction.commit();
     }

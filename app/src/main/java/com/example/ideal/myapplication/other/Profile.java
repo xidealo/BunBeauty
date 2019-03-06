@@ -55,8 +55,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String FILE_NAME = "Info";
     private static final String STATUS = "status";
 
-    private final int PICK_IMAGE_REQUEST = 71;
-
     private static final String WORKING_TIME = "working time";
     private static final String USER_ID = "user id";
     private static final String TIME = "time";
@@ -148,12 +146,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             ownerId = userId;
         }
 
+        Log.d(TAG, "onCreate: " + ownerId);
         PanelBuilder panelBuilder = new PanelBuilder(this, ownerId);
         panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
         panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
-
-        // Добавляем данные о пользователе
-        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
 
         //установка аватарки
         loadServiceByWorkingDay(ownerId);
@@ -200,7 +196,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         logOutBtn.setOnClickListener(this);
         avatarImage.setOnClickListener(this);
-
     }
 
     @Override
@@ -540,8 +535,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         super.onResume();
         String userId = getUserId();
 
-        loadTimeForReviews();
-
         if(userId.equals(ownerId)){
             // если это мой сервис
             updateOrdersList(userId);
@@ -551,6 +544,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         else{
             updateServicesList(ownerId);
         }
+        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
+        loadTimeForReviews();
     }
 
     //подгрузка сервисов на serviceList

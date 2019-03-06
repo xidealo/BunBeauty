@@ -4,14 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static android.provider.Telephony.BaseMmsColumns.MESSAGE_ID;
 
 
 public class MessageOrderElement extends Fragment implements View.OnClickListener {
@@ -56,13 +52,10 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     private String text;
 
-    private String messageTime;
     private Boolean messageIsCanceled;
     private Boolean messageIsMyService;
     private String messageDate;
     private String messageOrderTime;
-    private String messageServiceName;
-    private String messageUserName;
     private String messageWorkingTimeId;
     private String messageOrderId;
     private String messageDialogId;
@@ -76,13 +69,13 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     @SuppressLint("ValidFragment")
     public MessageOrderElement(Message message) {
-        messageTime = message.getMessageTime();
+        String messageTime = message.getMessageTime();
         messageIsCanceled = message.getIsCanceled();
         messageIsMyService = message.getIsMyService();
         messageDate = message.getDate();
         messageOrderTime = message.getOrderTime();
-        messageServiceName = message.getServiceName();
-        messageUserName = message.getUserName();
+        String messageServiceName = message.getServiceName();
+        String messageUserName = message.getUserName();
         messageWorkingTimeId = message.getTimeId();
         messageOrderId = message.getOrderId();
         messageDialogId = message.getDialogId();
@@ -150,8 +143,8 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     public void confirm(Context context) {
         AlertDialog dialog = new AlertDialog.Builder(context).create();
-        dialog.setTitle("Удалить услугу");
-        dialog.setMessage("Удалить услугу?");
+        dialog.setTitle("Отказ");
+        dialog.setMessage("Отказать в предоставлении услуги?");
         dialog.setCancelable(false);
         dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Да", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int buttonId) {

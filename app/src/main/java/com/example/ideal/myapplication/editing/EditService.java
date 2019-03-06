@@ -9,28 +9,34 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.ServicePhotoElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.other.DBHelper;
-import com.example.ideal.myapplication.other.GuestService;
-import com.google.android.gms.common.api.internal.IStatusCallback;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,14 +77,22 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private static final String MESSAGES = "messages";
     private static final String MESSAGE_TIME = "message time";
 
+    private static final String PHOTOS = "photos";
+    private static final String PHOTO_LINK = "photo link";
+    private static final String OWNER_ID = "owner id";
+    private static final String SERVICE_PHOTO = "service photo";
+
+    private ArrayList<String> phLinToDelete;
 
     private String serviceId;
 
     private EditText nameServiceInput;
     private EditText costServiceInput;
     private EditText descriptionServiceInput;
-
+    private LinearLayout imageFeed;
     private DBHelper dbHelper;
+
+    private FragmentManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +105,10 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         costServiceInput = findViewById(R.id.costEditServiceInput);
         descriptionServiceInput = findViewById(R.id.descriptionEditServiceInput);
 
+        manager = getSupportFragmentManager();
+
+        imageFeed = findViewById(R.id.feedEditServiceLayout);
+
         FragmentManager manager = getSupportFragmentManager();
         PanelBuilder panelBuilder = new PanelBuilder(this);
         panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
@@ -100,6 +118,10 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         serviceId = getIntent().getStringExtra(SERVICE_ID);
 
         dbHelper = new DBHelper(this);
+        phLinToDelete = new ArrayList<>();
+
+        //подгружаем фото
+        setPhotoFeed(serviceId);
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery = "SELECT "
@@ -154,13 +176,116 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
                 editServiceInLocalStorage(service);
                 editServiceInFireBase(service);
-                goToService();
                 break;
 
             default:
                 break;
         }
     }
+
+    private void setPhotoFeed(String serviceId) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        //получаем имя, фамилию и город пользователя по его id
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_PHOTO_LINK_PHOTOS
+                        + " FROM "
+                        + DBHelper.TABLE_PHOTOS
+                        + " WHERE "
+                        + DBHelper.KEY_OWNER_ID_PHOTOS + " = ?";
+        Cursor cursor = database.rawQuery(sqlQuery,new String[] {serviceId});
+
+        if(cursor.moveToFirst()){
+            do {
+                int indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS);
+
+                String photoLink = cursor.getString(indexPhotoLink);
+                addToScreen(photoLink);
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+
+    }
+
+    private void addToScreen(String photoLink){
+        FragmentTransaction transaction = manager.beginTransaction();
+        ServicePhotoElement servicePhotoElement = new ServicePhotoElement(photoLink);
+        transaction.add(R.id.feedEditServiceLayout, servicePhotoElement);
+        transaction.commit();
+    }
+    
+    public void deleteFragment(ServicePhotoElement fr, String photoLink){
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.remove(fr);
+        transaction.commit();
+        phLinToDelete.add(photoLink);
+
+    }
+    private void deletePhotoFromDatabase(final String photoLink) {
+
+        Query photoQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
+                .orderByChild(PHOTO_LINK)
+                .equalTo(photoLink);
+
+        photoQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
+
+                for(DataSnapshot photo: photosSnapshot.getChildren()){
+                    String photoId = photo.getKey();
+
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference(PHOTOS).child(photoId);
+
+                    Map<String,Object> items = new HashMap<>();
+                    items.put(PHOTO_LINK,null);
+                    items.put(OWNER_ID,null);
+                    myRef.updateChildren(items);
+
+                    deletePhotoFromStorage(photoId);
+                    deletePhotoFromLocalStorage(photoId);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+    }
+
+    private void deletePhotoFromLocalStorage(String photoId) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        database.delete(
+                DBHelper.TABLE_PHOTOS,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{photoId});
+        goToService();
+
+    }
+
+    private void deletePhotoFromStorage(String photoId) {
+
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+
+        final StorageReference storageReference = firebaseStorage.getReference(SERVICE_PHOTO
+                + "/"
+                + photoId);
+
+        storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+
 
     public void deleteThisService() {
         if (withoutOrders()) {
@@ -436,6 +561,11 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         if (service.getCost() != null) items.put(COST, service.getCost());
         if (service.getDescription() != null) items.put(DESCRIPTION, service.getDescription());
         reference.updateChildren(items);
+
+        for(String photoLink: phLinToDelete) {
+            deletePhotoFromDatabase(photoLink);
+        }
+
     }
 
     private void attentionItHasOrders() {

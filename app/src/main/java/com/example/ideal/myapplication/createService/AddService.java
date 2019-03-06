@@ -10,17 +10,16 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.ServicePhotoElement;
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -37,7 +36,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class AddService extends AppCompatActivity implements View.OnClickListener {
 
@@ -59,16 +57,13 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String PHOTO_LINK = "photo link";
     private static final String OWNER_ID = "owner id";
 
-    private Button addServicesBtn;
-
     private EditText nameServiceInput;
     private EditText costAddServiceInput;
     private EditText descriptionServiceInput;
     //храним ссылки на картинки в хранилище
-    private ArrayList<String> picturesLink;
+    private ArrayList<Uri> fpath;
 
-    private ImageView serviceImage;
-    private LinearLayout imageFeed;
+    private FragmentManager manager;
 
     private DBHelper dbHelper;
 
@@ -77,21 +72,20 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_service);
 
-        addServicesBtn = findViewById(R.id.addServiceAddServiceBtn);
+        Button addServicesBtn = findViewById(R.id.addServiceAddServiceBtn);
 
         nameServiceInput = findViewById(R.id.nameAddServiceInput);
         costAddServiceInput = findViewById(R.id.costAddServiceInput);
         descriptionServiceInput = findViewById(R.id.descriptionAddServiceInput);
-        serviceImage = findViewById(R.id.servicePhotoAddServiceImage);
-        imageFeed = findViewById(R.id.feedAddServiceLayout);
+        ImageView serviceImage = findViewById(R.id.servicePhotoAddServiceImage);
 
-        FragmentManager manager = getSupportFragmentManager();
+        manager = getSupportFragmentManager();
         PanelBuilder panelBuilder = new PanelBuilder(this);
         panelBuilder.buildFooter(manager, R.id.footerAddServiceLayout);
         panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerAddServiceLayout);
 
         dbHelper = new DBHelper(this);
-        picturesLink = new ArrayList<>();
+        fpath = new ArrayList<>();
 
         addServicesBtn.setOnClickListener(this);
         serviceImage.setOnClickListener(this);
@@ -121,7 +115,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                         break;
                     }
 
-                    addService(service);
+                    uploadService(service);
                 }
                 else {
                     Toast.makeText(this, getString(R.string.empty_field), Toast.LENGTH_SHORT).show();
@@ -135,7 +129,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    private void addService(Service service) {
+    private void uploadService(Service service) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(SERVICES);
@@ -153,8 +147,8 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         service.setId(serviceId);
         addServiceInLocalStorage(service);
 
-        for(String link: picturesLink){
-            updatePhotos(link,serviceId);
+        for(Uri path: fpath){
+            uploadImage(path, serviceId);
         }
     }
 
@@ -205,14 +199,11 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                 //установка картинки на activity
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
 
-                ImageView serviceImage = new ImageView(getApplicationContext());
-                serviceImage.setImageBitmap(bitmap);
-                serviceImage.setLayoutParams(new ViewGroup.LayoutParams(250,250));
-                imageFeed.addView(serviceImage);
+                addToScreen(bitmap,filePath);
 
-                serviceImage.setImageBitmap(bitmap);
+                //serviceImage.setImageBitmap(bitmap);
                 //загрузка картинки в fireStorage
-                uploadImage(filePath);
+                fpath.add(filePath);
             }
             catch (IOException e)
             {
@@ -221,41 +212,41 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    private void uploadImage(Uri filePath) {
+    private void uploadImage(Uri filePath, final String serviceId) {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(PHOTOS);
+
         if(filePath != null)
         {
-            final StorageReference storageReference = firebaseStorage.getReference(SERVICE_PHOTO +"/"+ UUID.randomUUID().toString());
-
+            final String photoId = myRef.push().getKey();
+            final StorageReference storageReference = firebaseStorage.getReference(SERVICE_PHOTO + "/" + photoId);
             storageReference.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            picturesLink.add(uri.toString());
+                            uploadPhotos(uri.toString(),serviceId,photoId);
                         }
                     });
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-
                 }
             });
         }
     }
 
-    private void updatePhotos(String storageReference, String serviceId) {
+    private void uploadPhotos(String storageReference, String serviceId,String photoId) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(PHOTOS);
+        DatabaseReference myRef = database.getReference(PHOTOS).child(photoId);
 
         Map<String,Object> items = new HashMap<>();
         items.put(PHOTO_LINK,storageReference);
         items.put(OWNER_ID,serviceId);
-        String photoId =  myRef.push().getKey();
-        myRef = database.getReference(PHOTOS).child(photoId);
 
         myRef.updateChildren(items);
 
@@ -278,6 +269,21 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
 
         database.insert(DBHelper.TABLE_PHOTOS,null,contentValues);
+    }
+
+    private void addToScreen(Bitmap bitmap, Uri filePath){
+        FragmentTransaction transaction = manager.beginTransaction();
+        ServicePhotoElement servicePhotoElement = new ServicePhotoElement(bitmap,filePath);
+        transaction.add(R.id.feedAddServiceLayout, servicePhotoElement);
+        transaction.commit();
+    }
+
+
+    public void deleteFragment(ServicePhotoElement fr, Uri filePath){
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.remove(fr);
+        transaction.commit();
+        fpath.remove(filePath);
     }
 
     private String getUserId(){

@@ -24,7 +24,7 @@
     <EditText
         android:id="@+id/costAddServiceInput"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="42dp"
         android:layout_gravity="center"
         android:ems="10"
         android:hint="@string/costAddServiceTB"
@@ -34,12 +34,12 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.796" />
+        app:layout_constraintVertical_bias="0.936" />
 
     <EditText
         android:id="@+id/descriptionAddServiceInput"
         android:layout_width="300dp"
-        android:layout_height="142dp"
+        android:layout_height="99dp"
         android:layout_gravity="center"
         android:ems="10"
         android:inputType="textMultiLine"
@@ -48,7 +48,7 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.708" />
+        app:layout_constraintVertical_bias="0.637" />
 
     <Button
         android:id="@+id/addServiceAddServiceBtn"
@@ -60,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.939"
+        app:layout_constraintVertical_bias="0.976"
         tools:ignore="MissingConstraints" />
 
     <LinearLayout
@@ -83,12 +83,14 @@
         app:layout_constraintBottom_toTopOf="@+id/addServiceAddServiceBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/descriptionAddServiceInput">
+        app:layout_constraintTop_toBottomOf="@+id/descriptionAddServiceInput"
+        app:layout_constraintVertical_bias="1.0">
+
         <LinearLayout
             android:id="@+id/feedAddServiceLayout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/servicePhotoAddServiceImage"

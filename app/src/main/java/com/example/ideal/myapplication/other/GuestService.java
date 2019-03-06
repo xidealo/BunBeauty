@@ -21,8 +21,6 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
-import com.example.ideal.myapplication.fragments.objects.Message;
-import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
@@ -65,7 +63,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private TextView descriptionText;
     private FragmentManager manager;
     private LinearLayout ratingLayout;
-    private LinearLayout imageFeed;
+    private LinearLayout imageFeedLayout;
 
     private WorkWithLocalStorageApi workWithLocalStorageApi;
 
@@ -111,7 +109,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         manager = getSupportFragmentManager();
 
         ratingLayout = findViewById(R.id.resultGuestServiceLayout);
-        imageFeed = findViewById(R.id.feedGuestServiceLayout);
+        imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -142,8 +140,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             status = USER;
             editScheduleBtn.setText("Расписание");
         }
-
-        setPhotoFeed(serviceId);
 
         editScheduleBtn.setOnClickListener(this);
 
@@ -324,10 +320,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         }
         cursor.close();
     }
+
     private void setPhotoFeed(String serviceId) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        //получаем имя, фамилию и город пользователя по его id
+        //получаем ссылку на фото по id владельца
         String sqlQuery =
                 "SELECT "
                         + DBHelper.KEY_PHOTO_LINK_PHOTOS
@@ -345,7 +342,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
                 ImageView serviceImage = new ImageView(getApplicationContext());
                 serviceImage.setLayoutParams(new ViewGroup.LayoutParams(250,250));
-                imageFeed.addView(serviceImage);
+                imageFeedLayout.addView(serviceImage);
 
                 //установка аватарки
                 Picasso.get()
@@ -360,7 +357,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        imageFeedLayout.removeAllViews();
         loadProfileData();
+        setPhotoFeed(serviceId);
     }
 
     private void attentionThisScheduleIsEmpty() {

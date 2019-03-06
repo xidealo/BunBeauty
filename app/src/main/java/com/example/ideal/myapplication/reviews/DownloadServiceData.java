@@ -12,6 +12,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
 import com.example.ideal.myapplication.fragments.objects.Message;
+import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
@@ -61,6 +62,11 @@ public class DownloadServiceData {
     private static final String FIRST_PHONE = "first phone";
     private static final String SECOND_PHONE = "second phone";
 
+    //PHOTOS
+    private static final String PHOTOS = "photos";
+    private static final String PHOTO_LINK = "photo link";
+    private static final String OWNER_ID = "owner id";
+
     private long currentCountOfDays;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private SQLiteDatabase localDatabase;
@@ -87,11 +93,15 @@ public class DownloadServiceData {
         workWithLocalStorageApi = new WorkWithLocalStorageApi(localDatabase);
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         service = new Service();
+
+
         //загружаем все сервисы в локалку
         DatabaseReference myRef = database
                 .getReference(SERVICES)
                 .child(serviceId);
+
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot servicesSnapshot) {
@@ -109,7 +119,9 @@ public class DownloadServiceData {
                 updateServicesInLocalStorage(service);
 
                 ownerId = userId;
-
+                //загрузка фотографий
+                loadPhotosByServiceId(serviceId);
+                loadPhotosByPhoneNumber(ownerId);
                 //возвращает все дни определенного сервиса
                 final Query query = database.getReference(WORKING_DAYS).
                         orderByChild(SERVICE_ID).
@@ -515,6 +527,87 @@ public class DownloadServiceData {
             localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
     }
+    private void loadPhotosByServiceId(String serviceId) {
+
+        Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
+                .orderByChild(OWNER_ID)
+                .equalTo(serviceId);
+
+        photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
+
+                for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
+
+                    Photo photo = new Photo();
+
+                    photo.setPhotoId(fPhoto.getKey());
+                    photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
+                    photo.setPhotoOwnerId(String.valueOf(fPhoto.child(OWNER_ID).getValue()));
+
+                    addPhotoInLocalStorage(photo);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void loadPhotosByPhoneNumber(String myPhoneNumber) {
+
+        Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
+                .orderByChild(OWNER_ID)
+                .equalTo(myPhoneNumber);
+        photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
+
+                for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
+
+                    Photo photo = new Photo();
+
+                    photo.setPhotoId(fPhoto.getKey());
+                    photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
+                    photo.setPhotoOwnerId(String.valueOf(fPhoto.child(OWNER_ID).getValue()));
+
+                    addPhotoInLocalStorage(photo);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void addPhotoInLocalStorage(Photo photo) {
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(localDatabase);
+        boolean isUpdate = workWithLocalStorageApi
+                .hasSomeData(DBHelper.TABLE_PHOTOS,
+                        photo.getPhotoId());
+
+        if(isUpdate){
+            localDatabase.update(DBHelper.TABLE_PHOTOS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{photo.getPhotoId()});
+        }
+        else {
+            contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+            localDatabase.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
+        }
+
+    }
 
     private void addToScreenOnMainScreen(float avgRating, Service service, User user) {
 
@@ -543,6 +636,7 @@ public class DownloadServiceData {
 
         transaction.commit();
     }
+
 
     private  void addToScreen(float avgRating){
 

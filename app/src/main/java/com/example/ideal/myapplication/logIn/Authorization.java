@@ -220,7 +220,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
             }
         });
-
     }
 
     private void addPhotoInLocalStorage(Photo photo) {
@@ -385,6 +384,8 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         database.delete(DBHelper.TABLE_MESSAGES, null,null);
         database.delete(DBHelper.TABLE_REVIEWS, null,null);
         database.delete(DBHelper.TABLE_ORDERS, null,null);
+
+        database.delete(DBHelper.TABLE_PHOTOS, null,null);
     }
 
     // Добавляет информацию о сервисах данного пользователя в SQLite
