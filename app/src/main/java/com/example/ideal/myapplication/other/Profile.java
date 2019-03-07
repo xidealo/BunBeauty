@@ -535,17 +535,18 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         super.onResume();
         String userId = getUserId();
 
+        loadTimeForReviews();
+        updateProfileData(ownerId);
+
         if(userId.equals(ownerId)){
             // если это мой сервис
             updateOrdersList(userId);
-            updateProfileData(userId);
             updateServicesList(userId);
         }
         else{
             updateServicesList(ownerId);
         }
         workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
-        loadTimeForReviews();
     }
 
     //подгрузка сервисов на serviceList

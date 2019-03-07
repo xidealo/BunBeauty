@@ -17,7 +17,6 @@ import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -119,9 +118,10 @@ public class DownloadServiceData {
                 updateServicesInLocalStorage(service);
 
                 ownerId = userId;
-                //загрузка фотографий
+                //загрузка фотографий для сервисов
                 loadPhotosByServiceId(serviceId);
                 loadPhotosByPhoneNumber(ownerId);
+
                 //возвращает все дни определенного сервиса
                 final Query query = database.getReference(WORKING_DAYS).
                         orderByChild(SERVICE_ID).
@@ -458,7 +458,6 @@ public class DownloadServiceData {
 
     private void addUserInLocalStorage(User localUser) {
         ContentValues contentValues = new ContentValues();
-
         contentValues.put(DBHelper.KEY_NAME_USERS,localUser.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS,localUser.getCity());
 
@@ -474,8 +473,8 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_USER_ID, localUser.getPhone());
             localDatabase.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
-    }
 
+    }
 
     private void addDialogInLocalStorage(String dialogId, String firstPhone, String secondPhone) {
 
