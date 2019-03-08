@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +20,13 @@ import com.squareup.picasso.Picasso;
 
 public class ServicePhotoElement extends Fragment implements View.OnClickListener {
 
+    private static final String ADD_SERVICE = "add service";
     private Button cancelPhoto;
     private ImageView photo;
 
     private Bitmap bitmap;
     private String photoLink;
+    private String status;
     private Uri filePath;
     private final String TAG = "DBInf";
 
@@ -36,9 +35,10 @@ public class ServicePhotoElement extends Fragment implements View.OnClickListene
     }
 
     @SuppressLint("ValidFragment")
-    public ServicePhotoElement(Bitmap _bitmap, Uri _filePath) {
+    public ServicePhotoElement(Bitmap _bitmap, Uri _filePath, String _status) {
         bitmap = _bitmap;
         filePath = _filePath;
+        status = _status;
     }
 
     @SuppressLint("ValidFragment")
@@ -70,11 +70,22 @@ public class ServicePhotoElement extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         if(bitmap!=null) {
             //удаление фрагмента
-            AddService activity = (AddService) this.getActivity();
-            if (activity != null)
-                activity.deleteFragment(this, filePath);
+            //если мы на addService
+            if(status.equals(ADD_SERVICE)) {
+                AddService activity = (AddService) this.getActivity();
+                if (activity != null) {
+                    activity.deleteFragment(this, filePath);
+                }
+            }else {
+                //на edit service
+                EditService editServiceActivity = (EditService) this.getActivity();
+                if (editServiceActivity != null) {
+                    editServiceActivity.deleteFragment(this, filePath);
+                }
+            }
         }
         else {
+            // только на ES можно удлаять, уже загруженные
             EditService activity = (EditService) this.getActivity();
             if (activity != null)
                 activity.deleteFragment(this, photoLink);

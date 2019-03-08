@@ -273,7 +273,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
     private void addToScreen(Bitmap bitmap, Uri filePath){
         FragmentTransaction transaction = manager.beginTransaction();
-        ServicePhotoElement servicePhotoElement = new ServicePhotoElement(bitmap,filePath);
+        ServicePhotoElement servicePhotoElement = new ServicePhotoElement(bitmap,filePath,"add service");
         transaction.add(R.id.feedAddServiceLayout, servicePhotoElement);
         transaction.commit();
     }

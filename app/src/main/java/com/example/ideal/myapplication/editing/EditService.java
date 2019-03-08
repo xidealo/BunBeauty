@@ -6,7 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,11 +19,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.ServicePhotoElement;
+import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.logIn.Authorization;
@@ -35,7 +40,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,14 +89,16 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private static final String OWNER_ID = "owner id";
     private static final String SERVICE_PHOTO = "service photo";
 
+    private static final int PICK_IMAGE_REQUEST = 71;
+
     private ArrayList<String> phLinToDelete;
+    private ArrayList<Uri> fPathToAdd;
 
     private String serviceId;
 
     private EditText nameServiceInput;
     private EditText costServiceInput;
     private EditText descriptionServiceInput;
-    private LinearLayout imageFeed;
     private DBHelper dbHelper;
 
     private FragmentManager manager;
@@ -107,7 +116,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         manager = getSupportFragmentManager();
 
-        imageFeed = findViewById(R.id.feedEditServiceLayout);
+        ImageView serviceImage = findViewById(R.id.servicePhotoEditServiceImage);
 
         FragmentManager manager = getSupportFragmentManager();
         PanelBuilder panelBuilder = new PanelBuilder(this);
@@ -119,6 +128,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         dbHelper = new DBHelper(this);
         phLinToDelete = new ArrayList<>();
+        fPathToAdd = new ArrayList<>();
 
         //подгружаем фото
         setPhotoFeed(serviceId);
@@ -144,6 +154,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         cursor.close();
         editServicesBtn.setOnClickListener(this);
+        serviceImage.setOnClickListener(this);
     }
 
     @Override
@@ -174,14 +185,115 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     service.setDescription(description);
                 }
 
+                for(Uri path: fPathToAdd){
+                    uploadImage(path, serviceId);
+                }
+
                 editServiceInLocalStorage(service);
                 editServiceInFireBase(service);
+                break;
+
+            case R.id.servicePhotoEditServiceImage:
+                chooseImage();
                 break;
 
             default:
                 break;
         }
     }
+
+    private void chooseImage() {
+
+        //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        //Тип получаемых объектов - image:
+        photoPickerIntent.setType("image/*");
+        //Запускаем переход с ожиданием обратного результата в виде информации об изображении:
+        startActivityForResult(photoPickerIntent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null )
+        {
+            Uri filePath = data.getData();
+            try {
+                //установка картинки на activity
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+
+                addToScreenNewPhoto(bitmap,filePath);
+
+                //serviceImage.setImageBitmap(bitmap);
+                //загрузка картинки в fireStorage
+                fPathToAdd.add(filePath);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+    private void uploadImage(Uri filePath, final String serviceId) {
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(PHOTOS);
+
+        if(filePath != null)
+        {
+            final String photoId = myRef.push().getKey();
+            final StorageReference storageReference = firebaseStorage.getReference(SERVICE_PHOTO + "/" + photoId);
+            storageReference.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            uploadPhotos(uri.toString(),serviceId,photoId);
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                }
+            });
+        }
+    }
+
+    private void uploadPhotos(String storageReference, String serviceId,String photoId) {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(PHOTOS).child(photoId);
+
+        Map<String,Object> items = new HashMap<>();
+        items.put(PHOTO_LINK,storageReference);
+        items.put(OWNER_ID,serviceId);
+
+        myRef.updateChildren(items);
+
+        Photo photo = new Photo();
+        photo.setPhotoId(photoId);
+        photo.setPhotoLink(storageReference);
+        photo.setPhotoOwnerId(serviceId);
+
+        addPhotoInLocalStorage(photo);
+    }
+
+    private void addPhotoInLocalStorage(Photo photo) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+
+        database.insert(DBHelper.TABLE_PHOTOS,null,contentValues);
+    }
+
 
     private void setPhotoFeed(String serviceId) {
 
@@ -214,14 +326,14 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         transaction.add(R.id.feedEditServiceLayout, servicePhotoElement);
         transaction.commit();
     }
-    
-    public void deleteFragment(ServicePhotoElement fr, String photoLink){
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.remove(fr);
-        transaction.commit();
-        phLinToDelete.add(photoLink);
 
+    private void addToScreenNewPhoto(Bitmap bitmap, Uri filePath){
+        FragmentTransaction transaction = manager.beginTransaction();
+        ServicePhotoElement servicePhotoElement = new ServicePhotoElement(bitmap,filePath,"");
+        transaction.add(R.id.feedEditServiceLayout, servicePhotoElement);
+        transaction.commit();
     }
+
     private void deletePhotoFromDatabase(final String photoLink) {
 
         Query photoQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
@@ -285,7 +397,19 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         });
     }
 
+    public void deleteFragment(ServicePhotoElement fr, Uri filePath){
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.remove(fr);
+        transaction.commit();
+        fPathToAdd.remove(filePath);
+    }
 
+    public void deleteFragment(ServicePhotoElement fr, String photoLink){
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.remove(fr);
+        transaction.commit();
+        phLinToDelete.add(photoLink);
+    }
 
     public void deleteThisService() {
         if (withoutOrders()) {

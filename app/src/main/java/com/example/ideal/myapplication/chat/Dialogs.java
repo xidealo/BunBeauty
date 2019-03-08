@@ -18,6 +18,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.chatElements.DialogElement;
 import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.Order;
+import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -77,6 +78,11 @@ public class Dialogs extends AppCompatActivity {
 
     private static final String REVIEW_FOR_SERVICE = "review for service";
     private static final String REVIEW_FOR_USER = "review for user";
+
+    //PHOTOS
+    private static final String PHOTOS = "photos";
+    private static final String PHOTO_LINK = "photo link";
+    private static final String OWNER_ID = "owner id";
 
     private WorkWithTimeApi workWithTimeApi;
     private WorkWithLocalStorageApi utilitiesApi;
@@ -188,8 +194,8 @@ public class Dialogs extends AppCompatActivity {
 
                 getAndPutMessagesInLocalStorage(dialogId);
 
-                addToScreen(dialogId, user);
 
+                loadPhotosByPhoneNumber(dialogId,user);
             }
 
             @Override
@@ -197,6 +203,62 @@ public class Dialogs extends AppCompatActivity {
                 attentionBadConnection();
             }
         });
+    }
+
+    private void loadPhotosByPhoneNumber(final String dialogId, final User user) {
+
+        Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
+                .orderByChild(OWNER_ID)
+                .equalTo(user.getPhone());
+        photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
+
+                for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
+
+                    Photo photo = new Photo();
+
+                    photo.setPhotoId(fPhoto.getKey());
+                    photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
+                    photo.setPhotoOwnerId(String.valueOf(fPhoto.child(OWNER_ID).getValue()));
+
+                    addPhotoInLocalStorage(photo,dialogId,user);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void addPhotoInLocalStorage(Photo photo,String dialogId, User user) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+        boolean isUpdate = workWithLocalStorageApi
+                .hasSomeData(DBHelper.TABLE_PHOTOS,
+                        photo.getPhotoId());
+
+        if(isUpdate){
+            database.update(DBHelper.TABLE_PHOTOS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{photo.getPhotoId()});
+        }
+        else {
+            contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+            database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
+        }
+
+        addToScreen(dialogId, user);
     }
 
     private void addUserInLocalStorage(User user) {

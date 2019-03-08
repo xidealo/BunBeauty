@@ -1,4 +1,4 @@
-package com.example.ideal.myapplication.reviews;
+package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -16,7 +16,6 @@ import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
-import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -116,11 +115,11 @@ public class DownloadServiceData {
                 service.setDescription(serviceDescription);
 
                 updateServicesInLocalStorage(service);
+                loadPhotosByPhoneNumber(ownerId);
 
                 ownerId = userId;
                 //загрузка фотографий для сервисов
                 loadPhotosByServiceId(serviceId);
-                loadPhotosByPhoneNumber(ownerId);
 
                 //возвращает все дни определенного сервиса
                 final Query query = database.getReference(WORKING_DAYS).
@@ -241,7 +240,6 @@ public class DownloadServiceData {
                                 ratingReview.setWorkingTimeId(workingTimeId);
                                 //добавление ревью в локальную бд
                                 addReviewForServiceInLocalStorage(ratingReview);
-
                                 // загружать инфу о пользователе
                                 if (userId.equals("0")) {
                                     loadMessageById(messageId);
@@ -368,6 +366,7 @@ public class DownloadServiceData {
             public void onDataChange(@NonNull DataSnapshot user) {
                 User localUser = new User();
                 localUser.setPhone(valuingPhone);
+                //загрузка фото людей с оценками
                 localUser.setName(String.valueOf(user.child(NAME).getValue()));
                 localUser.setCity(String.valueOf(user.child(CITY).getValue()));
                 addUserInLocalStorage(localUser);
@@ -439,13 +438,15 @@ public class DownloadServiceData {
                 String secondPhone = String.valueOf(dialogSnapshot.child(SECOND_PHONE).getValue());
 
                 addDialogInLocalStorage(dialogId, firstPhone, secondPhone);
-
+                Log.d(TAG, "onDataChange: ");
                 if(!firstPhone.equals(ownerId)) {
                     loadUserForThisReview(firstPhone);
+                    Log.d(TAG, "FIRST PHONE ");
                 }
 
                 if(!secondPhone.equals(ownerId) ) {
                     loadUserForThisReview(firstPhone);
+                    Log.d(TAG, "SECOND PHONE ");
                 }
             }
 
@@ -605,7 +606,6 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
             localDatabase.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
-
     }
 
     private void addToScreenOnMainScreen(float avgRating, Service service, User user) {
