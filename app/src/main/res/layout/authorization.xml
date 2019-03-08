@@ -21,17 +21,27 @@
         app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/bun_beauty" />
 
+    <TextView
+        android:id="@+id/titleAuthText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Введите номер телефона"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logoAuthImage"
+        app:layout_constraintVertical_bias="0.1" />
+
     <Spinner
         android:id="@+id/codeAuthSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/phoneAuthInput"
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logoAuthImage"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintVertical_bias="0.3" />
 
     <EditText
         android:id="@+id/phoneAuthInput"
@@ -49,10 +59,10 @@
         app:layout_constraintHorizontal_bias="0.656"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logoAuthImage"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintVertical_bias="0.3" />
 
     <Button
-        android:id="@+id/logInAuthBtn"
+        android:id="@+id/verifyAuthBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/log_in"
@@ -62,46 +72,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logoAuthImage"
-        app:layout_constraintVertical_bias="0.3" />
-
-    <EditText
-        android:id="@+id/codeAuthInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/lightText"
-        android:ems="10"
-        android:hint="@string/enterCode"
-        android:inputType="number"
-        android:textColor="@color/white"
-        android:textColorHint="@color/lightText"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logInAuthBtn"
-        app:layout_constraintVertical_bias="0.3" />
-
-    <Button
-        android:id="@+id/verifyAuthBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/verifyCode"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logInAuthBtn" />
-
-    <Button
-        android:id="@+id/resendAuthBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/resendCode"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logInAuthBtn"
-        app:layout_constraintVertical_bias="0.7" />
+        app:layout_constraintVertical_bias="0.45" />
 
 </android.support.constraint.ConstraintLayout>

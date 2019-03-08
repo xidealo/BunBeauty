@@ -39,7 +39,7 @@
         <activity android:name=".createService.MyCalendar" />
         <activity android:name=".editing.EditService" />
         <activity android:name=".editing.EditProfile" />
-        <activity android:name=".logIn.Confirmation" />
+        <activity android:name=".logIn.VerifyPhone" />
     </application>
 
 </manifest>

@@ -17,6 +17,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.other.GuestService;
+import com.example.ideal.myapplication.other.MainScreen;
 
 @SuppressLint("ValidFragment")
 public class foundServiceElement extends Fragment implements View.OnClickListener {

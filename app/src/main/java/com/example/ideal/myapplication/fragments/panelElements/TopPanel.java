@@ -115,7 +115,8 @@ public class TopPanel extends Fragment implements View.OnClickListener{
                     multiBtn.setText("Редактировать");
                 // Если это чужой сервис
                 } else {
-                    multiBtn.setText("Мастер");
+                    //multiBtn.setText("Мастер");
+                    multiBtn.setVisibility(View.GONE);
                 }
             // Если это не сервис
             } else {

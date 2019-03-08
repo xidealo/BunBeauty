@@ -5,49 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    tools:context=".logIn.PasswordRecovery">
+    tools:context=".logIn.VerifyPhone">
 
-    <Spinner
-        android:id="@+id/codeRecoverySpinner"
+    <ImageView
+        android:id="@+id/logoVerifyImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/phoneRecoveryInput"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
-
-    <EditText
-        android:id="@+id/phoneRecoveryInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/lightText"
-        android:ems="10"
-        android:hint="@string/phoneRegistration"
-        android:inputType="phone"
-        android:textColor="@color/white"
-        android:textColorHint="@color/lightText"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
-
-    <Button
-        android:id="@+id/sendCodeRecoveryBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Отпрвить код"
+        android:layout_gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/bun_beauty" />
 
     <EditText
-        android:id="@+id/codeRecoveryInput"
+        android:id="@+id/codeVerifyInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/lightText"
@@ -56,36 +31,43 @@
         android:inputType="number"
         android:textColor="@color/white"
         android:textColorHint="@color/lightText"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendCodeRecoveryBtn"
+        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
         app:layout_constraintVertical_bias="0.3" />
 
     <Button
-        android:id="@+id/verifyRecoveryBtn"
+        android:id="@+id/verifyVerifyBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/verifyCode"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendCodeRecoveryBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
+        app:layout_constraintVertical_bias="0.42" />
 
     <Button
-        android:id="@+id/resendRecoveryBtn"
+        android:id="@+id/resendVerifyBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/resendCode"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendCodeRecoveryBtn"
-        app:layout_constraintVertical_bias="0.7" />
+        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
+        app:layout_constraintVertical_bias="0.54" />
 
+    <TextView
+        android:id="@+id/changePhoneVerifyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Именить номер"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
+        app:layout_constraintVertical_bias="0.9" />
 
 </android.support.constraint.ConstraintLayout>
