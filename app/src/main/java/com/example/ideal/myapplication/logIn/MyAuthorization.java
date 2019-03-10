@@ -12,7 +12,6 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.Profile;
-import com.example.ideal.myapplication.reviews.DownloadServiceData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

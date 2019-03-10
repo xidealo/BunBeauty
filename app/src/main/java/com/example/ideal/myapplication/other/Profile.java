@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -91,8 +92,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private String ownerId;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private ImageView avatarImage;
-
-    private final String TAG = "DBInf";
 
     private FragmentManager manager;
 
