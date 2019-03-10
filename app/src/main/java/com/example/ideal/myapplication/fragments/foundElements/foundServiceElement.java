@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.fragments.foundElements;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.Rating;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,12 +11,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.GuestService;
 import com.example.ideal.myapplication.other.MainScreen;
 
@@ -28,23 +32,26 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
     private TextView city;
     private TextView nameServiceText;
     private TextView costText;
+    private ImageView avatarImage;
     private RatingBar ratingBar;
 
     private float avgRating;
 
-    private String idString;
+    private String serviceId;
     private String nameUserString;
     private String cityString;
     private String nameServiceString;
     private String costString;
+    private String userId;
 
     @SuppressLint("ValidFragment")
     public foundServiceElement(Float _avgRating, Service service, User user) {
-        idString = service.getId();
+        serviceId = service.getId();
         nameUserString = user.getName();
         cityString = user.getCity();
         nameServiceString = service.getName();
         costString = service.getCost();
+        userId = user.getPhone();
 
         avgRating = _avgRating;
     }
@@ -62,6 +69,7 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         nameServiceText = view.findViewById(R.id.serviceNameFoundServiceElementText);
         costText = view.findViewById(R.id.costFoundServiceElementText);
         ratingBar = view.findViewById(R.id.ratingBarFondServiceElement);
+        avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage);
 
         nameUserText.setOnClickListener(this);
         city.setOnClickListener(this);
@@ -76,6 +84,13 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         nameServiceText.setText(nameServiceString);
         costText.setText(costString);
         ratingBar.setRating(avgRating);
+
+        DBHelper dbHelper = new DBHelper(getContext());
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+
+        workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage);
     }
 
     @Override
@@ -85,7 +100,7 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
 
     private void goToGuestService(){
         Intent intent = new Intent(this.getContext(), GuestService.class);
-        intent.putExtra(SERVICE_ID, idString);
+        intent.putExtra(SERVICE_ID, serviceId);
         startActivity(intent);
     }
 }

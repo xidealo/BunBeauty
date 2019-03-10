@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:theme="@style/allPages"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <ImageView
+        android:id="@+id/avatarFoundServiceElementImage"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        tools:srcCompat="@tools:sample/avatars" />
+
     <TextView
         android:id="@+id/userNameFoundServiceElementText"
-        android:layout_width="95dp"
+        android:layout_width="14dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="TextView"

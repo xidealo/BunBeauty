@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     tools:context=".fragments.chatElements.DialogElement">
+
+    <ImageView
+        android:id="@+id/avatarDialogElementImage"
+        android:layout_width="65dp"
+        android:layout_height="20dp"
+        android:layout_weight="1"
+        tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/nameDialogElementText"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="4"
+
         android:text="name text" />
 
-</FrameLayout>
+</LinearLayout>

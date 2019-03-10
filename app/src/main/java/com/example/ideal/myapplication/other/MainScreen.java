@@ -15,10 +15,8 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.User;
-import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
-import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.example.ideal.myapplication.reviews.DownloadServiceData;
+import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -122,6 +120,7 @@ public class MainScreen extends AppCompatActivity {
                     final String userId = snapshot.getKey();
 
                     final User user = new User();
+                    user.setPhone(userId);
                     user.setName(userName);
                     user.setCity(userCity);
 
@@ -138,7 +137,6 @@ public class MainScreen extends AppCompatActivity {
                                 DownloadServiceData downloadServiceData = new DownloadServiceData();
                                 downloadServiceData.loadSchedule(serviceId,database,
                                         "MainScreen",manager);
-
                                 countOfService++;
                                 //количество возможных предложений на mainScreen
                                 if(countOfService == limitOfService) {

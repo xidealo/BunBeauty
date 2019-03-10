@@ -10,6 +10,23 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.objects.Photo;
+import com.example.ideal.myapplication.fragments.objects.Service;
+import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.WorkWithViewApi;
+import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.other.Profile;
+import com.example.ideal.myapplication.helpApi.DownloadServiceData;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import com.example.ideal.myapplication.helpApi.WorkWithViewApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +39,10 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     private static final String FILE_NAME = "Info";
     private static final String PHONE_NUMBER = "Phone number";
     private static final String PASS = "password";
+    //PHOTOS
+    private static final String PHOTOS = "photos";
+    private static final String PHOTO_LINK = "photo link";
+    private static final String OWNER_ID = "owner id";
 
     private static final String USERS = "users";
     private static final String NAME = "name";
@@ -112,7 +133,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
             phoneInput.requestFocus();
             return false;
         }
-
         return  true;
     }
 

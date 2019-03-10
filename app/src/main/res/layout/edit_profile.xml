@@ -8,6 +8,25 @@
     tools:context=".editing.EditProfile"
     android:theme="@style/allPages">
 
+    <ImageView
+        android:id="@+id/avatarEditProfileImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameEditProfileInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.923"
+        app:srcCompat="@mipmap/ic_launcher_round"
+        tools:srcCompat="@tools:sample/avatars" />
+
     <EditText
         android:id="@+id/nameEditProfileInput"
         android:layout_width="wrap_content"
@@ -17,10 +36,9 @@
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/cityEditProfileInput"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.946" />
 
     <EditText
         android:id="@+id/cityEditProfileInput"
@@ -31,10 +49,9 @@
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/phoneEditProfileInput"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.973" />
 
     <EditText
         android:id="@+id/phoneEditProfileInput"
@@ -45,10 +62,9 @@
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/editProfileEditProfileBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.93" />
 
     <Button
         android:id="@+id/editProfileEditProfileBtn"
@@ -57,10 +73,9 @@
         android:text="@string/edit"
         app:layout_constraintBottom_toTopOf="@+id/codeEditProfileInput"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.974" />
 
     <EditText
         android:id="@+id/codeEditProfileInput"
@@ -72,10 +87,9 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/verifyProfileEditProfileBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.977" />
 
     <Button
         android:id="@+id/verifyProfileEditProfileBtn"
@@ -85,10 +99,10 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/resendProfileEditProfileBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.963" />
 
     <Button
         android:id="@+id/resendProfileEditProfileBtn"
@@ -98,10 +112,9 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <LinearLayout
         android:id="@+id/headerEditProfileLayout"
@@ -116,5 +129,23 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBarEditProfile"
+        style="?android:attr/progressBarStyle"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/resendProfileEditProfileBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerEditProfileLayout"
+        app:layout_constraintVertical_bias="0.73" />
 
 </android.support.constraint.ConstraintLayout>

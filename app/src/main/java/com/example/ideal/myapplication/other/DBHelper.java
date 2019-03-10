@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final  int DATABASE_VERSION = 76;
+    public static final  int DATABASE_VERSION = 77;
     public static final String DATABASE_NAME = "MyFirstDB";
 
     //tables name
@@ -18,6 +18,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_MESSAGES = "messages";
     public static final String TABLE_ORDERS = "orders";
     public static final String TABLE_REVIEWS = "reviews";
+    public static final String TABLE_PHOTOS = "photos";
 
     //for all
     public  static final  String KEY_ID = "_id";
@@ -27,10 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public  static final  String KEY_NAME_USERS = "user_name";
     public  static final  String KEY_CITY_USERS = "city";
     public  static final  String KEY_PASS_USERS = "pass";
-    public  static final  String KEY_RATING_USERS = "user_rating";
     public  static final  String KEY_BIRTHDAY_USERS = "birthday";
-    public  static final  String KEY_COUNT_OF_RATES_USERS = "count_of_rates";
-    public  static final  String KEY_PHOTO_LINK_USERS = "photo_link";
 
     //services
     public  static final  String KEY_NAME_SERVICES = "service_name";
@@ -65,6 +63,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public  static final  String KEY_MESSAGE_ID_ORDERS = "message_id";
     public  static final  String KEY_WORKING_TIME_ID_ORDERS = "working_time_id";
 
+    //photos
+    public  static final  String KEY_PHOTO_LINK_PHOTOS = "photo_link";
+    public  static final  String KEY_OWNER_ID_PHOTOS = "owner_id";
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -78,10 +80,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_NAME_USERS + " text,"
                 + KEY_PASS_USERS + " text,"
                 + KEY_CITY_USERS + " text,"
-                + KEY_RATING_USERS + " text,"
-                + KEY_BIRTHDAY_USERS + " text,"
-                + KEY_COUNT_OF_RATES_USERS + " text,"
-                + KEY_PHOTO_LINK_USERS + " text"
+                + KEY_BIRTHDAY_USERS + " text"
                 + ")";
         String services = "create table "+ TABLE_CONTACTS_SERVICES
                 + "(" + KEY_ID + " text primary key,"
@@ -135,6 +134,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_WORKING_TIME_ID_ORDERS + " integer"
                 + ")";
 
+        String photos = "create table "+ TABLE_PHOTOS
+                + "("
+                + KEY_ID + " text primary key,"
+                + KEY_PHOTO_LINK_PHOTOS + " text,"
+                + KEY_OWNER_ID_PHOTOS + " text"
+                + ")";
+
         // create users table
         db.execSQL(users);
 
@@ -159,6 +165,9 @@ public class DBHelper extends SQLiteOpenHelper {
         //create orders
         db.execSQL(orders);
 
+        //create photos
+        db.execSQL(photos);
+
     }
 
     @Override
@@ -171,6 +180,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists " + TABLE_MESSAGES);
         db.execSQL("drop table if exists " + TABLE_REVIEWS);
         db.execSQL("drop table if exists " + TABLE_ORDERS);
+        db.execSQL("drop table if exists " + TABLE_PHOTOS);
 
         onCreate(db);
     }

@@ -14,6 +14,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -26,9 +27,8 @@ import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
-import com.example.ideal.myapplication.reviews.DownloadServiceData;
+import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -43,6 +43,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String PHONE_NUMBER = "Phone number";
     private static final String OWNER_ID = "owner id";
     private static final String FILE_NAME = "Info";
+
     private static final String USER_NAME = "my name";
     private static final String USER_CITY = "my city";
     private static final String TAG = "DBInf";
@@ -88,8 +89,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private SharedPreferences sPref;
     private DBHelper dbHelper;
     private String ownerId;
-    private WorkWithTimeApi workWithTimeApi;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
+    private ImageView avatarImage;
+
+    private final String TAG = "DBInf";
 
     private FragmentManager manager;
 
@@ -102,8 +105,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         Button logOutBtn = findViewById(R.id.logOutProfileBtn);
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
+        avatarImage = findViewById(R.id.avatarProfileImage);
 
         SwitchCompat servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
+
 
         servicesScroll = findViewById(R.id.servicesProfileScroll);
         ordersScroll = findViewById(R.id.orderProfileScroll);
@@ -119,7 +124,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         counter =0;
 
         dbHelper = new DBHelper(this);
-        workWithTimeApi = new WorkWithTimeApi();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
@@ -135,12 +139,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             ownerId = userId;
         }
 
+        Log.d(TAG, "onCreate: " + ownerId);
         PanelBuilder panelBuilder = new PanelBuilder(this, ownerId);
         panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
         panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
 
-        // Добавляем данные о пользователе
-        updateProfileData(ownerId);
+        //установка аватарки
+        loadServiceByWorkingDay(ownerId);
 
         // Проверяем совпадают id пользователя и владельца
         if(userId.equals(ownerId)){
@@ -183,6 +188,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
 
         logOutBtn.setOnClickListener(this);
+        avatarImage.setOnClickListener(this);
     }
 
     @Override
@@ -522,16 +528,17 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         String userId = getUserId();
 
         loadTimeForReviews();
+        updateProfileData(ownerId);
 
         if(userId.equals(ownerId)){
             // если это мой сервис
             updateOrdersList(userId);
-            updateProfileData(userId);
             updateServicesList(userId);
         }
         else{
             updateServicesList(ownerId);
         }
+        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
     }
 
     //подгрузка сервисов на serviceList
@@ -644,6 +651,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         transaction.commit();
     }
 
+
     //получить id-phone пользователя
     private String getUserId(){
         // возваращает id текущего пользователя
@@ -678,5 +686,4 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         Intent intent = new Intent(this, AddService.class);
         startActivity(intent);
     }
-
 }

@@ -1,15 +1,18 @@
 package com.example.ideal.myapplication.reviews;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.database.sqlite.SQLiteDatabase;
+import android.media.Image;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.Profile;
 
 public class PickedComment extends AppCompatActivity implements View.OnClickListener {
@@ -22,10 +25,11 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
 
     private static final String OWNER_ID = "owner id";
 
+    private TextView userNameText;
+    private TextView reviewText;
+    private RatingBar ratingBar;
 
-    TextView userNameText;
-    TextView reviewText;
-    RatingBar ratingBar;
+    private ImageView avatarImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,20 +40,30 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
         reviewText = findViewById(R.id.reviewPickedCommentText);
         ratingBar = findViewById(R.id.ratingPickedCommentBar);
 
-        userNameText.setOnClickListener(this);
+        avatarImage = findViewById(R.id.avatarPickedCommentImage);
 
+        userNameText.setOnClickListener(this);
+        avatarImage.setOnClickListener(this);
         setInfo();
     }
 
     private void setInfo() {
 
         String userName = getIntent().getStringExtra(USER_NAME);
+        String ownerId = getIntent().getStringExtra(USER_ID);
         String review = getIntent().getStringExtra(REVIEW);
         float rating = getIntent().getFloatExtra(RATING, 0);
 
         userNameText.setText(userName);
         reviewText.setText(review);
         ratingBar.setRating(rating);
+
+        DBHelper dbHelper = new DBHelper(this);
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+
+        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
     }
 
 

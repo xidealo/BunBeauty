@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
@@ -20,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -524,6 +526,9 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         // Вписываем телефон в working time (localStorage)
         // До того onDataChange
         updateLocalStorageTime();
+
+        //закрашиваем, чтобы нельзя было заисаться еще раз
+        checkCurrentTimes();
 
         // Вписываем телефон в working time (firebase)
         DatabaseReference myRef = database.getReference(WORKING_TIME).child(timeId);

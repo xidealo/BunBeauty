@@ -2,8 +2,12 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.example.ideal.myapplication.other.DBHelper;
+import com.squareup.picasso.Picasso;
 
 public class WorkWithLocalStorageApi {
 
@@ -37,6 +41,34 @@ public class WorkWithLocalStorageApi {
         }
         cursor.close();
         return isMyService;
+    }
+
+    private static final String TAG = "DBInf";
+
+    public void setPhotoAvatar(String userId, ImageView avatarImage) {
+
+        //получаем имя, фамилию и город пользователя по его id
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_PHOTO_LINK_PHOTOS
+                        + " FROM "
+                        + DBHelper.TABLE_PHOTOS
+                        + " WHERE "
+                        + DBHelper.KEY_OWNER_ID_PHOTOS + " = ?";
+        Cursor cursor = localDatabase.rawQuery(sqlQuery,new String[] {userId});
+
+        if(cursor.moveToFirst()){
+            Log.d(TAG, "setPhotoAvatar: ");
+            int indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS);
+
+            String photoLink = cursor.getString(indexPhotoLink);
+
+            //установка аватарки
+            Picasso.get()
+                    .load(photoLink)
+                    .into(avatarImage);
+        }
+        cursor.close();
     }
 
     public Cursor getServiceCursorByTimeId(String workingTimeId) {

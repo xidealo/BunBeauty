@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/allPages"
+    android:orientation="vertical"
+    tools:context=".fragments.ServicePhotoElement">
+
+
+    <Button
+        android:id="@+id/cancelServicePhotoElement"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:text="x" />
+
+    <ImageView
+        android:id="@+id/imageServicePhotoElementImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        tools:src="@tools:sample/avatars" />
+</LinearLayout>

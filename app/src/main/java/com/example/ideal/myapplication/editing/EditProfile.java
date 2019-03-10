@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,14 +16,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
@@ -35,9 +44,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class EditProfile extends AppCompatActivity implements View.OnClickListener {
@@ -48,6 +63,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private static final String USER_NAME = "name";
     private static final String PASS = "password";
     private static final String USER_CITY = "city";
+
+    private static final String AVATAR = "avatar";
+    private static final String PHOTOS = "photos";
+    private static final String PHOTO_LINK = "photo link";
+
+    private final int PICK_IMAGE_REQUEST = 71;
 
     private static final String DIALOGS = "dialogs";
     private static final String USERS = "users";
@@ -64,6 +85,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private String oldPhone;
     private String phone;
+    private Uri filePath;
 
     private Button editBtn;
     private Button verifyButton;
@@ -73,6 +95,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private EditText cityInput;
     private EditText phoneInput;
     private EditText codeInput;
+    private ProgressBar progressBar;
 
     private String phoneVerificationId;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks
@@ -82,6 +105,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private DBHelper dbHelper;
     private SharedPreferences sPref;
     private User user;
+
+    private ImageView avatarImage;
 
     private FirebaseAuth fbAuth;
 
@@ -99,11 +124,15 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         resendButton = findViewById(R.id.resendProfileEditProfileBtn);
         verifyButton = findViewById(R.id.verifyProfileEditProfileBtn);
 
+        progressBar = findViewById(R.id.progressBarEditProfile);
+
+        //для работы с картинкой
+        avatarImage = findViewById(R.id.avatarEditProfileImage);
+
         FragmentManager manager = getSupportFragmentManager();
         PanelBuilder panelBuilder = new PanelBuilder(this);
         panelBuilder.buildFooter(manager, R.id.footerEditProfileLayout);
-        panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerEditProfileLayout);
-        Log.d(TAG, " R.id.footerAddServiceLayout: " +  R.id.footerAddServiceLayout);
+        panelBuilder.buildHeader(manager, "Редактирование профиля", R.id.headerEditProfileLayout);
 
         fbAuth = FirebaseAuth.getInstance();
         user = new User();
@@ -133,7 +162,10 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         editBtn.setOnClickListener(this);
         resendButton.setOnClickListener(this);
         verifyButton.setOnClickListener(this);
+        avatarImage.setOnClickListener(this);
     }
+
+
 
     @Override
     public void onClick(View v) {
@@ -141,6 +173,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
             case R.id.editProfileEditProfileBtn:
                 checkPhone();
+                editBtn.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
                 break;
 
             case R.id.verifyProfileEditProfileBtn:
@@ -152,6 +186,14 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 }
                 break;
 
+            case R.id.resendConfirmationBtn:
+                resendCode();
+                break;
+
+            case R.id.avatarEditProfileImage:
+                chooseImage();
+                break;
+            
             default:
                 break;
         }
@@ -173,9 +215,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             // Сравниваем телефон в поле ввода и уже имеющийся
             if (phone.equals(oldPhone)) {
                 // Номер не изменился
-
                 updateInfo();
-                goToProfile();
             } else {
                 // Номер изменился
 
@@ -210,6 +250,16 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         if (user.getName() != null) items.put(USER_NAME, user.getName());
         if (user.getCity() != null) items.put(USER_CITY, user.getCity());
         reference.updateChildren(items);
+
+        //сначала надо проверить нет ли аватарки у пользователя в FB
+        //если есть то просто перезаписать ссылку
+        //загрузка картинки в fireStorage
+        if(filePath != null) {
+            uploadImage(filePath);
+        }
+        else {
+            goToProfile();
+        }
 
         updateInfoInLocalStorage();
     }
@@ -437,7 +487,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                     myRef.updateChildren(items);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -519,6 +568,180 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 "Данный пользователь уже зарегестрирован.",
                 Toast.LENGTH_SHORT).show();
     }
+
+    private void chooseImage() {
+
+        //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        //Тип получаемых объектов - image:
+        photoPickerIntent.setType("image/*");
+        //Запускаем переход с ожиданием обратного результата в виде информации об изображении:
+        startActivityForResult(photoPickerIntent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null )
+        {
+            filePath = data.getData();
+            try {
+                //установка картинки на activity
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                avatarImage.setImageBitmap(bitmap);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void uploadImage(Uri filePath) {
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(PHOTOS);
+        if(filePath != null)
+        {
+            final String photoId = myRef.push().getKey(); // генерить ключ из фб
+            final StorageReference storageReference = firebaseStorage.getReference(AVATAR + "/" + photoId);
+            storageReference.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            updatePhotos(uri.toString(),photoId);
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+        }
+    }
+
+    private void updatePhotos(final String storageReference, final String newPhotoId) {
+
+        // проверяем нет ли такого телефона в FB, если есть то перезаписываем только ссылку
+        final FirebaseDatabase database =  FirebaseDatabase.getInstance();
+
+        Query query = database.getReference(PHOTOS)
+                .orderByChild(OWNER_ID)
+                .equalTo(oldPhone);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
+                if(photosSnapshot.getChildrenCount()==0){
+                    uploadNewPhoto(storageReference,newPhotoId);
+                }
+                else {
+                    for(DataSnapshot photo: photosSnapshot.getChildren()){
+                        // получаем айди старого фото и удаляем его из storage и меняем в database
+                        String photoId = photo.getKey();
+                        deleteOldPhoto(photoId);
+
+                        DatabaseReference myRef = database.getReference(PHOTOS).child(photoId);
+                        Map<String,Object> items = new HashMap<>();
+                        items.put(PHOTO_LINK,null);
+                        items.put(OWNER_ID,null);
+                        myRef.updateChildren(items);
+
+                        uploadNewPhoto(storageReference,newPhotoId);
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void deleteOldPhoto(String photoId) {
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+
+        final StorageReference storageReference = firebaseStorage.getReference(AVATAR
+                + "/"
+                + photoId);
+
+        storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+    }
+
+    private void uploadNewPhoto(String storageReference, String photoId){
+        FirebaseDatabase database =  FirebaseDatabase.getInstance();
+
+        DatabaseReference  myRef = database.getReference(PHOTOS).child(photoId);
+
+        Map<String,Object> items = new HashMap<>();
+        items.put(PHOTO_LINK,storageReference);
+        items.put(OWNER_ID,oldPhone);
+
+        myRef.updateChildren(items);
+
+        Photo photo = new Photo();
+        photo.setPhotoId(photoId);
+        photo.setPhotoLink(storageReference);
+        photo.setPhotoOwnerId(oldPhone);
+
+        addPhotoInLocalStorage(photo);
+    }
+
+    private void addPhotoInLocalStorage(Photo photo) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        database.delete(
+                DBHelper.TABLE_PHOTOS,
+                DBHelper.KEY_OWNER_ID_PHOTOS + " = ?",
+                new String[]{photo.getPhotoOwnerId()});
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+        boolean isUpdate = workWithLocalStorageApi
+                .hasSomeData(DBHelper.TABLE_PHOTOS,
+                        photo.getPhotoId());
+        if(isUpdate){
+            database.update(DBHelper.TABLE_PHOTOS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{photo.getPhotoId()});
+        }
+        else {
+            contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+            database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
+        }
+
+
+
+        goToProfile();
+    }
+
 
     private void attentionInvalidPhoneNumber(){
         Toast.makeText(

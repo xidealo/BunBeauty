@@ -3,6 +3,7 @@ package com.example.ideal.myapplication.fragments.panelElements;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
@@ -20,6 +22,8 @@ import com.example.ideal.myapplication.chat.Dialogs;
 import com.example.ideal.myapplication.chat.Messages;
 import com.example.ideal.myapplication.editing.EditProfile;
 import com.example.ideal.myapplication.editing.EditService;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.GuestService;
 import com.example.ideal.myapplication.other.MainScreen;
 import com.example.ideal.myapplication.other.Profile;
@@ -37,6 +41,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
 
     private Button backBtn;
     private TextView titleText;
+    private ImageView avatarImage;
     private Button multiBtn;
 
     private String title;
@@ -99,6 +104,8 @@ public class TopPanel extends Fragment implements View.OnClickListener{
         titleText = view.findViewById(R.id.titleTopPanelText);
         multiBtn = view.findViewById(R.id.multiTopPanelBtn);
 
+        avatarImage = view.findViewById(R.id.avatarTopPanelImage);
+
         if(super.getActivity().isTaskRoot()){
             backBtn.setVisibility(View.INVISIBLE);
         } else {
@@ -115,16 +122,29 @@ public class TopPanel extends Fragment implements View.OnClickListener{
                     multiBtn.setText("Редактировать");
                 // Если это чужой сервис
                 } else {
-                    //multiBtn.setText("Мастер");
+                    DBHelper dbHelper = new DBHelper(getContext());
+                    SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+                    WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+                    workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId,avatarImage);
                     multiBtn.setVisibility(View.GONE);
+                    avatarImage.setVisibility(View.VISIBLE);
+                    avatarImage.setOnClickListener(this);
+
                 }
             // Если это не сервис
             } else {
                 // Если это редактирование сервиса
                 if(getContext().getClass() == Messages.class) {
                     // Если это диалог
-                    multiBtn.setText("Собеседник");
-                    titleText.setOnClickListener(this);
+                    DBHelper dbHelper = new DBHelper(getContext());
+                    SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+                    WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+                    workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId,avatarImage);
+                    multiBtn.setVisibility(View.GONE);
+                    avatarImage.setVisibility(View.VISIBLE);
+                    avatarImage.setOnClickListener(this);
                 // Если это не диалог
                 } else {
                     if(getContext().getClass() == EditService.class) {
@@ -142,7 +162,6 @@ public class TopPanel extends Fragment implements View.OnClickListener{
                 }
             }
         }
-
         setTitle();
     }
 
@@ -161,7 +180,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
                 multiClick();
                 break;
 
-            case R.id.titleTopPanelText:
+            case R.id.avatarTopPanelImage:
                 goToProfile();
                 break;
         }
@@ -198,6 +217,8 @@ public class TopPanel extends Fragment implements View.OnClickListener{
             deleteService();
         }
     }
+
+
 
     private void goToEditProfile() {
         Intent intent = new Intent(getContext(), EditProfile.class);
