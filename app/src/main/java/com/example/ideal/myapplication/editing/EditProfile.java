@@ -152,10 +152,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 }
                 break;
 
-            case R.id.resendConfirmationBtn:
-                resendCode();
-                break;
-
             default:
                 break;
         }

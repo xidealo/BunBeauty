@@ -9,10 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".fragments.panelElements.TopPanel"></activity>
+        <activity android:name=".logIn.CreatingNewPassword"></activity>
+        <activity android:name=".logIn.PasswordRecovery" />
+        <activity android:name=".test.VerifyPhoneActivity" />
+        <activity android:name=".test.ProfileActivity" />
+        <activity android:name=".test.MainActivity" />
+        <activity android:name=".fragments.panelElements.TopPanel" />
         <activity
             android:name=".reviews.PickedComment"
-            android:theme="@style/Theme.AppCompat.Dialog"></activity>
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity android:name=".reviews.Comments" />
         <activity android:name=".reviews.Review" />
         <activity android:name=".chat.Messages" />
@@ -34,7 +39,7 @@
         <activity android:name=".createService.MyCalendar" />
         <activity android:name=".editing.EditService" />
         <activity android:name=".editing.EditProfile" />
-        <activity android:name=".logIn.Confirmation" />
+        <activity android:name=".logIn.VerifyPhone" />
     </application>
 
 </manifest>

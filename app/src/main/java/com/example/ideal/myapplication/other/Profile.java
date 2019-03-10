@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -21,9 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.chat.Dialogs;
 import com.example.ideal.myapplication.createService.AddService;
-import com.example.ideal.myapplication.editing.EditProfile;
 import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
@@ -33,6 +30,7 @@ import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.reviews.DownloadServiceData;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,7 +43,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String PHONE_NUMBER = "Phone number";
     private static final String OWNER_ID = "owner id";
     private static final String FILE_NAME = "Info";
-    private static final String STATUS = "status";
     private static final String USER_NAME = "my name";
     private static final String USER_CITY = "my city";
     private static final String TAG = "DBInf";
@@ -128,7 +125,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         manager = getSupportFragmentManager();
         //получаем id пользователя
-        String userId = getUserId();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
 
         // Получаем id владельца профиля
         ownerId = getIntent().getStringExtra(OWNER_ID);
@@ -195,7 +192,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 goToAddService();
                 break;
             case R.id.logOutProfileBtn:
-                annulStatus();
                 goToLogIn();
                 break;
 
@@ -665,18 +661,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         transaction.commit();
     }
 
-    //Анулировать статус при выходе
-    private void annulStatus() {
-        sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.remove(STATUS);
-        editor.apply();
-    }
-
     private void goToLogIn() {
+        FirebaseAuth.getInstance().signOut();
+
         Intent intent = new Intent(this, Authorization.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish();
     }
 
     private void setWithoutRating(){
@@ -686,28 +676,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private void goToAddService() {
         Intent intent = new Intent(this, AddService.class);
-        startActivity(intent);
-    }
-
-    private void goToSearchService() {
-        Intent intent = new Intent(this, SearchService.class);
-        startActivity(intent);
-    }
-
-    private void goToMainScreen() {
-        Intent intent = new Intent(this, MainScreen.class);
-        startActivity(intent);
-    }
-
-    private void goToEditProfile() {
-        Intent intent = new Intent(this, EditProfile.class);
-        intent.putExtra(USER_NAME, nameText.getText());
-        intent.putExtra(USER_CITY, cityText.getText());
-        startActivity(intent);
-    }
-
-    private void goToDialogs() {
-        Intent intent = new Intent(this, Dialogs.class);
         startActivity(intent);
     }
 

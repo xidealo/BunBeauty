@@ -34,7 +34,6 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     private static final String CITY = "city";
 
     Button registrateBtn;
-    Button loginBtn;
 
     EditText nameInput;
     EditText surnameInput;
@@ -52,8 +51,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration);
 
-        registrateBtn = findViewById(R.id.registrateRegistrationBtn);
-        loginBtn = findViewById(R.id.loginRegistrationBtn);
+        registrateBtn = findViewById(R.id.saveDataRegistrationBtn);
 
         nameInput = findViewById(R.id.nameRegistrationInput);
         surnameInput = findViewById(R.id.surnameRegistrationInput);
@@ -66,7 +64,6 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         dbHelper = new DBHelper(this);
 
         registrateBtn.setOnClickListener(this);
-        loginBtn.setOnClickListener(this);
     }
 
     @Override
@@ -75,43 +72,22 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         WorkWithViewApi.hideKeyboard(this);
 
         switch (v.getId()){
-            case R.id.registrateRegistrationBtn:
+            case R.id.saveDataRegistrationBtn:
                 //получение данных с инпутов
-                user = new User();
+
                 //проверка на незаполенные поля
-                if(isFullInputs()) {
+                if(areInputsCorrect()) {
+                    user = new User();
                     //если имя не устанавлявается, значит выводим тоаст и выходим из кейса
                     String fullName = nameInput.getText().toString().toLowerCase() + " " + surnameInput.getText().toString().toLowerCase();
-                    if(!user.setName(fullName)){
-                        Toast.makeText(
-                                this,
-                                "Имя должно содержать только буквы",
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                    if(!user.setCity(cityInput.getText().toString().toLowerCase())){
-                        Toast.makeText(
-                                this,
-                                "Название города должно содержать только буквы",
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    }
+                    user.setName(fullName);
+                    user.setCity(cityInput.getText().toString().toLowerCase());
                     registration(user);
                     //идем в профиль
                     goToProfile();
                 }
-                else{
-                    Toast.makeText(
-                            this,
-                            "Не все поля заполнены",
-                            Toast.LENGTH_SHORT).show();
-                }
                 break;
 
-            case R.id.loginRegistrationBtn:
-                // идем в авторизацию
-                goToAuthorization();
-                break;
             default:
                 break;
         }
@@ -123,17 +99,14 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         DatabaseReference myRef = database.getReference(REF).child(phoneNumber);
 
         Map<String,Object> items = new HashMap<>();
-        items.put(NAME,user.getName());
-        items.put(CITY,user.getCity());
+        items.put(NAME, user.getName());
+        items.put(CITY, user.getCity());
         myRef.updateChildren(items);
         //заносим данные о пользователе в локальную базу данных
         putDataInLocalStorage(user, phoneNumber);
-        // сохраняем статус о том, что пользователь вошел
-        saveStatus();
     }
 
-    private void putDataInLocalStorage(User user,
-                                       String phoneNumber) {
+    private void putDataInLocalStorage(User user, String phoneNumber) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -148,19 +121,47 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         database.insert(DBHelper.TABLE_CONTACTS_USERS,null,contentValues);
     }
 
-    protected Boolean isFullInputs(){
-        if(nameInput.getText().toString().isEmpty()) return false;
-        if(surnameInput.getText().toString().isEmpty()) return false;
-        if(cityInput.getText().toString().isEmpty()) return false;
+    protected Boolean areInputsCorrect(){
+        String name = nameInput.getText().toString();
+        if(name.isEmpty()) {
+            nameInput.setError("Введите своё имя");
+            nameInput.requestFocus();
+            return false;
+        }
+
+        if(!name.matches("[a-zA-ZА-Яа-я\\-]+")) {
+            nameInput.setError("Допустимы только буквы и тире");
+            nameInput.requestFocus();
+            return false;
+        }
+
+        String surname = surnameInput.getText().toString();
+        if(surname.isEmpty()) {
+            surnameInput.setError("Введите свою фамилию");
+            surnameInput.requestFocus();
+            return false;
+        }
+
+        if(!surname.matches("[a-zA-ZА-Яа-я\\-]+")) {
+            surnameInput.setError("Допустимы только буквы и тире");
+            surnameInput.requestFocus();
+            return false;
+        }
+
+        String city = cityInput.getText().toString();
+        if(city.isEmpty()) {
+            cityInput.setError("Введите город, в которым вы живёте");
+            cityInput.requestFocus();
+            return false;
+        }
+
+        if(!city.matches("[a-zA-ZА-Яа-я\\-]+")) {
+            cityInput.setError("Допустимы только буквы и тире");
+            cityInput.requestFocus();
+            return false;
+        }
 
         return  true;
-    }
-
-    private void saveStatus() {
-        sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putBoolean(STATUS, true);
-        editor.apply();
     }
 
     private  void goToProfile(){
@@ -170,7 +171,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     }
 
     private  void  goToAuthorization(){
-        Intent intent = new Intent(Registration.this, Authorization.class);
+        Intent intent = new Intent(this, Authorization.class);
         startActivity(intent);
         finish();
     }

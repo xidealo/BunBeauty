@@ -66,22 +66,15 @@
         android:textColorHint="@color/lightText" />
 
     <Button
-        android:id="@+id/registrateRegistrationBtn"
+        android:id="@+id/saveDataRegistrationBtn"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
         android:background="@drawable/btn"
-        android:text="@string/regUser"
+        android:text="@string/saveData"
         android:textColor="@color/white"
         android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/loginRegistrationBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/logInRegistration" />
 
 
 </LinearLayout>
