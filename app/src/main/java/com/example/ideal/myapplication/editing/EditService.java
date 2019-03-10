@@ -185,10 +185,6 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     service.setDescription(description);
                 }
 
-                for(Uri path: fPathToAdd){
-                    uploadImage(path, serviceId);
-                }
-
                 editServiceInLocalStorage(service);
                 editServiceInFireBase(service);
                 break;
@@ -292,6 +288,8 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
 
         database.insert(DBHelper.TABLE_PHOTOS,null,contentValues);
+
+        goToService();
     }
 
 
@@ -358,6 +356,15 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     deletePhotoFromStorage(photoId);
                     deletePhotoFromLocalStorage(photoId);
                 }
+
+                for(Uri path: fPathToAdd){
+                    uploadImage(path, serviceId);
+                }
+
+                if(fPathToAdd.isEmpty()){
+                    goToService();
+                }
+
             }
 
             @Override
@@ -373,8 +380,6 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 DBHelper.TABLE_PHOTOS,
                 DBHelper.KEY_ID + " = ?",
                 new String[]{photoId});
-        goToService();
-
     }
 
     private void deletePhotoFromStorage(String photoId) {
@@ -690,6 +695,15 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
             deletePhotoFromDatabase(photoLink);
         }
 
+        if(phLinToDelete.isEmpty()){
+            //добавление новых картинок при редактировании
+            for(Uri path: fPathToAdd){
+                uploadImage(path, serviceId);
+            }
+            if(fPathToAdd.isEmpty()){
+                goToService();
+            }
+        }
     }
 
     private void attentionItHasOrders() {

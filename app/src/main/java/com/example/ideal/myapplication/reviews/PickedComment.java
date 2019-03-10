@@ -43,7 +43,7 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
         avatarImage = findViewById(R.id.avatarPickedCommentImage);
 
         userNameText.setOnClickListener(this);
-
+        avatarImage.setOnClickListener(this);
         setInfo();
     }
 

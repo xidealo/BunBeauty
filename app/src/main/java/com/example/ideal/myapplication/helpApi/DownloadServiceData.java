@@ -120,6 +120,7 @@ public class DownloadServiceData {
                 ownerId = userId;
                 //загрузка фотографий для сервисов
                 loadPhotosByServiceId(serviceId);
+                loadPhotosByPhoneNumber(ownerId);
 
                 //возвращает все дни определенного сервиса
                 final Query query = database.getReference(WORKING_DAYS).
