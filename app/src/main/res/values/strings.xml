@@ -57,6 +57,6 @@
         <item>имя и фамилия</item>
     </string-array>
     <string name="title_activity_picked_comment">PickedComment</string>
-
+    <string name="saveData">Сохранить данные</string>
 
 </resources>

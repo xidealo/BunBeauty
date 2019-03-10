@@ -6,7 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
+import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -17,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 public class MainScreen extends AppCompatActivity {
@@ -34,6 +39,8 @@ public class MainScreen extends AppCompatActivity {
     private static final String SERVICES = "services";
     private static final String USER_ID = "user id";
 
+    LinearLayout resultsLayout;
+
     private int countOfService = 0;
 
     private DBHelper dbHelper;
@@ -47,6 +54,8 @@ public class MainScreen extends AppCompatActivity {
         setContentView(R.layout.main_screen);
 
         manager = getSupportFragmentManager();
+
+        resultsLayout = findViewById(R.id.resultsMainScreenLayout);
 
         dbHelper = new DBHelper(this);
 

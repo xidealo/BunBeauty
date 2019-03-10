@@ -193,7 +193,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             case R.id.avatarEditProfileImage:
                 chooseImage();
                 break;
-
+            
             default:
                 break;
         }

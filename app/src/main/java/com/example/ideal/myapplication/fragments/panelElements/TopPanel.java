@@ -130,6 +130,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
                     multiBtn.setVisibility(View.GONE);
                     avatarImage.setVisibility(View.VISIBLE);
                     avatarImage.setOnClickListener(this);
+
                 }
             // Если это не сервис
             } else {

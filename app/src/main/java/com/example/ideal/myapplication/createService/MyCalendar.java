@@ -291,7 +291,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 dayBtns[i][j].setX(j * width / DAYS_COUNT);
                 dayBtns[i][j].setY(i * height / (2*WEEKS_COUNT));
                 dayBtns[i][j].setBackgroundResource(R.drawable.day_button);
-                dayBtns[i][j].setLayoutParams(new ViewGroup.LayoutParams(width / DAYS_COUNT-5, height / (2*WEEKS_COUNT)-35));
+                //dayBtns[i][j].setLayoutParams(new ViewGroup.LayoutParams(width / DAYS_COUNT-5, height / (2*WEEKS_COUNT)-35));
 
                 //тэги
                 dayBtns[i][j].setTag(R.string.selectedId, false);
