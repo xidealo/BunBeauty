@@ -25,6 +25,7 @@ import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -840,10 +841,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
     // Получает
     private String getUserId(){
-        SharedPreferences sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-        userId = sPref.getString(PHONE_NUMBER, "-");
-
-        return userId;
+        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
     private String getThisDate() {

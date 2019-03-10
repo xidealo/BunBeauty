@@ -16,6 +16,7 @@ import com.example.ideal.myapplication.fragments.chatElements.MessageReviewEleme
 import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Messages extends AppCompatActivity {
 
@@ -425,9 +426,7 @@ public class Messages extends AppCompatActivity {
     }
 
     private String getUserId(){
-        SharedPreferences sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-
-        return sPref.getString(PHONE_NUMBER, "-");
+        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
     @Override

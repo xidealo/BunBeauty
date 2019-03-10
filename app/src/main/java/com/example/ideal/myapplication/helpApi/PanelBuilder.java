@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.example.ideal.myapplication.fragments.panelElements.BottomPanel;
 import com.example.ideal.myapplication.fragments.panelElements.TopPanel;
+import com.google.firebase.auth.FirebaseAuth;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -90,11 +91,7 @@ public class PanelBuilder {
     }
 
     private String getUserId(){
-        // возваращает id текущего пользователя
-        sPref = context.getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-        String userId = String.valueOf(sPref.getString(PHONE_NUMBER, "0"));
-
-        return userId;
+        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
 

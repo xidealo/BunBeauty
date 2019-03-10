@@ -24,6 +24,7 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -151,9 +152,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
     // Получает id пользователя
     private String getUserId() {
-        sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-
-        return sPref.getString(PHONE, "-");
+        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
     //Получает город пользователя

@@ -22,6 +22,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -470,8 +471,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     }
 
     private  String getUserId(){
-        sPref = getSharedPreferences(FILE_NAME,MODE_PRIVATE);
-        return sPref.getString(PHONE_NUMBER, "-");
+        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
     @Override

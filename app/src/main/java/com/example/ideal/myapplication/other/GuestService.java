@@ -25,6 +25,7 @@ import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -370,10 +371,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private String getUserId() {
-        SharedPreferences sPref;
-        sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-
-        return sPref.getString(PHONE_NUMBER, "0");
+        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
     private void goToMyCalendar(String status) {

@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.Profile;
 import com.google.firebase.database.DataSnapshot;
@@ -234,6 +234,7 @@ public class MyAuthorization {
         database.delete(DBHelper.TABLE_CONTACTS_SERVICES, null, null);
         database.delete(DBHelper.TABLE_WORKING_DAYS,null,null);
         database.delete(DBHelper.TABLE_WORKING_TIME,null,null);
+        database.delete(DBHelper.TABLE_PHOTOS,null,null);
 
         database.delete(DBHelper.TABLE_MESSAGES, null,null);
         database.delete(DBHelper.TABLE_REVIEWS, null,null);
