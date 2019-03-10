@@ -17,6 +17,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -163,9 +164,7 @@ public class MainScreen extends AppCompatActivity {
     }
 
     private  String getUserId(){
-        SharedPreferences sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-
-        return sPref.getString(PHONE_NUMBER, "-");
+        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
     private void attentionBadConnection() {

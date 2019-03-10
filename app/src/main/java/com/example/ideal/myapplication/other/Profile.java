@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -91,8 +92,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private String ownerId;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private ImageView avatarImage;
-
-    private final String TAG = "DBInf";
 
     private FragmentManager manager;
 
@@ -525,7 +524,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        String userId = getUserId();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
 
         loadTimeForReviews();
         updateProfileData(ownerId);
@@ -649,16 +648,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.ratingLayout, ratingElement);
         transaction.commit();
-    }
-
-
-    //получить id-phone пользователя
-    private String getUserId(){
-        // возваращает id текущего пользователя
-        sPref = getSharedPreferences(FILE_NAME,MODE_PRIVATE);
-        String userId = String.valueOf(sPref.getString(PHONE_NUMBER, "0"));
-
-        return userId;
     }
 
     private void addOrderToScreen(String id, String name, String date, String time) {

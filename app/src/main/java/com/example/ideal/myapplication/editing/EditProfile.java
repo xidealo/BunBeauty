@@ -124,7 +124,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         resendButton = findViewById(R.id.resendProfileEditProfileBtn);
         verifyButton = findViewById(R.id.verifyProfileEditProfileBtn);
 
-        progressBar = findViewById(R.id.progressBarEditProfile);
+        //progressBar = findViewById(R.id.progressBarEditProfile);
 
         //для работы с картинкой
         avatarImage = findViewById(R.id.avatarEditProfileImage);
@@ -186,13 +186,13 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 }
                 break;
 
-            case R.id.resendConfirmationBtn:
+            /*case R.id.resendConfirmationBtn:
                 resendCode();
-                break;
+                break;*/
 
-            case R.id.avatarEditProfileImage:
+            /*case R.id.avatarEditProfileImage:
                 chooseImage();
-                break;
+                break;*/
             
             default:
                 break;
@@ -550,9 +550,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private String getUserPhone() {
-        sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-
-        return  sPref.getString(PHONE_NUMBER, "-");
+        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
     private String convertPhoneToNormalView(String phone) {
