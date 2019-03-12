@@ -2,15 +2,12 @@ package com.example.ideal.myapplication.createService;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +30,6 @@ import java.util.Map;
 public class MyCalendar extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
-    private static final String FILE_NAME = "Info";
-    private static final String PHONE_NUMBER = "Phone number";
     private static final String REF = "working days";
 
     private static final String SERVICE_ID = "service id";
@@ -59,7 +54,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     RelativeLayout mainLayout;
 
     DBHelper dbHelper;
-    SharedPreferences sPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +72,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         serviceId = getIntent().getStringExtra(SERVICE_ID);
 
         FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder(this);
+        PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerMyCalendarLayout);
         panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyCalendarLayout);
 
@@ -289,10 +283,10 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 dayBtns[i][j] = new Button(this);
 
                 //положение, бэкграунд, размеры
-                dayBtns[i][j].setX(j * width / DAYS_COUNT);
-                dayBtns[i][j].setY(i * height / (2*WEEKS_COUNT));
+                dayBtns[i][j].setX(j * width / DAYS_COUNT+1);
+                dayBtns[i][j].setY(i * height / (2*WEEKS_COUNT+1));
                 dayBtns[i][j].setBackgroundResource(R.drawable.day_button);
-                //dayBtns[i][j].setLayoutParams(new ViewGroup.LayoutParams(width / DAYS_COUNT-5, height / (2*WEEKS_COUNT)-35));
+                dayBtns[i][j].setLayoutParams(new ViewGroup.LayoutParams(width / DAYS_COUNT-5, height / (2*WEEKS_COUNT)-35));
 
                 //тэги
                 dayBtns[i][j].setTag(R.string.selectedId, false);

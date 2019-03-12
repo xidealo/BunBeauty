@@ -3,7 +3,6 @@ package com.example.ideal.myapplication.createService;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +40,6 @@ import java.util.Map;
 public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
-    private static final String FILE_NAME = "Info";
-    private static final String PHONE_NUMBER = "Phone number";
     private static final String WORKING_DAYS_ID = "working day id";
     private static final String WORKING_TIME = "working time";
     private static final String WORKING_DAYS = "working days";
@@ -108,7 +106,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         SwitchCompat amOrPmMyTimeSwitch = findViewById(R.id.amOrPmMyTimeSwitch);
 
         FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder(this);
+        PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerMyTimeLayout);
         panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyTimeLayout);
 
@@ -198,6 +196,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                         removedHours.add(btnText);
                         btn.setTag(R.string.selectedId, false);
                     } else {
+                        Log.d(TAG, "onClick: " + btnText);
                         btn.setBackgroundResource(R.drawable.pressed_button);
                         workingHours.add(btnText);
                         removedHours.remove(btnText);
@@ -308,11 +307,14 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         }
     }
 
-    // Выделяет кнопки хронящиеся в буфере рабочих дней
+    // Выделяет кнопки хранящиеся в буфере рабочих дней
     private void checkWorkingHours() {
         for (int i = 0; i < ROWS_COUNT; i++) {
             for (int j = 0; j < COLUMNS_COUNT; j++) {
                 String time = (String) timeBtns[i][j].getText();
+                if (time.length() == 4) {
+                    time = "0" + time;
+                }
                 if (workingHours.contains(time)) {
                     timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
                     timeBtns[i][j].setTag(R.string.selectedId, true);

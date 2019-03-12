@@ -47,12 +47,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class EditProfile extends AppCompatActivity implements View.OnClickListener {
@@ -124,13 +122,13 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         resendButton = findViewById(R.id.resendProfileEditProfileBtn);
         verifyButton = findViewById(R.id.verifyProfileEditProfileBtn);
 
-        //progressBar = findViewById(R.id.progressBarEditProfile);
+        progressBar = findViewById(R.id.progressBarEditProfile);
 
         //для работы с картинкой
         avatarImage = findViewById(R.id.avatarEditProfileImage);
 
         FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder(this);
+        PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerEditProfileLayout);
         panelBuilder.buildHeader(manager, "Редактирование профиля", R.id.headerEditProfileLayout);
 
@@ -190,9 +188,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 resendCode();
                 break;*/
 
-            /*case R.id.avatarEditProfileImage:
+            case R.id.avatarEditProfileImage:
                 chooseImage();
-                break;*/
+                break;
             
             default:
                 break;

@@ -11,7 +11,6 @@ import android.widget.Spinner;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.helpApi.WorkWithViewApi;
-import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -20,25 +19,15 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
     private static final String PHONE_NUMBER = "Phone number";
 
-
     private Button verifyBtn;
     private EditText phoneInput;
-
     private Spinner codeSpinner;
-
     private String myPhoneNumber;
-
-    DBHelper dbHelper;
-    FirebaseAuth fbAuth;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.authorization);
-
-        dbHelper = new DBHelper(this);
-        fbAuth = FirebaseAuth.getInstance();
 
         verifyBtn = findViewById(R.id.verifyAuthBtn);
         phoneInput = findViewById(R.id.phoneAuthInput);
@@ -105,6 +94,12 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         phoneInput.setVisibility(View.VISIBLE);
 
         verifyBtn.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        verifyBtn.setClickable(true);
     }
 
     private void goToVerifyPhone() {
