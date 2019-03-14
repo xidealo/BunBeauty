@@ -58,7 +58,6 @@ public class WorkWithLocalStorageApi {
         Cursor cursor = localDatabase.rawQuery(sqlQuery,new String[] {userId});
 
         if(cursor.moveToFirst()){
-            Log.d(TAG, "setPhotoAvatar: ");
             int indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS);
 
             String photoLink = cursor.getString(indexPhotoLink);

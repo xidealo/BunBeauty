@@ -30,8 +30,6 @@ public class MainScreen extends AppCompatActivity {
     // добавить, чтобы не было видно своих сервисов
     // например номер юзера, возвращаемого сервиса не должен быть равен локальному
     private static final String TAG = "DBInf";
-    private static final String FILE_NAME = "Info";
-    private static final String PHONE_NUMBER = "Phone number";
 
     private static final String USERS = "users";
     private static final String NAME = "name";
@@ -135,9 +133,8 @@ public class MainScreen extends AppCompatActivity {
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 String serviceId = snapshot.getKey();
 
-                                DownloadServiceData downloadServiceData = new DownloadServiceData();
-                                downloadServiceData.loadSchedule(serviceId,database,
-                                        "MainScreen",manager);
+                                DownloadServiceData downloadServiceData = new DownloadServiceData(database);
+                                downloadServiceData.loadSchedule(serviceId,"MainScreen",manager);
                                 countOfService++;
                                 //количество возможных предложений на mainScreen
                                 if(countOfService == limitOfService) {

@@ -16,12 +16,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Dialogs;
 import com.example.ideal.myapplication.chat.Messages;
 import com.example.ideal.myapplication.editing.EditProfile;
 import com.example.ideal.myapplication.editing.EditService;
+import com.example.ideal.myapplication.helpApi.SubscribtionsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.GuestService;
@@ -41,6 +43,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
 
     private Button backBtn;
     private TextView titleText;
+    private TextView countOfSubsText;
     private ImageView avatarImage;
     private Button multiBtn;
 
@@ -102,6 +105,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         backBtn = view.findViewById(R.id.backTopPanelBtn);
         titleText = view.findViewById(R.id.titleTopPanelText);
+        countOfSubsText = view.findViewById(R.id.countOfSubsTopPanelText);
         multiBtn = view.findViewById(R.id.multiTopPanelBtn);
 
         avatarImage = view.findViewById(R.id.avatarTopPanelImage);
@@ -115,48 +119,60 @@ public class TopPanel extends Fragment implements View.OnClickListener{
         multiBtn.setOnClickListener(this);
         // Если не мой профиль
         if(!isMyProfile) {
-            // Если это страница сервиса
-            if(getContext().getClass() == GuestService.class) {
-                // Если это мой сервис
-                if(isMyService) {
-                    multiBtn.setText("Редактировать");
-                // Если это чужой сервис
+            // Если это профиль
+            if (getContext().getClass() == Profile.class) {
+                if(((Profile)super.getActivity()).checkSubscription()) {
+                    multiBtn.setText("<B");
+                    multiBtn.setTag( true);
                 } else {
-                    DBHelper dbHelper = new DBHelper(getContext());
-                    SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-                    WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-                    workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId,avatarImage);
-                    multiBtn.setVisibility(View.GONE);
-                    avatarImage.setVisibility(View.VISIBLE);
-                    avatarImage.setOnClickListener(this);
-
+                    multiBtn.setText("<3");
+                    multiBtn.setTag( false);
                 }
-            // Если это не сервис
+                countOfSubsText.setVisibility(View.VISIBLE);
             } else {
-                // Если это редактирование сервиса
-                if(getContext().getClass() == Messages.class) {
-                    // Если это диалог
-                    DBHelper dbHelper = new DBHelper(getContext());
-                    SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-                    WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-                    workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId,avatarImage);
-                    multiBtn.setVisibility(View.GONE);
-                    avatarImage.setVisibility(View.VISIBLE);
-                    avatarImage.setOnClickListener(this);
-                // Если это не диалог
-                } else {
-                    if(getContext().getClass() == EditService.class) {
-                        multiBtn.setText("Удалить");
-                    // Если это не редактирование сервиса
+                // Если это страница сервиса
+                if (getContext().getClass() == GuestService.class) {
+                    // Если это мой сервис
+                    if (isMyService) {
+                        multiBtn.setText("Редактировать");
+                        // Если это чужой сервис
                     } else {
-                        // Если это главная страница
-                        if(getContext().getClass() == MainScreen.class) {
-                            multiBtn.setText("Поиск");
-                        // Если это любое другое активити
+                        DBHelper dbHelper = new DBHelper(getContext());
+                        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+                        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+                        workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId, avatarImage);
+                        multiBtn.setVisibility(View.GONE);
+                        avatarImage.setVisibility(View.VISIBLE);
+                        avatarImage.setOnClickListener(this);
+
+                    }
+                    // Если это не сервис
+                } else {
+                    // Если это редактирование сервиса
+                    if (getContext().getClass() == Messages.class) {
+                        // Если это диалог
+                        DBHelper dbHelper = new DBHelper(getContext());
+                        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+                        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+                        workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId, avatarImage);
+                        multiBtn.setVisibility(View.GONE);
+                        avatarImage.setVisibility(View.VISIBLE);
+                        avatarImage.setOnClickListener(this);
+                        // Если это не диалог
+                    } else {
+                        if (getContext().getClass() == EditService.class) {
+                            multiBtn.setText("Удалить");
+                            // Если это не редактирование сервиса
                         } else {
-                            multiBtn.setVisibility(View.INVISIBLE);
+                            // Если это главная страница
+                            if (getContext().getClass() == MainScreen.class) {
+                                multiBtn.setText("Поиск");
+                                // Если это любое другое активити
+                            } else {
+                                multiBtn.setVisibility(View.INVISIBLE);
+                            }
                         }
                     }
                 }
@@ -190,31 +206,59 @@ public class TopPanel extends Fragment implements View.OnClickListener{
         // мой профиль
         if (isMyProfile) {
             goToEditProfile();
+            return;
         }
 
         Class currentClass = getContext().getClass();
+
+        //чужой профиль
+        if (currentClass == Profile.class) {
+            Profile profile = (Profile)super.getActivity();
+            String ownerId = profile.getIntent().getStringExtra(OWNER_ID);
+            SubscribtionsApi subsApi = new SubscribtionsApi(ownerId, getContext());
+
+            if((boolean)multiBtn.getTag()) {
+                multiBtn.setTag(false);
+                multiBtn.setText("<3");
+                subsApi.unsubscribe();
+                Toast.makeText(getContext(), "Подписка отменена", Toast.LENGTH_SHORT).show();
+            } else {
+                multiBtn.setTag(true);
+                multiBtn.setText("<B");
+                subsApi.subscribe();
+                Toast.makeText(getContext(), "Вы подписались", Toast.LENGTH_SHORT).show();
+            }
+
+            return;
+        }
 
         // сервис
         if (currentClass == GuestService.class) {
             if (isMyService) {
                 goToEditService();
+                return;
             } else {
                 goToProfile();
+                return;
             }
         }
 
+        // Сообщения
         if (currentClass == Messages.class) {
             goToProfile();
+            return;
         }
 
         // главная
         if (currentClass == MainScreen.class) {
             goToSearchService();
+            return;
         }
 
         // редактирование сервиса
         if (currentClass == EditService.class) {
             deleteService();
+            return;
         }
     }
 

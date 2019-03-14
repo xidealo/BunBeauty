@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.Profile;
 import com.google.firebase.database.DataSnapshot;
@@ -79,6 +80,9 @@ public class MyAuthorization {
                     // Добавляем все данные о пользователе в SQLite
                     addUserInfoInLocalStorage(user);
 
+                    // Добавляем подписки пользователя
+                    loadUserSubscriptions();
+
                     // Загружаем сервисы пользователя из FireBase
                     loadServiceByUserPhone();
                 }
@@ -89,6 +93,76 @@ public class MyAuthorization {
                 attentionBadConnection();
             }
         });
+    }
+
+    private void loadUserSubscriptions() {
+        Query query = FirebaseDatabase.getInstance().getReference("subscribers").
+                orderByChild(USER_ID).
+                equalTo(myPhoneNumber);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot subSnapshot : dataSnapshot.getChildren()) {
+                    String id = subSnapshot.getKey();
+                    String workerId = String.valueOf(subSnapshot.child("worker id").getValue());
+
+                    loadUserById(workerId);
+
+                    addUserSubscriptionInLocalStorage(id, workerId);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                attentionBadConnection();
+            }
+        });
+    }
+
+    private void loadUserById(final String userId) {
+
+        final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(USERS).child(userId);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                // Получаем остальные данные о пользователе
+                Object name = userSnapshot.child(NAME).getValue();
+                if (name == null) {
+                    // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
+                    goToRegistration();
+                } else {
+                    String city = String.valueOf(userSnapshot.child(CITY).getValue());
+
+                    User user = new User();
+                    user.setPhone(userId);
+                    user.setName(String.valueOf(name));
+                    user.setCity(city);
+
+                    SQLiteDatabase localDatabase = dbHelper.getReadableDatabase();
+                    DownloadServiceData downloadServiceData = new DownloadServiceData(localDatabase);
+                    downloadServiceData.loadPhotosByPhoneNumber(userId);
+
+                    // Добавляем все данные о пользователе в SQLite
+                    addUserInfoInLocalStorage(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                attentionBadConnection();
+            }
+        });
+    }
+
+    private void addUserSubscriptionInLocalStorage(String id, String workerId) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, id);
+        contentValues.put(DBHelper.KEY_USER_ID, myPhoneNumber);
+        contentValues.put(DBHelper.KEY_WORKER_ID, workerId);
+
+        database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
     }
 
     private void loadServiceByUserPhone() {
@@ -110,9 +184,8 @@ public class MyAuthorization {
                 for (DataSnapshot service : dataSnapshot.getChildren()) {
                     String serviceId = String.valueOf(service.getKey());
 
-                    DownloadServiceData downloadServiceData = new DownloadServiceData();
-                    downloadServiceData.loadSchedule(serviceId, localDatabase,
-                            "Authorization", null);
+                    DownloadServiceData downloadServiceData = new DownloadServiceData(localDatabase);
+                    downloadServiceData.loadSchedule(serviceId,"Authorization", null);
                     serviceCounter++;
                     if (serviceCounter == servicesCount) {
                         loadTimeByUserPhone();
@@ -235,6 +308,7 @@ public class MyAuthorization {
         database.delete(DBHelper.TABLE_WORKING_DAYS,null,null);
         database.delete(DBHelper.TABLE_WORKING_TIME,null,null);
         database.delete(DBHelper.TABLE_PHOTOS,null,null);
+        database.delete(DBHelper.TABLE_SUBSCRIBERS,null,null);
 
         database.delete(DBHelper.TABLE_MESSAGES, null,null);
         database.delete(DBHelper.TABLE_REVIEWS, null,null);
