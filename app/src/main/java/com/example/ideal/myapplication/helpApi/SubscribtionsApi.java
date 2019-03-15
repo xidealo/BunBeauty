@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,7 +60,6 @@ public class SubscribtionsApi {
     public void unsubscribe() {
         FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = fdatabase.getReference(SUBSCRIBERS);
-        Log.d(TAG, "unsubscribe: ");
         Query query = fdatabase.getReference(SUBSCRIBERS).orderByChild(USER_ID).equalTo(userId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -106,4 +107,20 @@ public class SubscribtionsApi {
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
     }
 
+    public void loadCountOfSubscribers(final TextView countOfSubsText) {
+        FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
+        Query query = fdatabase.getReference(SUBSCRIBERS).orderByChild(WORKER_ID).equalTo(workerId);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String countOfSubs = String.valueOf(dataSnapshot.getChildrenCount());
+                countOfSubsText.setText(countOfSubs);
+                countOfSubsText.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
 }

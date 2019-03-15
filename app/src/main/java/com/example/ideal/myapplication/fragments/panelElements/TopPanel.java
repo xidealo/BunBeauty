@@ -53,6 +53,8 @@ public class TopPanel extends Fragment implements View.OnClickListener{
     private String serviceId;
     private String serviceOwnerId;
 
+    SubscribtionsApi subsApi;
+
     public TopPanel() {
     }
 
@@ -121,6 +123,11 @@ public class TopPanel extends Fragment implements View.OnClickListener{
         if(!isMyProfile) {
             // Если это профиль
             if (getContext().getClass() == Profile.class) {
+                Profile profile = (Profile)super.getActivity();
+                String ownerId = profile.getIntent().getStringExtra(OWNER_ID);
+                subsApi = new SubscribtionsApi(ownerId, getContext());
+                subsApi.loadCountOfSubscribers(countOfSubsText);
+
                 if(((Profile)super.getActivity()).checkSubscription()) {
                     multiBtn.setText("<B");
                     multiBtn.setTag( true);
@@ -213,10 +220,6 @@ public class TopPanel extends Fragment implements View.OnClickListener{
 
         //чужой профиль
         if (currentClass == Profile.class) {
-            Profile profile = (Profile)super.getActivity();
-            String ownerId = profile.getIntent().getStringExtra(OWNER_ID);
-            SubscribtionsApi subsApi = new SubscribtionsApi(ownerId, getContext());
-
             if((boolean)multiBtn.getTag()) {
                 multiBtn.setTag(false);
                 multiBtn.setText("<3");

@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.SubscriptionElement;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
-import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Subscribers extends AppCompatActivity {
@@ -38,7 +37,13 @@ public class Subscribers extends AppCompatActivity {
         PanelBuilder panelBuilder = new PanelBuilder(this);
         panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
         panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mainLayout.removeAllViews();
         getMySubscribers();
     }
 
