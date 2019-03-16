@@ -37,7 +37,7 @@ public class Subscribers extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
 
-        PanelBuilder panelBuilder = new PanelBuilder(this);
+        PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
         panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
     }
