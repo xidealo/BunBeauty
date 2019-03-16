@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.ideal.myapplication.other.DBHelper;
@@ -57,7 +58,10 @@ public class WorkWithLocalStorageApi {
 
         Cursor cursor = localDatabase.rawQuery(sqlQuery,new String[] {userId});
 
+        Log.d(TAG, "setPhotoAvatar: "  + userId);
+
         if(cursor.moveToFirst()){
+            Log.d(TAG, "setPhotoAvatar: "  + userId);
             int indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS);
 
             String photoLink = cursor.getString(indexPhotoLink);

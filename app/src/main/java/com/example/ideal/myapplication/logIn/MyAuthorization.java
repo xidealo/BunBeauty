@@ -89,6 +89,9 @@ public class MyAuthorization {
                     // Добавляем подписки пользователя
                     loadUserSubscriptions();
 
+                    //добавляем фото
+                    loadPhotosByPhoneNumber(myPhoneNumber);
+
                     // Загружаем сервисы пользователя из FireBase
                     loadServiceByUserPhone();
                 }
@@ -176,6 +179,7 @@ public class MyAuthorization {
         Query query = FirebaseDatabase.getInstance().getReference(SERVICES).
                 orderByChild(USER_ID).
                 equalTo(myPhoneNumber);
+
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -219,7 +223,6 @@ public class MyAuthorization {
                 final long ordersCount = dataSnapshot.getChildrenCount();
 
                 if(ordersCount==0){
-                    loadPhotosByPhoneNumber(myPhoneNumber);
                     return;
                 }
 
