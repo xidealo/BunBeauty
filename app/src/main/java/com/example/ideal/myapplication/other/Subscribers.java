@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.SubscriptionElement;
@@ -17,7 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class Subscribers extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
-    LinearLayout mainLayout;
+    private LinearLayout mainLayout;
+    private TextView subsText;
 
     private DBHelper dbHelper;
 
@@ -31,6 +33,7 @@ public class Subscribers extends AppCompatActivity {
         manager = getSupportFragmentManager();
 
         mainLayout = findViewById(R.id.mainSubscribersLayout);
+        subsText = findViewById(R.id.subsCountSubscribersText);
 
         dbHelper = new DBHelper(this);
 
@@ -44,10 +47,21 @@ public class Subscribers extends AppCompatActivity {
         super.onResume();
 
         mainLayout.removeAllViews();
+        updateSubsText();
         getMySubscribers();
     }
 
-    private void getMySubscribers() {
+    private void updateSubsText() {
+        Cursor subsCursor = createSubsCursor();
+        long subsCount = subsCursor.getCount();
+        String subs = "У вас пока нет подписок";
+        if (subsCount != 0) {
+            subs = "Подписки: " + subsCount;
+        }
+        subsText.setText(subs);
+    }
+
+    private Cursor createSubsCursor() {
         String userId = getUserId();
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -63,18 +77,23 @@ public class Subscribers extends AppCompatActivity {
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
 
-        if(cursor.moveToFirst()) {
-            int indexWorkerId = cursor.getColumnIndex(DBHelper.KEY_WORKER_ID);
-            int indexWorkerName = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
+        return cursor;
+    }
+
+    private void getMySubscribers() {
+        Cursor subsCursor = createSubsCursor();
+
+        if(subsCursor.moveToFirst()) {
+            int indexWorkerId = subsCursor.getColumnIndex(DBHelper.KEY_WORKER_ID);
+            int indexWorkerName = subsCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
 
            do {
-               String workerId = cursor.getString(indexWorkerId);
-               String workerName = cursor.getString(indexWorkerName);
+               String workerId = subsCursor.getString(indexWorkerId);
+               String workerName = subsCursor.getString(indexWorkerName);
 
                addSubscriptionToScreen(workerId, workerName);
-           } while (cursor.moveToNext());
+           } while (subsCursor.moveToNext());
         }
-        cursor.close();
     }
 
     private  String getUserId(){

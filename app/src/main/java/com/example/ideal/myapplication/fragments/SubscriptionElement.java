@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.helpApi.SubscribtionsApi;
+import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
-import com.example.ideal.myapplication.other.GuestService;
 import com.example.ideal.myapplication.other.Profile;
 
 @SuppressLint("ValidFragment")
@@ -32,8 +30,8 @@ public class SubscriptionElement extends Fragment implements View.OnClickListene
     private Button subscribeBtn;
     private ImageView avatarImage;
 
-    String workerId;
-    String workerName;
+    private String workerId;
+    private String workerName;
 
     @SuppressLint("ValidFragment")
     public SubscriptionElement(String _workerId, String _workerName) {
@@ -75,7 +73,7 @@ public class SubscriptionElement extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.subscribeSubscriptionElementBtn:
-                SubscribtionsApi subsApi = new SubscribtionsApi(workerId, getContext());
+                SubscriptionsApi subsApi = new SubscriptionsApi(workerId, getContext());
                 
                 if ((boolean) subscribeBtn.getTag()) {
                     subscribeBtn.setTag(false);

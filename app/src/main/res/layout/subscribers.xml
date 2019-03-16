@@ -6,7 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".other.Subscribers">
 
+    <TextView
+        android:id="@+id/subsCountSubscribersText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="У вас пока нет подписок"
+        app:layout_constraintBottom_toTopOf="@+id/nestedScrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerSubscribersLayout"
+        app:layout_constraintVertical_bias="0.1" />
+
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true"

@@ -66,6 +66,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private static final String USERS = "users";
 
+    private static final String SUBSCRIPTIONS = "подписки";
+
     private String userId;
     private String ownerId;
     private float sumRates;
@@ -77,6 +79,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private TextView cityText;
     private TextView withoutRatingText;
     private ProgressBar progressBar;
+
+
+    private Button subscribersBtn;
 
     private ScrollView servicesScroll;
     private ScrollView ordersScroll;
@@ -100,7 +105,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         Button logOutBtn = findViewById(R.id.logOutProfileBtn);
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
-        Button subscribersBtn = findViewById(R.id.subscribersProfileBtn);
+        subscribersBtn = findViewById(R.id.subscribersProfileBtn);
         avatarImage = findViewById(R.id.avatarProfileImage);
 
         SwitchCompat servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
@@ -125,7 +130,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         manager = getSupportFragmentManager();
         //получаем id пользователя
-        userId = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        userId = getUserId();
 
         // Получаем id владельца профиля
         ownerId = getIntent().getStringExtra(OWNER_ID);
@@ -536,11 +541,39 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             // если это мой сервис
             updateOrdersList(userId);
             updateServicesList(userId);
+
+            // выводим кол-во подписок
+            long subscriptionsCount = getCountOfSubscriptions();
+            String btnText = SUBSCRIPTIONS;
+
+            if (subscriptionsCount != 0) {
+                btnText += " (" + subscriptionsCount + ")";
+            }
+            subscribersBtn.setText(btnText);
         }
         else{
             updateServicesList(ownerId);
         }
         workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
+    }
+
+    private long getCountOfSubscriptions() {
+        String userId = getUserId();
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String sqlQuery =
+                "SELECT " + DBHelper.KEY_WORKER_ID + ", "
+                        + DBHelper.KEY_NAME_USERS
+                        + " FROM " + DBHelper.TABLE_CONTACTS_USERS + ", "
+                        + DBHelper.TABLE_SUBSCRIBERS
+                        + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_USER_ID
+                        + " = " + DBHelper.KEY_WORKER_ID
+                        + " AND " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_USER_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
+
+        return cursor.getCount();
     }
 
     //подгрузка сервисов на serviceList
@@ -638,6 +671,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             }
         }
         cursor.close();
+    }
+
+    private String getUserId() {
+        return  FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
     private void addRatingToScreen() {

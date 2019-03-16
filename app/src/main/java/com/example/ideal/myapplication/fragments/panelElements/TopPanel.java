@@ -1,15 +1,12 @@
 package com.example.ideal.myapplication.fragments.panelElements;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.chat.Dialogs;
 import com.example.ideal.myapplication.chat.Messages;
 import com.example.ideal.myapplication.editing.EditProfile;
 import com.example.ideal.myapplication.editing.EditService;
-import com.example.ideal.myapplication.helpApi.SubscribtionsApi;
+import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.GuestService;
@@ -53,7 +49,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
     private String serviceId;
     private String serviceOwnerId;
 
-    SubscribtionsApi subsApi;
+    SubscriptionsApi subsApi;
 
     public TopPanel() {
     }
@@ -125,7 +121,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
             if (getContext().getClass() == Profile.class) {
                 Profile profile = (Profile)super.getActivity();
                 String ownerId = profile.getIntent().getStringExtra(OWNER_ID);
-                subsApi = new SubscribtionsApi(ownerId, getContext());
+                subsApi = new SubscriptionsApi(ownerId, getContext());
                 subsApi.loadCountOfSubscribers(countOfSubsText);
 
                 if(((Profile)super.getActivity()).checkSubscription()) {

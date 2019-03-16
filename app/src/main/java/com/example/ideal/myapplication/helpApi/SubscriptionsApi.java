@@ -20,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SubscribtionsApi {
+public class SubscriptionsApi {
 
     private static final String TAG = "DBInf";
 
@@ -33,7 +33,7 @@ public class SubscribtionsApi {
     private String workerId;
     private DBHelper dbHelper;
 
-    public SubscribtionsApi(String _workerId, Context context){
+    public SubscriptionsApi(String _workerId, Context context){
         userId = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
         workerId = _workerId;
 
