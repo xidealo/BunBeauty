@@ -1,15 +1,12 @@
 package com.example.ideal.myapplication.chat;
 
 import android.content.ContentValues;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -30,21 +27,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Dialogs extends AppCompatActivity {
-
-    private static final String FILE_NAME = "Info";
-    private static final String PHONE_NUMBER = "Phone number";
 
     private static final String DIALOGS = "dialogs";
     private static final String FIRST_PHONE = "first phone";
@@ -103,7 +92,7 @@ public class Dialogs extends AppCompatActivity {
     private  void init(){
         manager = getSupportFragmentManager();
 
-        PanelBuilder panelBuilder = new PanelBuilder(this);
+        PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerDialogsLayout);
         panelBuilder.buildHeader(manager, "Диалоги", R.id.headerDialogsLayout);
 
@@ -193,8 +182,7 @@ public class Dialogs extends AppCompatActivity {
 
                 addUserInLocalStorage(user);
 
-                getAndPutMessagesInLocalStorage(dialogId);
-
+                loadMessages(dialogId);
 
                 loadPhotosByPhoneNumber(dialogId,user);
             }
@@ -308,7 +296,7 @@ public class Dialogs extends AppCompatActivity {
         }
     }
 
-    private void getAndPutMessagesInLocalStorage(final String dialogId) {
+    private void loadMessages(final String dialogId) {
         //если разница между timeId 24 часа и у message isCanceled не отменено, мы генерим 2 ревью
         //message_orders
         Query messagesQuery = FirebaseDatabase.getInstance().getReference(MESSAGES)
@@ -330,8 +318,9 @@ public class Dialogs extends AppCompatActivity {
                     myMessage.setMessageTime(time);
                     myMessage.setDialogId(dialogId);
                     addMessagesInLocalStorage(myMessage);
-                    getAndPutOrderInLocalStorage(myMessage);
-                    getAndPutReviewInLocalStorage(myMessage);
+
+                    loadOrder(myMessage);
+                    loadReview(myMessage);
                 }
             }
             @Override
@@ -366,7 +355,7 @@ public class Dialogs extends AppCompatActivity {
         }
     }
 
-    private void getAndPutOrderInLocalStorage(final Message message) {
+    private void loadOrder(final Message message) {
         Query messagesQuery = FirebaseDatabase.getInstance().getReference(ORDERS)
                 .orderByChild(MESSAGE_ID)
                 .equalTo(message.getId());
@@ -417,7 +406,7 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void getAndPutReviewInLocalStorage(final Message message) {
+    private void loadReview(final Message message) {
         Query reviewsQuery = FirebaseDatabase.getInstance().getReference(REVIEWS)
                 .orderByChild(MESSAGE_ID)
                 .equalTo(message.getId());

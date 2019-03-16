@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -28,6 +27,7 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.auth.FirebaseAuth;
@@ -140,7 +140,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             ownerId = userId;
         }
 
-        PanelBuilder panelBuilder = new PanelBuilder(this, ownerId);
+        PanelBuilder panelBuilder = new PanelBuilder(ownerId);
         panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
         panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
 
@@ -466,26 +466,15 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot reviewsSnapshot) {
 
-                        RatingReview ratingReview = new RatingReview();
-
-                        for (DataSnapshot reviewSnapshot : reviewsSnapshot.getChildren()) {
-                            String type = String.valueOf(reviewSnapshot.child(TYPE).getValue());
-                            float rating = Float.valueOf(String.valueOf(reviewSnapshot.child(RATING).getValue()));
-
-                            if(type.equals(REVIEW_FOR_USER) && rating>0) {
-                                countOfRates++;
-                                sumRates += rating;
-                                ratingReview.setId(String.valueOf(reviewSnapshot.getKey()));
-                                ratingReview.setReview(String.valueOf(reviewSnapshot.child(REVIEW).getValue()));
-                                ratingReview.setRating(String.valueOf(reviewSnapshot.child(RATING).getValue()));
-                                ratingReview.setType(String.valueOf(reviewSnapshot.child(TYPE).getValue()));
-                                ratingReview.setWorkingTimeId(workingTimeId);
-                                ratingReview.setMessageId(String.valueOf(reviewSnapshot.child(MESSAGE_ID).getValue()));
-
-                                addReviewInLocalStorage(ratingReview);
-
-                                // Подгружаем дни по времени >> сервисы по дням >> авторов ревью по сервисам
-                                loadDaysByTime();
+                        //проверить обоюдное это ревью, если нет, то проверить на 72 часа
+                        if(isMutualReview(reviewsSnapshot)) {
+                            addReview(reviewsSnapshot,workingTimeId);
+                        }
+                        else {
+                            //проверка на время, если у timeId время с записи больше 72,
+                            // то в любом случае добавляем в локалку
+                            if(isAfterThreeDays(workingTimeId)){
+                                addReview(reviewsSnapshot,workingTimeId);
                             }
                         }
 
@@ -504,6 +493,30 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         cursor.close();
     }
 
+    private void addReview(DataSnapshot reviewsSnapshot, String workingTimeId) {
+
+        RatingReview ratingReview = new RatingReview();
+        for (DataSnapshot reviewSnapshot : reviewsSnapshot.getChildren()) {
+            String type = String.valueOf(reviewSnapshot.child(TYPE).getValue());
+            float rating = Float.valueOf(String.valueOf(reviewSnapshot.child(RATING).getValue()));
+
+            if (type.equals(REVIEW_FOR_USER) && rating > 0) {
+                countOfRates++;
+                sumRates += rating;
+                ratingReview.setId(String.valueOf(reviewSnapshot.getKey()));
+                ratingReview.setReview(String.valueOf(reviewSnapshot.child(REVIEW).getValue()));
+                ratingReview.setRating(String.valueOf(reviewSnapshot.child(RATING).getValue()));
+                ratingReview.setType(String.valueOf(reviewSnapshot.child(TYPE).getValue()));
+                ratingReview.setWorkingTimeId(workingTimeId);
+                ratingReview.setMessageId(String.valueOf(reviewSnapshot.child(MESSAGE_ID).getValue()));
+
+                addReviewInLocalStorage(ratingReview);
+
+                // Подгружаем дни по времени >> сервисы по дням >> авторов ревью по сервисам
+                loadDaysByTime();
+            }
+        }
+    }
     private void addReviewInLocalStorage(RatingReview ratingReview) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -537,6 +550,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         loadTimeForReviews();
         updateProfileData(ownerId);
 
+        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
+
         if(userId.equals(ownerId)){
             // если это мой сервис
             updateOrdersList(userId);
@@ -554,7 +569,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         else{
             updateServicesList(ownerId);
         }
-        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
     }
 
     private long getCountOfSubscriptions() {
@@ -672,9 +686,18 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
         cursor.close();
     }
-
     private String getUserId() {
         return  FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+    }
+  
+    private boolean isAfterThreeDays(String workingTimeId) {
+
+        String date  = workWithLocalStorageApi.getDate(workingTimeId);
+        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
+        long dateMilliseconds = workWithTimeApi.getMillisecondsStringDate(date);
+        boolean isAfterThreeDays = (workWithTimeApi.getSysdateLong() - dateMilliseconds) > 259200000;
+
+        return isAfterThreeDays;
     }
 
     private void addRatingToScreen() {
@@ -732,9 +755,24 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         Intent intent = new Intent(this, AddService.class);
         startActivity(intent);
     }
-
+  
     private void goToSubscribers() {
         Intent intent = new Intent(this, Subscribers.class);
         startActivity(intent);
+    }
+  
+    //ревью оставили 2 человека?
+    private boolean isMutualReview(DataSnapshot reviewsSnapshot) {
+        if(reviewsSnapshot.getChildrenCount()==0){
+            return false;
+        }
+        for (DataSnapshot rate : reviewsSnapshot.getChildren()) {
+            String rating = String.valueOf(rate.child(RATING).getValue());
+            //если хоть 1 оценка 0, то возвращаем false
+            if (rating.equals("0")) {
+                return false;
+            }
+        }
+        return true;
     }
 }

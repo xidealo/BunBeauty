@@ -1,7 +1,5 @@
 package com.example.ideal.myapplication.helpApi;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
@@ -9,27 +7,16 @@ import com.example.ideal.myapplication.fragments.panelElements.BottomPanel;
 import com.example.ideal.myapplication.fragments.panelElements.TopPanel;
 import com.google.firebase.auth.FirebaseAuth;
 
-import static android.content.Context.MODE_PRIVATE;
-
 public class PanelBuilder {
 
-
-    private static final String PHONE_NUMBER = "Phone number";
-    private static final String FILE_NAME = "Info";
-
-
-    private Context context;
-    private SharedPreferences sPref;
     private FragmentTransaction transaction;
-    private BottomPanel bottomPanel;
     private TopPanel topPanel;
 
     private boolean isMyProfile = false;
     private String myPhone;
 
     // Для профиля
-    public PanelBuilder(Context _context, String ownerId) {
-        context = _context;
+    public PanelBuilder(String ownerId) {
 
         if(ownerId != null) {
             isMyProfile = isMyProfile(ownerId);
@@ -37,8 +24,8 @@ public class PanelBuilder {
     }
 
     // Для всех остальных
-    public PanelBuilder(Context _context) {
-        context = _context;
+    public PanelBuilder() {
+
     }
 
     private boolean isMyProfile(String ownerId) {
@@ -52,7 +39,7 @@ public class PanelBuilder {
     }
 
     public void buildFooter(FragmentManager manager, int layoutId) {
-        bottomPanel = new BottomPanel(isMyProfile, myPhone);
+        BottomPanel bottomPanel = new BottomPanel(isMyProfile, myPhone);
 
         transaction = manager.beginTransaction();
         transaction.add(layoutId, bottomPanel);

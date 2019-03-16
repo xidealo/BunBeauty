@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
+import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
@@ -40,20 +41,25 @@ public class MyAuthorization {
     private static final String SERVICE_ID = "service id";
     private static final String DATE = "data";
 
+    //PHOTOS
+    private static final String PHOTOS = "photos";
+    private static final String PHOTO_LINK = "photo link";
+    private static final String OWNER_ID = "owner id";
+
     private DBHelper dbHelper;
 
     private long orderCounter;
-    Context context;
-    String myPhoneNumber;
+    private Context context;
+    private String myPhoneNumber;
 
-    public MyAuthorization(Context _context, String _myPhoneNumber) {
+    MyAuthorization(Context _context, String _myPhoneNumber) {
         context = _context;
         myPhoneNumber = _myPhoneNumber;
 
         dbHelper = new DBHelper(context);
     }
 
-    public void authorizeUser() {
+    void authorizeUser() {
         // скарываем Views и запукаем прогресс бар
 
         final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(USERS).child(myPhoneNumber);
@@ -187,6 +193,7 @@ public class MyAuthorization {
                     DownloadServiceData downloadServiceData = new DownloadServiceData(localDatabase);
                     downloadServiceData.loadSchedule(serviceId,"Authorization", null);
                     serviceCounter++;
+
                     if (serviceCounter == servicesCount) {
                         loadTimeByUserPhone();
                     }
@@ -200,6 +207,8 @@ public class MyAuthorization {
         });
     }
 
+    private static final String TAG = "DBInf";
+
     private void loadTimeByUserPhone() {
         Query timeQuery = FirebaseDatabase.getInstance().getReference(WORKING_TIME)
                 .orderByChild(USER_ID)
@@ -208,10 +217,12 @@ public class MyAuthorization {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 final long ordersCount = dataSnapshot.getChildrenCount();
+
                 if(ordersCount==0){
-                    goToProfile();
+                    loadPhotosByPhoneNumber(myPhoneNumber);
                     return;
                 }
+
                 orderCounter = 0;
                 for(DataSnapshot timeSnapshot:dataSnapshot.getChildren()){
                     String timeId = String.valueOf(timeSnapshot.getKey());
@@ -284,6 +295,62 @@ public class MyAuthorization {
         });
     }
 
+    private void loadPhotosByPhoneNumber(String myPhoneNumber) {
+
+        final Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
+                .orderByChild(OWNER_ID)
+                .equalTo(myPhoneNumber);
+
+        photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
+                for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
+
+                    Photo photo = new Photo();
+
+                    photo.setPhotoId(fPhoto.getKey());
+                    photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
+                    photo.setPhotoOwnerId(String.valueOf(fPhoto.child(OWNER_ID).getValue()));
+
+                    addPhotoInLocalStorage(photo);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void addPhotoInLocalStorage(Photo photo) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+        boolean isUpdate = workWithLocalStorageApi
+                .hasSomeData(DBHelper.TABLE_PHOTOS,
+                        photo.getPhotoId());
+
+        if(isUpdate){
+            database.update(DBHelper.TABLE_PHOTOS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{photo.getPhotoId()});
+        }
+        else {
+            contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+            database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
+        }
+        goToProfile();
+    }
+
     // Обновляет информацию о текущем пользователе в SQLite
     private void addUserInfoInLocalStorage(User user) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
@@ -307,6 +374,7 @@ public class MyAuthorization {
         database.delete(DBHelper.TABLE_CONTACTS_SERVICES, null, null);
         database.delete(DBHelper.TABLE_WORKING_DAYS,null,null);
         database.delete(DBHelper.TABLE_WORKING_TIME,null,null);
+
         database.delete(DBHelper.TABLE_PHOTOS,null,null);
         database.delete(DBHelper.TABLE_SUBSCRIBERS,null,null);
 

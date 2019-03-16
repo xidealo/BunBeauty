@@ -195,8 +195,8 @@
 
     <ImageView
         android:id="@+id/avatarProfileImage"
-        android:layout_width="75dp"
-        android:layout_height="79dp"
+        android:layout_width="149dp"
+        android:layout_height="121dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
