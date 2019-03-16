@@ -79,10 +79,13 @@ public class DownloadServiceData {
     private Service service;
     private FragmentManager manager;
 
-    public void loadSchedule(final String _serviceId, SQLiteDatabase _database,
+    public DownloadServiceData(SQLiteDatabase _database) {
+        localDatabase = _database;
+    }
+
+    public void loadSchedule(final String _serviceId,
                              String _status, FragmentManager _manager) {
 
-        localDatabase = _database;
         serviceId = _serviceId;
         status = _status;
 
@@ -569,7 +572,7 @@ public class DownloadServiceData {
         });
     }
 
-    private void loadPhotosByPhoneNumber(String myPhoneNumber) {
+    public void loadPhotosByPhoneNumber(String myPhoneNumber) {
 
         final Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
                 .orderByChild(OWNER_ID)

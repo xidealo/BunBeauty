@@ -54,8 +54,10 @@ public class WorkWithLocalStorageApi {
                         + DBHelper.TABLE_PHOTOS
                         + " WHERE "
                         + DBHelper.KEY_OWNER_ID_PHOTOS + " = ?";
-        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{userId});
-        if (cursor.moveToFirst()) {
+
+        Cursor cursor = localDatabase.rawQuery(sqlQuery,new String[] {userId});
+
+        if(cursor.moveToFirst()){
             int indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS);
 
             String photoLink = cursor.getString(indexPhotoLink);

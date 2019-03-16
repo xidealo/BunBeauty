@@ -39,4 +39,13 @@
         android:visibility="gone"
         tools:srcCompat="@tools:sample/avatars" />
 
+    <TextView
+        android:id="@+id/countOfSubsTopPanelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="5dp"
+        android:visibility="gone"
+        android:text="кол-во" />
+
 </LinearLayout>

@@ -66,6 +66,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private static final String USERS = "users";
 
+    private static final String SUBSCRIPTIONS = "подписки";
+
+    private String userId;
+    private String ownerId;
     private float sumRates;
     private long countOfRates;
     private long counter;
@@ -76,6 +80,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private TextView withoutRatingText;
     private ProgressBar progressBar;
 
+
+    private Button subscribersBtn;
+
     private ScrollView servicesScroll;
     private ScrollView ordersScroll;
     private LinearLayout servicesLayout;
@@ -83,7 +90,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout ratingLayout;
 
     private DBHelper dbHelper;
-    private String ownerId;
+
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private ImageView avatarImage;
 
@@ -98,6 +105,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         Button logOutBtn = findViewById(R.id.logOutProfileBtn);
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
+        subscribersBtn = findViewById(R.id.subscribersProfileBtn);
         avatarImage = findViewById(R.id.avatarProfileImage);
 
         SwitchCompat servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
@@ -122,7 +130,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         manager = getSupportFragmentManager();
         //получаем id пользователя
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        userId = getUserId();
 
         // Получаем id владельца профиля
         ownerId = getIntent().getStringExtra(OWNER_ID);
@@ -165,12 +173,14 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 }
             });
             addServicesBtn.setOnClickListener(this);
+            subscribersBtn.setOnClickListener(this);
         } else {
             // Не совпадает - чужой профиль
 
             // Скрываем функционал
             servicesOrOrdersSwitch.setVisibility(View.INVISIBLE);
             addServicesBtn.setVisibility(View.INVISIBLE);
+            subscribersBtn.setVisibility(View.INVISIBLE);
 
             // Отображаем все сервисы пользователя
             ordersLayout.setVisibility(View.INVISIBLE);
@@ -189,8 +199,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             case R.id.addServicesProfileBtn:
                 goToAddService();
                 break;
+
             case R.id.logOutProfileBtn:
                 goToLogIn();
+                break;
+
+            case R.id.subscribersProfileBtn:
+                goToSubscribers();
                 break;
 
             default:
@@ -541,10 +556,38 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             // если это мой сервис
             updateOrdersList(userId);
             updateServicesList(userId);
+
+            // выводим кол-во подписок
+            long subscriptionsCount = getCountOfSubscriptions();
+            String btnText = SUBSCRIPTIONS;
+
+            if (subscriptionsCount != 0) {
+                btnText += " (" + subscriptionsCount + ")";
+            }
+            subscribersBtn.setText(btnText);
         }
         else{
             updateServicesList(ownerId);
         }
+    }
+
+    private long getCountOfSubscriptions() {
+        String userId = getUserId();
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String sqlQuery =
+                "SELECT " + DBHelper.KEY_WORKER_ID + ", "
+                        + DBHelper.KEY_NAME_USERS
+                        + " FROM " + DBHelper.TABLE_CONTACTS_USERS + ", "
+                        + DBHelper.TABLE_SUBSCRIBERS
+                        + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_USER_ID
+                        + " = " + DBHelper.KEY_WORKER_ID
+                        + " AND " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_USER_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
+
+        return cursor.getCount();
     }
 
     //подгрузка сервисов на serviceList
@@ -577,10 +620,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                     service.setId(foundId);
                     service.setName(foundNameService);
 
-                    //нужно, чтобы отображать наши сервисы
-                    DownloadServiceData downloadServiceData = new DownloadServiceData();
-                    downloadServiceData.loadSchedule(service.getId(),database,
-                            "Profile",manager);
+                    DownloadServiceData downloadServiceData = new DownloadServiceData(database);
+                    downloadServiceData.loadSchedule(service.getId(),"Profile", manager);
 
                     //пока в курсоре есть строки и есть новые сервисы
                 }while (cursor.moveToNext());
@@ -645,7 +686,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
         cursor.close();
     }
-
+    private String getUserId() {
+        return  FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+    }
+  
     private boolean isAfterThreeDays(String workingTimeId) {
 
         String date  = workWithLocalStorageApi.getDate(workingTimeId);
@@ -676,6 +720,24 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         transaction.commit();
     }
 
+    public boolean checkSubscription() {
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        String sqlQuery =
+                "SELECT * FROM "
+                + DBHelper.TABLE_SUBSCRIBERS
+                + " WHERE "
+                + DBHelper.KEY_USER_ID + " = ? AND "
+                + DBHelper.KEY_WORKER_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId, ownerId});
+        if(cursor.moveToFirst()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void goToLogIn() {
         FirebaseAuth.getInstance().signOut();
 
@@ -693,7 +755,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         Intent intent = new Intent(this, AddService.class);
         startActivity(intent);
     }
-
+  
+    private void goToSubscribers() {
+        Intent intent = new Intent(this, Subscribers.class);
+        startActivity(intent);
+    }
+  
     //ревью оставили 2 человека?
     private boolean isMutualReview(DataSnapshot reviewsSnapshot) {
         if(reviewsSnapshot.getChildrenCount()==0){

@@ -128,9 +128,8 @@ public class MainScreen extends AppCompatActivity {
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 String serviceId = snapshot.getKey();
 
-                                DownloadServiceData downloadServiceData = new DownloadServiceData();
-                                downloadServiceData.loadSchedule(serviceId,database,
-                                        "MainScreen",manager);
+                                DownloadServiceData downloadServiceData = new DownloadServiceData(database);
+                                downloadServiceData.loadSchedule(serviceId,"MainScreen",manager);
                                 countOfService++;
                                 //количество возможных предложений на mainScreen
                                 if(countOfService == limitOfService) {

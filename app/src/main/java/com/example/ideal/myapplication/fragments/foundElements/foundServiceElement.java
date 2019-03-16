@@ -87,7 +87,6 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-
         workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage);
     }
 
