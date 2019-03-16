@@ -58,7 +58,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
         myRating = 0;
 
         FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder(this);
+        PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerReviewLayout);
         panelBuilder.buildHeader(manager, "Оценить", R.id.headerReviewLayout);
 

@@ -2,7 +2,6 @@ package com.example.ideal.myapplication.createService;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -39,9 +38,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AddService extends AppCompatActivity implements View.OnClickListener {
-
-    private static final String FILE_NAME = "Info";
-    private static final String PHONE_NUMBER = "Phone number";
 
     private static final String SERVICE_ID = "service id";
     private static final String STATUS_USER_BY_SERVICE = "status User";
@@ -81,7 +77,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         ImageView serviceImage = findViewById(R.id.servicePhotoAddServiceImage);
 
         manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder(this);
+        PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerAddServiceLayout);
         panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerAddServiceLayout);
 

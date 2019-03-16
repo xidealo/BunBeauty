@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.helpApi.WorkWithViewApi;
-import com.example.ideal.myapplication.other.DBHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -28,26 +27,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
 
     private static final String TAG = "DBInf";
 
-    private static final String PASS = "password";
-    private static final String FILE_NAME = "Info";
     private static final String PHONE_NUMBER = "Phone number";
-
-    private static final String USERS = "users";
-    private static final String NAME = "name";
-    private static final String CITY = "city";
-
-    private static final String SERVICES = "services";
-    private static final String USER_ID = "user id";
-    private static final String DESCRIPTION = "description";
-    private static final String COST = "cost";
-
-    private static final String WORKING_TIME = "working time";
-    private static final String WORKING_DAY_ID = "working day id";
-    private static final String TIME = "time";
-
-    private static final String WORKING_DAYS = "working days";
-    private static final String SERVICE_ID = "service id";
-    private static final String DATE = "data";
 
     private Button verifyCodeBtn;
     private Button resendCodeBtn;
@@ -61,7 +41,6 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
     //private PhoneAuthProvider.OnVerificationStateChangedCallbacks verificationCallbacks;
     private PhoneAuthProvider.ForceResendingToken resendToken;
 
-    private DBHelper dbHelper;
     private FirebaseAuth fbAuth;
 
     @Override
@@ -77,7 +56,6 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
 
         changePhoneText = findViewById(R.id.changePhoneVerifyText);
 
-        dbHelper = new DBHelper(this);
         fbAuth = FirebaseAuth.getInstance();
 
         myPhoneNumber = getIntent().getStringExtra(PHONE_NUMBER);

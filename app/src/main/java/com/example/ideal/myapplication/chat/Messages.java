@@ -1,13 +1,11 @@
 package com.example.ideal.myapplication.chat;
 
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.R;
@@ -22,8 +20,6 @@ public class Messages extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
 
-    private static final String FILE_NAME = "Info";
-    private static final String PHONE_NUMBER = "Phone number";
     private static final String DIALOG_ID = "dialog id";
 
     private static final String SERVICE_ID = "service_id";
@@ -33,7 +29,6 @@ public class Messages extends AppCompatActivity {
 
     private String myPhone;
     private String dialogId;
-    private String senderPhone;
     private String senderName;
     private DBHelper dbHelper;
 
@@ -51,12 +46,12 @@ public class Messages extends AppCompatActivity {
         dialogId = getIntent().getStringExtra(DIALOG_ID);
         myPhone = getUserId();
         // получаем телефон нашего собеседеника
-        senderPhone = getSenderPhone(dialogId);
+        String senderPhone = getSenderPhone(dialogId);
         senderName = getSenderName(senderPhone);
 
         manager = getSupportFragmentManager();
 
-        PanelBuilder panelBuilder = new PanelBuilder(this);
+        PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
         panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderPhone);
 

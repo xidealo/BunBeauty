@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
-import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -35,8 +33,6 @@ import com.google.firebase.database.ValueEventListener;
 public class SearchService extends FragmentActivity implements View.OnClickListener {
 
     // сначала идут константы
-    private static final String FILE_NAME = "Info";
-    private static final String PHONE = "phone";
     private static final String TAG = "DBInf";
 
     private static final String USERS = "users";
@@ -82,7 +78,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
         dbHelper = new DBHelper(this);
 
         manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder(this);
+        PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerSearchServiceLayout);
         panelBuilder.buildHeader(manager, "Поиск", R.id.headerSearchServiceLayout);
 

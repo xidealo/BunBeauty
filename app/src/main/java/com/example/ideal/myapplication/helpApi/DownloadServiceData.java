@@ -115,7 +115,6 @@ public class DownloadServiceData {
                 service.setDescription(serviceDescription);
 
                 updateServicesInLocalStorage(service);
-                loadPhotosByPhoneNumber(ownerId);
 
                 ownerId = userId;
                 //загрузка фотографий для сервисов
@@ -135,7 +134,7 @@ public class DownloadServiceData {
                         if (countOfDays == 0) {
                             addToScreen(0);
                         }
-
+                        //крутит цикл
                         for (DataSnapshot workingDay : workingDaysSnapshot.getChildren()) {
                             final String dayId = String.valueOf(workingDay.getKey());
                             String dayDate = String.valueOf(workingDay.child(DATA).getValue());
@@ -144,6 +143,7 @@ public class DownloadServiceData {
                             final Query queryTime = database.getReference(WORKING_TIME).
                                     orderByChild(WORKING_DAY_ID).
                                     equalTo(dayId);
+                            //этот в цикле 2
                             queryTime.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot workingTimesSnapshot) {
@@ -218,35 +218,17 @@ public class DownloadServiceData {
                 Query query = database.getReference(REVIEWS)
                         .orderByChild(WORKING_TIME_ID)
                         .equalTo(workingTimeId);
-
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot rates) {
-                        RatingReview ratingReview = new RatingReview();
-                        for (DataSnapshot rate : rates.getChildren()) {
-                            String type = String.valueOf(rate.child(TYPE).getValue());
-                            String rating = String.valueOf(rate.child(RATING).getValue());
-                            if (type.equals(REVIEW_FOR_SERVICE) && (!rating.equals("0"))) {
-                                // только ревью для сервисов
-                                countOfRates++;
-                                sumRates += Float.valueOf(String.valueOf(rate.child(RATING).getValue()));
-
-                                String messageId = String.valueOf(rate.child(MESSAGE_ID).getValue());
-
-                                ratingReview.setId(String.valueOf(rate.getKey()));
-                                ratingReview.setReview(String.valueOf(rate.child(REVIEW).getValue()));
-                                ratingReview.setRating(rating);
-                                ratingReview.setMessageId(messageId);
-                                ratingReview.setType(type);
-                                ratingReview.setWorkingTimeId(workingTimeId);
-                                //добавление ревью в локальную бд
-                                addReviewForServiceInLocalStorage(ratingReview);
-                                // загружать инфу о пользователе
-                                if (userId.equals("0")) {
-                                    loadMessageById(messageId);
-                                } else {
-                                    loadUserForThisReview(userId);
-                                }
+                    public void onDataChange(@NonNull DataSnapshot reviewsSnapshot) {
+                        //проверить обоюдное это ревью, если нет, то проверить на 72 часа
+                        if(isMutualReview(reviewsSnapshot)) {
+                          addReview(reviewsSnapshot,workingTimeId,userId);
+                        }
+                        else{
+                            //проверка на время, если у timeId время с записи больше 72, то в любом случае добавляем в локалку
+                            if(isAfterWeek(workingTimeId)){
+                                addReview(reviewsSnapshot,workingTimeId,userId);
                             }
                         }
 
@@ -254,7 +236,6 @@ public class DownloadServiceData {
                         if (counter == cursor.getCount() && (countOfRates == 0)) {
                             addToScreen(0);
                         }
-
                     }
 
                     @Override
@@ -264,6 +245,42 @@ public class DownloadServiceData {
             } while (cursor.moveToNext());
         }
         cursor.close();
+    }
+
+    private void addReview(DataSnapshot reviewsSnapshot, String workingTimeId,String userId){
+
+        RatingReview ratingReview = new RatingReview();
+
+        for (DataSnapshot reviewSnapshot : reviewsSnapshot.getChildren()) {
+            String type = String.valueOf(reviewSnapshot.child(TYPE).getValue());
+            String rating = String.valueOf(reviewSnapshot.child(RATING).getValue());
+            if ((!rating.equals("0"))) {
+
+                // считаем только ревью для сервисов
+                if(type.equals(REVIEW_FOR_SERVICE)) {
+                    countOfRates++;
+                    sumRates += Float.valueOf(String.valueOf(reviewSnapshot.child(RATING).getValue()));
+                }
+
+                String messageId = String.valueOf(reviewSnapshot.child(MESSAGE_ID).getValue());
+
+                ratingReview.setId(String.valueOf(reviewSnapshot.getKey()));
+                ratingReview.setReview(String.valueOf(reviewSnapshot.child(REVIEW).getValue()));
+                ratingReview.setRating(rating);
+                ratingReview.setMessageId(messageId);
+                ratingReview.setType(type);
+                ratingReview.setWorkingTimeId(workingTimeId);
+                //добавление ревью в локальную бд
+                addReviewForServiceInLocalStorage(ratingReview);
+                // загружать инфу о пользователе
+                if (userId.equals("0")) {
+                    loadMessageById(messageId);
+                } else {
+                    loadUserForThisReview(userId);
+                }
+            }
+        }
+
     }
 
     private void addScheduleInLocalStorage(String dayId, String dayDate, String serviceId) {
@@ -372,6 +389,7 @@ public class DownloadServiceData {
                 localUser.setCity(String.valueOf(user.child(CITY).getValue()));
                 addUserInLocalStorage(localUser);
                 if(!addToScreen) {
+                    Log.d(TAG, "FOUR");
                     addToScreen(1);
                     addToScreen = true;
                 }
@@ -439,15 +457,12 @@ public class DownloadServiceData {
                 String secondPhone = String.valueOf(dialogSnapshot.child(SECOND_PHONE).getValue());
 
                 addDialogInLocalStorage(dialogId, firstPhone, secondPhone);
-                Log.d(TAG, "onDataChange: ");
                 if(!firstPhone.equals(ownerId)) {
                     loadUserForThisReview(firstPhone);
-                    Log.d(TAG, "FIRST PHONE ");
                 }
 
                 if(!secondPhone.equals(ownerId) ) {
                     loadUserForThisReview(firstPhone);
-                    Log.d(TAG, "SECOND PHONE ");
                 }
             }
 
@@ -537,7 +552,6 @@ public class DownloadServiceData {
         photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
-
                 for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
 
                     Photo photo = new Photo();
@@ -549,7 +563,6 @@ public class DownloadServiceData {
                     addPhotoInLocalStorage(photo);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -558,13 +571,13 @@ public class DownloadServiceData {
 
     private void loadPhotosByPhoneNumber(String myPhoneNumber) {
 
-        Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
+        final Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
                 .orderByChild(OWNER_ID)
                 .equalTo(myPhoneNumber);
+
         photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
-
                 for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
 
                     Photo photo = new Photo();
@@ -580,7 +593,6 @@ public class DownloadServiceData {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
@@ -637,10 +649,21 @@ public class DownloadServiceData {
         transaction.commit();
     }
 
+    //время полученное по timeId больше 3 дней
+    private boolean isAfterWeek(String workingTimeId) {
+
+        String date  = workWithLocalStorageApi.getDate(workingTimeId);
+        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
+        long dateMilliseconds = workWithTimeApi.getMillisecondsStringDate(date);
+        boolean isAfterWeek = (workWithTimeApi.getSysdateLong() - dateMilliseconds) > 604800000;
+
+        return isAfterWeek;
+    }
 
     private  void addToScreen(float avgRating){
 
         if(!addToScreen) {
+            addToScreen = true;
             switch (status){
                 case "MainScreen":
                     //подгружаем владельца сервиса и отображаем его на фрагменте
@@ -650,8 +673,22 @@ public class DownloadServiceData {
                     addToScreenOnProfile(avgRating);
                     break;
             }
-
         }
+    }
+
+    //ревью оставили 2 человека?
+    private boolean isMutualReview(DataSnapshot reviewsSnapshot) {
+        if(reviewsSnapshot.getChildrenCount()==0){
+            return false;
+        }
+        for (DataSnapshot reviewSnapshot : reviewsSnapshot.getChildren()) {
+            String rating = String.valueOf(reviewSnapshot.child(RATING).getValue());
+            //если хоть 1 оценка 0, то возвращаем false
+            if (rating.equals("0")) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 

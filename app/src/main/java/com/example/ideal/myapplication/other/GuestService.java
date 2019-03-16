@@ -2,7 +2,6 @@ package com.example.ideal.myapplication.other;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -37,12 +36,10 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "DBInf";
 
-    private static final String PHONE_NUMBER = "Phone number";
     private static final String CITY = "city";
     private static final String NAME = "name";
     private static final String WORKER = "worker";
     private static final String USER = "user";
-    private static final String FILE_NAME = "Info";
     private static final String SERVICE_ID = "service id";
     private static final String USERS = "users";
 
@@ -130,7 +127,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         // мой сервис или нет?
         boolean isMyService = userId.equals(ownerId);
 
-        PanelBuilder panelBuilder = new PanelBuilder(this);
+        PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildHeader(manager, serviceName, R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
         panelBuilder.buildFooter(manager, R.id.footerGuestServiceLayout);
 
@@ -141,71 +138,81 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             status = USER;
             editScheduleBtn.setText("Расписание");
         }
-
         editScheduleBtn.setOnClickListener(this);
-
     }
 
     private void getDataAboutService(String serviceId) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        // все осервисе, оценка, количество оценок
-        //проверка на удаленный номер
 
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_NAME_SERVICES + ", "
-                        + DBHelper.KEY_MIN_COST_SERVICES + ", "
-                        + DBHelper.KEY_DESCRIPTION_SERVICES + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." +DBHelper.KEY_USER_ID + ", "
-                        + DBHelper.KEY_RATING_REVIEWS
-                        + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_REVIEWS
-                        + " WHERE "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "."+DBHelper.KEY_ID + " = " +  DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                        + " AND "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " AND "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
-                        + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." +DBHelper.KEY_ID + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_TYPE_REVIEWS + " = ? ";
+            SQLiteDatabase database = dbHelper.getWritableDatabase();
+            // все о сервисе, оценка, количество оценок
+            //проверка на удаленный номер
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
+            String sqlQuery =
+                    "SELECT "
+                            + DBHelper.KEY_NAME_SERVICES + ", "
+                            + DBHelper.KEY_MIN_COST_SERVICES + ", "
+                            + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
+                            + DBHelper.KEY_DESCRIPTION_SERVICES + ", "
+                            + DBHelper.TABLE_CONTACTS_SERVICES + "." +DBHelper.KEY_USER_ID + ", "
+                            + DBHelper.KEY_RATING_REVIEWS
+                            + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES + ", "
+                            + DBHelper.TABLE_WORKING_DAYS + ", "
+                            + DBHelper.TABLE_WORKING_TIME + ", "
+                            + DBHelper.TABLE_REVIEWS
+                            + " WHERE "
+                            + DBHelper.TABLE_CONTACTS_SERVICES + "."+DBHelper.KEY_ID + " = " +  DBHelper.KEY_SERVICE_ID_WORKING_DAYS
+                            + " AND "
+                            + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                            + " AND "
+                            + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
+                            + " AND "
+                            + DBHelper.TABLE_CONTACTS_SERVICES + "." +DBHelper.KEY_ID + " = ? "
+                            + " AND "
+                            + DBHelper.KEY_TYPE_REVIEWS + " = ? "
+                            + " AND "
+                            + DBHelper.KEY_RATING_REVIEWS + " != 0";
 
-        float sumRates = 0;
+            Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
 
-        // если сюда не заходит, значит ревью нет
-        if (cursor.moveToFirst()) {
-            int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
-            int indexMinCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
-            int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
-            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+            float sumRates = 0;
+            long counter = 0;
+            // если сюда не заходит, значит ревью нет
+            if (cursor.moveToFirst()) {
+                int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
+                int indexMinCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
+                int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
+                int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+                ownerId = cursor.getString(indexUserId);
+                serviceName = cursor.getString(indexName);
 
-            ownerId = cursor.getString(indexUserId);
-            serviceName = cursor.getString(indexName);
-
-            nameText.setText(serviceName);
-            costText.setText(cursor.getString(indexMinCost));
-            descriptionText.setText(cursor.getString(indexDescription));
-            do {
-                int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-                sumRates += Float.valueOf(cursor.getString(indexRating));
-            } while (cursor.moveToNext());
+                nameText.setText(serviceName);
+                costText.setText(cursor.getString(indexMinCost));
+                descriptionText.setText(cursor.getString(indexDescription));
+                do {
+                    //у каждого ревью беру timeId и смотрю по нему есть ли оценка 
+                    int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
+                    if(workWithLocalStorageApi.isMutualReview(cursor.getString(indexWorkingTimeId))) {
+                        int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+                        sumRates += Float.valueOf(cursor.getString(indexRating));
+                        counter++;
+                    }else {
+                        if(workWithLocalStorageApi.isAfterWeek(cursor.getString(indexWorkingTimeId))){
+                            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+                            sumRates += Float.valueOf(cursor.getString(indexRating));
+                            counter++;
+                        }
+                    }
+                } while (cursor.moveToNext());
+            } else {
+                setWithoutRating();
+            }
+            if (counter!=0) {
+                float avgRating = sumRates / counter;
+                addToScreenOnGuestService(avgRating, counter);
+            }
+            cursor.close();
         }
-        else {
-            setWithoutRating();
-        }
-
-        if(cursor.getCount()!=0) {
-            float avgRating = sumRates / cursor.getCount();
-            addToScreenOnGuestService(avgRating,cursor.getCount());
-        }
-
-        cursor.close();
-    }
+        
     private  void loadOwner(String serviceId) {
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -385,7 +392,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private void addToScreenOnGuestService(float avgRating, long countOfRates) {
 
         ratingLayout.removeAllViews();
-
         RatingBarElement fElement
                 = new RatingBarElement(avgRating, countOfRates, serviceId, REVIEW_FOR_SERVICE);
         FragmentTransaction transaction = manager.beginTransaction();

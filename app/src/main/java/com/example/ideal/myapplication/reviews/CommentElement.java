@@ -9,14 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.chat.Messages;
 import com.example.ideal.myapplication.fragments.objects.Comment;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -72,7 +70,13 @@ public class CommentElement extends Fragment implements View.OnClickListener{
     }
 
     private void setData() {
-        String abbreviatedReview = review.substring(0, 2) + "...";
+        String abbreviatedReview;
+        if(review.length()>3) {
+            abbreviatedReview = review.substring(0, 2) + "...";
+        }
+        else {
+            abbreviatedReview = review;
+        }
 
         userNameText.setText(userName);
         reviewText.setText(abbreviatedReview);
