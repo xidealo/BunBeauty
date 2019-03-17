@@ -7,6 +7,7 @@ public class Service {
     private String description;
     private String cost;
     private String userId;
+    private boolean isPremium;
 
     public boolean setName(String _name){
         if(isCorrectData(_name)) {
@@ -22,9 +23,12 @@ public class Service {
         description = _description;
     }
 
+    public void setIsPremium(Boolean _isPremium){
+        isPremium = _isPremium;
+    }
+
     public boolean setCost(String _cost){
         if(isCorrectCost(_cost)) {
-
             cost = _cost;
             return true;
         }
@@ -39,7 +43,7 @@ public class Service {
     public String getDescription(){return description;}
     public String getCost(){return cost;}
     public String getUserId(){return userId;}
-
+    public Boolean getIsPremium(){return isPremium;}
     protected boolean isCorrectData(String data){
 
         if(!data.matches("[a-zA-ZА-Яа-я\\s\\-]+")) return false;

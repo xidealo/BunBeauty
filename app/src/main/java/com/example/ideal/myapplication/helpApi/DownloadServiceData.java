@@ -121,6 +121,7 @@ public class DownloadServiceData {
                 ownerId = userId;
                 //загрузка фотографий для сервисов
                 loadPhotosByServiceId(serviceId);
+                loadPhotosByPhoneNumber(ownerId);
 
                 //возвращает все дни определенного сервиса
                 final Query query = database.getReference(WORKING_DAYS).
@@ -390,7 +391,6 @@ public class DownloadServiceData {
                 localUser.setCity(String.valueOf(user.child(CITY).getValue()));
                 addUserInLocalStorage(localUser);
                 if(!addToScreen) {
-                    Log.d(TAG, "FOUR");
                     addToScreen(1);
                     addToScreen = true;
                 }
@@ -575,11 +575,9 @@ public class DownloadServiceData {
         final Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
                 .orderByChild(OWNER_ID)
                 .equalTo(myPhoneNumber);
-        Log.d(TAG, "loadPhotosByPhoneNumber: " + myPhoneNumber);
         photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
-                Log.d(TAG, "onDataChange: " + photosSnapshot);
                 for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
 
                     Photo photo = new Photo();

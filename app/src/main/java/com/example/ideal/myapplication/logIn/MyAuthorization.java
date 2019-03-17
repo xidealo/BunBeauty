@@ -223,6 +223,7 @@ public class MyAuthorization {
                 final long ordersCount = dataSnapshot.getChildrenCount();
 
                 if(ordersCount==0){
+                    goToProfile();
                     return;
                 }
 
@@ -351,7 +352,6 @@ public class MyAuthorization {
             contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
             database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
-        goToProfile();
     }
 
     // Обновляет информацию о текущем пользователе в SQLite

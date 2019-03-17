@@ -12,7 +12,6 @@
         android:id="@+id/nameGuestServiceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/footerGuestServiceLayout"
@@ -26,7 +25,6 @@
         android:id="@+id/costGuestServiceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/footerGuestServiceLayout"
@@ -40,7 +38,6 @@
         android:id="@+id/descriptionGuestServiceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/footerGuestServiceLayout"
@@ -148,5 +145,24 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@mipmap/ic_launcher_round"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <Button
+        android:id="@+id/premiumGuestServiceBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        android:text="Премиум"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.586"
+        app:layout_constraintStart_toEndOf="@+id/editScheduleGuestServiceBtn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.397" />
 
 </android.support.constraint.ConstraintLayout>
