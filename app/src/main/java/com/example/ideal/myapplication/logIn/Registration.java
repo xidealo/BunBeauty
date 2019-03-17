@@ -22,36 +22,32 @@ import java.util.Map;
 
 public class Registration extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String PHONE_NUMBER = "Phone number";
-    private static final String REF = "users";
+    private static final String PHONE = "phone";
+    private static final String USERS = "users";
 
     private static final String NAME = "name";
     private static final String CITY = "city";
 
-    Button registrateBtn;
+    private EditText nameInput;
+    private EditText surnameInput;
+    private EditText cityInput;
+    private EditText phoneInput;
 
-    EditText nameInput;
-    EditText surnameInput;
-    EditText cityInput;
-    EditText phoneInput;
-
-    DBHelper dbHelper;
-
-    User user;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration);
 
-        registrateBtn = findViewById(R.id.saveDataRegistrationBtn);
+        Button registrateBtn = findViewById(R.id.saveDataRegistrationBtn);
 
         nameInput = findViewById(R.id.nameRegistrationInput);
         surnameInput = findViewById(R.id.surnameRegistrationInput);
         cityInput = findViewById(R.id.cityRegistrationInput);
         phoneInput = findViewById(R.id.phoneRegistrationInput);
         //Заполняем поле телефона
-        String phoneNumber = getIntent().getStringExtra(PHONE_NUMBER);
+        String phoneNumber = getIntent().getStringExtra(PHONE);
         phoneInput.setText(phoneNumber);
 
         dbHelper = new DBHelper(this);
@@ -70,11 +66,13 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
                 //проверка на незаполенные поля
                 if(areInputsCorrect()) {
-                    user = new User();
+                    User user = new User();
                     //если имя не устанавлявается, значит выводим тоаст и выходим из кейса
                     String fullName = nameInput.getText().toString().toLowerCase() + " " + surnameInput.getText().toString().toLowerCase();
+                    String phone = phoneInput.getText().toString();
                     user.setName(fullName);
                     user.setCity(cityInput.getText().toString().toLowerCase());
+                    user.setPhone(phone);
                     registration(user);
                     //идем в профиль
                     goToProfile();
@@ -87,19 +85,22 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     }
 
     private void registration(User user) {
-        String phoneNumber = phoneInput.getText().toString();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(REF).child(phoneNumber);
+        DatabaseReference myRef = database.getReference(USERS);
 
         Map<String,Object> items = new HashMap<>();
         items.put(NAME, user.getName());
         items.put(CITY, user.getCity());
+        items.put(PHONE, user.getPhone());
+        String userId =  myRef.push().getKey();
+
+        myRef = database.getReference(USERS).child(userId);
         myRef.updateChildren(items);
         //заносим данные о пользователе в локальную базу данных
-        putDataInLocalStorage(user, phoneNumber);
+        putDataInLocalStorage(user);
     }
 
-    private void putDataInLocalStorage(User user, String phoneNumber) {
+    private void putDataInLocalStorage(User user) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -109,7 +110,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
         contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
-        contentValues.put(DBHelper.KEY_USER_ID, phoneNumber);
+        contentValues.put(DBHelper.KEY_USER_ID, user.getPhone());
 
         database.insert(DBHelper.TABLE_CONTACTS_USERS,null,contentValues);
     }
@@ -159,12 +160,6 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
     private  void goToProfile(){
         Intent intent = new Intent(this, Profile.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private  void  goToAuthorization(){
-        Intent intent = new Intent(this, Authorization.class);
         startActivity(intent);
         finish();
     }

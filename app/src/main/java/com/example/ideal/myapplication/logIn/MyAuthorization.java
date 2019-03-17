@@ -23,7 +23,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class MyAuthorization {
-    private static final String PHONE_NUMBER = "Phone number";
+    private static final String PHONE = "phone";
 
     private static final String USERS = "users";
     private static final String NAME = "name";
@@ -33,8 +33,6 @@ public class MyAuthorization {
     private static final String USER_ID = "user id";
     private static final String DESCRIPTION = "description";
     private static final String COST = "cost";
-    private static final String WITHOUT_SERVICE = "without service";
-    private static final String WITH_SERVICE = "with service";
 
     private static final String WORKING_TIME = "working time";
     private static final String WORKING_DAY_ID = "working day id";
@@ -65,39 +63,42 @@ public class MyAuthorization {
     void authorizeUser() {
         // скарываем Views и запукаем прогресс бар
 
-        final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(USERS).child(myPhoneNumber);
+        Query query = FirebaseDatabase.getInstance().getReference(USERS).
+                orderByChild(PHONE).
+                equalTo(myPhoneNumber);
 
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
                 // Получаем остальные данные о пользователе
-                Object name = userSnapshot.child(NAME).getValue();
-                if (name == null) {
-                    // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
-                    goToRegistration();
-                } else {
-                    String city = String.valueOf(userSnapshot.child(CITY).getValue());
+                for(DataSnapshot userSnapshot: usersSnapshot.getChildren()) {
+                    Object name = userSnapshot.child(NAME).getValue();
+                    if (name == null) {
+                        // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
+                        goToRegistration();
+                    } else {
+                        String city = String.valueOf(userSnapshot.child(CITY).getValue());
 
-                    User user = new User();
-                    user.setPhone(myPhoneNumber);
-                    user.setName(String.valueOf(name));
-                    user.setCity(city);
+                        User user = new User();
+                        user.setPhone(myPhoneNumber);
+                        user.setName(String.valueOf(name));
+                        user.setCity(city);
 
-                    // Очищаем LocalStorage
-                    clearSQLite();
+                        // Очищаем LocalStorage
+                        clearSQLite();
 
-                    // Добавляем все данные о пользователе в SQLite
-                    addUserInfoInLocalStorage(user);
+                        // Добавляем все данные о пользователе в SQLite
+                        addUserInfoInLocalStorage(user);
 
-                    // Добавляем подписки пользователя
-                    loadUserSubscriptions();
+                        // Добавляем подписки пользователя
+                        loadUserSubscriptions();
 
-                    //добавляем фото
-                    loadPhotosByPhoneNumber(myPhoneNumber);
+                        //добавляем фото
+                        loadPhotosByPhoneNumber(myPhoneNumber);
 
-                    // Загружаем сервисы пользователя из FireBase
-                    loadServiceByUserPhone();
-
+                        // Загружаем сервисы пользователя из FireBase
+                        loadServiceByUserPhone();
+                    }
                 }
             }
 
@@ -432,7 +433,7 @@ public class MyAuthorization {
     private void goToRegistration() {
         Intent intent = new Intent(context, Registration.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(PHONE_NUMBER, myPhoneNumber);
+        intent.putExtra(PHONE, myPhoneNumber);
         context.startActivity(intent);
     }
 

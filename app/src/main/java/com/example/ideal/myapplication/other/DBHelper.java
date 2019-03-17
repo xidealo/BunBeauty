@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final  int DATABASE_VERSION = 80;
+    public static final  int DATABASE_VERSION = 81;
     public static final String DATABASE_NAME = "MyFirstDB";
 
     //tables name
@@ -80,11 +80,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String users = "create table "+ TABLE_CONTACTS_USERS
                 + "("
-                + KEY_USER_ID + " text primary key,"
+                + KEY_ID + " text primary key,"
+                + KEY_USER_ID + " text,"
                 + KEY_NAME_USERS + " text,"
                 + KEY_PASS_USERS + " text,"
-                + KEY_CITY_USERS + " text,"
-                + KEY_BIRTHDAY_USERS + " text"
+                + KEY_CITY_USERS + " text"
                 + ")";
 
         String services = "create table "+ TABLE_CONTACTS_SERVICES

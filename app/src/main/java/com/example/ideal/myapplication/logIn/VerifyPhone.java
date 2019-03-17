@@ -121,8 +121,6 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
                 if (code.trim().length() >= 6) {
                     // подтверждаем код и если все хорошо, создаем юзера
                     verifyCode(code);
-                } else {
-
                 }
                 break;
 
