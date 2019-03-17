@@ -47,6 +47,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String COST = "cost";
     private static final String DESCRIPTION = "description";
     private static final String USER_ID = "user id";
+    private static final String IS_PREMIUM = "is premium";
 
     private static final int PICK_IMAGE_REQUEST = 71;
     private static final String SERVICE_PHOTO = "service photo";
@@ -112,6 +113,8 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                         break;
                     }
 
+                    service.setIsPremium(false);
+
                     uploadService(service);
                 }
                 else {
@@ -137,6 +140,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         items.put(COST,service.getCost());
         items.put(DESCRIPTION,service.getDescription());
         items.put(USER_ID,userId);
+        items.put(IS_PREMIUM,service.getIsPremium());
         String serviceId =  myRef.push().getKey();
         myRef = database.getReference(SERVICES).child(serviceId);
         myRef.updateChildren(items);

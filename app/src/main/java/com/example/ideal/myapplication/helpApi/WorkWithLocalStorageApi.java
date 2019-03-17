@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.ideal.myapplication.other.DBHelper;
@@ -171,6 +172,7 @@ public class WorkWithLocalStorageApi {
     public boolean isMutualReview(String workingTimeId) {
         // все о сервисе, оценка, количество оценок
         //проверка на удаленный номер
+        Log.d(TAG, "isMutualReview: " + workingTimeId);
         String sqlQuery =
                 "SELECT "
                         + DBHelper.KEY_NAME_SERVICES
@@ -194,6 +196,7 @@ public class WorkWithLocalStorageApi {
         Cursor cursorServiceReview = localDatabase.rawQuery(sqlQuery, new String[]{workingTimeId, REVIEW_FOR_SERVICE});
 
         if (cursorServiceReview.moveToFirst()) {
+            Log.d(TAG, "FIRST");
             sqlQuery =
                     "SELECT "
                             + DBHelper.KEY_RATING_REVIEWS
@@ -217,6 +220,7 @@ public class WorkWithLocalStorageApi {
             Cursor cursorUserReview = localDatabase.rawQuery(sqlQuery, new String[]{workingTimeId, REVIEW_FOR_USER});
 
             if (cursorUserReview.moveToFirst()) {
+                Log.d(TAG, "SECOND");
                 cursorUserReview.close();
                 return true;
             }

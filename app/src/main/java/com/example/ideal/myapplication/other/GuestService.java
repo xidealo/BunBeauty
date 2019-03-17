@@ -75,26 +75,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         init();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.editScheduleGuestServiceBtn:
-                if (status.equals(WORKER)) {
-                    // если мой сервис, я - воркер
-                    // сразу идём редактировать расписание
-                    goToMyCalendar(WORKER);
-                } else {
-                    // если не мой сервис, я - юзер
-                    // проверяем какие дни мне доступны
-                    checkScheduleAndGoToProfile();
-                }
-                break;
-
-            default:
-                break;
-        }
-    }
-
     private void init(){
         nameText = findViewById(R.id.nameGuestServiceText);
         costText = findViewById(R.id.costGuestServiceText);
@@ -104,6 +84,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         progressBar = findViewById(R.id.progressBarGuestService);
 
         Button editScheduleBtn = findViewById(R.id.editScheduleGuestServiceBtn);
+        Button premiumBtn = findViewById(R.id.premiumGuestServiceBtn);
         manager = getSupportFragmentManager();
 
         ratingLayout = findViewById(R.id.resultGuestServiceLayout);
@@ -134,11 +115,35 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         if (isMyService) {
             status = WORKER;
             editScheduleBtn.setText("Редактировать расписание");
+            premiumBtn.setVisibility(View.VISIBLE);
+            premiumBtn.setOnClickListener(this);
         } else {
             status = USER;
             editScheduleBtn.setText("Расписание");
         }
         editScheduleBtn.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.editScheduleGuestServiceBtn:
+                if (status.equals(WORKER)) {
+                    // если мой сервис, я - воркер
+                    // сразу идём редактировать расписание
+                    goToMyCalendar(WORKER);
+                } else {
+                    // если не мой сервис, я - юзер
+                    // проверяем какие дни мне доступны
+                    checkScheduleAndGoToProfile();
+                }
+                break;
+            case R.id.premiumGuestServiceBtn:
+                goToPremium();
+                break;
+            default:
+                break;
+        }
     }
 
     private void getDataAboutService(String serviceId) {
@@ -381,14 +386,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
-    private void goToMyCalendar(String status) {
-        Intent intent = new Intent(this, MyCalendar.class);
-        intent.putExtra(SERVICE_ID, serviceId);
-        intent.putExtra(STATUS_USER_BY_SERVICE, status);
-
-        startActivity(intent);
-    }
-
     private void addToScreenOnGuestService(float avgRating, long countOfRates) {
 
         ratingLayout.removeAllViews();
@@ -404,6 +401,19 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private void setWithoutRating(){
         progressBar.setVisibility(View.GONE);
         withoutRatingText.setVisibility(View.VISIBLE);
+    }
+    private void goToMyCalendar(String status) {
+        Intent intent = new Intent(this, MyCalendar.class);
+        intent.putExtra(SERVICE_ID, serviceId);
+        intent.putExtra(STATUS_USER_BY_SERVICE, status);
+
+        startActivity(intent);
+    }
+
+    private void goToPremium() {
+        Intent intent = new Intent(this,Premium.class);
+        intent.putExtra(SERVICE_ID, serviceId);
+        startActivity(intent);
     }
 
     private void attentionBadConnection() {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.fragments.objects.Photo;
@@ -32,6 +33,8 @@ public class MyAuthorization {
     private static final String USER_ID = "user id";
     private static final String DESCRIPTION = "description";
     private static final String COST = "cost";
+    private static final String WITHOUT_SERVICE = "without service";
+    private static final String WITH_SERVICE = "with service";
 
     private static final String WORKING_TIME = "working time";
     private static final String WORKING_DAY_ID = "working day id";
@@ -89,8 +92,12 @@ public class MyAuthorization {
                     // Добавляем подписки пользователя
                     loadUserSubscriptions();
 
+                    //добавляем фото
+                    loadPhotosByPhoneNumber(myPhoneNumber);
+
                     // Загружаем сервисы пользователя из FireBase
                     loadServiceByUserPhone();
+
                 }
             }
 
@@ -145,9 +152,7 @@ public class MyAuthorization {
                     user.setName(String.valueOf(name));
                     user.setCity(city);
 
-                    SQLiteDatabase localDatabase = dbHelper.getReadableDatabase();
-                    DownloadServiceData downloadServiceData = new DownloadServiceData(localDatabase);
-                    downloadServiceData.loadPhotosByPhoneNumber(userId);
+                    loadPhotosByPhoneNumber(userId);
 
                     // Добавляем все данные о пользователе в SQLite
                     addUserInfoInLocalStorage(user);
@@ -176,6 +181,7 @@ public class MyAuthorization {
         Query query = FirebaseDatabase.getInstance().getReference(SERVICES).
                 orderByChild(USER_ID).
                 equalTo(myPhoneNumber);
+
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -185,6 +191,7 @@ public class MyAuthorization {
                     loadTimeByUserPhone();
                     return;
                 }
+
                 long serviceCounter = 0;
 
                 for (DataSnapshot service : dataSnapshot.getChildren()) {
@@ -208,7 +215,7 @@ public class MyAuthorization {
     }
 
     private static final String TAG = "DBInf";
-
+    //загружаю место куда я записан
     private void loadTimeByUserPhone() {
         Query timeQuery = FirebaseDatabase.getInstance().getReference(WORKING_TIME)
                 .orderByChild(USER_ID)
@@ -217,9 +224,8 @@ public class MyAuthorization {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 final long ordersCount = dataSnapshot.getChildrenCount();
-
                 if(ordersCount==0){
-                    loadPhotosByPhoneNumber(myPhoneNumber);
+                    goToProfile();
                     return;
                 }
 
@@ -285,6 +291,7 @@ public class MyAuthorization {
                 if((orderCounter == ordersCount)) {
                     // Выполняем вход
                     goToProfile();
+                    Log.d(TAG, "loadServiceById: ");
                 }
             }
 
@@ -314,12 +321,9 @@ public class MyAuthorization {
 
                     addPhotoInLocalStorage(photo);
                 }
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
@@ -348,7 +352,6 @@ public class MyAuthorization {
             contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
             database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
-        goToProfile();
     }
 
     // Обновляет информацию о текущем пользователе в SQLite
@@ -433,7 +436,8 @@ public class MyAuthorization {
         context.startActivity(intent);
     }
 
-    private void goToProfile(){
+    private void goToProfile() {
+
         Intent intent = new Intent(context, Profile.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);

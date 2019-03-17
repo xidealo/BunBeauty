@@ -97,7 +97,6 @@ public class DownloadServiceData {
 
         service = new Service();
 
-
         //загружаем все сервисы в локалку
         DatabaseReference myRef = database
                 .getReference(SERVICES)
@@ -116,7 +115,7 @@ public class DownloadServiceData {
                 service.setUserId(userId);
                 service.setCost(serviceCost);
                 service.setDescription(serviceDescription);
-
+                Log.d(TAG, "LOAD SCHEDULE: ");
                 updateServicesInLocalStorage(service);
 
                 ownerId = userId;
@@ -392,7 +391,6 @@ public class DownloadServiceData {
                 localUser.setCity(String.valueOf(user.child(CITY).getValue()));
                 addUserInLocalStorage(localUser);
                 if(!addToScreen) {
-                    Log.d(TAG, "FOUR");
                     addToScreen(1);
                     addToScreen = true;
                 }
@@ -493,7 +491,6 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_USER_ID, localUser.getPhone());
             localDatabase.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
-
     }
 
     private void addDialogInLocalStorage(String dialogId, String firstPhone, String secondPhone) {
@@ -577,7 +574,6 @@ public class DownloadServiceData {
         final Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
                 .orderByChild(OWNER_ID)
                 .equalTo(myPhoneNumber);
-
         photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
