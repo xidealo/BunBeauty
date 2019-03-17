@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Comment;
@@ -170,7 +171,7 @@ public class Comments extends AppCompatActivity {
                         chatCursor.getColumnIndex(DBHelper.KEY_SECOND_USER_ID_DIALOGS));
 
                 Cursor userCursor;
-                if (firstPhone != ownerId) {
+                if (!firstPhone.equals(ownerId)) {
                     orderId = firstPhone;
                     userCursor = database.rawQuery(userSqlQuery, new String[]{firstPhone});
                 } else {
@@ -181,14 +182,18 @@ public class Comments extends AppCompatActivity {
                 if (userCursor.moveToFirst()) {
                     name = userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
                 }
+                userCursor.close();
             }
+            chatCursor.close();
         } else {
             Cursor userCursor = database.rawQuery(userSqlQuery, new String[]{orderId});
 
             if (userCursor.moveToFirst()) {
                 name = userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
             }
+            userCursor.close();
         }
+
         Comment comment = new Comment();
         comment.setUserId(orderId);
         comment.setUserName(name);
@@ -201,7 +206,7 @@ public class Comments extends AppCompatActivity {
     private void loadCommentsForUser(String _userId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-
+        Log.d(TAG, "loadCommentsForUser: ");
         String sqlQuery = "SELECT "
                 + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_USER_ID + ", "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
@@ -237,15 +242,19 @@ public class Comments extends AppCompatActivity {
         final Cursor cursor = database.rawQuery(sqlQuery, new String[]{_userId, REVIEW_FOR_USER});
 
         if(cursor.moveToFirst()) {
+            Log.d(TAG, "IN CURSOR");
             int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
-
             do {
+                Log.d(TAG, "loadCommentsForUser: " + cursor.getString(indexWorkingTimeId));
                 if (workWithLocalStorageApi.isMutualReview(cursor.getString(indexWorkingTimeId))) {
                  createUserComment(cursor);
+                    Log.d(TAG, "loadCommentsForUser: ");
                 }
                 else {
+                    Log.d(TAG, "loadCommentsForUser: ");
                     if(workWithLocalStorageApi.isAfterWeek(cursor.getString(indexWorkingTimeId))){
                         createUserComment(cursor);
+                        Log.d(TAG, "loadCommentsForUser: ");
                     }
                 }
             }
@@ -255,6 +264,7 @@ public class Comments extends AppCompatActivity {
     }
 
     private void createUserComment(Cursor cursor){
+        Log.d(TAG, "createUserComment: ");
         int userIdIndex = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
         int nameIndex = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
         int reviewIndex = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);

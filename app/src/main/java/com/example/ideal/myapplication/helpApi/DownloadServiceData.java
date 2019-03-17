@@ -115,7 +115,7 @@ public class DownloadServiceData {
                 service.setUserId(userId);
                 service.setCost(serviceCost);
                 service.setDescription(serviceDescription);
-
+                Log.d(TAG, "LOAD SCHEDULE: ");
                 updateServicesInLocalStorage(service);
 
                 ownerId = userId;
@@ -491,7 +491,6 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_USER_ID, localUser.getPhone());
             localDatabase.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
-
     }
 
     private void addDialogInLocalStorage(String dialogId, String firstPhone, String secondPhone) {
