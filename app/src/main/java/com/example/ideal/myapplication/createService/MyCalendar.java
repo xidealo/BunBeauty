@@ -29,31 +29,33 @@ import java.util.Map;
 
 public class MyCalendar extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "DBInf";
-    private static final String REF = "working days";
+    private static final String WORKING_DAYS = "working days";
 
     private static final String SERVICE_ID = "service id";
     private static final String WORKING_DAYS_ID = "working day id";
     private static final String STATUS_USER_BY_SERVICE = "status User";
-    private static final String DATE = "data";
+    private static final String DATE = "date";
     private static final String USER = "user";
     private static final String WORKER = "worker";
+
+    private static final String USERS = "users";
+    private static final String SERVICES = "services";
 
     private static final int WEEKS_COUNT = 4;
     private static final int DAYS_COUNT = 7;
 
 
-    String statusUser;
-    String date;
-    String serviceId;
+    private String statusUser;
+    private String date;
+    private String serviceId;
 
-    Button[][] dayBtns;
-    Button nextBtn;
-    WorkWithTimeApi workWithTimeApi;
+    private Button[][] dayBtns;
+    private Button nextBtn;
+    private WorkWithTimeApi workWithTimeApi;
 
-    RelativeLayout mainLayout;
+    private RelativeLayout mainLayout;
 
-    DBHelper dbHelper;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,7 +231,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     //Возвращает дату записи
     private String getOrderDate() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        String userId = getUserId();
+        String userId = getUserPhone();
         // Получает дату записи
         // Таблицы: рабочии дни, рабочие время
         // Условия: связываем таблицы по id рабочего дня; уточняем id сервиса и id пользователя
@@ -410,15 +412,18 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
             goToMyTime(id,statusUser);
         } else {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference(REF);
+            DatabaseReference dateRef = database.getReference(USERS)
+                    .child(getUserId())
+                    .child(SERVICES)
+                    .child(serviceId)
+                    .child(WORKING_DAYS);
 
             Map<String,Object> items = new HashMap<>();
             items.put(DATE,date);
-            items.put(SERVICE_ID, serviceId);
 
-            Object dayId =  myRef.push().getKey();
-            myRef = database.getReference(REF).child(String.valueOf(dayId));
-            myRef.updateChildren(items);
+            String dayId =  dateRef.push().getKey();
+            dateRef = dateRef.child(dayId);
+            dateRef.updateChildren(items);
 
             putDataInLocalStorage(serviceId, String.valueOf(dayId));
 
@@ -465,6 +470,10 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     }
 
     private  String getUserId(){
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    private  String getUserPhone(){
         return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
@@ -486,6 +495,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         Intent intent = new Intent(this, MyTime.class);
         intent.putExtra(WORKING_DAYS_ID, dayId);
         intent.putExtra(STATUS_USER_BY_SERVICE, statusUser);
+        intent.putExtra(SERVICE_ID, serviceId);
 
         startActivity(intent);
     }

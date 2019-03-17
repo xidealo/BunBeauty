@@ -24,10 +24,12 @@ public class SubscriptionsApi {
 
     private static final String TAG = "DBInf";
 
-    private static final String USER_ID = "user id";
     private static final String WORKER_ID = "worker id";
+    private static final String USERS = "users";
+    private static final String PHONE = "phone";
 
     private static final String SUBSCRIBERS = "subscribers";
+    private static final String SUBSCRIPTIONS = "subscriptions";
 
     private String userId;
     private String workerId;
@@ -42,23 +44,22 @@ public class SubscriptionsApi {
 
     public void subscribe() {
         FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = fdatabase.getReference(SUBSCRIBERS);
+        DatabaseReference myRef = fdatabase.getReference(USERS)
+                .child(SUBSCRIPTIONS);
 
         Map<String,Object> items = new HashMap<>();
-        items.put(USER_ID, userId);
-        items.put(WORKER_ID, workerId);
+        items.put(PHONE, workerId);
 
         String subscriberId =  myRef.push().getKey();
         if (subscriberId != null) {
             myRef = myRef.child(subscriberId);
             myRef.updateChildren(items);
         }
-
         addSubscriberInLocalStorage(subscriberId);
     }
 
     public void unsubscribe() {
-        FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
+        /*FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = fdatabase.getReference(SUBSCRIBERS);
         Query query = fdatabase.getReference(SUBSCRIBERS).orderByChild(USER_ID).equalTo(userId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -83,7 +84,7 @@ public class SubscriptionsApi {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
-        });
+        });*/
     }
 
     private void deleteSubscriberInLocalStorage() {

@@ -14,6 +14,7 @@ import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithViewApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.Profile;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -92,10 +93,12 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         items.put(NAME, user.getName());
         items.put(CITY, user.getCity());
         items.put(PHONE, user.getPhone());
-        String userId =  myRef.push().getKey();
 
-        myRef = database.getReference(USERS).child(userId);
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        user.setId(userId);
+        myRef = myRef.child(userId);
         myRef.updateChildren(items);
+
         //заносим данные о пользователе в локальную базу данных
         putDataInLocalStorage(user);
     }
@@ -107,7 +110,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         database.delete(DBHelper.TABLE_CONTACTS_USERS, null, null);
 
         ContentValues contentValues = new ContentValues();
-
+        contentValues.put(DBHelper.KEY_ID, user.getId());
         contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
         contentValues.put(DBHelper.KEY_USER_ID, user.getPhone());

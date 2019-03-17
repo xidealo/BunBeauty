@@ -29,12 +29,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public  static final  String KEY_NAME_USERS = "user_name";
     public  static final  String KEY_CITY_USERS = "city";
     public  static final  String KEY_PASS_USERS = "pass";
-    public  static final  String KEY_BIRTHDAY_USERS = "birthday";
 
     //services
     public  static final  String KEY_NAME_SERVICES = "service_name";
     public  static final  String KEY_DESCRIPTION_SERVICES = "description";
     public  static final  String KEY_MIN_COST_SERVICES = "minCost";
+    public  static final  String KEY_IS_PREMIUM_SERVICES = "is_premium";
+    public  static final  String KEY_CREATION_DATE_SERVICES = "creation_date";
 
     //working days
     public  static final  String KEY_DATE_WORKING_DAYS = "date";
@@ -92,7 +93,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_NAME_SERVICES + " text,"
                 + KEY_DESCRIPTION_SERVICES+ " text,"
                 + KEY_MIN_COST_SERVICES + " text,"
-                + KEY_USER_ID + " text"
+                + KEY_IS_PREMIUM_SERVICES + " text,"
+                + KEY_CREATION_DATE_SERVICES+ " text"
                 + ")";
 
         String workingDays = "create table "+ TABLE_WORKING_DAYS
@@ -106,7 +108,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "("
                 + KEY_ID + " text primary key,"
                 + KEY_TIME_WORKING_TIME + " text,"
-                + KEY_USER_ID + " text,"
                 + KEY_WORKING_DAYS_ID_WORKING_TIME + " integer"
                 + ")";
 

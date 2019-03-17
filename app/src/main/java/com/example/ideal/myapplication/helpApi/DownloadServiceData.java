@@ -17,6 +17,7 @@ import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,7 +39,7 @@ public class DownloadServiceData {
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
     private static final String WORKING_DAY_ID = "working day id";
-    private static final String DATA = "data";
+    private static final String DATE = "date";
 
     private static final String REVIEWS = "reviews";
     private static final String REVIEW = "review";
@@ -75,7 +76,6 @@ public class DownloadServiceData {
     private long countOfRates;
     private long counter;
     private boolean addToScreen;
-    private String serviceId;
     private Service service;
     private FragmentManager manager;
 
@@ -83,100 +83,101 @@ public class DownloadServiceData {
         localDatabase = _database;
     }
 
-    public void loadSchedule(final String _serviceId,
-                             String _status, FragmentManager _manager) {
+    public void loadSchedule(final String userId, String _status, FragmentManager _manager) {
 
-        serviceId = _serviceId;
         status = _status;
-
         manager = _manager;
-
         workWithLocalStorageApi = new WorkWithLocalStorageApi(localDatabase);
-
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         service = new Service();
 
         //загружаем все сервисы в локалку
-        DatabaseReference myRef = database
-                .getReference(SERVICES)
-                .child(serviceId);
+        DatabaseReference myRef = database.getReference(USERS)
+                .child(userId)
+                .child(SERVICES);
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot servicesSnapshot) {
-                String serviceName = String.valueOf(servicesSnapshot.child(NAME).getValue());
-                String serviceCost = String.valueOf(servicesSnapshot.child(COST).getValue());
-                String serviceDescription = String.valueOf(servicesSnapshot.child(DESCRIPTION).getValue());
-                String userId = String.valueOf(servicesSnapshot.child(USER_ID).getValue());
+                for (DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
 
-                service.setId(serviceId);
-                service.setName(serviceName);
-                service.setUserId(userId);
-                service.setCost(serviceCost);
-                service.setDescription(serviceDescription);
-                Log.d(TAG, "LOAD SCHEDULE: ");
-                updateServicesInLocalStorage(service);
+                    String serviceId = serviceSnapshot.getKey();
+                    String serviceName = String.valueOf(serviceSnapshot.child(NAME).getValue());
+                    String serviceCost = String.valueOf(serviceSnapshot.child(COST).getValue());
+                    String serviceDescription = String.valueOf(serviceSnapshot.child(DESCRIPTION).getValue());
 
-                ownerId = userId;
-                //загрузка фотографий для сервисов
-                loadPhotosByServiceId(serviceId);
-                loadPhotosByPhoneNumber(ownerId);
+                    service.setId(serviceId);
+                    service.setName(serviceName);
+                    service.setUserId(userId);
+                    service.setCost(serviceCost);
+                    service.setDescription(serviceDescription);
+                    updateServicesInLocalStorage(service);
 
-                //возвращает все дни определенного сервиса
-                final Query query = database.getReference(WORKING_DAYS).
-                        orderByChild(SERVICE_ID).
-                        equalTo(serviceId);
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull final DataSnapshot workingDaysSnapshot) {
-                        final long countOfDays = workingDaysSnapshot.getChildrenCount();
-                        currentCountOfDays = 0;
-                        //если нет дней, убираем прогерсс бар и устанавливаем надпись, что нет оценок
-                        if (countOfDays == 0) {
-                            addToScreen(0);
+                    ownerId = userId;
+                    //загрузка фотографий для сервисов
+
+                    //loadPhotosByServiceId(serviceId);
+
+                    loadPhotosByPhoneNumber(ownerId);
+                    addScheduleInLocalStorage(serviceSnapshot.child(WORKING_DAYS));
+
+                    //возвращает все дни определенного сервиса
+                    final Query query = database.getReference(WORKING_DAYS).
+                            orderByChild(SERVICE_ID).
+                            equalTo(serviceId);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull final DataSnapshot workingDaysSnapshot) {
+                            final long countOfDays = workingDaysSnapshot.getChildrenCount();
+                            currentCountOfDays = 0;
+                            //если нет дней, убираем прогерсс бар и устанавливаем надпись, что нет оценок
+                            if (countOfDays == 0) {
+                                addToScreen(0);
+                            }
+                            //крутит цикл
+                            for (DataSnapshot workingDay : workingDaysSnapshot.getChildren()) {
+                                final String dayId = String.valueOf(workingDay.getKey());
+                                String dayDate = String.valueOf(workingDay.child(DATE).getValue());
+
+                                final Query queryTime = database.getReference(WORKING_TIME).
+                                        orderByChild(WORKING_DAY_ID).
+                                        equalTo(dayId);
+                                //этот в цикле 2
+                                queryTime.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot workingTimesSnapshot) {
+                                        //если нет времени
+                                        if (workingTimesSnapshot.getChildrenCount() == 0) {
+                                            addToScreen(0);
+                                        }
+
+                                        for (DataSnapshot workingTimeSnapshot : workingTimesSnapshot.getChildren()) {
+                                            String timeId = String.valueOf(workingTimeSnapshot.getKey());
+                                            String time = String.valueOf(workingTimeSnapshot.child(TIME).getValue());
+                                            String timeUserId = String.valueOf(workingTimeSnapshot.child(USER_ID).getValue());
+                                            String timeWorkingDayId = String.valueOf(workingTimeSnapshot.child(WORKING_DAY_ID).getValue());
+                                        }
+                                        currentCountOfDays++;
+                                        if (currentCountOfDays == countOfDays) {
+                                            loadRating();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    }
+                                });
+                            }
                         }
-                        //крутит цикл
-                        for (DataSnapshot workingDay : workingDaysSnapshot.getChildren()) {
-                            final String dayId = String.valueOf(workingDay.getKey());
-                            String dayDate = String.valueOf(workingDay.child(DATA).getValue());
-                            addScheduleInLocalStorage(dayId, dayDate, serviceId);
 
-                            final Query queryTime = database.getReference(WORKING_TIME).
-                                    orderByChild(WORKING_DAY_ID).
-                                    equalTo(dayId);
-                            //этот в цикле 2
-                            queryTime.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot workingTimesSnapshot) {
-                                    //если нет времени
-                                    if (workingTimesSnapshot.getChildrenCount() == 0) {
-                                        addToScreen(0);
-                                    }
-
-                                    for (DataSnapshot workingTimeSnapshot : workingTimesSnapshot.getChildren()) {
-                                        String timeId = String.valueOf(workingTimeSnapshot.getKey());
-                                        String time = String.valueOf(workingTimeSnapshot.child(TIME).getValue());
-                                        String timeUserId = String.valueOf(workingTimeSnapshot.child(USER_ID).getValue());
-                                        String timeWorkingDayId = String.valueOf(workingTimeSnapshot.child(WORKING_DAY_ID).getValue());
-                                        addTimeInLocalStorage(timeId, time, timeUserId, timeWorkingDayId);
-                                    }
-                                    currentCountOfDays++;
-                                    if (currentCountOfDays == countOfDays) {
-                                        loadRating();
-                                    }
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) { }
-                            });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
                         }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) { }
-                });
+                    });
 
+                }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -285,27 +286,31 @@ public class DownloadServiceData {
 
     }
 
-    private void addScheduleInLocalStorage(String dayId, String dayDate, String serviceId) {
+    private void addScheduleInLocalStorage(DataSnapshot workingDaysSnapshot) {
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, dayDate);
-        contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
+        for(DataSnapshot workingDaySnapshot: workingDaysSnapshot.getChildren()) {
 
-        boolean isUpdate = workWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_WORKING_DAYS, dayId);
+            ContentValues contentValues = new ContentValues();
+            String dayId = workingDaySnapshot.getKey();
+            contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, String.valueOf(workingDaySnapshot.child(DATE)));
 
-        if (isUpdate) {
-            localDatabase.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{dayId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, dayId);
-            localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
+            boolean isUpdate = workWithLocalStorageApi
+                    .hasSomeData(DBHelper.TABLE_WORKING_DAYS, dayId);
+
+            if (isUpdate) {
+                localDatabase.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
+                        DBHelper.KEY_ID + " = ?",
+                        new String[]{dayId});
+            } else {
+                contentValues.put(DBHelper.KEY_ID, dayId);
+                localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
+            }
+
+            addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME));
         }
     }
 
-    private void addTimeInLocalStorage(String timeId, String timeDate,
-                                       String timeUserId, String timeWorkingDayId) {
+    private void addTimeInLocalStorage(DataSnapshot timesSnapshot) {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, timeDate);
@@ -324,7 +329,6 @@ public class DownloadServiceData {
             localDatabase.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
         }
     }
-
     private void addReviewForServiceInLocalStorage(RatingReview ratingReview) {
 
         ContentValues contentValues = new ContentValues();
@@ -543,7 +547,7 @@ public class DownloadServiceData {
             localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
     }
-    private void loadPhotosByServiceId(String serviceId) {
+    private void loadPhotosByServiceId(DatabaseReference serviceRef) {
 
         Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
                 .orderByChild(OWNER_ID)
@@ -569,31 +573,25 @@ public class DownloadServiceData {
         });
     }
 
-    public void loadPhotosByPhoneNumber(String myPhoneNumber) {
+    private void loadPhotosByPhoneNumber(final String ownerId) {
 
-        final Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
-                .orderByChild(OWNER_ID)
-                .equalTo(myPhoneNumber);
-        photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        final DatabaseReference photosRef = FirebaseDatabase.getInstance().getReference(USERS)
+                .child(ownerId)
+                .child(PHOTO_LINK);
+
+        photosRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
-                for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Photo photo = new Photo();
 
-                    Photo photo = new Photo();
-
-                    photo.setPhotoId(fPhoto.getKey());
-                    photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
-                    photo.setPhotoOwnerId(String.valueOf(fPhoto.child(OWNER_ID).getValue()));
-
-                    addPhotoInLocalStorage(photo);
-                }
-
+                photo.setPhotoId(ownerId);
+                photo.setPhotoLink(String.valueOf(dataSnapshot.getValue()));
+                addPhotoInLocalStorage(photo);
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+
     }
 
     private void addPhotoInLocalStorage(Photo photo) {

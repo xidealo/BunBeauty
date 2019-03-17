@@ -22,6 +22,7 @@ import com.example.ideal.myapplication.fragments.ServicePhotoElement;
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,13 +42,14 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
     private static final String SERVICE_ID = "service id";
     private static final String STATUS_USER_BY_SERVICE = "status User";
+    private static final String USERS = "users";
 
     private static final String SERVICES = "services";
     private static final String NAME = "name";
     private static final String COST = "cost";
     private static final String DESCRIPTION = "description";
-    private static final String USER_ID = "user id";
     private static final String IS_PREMIUM = "is premium";
+    private static final String CREATION_DATE = "creation date";
 
     private static final int PICK_IMAGE_REQUEST = 71;
     private static final String SERVICE_PHOTO = "service photo";
@@ -130,20 +132,22 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     }
 
     private void uploadService(Service service) {
+        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
+
+        String userId = getUserId();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(SERVICES);
-        String userId = getUserId();
+        DatabaseReference serviceRef = database.getReference(USERS).child(userId).child(SERVICES);
 
         Map<String,Object> items = new HashMap<>();
         items.put(NAME,service.getName().toLowerCase());
         items.put(COST,service.getCost());
         items.put(DESCRIPTION,service.getDescription());
-        items.put(USER_ID,userId);
         items.put(IS_PREMIUM,service.getIsPremium());
-        String serviceId =  myRef.push().getKey();
-        myRef = database.getReference(SERVICES).child(serviceId);
-        myRef.updateChildren(items);
+        items.put(CREATION_DATE,workWithTimeApi.getCurDateInFormatYMDHMS());
+        String serviceId =  serviceRef.push().getKey();
+        serviceRef = serviceRef.child(serviceId);
+        serviceRef.updateChildren(items);
 
         service.setId(serviceId);
         addServiceInLocalStorage(service);
@@ -288,7 +292,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     }
 
     private String getUserId(){
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     private void goToMyCalendar(String status, String serviceId) {

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -109,7 +110,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         avatarImage = findViewById(R.id.avatarProfileImage);
 
         SwitchCompat servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
-
 
         servicesScroll = findViewById(R.id.servicesProfileScroll);
         ordersScroll = findViewById(R.id.orderProfileScroll);
@@ -217,7 +217,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private void updateProfileData(String userId){
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-
         //получаем имя, фамилию и город пользователя по его id
         String sqlQuery =
                 "SELECT "
@@ -226,7 +225,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_USERS
                         + " WHERE "
-                        + DBHelper.KEY_USER_ID + " = ?";
+                        + DBHelper.KEY_ID + " = ?";
         Cursor cursor = database.rawQuery(sqlQuery,new String[] {userId});
 
         if(cursor.moveToFirst()){
@@ -283,7 +282,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 + " FROM "
                 + DBHelper.TABLE_WORKING_TIME
                 + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ?";
+                + DBHelper.KEY_ID + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{ownerId});
 
@@ -366,10 +365,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         if (isUpdate) {
             database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
-                    DBHelper.KEY_USER_ID + " = ?",
+                    DBHelper.KEY_ID + " = ?",
                     new String[]{userId});
         } else {
-            contentValues.put(DBHelper.KEY_USER_ID, userId);
+            contentValues.put(DBHelper.KEY_ID, userId);
             database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
     }
@@ -378,7 +377,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_USER_ID, userId);
+        contentValues.put(DBHelper.KEY_ID, userId);
         contentValues.put(DBHelper.KEY_NAME_SERVICES, name);
 
         boolean isUpdate = workWithLocalStorageApi
@@ -422,7 +421,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, time);
-        contentValues.put(DBHelper.KEY_USER_ID, userId);
+        contentValues.put(DBHelper.KEY_ID, userId);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
 
         boolean isUpdate = workWithLocalStorageApi
@@ -447,7 +446,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 + " FROM "
                 + DBHelper.TABLE_WORKING_TIME
                 + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ?";
+                + DBHelper.KEY_ID + " = ?";
 
         final Cursor cursor = database.rawQuery(sqlQuery, new String[]{ownerId});
 
@@ -545,7 +544,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
 
         loadTimeForReviews();
         updateProfileData(ownerId);
@@ -581,9 +579,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + DBHelper.KEY_NAME_USERS
                         + " FROM " + DBHelper.TABLE_CONTACTS_USERS + ", "
                         + DBHelper.TABLE_SUBSCRIBERS
-                        + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_USER_ID
+                        + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
                         + " = " + DBHelper.KEY_WORKER_ID
-                        + " AND " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_USER_ID + " = ?";
+                        + " AND " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_ID + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
 
@@ -606,7 +604,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_SERVICES
                         + " WHERE "
-                        + DBHelper.KEY_USER_ID + " = ? ";
+                        + DBHelper.KEY_ID + " = ? ";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
         //Идём с конца
@@ -653,7 +651,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " AND "
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
                         + " AND "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_USER_ID + " = ?"
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = ?"
                         + " AND "
                         + " STRFTIME('%s', " + DBHelper.KEY_DATE_WORKING_DAYS
                         + ")>=STRFTIME('%s', DATE('now'))";
@@ -687,7 +685,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         cursor.close();
     }
     private String getUserId() {
-        return  FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        return  FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
   
     private boolean isAfterThreeDays(String workingTimeId) {
@@ -727,7 +725,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 "SELECT * FROM "
                 + DBHelper.TABLE_SUBSCRIBERS
                 + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ? AND "
+                + DBHelper.KEY_ID + " = ? AND "
                 + DBHelper.KEY_WORKER_ID + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId, ownerId});

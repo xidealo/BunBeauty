@@ -54,7 +54,7 @@ public class WorkWithLocalStorageApi {
                         + " FROM "
                         + DBHelper.TABLE_PHOTOS
                         + " WHERE "
-                        + DBHelper.KEY_OWNER_ID_PHOTOS + " = ?";
+                        + DBHelper.KEY_ID + " = ?";
 
         Cursor cursor = localDatabase.rawQuery(sqlQuery,new String[] {userId});
 

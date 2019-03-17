@@ -45,6 +45,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     private static final String WORKING_DAYS = "working days";
     private static final String SERVICES = "services";
 
+    private static final String USERS = "users";
     private static final String DIALOGS = "dialogs";
     private static final String MESSAGES = "messages";
     private static final String USER_ID = "user id";
@@ -96,7 +97,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         setContentView(R.layout.my_time);
 
         statusUser = getIntent().getStringExtra(STATUS_USER_BY_SERVICE);
-        userId = getUserId();
+        userId = getUserPhone();
 
         mainLayout = findViewById(R.id.mainMyTimeLayout);
 
@@ -447,6 +448,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     // Добавляем время из буфера workingTime в БД
     private void addTime(){
         workingDaysId = getIntent().getStringExtra(WORKING_DAYS_ID);
+        String serviceId = getIntent().getStringExtra(SERVICE_ID);
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -468,16 +470,21 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             if(!checkTimeForWorker(cursor, time)) {
 
                 FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = fdatabase.getReference(WORKING_TIME);
+                DatabaseReference timeRef = fdatabase.getReference(USERS)
+                        .child(getUserId())
+                        .child(SERVICES)
+                        .child(serviceId)
+                        .child(WORKING_DAYS)
+                        .child(workingDaysId)
+                        .child(WORKING_TIME);
 
                 Map<String,Object> items = new HashMap<>();
                 items.put(TIME,time);
-                items.put(USER_ID, "0");
                 items.put(WORKING_DAYS_ID, workingDaysId);
 
-                String timeId =  myRef.push().getKey();
-                myRef = fdatabase.getReference(WORKING_TIME).child(timeId);
-                myRef.updateChildren(items);
+                String timeId =  timeRef.push().getKey();
+                timeRef = timeRef.child(timeId);
+                timeRef.updateChildren(items);
 
                 putDataInLocalStorage(timeId, time,contentValues,database);
             }
@@ -492,7 +499,6 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
         contentValues.put(DBHelper.KEY_ID, timeId);
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, time);
-        contentValues.put(DBHelper.KEY_USER_ID,"0");
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDaysId);
 
         database.insert(DBHelper.TABLE_WORKING_TIME,null,contentValues);
@@ -503,7 +509,6 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         if(cursor.moveToFirst()) {
             int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
             int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
-            String userId = getUserId();
             do {
                 if(cursor.getString(indexUserId).equals(userId)) {
                     String orderTime = cursor.getString(indexTime);
@@ -704,7 +709,6 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             timeId = cursor.getString(indexTimeId);
 
             ContentValues contentValues = new ContentValues();
-            String userId = getUserId();
 
             contentValues.put(DBHelper.KEY_USER_ID, userId);
             database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
@@ -842,8 +846,12 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     }
 
     // Получает
-    private String getUserId(){
+    private String getUserPhone(){
         return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+    }
+
+    private  String getUserId(){
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     private String getThisDate() {
