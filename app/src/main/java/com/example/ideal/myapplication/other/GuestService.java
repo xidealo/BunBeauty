@@ -102,7 +102,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         //получаем рейтинг сервиса
         getServiceRating(serviceId);
 
-        
         userId = getUserId();
 
         // мой сервис или нет?

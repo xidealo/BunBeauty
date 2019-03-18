@@ -116,7 +116,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                     }
 
                     service.setIsPremium(false);
-
+                    service.setUserId(getUserId());
                     uploadService(service);
                 }
                 else {
@@ -134,10 +134,8 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private void uploadService(Service service) {
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
 
-        String userId = getUserId();
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference serviceRef = database.getReference(USERS).child(userId).child(SERVICES);
+        DatabaseReference serviceRef = database.getReference(USERS).child(service.getUserId()).child(SERVICES);
 
         Map<String,Object> items = new HashMap<>();
         items.put(NAME,service.getName().toLowerCase());
@@ -167,7 +165,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName().toLowerCase());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
-        //contentValues.put(DBHelper.KEY_USER_ID, userId);
+        contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
 
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES,null,contentValues);
         goToMyCalendar(getString(R.string.status_worker),service.getId());

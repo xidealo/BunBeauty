@@ -216,7 +216,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     // получаем данные о пользователе и отображаем в прфоиле
     private void updateProfileData(String userId){
-
+        Log.d(TAG, "updateProfileData: " + userId);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         //получаем имя, фамилию и город пользователя по его id
         String sqlQuery =

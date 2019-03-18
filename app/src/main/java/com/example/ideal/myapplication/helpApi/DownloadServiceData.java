@@ -104,7 +104,7 @@ public class DownloadServiceData {
             service.setUserId(userId);
             service.setCost(serviceCost);
             service.setDescription(serviceDescription);
-            updateServicesInLocalStorage(service);
+            addServicesInLocalStorage(service);
 
             ownerId = userId;
             //загрузка фотографий для сервисов
@@ -456,7 +456,7 @@ public class DownloadServiceData {
     }
 
 
-    private void updateServicesInLocalStorage(Service service) {
+    private void addServicesInLocalStorage(Service service) {
         ContentValues contentValues = new ContentValues();
         // Заполняем contentValues информацией о данном сервисе
 
