@@ -97,12 +97,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         //получаем данные о сервисе
-        getDataAboutService(serviceId);
+        getInfoAboutService(serviceId);
 
-        //ОН ВСЕГДА 0?
-        if(ownerId == null){
-            loadOwner(serviceId);
-        }
+        //получаем рейтинг сервиса
+        getServiceRating(serviceId);
+
         
         userId = getUserId();
 
@@ -147,79 +146,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void getDataAboutService(String serviceId) {
-
-            SQLiteDatabase database = dbHelper.getWritableDatabase();
-            // все о сервисе, оценка, количество оценок
-            //проверка на удаленный номер
-
-            String sqlQuery =
-                    "SELECT "
-                            + DBHelper.KEY_NAME_SERVICES + ", "
-                            + DBHelper.KEY_MIN_COST_SERVICES + ", "
-                            + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
-                            + DBHelper.KEY_DESCRIPTION_SERVICES + ", "
-                            + DBHelper.TABLE_CONTACTS_SERVICES + "." +DBHelper.KEY_USER_ID + ", "
-                            + DBHelper.KEY_RATING_REVIEWS
-                            + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                            + DBHelper.TABLE_WORKING_DAYS + ", "
-                            + DBHelper.TABLE_WORKING_TIME + ", "
-                            + DBHelper.TABLE_REVIEWS
-                            + " WHERE "
-                            + DBHelper.TABLE_CONTACTS_SERVICES + "."+DBHelper.KEY_ID + " = " +  DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                            + " AND "
-                            + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                            + " AND "
-                            + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
-                            + " AND "
-                            + DBHelper.TABLE_CONTACTS_SERVICES + "." +DBHelper.KEY_ID + " = ? "
-                            + " AND "
-                            + DBHelper.KEY_TYPE_REVIEWS + " = ? "
-                            + " AND "
-                            + DBHelper.KEY_RATING_REVIEWS + " != 0";
-
-            Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
-
-            float sumRates = 0;
-            long counter = 0;
-            // если сюда не заходит, значит ревью нет
-            if (cursor.moveToFirst()) {
-                int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
-                int indexMinCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
-                int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
-                int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
-                ownerId = cursor.getString(indexUserId);
-                serviceName = cursor.getString(indexName);
-
-                nameText.setText(serviceName);
-                costText.setText(cursor.getString(indexMinCost));
-                descriptionText.setText(cursor.getString(indexDescription));
-                do {
-                    //у каждого ревью беру timeId и смотрю по нему есть ли оценка 
-                    int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
-                    if(workWithLocalStorageApi.isMutualReview(cursor.getString(indexWorkingTimeId))) {
-                        int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-                        sumRates += Float.valueOf(cursor.getString(indexRating));
-                        counter++;
-                    }else {
-                        if(workWithLocalStorageApi.isAfterWeek(cursor.getString(indexWorkingTimeId))){
-                            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-                            sumRates += Float.valueOf(cursor.getString(indexRating));
-                            counter++;
-                        }
-                    }
-                } while (cursor.moveToNext());
-            } else {
-                setWithoutRating();
-            }
-            if (counter!=0) {
-                float avgRating = sumRates / counter;
-                addToScreenOnGuestService(avgRating, counter);
-            }
-            cursor.close();
-        }
-        
-    private  void loadOwner(String serviceId) {
+    private void getInfoAboutService(String serviceId) {
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // все осервисе, оценка, количество оценок
@@ -246,6 +173,65 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             descriptionText.setText(cursor.getString(indexDescription));
         }
         cursor.close();
+    }
+
+    private void getServiceRating(String serviceId) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        // все о сервисе, оценка, количество оценок
+        //проверка на удаленный номер
+
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
+                        + DBHelper.KEY_RATING_REVIEWS
+                        + " FROM "
+                        + DBHelper.TABLE_WORKING_DAYS + ", "
+                        + DBHelper.TABLE_WORKING_TIME + ", "
+                        + DBHelper.TABLE_REVIEWS
+                        + " WHERE "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
+                        + " AND "
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + " AND "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
+                        + " AND "
+                        + DBHelper.KEY_TYPE_REVIEWS + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_RATING_REVIEWS + " != 0";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
+
+        float sumRates = 0;
+        long counter = 0;
+        // если сюда не заходит, значит ревью нет
+        if (cursor.moveToFirst()) {
+            do {
+                //у каждого ревью беру timeId и смотрю по нему есть ли оценка
+                int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
+                if (workWithLocalStorageApi.isMutualReview(cursor.getString(indexWorkingTimeId))) {
+                    int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+                    sumRates += Float.valueOf(cursor.getString(indexRating));
+                    counter++;
+                } else {
+                    if (workWithLocalStorageApi.isAfterWeek(cursor.getString(indexWorkingTimeId))) {
+                        int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+                        sumRates += Float.valueOf(cursor.getString(indexRating));
+                        counter++;
+                    }
+                }
+            } while (cursor.moveToNext());
+
+            float avgRating = sumRates / counter;
+            addToScreenOnGuestService(avgRating, counter);
+        } else {
+            setWithoutRating();
+        }
+        cursor.close();
+    }
+        
+    private  void loadOwner(String serviceId) {
+
     }
 
     private void loadProfileData() {

@@ -107,8 +107,6 @@ public class Comments extends AppCompatActivity {
         Cursor mainCursor = database.rawQuery(mainSqlQuery, new String[]{_serviceId, REVIEW_FOR_SERVICE});
 
         if(mainCursor.moveToFirst()) {
-            // index + data
-
             int indexWorkingTimeId = mainCursor.getColumnIndex(DBHelper.KEY_ID);
             do {
                 if(workWithLocalStorageApi.isMutualReview(mainCursor.getString(indexWorkingTimeId))) {

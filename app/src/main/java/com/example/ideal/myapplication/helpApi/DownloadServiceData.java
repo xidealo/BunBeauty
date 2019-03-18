@@ -76,59 +76,40 @@ public class DownloadServiceData {
     private long countOfRates;
     private long counter;
     private boolean addToScreen;
-    private Service service;
-    private FragmentManager manager;
 
-    public DownloadServiceData(SQLiteDatabase _database) {
+    public DownloadServiceData(SQLiteDatabase _database, String _status) {
         localDatabase = _database;
+        status = _status;
+        workWithLocalStorageApi = new WorkWithLocalStorageApi(localDatabase);
     }
 
-    public void loadSchedule(final String userId, String _status, FragmentManager _manager) {
+    public void loadSchedule(DataSnapshot servicesSnapshot, String userId) {
 
-        status = _status;
-        manager = _manager;
-        workWithLocalStorageApi = new WorkWithLocalStorageApi(localDatabase);
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        Service service = new Service();
 
-        service = new Service();
+        for (DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
 
-        //загружаем все сервисы в локалку
-        DatabaseReference myRef = database.getReference(USERS)
-                .child(userId)
-                .child(SERVICES);
+            String serviceId = serviceSnapshot.getKey();
+            String serviceName = String.valueOf(serviceSnapshot.child(NAME).getValue());
+            String serviceCost = String.valueOf(serviceSnapshot.child(COST).getValue());
+            String serviceDescription = String.valueOf(serviceSnapshot.child(DESCRIPTION).getValue());
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot servicesSnapshot) {
-                for (DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
+            service.setId(serviceId);
+            service.setName(serviceName);
+            service.setUserId(userId);
+            service.setCost(serviceCost);
+            service.setDescription(serviceDescription);
+            updateServicesInLocalStorage(service);
 
-                    String serviceId = serviceSnapshot.getKey();
-                    String serviceName = String.valueOf(serviceSnapshot.child(NAME).getValue());
-                    String serviceCost = String.valueOf(serviceSnapshot.child(COST).getValue());
-                    String serviceDescription = String.valueOf(serviceSnapshot.child(DESCRIPTION).getValue());
+            ownerId = userId;
+            //загрузка фотографий для сервисов
+            //loadPhotosByServiceId(serviceId);
+            //loadPhotosByPhoneNumber(ownerId);
 
-                    service.setId(serviceId);
-                    service.setName(serviceName);
-                    service.setUserId(userId);
-                    service.setCost(serviceCost);
-                    service.setDescription(serviceDescription);
-                    updateServicesInLocalStorage(service);
+            addScheduleInLocalStorage(serviceSnapshot.child(WORKING_DAYS), serviceId);
 
-                    ownerId = userId;
-                    //загрузка фотографий для сервисов
-                    //loadPhotosByServiceId(serviceId);
-                    //loadPhotosByPhoneNumber(ownerId);
-
-                    addScheduleInLocalStorage(serviceSnapshot.child(WORKING_DAYS), serviceId);
-
-                    addToScreen(0);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+            //addToScreen(0);
+        }
     }
 
     private void addScheduleInLocalStorage(DataSnapshot workingDaysSnapshot, String serviceId) {
@@ -347,7 +328,7 @@ public class DownloadServiceData {
                 localUser.setCity(String.valueOf(user.child(CITY).getValue()));
                 addUserInLocalStorage(localUser);
                 if(!addToScreen) {
-                    addToScreen(1);
+                    //addToScreen(1);
                     addToScreen = true;
                 }
             }
@@ -372,7 +353,7 @@ public class DownloadServiceData {
                 addUserInLocalStorage(localUser);
 
                 //подгружаем владельца сервиса и отображаем его на фрагменте
-                addToScreenOnMainScreen(avgRating, service, localUser);
+                //addToScreenOnMainScreen();
             }
 
             @Override
@@ -574,21 +555,6 @@ public class DownloadServiceData {
         }
     }
 
-    private void addToScreenOnMainScreen(float avgRating, Service service, User user) {
-
-        if(avgRating!=0) {
-            avgRating = sumRates / countOfRates;
-        }
-
-        foundServiceElement fElement = new foundServiceElement(avgRating, service, user);
-
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.resultsMainScreenLayout, fElement);
-        transaction.commit();
-    }
-
-
-
     //время полученное по timeId больше 3 дней
     private boolean isAfterWeek(String workingTimeId) {
 
@@ -600,7 +566,7 @@ public class DownloadServiceData {
         return isAfterWeek;
     }
 
-    private  void addToScreen(float avgRating) {
+    private void addToScreen(float avgRating) {
         switch (status) {
             case "MainScreen":
                 //подгружаем владельца сервиса и отображаем его на фрагменте

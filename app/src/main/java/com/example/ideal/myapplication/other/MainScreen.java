@@ -5,12 +5,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
+import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -29,6 +32,7 @@ public class MainScreen extends AppCompatActivity {
 
     private static final String USERS = "users";
     private static final String NAME = "name";
+    private static final String PHONE = "phone";
     private static final String CITY = "city";
 
     private static final String SERVICES = "services";
@@ -101,7 +105,6 @@ public class MainScreen extends AppCompatActivity {
 
         final SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        final int limitOfService = 6;
         //возвращение всех пользователей из контретного города
         Query userQuery = FirebaseDatabase.getInstance().getReference(USERS)
                 .orderByChild(CITY)
@@ -109,44 +112,22 @@ public class MainScreen extends AppCompatActivity {
 
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String userName = String.valueOf(snapshot.child(NAME).getValue());
-                    final String userId = snapshot.getKey();
+            public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
+                for (DataSnapshot userSnapshot : usersSnapshot.getChildren()) {
+                    String userName = String.valueOf(userSnapshot.child(NAME).getValue());
+                    String userPhone = String.valueOf(userSnapshot.child(PHONE).getValue());
+                    final String userId = userSnapshot.getKey();
 
                     final User user = new User();
-                    user.setPhone(userId);
+                    user.setId(userId);
                     user.setName(userName);
+                    user.setPhone(userPhone);
                     user.setCity(userCity);
 
-                    Query serviceQuery = FirebaseDatabase.getInstance().getReference(SERVICES)
-                            .orderByChild(USER_ID)
-                            .equalTo(userId);
+                    DownloadServiceData downloadServiceData = new DownloadServiceData(database, "MainScreen");
+                    downloadServiceData.loadSchedule(userSnapshot.child(SERVICES), userId);
 
-                    serviceQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                String serviceId = snapshot.getKey();
-
-                                DownloadServiceData downloadServiceData = new DownloadServiceData(database);
-                                downloadServiceData.loadSchedule(serviceId, "MainScreen", manager);
-                                countOfService++;
-                                //количество возможных предложений на mainScreen
-                                if (countOfService == limitOfService) {
-                                    return;
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            attentionBadConnection();
-                        }
-                    });
-                    if (countOfService == limitOfService) {
-                        return;
-                    }
+                    updateServicesList(user);
                 }
             }
 
@@ -158,8 +139,57 @@ public class MainScreen extends AppCompatActivity {
         countOfService = 0;
     }
 
+    private void updateServicesList(User user) {
+        //количество сервисов отображаемых на данный момент(старых)
+        resultsLayout.removeAllViews();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        // Возвращает id, название, рэйтинг и количество оценивших
+        // используем таблицу сервисы
+        // уточняем юзера по его id
+        String sqlQuery =
+                "SELECT * FROM "
+                        + DBHelper.TABLE_CONTACTS_SERVICES
+                        + " WHERE "
+                        + DBHelper.KEY_USER_ID + " = ? ";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{user.getId()});
+        //Идём с конца
+        if(cursor.moveToFirst()){
+            int indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            int indexServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
+            int indexServiceCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
+            do{
+                String serviceId = cursor.getString(indexServiceId);
+                String serviceName = cursor.getString(indexServiceName);
+                String serviceCost = cursor.getString(indexServiceCost);
+                Service service = new Service();
+                service.setId(serviceId);
+                service.setName(serviceName);
+                service.setCost(serviceCost);
+
+                addToScreenOnMainScreen(service, user);
+                //пока в курсоре есть строки и есть новые сервисы
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+    }
+
     private  String getUserId(){
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    private void addToScreenOnMainScreen(Service service, User user) {
+
+        /*if(avgRating!=0) {
+            avgRating = sumRates / countOfRates;
+        }*/
+
+        foundServiceElement fElement = new foundServiceElement(0.f, service, user);
+
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(R.id.resultsMainScreenLayout, fElement);
+        transaction.commit();
     }
 
     private void attentionBadConnection() {
