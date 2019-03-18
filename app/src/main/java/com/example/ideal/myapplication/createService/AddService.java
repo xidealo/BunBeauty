@@ -161,7 +161,6 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        String userId = getUserId();
         //добавление в БД
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, service.getId());
@@ -220,7 +219,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private void uploadImage(Uri filePath, final String serviceId) {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(PHOTOS);
+        DatabaseReference myRef = database.getReference(USERS);
 
         if(filePath != null)
         {
@@ -247,12 +246,15 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private void uploadPhotos(String storageReference, String serviceId,String photoId) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(PHOTOS).child(photoId);
+        DatabaseReference myRef = database.getReference(USERS)
+                .child(getUserId())
+                .child(SERVICES)
+                .child(serviceId)
+                .child(PHOTOS)
+                .child(photoId);
 
         Map<String,Object> items = new HashMap<>();
         items.put(PHOTO_LINK,storageReference);
-        items.put(OWNER_ID,serviceId);
-
         myRef.updateChildren(items);
 
         Photo photo = new Photo();

@@ -3,6 +3,7 @@ package com.example.ideal.myapplication.helpApi;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -83,9 +84,13 @@ public class DownloadServiceData {
         workWithLocalStorageApi = new WorkWithLocalStorageApi(localDatabase);
     }
 
-    public void loadSchedule(DataSnapshot servicesSnapshot, String userId) {
+    public void loadSchedule(DataSnapshot userSnapshot, String userId) {
 
         Service service = new Service();
+
+        DataSnapshot servicesSnapshot = userSnapshot.child(SERVICES);
+
+        loadPhotosByPhoneNumber(userSnapshot);
 
         for (DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
 
@@ -103,8 +108,7 @@ public class DownloadServiceData {
 
             ownerId = userId;
             //загрузка фотографий для сервисов
-            //loadPhotosByServiceId(serviceId);
-            //loadPhotosByPhoneNumber(ownerId);
+            loadPhotosByServiceId(serviceSnapshot.child(PHOTOS), serviceId);
 
             addScheduleInLocalStorage(serviceSnapshot.child(WORKING_DAYS), serviceId);
 
@@ -483,51 +487,29 @@ public class DownloadServiceData {
         }
     }
 
-    /*
-    private void loadPhotosByServiceId(DatabaseReference serviceRef) {
 
-        Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
-                .orderByChild(OWNER_ID)
-                .equalTo(serviceId);
+    private void loadPhotosByServiceId(DataSnapshot photosSnapshot, String serviceId) {
 
-        photosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
-                for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
+        for (DataSnapshot fPhoto : photosSnapshot.getChildren()) {
+            Photo photo = new Photo();
 
-                    Photo photo = new Photo();
+            photo.setPhotoId(fPhoto.getKey());
+            photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
+            photo.setPhotoOwnerId(serviceId);
 
-                    photo.setPhotoId(fPhoto.getKey());
-                    photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
-                    photo.setPhotoOwnerId(String.valueOf(fPhoto.child(OWNER_ID).getValue()));
+            addPhotoInLocalStorage(photo);
+        }
+    }
 
-                    addPhotoInLocalStorage(photo);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }*/
+    private void loadPhotosByPhoneNumber(DataSnapshot userSnapshot) {
 
-    private void loadPhotosByPhoneNumber(final String ownerId) {
+        Photo photo = new Photo();
+        Log.d(TAG, "loadPhotosByPhoneNumber: " + userSnapshot.getKey());
+        Log.d(TAG, "loadPhotosByPhoneNumber: " + String.valueOf(userSnapshot.child(PHOTO_LINK).getValue()));
+        photo.setPhotoId(userSnapshot.getKey());
+        photo.setPhotoLink(String.valueOf(userSnapshot.child(PHOTO_LINK).getValue()));
 
-        final DatabaseReference photosRef = FirebaseDatabase.getInstance().getReference(USERS)
-                .child(ownerId)
-                .child(PHOTO_LINK);
-
-        photosRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Photo photo = new Photo();
-
-                photo.setPhotoId(ownerId);
-                photo.setPhotoLink(String.valueOf(dataSnapshot.getValue()));
-                addPhotoInLocalStorage(photo);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
+        addPhotoInLocalStorage(photo);
 
     }
 
