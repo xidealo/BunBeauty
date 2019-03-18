@@ -125,7 +125,7 @@ public class MainScreen extends AppCompatActivity {
                     user.setCity(userCity);
 
                     DownloadServiceData downloadServiceData = new DownloadServiceData(database, "MainScreen");
-                    downloadServiceData.loadSchedule(userSnapshot.child(SERVICES), userId);
+                    downloadServiceData.loadSchedule(userSnapshot, userId);
 
                     updateServicesList(user);
                 }

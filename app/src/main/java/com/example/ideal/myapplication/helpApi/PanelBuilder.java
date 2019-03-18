@@ -13,11 +13,10 @@ public class PanelBuilder {
     private TopPanel topPanel;
 
     private boolean isMyProfile = false;
-    private String myPhone;
+    private String myId;
 
     // Для профиля
     public PanelBuilder(String ownerId) {
-
         if(ownerId != null) {
             isMyProfile = isMyProfile(ownerId);
         }
@@ -29,17 +28,12 @@ public class PanelBuilder {
     }
 
     private boolean isMyProfile(String ownerId) {
-        myPhone = getUserId();
-
-        if(myPhone.equals(ownerId)) {
-            return true;
-        }
-
-        return false;
+        myId = getUserId();
+        return myId.equals(ownerId);
     }
 
     public void buildFooter(FragmentManager manager, int layoutId) {
-        BottomPanel bottomPanel = new BottomPanel(isMyProfile, myPhone);
+        BottomPanel bottomPanel = new BottomPanel(isMyProfile, myId);
 
         transaction = manager.beginTransaction();
         transaction.add(layoutId, bottomPanel);
@@ -78,7 +72,7 @@ public class PanelBuilder {
     }
 
     private String getUserId(){
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
 

@@ -102,7 +102,7 @@ public class MyAuthorization {
                         loadPhotosByPhoneNumber(userId);
 
                         // Загружаем сервисы пользователя из FireBase
-                        loadServiceByUserPhone(userSnapshot.child(SERVICES), user);
+                        loadServiceByUserPhone(userSnapshot, user);
                     }
                 }
             }
@@ -181,12 +181,12 @@ public class MyAuthorization {
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
     }
 
-    private void loadServiceByUserPhone(DataSnapshot servicesSnapshot, User user) {
+    private void loadServiceByUserPhone(DataSnapshot usersSnapshot, User user) {
         SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
         String userId = user.getId();
 
         DownloadServiceData downloadServiceData = new DownloadServiceData(localDatabase, "Authorization");
-        downloadServiceData.loadSchedule(servicesSnapshot, userId);
+        downloadServiceData.loadSchedule(usersSnapshot, userId);
 
         loadTimeByUserPhone();
     }

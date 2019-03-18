@@ -116,7 +116,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                     }
 
                     service.setIsPremium(false);
-
+                    service.setUserId(getUserId());
                     uploadService(service);
                 }
                 else {
@@ -134,10 +134,8 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private void uploadService(Service service) {
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
 
-        String userId = getUserId();
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference serviceRef = database.getReference(USERS).child(userId).child(SERVICES);
+        DatabaseReference serviceRef = database.getReference(USERS).child(service.getUserId()).child(SERVICES);
 
         Map<String,Object> items = new HashMap<>();
         items.put(NAME,service.getName().toLowerCase());
@@ -161,14 +159,13 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        String userId = getUserId();
         //добавление в БД
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, service.getId());
         contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName().toLowerCase());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
-        //contentValues.put(DBHelper.KEY_USER_ID, userId);
+        contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
 
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES,null,contentValues);
         goToMyCalendar(getString(R.string.status_worker),service.getId());
@@ -220,7 +217,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private void uploadImage(Uri filePath, final String serviceId) {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(PHOTOS);
+        DatabaseReference myRef = database.getReference(USERS);
 
         if(filePath != null)
         {
@@ -247,12 +244,15 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private void uploadPhotos(String storageReference, String serviceId,String photoId) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(PHOTOS).child(photoId);
+        DatabaseReference myRef = database.getReference(USERS)
+                .child(getUserId())
+                .child(SERVICES)
+                .child(serviceId)
+                .child(PHOTOS)
+                .child(photoId);
 
         Map<String,Object> items = new HashMap<>();
         items.put(PHOTO_LINK,storageReference);
-        items.put(OWNER_ID,serviceId);
-
         myRef.updateChildren(items);
 
         Photo photo = new Photo();
