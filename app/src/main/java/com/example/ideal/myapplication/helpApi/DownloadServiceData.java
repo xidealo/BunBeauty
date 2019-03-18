@@ -117,9 +117,11 @@ public class DownloadServiceData {
                     ownerId = userId;
                     //загрузка фотографий для сервисов
                     //loadPhotosByServiceId(serviceId);
-
                     //loadPhotosByPhoneNumber(ownerId);
+
                     addScheduleInLocalStorage(serviceSnapshot.child(WORKING_DAYS), serviceId);
+
+                    addToScreen(0);
                 }
             }
             @Override
@@ -129,7 +131,53 @@ public class DownloadServiceData {
         });
     }
 
-    /*
+    private void addScheduleInLocalStorage(DataSnapshot workingDaysSnapshot, String serviceId) {
+        for(DataSnapshot workingDaySnapshot: workingDaysSnapshot.getChildren()) {
+
+            ContentValues contentValues = new ContentValues();
+            String dayId = workingDaySnapshot.getKey();
+            contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, String.valueOf(workingDaySnapshot.child(DATE).getValue()));
+            contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
+
+            boolean hasSomeData = workWithLocalStorageApi
+                    .hasSomeData(DBHelper.TABLE_WORKING_DAYS, dayId);
+            if (hasSomeData) {
+                localDatabase.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
+                        DBHelper.KEY_ID + " = ?",
+                        new String[]{dayId});
+            } else {
+                contentValues.put(DBHelper.KEY_ID, dayId);
+                localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
+            }
+            addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME), dayId);
+        }
+    }
+
+    private void addTimeInLocalStorage(DataSnapshot timesSnapshot, String workingDayId) {
+        for (DataSnapshot timeSnapshot : timesSnapshot.getChildren()) {
+            ContentValues contentValues = new ContentValues();
+            String timeId = timeSnapshot.getKey();
+            contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, String.valueOf(timeSnapshot.child(TIME).getValue()));
+            contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
+            
+            boolean hasSomeData = workWithLocalStorageApi
+                    .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
+
+            if (hasSomeData) {
+                localDatabase.update(DBHelper.TABLE_WORKING_TIME, contentValues,
+                        DBHelper.KEY_ID + " = ?",
+                        new String[]{timeId});
+            } else {
+                contentValues.put(DBHelper.KEY_ID, timeId);
+                localDatabase.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
+            }
+
+            //loadRating();
+        }
+
+    }
+
+     /*
     private void loadRating() {
         //зашружаю среднюю оценку, складываю все и делю их на количество
         // также усталавниваю количество оценок
@@ -233,55 +281,6 @@ public class DownloadServiceData {
 
     }
 
-    private void addScheduleInLocalStorage(DataSnapshot workingDaysSnapshot, String serviceId) {
-
-        for(DataSnapshot workingDaySnapshot: workingDaysSnapshot.getChildren()) {
-
-            ContentValues contentValues = new ContentValues();
-            String dayId = workingDaySnapshot.getKey();
-            contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, String.valueOf(workingDaySnapshot.child(DATE)));
-            contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
-
-            boolean hasSomeData = workWithLocalStorageApi
-                    .hasSomeData(DBHelper.TABLE_WORKING_DAYS, dayId);
-
-            if (hasSomeData) {
-                localDatabase.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
-                        DBHelper.KEY_ID + " = ?",
-                        new String[]{dayId});
-            } else {
-                contentValues.put(DBHelper.KEY_ID, dayId);
-                localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
-            }
-
-            addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME), dayId);
-        }
-    }
-
-    private void addTimeInLocalStorage(DataSnapshot timesSnapshot, String workingDayId) {
-
-        for (DataSnapshot timeSnapshot : timesSnapshot.getChildren()) {
-            ContentValues contentValues = new ContentValues();
-            String timeId = timeSnapshot.getKey();
-            contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, String.valueOf(timeSnapshot.child(TIME)));
-            contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
-
-            boolean hasSomeData = workWithLocalStorageApi
-                    .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
-
-            if (hasSomeData) {
-                localDatabase.update(DBHelper.TABLE_WORKING_TIME, contentValues,
-                        DBHelper.KEY_ID + " = ?",
-                        new String[]{timeId});
-            } else {
-                contentValues.put(DBHelper.KEY_ID, timeId);
-                localDatabase.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
-            }
-
-            //loadRating();
-        }
-
-    }
     private void addReviewForServiceInLocalStorage(RatingReview ratingReview) {
 
         ContentValues contentValues = new ContentValues();
@@ -475,6 +474,7 @@ public class DownloadServiceData {
     private void updateServicesInLocalStorage(Service service) {
         ContentValues contentValues = new ContentValues();
         // Заполняем contentValues информацией о данном сервисе
+
         String serviceId = service.getId();
         contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName());
         contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
@@ -587,20 +587,7 @@ public class DownloadServiceData {
         transaction.commit();
     }
 
-    private void addToScreenOnProfile(float avgRating) {
 
-        if(avgRating!=0) {
-            avgRating = sumRates / countOfRates;
-        }
-
-        foundServiceProfileElement fElement
-                = new foundServiceProfileElement(avgRating,service);
-        FragmentTransaction transaction = manager.beginTransaction();
-
-        transaction.add(R.id.servicesProfileLayout, fElement);
-
-        transaction.commit();
-    }
 
     //время полученное по timeId больше 3 дней
     private boolean isAfterWeek(String workingTimeId) {
@@ -613,19 +600,12 @@ public class DownloadServiceData {
         return isAfterWeek;
     }
 
-    private  void addToScreen(float avgRating){
-
-        if(!addToScreen) {
-            addToScreen = true;
-            switch (status){
-                case "MainScreen":
-                    //подгружаем владельца сервиса и отображаем его на фрагменте
-                    loadOwnerAndAddToScreen(avgRating,ownerId);
-                    break;
-                case "Profile":
-                    addToScreenOnProfile(avgRating);
-                    break;
-            }
+    private  void addToScreen(float avgRating) {
+        switch (status) {
+            case "MainScreen":
+                //подгружаем владельца сервиса и отображаем его на фрагменте
+                loadOwnerAndAddToScreen(avgRating, ownerId);
+                break;
         }
     }
 

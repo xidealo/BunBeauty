@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -81,7 +82,7 @@ public class MainScreen extends AppCompatActivity {
         String sqlQuery =
                 "SELECT " + DBHelper.KEY_CITY_USERS
                         + " FROM " + DBHelper.TABLE_CONTACTS_USERS
-                        + " WHERE " + DBHelper.KEY_USER_ID + " = ?";
+                        + " WHERE " + DBHelper.KEY_ID + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
 
@@ -96,7 +97,7 @@ public class MainScreen extends AppCompatActivity {
         return city;
     }
 
-    private  void getServicesInThisCity(final String userCity){
+    private  void getServicesInThisCity(final String userCity) {
 
         final SQLiteDatabase database = dbHelper.getReadableDatabase();
 
@@ -109,7 +110,7 @@ public class MainScreen extends AppCompatActivity {
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot:dataSnapshot.getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String userName = String.valueOf(snapshot.child(NAME).getValue());
                     final String userId = snapshot.getKey();
 
@@ -129,24 +130,26 @@ public class MainScreen extends AppCompatActivity {
                                 String serviceId = snapshot.getKey();
 
                                 DownloadServiceData downloadServiceData = new DownloadServiceData(database);
-                                downloadServiceData.loadSchedule(serviceId,"MainScreen",manager);
+                                downloadServiceData.loadSchedule(serviceId, "MainScreen", manager);
                                 countOfService++;
                                 //количество возможных предложений на mainScreen
-                                if(countOfService == limitOfService) {
+                                if (countOfService == limitOfService) {
                                     return;
                                 }
                             }
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             attentionBadConnection();
                         }
                     });
-                    if(countOfService == limitOfService) {
+                    if (countOfService == limitOfService) {
                         return;
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -156,7 +159,7 @@ public class MainScreen extends AppCompatActivity {
     }
 
     private  String getUserId(){
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     private void attentionBadConnection() {

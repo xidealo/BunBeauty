@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -98,11 +99,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         //получаем данные о сервисе
         getDataAboutService(serviceId);
 
+        //ОН ВСЕГДА 0?
         if(ownerId == null){
             loadOwner(serviceId);
         }
-
-        //получаем рейтинг сервиса
+        
         userId = getUserId();
 
         // мой сервис или нет?
@@ -382,8 +383,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 Toast.LENGTH_SHORT).show();
     }
 
-    private String getUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+    private  String getUserId(){
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     private void addToScreenOnGuestService(float avgRating, long countOfRates) {

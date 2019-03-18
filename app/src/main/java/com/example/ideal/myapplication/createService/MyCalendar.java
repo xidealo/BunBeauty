@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,6 +130,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 break;
         }
     }
+
+    private static final String TAG = "DBInf";
 
     //Выделяет рабочие дни
     private void selectWorkingDayWithTime() {
@@ -446,7 +449,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     //Возвращает id дня по id данного сервиса и дате
     private String checkCurrentDay(String day) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-
         // Получает id рабочего дня
         // Таблицы: рабочии дни
         // Условия: уточняем id сервиса и дату
@@ -459,8 +461,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? AND "
                         + DBHelper.KEY_DATE_WORKING_DAYS + " = ? ";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{String.valueOf(serviceId), day});
-
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, day});
         if(cursor.moveToFirst()) {
             int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
             return String.valueOf(cursor.getString(indexId));

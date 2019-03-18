@@ -197,7 +197,6 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                         removedHours.add(btnText);
                         btn.setTag(R.string.selectedId, false);
                     } else {
-                        Log.d(TAG, "onClick: " + btnText);
                         btn.setBackgroundResource(R.drawable.pressed_button);
                         workingHours.add(btnText);
                         removedHours.remove(btnText);
@@ -829,15 +828,12 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         return false;
     }
 
-    // Проверяет свободно ли данное время
+    // Проверяет свободно ли данное время ДОДЕЛАТЬ
     private boolean isFreeTime(Cursor cursor, String time) {
         if(cursor.moveToFirst()) {
             int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
-            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
             do {
-                if (cursor.getString(indexUserId).equals("0") && time.equals(cursor.getString(indexTime))) {
                     return true;
-                }
             } while (cursor.moveToNext());
         }
         return false;

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.AddService;
 import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement;
+import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
@@ -554,7 +555,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             // если это мой сервис
             updateOrdersList(userId);
             updateServicesList(userId);
-
+            
             // выводим кол-во подписок
             long subscriptionsCount = getCountOfSubscriptions();
             String btnText = SUBSCRIPTIONS;
@@ -604,7 +605,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_SERVICES
                         + " WHERE "
-                        + DBHelper.KEY_ID + " = ? ";
+                        + DBHelper.KEY_USER_ID + " = ? ";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
         //Идём с конца
@@ -618,13 +619,28 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                     service.setId(foundId);
                     service.setName(foundNameService);
 
-                    DownloadServiceData downloadServiceData = new DownloadServiceData(database);
-                    downloadServiceData.loadSchedule(service.getId(),"Profile", manager);
+                    //DownloadServiceData downloadServiceData = new DownloadServiceData(database);
+                    //downloadServiceData.loadSchedule(ownerId,"Profile", manager);
 
+                    addToScreenOnProfile(0,service);
                     //пока в курсоре есть строки и есть новые сервисы
                 }while (cursor.moveToNext());
             }
         cursor.close();
+    }
+
+    private void addToScreenOnProfile(float avgRating, Service service) {
+        if(avgRating!=0) {
+            avgRating = sumRates / countOfRates;
+        }
+
+        foundServiceProfileElement fElement
+                = new foundServiceProfileElement(avgRating,service);
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        transaction.add(R.id.servicesProfileLayout, fElement);
+
+        transaction.commit();
     }
 
     //добавляет вновь добавленные записи (обновление ordersList)
