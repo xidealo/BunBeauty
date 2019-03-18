@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final  int DATABASE_VERSION = 83;
+    public static final  int DATABASE_VERSION = 84;
     public static final String DATABASE_NAME = "MyFirstDB";
 
     //tables name
@@ -138,6 +138,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String orders = "create table "+ TABLE_ORDERS
                 + "("
                 + KEY_ID + " text primary key,"
+                + KEY_USER_ID + " text,"
                 + KEY_IS_CANCELED_ORDERS + " text,"
                 + KEY_MESSAGE_ID_ORDERS + " text,"
                 + KEY_WORKING_TIME_ID_ORDERS + " integer"

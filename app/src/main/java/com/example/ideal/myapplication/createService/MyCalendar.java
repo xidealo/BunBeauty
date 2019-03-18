@@ -242,12 +242,18 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 "SELECT "
                         + DBHelper.KEY_DATE_WORKING_DAYS
                         + " FROM "
+                        + DBHelper.TABLE_ORDERS + ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
                         + DBHelper.TABLE_WORKING_DAYS
                         + " WHERE "
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
                         + " AND "
                         + DBHelper.KEY_USER_ID + " = ? "
+                        + " AND "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                        + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " AND "
+                        + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'"
                         + " AND "
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                         + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
@@ -257,7 +263,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                         + ")) <= 0)";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {String.valueOf(serviceId), userId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[] {serviceId, userId});
 
         if(cursor.moveToFirst()) {
             int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
@@ -353,6 +359,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + DBHelper.KEY_TIME_WORKING_TIME + ", "
                         + DBHelper.KEY_DATE_WORKING_DAYS
                         + " FROM "
+                        + DBHelper.TABLE_ORDERS+ ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
                         + DBHelper.TABLE_WORKING_DAYS
                         + " WHERE "
@@ -361,7 +368,12 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + " AND "
                         + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ? "
                         + " AND "
-                        + DBHelper.KEY_USER_ID + " = 0";
+                        + DBHelper.KEY_USER_ID + " = 0"
+                        + " AND "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                        + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " AND "
+                        + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId});
 

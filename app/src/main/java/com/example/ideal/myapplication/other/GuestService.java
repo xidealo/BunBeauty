@@ -102,7 +102,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         //получаем рейтинг сервиса
         getServiceRating(serviceId);
 
-        
         userId = getUserId();
 
         // мой сервис или нет?
@@ -206,16 +205,16 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         long counter = 0;
         // если сюда не заходит, значит ревью нет
         if (cursor.moveToFirst()) {
+            int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
             do {
                 //у каждого ревью беру timeId и смотрю по нему есть ли оценка
-                int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
-                if (workWithLocalStorageApi.isMutualReview(cursor.getString(indexWorkingTimeId))) {
-                    int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+                String workingTimeId = cursor.getString(indexWorkingTimeId);
+                if (workWithLocalStorageApi.isMutualReview(workingTimeId)) {
                     sumRates += Float.valueOf(cursor.getString(indexRating));
                     counter++;
                 } else {
-                    if (workWithLocalStorageApi.isAfterWeek(cursor.getString(indexWorkingTimeId))) {
-                        int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+                    if (workWithLocalStorageApi.isAfterWeek(workingTimeId)) {
                         sumRates += Float.valueOf(cursor.getString(indexRating));
                         counter++;
                     }
@@ -285,7 +284,44 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         // Получаем всё время данного сервиса, которое доступно данному юзеру
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        String sqlQuery = "SELECT " + DBHelper.KEY_TIME_WORKING_TIME
+        String takedTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
+
+        String myTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_USER_ID + " = ?"
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
+
+        String sqlQuery = "SELECT "
+                + DBHelper.KEY_TIME_WORKING_TIME
                 + " FROM "
                 + DBHelper.TABLE_WORKING_DAYS + ", "
                 + DBHelper.TABLE_WORKING_TIME
@@ -295,7 +331,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                 + " AND ((("
-                + DBHelper.KEY_USER_ID + " = 0)"
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " NOT IN (" + takedTimeQuery + ")"
                 + " AND ("
                 // 3 часа - разница с Гринвичем
                 // 2 часа - минимум времени до сеанса, чтобы за писаться
@@ -304,14 +341,14 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                 + ") <= 0)"
                 + ") OR (("
-                + DBHelper.KEY_USER_ID + " = ?"
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " IN (" + myTimeQuery + ")"
                 + ") AND ("
                 + "(STRFTIME('%s', 'now')+3*60*60) - (STRFTIME('%s',"
                 + DBHelper.KEY_DATE_WORKING_DAYS
                 + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
-                + ")) <= 0)))";
+                + ")) <= 0))))";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {serviceId, userId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[] {serviceId, serviceId, serviceId, userId});
 
         if (cursor.moveToFirst()) {
             goToMyCalendar(USER);
