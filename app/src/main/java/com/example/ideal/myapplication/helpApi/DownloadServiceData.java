@@ -116,66 +116,10 @@ public class DownloadServiceData {
 
                     ownerId = userId;
                     //загрузка фотографий для сервисов
-
                     //loadPhotosByServiceId(serviceId);
 
-                    loadPhotosByPhoneNumber(ownerId);
-                    addScheduleInLocalStorage(serviceSnapshot.child(WORKING_DAYS));
-
-                    //возвращает все дни определенного сервиса
-                    final Query query = database.getReference(WORKING_DAYS).
-                            orderByChild(SERVICE_ID).
-                            equalTo(serviceId);
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull final DataSnapshot workingDaysSnapshot) {
-                            final long countOfDays = workingDaysSnapshot.getChildrenCount();
-                            currentCountOfDays = 0;
-                            //если нет дней, убираем прогерсс бар и устанавливаем надпись, что нет оценок
-                            if (countOfDays == 0) {
-                                addToScreen(0);
-                            }
-                            //крутит цикл
-                            for (DataSnapshot workingDay : workingDaysSnapshot.getChildren()) {
-                                final String dayId = String.valueOf(workingDay.getKey());
-                                String dayDate = String.valueOf(workingDay.child(DATE).getValue());
-
-                                final Query queryTime = database.getReference(WORKING_TIME).
-                                        orderByChild(WORKING_DAY_ID).
-                                        equalTo(dayId);
-                                //этот в цикле 2
-                                queryTime.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot workingTimesSnapshot) {
-                                        //если нет времени
-                                        if (workingTimesSnapshot.getChildrenCount() == 0) {
-                                            addToScreen(0);
-                                        }
-
-                                        for (DataSnapshot workingTimeSnapshot : workingTimesSnapshot.getChildren()) {
-                                            String timeId = String.valueOf(workingTimeSnapshot.getKey());
-                                            String time = String.valueOf(workingTimeSnapshot.child(TIME).getValue());
-                                            String timeUserId = String.valueOf(workingTimeSnapshot.child(USER_ID).getValue());
-                                            String timeWorkingDayId = String.valueOf(workingTimeSnapshot.child(WORKING_DAY_ID).getValue());
-                                        }
-                                        currentCountOfDays++;
-                                        if (currentCountOfDays == countOfDays) {
-                                            loadRating();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    }
-                                });
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-
+                    //loadPhotosByPhoneNumber(ownerId);
+                    addScheduleInLocalStorage(serviceSnapshot.child(WORKING_DAYS), serviceId);
                 }
             }
             @Override
@@ -184,7 +128,8 @@ public class DownloadServiceData {
             }
         });
     }
-    
+
+    /*
     private void loadRating() {
         //зашружаю среднюю оценку, складываю все и делю их на количество
         // также усталавниваю количество оценок
@@ -250,6 +195,8 @@ public class DownloadServiceData {
         cursor.close();
     }
 
+    */
+
     private void addReview(DataSnapshot reviewsSnapshot, String workingTimeId,String userId){
 
         RatingReview ratingReview = new RatingReview();
@@ -286,18 +233,19 @@ public class DownloadServiceData {
 
     }
 
-    private void addScheduleInLocalStorage(DataSnapshot workingDaysSnapshot) {
+    private void addScheduleInLocalStorage(DataSnapshot workingDaysSnapshot, String serviceId) {
 
         for(DataSnapshot workingDaySnapshot: workingDaysSnapshot.getChildren()) {
 
             ContentValues contentValues = new ContentValues();
             String dayId = workingDaySnapshot.getKey();
             contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, String.valueOf(workingDaySnapshot.child(DATE)));
+            contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
 
-            boolean isUpdate = workWithLocalStorageApi
+            boolean hasSomeData = workWithLocalStorageApi
                     .hasSomeData(DBHelper.TABLE_WORKING_DAYS, dayId);
 
-            if (isUpdate) {
+            if (hasSomeData) {
                 localDatabase.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
                         DBHelper.KEY_ID + " = ?",
                         new String[]{dayId});
@@ -306,28 +254,33 @@ public class DownloadServiceData {
                 localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
             }
 
-            addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME));
+            addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME), dayId);
         }
     }
 
-    private void addTimeInLocalStorage(DataSnapshot timesSnapshot) {
+    private void addTimeInLocalStorage(DataSnapshot timesSnapshot, String workingDayId) {
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, timeDate);
-        contentValues.put(DBHelper.KEY_USER_ID, timeUserId);
-        contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, timeWorkingDayId);
+        for (DataSnapshot timeSnapshot : timesSnapshot.getChildren()) {
+            ContentValues contentValues = new ContentValues();
+            String timeId = timeSnapshot.getKey();
+            contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, String.valueOf(timeSnapshot.child(TIME)));
+            contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
 
-        boolean isUpdate = workWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
+            boolean hasSomeData = workWithLocalStorageApi
+                    .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
 
-        if (isUpdate) {
-            localDatabase.update(DBHelper.TABLE_WORKING_TIME, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{timeId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, timeId);
-            localDatabase.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
+            if (hasSomeData) {
+                localDatabase.update(DBHelper.TABLE_WORKING_TIME, contentValues,
+                        DBHelper.KEY_ID + " = ?",
+                        new String[]{timeId});
+            } else {
+                contentValues.put(DBHelper.KEY_ID, timeId);
+                localDatabase.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
+            }
+
+            //loadRating();
         }
+
     }
     private void addReviewForServiceInLocalStorage(RatingReview ratingReview) {
 
@@ -518,20 +471,21 @@ public class DownloadServiceData {
         }
     }
 
-    private void updateServicesInLocalStorage(Service service) {
 
+    private void updateServicesInLocalStorage(Service service) {
         ContentValues contentValues = new ContentValues();
         // Заполняем contentValues информацией о данном сервисе
+        String serviceId = service.getId();
         contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName());
         contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
 
-        boolean isUpdate =  workWithLocalStorageApi
+        boolean hasSomeData =  workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
 
         // Проверка есть ли такой сервис в SQLite
-        if(isUpdate) {
+        if(hasSomeData) {
             // Данный сервис уже есть
             // Обновляем информацию о нём
             localDatabase.update(
@@ -547,6 +501,8 @@ public class DownloadServiceData {
             localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
     }
+
+    /*
     private void loadPhotosByServiceId(DatabaseReference serviceRef) {
 
         Query photosQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
@@ -571,7 +527,7 @@ public class DownloadServiceData {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-    }
+    }*/
 
     private void loadPhotosByPhoneNumber(final String ownerId) {
 

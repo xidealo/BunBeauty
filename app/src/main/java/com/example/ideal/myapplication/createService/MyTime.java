@@ -333,8 +333,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         // Условия: уточняем id рабочего дня
         String sqlQuery =
                 "SELECT "
-                        + DBHelper.KEY_TIME_WORKING_TIME + ", "
-                        + DBHelper.KEY_USER_ID
+                        + DBHelper.KEY_TIME_WORKING_TIME
                         + " FROM "
                         + DBHelper.TABLE_WORKING_TIME
                         + " WHERE "
@@ -480,7 +479,6 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
                 Map<String,Object> items = new HashMap<>();
                 items.put(TIME,time);
-                items.put(WORKING_DAYS_ID, workingDaysId);
 
                 String timeId =  timeRef.push().getKey();
                 timeRef = timeRef.child(timeId);

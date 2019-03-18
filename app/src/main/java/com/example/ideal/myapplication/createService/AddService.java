@@ -168,7 +168,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName().toLowerCase());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
-        contentValues.put(DBHelper.KEY_USER_ID, userId);
+        //contentValues.put(DBHelper.KEY_USER_ID, userId);
 
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES,null,contentValues);
         goToMyCalendar(getString(R.string.status_worker),service.getId());
