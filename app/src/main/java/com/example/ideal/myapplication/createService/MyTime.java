@@ -70,8 +70,8 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     private String statusUser;
     private String userId;
     private String workingDaysId;
+    private String serviceId;
     private String date;
-    private String timeId;
     private String serviceName;
     private String time;
     private String dataDay;
@@ -97,6 +97,8 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         setContentView(R.layout.my_time);
 
         statusUser = getIntent().getStringExtra(STATUS_USER_BY_SERVICE);
+        workingDaysId = getIntent().getStringExtra(WORKING_DAYS_ID);
+        serviceId = getIntent().getStringExtra(SERVICE_ID);
         userId = getUserPhone();
 
         mainLayout = findViewById(R.id.mainMyTimeLayout);
@@ -122,7 +124,6 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
-        workingDaysId = getIntent().getStringExtra(WORKING_DAYS_ID);
         date = getThisDate();
 
         addButtonsOnScreen(false);
@@ -173,10 +174,10 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                 }
                 else {
                     if (workingHours.size() == 1) {
+
+                        confirm();
                         // Обновляем id пользователя в таблице рабочего времени
-                        loadCurrentTimeId();
-                      
-                        Toast.makeText(this, "Вы записались на услугу!", Toast.LENGTH_SHORT).show();
+                        //loadCurrentTimeId();
                     }
                 }
                 break;
@@ -232,8 +233,8 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         }
     }
 
-    public void confirm(Context context) {
-        AlertDialog dialog = new AlertDialog.Builder(context).create();
+    public void confirm() {
+        AlertDialog dialog = new AlertDialog.Builder(this).create();
         dialog.setTitle("Запись на услугу");
         dialog.setMessage("Записаться на услугу " + serviceName + " " + dataDay + " числа в " + time);
         dialog.setCancelable(false);
@@ -250,32 +251,6 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         dialog.show();
     }
 
-    private void loadCurrentTimeId(){
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        //получаем все время этого дня и кнопки на которую нажал
-        final Query query = database.getReference(WORKING_TIME)
-                .orderByChild(WORKING_DAYS_ID)
-                .equalTo(workingDaysId);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot workingTimeSnapshot) {
-                //делаем запрос по такому дню, такому времени
-                for (DataSnapshot time : workingTimeSnapshot.getChildren()) {
-                    if(String.valueOf(time.child("time").getValue()).equals(workingHours.get(0))) {
-                        timeId = String.valueOf(time.getKey());
-
-                        loadInformationAboutService(timeId);
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
     private void loadInformationAboutService(String workingTimeId) {
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
@@ -290,7 +265,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             serviceName = cursor.getString(indexNameService);
             dataDay = cursor.getString(indexDateDay);
             time = cursor.getString(indexTime);
-            confirm(this);
+            confirm();
         }
     }
 
@@ -325,7 +300,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
     //Выделяет необходимые кнопки
     private void checkCurrentTimes() {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         // Получает время и id пользователя который записан на это время
         // Таблицы: рабочие время
@@ -365,7 +340,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                     timeBtns[i][j].setTag(R.string.selectedId, true);
 
                     // Проверка записан ли кто-то на это время
-                    if (!isFreeTime(cursor, time)) {
+                    if (!isFreeTime(time)) {
                         timeBtns[i][j].setEnabled(false);
                     }
                 }
@@ -376,7 +351,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     // Выделяет кнопки (User)
     private void selectBtsForUser(Cursor cursor) {
         // Время на которое я записан
-        String myOrderTime = checkMyOrder(cursor);
+        String myOrderTime = checkMyOrder();
 
         for (int i = 0; i < ROWS_COUNT; i++) {
             for (int j = 0; j < COLUMNS_COUNT; j++) {
@@ -403,7 +378,8 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                     // Записи нет
 
                     // Проверка является ли данное время свободным
-                    if (isFreeTime(cursor, time)) {
+                    if (isFreeTime(time)) {
+                        Log.d(TAG, "selectBtsForUser: " + time);
                         timeBtns[i][j].setBackgroundResource(R.drawable.time_button);
                         timeBtns[i][j].setTag(R.string.selectedId, false);
                         // Проверка осталось ли больше 2х часов до данного времени
@@ -502,24 +478,53 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     }
 
     // Проверяет есть ли запись на данный день
-    private String checkMyOrder(Cursor cursor) {
+    private String checkMyOrder() {
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String myTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_USER_ID + " = ?"
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
+
+        String sqlQuery = "SELECT "
+                + DBHelper.KEY_TIME_WORKING_TIME
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_WORKING_DAYS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                + " AND "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " IN (" + myTimeQuery + ")"
+                + " AND "
+                + "(STRFTIME('%s', 'now')+3*60*60) - (STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ")) <= 0";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId, workingDaysId, userId});
+
+        String time = "";
         if(cursor.moveToFirst()) {
-            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
-            int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
-            do {
-                if(cursor.getString(indexUserId).equals(userId)) {
-                    String orderTime = cursor.getString(indexTime);
-
-                    long sysdateLong = workWithTimeApi.getSysdateLong();
-                    long currentLong = workWithTimeApi.getMillisecondsStringDate(date + " " + orderTime);
-
-                    if(sysdateLong<currentLong) {
-                        return orderTime;
-                    }
-                }
-            } while (cursor.moveToNext());
+            int timeIndex = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
+            time = cursor.getString(timeIndex);
         }
-        return "";
+
+        cursor.close();
+        return time;
     }
 
     // Записаться на данное время
@@ -528,22 +533,97 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        // Вписываем телефон в working time (localStorage)
-        // До того onDataChange
-        updateLocalStorageTime();
+        String workingTimeId = getWorkingTimeId();
+
+        String serviceOwnerId = getServiceOwnerId(workingTimeId);
+
+        // Прописываем путь в Firebase и получаем id записи
+        DatabaseReference myRef = database
+                .getReference(USERS)
+                .child(serviceOwnerId)
+                .child(SERVICES)
+                .child(serviceId)
+                .child(WORKING_DAYS)
+                .child(workingDaysId)
+                .child(WORKING_TIME)
+                .child(workingTimeId)
+                .child(ORDERS);
+        String orderId = myRef.push().getKey();
+
+        // Добавляем запись в LocalStorage
+        addOrderInLocalStorage(orderId, workingTimeId);
 
         //закрашиваем, чтобы нельзя было заисаться еще раз
         checkCurrentTimes();
 
-        // Вписываем телефон в working time (firebase)
-        DatabaseReference myRef = database.getReference(WORKING_TIME).child(timeId);
+        // Создаём запись в Firebase
         Map<String, Object> items = new HashMap<>();
+        items.put(IS_CANCELED, "false");
         items.put(USER_ID, getUserId());
+
+        myRef = myRef.child(orderId);
         myRef.updateChildren(items);
 
         // Создаём диалог
-        createDialog(workingDaysId);
+        // createDialog(workingDaysId);
+
+        Toast.makeText(this, "Вы записались на услугу!", Toast.LENGTH_SHORT).show();
         //не очень хорошо, тк может записать в локалку но не записать в фб? (пропал инет)
+    }
+
+    private String getServiceOwnerId(String workingTimeId) {
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_USER_ID
+                        + " FROM "
+                        + DBHelper.TABLE_WORKING_TIME + ", "
+                        + DBHelper.TABLE_WORKING_DAYS + ", "
+                        + DBHelper.TABLE_CONTACTS_SERVICES
+                        + " WHERE "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = ?"
+                        + " AND "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + " = " + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
+                        + " = " + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID;
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{ workingTimeId });
+
+        String ownerId = "";
+        if(cursor.moveToFirst()) {
+            int indexOwnerId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+            ownerId = cursor.getString(indexOwnerId);
+        }
+
+        cursor.close();
+        return  ownerId;
+    }
+
+    private String getWorkingTimeId() {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_ID
+                        + " FROM "
+                        + DBHelper.TABLE_WORKING_TIME
+                        + " WHERE "
+                        + DBHelper.KEY_TIME_WORKING_TIME + " = ? AND "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingHours.get(0), String.valueOf(workingDaysId)});
+        String timeId = "";
+        if(cursor.moveToFirst()) {
+            int indexTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            timeId = cursor.getString(indexTimeId);
+        }
+
+        cursor.close();
+        return  timeId;
     }
 
     private void createDialog(final String workingDaysId) {
@@ -667,53 +747,21 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         messageRef = database.getReference(MESSAGES).child(messageId);
         messageRef.updateChildren(items);
 
-        createOrder(messageId);
+        //createOrder(messageId);
     }
 
-    private void createOrder(String messageId) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference orderRef = database.getReference(ORDERS);
-        Map<String, Object> items = new HashMap<>();
-
-        items.put(IS_CANCELED, false);
-        items.put(WORKING_TIME_ID, timeId);
-        items.put(MESSAGE_ID, messageId);
-
-        String orderId =  orderRef.push().getKey();
-        orderRef = database.getReference(ORDERS).child(orderId);
-        orderRef.updateChildren(items);
-    }
-
-    private void updateLocalStorageTime() {
+    private void addOrderInLocalStorage(String orderId, String timeId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        // Получает время
-        // Таблицы: рабочие время
-        // Условия: уточняем id рабочего дня
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_ID + ", "
-                        + DBHelper.KEY_TIME_WORKING_TIME
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_TIME
-                        + " WHERE "
-                        + DBHelper.KEY_TIME_WORKING_TIME + " = ? AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingHours.get(0), String.valueOf(workingDaysId)});
-        if(cursor.moveToFirst()) {
-            int indexTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
-            timeId = cursor.getString(indexTimeId);
+        ContentValues contentValues = new ContentValues();
 
-            ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, orderId);
+        contentValues.put(DBHelper.KEY_USER_ID, userId);
+        contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, "false");
+        contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, timeId);
 
-            contentValues.put(DBHelper.KEY_USER_ID, userId);
-            database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
-                    DBHelper.KEY_ID + " = ? ",
-                    new String[]{String.valueOf(timeId)});
-            workingHours.clear();
-            cursor.close();
-        }
+        database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
+        workingHours.clear();
     }
 
     private void addDayInLocalStorage(String serviceId) {
@@ -829,13 +877,53 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     }
 
     // Проверяет свободно ли данное время ДОДЕЛАТЬ
-    private boolean isFreeTime(Cursor cursor, String time) {
+    private boolean isFreeTime(String time) {
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String takedTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
+
+        String sqlQuery = "SELECT "
+                + DBHelper.KEY_TIME_WORKING_TIME
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_WORKING_DAYS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                + " AND "
+                + DBHelper.KEY_TIME_WORKING_TIME + " = ?"
+                + " AND "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " NOT IN (" + takedTimeQuery + ")"
+                + " AND "
+                // 3 часа - разница с Гринвичем
+                // 2 часа - минимум времени до сеанса, чтобы за писаться
+                + " ((STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ")) <= 0";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId, time, time});
+
         if(cursor.moveToFirst()) {
-            int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
-            do {
-                    return true;
-            } while (cursor.moveToNext());
+            cursor.close();
+            return true;
         }
+        cursor.close();
         return false;
     }
 

@@ -228,10 +228,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         }
         cursor.close();
     }
-        
-    private  void loadOwner(String serviceId) {
-
-    }
 
     private void loadProfileData() {
         DatabaseReference userReference = FirebaseDatabase.getInstance()
