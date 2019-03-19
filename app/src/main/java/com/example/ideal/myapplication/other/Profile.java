@@ -599,7 +599,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_SERVICES
                         + " WHERE "
-                        + DBHelper.KEY_ID + " = ? ";
+                        + DBHelper.KEY_USER_ID+ " = ? ";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
         //Идём с конца

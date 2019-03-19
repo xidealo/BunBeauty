@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -37,7 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MyTime extends AppCompatActivity  implements View.OnClickListener {
+public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
     private static final String WORKING_DAYS_ID = "working day id";
@@ -75,6 +76,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     private String serviceName;
     private String time;
     private String dataDay;
+    private String serviceId;
     private int width;
     private int height;
     private String dialogId = "";
@@ -97,7 +99,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         setContentView(R.layout.my_time);
 
         statusUser = getIntent().getStringExtra(STATUS_USER_BY_SERVICE);
-        userId = getUserPhone();
+        userId = getUserId();
 
         mainLayout = findViewById(R.id.mainMyTimeLayout);
 
@@ -123,6 +125,8 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
         workingDaysId = getIntent().getStringExtra(WORKING_DAYS_ID);
+        serviceId = getIntent().getStringExtra(SERVICE_ID);
+
         date = getThisDate();
 
         addButtonsOnScreen(false);
@@ -134,7 +138,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             public void onCheckedChanged(CompoundButton buttonView, boolean isPm) {
                 // Очищаем layout
                 mainLayout.removeAllViews();
-                if(isPm) {
+                if (isPm) {
                     buttonView.setText("Вторая половина дня");
                     // создаем кнопки с нужным временем
                     addButtonsOnScreen(true);
@@ -160,7 +164,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.saveMyTimeBtn:
-                if(statusUser.equals(WORKER)) {
+                if (statusUser.equals(WORKER)) {
                     if (workingHours.size() > 0) {
                         // Добавляем время из буфера workingHours в БД
                         addTime();
@@ -170,12 +174,11 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                         deleteTime();
                     }
                     Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     if (workingHours.size() == 1) {
                         // Обновляем id пользователя в таблице рабочего времени
                         loadCurrentTimeId();
-                      
+
                         Toast.makeText(this, "Вы записались на услугу!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -184,14 +187,14 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             default:
                 Button btn = (Button) v;
                 String btnText = btn.getText().toString();
-                if(btnText.length() == 4) {
+                if (btnText.length() == 4) {
                     btnText = "0" + btnText;
                 }
                 // Проверка мой ли это сервис (я - worker)
-                if(statusUser.equals(WORKER)){
+                if (statusUser.equals(WORKER)) {
                     // Это мой сервис (я - worker)
 
-                    if(Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
+                    if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
                         btn.setBackgroundResource(R.drawable.time_button);
                         workingHours.remove(btnText);
                         removedHours.add(btnText);
@@ -202,12 +205,11 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                         removedHours.remove(btnText);
                         btn.setTag(R.string.selectedId, true);
                     }
-                }
-                else {
+                } else {
                     // Это не мой сервис (я - User)
 
                     // Проверка была ли кнопка выбрана до нажатия
-                    if(Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
+                    if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
                         // Кнопка была уже нажата
 
                         btn.setBackgroundResource(R.drawable.time_button);
@@ -218,7 +220,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
                         String selectedTime;
                         //Если уже существует выбранное время
-                        if(workingHours.size() == 1){
+                        if (workingHours.size() == 1) {
                             selectedTime = workingHours.get(0);
                             removeSelection(selectedTime);
                             workingHours.clear();
@@ -250,7 +252,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         dialog.show();
     }
 
-    private void loadCurrentTimeId(){
+    private void loadCurrentTimeId() {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         //получаем все время этого дня и кнопки на которую нажал
         final Query query = database.getReference(WORKING_TIME)
@@ -262,13 +264,14 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             public void onDataChange(@NonNull DataSnapshot workingTimeSnapshot) {
                 //делаем запрос по такому дню, такому времени
                 for (DataSnapshot time : workingTimeSnapshot.getChildren()) {
-                    if(String.valueOf(time.child("time").getValue()).equals(workingHours.get(0))) {
+                    if (String.valueOf(time.child("time").getValue()).equals(workingHours.get(0))) {
                         timeId = String.valueOf(time.getKey());
 
                         loadInformationAboutService(timeId);
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -282,7 +285,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
         Cursor cursor = workWithLocalStorageApi.getServiceCursorByTimeId(workingTimeId);
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             int indexNameService = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
             int indexDateDay = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
             int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
@@ -381,7 +384,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         for (int i = 0; i < ROWS_COUNT; i++) {
             for (int j = 0; j < COLUMNS_COUNT; j++) {
                 String time = (String) timeBtns[i][j].getText();
-                if(time.length() == 4) {
+                if (time.length() == 4) {
                     time = "0" + time;
                 }
 
@@ -421,7 +424,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     }
 
     private boolean hasMoreThenTwoHours(String time) {
-        long twoHours = 2*60*60*1000;
+        long twoHours = 2 * 60 * 60 * 1000;
 
         long sysdateLong = workWithTimeApi.getSysdateLong();
         long currentLong = workWithTimeApi.getMillisecondsStringDate(date + " " + time);
@@ -430,12 +433,12 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     }
 
     //Снимает выделение с кнопки с данным временем
-    private void removeSelection(String selectedTime){
+    private void removeSelection(String selectedTime) {
         for (int i = 0; i < ROWS_COUNT; i++) {
             for (int j = 0; j < COLUMNS_COUNT; j++) {
                 String time = (String) timeBtns[i][j].getText();
 
-                if(time.equals(selectedTime)){
+                if (time.equals(selectedTime)) {
                     timeBtns[i][j].setBackgroundResource(R.drawable.time_button);
                     timeBtns[i][j].setTag(R.string.selectedId, false);
                 }
@@ -444,7 +447,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     }
 
     // Добавляем время из буфера workingTime в БД
-    private void addTime(){
+    private void addTime() {
         workingDaysId = getIntent().getStringExtra(WORKING_DAYS_ID);
         String serviceId = getIntent().getStringExtra(SERVICE_ID);
 
@@ -464,8 +467,8 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{String.valueOf(workingDaysId)});
         ContentValues contentValues = new ContentValues();
 
-        for (String time: workingHours) {
-            if(!checkTimeForWorker(cursor, time)) {
+        for (String time : workingHours) {
+            if (!checkTimeForWorker(cursor, time)) {
 
                 FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
                 DatabaseReference timeRef = fdatabase.getReference(USERS)
@@ -476,14 +479,14 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                         .child(workingDaysId)
                         .child(WORKING_TIME);
 
-                Map<String,Object> items = new HashMap<>();
-                items.put(TIME,time);
+                Map<String, Object> items = new HashMap<>();
+                items.put(TIME, time);
 
-                String timeId =  timeRef.push().getKey();
+                String timeId = timeRef.push().getKey();
                 timeRef = timeRef.child(timeId);
                 timeRef.updateChildren(items);
 
-                putDataInLocalStorage(timeId, time,contentValues,database);
+                putDataInLocalStorage(timeId, time, contentValues, database);
             }
         }
 
@@ -498,22 +501,22 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, time);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDaysId);
 
-        database.insert(DBHelper.TABLE_WORKING_TIME,null,contentValues);
+        database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
     }
 
     // Проверяет есть ли запись на данный день
     private String checkMyOrder(Cursor cursor) {
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int indexUserId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
             do {
-                if(cursor.getString(indexUserId).equals(userId)) {
+                if (cursor.getString(indexUserId).equals(userId)) {
                     String orderTime = cursor.getString(indexTime);
 
                     long sysdateLong = workWithTimeApi.getSysdateLong();
                     long currentLong = workWithTimeApi.getMillisecondsStringDate(date + " " + orderTime);
 
-                    if(sysdateLong<currentLong) {
+                    if (sysdateLong < currentLong) {
                         return orderTime;
                     }
                 }
@@ -559,7 +562,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                 serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot service) {
-                        String workerId =  String.valueOf(service.child(USER_ID).getValue());
+                        String workerId = String.valueOf(service.child(USER_ID).getValue());
 
                         // Если диалог между 2 пользователями уже существует, получить его id
                         checkDialogsByNumbers(workerId);
@@ -588,15 +591,15 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             public void onDataChange(@NonNull DataSnapshot dialogs) {
                 String secondPhone;
 
-                for(DataSnapshot dialog:dialogs.getChildren()) {
+                for (DataSnapshot dialog : dialogs.getChildren()) {
                     secondPhone = String.valueOf(dialog.child(SECOND_PHONE).getValue());
 
-                    if(secondPhone.equals(userId)) {
+                    if (secondPhone.equals(userId)) {
                         dialogId = dialog.getKey();
                         break;
                     }
                 }
-                if(dialogId.isEmpty()) {
+                if (dialogId.isEmpty()) {
                     checkSecondPhone(workerId);
                 } else {
                     createMessage(dialogId);
@@ -619,22 +622,22 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             public void onDataChange(@NonNull DataSnapshot dialogs) {
                 String firstPhone;
 
-                for(DataSnapshot dialog:dialogs.getChildren()) {
+                for (DataSnapshot dialog : dialogs.getChildren()) {
                     firstPhone = String.valueOf(dialog.child(FIRST_PHONE).getValue());
 
-                    if(firstPhone.equals(userId)) {
+                    if (firstPhone.equals(userId)) {
                         dialogId = dialog.getKey();
                         break;
                     }
                 }
 
                 // Если id пустое, значит диалога нет, создаём новый
-                if(dialogId.isEmpty()) {
+                if (dialogId.isEmpty()) {
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference(DIALOGS);
-                    dialogId =  reference.push().getKey();
+                    dialogId = reference.push().getKey();
                     reference = reference.child(dialogId);
 
-                    Map<String,Object> items = new HashMap<>();
+                    Map<String, Object> items = new HashMap<>();
                     items.put(FIRST_PHONE, workerId);
                     items.put(SECOND_PHONE, userId);
 
@@ -663,7 +666,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         items.put(DIALOG_ID, dialogId);
         items.put(MESSAGE_TIME, dateNow);
 
-        String messageId =  messageRef.push().getKey();
+        String messageId = messageRef.push().getKey();
         messageRef = database.getReference(MESSAGES).child(messageId);
         messageRef.updateChildren(items);
 
@@ -680,7 +683,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         items.put(WORKING_TIME_ID, timeId);
         items.put(MESSAGE_ID, messageId);
 
-        String orderId =  orderRef.push().getKey();
+        String orderId = orderRef.push().getKey();
         orderRef = database.getReference(ORDERS).child(orderId);
         orderRef.updateChildren(items);
     }
@@ -701,7 +704,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                         + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingHours.get(0), String.valueOf(workingDaysId)});
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int indexTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
             timeId = cursor.getString(indexTimeId);
 
@@ -725,12 +728,12 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                 + " WHERE "
                 + DBHelper.KEY_ID + " = ?";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {workingDaysId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId});
 
         contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
         contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             database.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
                     DBHelper.KEY_ID + " = ?",
                     new String[]{String.valueOf(workingDaysId)});
@@ -742,36 +745,34 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
         }
     }
 
-    private void deleteTime(){
+    private void deleteTime() {
         workingDaysId = getIntent().getStringExtra(WORKING_DAYS_ID);
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         //получаю время кнопки, на которую нажал
 
         //получаем все время этого дня
+        final DatabaseReference timeRef = database.getReference(USERS)
+                .child(userId)
+                .child(SERVICES)
+                .child(serviceId)
+                .child(WORKING_DAYS)
+                .child(workingDaysId)
+                .child(WORKING_TIME);
+        Log.d(TAG, "deleteTime: "+userId);
+        Log.d(TAG, "deleteTime: "+serviceId);
+        Log.d(TAG, "deleteTime: "+workingDaysId);
 
-        final Query query = database.getReference(WORKING_TIME)
-                .orderByChild(WORKING_DAYS_ID)
-                .equalTo(workingDaysId);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //делаем запрос по такому дню, такому времени
-                //удаляем время из базы данных
+            public void onDataChange(@NonNull DataSnapshot timesSnapshot) {
+                Log.d(TAG, "onDataChange: " +timesSnapshot);
                 for (String hours : removedHours) {
-                    for (DataSnapshot time : dataSnapshot.getChildren()) {
-                        if (String.valueOf(time.child("time").getValue()).equals(hours)) {
+                    for (DataSnapshot time : timesSnapshot.getChildren()) {
+                        if (String.valueOf(time.child(TIME).getValue()).equals(hours)) {
                             String timeId = String.valueOf(time.getKey());
 
-                            //возвращает все дни определенного сервиса
-                            DatabaseReference myRef = database.getReference(WORKING_TIME).child(timeId);
+                            timeRef.child(timeId).removeValue();
 
-                            Map<String, Object> items = new HashMap<>();
-                            items.put(USER_ID, null);
-                            items.put("time", null);
-                            items.put(WORKING_DAYS_ID, null);
-
-                            myRef.updateChildren(items);
                             deleteTimeFromLocalStorage();
                         }
                     }
@@ -779,11 +780,13 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                 //очищаяем массив
                 removedHours.clear();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
+
             }
         });
+
     }
 
     private void deleteTimeFromLocalStorage() {
@@ -804,8 +807,8 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{String.valueOf(workingDaysId)});
 
-        for (String time: removedHours) {
-            if(checkTimeForWorker(cursor, time)) {
+        for (String time : removedHours) {
+            if (checkTimeForWorker(cursor, time)) {
                 database.delete(
                         DBHelper.TABLE_WORKING_TIME,
                         DBHelper.KEY_TIME_WORKING_TIME + " = ? AND "
@@ -817,7 +820,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
     // Проверяет есть ли какие-либо записи на данное время
     private boolean checkTimeForWorker(Cursor cursor, String time) {
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
             do {
                 if (time.equals(cursor.getString(indexTime))) {
@@ -830,21 +833,21 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
     // Проверяет свободно ли данное время ДОДЕЛАТЬ
     private boolean isFreeTime(Cursor cursor, String time) {
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
             do {
-                    return true;
+                return true;
             } while (cursor.moveToNext());
         }
         return false;
     }
 
     // Получает
-    private String getUserPhone(){
+    private String getUserPhone() {
         return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
-    private  String getUserId(){
+    private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
@@ -859,11 +862,11 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                         + " FROM "
                         + DBHelper.TABLE_WORKING_DAYS
                         + " WHERE "
-                        + DBHelper.KEY_ID+ " = ?";
+                        + DBHelper.KEY_ID + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId});
         String date = "-";
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
             date = cursor.getString(indexDate);
             cursor.close();
@@ -873,21 +876,21 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     }
 
     // Добавление кнопок со временем на экран
-    private void addButtonsOnScreen(boolean isPm){
+    private void addButtonsOnScreen(boolean isPm) {
         //Дополнительные часы (am - 0, pm - 12)
         int extraHours = 0;
-        if(isPm) {
+        if (isPm) {
             extraHours = 12;
         }
 
-        for (int i=0; i<ROWS_COUNT; i++) {
-            for (int j=0; j<COLUMNS_COUNT; j++) {
-                timeBtns[i][j]= new Button(this);
+        for (int i = 0; i < ROWS_COUNT; i++) {
+            for (int j = 0; j < COLUMNS_COUNT; j++) {
+                timeBtns[i][j] = new Button(this);
                 // установка параметров
                 timeBtns[i][j].setWidth(50);
                 timeBtns[i][j].setHeight(30);
-                timeBtns[i][j].setX(j*width/COLUMNS_COUNT);
-                timeBtns[i][j].setY(i*height/(2*ROWS_COUNT));
+                timeBtns[i][j].setX(j * width / COLUMNS_COUNT);
+                timeBtns[i][j].setY(i * height / (2 * ROWS_COUNT));
                 timeBtns[i][j].setBackgroundResource(R.drawable.time_button);
 
                 timeBtns[i][j].setTag(R.string.selectedId, false);
@@ -897,8 +900,8 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                 String min = (j % 2 == 0) ? "00" : "30";
                 timeBtns[i][j].setText(hour + ":" + min);
 
-                if(timeBtns[i][j].getParent() != null) {
-                    ((ViewGroup)timeBtns[i][j].getParent()).removeView(timeBtns[i][j]);
+                if (timeBtns[i][j].getParent() != null) {
+                    ((ViewGroup) timeBtns[i][j].getParent()).removeView(timeBtns[i][j]);
                 }
                 mainLayout.addView(timeBtns[i][j]);
             }
@@ -906,6 +909,6 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     }
 
     private void attentionBadConnection() {
-        Toast.makeText(this,"Плохое соединение",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Плохое соединение", Toast.LENGTH_SHORT).show();
     }
 }
