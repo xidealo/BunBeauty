@@ -113,7 +113,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         contentValues.put(DBHelper.KEY_ID, user.getId());
         contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
-        contentValues.put(DBHelper.KEY_USER_ID, user.getPhone());
+        contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
 
         database.insert(DBHelper.TABLE_CONTACTS_USERS,null,contentValues);
     }

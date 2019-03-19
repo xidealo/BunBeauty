@@ -421,8 +421,8 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_CITY_USERS,localUser.getCity());
 
         boolean isUpdate = workWithLocalStorageApi
-                .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
-                        localUser.getPhone());
+                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS,
+                        localUser.getId());
 
         if (isUpdate) {
             localDatabase.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
@@ -504,8 +504,6 @@ public class DownloadServiceData {
     private void loadPhotosByPhoneNumber(DataSnapshot userSnapshot) {
 
         Photo photo = new Photo();
-        Log.d(TAG, "loadPhotosByPhoneNumber: " + userSnapshot.getKey());
-        Log.d(TAG, "loadPhotosByPhoneNumber: " + String.valueOf(userSnapshot.child(PHOTO_LINK).getValue()));
         photo.setPhotoId(userSnapshot.getKey());
         photo.setPhotoLink(String.valueOf(userSnapshot.child(PHOTO_LINK).getValue()));
 

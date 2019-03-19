@@ -248,7 +248,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + " WHERE "
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
                         + " AND "
-                        + DBHelper.KEY_USER_ID + " = ? "
+                        + DBHelper.KEY_PHONE_USERS + " = ? "
                         + " AND "
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                         + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
@@ -368,7 +368,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + " AND "
                         + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ? "
                         + " AND "
-                        + DBHelper.KEY_USER_ID + " = 0"
+                        + DBHelper.KEY_ID + " = 0"
                         + " AND "
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                         + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS

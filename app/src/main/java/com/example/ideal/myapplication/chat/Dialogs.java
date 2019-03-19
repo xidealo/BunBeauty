@@ -89,7 +89,7 @@ public class Dialogs extends AppCompatActivity {
         init();
     }
 
-    private  void init(){
+    private void init() {
         manager = getSupportFragmentManager();
 
         PanelBuilder panelBuilder = new PanelBuilder();
@@ -103,6 +103,7 @@ public class Dialogs extends AppCompatActivity {
         resultLayout = findViewById(R.id.mainDialogsLayout);
         resultLayout.setVisibility(View.INVISIBLE);
     }
+
     // Подгружает все мои диалоги и всё что с ними связано из Firebase
     private void loadDialogs() {
         // Загрузка диалогов, где мой номер стоит на 1-м месте
@@ -122,7 +123,7 @@ public class Dialogs extends AppCompatActivity {
         query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dialogs) {
-                for(DataSnapshot dialog:dialogs.getChildren()) {
+                for (DataSnapshot dialog : dialogs.getChildren()) {
                     String secondPhone = String.valueOf(dialog.child(SECOND_PHONE).getValue());
                     String dialogId = dialog.getKey();
 
@@ -132,6 +133,7 @@ public class Dialogs extends AppCompatActivity {
                     loadInterlocutor(secondPhone, dialogId);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -149,7 +151,7 @@ public class Dialogs extends AppCompatActivity {
         query2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dialogs) {
-                for(DataSnapshot dialog:dialogs.getChildren()){
+                for (DataSnapshot dialog : dialogs.getChildren()) {
                     final String firstPhone = String.valueOf(dialog.child(FIRST_PHONE).getValue());
                     final String dialogId = dialog.getKey();
 
@@ -184,7 +186,7 @@ public class Dialogs extends AppCompatActivity {
 
                 loadMessages(dialogId);
 
-                loadPhotosByPhoneNumber(dialogId,user);
+                loadPhotosByPhoneNumber(dialogId, user);
             }
 
             @Override
@@ -203,7 +205,7 @@ public class Dialogs extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
 
-                for(DataSnapshot fPhoto: photosSnapshot.getChildren()){
+                for (DataSnapshot fPhoto : photosSnapshot.getChildren()) {
 
                     Photo photo = new Photo();
 
@@ -211,7 +213,7 @@ public class Dialogs extends AppCompatActivity {
                     photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
                     photo.setPhotoOwnerId(String.valueOf(fPhoto.child(OWNER_ID).getValue()));
 
-                    addPhotoInLocalStorage(photo,dialogId,user);
+                    addPhotoInLocalStorage(photo, dialogId, user);
                 }
 
             }
@@ -223,26 +225,25 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void addPhotoInLocalStorage(Photo photo,String dialogId, User user) {
+    private void addPhotoInLocalStorage(Photo photo, String dialogId, User user) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
         contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
-        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getPhotoOwnerId());
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
         boolean isUpdate = workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_PHOTOS,
                         photo.getPhotoId());
 
-        if(isUpdate){
+        if (isUpdate) {
             database.update(DBHelper.TABLE_PHOTOS, contentValues,
                     DBHelper.KEY_ID + " = ?",
                     new String[]{photo.getPhotoId()});
-        }
-        else {
+        } else {
             contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
             database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
@@ -259,9 +260,9 @@ public class Dialogs extends AppCompatActivity {
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
 
         boolean isUpdate = utilitiesApi
-               .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
-                       phone);
-        if(isUpdate) {
+                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS,
+                        phone);
+        if (isUpdate) {
             database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
                     DBHelper.KEY_USER_ID + " = ?",
                     new String[]{phone});
@@ -283,7 +284,7 @@ public class Dialogs extends AppCompatActivity {
                 .hasSomeData(DBHelper.TABLE_DIALOGS,
                         dialogId);
 
-        if(isUpdate) {
+        if (isUpdate) {
             database.update(DBHelper.TABLE_DIALOGS,
                     contentValues,
                     DBHelper.KEY_ID + " = ?",
@@ -307,7 +308,7 @@ public class Dialogs extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot messages) {
 
-                for(DataSnapshot message:messages.getChildren()){
+                for (DataSnapshot message : messages.getChildren()) {
                     // идем по всем сообщениям
                     Message myMessage = new Message();
 
@@ -323,6 +324,7 @@ public class Dialogs extends AppCompatActivity {
                     loadReview(myMessage);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -345,7 +347,7 @@ public class Dialogs extends AppCompatActivity {
                         message.getId());
 
         // update || insert
-        if(isUpdate) {
+        if (isUpdate) {
             database.update(DBHelper.TABLE_MESSAGES, contentValues,
                     DBHelper.KEY_ID + " = ?",
                     new String[]{String.valueOf(message.getId())});
@@ -364,7 +366,7 @@ public class Dialogs extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot orders) {
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
-                for(DataSnapshot order:orders.getChildren()){
+                for (DataSnapshot order : orders.getChildren()) {
                     // идем по всем сообщениям
                     Order myOrder = new Order();
                     String orderId = order.getKey();
@@ -386,9 +388,9 @@ public class Dialogs extends AppCompatActivity {
 
                     boolean isUpdate = utilitiesApi
                             .hasSomeData(DBHelper.TABLE_ORDERS,
-                            myOrder.getId());
+                                    myOrder.getId());
                     // update || insert
-                    if(isUpdate) {
+                    if (isUpdate) {
                         database.update(DBHelper.TABLE_ORDERS, contentValues,
                                 DBHelper.KEY_ID + " = ?",
                                 new String[]{String.valueOf(myOrder.getId())});
@@ -399,6 +401,7 @@ public class Dialogs extends AppCompatActivity {
                     updateWorkingTimeInLocalStorage(orderId);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -415,11 +418,11 @@ public class Dialogs extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot reviews) {
 
-                if(reviews.getChildrenCount()== 0 ){
+                if (reviews.getChildrenCount() == 0) {
                     resultLayout.setVisibility(View.VISIBLE);
                 }
 
-                for(DataSnapshot review: reviews.getChildren()){
+                for (DataSnapshot review : reviews.getChildren()) {
                     RatingReview ratingReview = new RatingReview();
 
                     String workingTimeId = String.valueOf(review.child(WORKING_TIME_ID).getValue());
@@ -457,7 +460,7 @@ public class Dialogs extends AppCompatActivity {
                         ratingReview.getId());
 
         // update || insert
-        if(isUpdate) {
+        if (isUpdate) {
             database.update(DBHelper.TABLE_REVIEWS, contentValues,
                     DBHelper.KEY_ID + " = ?",
                     new String[]{String.valueOf(ratingReview.getId())});
@@ -474,10 +477,9 @@ public class Dialogs extends AppCompatActivity {
 
         final boolean isOrder = (review == null);
         final String timeId;
-        if(isOrder) {
+        if (isOrder) {
             timeId = order.getWorkingTimeId();
-        }
-        else {
+        } else {
             timeId = review.getWorkingTimeId();
         }
 
@@ -497,22 +499,21 @@ public class Dialogs extends AppCompatActivity {
                 String dayId = String.valueOf(time.child(WORKING_DAY_ID).getValue());
 
                 // получаем день этого сообщения
-                if(isOrder) {
+                if (isOrder) {
                     order.setOrderTime(myTime);
-                    addDayInLocalStorage(dayId,order, null, dialogId);
-                }
-                else{
-                    addDayInLocalStorage(dayId,null, review, dialogId);
+                    addDayInLocalStorage(dayId, order, null, dialogId);
+                } else {
+                    addDayInLocalStorage(dayId, null, review, dialogId);
 
                     String type = review.getType();
                     String myPhone = getUserPhone();
 
-                    if((userId.equals("0") || userId.equals(myPhone))) {
-                        if(type.equals(REVIEW_FOR_SERVICE)) {
+                    if ((userId.equals("0") || userId.equals(myPhone))) {
+                        if (type.equals(REVIEW_FOR_SERVICE)) {
                             addReviewInLocalStorage(review);
                         }
                     } else {
-                        if(type.equals(REVIEW_FOR_USER)) {
+                        if (type.equals(REVIEW_FOR_USER)) {
                             addReviewInLocalStorage(review);
                         }
                     }
@@ -534,6 +535,7 @@ public class Dialogs extends AppCompatActivity {
                     database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -557,7 +559,7 @@ public class Dialogs extends AppCompatActivity {
                 String date = String.valueOf(day.child("data").getValue());
                 String serviceId = String.valueOf(day.child(SERVICE_ID).getValue());
 
-                if(isOrder) {
+                if (isOrder) {
                     long sysdate = workWithTimeApi.getSysdateLong();
                     long orderDate = workWithTimeApi.getMillisecondsStringDate(date + " " + order.getOrderTime());
                     long dayLong = 86400000;
@@ -614,6 +616,7 @@ public class Dialogs extends AppCompatActivity {
                     createReview(order, REVIEW_FOR_USER, messageId);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -621,11 +624,11 @@ public class Dialogs extends AppCompatActivity {
         });
     }
 
-    private void createReview(Order order, String type, String messageId){
+    private void createReview(Order order, String type, String messageId) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference myRef = database.getReference(REVIEWS);
-        Map<String,Object> items = new HashMap<>();
+        Map<String, Object> items = new HashMap<>();
 
         items.put(RATING, "0");
         items.put(REVIEW, "");
@@ -633,7 +636,7 @@ public class Dialogs extends AppCompatActivity {
         items.put(MESSAGE_ID, messageId);
         items.put(WORKING_TIME_ID, order.getWorkingTimeId());
 
-        String reviewId =  myRef.push().getKey();
+        String reviewId = myRef.push().getKey();
         myRef = database.getReference(REVIEWS).child(reviewId);
         myRef.updateChildren(items);
 
@@ -650,14 +653,14 @@ public class Dialogs extends AppCompatActivity {
     private String createMessage(String dialogId) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(MESSAGES);
-        Map<String,Object> items = new HashMap<>();
+        Map<String, Object> items = new HashMap<>();
 
         String dateNow = workWithTimeApi.getCurDateInFormatYMDHMS();
 
         items.put(MESSAGE_TIME, dateNow);
         items.put(DIALOG_ID, dialogId);
 
-        String messageId =  myRef.push().getKey();
+        String messageId = myRef.push().getKey();
         myRef = database.getReference(MESSAGES).child(messageId);
         myRef.updateChildren(items);
 
@@ -678,8 +681,8 @@ public class Dialogs extends AppCompatActivity {
         serviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot service) {
-                SQLiteDatabase database = dbHelper.getWritableDatabase();
 
+                SQLiteDatabase database = dbHelper.getWritableDatabase();
                 String name = String.valueOf(service.child(NAME).getValue());
 
                 ContentValues contentValues = new ContentValues();
@@ -727,7 +730,7 @@ public class Dialogs extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        for(DataSnapshot time: dataSnapshot.getChildren()) {
+                        for (DataSnapshot time : dataSnapshot.getChildren()) {
                             final String timeId = String.valueOf(time.getKey());
                             DatabaseReference myRef = database.getReference(WORKING_TIME)
                                     .child(timeId)
@@ -739,7 +742,7 @@ public class Dialogs extends AppCompatActivity {
 
                                     SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-                                    String phone =  String.valueOf(dataSnapshot.getValue());
+                                    String phone = String.valueOf(dataSnapshot.getValue());
 
                                     ContentValues contentValues = new ContentValues();
                                     contentValues.put(DBHelper.KEY_USER_ID, phone);
@@ -756,12 +759,14 @@ public class Dialogs extends AppCompatActivity {
                             });
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                         attentionBadConnection();
                     }
                 });
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -788,6 +793,6 @@ public class Dialogs extends AppCompatActivity {
     }
 
     private void attentionBadConnection() {
-        Toast.makeText(this,"Плохое соединение",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Плохое соединение", Toast.LENGTH_SHORT).show();
     }
 }

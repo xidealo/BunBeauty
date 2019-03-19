@@ -31,7 +31,6 @@ public class Messages extends AppCompatActivity {
     private String dialogId;
     private String senderName;
     private DBHelper dbHelper;
-
     private FragmentManager manager;
 
     private LinearLayout messagesLayout;

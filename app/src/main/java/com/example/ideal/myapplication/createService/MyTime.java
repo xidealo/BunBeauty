@@ -504,7 +504,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     // Проверяет есть ли запись на данный день
     private String checkMyOrder(Cursor cursor) {
         if(cursor.moveToFirst()) {
-            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
             do {
                 if(cursor.getString(indexUserId).equals(userId)) {
@@ -707,7 +707,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
             ContentValues contentValues = new ContentValues();
 
-            contentValues.put(DBHelper.KEY_USER_ID, userId);
+            contentValues.put(DBHelper.KEY_ID, userId);
             database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
                     DBHelper.KEY_ID + " = ? ",
                     new String[]{String.valueOf(timeId)});
