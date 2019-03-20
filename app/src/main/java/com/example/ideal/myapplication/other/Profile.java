@@ -655,13 +655,19 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_SERVICES + ", "
                         + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_WORKING_TIME
+                        + DBHelper.TABLE_WORKING_TIME + ", "
+                        + DBHelper.TABLE_ORDERS
                         + " WHERE "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
                         + " AND "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                        + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " AND "
+                        + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'"
+                        + " AND "
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
                         + " AND "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = ?"
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
                         + " AND "
                         + " STRFTIME('%s', " + DBHelper.KEY_DATE_WORKING_DAYS
                         + ")>=STRFTIME('%s', DATE('now'))";

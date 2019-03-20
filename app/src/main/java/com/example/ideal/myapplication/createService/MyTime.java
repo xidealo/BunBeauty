@@ -73,10 +73,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     private String workingDaysId;
     private String serviceId;
     private String date;
-    private String serviceName;
-    private String time;
-    private String dataDay;
-    private String serviceId;
     private int width;
     private int height;
     private String dialogId = "";
@@ -176,7 +172,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
                     Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
                 } else {
                     if (workingHours.size() == 1) {
-                        confirm();
+                        loadInformationAboutService(getWorkingTimeId());
                     }
                 }
                 break;
@@ -231,7 +227,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    public void confirm() {
+    public void confirm(String serviceName,String dataDay, String time) {
         AlertDialog dialog = new AlertDialog.Builder(this).create();
         dialog.setTitle("Запись на услугу");
         dialog.setMessage("Записаться на услугу " + serviceName + " " + dataDay + " числа в " + time);
@@ -260,10 +256,11 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
             int indexDateDay = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
             int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
 
-            serviceName = cursor.getString(indexNameService);
-            dataDay = cursor.getString(indexDateDay);
-            time = cursor.getString(indexTime);
-            confirm();
+            String serviceName = cursor.getString(indexNameService);
+            String dataDay = cursor.getString(indexDateDay);
+            String time = cursor.getString(indexTime);
+
+            confirm(serviceName, dataDay,time);
         }
     }
 

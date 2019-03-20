@@ -313,7 +313,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
                 + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
                 + " AND "
-                + DBHelper.KEY_ID + " = ?"
+                + DBHelper.KEY_USER_ID + " = ?"
                 + " AND "
                 + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
 

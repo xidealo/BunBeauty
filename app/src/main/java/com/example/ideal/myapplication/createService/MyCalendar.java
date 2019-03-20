@@ -45,7 +45,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     private static final int WEEKS_COUNT = 4;
     private static final int DAYS_COUNT = 7;
 
-
     private String statusUser;
     private String date;
     private String serviceId;
@@ -182,7 +181,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    // проверяет имеется ли у данного пользователя запись на данную услугу
+    // проверяет имеется ли у данного пользователя запись на услугу
     private void checkOrder(){
         //Если пользователь записан на какой-то день выделить только его
         date = getOrderDate(); // дата YYYY-mm-d
@@ -234,7 +233,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     //Возвращает дату записи
     private String getOrderDate() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        String userId = getUserPhone();
+        String userId = getUserId();
         // Получает дату записи
         // Таблицы: рабочии дни, рабочие время
         // Условия: связываем таблицы по id рабочего дня; уточняем id сервиса и id пользователя
@@ -248,7 +247,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + " WHERE "
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
                         + " AND "
-                        + DBHelper.KEY_PHONE_USERS + " = ? "
+                        + DBHelper.KEY_USER_ID + " = ? "
                         + " AND "
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                         + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
@@ -264,7 +263,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + ")) <= 0)";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {serviceId, userId});
-
         if(cursor.moveToFirst()) {
             int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
             String orderDate = cursor.getString(indexDate);
@@ -509,10 +507,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
 
     private  String getUserId(){
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
-
-    private  String getUserPhone(){
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
     @Override
