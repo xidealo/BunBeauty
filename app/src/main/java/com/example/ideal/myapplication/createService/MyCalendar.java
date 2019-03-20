@@ -221,7 +221,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         dayBtns[i][j].setEnabled(false);
                         dayBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
                     } else {
-                        Log.d(TAG, "dayId: " + dayId);
                         if (!hasSomeTime(dayId)) {
                             dayBtns[i][j].setEnabled(false);
                             dayBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
@@ -357,10 +356,14 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         String takedTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS
                 + " FROM "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
                 + DBHelper.TABLE_WORKING_TIME + ", "
                 + DBHelper.TABLE_ORDERS
                 + " WHERE "
                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                 + " AND "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
                 + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
@@ -373,10 +376,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 + DBHelper.TABLE_WORKING_TIME + ", "
                 + DBHelper.TABLE_ORDERS
                 + " WHERE "
-                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
-                + " AND "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                 + " AND "
                 + DBHelper.KEY_USER_ID + " = ?"
                 + " AND "
@@ -410,7 +411,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                 + ")) <= 0))))";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId, dayId, dayId, getUserId()});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId, dayId, getUserId()});
 
         if(cursor.moveToFirst()) {
             cursor.close();

@@ -321,7 +321,7 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
             selectBtsForWorker(cursor);
         } else {
             // Это не мой сервис (я - User)
-            selectBtsForUser(cursor);
+            selectBtsForUser();
         }
     }
 
@@ -349,9 +349,10 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
     }
 
     // Выделяет кнопки (User)
-    private void selectBtsForUser(Cursor cursor) {
+    private void selectBtsForUser() {
         // Время на которое я записан
         String myOrderTime = checkMyOrder();
+        Log.d(TAG, "myOrderTime: " + myOrderTime);
 
         for (int i = 0; i < ROWS_COUNT; i++) {
             for (int j = 0; j < COLUMNS_COUNT; j++) {
@@ -359,7 +360,6 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                 if(time.length() == 4) {
                     time = "0" + time;
                 }
-
 
                 //Проверка на наличие записи на данный день
                 if (!myOrderTime.equals("")) {
@@ -379,7 +379,6 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
                     // Проверка является ли данное время свободным
                     if (isFreeTime(time)) {
-                        Log.d(TAG, "selectBtsForUser: " + time);
                         timeBtns[i][j].setBackgroundResource(R.drawable.time_button);
                         timeBtns[i][j].setTag(R.string.selectedId, false);
                         // Проверка осталось ли больше 2х часов до данного времени
@@ -482,16 +481,33 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
+        String orderQuery = "SELECT * FROM "
+                + DBHelper.TABLE_ORDERS;
+
+        Cursor orderCursor = database.rawQuery(orderQuery, new String[]{});
+
+        int timeIdIndex = orderCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_ORDERS);
+        int userIdIndex = orderCursor.getColumnIndex(DBHelper.KEY_USER_ID);
+        int isCanceledIndex = orderCursor.getColumnIndex(DBHelper.KEY_IS_CANCELED_ORDERS);
+
+        if(orderCursor.moveToFirst()) {
+            String timeId = orderCursor.getString(timeIdIndex);
+            String userId = orderCursor.getString(userIdIndex);
+            String isCanceled = orderCursor.getString(isCanceledIndex);
+
+            Log.d(TAG, "checkMyOrder: " + timeId + " " + userId + " " + isCanceled);
+        }
+        orderCursor.close();
+
+
         String myTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS
                 + " FROM "
                 + DBHelper.TABLE_WORKING_TIME + ", "
                 + DBHelper.TABLE_ORDERS
                 + " WHERE "
-                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
-                + " AND "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                 + " AND "
                 + DBHelper.KEY_USER_ID + " = ?"
                 + " AND "
@@ -515,7 +531,9 @@ public class MyTime extends AppCompatActivity  implements View.OnClickListener {
                 + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                 + ")) <= 0";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId, workingDaysId, userId});
+        Log.d(TAG, "sqlQuery: " + sqlQuery);
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId, userId});
 
         String time = "";
         if(cursor.moveToFirst()) {
