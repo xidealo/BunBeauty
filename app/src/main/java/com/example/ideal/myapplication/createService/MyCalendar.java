@@ -185,7 +185,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     // проверяет имеется ли у данного пользователя запись на данную услугу
     private void checkOrder(){
         //Если пользователь записан на какой-то день выделить только его
-        date = getOrderDate(); // дата YYYY-mm-dd
+        date = getOrderDate(); // дата YYYY-mm-d
         if(!date.equals("")) {
             String[] arrDate = date.split("-");
             String orderDate = arrDate[2] + " " + monthToString(arrDate[1]);
@@ -350,59 +350,84 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     // Возвращает есть ли в рабочем дне рабочие часы
     private boolean hasSomeTime(String dayId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
+      
+        // Проверяет есть ли доступное время на данный день по его id
+        String takedTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
 
-        // Получает id рабочего дня
-        // Таблицы: рабочие время
-        // Условия: уточняем id рабочего дня
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_TIME_WORKING_TIME + ", "
-                        + DBHelper.KEY_DATE_WORKING_DAYS
-                        + " FROM "
-                        + DBHelper.TABLE_ORDERS+ ", "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_WORKING_DAYS
-                        + " WHERE "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_ID + " = 0"
-                        + " AND "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                        + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                        + " AND "
-                        + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
+        String myTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_USER_ID + " = ?"
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId});
+        String sqlQuery = "SELECT "
+                + DBHelper.KEY_TIME_WORKING_TIME
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_WORKING_DAYS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                + " AND ((("
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " NOT IN (" + takedTimeQuery + ")"
+                + " AND ("
+                // 3 часа - разница с Гринвичем
+                // 2 часа - минимум времени до сеанса, чтобы за писаться
+                + "(STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ") <= 0)"
+                + ") OR (("
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " IN (" + myTimeQuery + ")"
+                + ") AND ("
+                + "(STRFTIME('%s', 'now')+3*60*60) - (STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ")) <= 0))))";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId, dayId, getUserId()});
 
         if(cursor.moveToFirst()) {
-            int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
-            int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
-            String date, time;
-
-            do {
-                date = cursor.getString(indexDate);
-                time = cursor.getString(indexTime);
-                if(hasMoreThenTwoHours(date, time)) {
-                    cursor.close();
-                    return true;
-                }
-            } while (cursor.moveToNext());
+            cursor.close();
+            return true;
         }
         cursor.close();
         return false;
     }
 
-    private boolean hasMoreThenTwoHours(String date, String time) {
+    /*private boolean hasMoreThenTwoHours(String date, String time) {
         long twoHours = 2*60*60*1000;
 
         long sysdateLong = workWithTimeApi.getSysdateLong() ;
         long currentLong = workWithTimeApi.getMillisecondsStringDate(date + " " + time);
 
         return currentLong - sysdateLong >= twoHours;
-    }
+    }*/
 
     // Преобразует дату в формат БД
     private String convertDate(String dayAndMonth, String year) {

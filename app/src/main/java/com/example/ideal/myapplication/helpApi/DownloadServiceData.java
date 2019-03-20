@@ -101,6 +101,7 @@ public class DownloadServiceData {
 
             service.setId(serviceId);
             service.setName(serviceName);
+
             service.setUserId(userId);
             service.setCost(serviceCost);
             service.setDescription(serviceDescription);
@@ -121,7 +122,8 @@ public class DownloadServiceData {
 
             ContentValues contentValues = new ContentValues();
             String dayId = workingDaySnapshot.getKey();
-            contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, String.valueOf(workingDaySnapshot.child(DATE).getValue()));
+            String date = String.valueOf(workingDaySnapshot.child(DATE).getValue());
+            contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
             contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
 
             boolean hasSomeData = workWithLocalStorageApi
@@ -130,7 +132,7 @@ public class DownloadServiceData {
                 localDatabase.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
                         DBHelper.KEY_ID + " = ?",
                         new String[]{dayId});
-            } else {
+        } else {
                 contentValues.put(DBHelper.KEY_ID, dayId);
                 localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
             }
