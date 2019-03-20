@@ -141,15 +141,15 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         String sqlQuery = "SELECT "
                 + DBHelper.KEY_NAME_USERS + ", "
                 + DBHelper.KEY_CITY_USERS + ", "
-                + DBHelper.KEY_USER_ID
+                + DBHelper.KEY_PHONE_USERS
                 + " FROM " + DBHelper.TABLE_CONTACTS_USERS
-                + " WHERE " + DBHelper.KEY_USER_ID + " = ?";
+                + " WHERE " + DBHelper.KEY_PHONE_USERS + " = ?";
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{oldPhone});
 
         if (cursor.moveToFirst()) {
             int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
             int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
-            int indexPhone = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+            int indexPhone = cursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
 
             nameInput.setText(cursor.getString(indexName));
             cityInput.setText(cursor.getString(indexCity));
@@ -527,7 +527,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         if(contentValues.size()>0) {
             database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
-                    DBHelper.KEY_USER_ID + " = ?",
+                    DBHelper.KEY_PHONE_USERS + " = ?",
                     new String[]{String.valueOf(oldPhone)});
         }
     }
