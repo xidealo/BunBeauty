@@ -40,6 +40,8 @@ public class MyAuthorization {
 
     private static final String WORKING_TIME = "working time";
     private static final String WORKING_DAY_ID = "working day id";
+    private static final String WORKING_TIME_ID = "working time id";
+
     private static final String TIME = "time";
 
     private static final String WORKING_DAYS = "working days";
@@ -51,6 +53,7 @@ public class MyAuthorization {
 
     private static final String SUBSCRIPTIONS = "subscriptions";
     private static final String WORKER_ID = "worker id";
+    private static final String ORDERS = "orders";
 
     private DBHelper dbHelper;
 
@@ -100,16 +103,20 @@ public class MyAuthorization {
                         addUserInfoInLocalStorage(user);
 
                         // Добавляем подписки пользователя
-                        loadUserSubscriptions();
+                        loadUserSubscriptions(userSnapshot);
 
                         //добавляем фото
-                        loadPhotosByPhoneNumber(userId);
+                        loadPhotosByPhoneNumber(userSnapshot);
 
                         // Загружаем сервисы пользователя из FireBase
-                        loadServiceByUserPhone(userSnapshot, user);
+                        loadServiceByUserId(userSnapshot, userId);
+
+                        // Загружаем записи пользователя
+                        loadOrders(userSnapshot.child(ORDERS));
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -118,28 +125,16 @@ public class MyAuthorization {
     }
 
 
-    private void loadUserSubscriptions() {
-        DatabaseReference subRef = FirebaseDatabase.getInstance().getReference(USERS).
-                child(getUserId()).
-                child(SUBSCRIPTIONS);
-        subRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot subscriptionSnapshot) {
-                for(DataSnapshot subSnapshot : subscriptionSnapshot.getChildren()) {
+    private void loadUserSubscriptions(DataSnapshot userSnapshot) {
 
-                    String id = subSnapshot.getKey();
-                    String workerId = String.valueOf(subSnapshot.child(WORKER_ID).getValue());
-                    loadUserById(workerId);
+        DataSnapshot subscriptionSnapshot = userSnapshot.child(SUBSCRIPTIONS);
+        for (DataSnapshot subSnapshot : subscriptionSnapshot.getChildren()) {
+            String id = subSnapshot.getKey();
+            String workerId = String.valueOf(subSnapshot.child(WORKER_ID).getValue());
+            loadUserById(workerId);
 
-                    addUserSubscriptionInLocalStorage(id, workerId);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
+            addUserSubscriptionInLocalStorage(id, workerId);
+        }
     }
 
     private void loadUserById(final String userId) {
@@ -163,7 +158,7 @@ public class MyAuthorization {
                     user.setName(String.valueOf(name));
                     user.setCity(city);
 
-                    loadPhotosByPhoneNumber(userId);
+                    loadPhotosByPhoneNumber(userSnapshot);
 
                     // Добавляем все данные о пользователе в SQLite
                     addUserInfoInLocalStorage(user);
@@ -186,48 +181,54 @@ public class MyAuthorization {
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
     }
 
-    private void loadServiceByUserPhone(DataSnapshot usersSnapshot, User user) {
+    private void loadServiceByUserId(DataSnapshot userSnapshot, String userId) {
         SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
-        String userId = user.getId();
 
         DownloadServiceData downloadServiceData = new DownloadServiceData(localDatabase, "Authorization");
-        downloadServiceData.loadSchedule(usersSnapshot, userId);
-
-        loadTimeByUserPhone();
+        downloadServiceData.loadSchedule(userSnapshot, userId);
     }
 
-    //загружаю место куда я записан
-    private void loadTimeByUserPhone() {
-        Query timeQuery = FirebaseDatabase.getInstance().getReference(WORKING_TIME)
-                .orderByChild(USER_ID)
-                .equalTo(myPhoneNumber);
-        timeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                final long ordersCount = dataSnapshot.getChildrenCount();
-                if(ordersCount==0){
+    // Получается загружаем все, о человеке, с которым можем взаимодействовать из профиля, возхможно в орджереде стоит хранить дату,
+    // чтобы считать ее прсорочена она или нет и уже от этого делать onDataChange, если дата просрочена,
+    // то мы никак через профиль не взаимодействуем с этим человеком
+    private void loadOrders(DataSnapshot _ordersSnapshot) {
+
+        /*if(_ordersSnapshot.getChildrenCount() == 0) {
+
+        }*/
+
+        for(DataSnapshot orderSnapshot: _ordersSnapshot.getChildren()){
+            //получаем "путь" к тому, где мы записаны
+            final String workerId = String.valueOf(orderSnapshot.child(WORKER_ID).getValue());
+            String serviceId = String.valueOf(orderSnapshot.child(SERVICE_ID).getValue());
+            DatabaseReference serviceReference = FirebaseDatabase.getInstance()
+                    .getReference(USERS)
+                    .child(workerId)
+                    .child(SERVICES)
+                    .child(serviceId);
+
+            serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot serviceSnapshot) {
+                    SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
+
+                    DownloadServiceData downloadServiceData = new DownloadServiceData(localDatabase, "Authorization");
+                    downloadServiceData.addServiceInLocalStorage(serviceSnapshot, workerId);
                     goToProfile();
-                    return;
                 }
 
-                orderCounter = 0;
-                for(DataSnapshot timeSnapshot:dataSnapshot.getChildren()){
-                    String timeId = String.valueOf(timeSnapshot.getKey());
-                    String time = String.valueOf(timeSnapshot.child(TIME).getValue());
-                    String timeWorkingDayId = String.valueOf(timeSnapshot.child(WORKING_DAY_ID).getValue());
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    addTimeInLocalStorage(timeId, time, myPhoneNumber, timeWorkingDayId);
-
-                    loadWorkingDayById(timeWorkingDayId, ordersCount);
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
+            });
+
+        }
+        //goToProfile();
     }
 
+
+    /*
     private void loadWorkingDayById(String workingDayId, final long ordersCount) {
         DatabaseReference dayReference = FirebaseDatabase.getInstance().getReference(WORKING_DAYS).child(workingDayId);
         dayReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -241,12 +242,14 @@ public class MyAuthorization {
 
                 loadServiceById(dayServiceId, ordersCount);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
             }
         });
     }
+
 
     private void loadServiceById(String serviceId, final long ordersCount) {
         DatabaseReference serviceReference = FirebaseDatabase.getInstance().getReference(SERVICES).child(serviceId);
@@ -269,7 +272,7 @@ public class MyAuthorization {
                 addUserServicesInLocalStorage(newService);
                 orderCounter++;
 
-                if((orderCounter == ordersCount)) {
+                if ((orderCounter == ordersCount)) {
                     // Выполняем вход
                     goToProfile();
                 }
@@ -281,32 +284,18 @@ public class MyAuthorization {
             }
         });
     }
+    */
 
-    private void loadPhotosByPhoneNumber(final String userId) {
+    private void loadPhotosByPhoneNumber(DataSnapshot userSnapshot) {
 
-        final DatabaseReference photoRef = FirebaseDatabase.getInstance().getReference(USERS)
-                .child(userId)
-                .child(PHOTO_LINK);
+        String photoLink = String.valueOf(userSnapshot.child(PHOTO_LINK).getValue());
 
-        photoRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
-                String photoLink = String.valueOf(photosSnapshot.getValue());
+        Photo photo = new Photo();
 
-                Photo photo = new Photo();
+        photo.setPhotoId(userSnapshot.getKey());
+        photo.setPhotoLink(photoLink);
 
-                photo.setPhotoId(userId);
-                photo.setPhotoLink(photoLink);
-
-                addPhotoInLocalStorage(photo);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
+        addPhotoInLocalStorage(photo);
 
     }
 
@@ -324,12 +313,11 @@ public class MyAuthorization {
                 .hasSomeData(DBHelper.TABLE_PHOTOS,
                         photo.getPhotoId());
 
-        if(isUpdate){
+        if (isUpdate) {
             database.update(DBHelper.TABLE_PHOTOS, contentValues,
                     DBHelper.KEY_ID + " = ?",
                     new String[]{photo.getPhotoId()});
-        }
-        else {
+        } else {
             contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
             database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
@@ -337,6 +325,7 @@ public class MyAuthorization {
 
     // Обновляет информацию о текущем пользователе в SQLite
     private void addUserInfoInLocalStorage(User user) {
+        Log.d(TAG, "addUserInfoInLocalStorage: ");
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -347,7 +336,6 @@ public class MyAuthorization {
         contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
         contentValues.put(DBHelper.KEY_ID, user.getId());
         // Добавляем данного пользователя в SQLite
-        Log.d(TAG, "addUserInfoInLocalStorage: ");
         database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
     }
 
@@ -356,17 +344,17 @@ public class MyAuthorization {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        database.delete(DBHelper.TABLE_CONTACTS_USERS,null,null);
+        database.delete(DBHelper.TABLE_CONTACTS_USERS, null, null);
         database.delete(DBHelper.TABLE_CONTACTS_SERVICES, null, null);
-        database.delete(DBHelper.TABLE_WORKING_DAYS,null,null);
-        database.delete(DBHelper.TABLE_WORKING_TIME,null,null);
+        database.delete(DBHelper.TABLE_WORKING_DAYS, null, null);
+        database.delete(DBHelper.TABLE_WORKING_TIME, null, null);
 
-        database.delete(DBHelper.TABLE_PHOTOS,null,null);
-        database.delete(DBHelper.TABLE_SUBSCRIBERS,null,null);
+        database.delete(DBHelper.TABLE_PHOTOS, null, null);
+        database.delete(DBHelper.TABLE_SUBSCRIBERS, null, null);
 
-        database.delete(DBHelper.TABLE_MESSAGES, null,null);
-        database.delete(DBHelper.TABLE_REVIEWS, null,null);
-        database.delete(DBHelper.TABLE_ORDERS, null,null);
+        database.delete(DBHelper.TABLE_MESSAGES, null, null);
+        database.delete(DBHelper.TABLE_REVIEWS, null, null);
+        database.delete(DBHelper.TABLE_ORDERS, null, null);
     }
 
     // Добавляет информацию о сервисах данного пользователя в SQLite
@@ -395,10 +383,10 @@ public class MyAuthorization {
 
         contentValues.put(DBHelper.KEY_ID, timeId);
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, time);
-        contentValues.put(DBHelper.KEY_PHONE_USERS,timeUserId);
+        contentValues.put(DBHelper.KEY_PHONE_USERS, timeUserId);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, timeWorkingDayId);
 
-        database.insert(DBHelper.TABLE_WORKING_TIME,null,contentValues);
+        database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
     }
 
     private void addWorkingDayInLocalStorage(String dayId, String dayDate, String serviceId) {
@@ -427,10 +415,10 @@ public class MyAuthorization {
     }
 
     private void attentionBadConnection() {
-        Toast.makeText(context,"Плохое соединение",Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Плохое соединение", Toast.LENGTH_SHORT).show();
     }
 
-    private String getUserId(){
+    private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 }

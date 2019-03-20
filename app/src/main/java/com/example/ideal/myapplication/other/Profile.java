@@ -328,7 +328,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 addServiceInLocalStorage(serviceId, userId, name);
 
                 // Подгружаем авторов ревью по сервисам
-                loadUserByService(userId);
+                //loadUserByService(userId);
             }
 
             @Override

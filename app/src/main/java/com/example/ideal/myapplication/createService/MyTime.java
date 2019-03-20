@@ -67,6 +67,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     private static final String IS_CANCELED = "is canceled";
     private static final String MESSAGE_ID = "message id";
     private static final String DIALOG_ID = "dialog id";
+    private static final String WORKER_ID = "worker id";
 
     private String statusUser;
     private String userId;
@@ -234,6 +235,8 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         dialog.setCancelable(false);
         dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Да", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int buttonId) {
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
                 makeOrder();
             }
         });
@@ -244,7 +247,9 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.show();
     }
-  
+
+
+
     private void loadInformationAboutService(String workingTimeId) {
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
@@ -541,16 +546,29 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     }
 
     // Записаться на данное время
+    private void makeOrderForUser(String orderId, String workerId) {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database
+                .getReference(USERS)
+                .child(userId)
+                .child(ORDERS)
+                .child(orderId);
+
+        Map<String, Object> items = new HashMap<>();
+        items.put(WORKER_ID, workerId);
+        items.put(SERVICE_ID, serviceId);
+
+        myRef.updateChildren(items);
+    }
 
     private void makeOrder() {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         String workingTimeId = getWorkingTimeId();
-
         String serviceOwnerId = getServiceOwnerId(workingTimeId);
 
-        // Прописываем путь в Firebase и получаем id записи
+        // Добавляем информацию о записи в LocalStorage и Firebase
         DatabaseReference myRef = database
                 .getReference(USERS)
                 .child(serviceOwnerId)
@@ -562,14 +580,11 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
                 .child(workingTimeId)
                 .child(ORDERS);
         String orderId = myRef.push().getKey();
-
-        // Добавляем запись в LocalStorage
         addOrderInLocalStorage(orderId, workingTimeId);
 
         //закрашиваем, чтобы нельзя было заисаться еще раз
         checkCurrentTimes();
 
-        // Создаём запись в Firebase
         Map<String, Object> items = new HashMap<>();
         items.put(IS_CANCELED, "false");
         items.put(USER_ID, getUserId());
@@ -577,12 +592,12 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         myRef = myRef.child(orderId);
         myRef.updateChildren(items);
 
-        // Создаём диалог
-        // createDialog(workingDaysId);
+        makeOrderForUser(orderId, serviceOwnerId);
 
         Toast.makeText(this, "Вы записались на услугу!", Toast.LENGTH_SHORT).show();
-        //не очень хорошо, тк может записать в локалку но не записать в фб? (пропал инет)
     }
+
+
 
     private String getServiceOwnerId(String workingTimeId) {
 
