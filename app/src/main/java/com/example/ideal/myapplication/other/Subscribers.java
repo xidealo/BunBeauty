@@ -71,12 +71,14 @@ public class Subscribers extends AppCompatActivity {
                         + DBHelper.KEY_NAME_USERS
                         + " FROM " + DBHelper.TABLE_CONTACTS_USERS + ", "
                         + DBHelper.TABLE_SUBSCRIBERS
-                        + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_USER_ID
-                        + " = " + DBHelper.KEY_WORKER_ID
-                        + " AND " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_USER_ID + " = ?";
+                        + " WHERE "
+                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
+                        + " = "
+                         + DBHelper.KEY_WORKER_ID
+                        + " AND "
+                        + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_USER_ID + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
-
         return cursor;
     }
 
@@ -97,7 +99,7 @@ public class Subscribers extends AppCompatActivity {
     }
 
     private  String getUserId(){
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     private void addSubscriptionToScreen(String workerId, String workerName) {

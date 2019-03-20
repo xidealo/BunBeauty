@@ -423,8 +423,8 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_CITY_USERS,localUser.getCity());
 
         boolean isUpdate = workWithLocalStorageApi
-                .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
-                        localUser.getPhone());
+                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS,
+                        localUser.getId());
 
         if (isUpdate) {
             localDatabase.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,

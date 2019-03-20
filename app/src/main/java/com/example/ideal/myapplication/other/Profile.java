@@ -216,7 +216,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     // получаем данные о пользователе и отображаем в прфоиле
     private void updateProfileData(String userId){
-        Log.d(TAG, "updateProfileData: " + userId);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         //получаем имя, фамилию и город пользователя по его id
         String sqlQuery =
@@ -361,7 +360,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_NAME_USERS, name);
 
         boolean isUpdate = workWithLocalStorageApi
-                .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
+                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS,
                         userId);
 
         if (isUpdate) {
@@ -576,16 +575,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         String sqlQuery =
-                "SELECT " + DBHelper.KEY_WORKER_ID + ", "
-                        + DBHelper.KEY_NAME_USERS
-                        + " FROM " + DBHelper.TABLE_CONTACTS_USERS + ", "
-                        + DBHelper.TABLE_SUBSCRIBERS
-                        + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
-                        + " = " + DBHelper.KEY_WORKER_ID
-                        + " AND " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_ID + " = ?";
+                "SELECT " + DBHelper.KEY_WORKER_ID
+                        + " FROM " + DBHelper.TABLE_SUBSCRIBERS
+                        + " WHERE " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_USER_ID + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
-
         return cursor.getCount();
     }
 
@@ -605,7 +599,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_SERVICES
                         + " WHERE "
-                        + DBHelper.KEY_USER_ID + " = ? ";
+                        + DBHelper.KEY_USER_ID+ " = ? ";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
         //Идём с конца
@@ -741,15 +735,18 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 "SELECT * FROM "
                 + DBHelper.TABLE_SUBSCRIBERS
                 + " WHERE "
-                + DBHelper.KEY_ID + " = ? AND "
+                + DBHelper.KEY_USER_ID + " = ? AND "
                 + DBHelper.KEY_WORKER_ID + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId, ownerId});
         if(cursor.moveToFirst()) {
+            cursor.close();
             return true;
         } else {
+            cursor.close();
             return false;
         }
+
     }
 
     private void goToLogIn() {

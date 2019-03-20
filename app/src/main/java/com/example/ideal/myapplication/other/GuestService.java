@@ -245,6 +245,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 user.setName(name);
                 user.setCity(city);
                 user.setPhone(phone);
+                user.setId(userSnapshot.getKey());
                 addUserInLocalStorage(user);
             }
 
@@ -263,15 +264,15 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         contentValues.put(DBHelper.KEY_CITY_USERS,localUser.getCity());
 
         boolean isUpdate = workWithLocalStorageApi
-                .hasSomeDataForUsers(DBHelper.TABLE_CONTACTS_USERS,
-                        localUser.getPhone());
+                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS,
+                        localUser.getId());
 
         if (isUpdate) {
             database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
-                    DBHelper.KEY_USER_ID + " = ?",
-                    new String[]{String.valueOf(localUser.getPhone())});
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{localUser.getId()});
         } else {
-            contentValues.put(DBHelper.KEY_USER_ID, localUser.getPhone());
+            contentValues.put(DBHelper.KEY_ID, localUser.getId());
             database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
     }
@@ -312,7 +313,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
                 + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
                 + " AND "
-                + DBHelper.KEY_USER_ID + " = ?"
+                + DBHelper.KEY_ID + " = ?"
                 + " AND "
                 + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
 

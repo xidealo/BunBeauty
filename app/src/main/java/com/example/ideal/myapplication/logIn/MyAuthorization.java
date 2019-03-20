@@ -24,6 +24,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class MyAuthorization {
+
+    private static final String TAG = "DBInf";
+
     private static final String PHONE = "phone";
 
     private static final String USERS = "users";
@@ -44,9 +47,10 @@ public class MyAuthorization {
     private static final String DATE = "data";
 
     //PHOTOS
-    private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
-    private static final String OWNER_ID = "owner id";
+
+    private static final String SUBSCRIPTIONS = "subscriptions";
+    private static final String WORKER_ID = "worker id";
 
     private DBHelper dbHelper;
 
@@ -113,17 +117,18 @@ public class MyAuthorization {
         });
     }
 
-    private void loadUserSubscriptions() {
-        Query query = FirebaseDatabase.getInstance().getReference("subscribers").
-                orderByChild(USER_ID).
-                equalTo(myPhoneNumber);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot subSnapshot : dataSnapshot.getChildren()) {
-                    String id = subSnapshot.getKey();
-                    String workerId = String.valueOf(subSnapshot.child("worker id").getValue());
 
+    private void loadUserSubscriptions() {
+        DatabaseReference subRef = FirebaseDatabase.getInstance().getReference(USERS).
+                child(getUserId()).
+                child(SUBSCRIPTIONS);
+        subRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot subscriptionSnapshot) {
+                for(DataSnapshot subSnapshot : subscriptionSnapshot.getChildren()) {
+
+                    String id = subSnapshot.getKey();
+                    String workerId = String.valueOf(subSnapshot.child(WORKER_ID).getValue());
                     loadUserById(workerId);
 
                     addUserSubscriptionInLocalStorage(id, workerId);
@@ -139,8 +144,9 @@ public class MyAuthorization {
 
     private void loadUserById(final String userId) {
 
-        final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(USERS).child(userId);
-
+        final DatabaseReference userRef = FirebaseDatabase.getInstance()
+                .getReference(USERS)
+                .child(userId);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
@@ -151,9 +157,9 @@ public class MyAuthorization {
                     goToRegistration();
                 } else {
                     String city = String.valueOf(userSnapshot.child(CITY).getValue());
-
                     User user = new User();
-                    user.setPhone(userId);
+                    user.setId(userSnapshot.getKey());
+                    user.setPhone(String.valueOf(userSnapshot.child(PHONE).getValue()));
                     user.setName(String.valueOf(name));
                     user.setCity(city);
 
@@ -175,9 +181,8 @@ public class MyAuthorization {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, id);
-        contentValues.put(DBHelper.KEY_USER_ID, myPhoneNumber);
+        contentValues.put(DBHelper.KEY_USER_ID, getUserId());
         contentValues.put(DBHelper.KEY_WORKER_ID, workerId);
-
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
     }
 
@@ -338,9 +343,11 @@ public class MyAuthorization {
         // Заполняем contentValues информацией о данном пользователе
         contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
-        contentValues.put(DBHelper.KEY_USER_ID, user.getPhone());
+        contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
+        contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
         contentValues.put(DBHelper.KEY_ID, user.getId());
         // Добавляем данного пользователя в SQLite
+        Log.d(TAG, "addUserInfoInLocalStorage: ");
         database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
     }
 
@@ -371,7 +378,7 @@ public class MyAuthorization {
         // Заполняем contentValues информацией о данном сервисе
         contentValues.put(DBHelper.KEY_ID, service.getId());
         contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName());
-        contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
+        contentValues.put(DBHelper.KEY_PHONE_USERS, service.getUserId());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
 
@@ -388,7 +395,7 @@ public class MyAuthorization {
 
         contentValues.put(DBHelper.KEY_ID, timeId);
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, time);
-        contentValues.put(DBHelper.KEY_USER_ID,timeUserId);
+        contentValues.put(DBHelper.KEY_PHONE_USERS,timeUserId);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, timeWorkingDayId);
 
         database.insert(DBHelper.TABLE_WORKING_TIME,null,contentValues);

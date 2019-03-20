@@ -248,7 +248,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + " WHERE "
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
                         + " AND "
-                        + DBHelper.KEY_USER_ID + " = ? "
+                        + DBHelper.KEY_PHONE_USERS + " = ? "
                         + " AND "
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                         + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
@@ -350,9 +350,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     // Возвращает есть ли в рабочем дне рабочие часы
     private boolean hasSomeTime(String dayId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-
+      
         // Проверяет есть ли доступное время на данный день по его id
-
         String takedTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS
                 + " FROM "

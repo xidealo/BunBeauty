@@ -122,7 +122,7 @@ public class WorkWithLocalStorageApi {
         String sqlQuery = "SELECT * FROM "
                 + tableName
                 + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ?";
+                + DBHelper.KEY_ID + " = ?";
 
         Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{id});
 
