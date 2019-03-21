@@ -193,9 +193,9 @@ public class MyAuthorization {
     // то мы никак через профиль не взаимодействуем с этим человеком
     private void loadOrders(DataSnapshot _ordersSnapshot) {
 
-        /*if(_ordersSnapshot.getChildrenCount() == 0) {
-
-        }*/
+        if(_ordersSnapshot.getChildrenCount() == 0) {
+            goToProfile();
+        }
 
         for(DataSnapshot orderSnapshot: _ordersSnapshot.getChildren()){
             //получаем "путь" к тому, где мы записаны
