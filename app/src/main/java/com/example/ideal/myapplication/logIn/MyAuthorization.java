@@ -325,7 +325,6 @@ public class MyAuthorization {
 
     // Обновляет информацию о текущем пользователе в SQLite
     private void addUserInfoInLocalStorage(User user) {
-        Log.d(TAG, "addUserInfoInLocalStorage: ");
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
