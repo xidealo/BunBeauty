@@ -3,16 +3,12 @@ package com.example.ideal.myapplication.logIn;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.example.ideal.myapplication.fragments.objects.Photo;
-import com.example.ideal.myapplication.fragments.objects.Service;
-import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
-import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.Profile;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,11 +57,15 @@ public class MyAuthorization {
     private Context context;
     private String myPhoneNumber;
 
+    private DownloadServiceData downloadServiceData;
+
     MyAuthorization(Context _context, String _myPhoneNumber) {
         context = _context;
         myPhoneNumber = _myPhoneNumber;
 
         dbHelper = new DBHelper(context);
+        SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
+        downloadServiceData = new DownloadServiceData(localDatabase, "Authorization");
     }
 
     void authorizeUser() {
@@ -88,31 +88,23 @@ public class MyAuthorization {
                         // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
                         goToRegistration();
                     } else {
-                        String city = String.valueOf(userSnapshot.child(CITY).getValue());
-
-                        User user = new User();
-                        user.setPhone(myPhoneNumber);
-                        user.setName(String.valueOf(name));
-                        user.setCity(city);
-                        String userId = getUserId();
-                        user.setId(userId);
-                        // Очищаем LocalStorage
                         clearSQLite();
 
-                        // Добавляем все данные о пользователе в SQLite
-                        addUserInfoInLocalStorage(user);
+                        downloadServiceData.loadUserInfo(userSnapshot);
 
                         // Добавляем подписки пользователя
                         loadUserSubscriptions(userSnapshot);
 
-                        //добавляем фото
-                        loadPhotosByPhoneNumber(userSnapshot);
-
                         // Загружаем сервисы пользователя из FireBase
-                        loadServiceByUserId(userSnapshot, userId);
+                        downloadServiceData.loadSchedule(
+                                userSnapshot.child(SERVICES),
+                                userSnapshot.getKey());
+
+                        // Загружаем пользователей записанных на мои сервисы
+                        loadMyServiceOrders();
 
                         // Загружаем записи пользователя
-                        loadOrders(userSnapshot.child(ORDERS));
+                        loadMyOrders(userSnapshot.child(ORDERS));
                     }
                 }
             }
@@ -124,6 +116,39 @@ public class MyAuthorization {
         });
     }
 
+    private void loadMyServiceOrders() {
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        String ordersQuery =
+                "SELECT DISTINCT "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID +
+                        " FROM "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
+                        + DBHelper.TABLE_WORKING_DAYS + ", "
+                        + DBHelper.TABLE_WORKING_TIME + ", "
+                        + DBHelper.TABLE_ORDERS
+                        + " WHERE "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID;
+
+        Cursor cursor = database.rawQuery(ordersQuery, new String[]{getUserId()});
+
+        if(cursor.moveToFirst()) {
+            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+
+            do {
+                loadUserById(cursor.getString(indexUserId));
+            } while (cursor.moveToNext());
+        }
+    }
 
     private void loadUserSubscriptions(DataSnapshot userSnapshot) {
 
@@ -151,17 +176,7 @@ public class MyAuthorization {
                     // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
                     goToRegistration();
                 } else {
-                    String city = String.valueOf(userSnapshot.child(CITY).getValue());
-                    User user = new User();
-                    user.setId(userSnapshot.getKey());
-                    user.setPhone(String.valueOf(userSnapshot.child(PHONE).getValue()));
-                    user.setName(String.valueOf(name));
-                    user.setCity(city);
-
-                    loadPhotosByPhoneNumber(userSnapshot);
-
-                    // Добавляем все данные о пользователе в SQLite
-                    addUserInfoInLocalStorage(user);
+                    downloadServiceData.loadUserInfo(userSnapshot);
                 }
             }
 
@@ -181,39 +196,33 @@ public class MyAuthorization {
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
     }
 
-    private void loadServiceByUserId(DataSnapshot userSnapshot, String userId) {
-        SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
-
-        DownloadServiceData downloadServiceData = new DownloadServiceData(localDatabase, "Authorization");
-        downloadServiceData.loadSchedule(userSnapshot, userId);
-    }
-
     // Получается загружаем все, о человеке, с которым можем взаимодействовать из профиля, возхможно в орджереде стоит хранить дату,
     // чтобы считать ее прсорочена она или нет и уже от этого делать onDataChange, если дата просрочена,
     // то мы никак через профиль не взаимодействуем с этим человеком
-    private void loadOrders(DataSnapshot _ordersSnapshot) {
+    private void loadMyOrders(DataSnapshot _ordersSnapshot) {
 
         if(_ordersSnapshot.getChildrenCount() == 0) {
             goToProfile();
         }
 
-        for(DataSnapshot orderSnapshot: _ordersSnapshot.getChildren()){
-            //получаем "путь" к тому, где мы записаны
+        for(DataSnapshot orderSnapshot: _ordersSnapshot.getChildren()) {
+            //получаем "путь" к мастеру, на сервис которого мы записаны
             final String workerId = String.valueOf(orderSnapshot.child(WORKER_ID).getValue());
-            String serviceId = String.valueOf(orderSnapshot.child(SERVICE_ID).getValue());
-            DatabaseReference serviceReference = FirebaseDatabase.getInstance()
+            final String serviceId = String.valueOf(orderSnapshot.child(SERVICE_ID).getValue());
+            DatabaseReference userReference = FirebaseDatabase.getInstance()
                     .getReference(USERS)
-                    .child(workerId)
-                    .child(SERVICES)
-                    .child(serviceId);
+                    .child(workerId);
 
-            serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot serviceSnapshot) {
-                    SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
+                public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                    // Загружаем данные о пользователе
+                    downloadServiceData.loadUserInfo(userSnapshot);
 
-                    DownloadServiceData downloadServiceData = new DownloadServiceData(localDatabase, "Authorization");
+                    // Загружаем данные о сервисе на который записаны
+                    DataSnapshot serviceSnapshot = userSnapshot.child(SERVICES).child(serviceId);
                     downloadServiceData.addServiceInLocalStorage(serviceSnapshot, workerId);
+
                     goToProfile();
                 }
 
@@ -222,120 +231,7 @@ public class MyAuthorization {
 
                 }
             });
-
         }
-        //goToProfile();
-    }
-
-
-    /*
-    private void loadWorkingDayById(String workingDayId, final long ordersCount) {
-        DatabaseReference dayReference = FirebaseDatabase.getInstance().getReference(WORKING_DAYS).child(workingDayId);
-        dayReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot day) {
-                String dayServiceId = String.valueOf(day.child(SERVICE_ID).getValue());
-                String dayId = String.valueOf(day.getKey());
-                String dayDate = String.valueOf(day.child(DATE).getValue());
-
-                addWorkingDayInLocalStorage(dayId, dayDate, dayServiceId);
-
-                loadServiceById(dayServiceId, ordersCount);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
-
-    private void loadServiceById(String serviceId, final long ordersCount) {
-        DatabaseReference serviceReference = FirebaseDatabase.getInstance().getReference(SERVICES).child(serviceId);
-        serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot service) {
-                String serviceId = String.valueOf(service.getKey());
-                String serviceName = String.valueOf(service.child(NAME).getValue());
-                String serviceDescription = String.valueOf(service.child(DESCRIPTION).getValue());
-                String serviceCost = String.valueOf(service.child(COST).getValue());
-                String serviceUserId = String.valueOf(service.child(USER_ID).getValue());
-
-                Service newService = new Service();
-                newService.setId(serviceId);
-                newService.setName(serviceName);
-                newService.setDescription(serviceDescription);
-                newService.setCost(serviceCost);
-                newService.setUserId(serviceUserId);
-
-                addUserServicesInLocalStorage(newService);
-                orderCounter++;
-
-                if ((orderCounter == ordersCount)) {
-                    // Выполняем вход
-                    goToProfile();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-    */
-
-    private void loadPhotosByPhoneNumber(DataSnapshot userSnapshot) {
-
-        String photoLink = String.valueOf(userSnapshot.child(PHOTO_LINK).getValue());
-
-        Photo photo = new Photo();
-
-        photo.setPhotoId(userSnapshot.getKey());
-        photo.setPhotoLink(photoLink);
-
-        addPhotoInLocalStorage(photo);
-
-    }
-
-    private void addPhotoInLocalStorage(Photo photo) {
-
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
-        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
-
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-        boolean isUpdate = workWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_PHOTOS,
-                        photo.getPhotoId());
-
-        if (isUpdate) {
-            database.update(DBHelper.TABLE_PHOTOS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{photo.getPhotoId()});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
-            database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
-        }
-    }
-
-    // Обновляет информацию о текущем пользователе в SQLite
-    private void addUserInfoInLocalStorage(User user) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        // Заполняем contentValues информацией о данном пользователе
-        contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
-        contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
-        contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
-        contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
-        contentValues.put(DBHelper.KEY_ID, user.getId());
-        // Добавляем данного пользователя в SQLite
-        database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
     }
 
     // Удаляет все данные о пользователях, сервисах, рабочих днях и рабочем времени из SQLite
