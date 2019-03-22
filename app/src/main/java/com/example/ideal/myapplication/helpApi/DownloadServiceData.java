@@ -59,6 +59,7 @@ public class DownloadServiceData {
     private static final String CITY = "city";
     private static final String NAME = "name";
     private static final String USERS = "users";
+    private static final String PHONE = "phone";
 
     private static final String DIALOGS = "dialogs";
     private static final String FIRST_PHONE = "first phone";
@@ -69,6 +70,7 @@ public class DownloadServiceData {
     private static final String PHOTO_LINK = "photo link";
     private static final String OWNER_ID = "owner id";
     private static final String IS_CANCELED = "is canceled";
+
 
     private long currentCountOfDays;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
@@ -84,22 +86,63 @@ public class DownloadServiceData {
         workWithLocalStorageApi = new WorkWithLocalStorageApi(localDatabase);
     }
 
-    public void loadSchedule(DataSnapshot userSnapshot, String userId) {
-
-        DataSnapshot servicesSnapshot = userSnapshot.child(SERVICES);
+    public void loadUserInfo(DataSnapshot userSnapshot) {
 
         loadPhotosByPhoneNumber(userSnapshot);
 
-        for (DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
+        String userId = userSnapshot.getKey();
+        String userPhone = String.valueOf(userSnapshot.child(PHONE).getValue());
+        String userName = String.valueOf(userSnapshot.child(NAME).getValue());
+        String userCity = String.valueOf(userSnapshot.child(CITY).getValue());
 
+        User user = new User();
+        user.setId(userId);
+        user.setPhone(userPhone);
+        user.setName(userName);
+        user.setCity(userCity);
+
+        // Добавляем все данные о пользователе в SQLite
+        addUserInfoInLocalStorage(user);
+    }
+
+    // Обновляет информацию о текущем пользователе в SQLite
+    private void addUserInfoInLocalStorage(User user) {
+        ContentValues contentValues = new ContentValues();
+
+        // Заполняем contentValues информацией о данном пользователе
+        contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
+        contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
+        contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
+
+        String userId = user.getId();
+        boolean hasSomeData = workWithLocalStorageApi
+                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS, userId);
+
+        if (hasSomeData) {
+            localDatabase.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{userId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, userId);
+            localDatabase.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
+        }
+
+
+        contentValues.put(DBHelper.KEY_ID, user.getId());
+
+        // Добавляем данного пользователя в SQLite
+        localDatabase.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
+    }
+
+    public void loadSchedule(DataSnapshot servicesSnapshot, String userId) {
+
+        for (DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
             String serviceId = serviceSnapshot.getKey();
 
             addServiceInLocalStorage(serviceSnapshot, userId);
 
             //загрузка фотографий для сервисов
             loadPhotosByServiceId(serviceSnapshot.child(PHOTOS), serviceId);
-
-            //addToScreen(0);
         }
     }
 
@@ -526,7 +569,6 @@ public class DownloadServiceData {
         photo.setPhotoLink(String.valueOf(userSnapshot.child(PHOTO_LINK).getValue()));
 
         addPhotoInLocalStorage(photo);
-
     }
 
     private void addPhotoInLocalStorage(Photo photo) {

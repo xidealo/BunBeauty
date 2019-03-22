@@ -1,15 +1,12 @@
 package com.example.ideal.myapplication.other;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,16 +18,10 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
-import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class GuestService extends AppCompatActivity implements View.OnClickListener {
@@ -149,7 +140,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // все осервисе, оценка, количество оценок
-        //проверка на удаленный номер
+        // проверка на удаленный номер
 
         String sqlQuery =
                 "SELECT *"
@@ -178,7 +169,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         // все о сервисе, оценка, количество оценок
-        //проверка на удаленный номер
+        // проверка на удаленный номер
 
         String sqlQuery =
                 "SELECT "
@@ -229,54 +220,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         cursor.close();
     }
 
-    private void loadProfileData() {
-        DatabaseReference userReference = FirebaseDatabase.getInstance()
-                .getReference(USERS)
-                .child(ownerId);
-
-        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                String name = String.valueOf(userSnapshot.child(NAME).getValue());
-                String city = String.valueOf(userSnapshot.child(CITY).getValue());
-                String phone = userSnapshot.getKey();
-
-                User user = new User();
-                user.setName(name);
-                user.setCity(city);
-                user.setPhone(phone);
-                user.setId(userSnapshot.getKey());
-                addUserInLocalStorage(user);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
-    private void addUserInLocalStorage(User localUser) {
-        SQLiteDatabase database= dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(DBHelper.KEY_NAME_USERS,localUser.getName());
-        contentValues.put(DBHelper.KEY_CITY_USERS,localUser.getCity());
-
-        boolean isUpdate = workWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS,
-                        localUser.getId());
-
-        if (isUpdate) {
-            database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{localUser.getId()});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, localUser.getId());
-            database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
-        }
-    }
-
     private void checkScheduleAndGoToProfile(){
 
         // Получаем всё время данного сервиса, которое доступно данному юзеру
@@ -297,13 +240,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                 + " AND "
                 + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
-
-        /*Cursor bCursor = database.rawQuery(busyTimeQuery, new String[] {serviceId});
-
-        if (bCursor.moveToFirst()) {
-            int iTime = bCursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
-            Log.d(TAG, "checkScheduleAndGoToProfile: " + bCursor.getString(iTime));
-        }*/
 
         String myTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS
@@ -399,7 +335,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         imageFeedLayout.removeAllViews();
-        loadProfileData();
         setPhotoFeed(serviceId);
     }
 
