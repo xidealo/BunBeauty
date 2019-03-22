@@ -583,7 +583,6 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
                 for(DataSnapshot order : ordersSnapshot.getChildren()){
                     //удалять сообщения
-                    deleteThisServiceMessagesFromMessages(String.valueOf(order.child(MESSAGE_ID).getValue()));
                     DatabaseReference reference = FirebaseDatabase
                             .getInstance()
                             .getReference(ORDERS + "/" + order.getKey());
@@ -619,7 +618,6 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
                 for(DataSnapshot review : reviewsSnapshot.getChildren()){
 
-                    deleteThisServiceMessagesFromMessages(String.valueOf(review.child(MESSAGE_ID).getValue()));
 
                     DatabaseReference reference = FirebaseDatabase
                             .getInstance()
@@ -641,20 +639,6 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-    }
-
-    private void deleteThisServiceMessagesFromMessages(String messageId) {
-
-        DatabaseReference reference = FirebaseDatabase
-                .getInstance()
-                .getReference(MESSAGES + "/" + messageId);
-
-        Map<String, Object> items = new HashMap<>();
-        items.put(MESSAGE_TIME, null);
-        items.put(DIALOG_ID, null);
-        reference.updateChildren(items);
-
-        deleteServiceFromLocalStorage(DBHelper.TABLE_MESSAGES,messageId);
     }
 
     private void deleteServiceFromLocalStorage(String tableName, String id) {

@@ -45,7 +45,7 @@ public class Messages extends AppCompatActivity {
         dialogId = getIntent().getStringExtra(DIALOG_ID);
         myPhone = getUserId();
         // получаем телефон нашего собеседеника
-        String senderPhone = getSenderPhone(dialogId);
+        String senderPhone = getSenderName(dialogId);
         senderName = getSenderName(senderPhone);
 
         manager = getSupportFragmentManager();
@@ -57,39 +57,6 @@ public class Messages extends AppCompatActivity {
         messagesLayout = findViewById(R.id.resultsMessagesLayout);
     }
 
-    private String getSenderPhone(String dialogId) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        // Получает телефоны из диалога
-        // Таблицы: dialogs
-        // Условия: уточняем id диалога
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_FIRST_USER_ID_DIALOGS + ", "
-                        + DBHelper.KEY_SECOND_USER_ID_DIALOGS
-                        + " FROM "
-                        + DBHelper.TABLE_DIALOGS
-                        + " WHERE "
-                        + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dialogId});
-
-        if(cursor.moveToFirst()) {
-            int indexFirstPhone = cursor.getColumnIndex(DBHelper.KEY_FIRST_USER_ID_DIALOGS);
-            int indexSecondPhone = cursor.getColumnIndex(DBHelper.KEY_SECOND_USER_ID_DIALOGS);
-
-            String firstPhone = cursor.getString(indexFirstPhone);
-            String secondPhone = cursor.getString(indexSecondPhone);
-            cursor.close();
-            if(firstPhone.equals(myPhone)){
-                return secondPhone;
-            }
-            else {
-                return firstPhone;
-            }
-        }
-        cursor.close();
-        return "0";
-    }
 
     private String getSenderName(String senderPhone) {
 
@@ -113,46 +80,6 @@ public class Messages extends AppCompatActivity {
         return "";
     }
 
-    private void createMessages() {
-
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-        Message message = new Message();
-        // Получает id сообщения, время сообщения
-        // Таблицы: messages
-        // Условия: уточняем id диалога
-        String messageQuery =
-                "SELECT "
-                        + DBHelper.KEY_ID + ", "
-                        + DBHelper.KEY_MESSAGE_TIME_MESSAGES
-                        + " FROM "
-                        + DBHelper.TABLE_MESSAGES
-                        + " WHERE "
-                        + DBHelper.KEY_DIALOG_ID_MESSAGES + " = ?"
-                        + " ORDER BY "
-                        + DBHelper.KEY_MESSAGE_TIME_MESSAGES;
-        Cursor messageCursor = database.rawQuery(messageQuery, new String[]{dialogId});
-
-        if (messageCursor.moveToFirst()) {
-            int indexMessageId = messageCursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexMessageTime = messageCursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_MESSAGES);
-
-            // Цикл по всем сообщениям в диалоге пользователя
-            do {
-                String messageId = messageCursor.getString(indexMessageId);
-                String messageTime = messageCursor.getString(indexMessageTime);
-                message.setMessageTime(messageTime);
-                message.setDialogId(dialogId);
-                message.setId(messageId);
-
-                // Проверяем какую информацию содержит сообщение (запись или ревью)
-                if(!isThisMessageContainsOrder(message)){
-                    isThisMessageContainsReview(message);
-                }
-            } while (messageCursor.moveToNext());
-            messageCursor.close();
-        }
-    }
 
     private boolean isThisMessageContainsOrder(Message message) {
 
@@ -194,55 +121,6 @@ public class Messages extends AppCompatActivity {
         }
         orderCursor.close();
         return false;
-    }
-
-    private void isThisMessageContainsReview(Message message) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-        String reviewQuery =
-                "SELECT "
-                        + DBHelper.KEY_RATING_REVIEWS + ", "
-                        + DBHelper.KEY_TYPE_REVIEWS + ", "
-                        + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
-                        + " FROM "
-                        + DBHelper.TABLE_REVIEWS
-                        + " WHERE "
-                        + DBHelper.KEY_MESSAGE_ID_REVIEWS + " = ?";
-        Cursor reviewCursor = database.rawQuery(reviewQuery, new String[]{message.getId()});
-
-        if (reviewCursor.moveToFirst()) {
-            //int indexReview = reviewCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_REVIEWS);
-            int indexRating = reviewCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexType = reviewCursor.getColumnIndex(DBHelper.KEY_TYPE_REVIEWS);
-            int indexTimeId = reviewCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_REVIEWS);
-
-            do{
-                String timeId = reviewCursor.getString(indexTimeId);
-                String serviceId = getServiceId(timeId);
-                boolean isMyService = isMyService(serviceId);
-                String type = reviewCursor.getString(indexType);
-
-                if((type.equals(REVIEW_FOR_USER) && isMyService) || (type.equals(REVIEW_FOR_SERVICE) && !isMyService)) {
-                    boolean isRate = !reviewCursor.getString(indexRating).equals("0");
-                    boolean isCanceled = getIsCanceled(timeId);
-                    String time = getTime(timeId);
-                    String date = getDate(timeId);
-                    String serviceName = getServiceName(serviceId);
-
-                    message.setIsCanceled(isCanceled);
-                    message.setIsRate(isRate);
-                    message.setType(type);
-                    message.setOrderTime(time);
-                    message.setDate(date);
-                    message.setServiceName(serviceName);
-                    message.setUserName(senderName);
-
-                    addMessageReviewToScreen(message);
-                }
-            } while (reviewCursor.moveToNext());
-        }
-
-        reviewCursor.close();
     }
 
     private String getDate(String timeId) {
@@ -426,8 +304,6 @@ public class Messages extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         messagesLayout.removeAllViews();
-        createMessages();
     }
 }

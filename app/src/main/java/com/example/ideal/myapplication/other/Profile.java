@@ -525,7 +525,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, ratingReview.getReview());
         contentValues.put(DBHelper.KEY_RATING_REVIEWS, ratingReview.getRating());
         contentValues.put(DBHelper.KEY_TYPE_REVIEWS, ratingReview.getType());
-        contentValues.put(DBHelper.KEY_WORKING_TIME_ID_REVIEWS, ratingReview.getWorkingTimeId());
+        //contentValues.put(DBHelper.KEY_WORKING_TIME_ID_REVIEWS, ratingReview.getWorkingTimeId());
 
         boolean isUpdate = workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_REVIEWS,

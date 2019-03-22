@@ -234,8 +234,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         dialog.setCancelable(false);
         dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Да", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int buttonId) {
-                final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
                 makeOrder();
             }
         });
@@ -539,6 +537,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         Map<String, Object> items = new HashMap<>();
         items.put(IS_CANCELED, "false");
         items.put(USER_ID, userId);
+        items.put(TIME, workWithTimeApi.getCurDateInFormatYMDHMS());
 
         myRef = myRef.child(orderId);
         myRef.updateChildren(items);
@@ -782,9 +781,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
                 .child(WORKING_DAYS)
                 .child(workingDaysId)
                 .child(WORKING_TIME);
-        Log.d(TAG, "deleteTime: "+userId);
-        Log.d(TAG, "deleteTime: "+serviceId);
-        Log.d(TAG, "deleteTime: "+workingDaysId);
 
         timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

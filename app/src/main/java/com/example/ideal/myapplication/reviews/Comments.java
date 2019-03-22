@@ -95,7 +95,6 @@ public class Comments extends AppCompatActivity {
                 + DBHelper.KEY_RATING_REVIEWS + " != 0"
                 + " AND "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
                 + " AND "
                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                 + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
@@ -124,81 +123,7 @@ public class Comments extends AppCompatActivity {
     }
 
     private void createServiceComment(Cursor mainCursor){
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
-        int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-        int orderIdIndex = mainCursor.getColumnIndex(ORDER_ID);
-        int messageIdIndex = mainCursor.getColumnIndex(DBHelper.KEY_MESSAGE_ID_REVIEWS);
-        int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
-
-        String chatSqlQuery = "SELECT "
-                + DBHelper.KEY_FIRST_USER_ID_DIALOGS + ", "
-                + DBHelper.KEY_SECOND_USER_ID_DIALOGS
-                + " FROM "
-                + DBHelper.TABLE_MESSAGES + ", "
-                + DBHelper.TABLE_DIALOGS
-                + " WHERE "
-                + DBHelper.TABLE_MESSAGES + "." + DBHelper.KEY_ID + " = ?"
-                + " AND "
-                + DBHelper.TABLE_DIALOGS + "." + DBHelper.KEY_ID
-                + " = " + DBHelper.KEY_DIALOG_ID_MESSAGES;
-
-        String userSqlQuery = "SELECT "
-                + DBHelper.KEY_NAME_USERS
-                + " FROM "
-                + DBHelper.TABLE_CONTACTS_USERS
-                + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ?";
-
-        String name = "";
-        String orderId = mainCursor.getString(orderIdIndex);
-        String review = mainCursor.getString(reviewIndex);
-        float rating = Float.valueOf(mainCursor.getString(ratingIndex));
-
-        if (orderId.equals("0")) {
-            String messageId = mainCursor.getString(messageIdIndex);
-            String ownerId = mainCursor.getString(ownerIdIndex);
-
-            Cursor chatCursor = database.rawQuery(chatSqlQuery, new String[]{messageId});
-
-            if (chatCursor.moveToFirst()) {
-                String firstPhone = chatCursor.getString(
-                        chatCursor.getColumnIndex(DBHelper.KEY_FIRST_USER_ID_DIALOGS));
-                String secondPhone = chatCursor.getString(
-                        chatCursor.getColumnIndex(DBHelper.KEY_SECOND_USER_ID_DIALOGS));
-
-                Cursor userCursor;
-                if (!firstPhone.equals(ownerId)) {
-                    orderId = firstPhone;
-                    userCursor = database.rawQuery(userSqlQuery, new String[]{firstPhone});
-                } else {
-                    orderId = secondPhone;
-                    userCursor = database.rawQuery(userSqlQuery, new String[]{secondPhone});
-                }
-
-                if (userCursor.moveToFirst()) {
-                    name = userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
-                }
-                userCursor.close();
-            }
-            chatCursor.close();
-        } else {
-            Cursor userCursor = database.rawQuery(userSqlQuery, new String[]{orderId});
-
-            if (userCursor.moveToFirst()) {
-                name = userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
-            }
-            userCursor.close();
-        }
-
-        Comment comment = new Comment();
-        comment.setUserId(orderId);
-        comment.setUserName(name);
-        comment.setReview(review);
-        comment.setRating(rating);
-
-        loadPhotosByPhoneNumber(comment);
     }
 
     private void loadCommentsForUser(String _userId) {
@@ -225,7 +150,6 @@ public class Comments extends AppCompatActivity {
                 + DBHelper.KEY_RATING_REVIEWS + " != 0"
                 + " AND "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
                 + " AND "
                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                 + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME

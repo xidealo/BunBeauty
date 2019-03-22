@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,20 +23,18 @@ import com.example.ideal.myapplication.other.DBHelper;
 @SuppressLint("ValidFragment")
 public class DialogElement extends Fragment implements View.OnClickListener {
 
-    private final String DIALOG_ID = "dialog id";
-
     private TextView nameText;
     private ImageView avatarImage;
 
-    private String dialogId;
     private String userName;
     private String userId;
 
+    private static final String TAG = "DBInf";
+
     @SuppressLint("ValidFragment")
-    public DialogElement(String id, User user) {
-        dialogId = id;
+    public DialogElement(User user) {
         userName = user.getName();
-        userId = user.getPhone();
+        userId= user.getId();
     }
 
     @Override
@@ -69,7 +68,6 @@ public class DialogElement extends Fragment implements View.OnClickListener {
 
     private void goToDialog(){
         Intent intent = new Intent(this.getContext(), Messages.class);
-        intent.putExtra(DIALOG_ID, dialogId);
         startActivity(intent);
     }
 }

@@ -351,52 +351,8 @@ public class MyAuthorization {
         database.delete(DBHelper.TABLE_PHOTOS, null, null);
         database.delete(DBHelper.TABLE_SUBSCRIBERS, null, null);
 
-        database.delete(DBHelper.TABLE_MESSAGES, null, null);
         database.delete(DBHelper.TABLE_REVIEWS, null, null);
         database.delete(DBHelper.TABLE_ORDERS, null, null);
-    }
-
-    // Добавляет информацию о сервисах данного пользователя в SQLite
-    private void addUserServicesInLocalStorage(Service service) {
-
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        // Заполняем contentValues информацией о данном сервисе
-        contentValues.put(DBHelper.KEY_ID, service.getId());
-        contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName());
-        contentValues.put(DBHelper.KEY_PHONE_USERS, service.getUserId());
-        contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
-        contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
-
-        // Добавляем данный сервис в SQLite
-        database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
-    }
-
-    private void addTimeInLocalStorage(String timeId, String time,
-                                       String timeUserId, String timeWorkingDayId) {
-
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(DBHelper.KEY_ID, timeId);
-        contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, time);
-        contentValues.put(DBHelper.KEY_PHONE_USERS, timeUserId);
-        contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, timeWorkingDayId);
-
-        database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
-    }
-
-    private void addWorkingDayInLocalStorage(String dayId, String dayDate, String serviceId) {
-
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_ID, dayId);
-        contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, dayDate);
-        contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
-
-        database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
     }
 
     private void goToRegistration() {

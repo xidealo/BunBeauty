@@ -185,8 +185,8 @@ public class WorkWithLocalStorageApi {
                         + " AND "
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
                         + " AND "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
-                        + " AND "
+                       // + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
+                        //+ " AND "
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = ? "
                         + " AND "
                         + DBHelper.KEY_TYPE_REVIEWS + " = ? "
@@ -209,8 +209,8 @@ public class WorkWithLocalStorageApi {
                             + " AND "
                             + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
                             + " AND "
-                            + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
-                            + " AND "
+                           // + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
+                           // + " AND "
                             + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = ? "
                             + " AND "
                             + DBHelper.KEY_TYPE_REVIEWS + " = ? "

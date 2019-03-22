@@ -193,8 +193,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                         + " AND "
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
                         + " AND "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
-                        + " AND "
                         + DBHelper.KEY_TYPE_REVIEWS + " = ? "
                         + " AND "
                         + DBHelper.KEY_RATING_REVIEWS + " != 0";
