@@ -871,6 +871,18 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
                 + " AND "
                 + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
 
+        String extraCondition = "";
+        if (!statusUser.equals(WORKER)) {
+
+            // 3 часа - разница с Гринвичем
+            // 2 часа - минимум времени до сеанса, чтобы за писаться
+            extraCondition = " AND "
+                    + " ((STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
+                    + DBHelper.KEY_DATE_WORKING_DAYS
+                    + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                    + ")) <= 0";
+        }
+
         String sqlQuery = "SELECT "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                 + " FROM "
@@ -886,13 +898,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
                 + " AND "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                 + " NOT IN (" + busyTimeQuery + ")"
-                + " AND "
-                // 3 часа - разница с Гринвичем
-                // 2 часа - минимум времени до сеанса, чтобы за писаться
-                + " ((STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
-                + DBHelper.KEY_DATE_WORKING_DAYS
-                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
-                + ")) <= 0";
+                + extraCondition;
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId, time, workingDaysId});
 

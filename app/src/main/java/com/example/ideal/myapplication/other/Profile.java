@@ -325,7 +325,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             public void onDataChange(@NonNull DataSnapshot serviceSnapshot) {
                 String userId = String.valueOf(serviceSnapshot.child(USER_ID).getValue());
                 String name = String.valueOf(serviceSnapshot.child(NAME).getValue());
-                addServiceInLocalStorage(serviceId, userId, name);
+                //addServiceInLocalStorage(serviceId, userId, name);
 
                 // Подгружаем авторов ревью по сервисам
                 //loadUserByService(userId);
@@ -545,7 +545,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
 
-        loadTimeForReviews();
+        //loadTimeForReviews();
         updateProfileData(ownerId);
 
         workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);

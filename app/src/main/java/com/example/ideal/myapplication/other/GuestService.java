@@ -281,7 +281,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         // Получаем всё время данного сервиса, которое доступно данному юзеру
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        String takedTimeQuery = "SELECT "
+        String busyTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS
                 + " FROM "
                 + DBHelper.TABLE_WORKING_DAYS + ", "
@@ -294,9 +294,16 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                 + " AND "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                 + " AND "
                 + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
+
+        /*Cursor bCursor = database.rawQuery(busyTimeQuery, new String[] {serviceId});
+
+        if (bCursor.moveToFirst()) {
+            int iTime = bCursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
+            Log.d(TAG, "checkScheduleAndGoToProfile: " + bCursor.getString(iTime));
+        }*/
 
         String myTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS
@@ -329,7 +336,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                 + " AND ((("
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                + " NOT IN (" + takedTimeQuery + ")"
+                + " NOT IN (" + busyTimeQuery + ")"
                 + " AND ("
                 // 3 часа - разница с Гринвичем
                 // 2 часа - минимум времени до сеанса, чтобы за писаться

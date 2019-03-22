@@ -363,7 +363,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                 + " AND "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                 + " AND "
                 + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
 
