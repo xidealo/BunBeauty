@@ -7,9 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.chatElements.DialogElement;
@@ -88,12 +85,88 @@ public class Dialogs extends AppCompatActivity {
     }
 
     private void getDialogs() {
+        //загружаем сначала те, на которые я записан
+        getWorkerOrder();
+        //загружаем те, на которые записаны мои клиенты
+        getClientOrder();
+    }
 
+    private void getClientOrder() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        //берем все мои ордеры
+        // вернуть id тех, кто записан на мои сервисы
         String ordersQuery =
-                "SELECT "
-                        + DBHelper.TABLE_CONTACTS_USERS +"."+ DBHelper.KEY_ID + ", "
+                "SELECT DISTINCT "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID
+                        + " FROM "
+                        + DBHelper.TABLE_ORDERS + ", "
+                        + DBHelper.TABLE_WORKING_TIME + ", "
+                        + DBHelper.TABLE_WORKING_DAYS + ", "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
+                        + DBHelper.TABLE_CONTACTS_USERS
+                        + " WHERE "
+                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " = "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + " = "
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
+                        + " = "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
+                        + " = "
+                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ? ";
+
+        Cursor cursor = database.rawQuery(ordersQuery, new String[]{getUserId()});
+
+        if (cursor.moveToFirst()) {
+            int indexClientId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+            do {
+                createUser(cursor.getString(indexClientId));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+    }
+
+    private void createUser(String userId) {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+
+        Cursor userCursor = workWithLocalStorageApi.getUser(userId);
+
+        if (userCursor.moveToFirst()) {
+            int indexId = userCursor.getColumnIndex(DBHelper.KEY_ID);
+            int indexName = userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
+            int indexPhone = userCursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
+            int indexCity = userCursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
+
+            do {
+                User user = new User();
+                user.setId(userCursor.getString(indexId));
+                user.setName(userCursor.getString(indexName));
+                user.setPhone(userCursor.getString(indexPhone));
+                user.setCity(userCursor.getString(indexCity));
+                //чтобы не выводил сам себя
+                if (!user.getId().equals(getUserId()))
+                    addToScreen(user);
+            } while (userCursor.moveToNext());
+        }
+
+    }
+
+    private void getWorkerOrder() {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        // вернуть все заказы, на которые я записан
+        String ordersQuery =
+                "SELECT DISTINCT "
+                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + ", "
                         + DBHelper.KEY_NAME_USERS + ", "
                         + DBHelper.KEY_PHONE_USERS + ", "
                         + DBHelper.KEY_CITY_USERS
@@ -124,25 +197,26 @@ public class Dialogs extends AppCompatActivity {
 
         Cursor cursor = database.rawQuery(ordersQuery, new String[]{getUserId()});
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
             int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
             int indexPhone = cursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
             int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
-            do{
+            do {
                 User user = new User();
                 user.setId(cursor.getString(indexId));
                 user.setName(cursor.getString(indexName));
                 user.setPhone(cursor.getString(indexPhone));
                 user.setCity(cursor.getString(indexCity));
-                addToScreen(user);
-            }while (cursor.moveToNext());
+                //чтобы не выводил сам себя
+                if (!user.getId().equals(getUserId()))
+                    addToScreen(user);
+            } while (cursor.moveToNext());
         }
 
         cursor.close();
     }
-
 
     private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -154,6 +228,7 @@ public class Dialogs extends AppCompatActivity {
     }
 
     private void addToScreen(User user) {
+        Log.d(TAG, "addToScreen: " + user.getId());
         DialogElement dElement = new DialogElement(user);
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.mainDialogsLayout, dElement);

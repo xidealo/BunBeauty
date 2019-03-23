@@ -33,6 +33,7 @@ public class DialogElement extends Fragment implements View.OnClickListener {
 
     @SuppressLint("ValidFragment")
     public DialogElement(User user) {
+        Log.d(TAG, "DialogElement: " + user.getName());
         userName = user.getName();
         userId= user.getId();
     }

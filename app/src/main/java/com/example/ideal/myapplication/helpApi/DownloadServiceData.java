@@ -194,11 +194,9 @@ public class DownloadServiceData {
     }
 
     private void addOrdersInLocalStorage(DataSnapshot ordersSnapshot, String timeId) {
-
         for (DataSnapshot orderSnapshot : ordersSnapshot.getChildren()) {
             ContentValues contentValues = new ContentValues();
             String orderId = orderSnapshot.getKey();
-
             contentValues.put(DBHelper.KEY_ID, orderId);
             contentValues.put(DBHelper.KEY_USER_ID, String.valueOf(orderSnapshot.child(USER_ID).getValue()));
             contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, String.valueOf(orderSnapshot.child(IS_CANCELED).getValue()));
@@ -206,6 +204,7 @@ public class DownloadServiceData {
 
             boolean hasSomeData = workWithLocalStorageApi
                     .hasSomeData(DBHelper.TABLE_ORDERS, orderId);
+            Log.d(TAG, "addOrdersInLocalStorage: " + String.valueOf(orderSnapshot.child(USER_ID).getValue()));
 
             if (hasSomeData) {
                 localDatabase.update(DBHelper.TABLE_ORDERS, contentValues,
