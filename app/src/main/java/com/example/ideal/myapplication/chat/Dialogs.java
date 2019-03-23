@@ -92,7 +92,7 @@ public class Dialogs extends AppCompatActivity {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         //берем все мои ордеры
         String ordersQuery =
-                "SELECT "
+                "SELECT DISTINCT "
                         + DBHelper.TABLE_CONTACTS_USERS +"."+ DBHelper.KEY_ID + ", "
                         + DBHelper.KEY_NAME_USERS + ", "
                         + DBHelper.KEY_PHONE_USERS + ", "
