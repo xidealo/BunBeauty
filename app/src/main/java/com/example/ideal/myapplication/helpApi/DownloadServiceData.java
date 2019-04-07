@@ -204,7 +204,6 @@ public class DownloadServiceData {
 
             boolean hasSomeData = workWithLocalStorageApi
                     .hasSomeData(DBHelper.TABLE_ORDERS, orderId);
-            Log.d(TAG, "addOrdersInLocalStorage: " + String.valueOf(orderSnapshot.child(USER_ID).getValue()));
 
             if (hasSomeData) {
                 localDatabase.update(DBHelper.TABLE_ORDERS, contentValues,
@@ -213,6 +212,32 @@ public class DownloadServiceData {
             } else {
                 contentValues.put(DBHelper.KEY_ID, orderId);
                 localDatabase.insert(DBHelper.TABLE_ORDERS, null, contentValues);
+            }
+            addReviewInLocalStorage(orderSnapshot.child(REVIEWS),orderId);
+        }
+    }
+
+    private void addReviewInLocalStorage(DataSnapshot reviewsSnapshot, String orderId){
+
+        for (DataSnapshot reviewSnapshot : reviewsSnapshot.getChildren()) {
+            ContentValues contentValues = new ContentValues();
+            String reviewId = reviewSnapshot.getKey();
+            contentValues.put(DBHelper.KEY_ID, reviewId);
+            contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, String.valueOf(reviewSnapshot.child(REVIEW).getValue()));
+            contentValues.put(DBHelper.KEY_RATING_REVIEWS, String.valueOf(reviewSnapshot.child(RATING).getValue()));
+            contentValues.put(DBHelper.KEY_TYPE_REVIEWS, String.valueOf(reviewSnapshot.child(TYPE).getValue()));
+            contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
+
+            boolean hasSomeData = workWithLocalStorageApi
+                    .hasSomeData(DBHelper.TABLE_REVIEWS, reviewId);
+
+            if (hasSomeData) {
+                localDatabase.update(DBHelper.TABLE_REVIEWS, contentValues,
+                        DBHelper.KEY_ID + " = ?",
+                        new String[]{reviewId});
+            } else {
+                contentValues.put(DBHelper.KEY_ID, reviewId);
+                localDatabase.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
             }
         }
     }

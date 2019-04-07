@@ -58,7 +58,6 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
     private String messageOrderTime;
     private String messageWorkingTimeId;
     private String messageOrderId;
-    private String messageDialogId;
 
     private WorkWithTimeApi workWithTimeApi;
 
@@ -72,13 +71,12 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         String messageTime = message.getMessageTime();
         messageIsCanceled = message.getIsCanceled();
         messageIsMyService = message.getIsMyService();
-        messageDate = message.getDate();
-        messageOrderTime = message.getOrderTime();
+        messageOrderTime = message.getServiceTime();
         String messageServiceName = message.getServiceName();
         String messageUserName = message.getUserName();
         messageWorkingTimeId = message.getTimeId();
         messageOrderId = message.getOrderId();
-        messageDialogId = message.getDialogId();
+        messageDate= message.getMessageDate();
 
         if(messageIsCanceled) {
             if (messageIsMyService) {
@@ -177,7 +175,6 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
             //за час до
             if (beforeOneHour()) {
                 // создаём сообщение с возможность написать ревью
-                createMessage();
             }
         }
     }
@@ -202,21 +199,6 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         updateLocalStorage();
     }
 
-    private void createMessage() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(MESSAGES);
-        Map<String,Object> items = new HashMap<>();
-
-        String dateNow = workWithTimeApi.getCurDateInFormatYMDHMS();
-
-        items.put(MESSAGE_TIME, dateNow);
-        items.put(DIALOG_ID, messageDialogId);
-
-        String messageId =  myRef.push().getKey();
-        createReview(messageId);
-        myRef = database.getReference(MESSAGES).child(messageId);
-        myRef.updateChildren(items);
-    }
 
     private void createReview(String messageId){
         FirebaseDatabase database = FirebaseDatabase.getInstance();

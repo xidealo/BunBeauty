@@ -228,7 +228,6 @@ public class Dialogs extends AppCompatActivity {
     }
 
     private void addToScreen(User user) {
-        Log.d(TAG, "addToScreen: " + user.getId());
         DialogElement dElement = new DialogElement(user);
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.mainDialogsLayout, dElement);

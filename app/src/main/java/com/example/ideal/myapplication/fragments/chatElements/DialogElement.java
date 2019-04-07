@@ -23,17 +23,17 @@ import com.example.ideal.myapplication.other.DBHelper;
 @SuppressLint("ValidFragment")
 public class DialogElement extends Fragment implements View.OnClickListener {
 
+    private static final String USER_ID = "user id";
+
     private TextView nameText;
     private ImageView avatarImage;
 
     private String userName;
     private String userId;
-
     private static final String TAG = "DBInf";
 
     @SuppressLint("ValidFragment")
     public DialogElement(User user) {
-        Log.d(TAG, "DialogElement: " + user.getName());
         userName = user.getName();
         userId= user.getId();
     }
@@ -69,6 +69,7 @@ public class DialogElement extends Fragment implements View.OnClickListener {
 
     private void goToDialog(){
         Intent intent = new Intent(this.getContext(), Messages.class);
+        intent.putExtra(USER_ID, userId);
         startActivity(intent);
     }
 }

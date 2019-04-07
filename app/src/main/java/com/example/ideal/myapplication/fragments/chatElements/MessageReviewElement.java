@@ -21,29 +21,26 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
 
     private static final String TAG = "DBInf";
 
-    //private static final String SERVICE_ID = "service id";
     private static final String MESSAGE_ID = "message id";
     private static final String TYPE = "type";
-    //private static final String IS_MY_SERVICE = "is my service";
 
     private static final String REVIEW_FOR_USER = "review for user";
 
+    private String text;
 
-    String text;
+    private String messageTime;
+    private Boolean messageIsCanceled;
+    private String messageType;
+    private String messageDate;
+    private String messageOrderTime;
+    private String messageServiceName;
+    private String messageUserName;
+    private String messageRatingReview;
 
-    String messageTime;
-    Boolean messageIsCanceled;
-    Boolean messageIsRate;
-    String messageType;
-    String messageDate;
-    String messageOrderTime;
-    String messageServiceName;
-    String messageUserName;
+    private String messageId;
 
-    String messageId;
-
-    TextView messageText;
-    Button reviewBtn;
+    private TextView messageText;
+    private Button reviewBtn;
 
     public MessageReviewElement() {
     }
@@ -52,42 +49,42 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
     public MessageReviewElement(Message message) {
         messageTime = message.getMessageTime();
         messageIsCanceled = message.getIsCanceled();
-        messageIsRate = message.getIsRate();
         messageType = message.getType();
-        messageDate = message.getDate();
-        messageOrderTime = message.getOrderTime();
+        messageOrderTime = message.getServiceTime();
         messageServiceName = message.getServiceName();
         messageUserName = message.getUserName();
+        messageRatingReview = message.getRatingReview();
+        messageDate = message.getMessageDate();
 
         messageId = message.getId();
 
-        if(messageType.equals(REVIEW_FOR_USER)) {
+        if (messageType.equals(REVIEW_FOR_USER)) {
             text =
                     messageDate + " в " + messageOrderTime
-                    + " Вы предоставляли услугу " + messageServiceName
-                    + " пользователю " + messageUserName
-                    + ".\nПожалуйста, оставьте отзыв об этом пользователе, чтобы улучшить качество сервиса."
-                    + " Вы также сможете увидеть отзыв, о себе,"
-                    + " как только пользователь оставит его или пройдет 72 часа."
-                    + "\n (" + messageTime + ")";
+                            + " Вы предоставляли услугу " + messageServiceName
+                            + " пользователю " + messageUserName
+                            + ".\nПожалуйста, оставьте отзыв об этом пользователе, чтобы улучшить качество сервиса."
+                            + " Вы также сможете увидеть отзыв, о себе,"
+                            + " как только пользователь оставит его или пройдет 72 часа."
+                            + "\n (" + messageTime + ")";
         } else {
-            if(messageIsCanceled) {
+            if (messageIsCanceled) {
                 text =
                         "Пользователь " + messageUserName
-                        + " отказал Вам в придоставлении услуги " + messageServiceName
-                        + " в последний момент. Сеанс на " + messageDate
-                        + " в " + messageOrderTime
-                        + " отменён. Вы можете оценить качество данного сервиса."
-                        + "\n (" + messageTime + ")";
+                                + " отказал Вам в придоставлении услуги " + messageServiceName
+                                + " в последний момент. Сеанс на " + messageDate
+                                + " в " + messageOrderTime
+                                + " отменён. Вы можете оценить качество данного сервиса."
+                                + "\n (" + messageTime + ")";
             } else {
                 text =
                         messageDate + " в " + messageOrderTime
-                        + " Вы получали услугу " + messageServiceName
-                        + " у пользователя " + messageUserName
-                        + ".\nПожалуйста, оставьте отзыв о данной услуге, чтобы улучшить качество сервиса."
-                        + " Вы также сможете увидеть отзыв, о себе,"
-                        + " как только пользователь оставит его или пройдет 72 часа."
-                        + "\n (" + messageTime + ")";
+                                + " Вы получали услугу " + messageServiceName
+                                + " у пользователя " + messageUserName
+                                + ".\nПожалуйста, оставьте отзыв о данной услуге, чтобы улучшить качество сервиса."
+                                + " Вы также сможете увидеть отзыв, о себе,"
+                                + " как только пользователь оставит его или пройдет 72 часа."
+                                + "\n (" + messageTime + ")";
             }
         }
     }
@@ -103,13 +100,17 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
         reviewBtn = view.findViewById(R.id.reviewMessageReviewElementBtn);
 
         // Проверяем стоит ли оценка
-        if(messageIsRate) {
+        if (isMessageRate()) {
             reviewBtn.setEnabled(false);
         } else {
             reviewBtn.setOnClickListener(this);
         }
-
         setData();
+    }
+
+    //если рейтинг не 0, значит считаем, что оценен
+    private boolean isMessageRate() {
+        return !messageRatingReview.equals("0");
     }
 
     private void setData() {
