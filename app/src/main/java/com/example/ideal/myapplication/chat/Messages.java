@@ -29,6 +29,10 @@ public class Messages extends AppCompatActivity {
     private static final String REVIEW_FOR_SERVICE = "review for service";
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String USER_ID = "user id";
+
+    private static final String ORDER_ID = "order_id";
+    private static final String OWNER_ID = "owner_id";
+
     private String senderName;
     private DBHelper dbHelper;
     private FragmentManager manager;
@@ -49,9 +53,9 @@ public class Messages extends AppCompatActivity {
         panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
         panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderId);
         //кто-то записан к нам
-        addMessage(senderId);
+        addMessages(senderId);
         //мы записаны к кому-то
-        addMessageSecond(senderId);
+        //addMessageSecond(senderId);
     }
 
     private String getSenderName(String senderId) {
@@ -77,7 +81,7 @@ public class Messages extends AppCompatActivity {
     }
 
     // получить все ордеры, у которых userId = userId собеседника.
-    private void addMessage(String senderId) {
+    private void addMessages(String senderId) {
 
     //добавить еще проверку есть ли поля у ревью этого ордера, если да, то добавляем ревью, если нет то ордер
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -85,24 +89,24 @@ public class Messages extends AppCompatActivity {
         // вернуть заказы тех, кто записан на мои сервисы
         // нужно ли еще уточнять в serviceTable, что айди владельца равно нашему?
         String orderQuery =
-                "SELECT DISTINCT "
+                "SELECT "
                         + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID +", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID +", "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " AS " + ORDER_ID + ", "
                         + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_IS_CANCELED_ORDERS +", "
                         + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_MESSAGE_TIME_ORDERS +", "
                         + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_WORKING_TIME_ID_ORDERS + ","
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_TIME_WORKING_TIME + ","
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_DATE_WORKING_DAYS + ","
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + ","
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ","
-                        + DBHelper.TABLE_REVIEWS + "." + DBHelper.KEY_RATING_REVIEWS
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ", "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID + ", "
+                        + DBHelper.KEY_RATING_REVIEWS
                         + " FROM "
                         + DBHelper.TABLE_ORDERS + ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
                         + DBHelper.TABLE_WORKING_DAYS + ", "
                         + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                        + DBHelper.TABLE_REVIEWS + ", "
-                        + DBHelper.TABLE_CONTACTS_USERS
+                        + DBHelper.TABLE_REVIEWS
                         + " WHERE "
                         + DBHelper.KEY_ORDER_ID_REVIEWS
                         + " = "
@@ -119,18 +123,24 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
                         + " = "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
+                        + " AND ("
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
                         + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?"
+                        + " OR "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?"
                         + " AND "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? ";
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? )" +
+                        " ORDER BY "
+                        + DBHelper.KEY_MESSAGE_TIME_ORDERS;
 
-        Cursor cursor = database.rawQuery(orderQuery, new String[]{senderId});
+        String myId = getUserId();
+        Cursor cursor = database.rawQuery(orderQuery, new String[]{senderId, myId, senderId, myId});
 
         if (cursor.moveToFirst()) {
-            int indexMessageId = cursor.getColumnIndex(DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID );
-            int indexMessageUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
+            int indexOwnerId = cursor.getColumnIndex(OWNER_ID);
+
             int indexMessageIsCanceled = cursor.getColumnIndex(DBHelper.KEY_IS_CANCELED_ORDERS);
             int indexMessageOrderTime = cursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_ORDERS);
             int indexMessageWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_ORDERS);
@@ -141,25 +151,30 @@ public class Messages extends AppCompatActivity {
             int indexMessageRatingReview = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
 
             do {
+                String orderId = cursor.getString(indexOrderId);
+                String ownerId = cursor.getString(indexOwnerId);
+                Log.d(TAG, orderId + "    записан к    " + ownerId);
+
+                boolean isCanceled = Boolean.valueOf(cursor.getString(indexMessageIsCanceled));
+                String serviceId = cursor.getString(indexMessageServiceId);
+                boolean isMyService = isMyService(serviceId);
+
                 String date = cursor.getString(indexMessageServiceDate);
                 String time = cursor.getString(indexMessageServiceTime);
-                String commonDate = date + " " + time;
 
-                String serviceId = cursor.getString(indexMessageServiceId);
                 Message message = new Message();
-                message.setId(cursor.getString(indexMessageId));
-                message.setUserId(cursor.getString(indexMessageUserId));
-                message.setIsCanceled(Boolean.valueOf(cursor.getString(indexMessageIsCanceled)));
+                message.setIsCanceled(isCanceled);
                 message.setMessageTime(cursor.getString(indexMessageOrderTime));
                 message.setWorkingTimeId(cursor.getString(indexMessageWorkingTimeId));
                 message.setServiceTime(time);
                 message.setMessageDate(date);
                 message.setServiceName(cursor.getString(indexMessageServiceName));
                 message.setUserName(senderName);
-                message.setIsMyService(isMyService(serviceId));
+                message.setIsMyService(isMyService);
 
+                // Если сообщение связано с услугой на которую я записался
                 // проверяем, если у ордера время записи прошло + 24 часа, тогда сорздаем не ордер, а ревью.
-                if(isAfterOrderTime(commonDate)){
+                if(isAfterOrderTime(date, time) && !isCanceled){
                     message.setType(REVIEW_FOR_USER);
                     //если рейтинг не 0, значит считаем, что оценен
                     message.setRatingReview(cursor.getString(indexMessageRatingReview));
@@ -174,7 +189,7 @@ public class Messages extends AppCompatActivity {
         cursor.close();
     }
 
-    private void addMessageSecond(String senderId) {
+   /* private void addMessageSecond(String senderId) {
 
         //добавить еще проверку есть ли поля у ревью этого ордера, если да, то добавляем ревью, если нет то ордер
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -250,11 +265,12 @@ public class Messages extends AppCompatActivity {
 
         }
         cursor.close();
-    }
+    }*/
 
-    private boolean isAfterOrderTime(String commonDate) {
+    private boolean isAfterOrderTime(String date, String time) {
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
         //3600000 * 24 = 24 часа
+        String commonDate = date + " " + time;
         Long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) +3600000*24;
         Long sysdate = workWithTimeApi.getSysdateLong();
 

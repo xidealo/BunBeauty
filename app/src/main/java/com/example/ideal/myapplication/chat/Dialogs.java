@@ -20,6 +20,8 @@ import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
+
 public class Dialogs extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
@@ -57,10 +59,11 @@ public class Dialogs extends AppCompatActivity {
     //PHOTOS
     private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
-    private static final String OWNER_ID = "owner id";
+    private static final String OWNER_ID = "owner_id";
+    private static final String ORDER_ID = "order_id";
 
-    private WorkWithTimeApi workWithTimeApi;
-    private WorkWithLocalStorageApi utilitiesApi;
+    private WorkWithTimeApi TimeApi;
+    private WorkWithLocalStorageApi LSApi;
     private DBHelper dbHelper;
 
     private FragmentManager manager;
@@ -82,9 +85,9 @@ public class Dialogs extends AppCompatActivity {
         panelBuilder.buildHeader(manager, "Диалоги", R.id.headerDialogsLayout);
 
         dbHelper = new DBHelper(this);
-        workWithTimeApi = new WorkWithTimeApi();
+        TimeApi = new WorkWithTimeApi();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        utilitiesApi = new WorkWithLocalStorageApi(database);
+        LSApi = new WorkWithLocalStorageApi(database);
     }
 
     private void getDialogs() {
@@ -93,16 +96,13 @@ public class Dialogs extends AppCompatActivity {
         //берем все мои ордеры
         String ordersQuery =
                 "SELECT DISTINCT "
-                        + DBHelper.TABLE_CONTACTS_USERS +"."+ DBHelper.KEY_ID + ", "
-                        + DBHelper.KEY_NAME_USERS + ", "
-                        + DBHelper.KEY_PHONE_USERS + ", "
-                        + DBHelper.KEY_CITY_USERS
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " AS " + ORDER_ID + ", "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID
                         + " FROM "
                         + DBHelper.TABLE_ORDERS + ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
                         + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                        + DBHelper.TABLE_CONTACTS_USERS
+                        + DBHelper.TABLE_CONTACTS_SERVICES
                         + " WHERE "
                         + DBHelper.KEY_WORKING_TIME_ID_ORDERS
                         + " = "
@@ -115,32 +115,60 @@ public class Dialogs extends AppCompatActivity {
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
                         + " = "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? ";
+                        + " AND ("
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
+                        + " OR "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?)";
 
-        Cursor cursor = database.rawQuery(ordersQuery, new String[]{getUserId()});
+        String myId = getUserId();
+        Cursor cursor = database.rawQuery(ordersQuery, new String[]{ myId, myId });
 
         if(cursor.moveToFirst()){
+            ArrayList<String> createdDialogs = new ArrayList<>();
 
-            int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
-            int indexPhone = cursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
-            int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
+            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
+            int indexOwnerId = cursor.getColumnIndex(OWNER_ID);
+
             do{
-                User user = new User();
-                user.setId(cursor.getString(indexId));
-                user.setName(cursor.getString(indexName));
-                user.setPhone(cursor.getString(indexPhone));
-                user.setCity(cursor.getString(indexCity));
-                addToScreen(user);
+                String orderId = cursor.getString(indexOrderId);
+                String ownerId = cursor.getString(indexOwnerId);
+
+                // Проверка где лежит мой id
+                if (myId.equals(orderId)) {
+                    // Если я записывался на услугу
+                    // Проверяем не создан ли уже диалог с владельцем сервиса
+                    if (!createdDialogs.contains(ownerId)) {
+                        // Если нет создаём и заносим в соданные
+                        createDialogWithUser(ownerId);
+                        createdDialogs.add(orderId);
+                    }
+                } else {
+                    // Если ко мне записывались на услугу
+                    // Проверяем не создан ли уже диалог с клиентом
+                    if (!createdDialogs.contains(orderId)) {
+                        // Если нет создаём и заносим в соданные
+                        createDialogWithUser(orderId);
+                        createdDialogs.add(orderId);
+                    }
+
+                }
             }while (cursor.moveToNext());
         }
 
         cursor.close();
+    }
+
+    private void createDialogWithUser(String userId) {
+
+        Cursor cursor = LSApi.getUser(userId);
+
+        if(cursor.moveToNext()) {
+            String userName = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
+            User user = new User();
+            user.setId(userId);
+            user.setName(userName);
+            addToScreen(user);
+        }
     }
 
 

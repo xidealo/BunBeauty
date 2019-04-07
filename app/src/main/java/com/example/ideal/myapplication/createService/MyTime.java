@@ -35,6 +35,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -529,7 +530,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         Map<String, Object> items = new HashMap<>();
         items.put(IS_CANCELED, "false");
         items.put(USER_ID, userId);
-        items.put(TIME, workWithTimeApi.getCurDateInFormatYMDHMS());
+        items.put(TIME, workWithTimeApi.getDateInFormatYMDHMS(new Date()));
 
         myRef = myRef.child(orderId);
         myRef.updateChildren(items);

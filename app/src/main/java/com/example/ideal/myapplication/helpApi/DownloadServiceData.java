@@ -26,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
+
 public class DownloadServiceData {
 
     private static final String TAG = "DBInf";
@@ -73,7 +75,7 @@ public class DownloadServiceData {
 
 
     private long currentCountOfDays;
-    private WorkWithLocalStorageApi workWithLocalStorageApi;
+    private WorkWithLocalStorageApi LSApi;
     private SQLiteDatabase localDatabase;
 
     private String ownerId;
@@ -83,7 +85,7 @@ public class DownloadServiceData {
     public DownloadServiceData(SQLiteDatabase _database, String _status) {
         localDatabase = _database;
         status = _status;
-        workWithLocalStorageApi = new WorkWithLocalStorageApi(localDatabase);
+        LSApi = new WorkWithLocalStorageApi(localDatabase);
     }
 
     public void loadUserInfo(DataSnapshot userSnapshot) {
@@ -115,7 +117,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
 
         String userId = user.getId();
-        boolean hasSomeData = workWithLocalStorageApi
+        boolean hasSomeData = LSApi
                 .hasSomeData(DBHelper.TABLE_CONTACTS_USERS, userId);
 
         if (hasSomeData) {
@@ -126,12 +128,6 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_ID, userId);
             localDatabase.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
-
-
-        contentValues.put(DBHelper.KEY_ID, user.getId());
-
-        // Добавляем данного пользователя в SQLite
-        localDatabase.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
     }
 
     public void loadSchedule(DataSnapshot servicesSnapshot, String userId) {
@@ -155,13 +151,13 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
             contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
 
-            boolean hasSomeData = workWithLocalStorageApi
+            boolean hasSomeData = LSApi
                     .hasSomeData(DBHelper.TABLE_WORKING_DAYS, dayId);
             if (hasSomeData) {
                 localDatabase.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
                         DBHelper.KEY_ID + " = ?",
                         new String[]{dayId});
-        } else {
+            } else {
                 contentValues.put(DBHelper.KEY_ID, dayId);
                 localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
             }
@@ -176,7 +172,7 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, String.valueOf(timeSnapshot.child(TIME).getValue()));
             contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
             
-            boolean hasSomeData = workWithLocalStorageApi
+            boolean hasSomeData = LSApi
                     .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
 
             if (hasSomeData) {
@@ -202,7 +198,14 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, String.valueOf(orderSnapshot.child(IS_CANCELED).getValue()));
             contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, timeId);
 
-            boolean hasSomeData = workWithLocalStorageApi
+            String updatedTime = updateMessageTime(timeId);
+            if (!updatedTime.equals("")) {
+                contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, updatedTime);
+            } else {
+                contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, String.valueOf(orderSnapshot.child(TIME).getValue()));
+            }
+
+            boolean hasSomeData = LSApi
                     .hasSomeData(DBHelper.TABLE_ORDERS, orderId);
 
             if (hasSomeData) {
@@ -217,6 +220,34 @@ public class DownloadServiceData {
         }
     }
 
+    private String updateMessageTime(String timeId) {
+        String updatedTime = "";
+
+        Cursor cursor = LSApi.getServiceCursorByTimeId(timeId);
+
+        if (cursor.moveToFirst()) {
+            int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
+            int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
+
+            String time = cursor.getString(indexTime);
+            String date = cursor.getString(indexDate);
+
+            WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
+            //3600000 * 24 = 24 часа
+            String commonDate = date + " " + time;
+            Long messageDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000*24;
+            Long sysdate = workWithTimeApi.getSysdateLong();
+
+            if (sysdate > messageDateLong) {
+                // вычитаем 3 часа, т.к. метод работает с датой по Гринвичу
+                updatedTime = workWithTimeApi.getDateInFormatYMDHMS(new Date(messageDateLong - 3600000*3));
+            }
+        }
+
+        cursor.close();
+        return  updatedTime;
+    }
+
     private void addReviewInLocalStorage(DataSnapshot reviewsSnapshot, String orderId){
 
         for (DataSnapshot reviewSnapshot : reviewsSnapshot.getChildren()) {
@@ -228,7 +259,7 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_TYPE_REVIEWS, String.valueOf(reviewSnapshot.child(TYPE).getValue()));
             contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
 
-            boolean hasSomeData = workWithLocalStorageApi
+            boolean hasSomeData = LSApi
                     .hasSomeData(DBHelper.TABLE_REVIEWS, reviewId);
 
             if (hasSomeData) {
@@ -357,7 +388,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_MESSAGE_ID_REVIEWS, ratingReview.getMessageId());
 
         //для проверки на update || insert в таблицу
-        boolean isUpdate =  workWithLocalStorageApi
+        boolean isUpdate =  LSApi
                 .hasSomeData(DBHelper.TABLE_REVIEWS,
                         ratingReview.getId());
         if(isUpdate){
@@ -455,7 +486,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_DIALOG_ID_MESSAGES, message.getDialogId());
 
         //для проверки на update || insert в таблицу
-        boolean isUpdate =  workWithLocalStorageApi
+        boolean isUpdate =  LSApi
                 .hasSomeData(DBHelper.TABLE_MESSAGES, message.getId());
         if(isUpdate){
             localDatabase.update(DBHelper.TABLE_MESSAGES, contentValues,
@@ -500,7 +531,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_NAME_USERS,localUser.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS,localUser.getCity());
 
-        boolean isUpdate = workWithLocalStorageApi
+        boolean isUpdate = LSApi
                 .hasSomeData(DBHelper.TABLE_CONTACTS_USERS,
                         localUser.getId());
 
@@ -522,7 +553,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_SECOND_USER_ID_DIALOGS, secondPhone);
 
         //для проверки на update || insert в таблицу
-        boolean isUpdate =  workWithLocalStorageApi
+        boolean isUpdate =  LSApi
                 .hasSomeData(DBHelper.TABLE_DIALOGS, dialogId);
         if(isUpdate){
             localDatabase.update(DBHelper.TABLE_DIALOGS, contentValues,
@@ -548,7 +579,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, String.valueOf(serviceSnapshot.child(DESCRIPTION).getValue()));
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, String.valueOf(serviceSnapshot.child(COST).getValue()));
 
-        boolean hasSomeData =  workWithLocalStorageApi
+        boolean hasSomeData =  LSApi
                 .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
 
         // Проверка есть ли такой сервис в SQLite
@@ -603,8 +634,7 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
         contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
 
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(localDatabase);
-        boolean isUpdate = workWithLocalStorageApi
+        boolean isUpdate = LSApi
                 .hasSomeData(DBHelper.TABLE_PHOTOS,
                         photo.getPhotoId());
 
@@ -622,7 +652,7 @@ public class DownloadServiceData {
     //время полученное по timeId больше 3 дней
     private boolean isAfterWeek(String workingTimeId) {
 
-        String date  = workWithLocalStorageApi.getDate(workingTimeId);
+        String date  = LSApi.getDate(workingTimeId);
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
         long dateMilliseconds = workWithTimeApi.getMillisecondsStringDate(date);
         boolean isAfterWeek = (workWithTimeApi.getSysdateLong() - dateMilliseconds) > 604800000;

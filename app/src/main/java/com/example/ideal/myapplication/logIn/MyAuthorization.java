@@ -178,7 +178,6 @@ public class MyAuthorization {
                     // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
                     goToRegistration();
                 } else {
-                    Log.d(TAG, "onDataChange: " + userSnapshot);
                     downloadServiceData.loadUserInfo(userSnapshot);
                 }
             }
