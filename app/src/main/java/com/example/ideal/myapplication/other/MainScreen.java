@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -15,7 +14,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
-import com.example.ideal.myapplication.helpApi.DownloadServiceData;
+import com.example.ideal.myapplication.helpApi.LoadData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -124,9 +123,9 @@ public class MainScreen extends AppCompatActivity {
                     user.setPhone(userPhone);
                     user.setCity(userCity);
 
-                    DownloadServiceData downloadServiceData = new DownloadServiceData(database, "MainScreen");
-                    downloadServiceData.loadUserInfo(userSnapshot);
-                    downloadServiceData.loadSchedule(userSnapshot.child(SERVICES), userId);
+                    LoadData loadData = new LoadData(database, "MainScreen");
+                    loadData.loadUserInfo(userSnapshot);
+                    loadData.loadSchedule(userSnapshot.child(SERVICES), userId);
 
                     updateServicesList(user);
                 }

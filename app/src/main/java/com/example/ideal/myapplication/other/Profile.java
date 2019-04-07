@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -26,7 +25,6 @@ import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
-import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
@@ -525,7 +523,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, ratingReview.getReview());
         contentValues.put(DBHelper.KEY_RATING_REVIEWS, ratingReview.getRating());
         contentValues.put(DBHelper.KEY_TYPE_REVIEWS, ratingReview.getType());
-        //contentValues.put(DBHelper.KEY_WORKING_TIME_ID_REVIEWS, ratingReview.getWorkingTimeId());
 
         boolean isUpdate = workWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_REVIEWS,
@@ -613,7 +610,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                     service.setId(foundId);
                     service.setName(foundNameService);
 
-                    //DownloadServiceData downloadServiceData = new DownloadServiceData(database);
+                    //LoadData downloadServiceData = new LoadData(database);
                     //downloadServiceData.loadSchedule(ownerId,"Profile", manager);
 
                     addToScreenOnProfile(0,service);

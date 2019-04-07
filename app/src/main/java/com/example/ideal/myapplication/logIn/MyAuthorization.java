@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.example.ideal.myapplication.helpApi.DownloadServiceData;
+import com.example.ideal.myapplication.helpApi.LoadData;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.Profile;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,7 +57,7 @@ public class MyAuthorization {
     private Context context;
     private String myPhoneNumber;
 
-    private DownloadServiceData downloadServiceData;
+    private LoadData loadData;
 
     MyAuthorization(Context _context, String _myPhoneNumber) {
         context = _context;
@@ -65,7 +65,7 @@ public class MyAuthorization {
 
         dbHelper = new DBHelper(context);
         SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
-        downloadServiceData = new DownloadServiceData(localDatabase, "Authorization");
+        loadData = new LoadData(localDatabase, "Authorization");
     }
 
     void authorizeUser() {
@@ -90,13 +90,14 @@ public class MyAuthorization {
                     } else {
                         clearSQLite();
 
-                        downloadServiceData.loadUserInfo(userSnapshot);
+                        // Загружаем информацию о пользователе
+                        loadData.loadUserInfo(userSnapshot);
 
                         // Добавляем подписки пользователя
                         loadUserSubscriptions(userSnapshot);
 
                         // Загружаем сервисы пользователя из FireBase
-                        downloadServiceData.loadSchedule(
+                        loadData.loadSchedule(
                                 userSnapshot.child(SERVICES),
                                 userSnapshot.getKey());
 
@@ -148,6 +149,7 @@ public class MyAuthorization {
                 loadUserById(cursor.getString(indexUserId));
             } while (cursor.moveToNext());
         }
+        cursor.close();
     }
 
     private void loadUserSubscriptions(DataSnapshot userSnapshot) {
@@ -176,7 +178,7 @@ public class MyAuthorization {
                     // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
                     goToRegistration();
                 } else {
-                    downloadServiceData.loadUserInfo(userSnapshot);
+                    loadData.loadUserInfo(userSnapshot);
                 }
             }
 
@@ -196,7 +198,7 @@ public class MyAuthorization {
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
     }
 
-    // Получается загружаем все, о человеке, с которым можем взаимодействовать из профиля, возхможно в орджереде стоит хранить дату,
+    // Получается загружаем все, о человеке, с которым можем взаимодействовать из профиля, возможно в ордереде стоит хранить дату,
     // чтобы считать ее прсорочена она или нет и уже от этого делать onDataChange, если дата просрочена,
     // то мы никак через профиль не взаимодействуем с этим человеком
     private void loadMyOrders(DataSnapshot _ordersSnapshot) {
@@ -217,11 +219,11 @@ public class MyAuthorization {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                     // Загружаем данные о пользователе
-                    downloadServiceData.loadUserInfo(userSnapshot);
+                    loadData.loadUserInfo(userSnapshot);
 
                     // Загружаем данные о сервисе на который записаны
                     DataSnapshot serviceSnapshot = userSnapshot.child(SERVICES).child(serviceId);
-                    downloadServiceData.addServiceInLocalStorage(serviceSnapshot, workerId);
+                    loadData.addServiceInLocalStorage(serviceSnapshot, workerId);
 
                     goToProfile();
                 }

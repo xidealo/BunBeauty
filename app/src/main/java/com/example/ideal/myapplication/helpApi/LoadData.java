@@ -26,7 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class DownloadServiceData {
+public class LoadData {
 
     private static final String TAG = "DBInf";
 
@@ -80,7 +80,7 @@ public class DownloadServiceData {
     private String status;
     private boolean addToScreen;
 
-    public DownloadServiceData(SQLiteDatabase _database, String _status) {
+    public LoadData(SQLiteDatabase _database, String _status) {
         localDatabase = _database;
         status = _status;
         workWithLocalStorageApi = new WorkWithLocalStorageApi(localDatabase);
@@ -194,11 +194,9 @@ public class DownloadServiceData {
     }
 
     private void addOrdersInLocalStorage(DataSnapshot ordersSnapshot, String timeId) {
-
         for (DataSnapshot orderSnapshot : ordersSnapshot.getChildren()) {
             ContentValues contentValues = new ContentValues();
             String orderId = orderSnapshot.getKey();
-
             contentValues.put(DBHelper.KEY_ID, orderId);
             contentValues.put(DBHelper.KEY_USER_ID, String.valueOf(orderSnapshot.child(USER_ID).getValue()));
             contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, String.valueOf(orderSnapshot.child(IS_CANCELED).getValue()));

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +14,17 @@ import android.widget.Button;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Dialogs;
+import com.example.ideal.myapplication.myServices.MessageService;
 import com.example.ideal.myapplication.other.MainScreen;
 import com.example.ideal.myapplication.other.Profile;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class BottomPanel extends Fragment implements View.OnClickListener{
 
     private static final String OWNER_ID = "owner id";
     private static final String TAG = "DBInf";
+    private static final String USER_ID = "user id";
 
     private Button profileBtn;
     private Button mainScreenBtn;
@@ -48,6 +52,11 @@ public class BottomPanel extends Fragment implements View.OnClickListener{
         profileBtn = view.findViewById(R.id.profileBottomPanelBtn);
         mainScreenBtn = view.findViewById(R.id.mainScreenBottomPanelBtn);
         chatBtn = view.findViewById(R.id.chatBottomPanelBtn);
+
+        // включаем сервис
+        Intent intent = new Intent(getContext(), MessageService.class);
+        intent.putExtra(USER_ID, getUserId());
+        getContext().startService(intent);
 
         profileBtn.setOnClickListener(this);
         mainScreenBtn.setOnClickListener(this);
@@ -93,5 +102,18 @@ public class BottomPanel extends Fragment implements View.OnClickListener{
             Intent intent = new Intent(getContext(), Dialogs.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // выключаем сервис
+        Intent intent = new Intent(getContext(), MessageService.class);
+        getContext().stopService(intent);
+    }
+
+    private String getUserId() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 }
