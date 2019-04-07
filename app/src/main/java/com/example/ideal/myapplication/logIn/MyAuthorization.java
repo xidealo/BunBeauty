@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
@@ -148,6 +149,7 @@ public class MyAuthorization {
                 loadUserById(cursor.getString(indexUserId));
             } while (cursor.moveToNext());
         }
+        cursor.close();
     }
 
     private void loadUserSubscriptions(DataSnapshot userSnapshot) {
@@ -176,6 +178,7 @@ public class MyAuthorization {
                     // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
                     goToRegistration();
                 } else {
+                    Log.d(TAG, "onDataChange: " + userSnapshot);
                     downloadServiceData.loadUserInfo(userSnapshot);
                 }
             }
@@ -196,7 +199,7 @@ public class MyAuthorization {
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
     }
 
-    // Получается загружаем все, о человеке, с которым можем взаимодействовать из профиля, возхможно в орджереде стоит хранить дату,
+    // Получается загружаем все, о человеке, с которым можем взаимодействовать из профиля, возможно в ордереде стоит хранить дату,
     // чтобы считать ее прсорочена она или нет и уже от этого делать onDataChange, если дата просрочена,
     // то мы никак через профиль не взаимодействуем с этим человеком
     private void loadMyOrders(DataSnapshot _ordersSnapshot) {

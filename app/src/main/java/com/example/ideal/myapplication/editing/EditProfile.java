@@ -184,10 +184,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 }
                 break;
 
-            /*case R.id.resendConfirmationBtn:
-                resendCode();
-                break;*/
-
             case R.id.avatarEditProfileImage:
                 chooseImage();
                 break;
@@ -346,14 +342,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private void updatePhone() {
 
-        //я не знаю, как сделать update id, поэтому я ксоздаю нового пользователя и удаляю старого
-        deleteOldPhoneNumber();
-        createNewPhoneNumber();
-        savePhone();
-        updateOtherPlaceWithPhone();
-        //добавить обновление локальной бд
-        //не буду менять локальнгый бд, просто выкину его с финишом на авторизацию
-        //там перезайдет и подгрузим все данные
     }
 
     //удаляем старый телефон в таблице юзер
@@ -378,7 +366,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private void updateOtherPlaceWithPhone() {
         updateWorkingTime();
         updateServices();
-        updateDialogs();
         goToAuthorization();
     }
 
@@ -464,10 +451,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 new String[]{String.valueOf(serviceId)});
     }
 
-    private void updateDialogs() {
-        checkFirstPhone();
-        checkSecondPhone();
-    }
 
     private void checkFirstPhone() {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();

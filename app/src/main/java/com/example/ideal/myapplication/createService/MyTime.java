@@ -63,9 +63,17 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     private static final int ROWS_COUNT = 6;
     private static final int COLUMNS_COUNT = 4;
     private static final String ORDERS = "orders";
+    private static final String REVIEWS = "reviews";
     private static final String IS_CANCELED = "is canceled";
     private static final String DIALOG_ID = "dialog id";
     private static final String WORKER_ID = "worker id";
+
+    private static final String RATING = "rating";
+    private static final String REVIEW = "review";
+    private static final String TYPE = "type";
+    private static final String ORDER_ID = "order_id";
+    private static final String REVIEW_FOR_SERVICE = "review for service";
+    private static final String REVIEW_FOR_USER = "review for user";
 
     private String statusUser;
     private String userId;
@@ -494,22 +502,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         return time;
     }
 
-    // Записаться на данное время
-    private void makeOrderForUser(String orderId, String workerId) {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database
-                .getReference(USERS)
-                .child(userId)
-                .child(ORDERS)
-                .child(orderId);
-
-        Map<String, Object> items = new HashMap<>();
-        items.put(WORKER_ID, workerId);
-        items.put(SERVICE_ID, serviceId);
-
-        myRef.updateChildren(items);
-    }
-
     private void makeOrder() {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -542,12 +534,57 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         myRef = myRef.child(orderId);
         myRef.updateChildren(items);
 
-        makeOrderForUser(orderId, serviceOwnerId);
+        String reviewId = makeReviewForService(myRef);
+
+        makeOrderForUser(orderId, serviceOwnerId, reviewId);
+
 
         Toast.makeText(this, "Вы записались на услугу!", Toast.LENGTH_SHORT).show();
     }
 
+    private String makeReviewForService(DatabaseReference myRef) {
+        String reviewId = myRef.push().getKey();
 
+        myRef = myRef.child(REVIEWS).child(reviewId);
+
+        Map<String, Object> items = new HashMap<>();
+        items.put(RATING, "0");
+        items.put(REVIEW, "");
+        items.put(TYPE, REVIEW_FOR_SERVICE);
+        myRef.updateChildren(items);
+
+        return  reviewId;
+    }
+
+
+    // Записаться на данное время
+    private void makeOrderForUser(String orderId, String workerId, String reviewId) {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database
+                .getReference(USERS)
+                .child(userId)
+                .child(ORDERS)
+                .child(orderId);
+
+        Map<String, Object> items = new HashMap<>();
+        items.put(WORKER_ID, workerId);
+        items.put(SERVICE_ID, serviceId);
+
+        myRef.updateChildren(items);
+
+        makeReviewForUser(myRef,reviewId);
+    }
+
+    private void makeReviewForUser(DatabaseReference myRef, String reviewId) {
+
+        myRef = myRef.child(REVIEWS).child(reviewId);
+
+        Map<String, Object> items = new HashMap<>();
+        items.put(RATING, "0");
+        items.put(REVIEW, "");
+        items.put(TYPE, REVIEW_FOR_USER);
+        myRef.updateChildren(items);
+    }
 
     private String getServiceOwnerId(String workingTimeId) {
 
@@ -604,130 +641,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         return  timeId;
     }
 
-    private void createDialog(final String workingDaysId) {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference dayReference = database.getReference(WORKING_DAYS).child(workingDaysId);
-        dayReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot day) {
-                String serviceId = String.valueOf(day.child(SERVICE_ID).getValue());
-                addDayInLocalStorage(serviceId);
-
-                DatabaseReference serviceReference = database.getReference(SERVICES).child(serviceId);
-                serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot service) {
-                        String workerId = String.valueOf(service.child(USER_ID).getValue());
-
-                        // Если диалог между 2 пользователями уже существует, получить его id
-                        checkDialogsByNumbers(workerId);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        attentionBadConnection();
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
-    private void checkDialogsByNumbers(final String workerId) {
-        final Query firstPhoneQuery = FirebaseDatabase.getInstance().getReference(DIALOGS)
-                .orderByChild(FIRST_PHONE)
-                .equalTo(workerId);
-        firstPhoneQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dialogs) {
-                String secondPhone;
-
-                for (DataSnapshot dialog : dialogs.getChildren()) {
-                    secondPhone = String.valueOf(dialog.child(SECOND_PHONE).getValue());
-
-                    if (secondPhone.equals(userId)) {
-                        dialogId = dialog.getKey();
-                        break;
-                    }
-                }
-                if (dialogId.isEmpty()) {
-                    checkSecondPhone(workerId);
-                } else {
-                    createMessage(dialogId);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
-    private void checkSecondPhone(final String workerId) {
-        Query secondPhoneQuery = FirebaseDatabase.getInstance().getReference(DIALOGS)
-                .orderByChild(SECOND_PHONE)
-                .equalTo(workerId);
-        secondPhoneQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dialogs) {
-                String firstPhone;
-
-                for (DataSnapshot dialog : dialogs.getChildren()) {
-                    firstPhone = String.valueOf(dialog.child(FIRST_PHONE).getValue());
-
-                    if (firstPhone.equals(userId)) {
-                        dialogId = dialog.getKey();
-                        break;
-                    }
-                }
-
-                // Если id пустое, значит диалога нет, создаём новый
-                if (dialogId.isEmpty()) {
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference(DIALOGS);
-                    dialogId = reference.push().getKey();
-                    reference = reference.child(dialogId);
-
-                    Map<String, Object> items = new HashMap<>();
-                    items.put(FIRST_PHONE, workerId);
-                    items.put(SECOND_PHONE, userId);
-
-                    reference.updateChildren(items);
-                }
-
-                createMessage(dialogId);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
-    private void createMessage(final String dialogId) {
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference messageRef = database.getReference(MESSAGES);
-        Map<String, Object> items = new HashMap<>();
-
-        String dateNow = workWithTimeApi.getCurDateInFormatYMDHMS();
-
-        items.put(DIALOG_ID, dialogId);
-        items.put(MESSAGE_TIME, dateNow);
-
-        String messageId = messageRef.push().getKey();
-        messageRef = database.getReference(MESSAGES).child(messageId);
-        messageRef.updateChildren(items);
-
-        //createOrder(messageId);
-    }
-
     private void addOrderInLocalStorage(String orderId, String timeId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -740,32 +653,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
         workingHours.clear();
-    }
-
-    private void addDayInLocalStorage(String serviceId) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        String sqlQuery = "SELECT * FROM "
-                + DBHelper.TABLE_WORKING_DAYS
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId});
-
-        contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
-        contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
-
-        if (cursor.moveToFirst()) {
-            database.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{String.valueOf(workingDaysId)});
-            cursor.close();
-        } else {
-            contentValues.put(DBHelper.KEY_ID, workingDaysId);
-            database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
-            cursor.close();
-        }
     }
 
     private void deleteTime() {
@@ -785,7 +672,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot timesSnapshot) {
-                Log.d(TAG, "onDataChange: " +timesSnapshot);
                 for (String hours : removedHours) {
                     for (DataSnapshot time : timesSnapshot.getChildren()) {
                         if (String.valueOf(time.child(TIME).getValue()).equals(hours)) {
