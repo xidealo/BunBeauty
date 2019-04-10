@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,11 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,9 +33,6 @@ import java.util.Map;
 public class MessageOrderElement extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
-
-    private static final String ORDERS = "orders";
-    private static final String IS_CANCELED = "is canceled";
 
     private static final String MESSAGES = "messages";
     private static final String MESSAGE_TIME = "message time";
@@ -45,19 +45,29 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
     private static final String WORKING_TIME_ID = "working time id";
     private static final String TYPE = "type";
 
-    private static final String WORKING_TIME = "working time";
-    private static final String USER_ID = "user id";
-
     private static final String REVIEW_FOR_SERVICE = "review for service";
 
-    private String text;
+    private static final String USERS = "users";
+    private static final String SERVISES = "services";
+    private static final String WORKING_DAYS = "working days";
+    private static final String WORKING_TIME = "working time";
+    private static final String ORDERS = "orders";
+
+    private static final String IS_CANCELED = "is canceled";
+    private static final String TIME = "time";
 
     private Boolean messageIsCanceled;
     private Boolean messageIsMyService;
-    private String messageDate;
-    private String messageOrderTime;
-    private String messageWorkingTimeId;
-    private String messageOrderId;
+
+    private String text;
+    private String messageWorkingDay;
+    private String messageWorkingTime;
+
+    private String userId;
+    private String serviceId;
+    private String workingTimeId;
+    private String workingDayId;
+    private String orderId;
 
     private WorkWithTimeApi workWithTimeApi;
 
@@ -68,43 +78,51 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     @SuppressLint("ValidFragment")
     public MessageOrderElement(Message message) {
-        String messageTime = message.getMessageTime();
+        // для условий
         messageIsCanceled = message.getIsCanceled();
         messageIsMyService = message.getIsMyService();
-        messageOrderTime = message.getServiceTime();
-        String messageServiceName = message.getServiceName();
+
+        // содержание сообщения
         String messageUserName = message.getUserName();
-        messageWorkingTimeId = message.getTimeId();
-        messageOrderId = message.getOrderId();
-        messageDate= message.getMessageDate();
+        String messageServiceName = message.getServiceName();
+        messageWorkingDay= message.getWorkingDay();
+        messageWorkingTime = message.getWorkingTime();
+        String messageTime = message.getMessageTime();
+
+        // для Reference
+        userId = message.getUserId();
+        serviceId = message.getServiceId();
+        workingDayId = message.getWorkingDayId();
+        workingTimeId = message.getWorkingTimeId();
+        orderId = message.getOrderId();
 
         if(messageIsCanceled) {
             if (messageIsMyService) {
                 text = "Вы отказали пользователю " + messageUserName
                         + " в предоставлении услуги " + messageServiceName
-                        + ". Сеанс на " + messageDate
-                        + " в " + messageOrderTime + "отменён."
+                        + ". Сеанс на " + messageWorkingDay
+                        + " в " + messageWorkingTime + " отменён."
                         + "\n (" + messageTime + ")";
             } else {
                 text = "Пользователь " + messageUserName
                         + " отказал Вам в придоставлении услуги " + messageServiceName
-                        + ". Сеанс на " + messageDate
-                        + " в " + messageOrderTime + "отменён."
+                        + ". Сеанс на " + messageWorkingDay
+                        + " в " + messageWorkingTime + " отменён."
                         + "\n (" + messageTime + ")";
             }
         } else {
             if (messageIsMyService) {
                 text = "Пользователь " + messageUserName
                         + " записался на услугу " + messageServiceName
-                        + ". Сеанс состоится " + messageDate
-                        + " в " + messageOrderTime
+                        + ". Сеанс состоится " + messageWorkingDay
+                        + " в " + messageWorkingTime
                         + ". Вы можете отказаться, указав причину, однако, если вы сделаете это слишком поздно, у пользователя будет возможность оценить Ваш сервис."
                         + "\n (" + messageTime + ")";
             } else {
                 text = "Вы записались к " + messageUserName
                         + " на услугу " + messageServiceName
-                        + ". Сеанс состоится " + messageDate
-                        + " в " + messageOrderTime
+                        + ". Сеанс состоится " + messageWorkingDay
+                        + " в " + messageWorkingTime
                         + "\n (" + messageTime + ")";
             }
         }
@@ -123,10 +141,10 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         canceledBtn.setOnClickListener(this);
         workWithTimeApi = new WorkWithTimeApi();
 
-        if((!isRelevance()) || (!messageIsMyService)){
-            canceledBtn.setVisibility(View.INVISIBLE);
+        if (!messageIsMyService) {
+            canceledBtn.setVisibility(View.GONE);
         } else {
-            if(messageIsCanceled) {
+            if(!isRelevance() || messageIsCanceled){
                 canceledBtn.setEnabled(false);
             }
         }
@@ -139,8 +157,8 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         messageText.setText(text);
     }
 
-    public void confirm(Context context) {
-        AlertDialog dialog = new AlertDialog.Builder(context).create();
+    public void confirm() {
+        AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
         dialog.setTitle("Отказ");
         dialog.setMessage("Отказать в предоставлении услуги?");
         dialog.setCancelable(false);
@@ -159,9 +177,10 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        confirm(getContext());
+        confirm();
     }
 
+    // изменить время сообщения !!!
     private void setIsCanceled() {
         //Отказываем юзеру в услуге за ЧАС до ее исполнения
         //Иначе даем возможность написать ревью
@@ -177,26 +196,56 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
                 // создаём сообщение с возможность написать ревью
             }
         }
+
+        canceledBtn.setEnabled(false);
     }
 
     private boolean isRelevance() {
-        String commonDate = messageDate + " " + messageOrderTime;
+        String commonDate = messageWorkingDay + " " + messageWorkingTime;
 
-        Long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate);
-        Long sysdateLong = workWithTimeApi.getSysdateLong();
+        long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate);
+        long sysdateLong = workWithTimeApi.getSysdateLong();
 
         return orderDateLong > sysdateLong;
     }
 
     private void cancel(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(ORDERS).child(messageOrderId);
+
+        String myId = getUserId();
+        DatabaseReference myRef;
+        if (messageIsMyService) {
+            myRef = database.getReference(USERS)
+                    .child(myId)
+                    .child(SERVISES)
+                    .child(serviceId)
+                    .child(WORKING_DAYS)
+                    .child(workingDayId)
+                    .child(WORKING_TIME)
+                    .child(workingTimeId)
+                    .child(ORDERS)
+                    .child(orderId);
+        } else {
+            myRef = database.getReference(USERS)
+                    .child(userId)
+                    .child(SERVISES)
+                    .child(serviceId)
+                    .child(WORKING_DAYS)
+                    .child(workingDayId)
+                    .child(WORKING_TIME)
+                    .child(workingTimeId)
+                    .child(ORDERS)
+                    .child(orderId);
+        }
+        Log.d(TAG, "cancel: " + myRef);
+
         Map<String, Object> items = new HashMap<>();
 
         items.put(IS_CANCELED, true);
+        String newMessageTime = workWithTimeApi.getDateInFormatYMDHMS(new Date());
+        items.put(TIME, newMessageTime);
         myRef.updateChildren(items);
-        clearPhone();
-        updateLocalStorage();
+        updateLocalStorage(newMessageTime);
     }
 
 
@@ -210,7 +259,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         items.put(TYPE, REVIEW_FOR_SERVICE);
         items.put(REVIEW, "");
         items.put(MESSAGE_ID, messageId);
-        items.put(WORKING_TIME_ID, messageWorkingTimeId);
+        //items.put(WORKING_TIME_ID, messageWorkingTimeId);
 
         String reviewId =  myRef.push().getKey();
         myRef = database.getReference(REVIEWS).child(reviewId);
@@ -218,47 +267,30 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
     }
 
     private boolean beforeOneHour() {
-        String commonDate = messageDate + " " + messageOrderTime;
-        Long sysdateLong = workWithTimeApi.getSysdateLong();
-        Long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate);
+        String commonDate = messageWorkingDay + " " + messageWorkingTime;
+        long sysdateLong = workWithTimeApi.getSysdateLong();
+        long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate);
 
         return orderDateLong - sysdateLong < 3600000;
     }
 
-    private void clearPhone() {
-        //получить id message
-        //получить date (id working days)
-        //сделать query по date в working time и получить id времени
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database
-                .getReference(WORKING_TIME)
-                .child(messageWorkingTimeId);
-
-        Map<String, Object> items = new HashMap<>();
-        items.put(USER_ID, "0");
-        myRef.updateChildren(items);
-
-        canceledBtn.setEnabled(false);
-    }
-
-    private void updateLocalStorage() {
+    private void updateLocalStorage(String newMessageTime) {
         // isCancled
         DBHelper dbHelper = new DBHelper(this.getContext());
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, "true");
+        contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, newMessageTime);
 
         database.update(DBHelper.TABLE_ORDERS, contentValues,
                 DBHelper.KEY_ID + " = ?",
-                new String[]{String.valueOf(messageOrderId)});
+                new String[]{String.valueOf(orderId)});
         contentValues.clear();
-
-        // userId
-        contentValues.put(DBHelper.KEY_USER_ID, "0");
-        database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
-                DBHelper.KEY_ID + " = ?",
-                new String[]{String.valueOf(messageWorkingTimeId)});
-
     }
+
+    private  String getUserId(){
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
 }
