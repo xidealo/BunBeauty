@@ -248,7 +248,7 @@ public class DownloadServiceData {
         return  updatedTime;
     }
 
-    private void addReviewInLocalStorage(DataSnapshot reviewsSnapshot, String orderId){
+    public void addReviewInLocalStorage(DataSnapshot reviewsSnapshot, String orderId){
 
         for (DataSnapshot reviewSnapshot : reviewsSnapshot.getChildren()) {
             ContentValues contentValues = new ContentValues();

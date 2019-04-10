@@ -83,8 +83,8 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     private String date;
     private int width;
     private int height;
-    private String dialogId = "";
     private WorkWithTimeApi workWithTimeApi;
+    private WorkWithLocalStorageApi LSApi;
 
     private Button[][] timeBtns;
     private Button saveBtn;
@@ -131,6 +131,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
+        LSApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
         date = getThisDate();
 
         addButtonsOnScreen(false);
@@ -257,9 +258,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     // Подгружаем информацию о сервисе
     private void loadInformationAboutService(String workingTimeId) {
 
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
-
-        Cursor cursor = workWithLocalStorageApi.getServiceCursorByTimeId(workingTimeId);
+        Cursor cursor = LSApi.getServiceCursorByTimeId(workingTimeId);
 
         if (cursor.moveToFirst()) {
             int indexNameService = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
@@ -503,12 +502,20 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         return time;
     }
 
+    // заносим данные о записи в БД
     private void makeOrder() {
-
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         String workingTimeId = getWorkingTimeId();
         String serviceOwnerId = getServiceOwnerId(workingTimeId);
+        String orderId = makeOrderForService(workingTimeId, serviceOwnerId);
+        makeOrderForUser(orderId, serviceOwnerId);
+
+        Toast.makeText(this, "Вы записались на услугу!", Toast.LENGTH_SHORT).show();
+    }
+
+    // Создаёт запись в разделе Сервис
+    private String makeOrderForService(String workingTimeId, String serviceOwnerId) {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         // Добавляем информацию о записи в LocalStorage и Firebase
         DatabaseReference myRef = database
@@ -535,31 +542,14 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         myRef = myRef.child(orderId);
         myRef.updateChildren(items);
 
-        String reviewId = makeReviewForService(myRef);
+        // создаём отзыв дял сервиса
+        makeReview(myRef, REVIEW_FOR_SERVICE);
 
-        makeOrderForUser(orderId, serviceOwnerId, reviewId);
-
-
-        Toast.makeText(this, "Вы записались на услугу!", Toast.LENGTH_SHORT).show();
+        return orderId;
     }
 
-    private String makeReviewForService(DatabaseReference myRef) {
-        String reviewId = myRef.push().getKey();
-
-        myRef = myRef.child(REVIEWS).child(reviewId);
-
-        Map<String, Object> items = new HashMap<>();
-        items.put(RATING, "0");
-        items.put(REVIEW, "");
-        items.put(TYPE, REVIEW_FOR_SERVICE);
-        myRef.updateChildren(items);
-
-        return  reviewId;
-    }
-
-
-    // Записаться на данное время
-    private void makeOrderForUser(String orderId, String workerId, String reviewId) {
+    // Создаёт запись в разделе User
+    private void makeOrderForUser(String orderId, String workerId) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database
                 .getReference(USERS)
@@ -573,41 +563,26 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         myRef.updateChildren(items);
 
-        makeReviewForUser(myRef,reviewId);
+        // создаём отзыв для пользователя
+        makeReview(myRef, REVIEW_FOR_USER);
     }
 
-    private void makeReviewForUser(DatabaseReference myRef, String reviewId) {
-
+    // создаёт пустой отзыв по указанной ссылке на запись и типу
+    private void makeReview(DatabaseReference myRef, String type) {
+        myRef = myRef.child(REVIEWS);
+        String reviewId = myRef.push().getKey();
         myRef = myRef.child(REVIEWS).child(reviewId);
 
         Map<String, Object> items = new HashMap<>();
         items.put(RATING, "0");
         items.put(REVIEW, "");
-        items.put(TYPE, REVIEW_FOR_USER);
+        items.put(TYPE, type);
         myRef.updateChildren(items);
     }
 
     private String getServiceOwnerId(String workingTimeId) {
 
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_USER_ID
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
-                        + " WHERE "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = ?"
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " = " + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                        + " = " + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID;
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{ workingTimeId });
+        Cursor cursor = LSApi.getServiceCursorByTimeId(workingTimeId);
 
         String ownerId = "";
         if(cursor.moveToFirst()) {
