@@ -137,6 +137,7 @@ public class Messages extends AppCompatActivity {
 
         String myId = getUserId();
         Cursor cursor = database.rawQuery(orderQuery, new String[]{senderId, myId, senderId, myId});
+        Log.d(TAG, "addMessages: " + cursor.getCount());
 
         if (cursor.moveToFirst()) {
 

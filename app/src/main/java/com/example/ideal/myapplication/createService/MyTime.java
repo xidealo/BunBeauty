@@ -571,7 +571,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     private void makeReview(DatabaseReference myRef, String type) {
         myRef = myRef.child(REVIEWS);
         String reviewId = myRef.push().getKey();
-        myRef = myRef.child(REVIEWS).child(reviewId);
+        myRef = myRef.child(reviewId);
 
         Map<String, Object> items = new HashMap<>();
         items.put(RATING, "0");

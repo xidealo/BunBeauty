@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -252,7 +253,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                 + " AND "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                 + " AND "
                 + DBHelper.KEY_USER_ID + " = ?"
                 + " AND "
@@ -285,6 +286,29 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + DBHelper.KEY_DATE_WORKING_DAYS
                 + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                 + ")) <= 0))))";
+
+        /*String query = "SELECT *"
+                + " FROM "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID;
+
+        Cursor cursor1 = database.rawQuery(query, new String[] {});
+
+        Log.d(TAG, "checkScheduleAndGoToProfile: " + cursor1.getCount());
+
+        if (cursor1.moveToFirst()) {
+            String userId = cursor1.getString(cursor1.getColumnIndex(DBHelper.KEY_USER_ID));
+            String isCanceled = cursor1.getString(cursor1.getColumnIndex(DBHelper.KEY_IS_CANCELED_ORDERS));
+            Log.d(TAG, userId + " " + isCanceled);
+        }
+cursor1.close();*/
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {serviceId, serviceId, serviceId, userId});
 

@@ -61,7 +61,7 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
                     messageWorkingDay + " в " + messageWorkingTime
                             + " Вы предоставляли услугу " + messageServiceName
                             + " пользователю " + messageUserName
-                            + ".\nПожалуйста, оставьте отзыв об этом пользователе, чтобы улучшить качество сервиса."
+                            + ".\nПожалуйста, оставьте отзыв об этом пользователе."
                             + " Вы также сможете увидеть отзыв, о себе,"
                             + " как только пользователь оставит его или пройдет 72 часа."
                             + "\n (" + messageTime + ")";

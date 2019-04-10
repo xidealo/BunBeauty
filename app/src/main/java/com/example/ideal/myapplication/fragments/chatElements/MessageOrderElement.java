@@ -108,7 +108,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         } else {
             if (messageIsMyService) {
                 text = "Пользователь " + messageUserName
-                        + " записался на услугу " + messageServiceName
+                        + " записался к вам на услугу " + messageServiceName
                         + ". Сеанс состоится " + messageWorkingDay
                         + " в " + messageWorkingTime
                         + ". Вы можете отказаться, указав причину, однако, если вы сделаете это слишком поздно, у пользователя будет возможность оценить Ваш сервис."
