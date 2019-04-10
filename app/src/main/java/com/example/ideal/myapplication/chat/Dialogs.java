@@ -26,43 +26,9 @@ public class Dialogs extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
 
-    private static final String USERS = "users";
-    private static final String USER_ID = "user id";
-    private static final String NAME = "name";
-    private static final String CITY = "city";
-
-    private static final String MESSAGES = "messages";
-    private static final String ORDERS = "orders";
-    private static final String REVIEWS = "reviews";
-    private static final String RATING = "rating";
-    private static final String REVIEW = "review";
-    private static final String MESSAGE_TIME = "message time";
-    private static final String DIALOG_ID = "dialog id";
-    private static final String IS_CANCELED = "is canceled";
-
-    private static final String WORKING_TIME = "working time";
-
-    private static final String WORKING_TIME_ID = "working time id";
-    private static final String WORKING_DAY_ID = "working day id";
-    private static final String TYPE = "type";
-    private static final String MESSAGE_ID = "message id";
-
-    private static final String WORKING_DAYS = "working days";
-    private static final String SERVICE_ID = "service id";
-
-    private static final String SERVICES = "services";
-    private static final String TIME = "time";
-
-    private static final String REVIEW_FOR_SERVICE = "review for service";
-    private static final String REVIEW_FOR_USER = "review for user";
-
-    //PHOTOS
-    private static final String PHOTOS = "photos";
-    private static final String PHOTO_LINK = "photo link";
     private static final String OWNER_ID = "owner_id";
     private static final String ORDER_ID = "order_id";
 
-    private WorkWithTimeApi TimeApi;
     private WorkWithLocalStorageApi LSApi;
     private DBHelper dbHelper;
 
@@ -85,7 +51,7 @@ public class Dialogs extends AppCompatActivity {
         panelBuilder.buildHeader(manager, "Диалоги", R.id.headerDialogsLayout);
 
         dbHelper = new DBHelper(this);
-        TimeApi = new WorkWithTimeApi();
+        // TimeApi = new WorkWithTimeApi();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         LSApi = new WorkWithLocalStorageApi(database);
     }

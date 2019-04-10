@@ -34,15 +34,10 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     private static final String TAG = "DBInf";
 
-    private static final String MESSAGES = "messages";
-    private static final String MESSAGE_TIME = "message time";
-    private static final String DIALOG_ID = "dialog id";
-
     private static final String REVIEWS = "reviews";
     private static final String REVIEW = "review";
     private static final String RATING = "rating";
     private static final String MESSAGE_ID = "message id";
-    private static final String WORKING_TIME_ID = "working time id";
     private static final String TYPE = "type";
 
     private static final String REVIEW_FOR_SERVICE = "review for service";
