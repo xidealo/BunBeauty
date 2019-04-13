@@ -118,7 +118,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
                             + DBHelper.KEY_WORKING_TIME_ID_ORDERS + ", "
                             + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + ", "
                             + DBHelper.KEY_SERVICE_ID_WORKING_DAYS+ ", "
-                            + DBHelper.TABLE_REVIEWS + "." + DBHelper.KEY_USER_ID
+                            + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
                             + " FROM "
                             + DBHelper.TABLE_REVIEWS + ", "
                             + DBHelper.TABLE_ORDERS + ", "

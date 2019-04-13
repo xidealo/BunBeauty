@@ -237,7 +237,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     }
 
     // Спрашиваем, действительно ли записать на срвис
-    public void confirm(String serviceName,String dataDay, String time) {
+    public void confirm(String serviceName, String dataDay, String time) {
         AlertDialog dialog = new AlertDialog.Builder(this).create();
         dialog.setTitle("Запись на услугу");
         dialog.setMessage("Записаться на услугу " + serviceName + " " + dataDay + " числа в " + time);
@@ -269,7 +269,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
             String dataDay = cursor.getString(indexDateDay);
             String time = cursor.getString(indexTime);
 
-            confirm(serviceName, dataDay,time);
+            confirm(serviceName, dataDay, time);
         }
     }
 
@@ -493,7 +493,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId, userId});
 
         String time = "";
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int timeIndex = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
             time = cursor.getString(timeIndex);
         }
@@ -529,18 +529,21 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
                 .child(workingTimeId)
                 .child(ORDERS);
         String orderId = myRef.push().getKey();
-        addOrderInLocalStorage(orderId, workingTimeId);
 
-        //закрашиваем, чтобы нельзя было заисаться еще раз
-        checkCurrentTimes();
+        String messageTime = workWithTimeApi.getDateInFormatYMDHMS(new Date());
 
         Map<String, Object> items = new HashMap<>();
         items.put(IS_CANCELED, "false");
         items.put(USER_ID, userId);
-        items.put(TIME, workWithTimeApi.getDateInFormatYMDHMS(new Date()));
+        items.put(TIME, messageTime);
 
         myRef = myRef.child(orderId);
         myRef.updateChildren(items);
+
+        addOrderInLocalStorage(orderId, workingTimeId, messageTime);
+
+        //закрашиваем, чтобы нельзя было заисаться еще раз
+        checkCurrentTimes();
 
         // создаём отзыв дял сервиса
         makeReview(myRef, REVIEW_FOR_SERVICE);
@@ -569,6 +572,8 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
     // создаёт пустой отзыв по указанной ссылке на запись и типу
     private void makeReview(DatabaseReference myRef, String type) {
+        String orderId = myRef.getKey();
+
         myRef = myRef.child(REVIEWS);
         String reviewId = myRef.push().getKey();
         myRef = myRef.child(reviewId);
@@ -578,6 +583,22 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         items.put(REVIEW, "");
         items.put(TYPE, type);
         myRef.updateChildren(items);
+
+        addReviewInLocalStorage(orderId, reviewId, type);
+    }
+
+    public void addReviewInLocalStorage(String orderId, String reviewId, String type) {
+        SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
+
+        Log.d(TAG,  " | type = " + type);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, reviewId);
+        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, "");
+        contentValues.put(DBHelper.KEY_RATING_REVIEWS, "0");
+        contentValues.put(DBHelper.KEY_TYPE_REVIEWS, type);
+        contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
+
+        localDatabase.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
     }
 
     private String getServiceOwnerId(String workingTimeId) {
@@ -585,13 +606,13 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         Cursor cursor = LSApi.getServiceCursorByTimeId(workingTimeId);
 
         String ownerId = "";
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int indexOwnerId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
             ownerId = cursor.getString(indexOwnerId);
         }
 
         cursor.close();
-        return  ownerId;
+        return ownerId;
     }
 
     private String getWorkingTimeId() {
@@ -608,16 +629,16 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingHours.get(0), String.valueOf(workingDaysId)});
         String timeId = "";
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int indexTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
             timeId = cursor.getString(indexTimeId);
         }
 
         cursor.close();
-        return  timeId;
+        return timeId;
     }
 
-    private void addOrderInLocalStorage(String orderId, String timeId) {
+    private void addOrderInLocalStorage(String orderId, String timeId, String messageTime) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -626,6 +647,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, "false");
         contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, timeId);
+        contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, messageTime);
 
         database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
         workingHours.clear();
@@ -760,7 +782,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId, time, workingDaysId});
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             cursor.close();
             return true;
         }

@@ -22,8 +22,6 @@ public class Messages extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
 
-    private static final String DIALOG_ID = "dialog id";
-
     private static final String REVIEW_FOR_SERVICE = "review for service";
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String USER_ID = "user id";
@@ -34,9 +32,12 @@ public class Messages extends AppCompatActivity {
     private static final String WORKING_TIME_ID = "working_time_id";
     private static final String REVIEW_ID = "review_id";
 
+    private String senderId;
     private String senderName;
     private DBHelper dbHelper;
     private FragmentManager manager;
+
+    LinearLayout resultsLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +45,16 @@ public class Messages extends AppCompatActivity {
         setContentView(R.layout.messages);
 
         dbHelper = new DBHelper(this);
+        resultsLayout = findViewById(R.id.resultsMessagesLayout);
 
         // получаем телефон нашего собеседеника
         manager = getSupportFragmentManager();
-        String senderId = getIntent().getStringExtra(USER_ID);
+        senderId = getIntent().getStringExtra(USER_ID);
         senderName = getSenderName(senderId);
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
         panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderId);
-        //кто-то записан к нам
-        addMessages(senderId);
-        //мы записаны к кому-то
-        //addMessageSecond(senderId);
     }
 
     private String getSenderName(String senderId) {
@@ -101,6 +99,7 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " AS " + SERVICE_ID + ","
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ", "
                         + DBHelper.TABLE_REVIEWS + "." + DBHelper.KEY_ID + " AS " + REVIEW_ID + ","
+                        + DBHelper.TABLE_REVIEWS + "." + DBHelper.KEY_TYPE_REVIEWS + ","
                         + DBHelper.KEY_RATING_REVIEWS
                         + " FROM "
                         + DBHelper.TABLE_ORDERS + ", "
@@ -137,7 +136,7 @@ public class Messages extends AppCompatActivity {
 
         String myId = getUserId();
         Cursor cursor = database.rawQuery(orderQuery, new String[]{senderId, myId, senderId, myId});
-        Log.d(TAG, "addMessages: " + cursor.getCount());
+        //Log.d(TAG, "addMessages: " + cursor.getCount());
 
         if (cursor.moveToFirst()) {
 
@@ -155,6 +154,7 @@ public class Messages extends AppCompatActivity {
             int indexMessageReviewId = cursor.getColumnIndex(REVIEW_ID);
 
             int indexMessageRatingReview = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+            int indexMessageTypeReview = cursor.getColumnIndex(DBHelper.KEY_TYPE_REVIEWS);
 
             do {
                 boolean isCanceled = Boolean.valueOf(cursor.getString(indexMessageIsCanceled));
@@ -175,26 +175,29 @@ public class Messages extends AppCompatActivity {
                 message.setWorkingTime(time);
                 message.setMessageTime(cursor.getString(indexMessageTime));
 
+                String type = cursor.getString(indexMessageTypeReview);
+
                 // Если сообщение связано с услугой на которую я записался
                 // проверяем, если у ордера время записи прошло + 24 часа, тогда сорздаем не ордер, а ревью.
-                if (isAfterOrderTime(date, time) && !isCanceled) {
-                    if (isMyService) {
-                        message.setType(REVIEW_FOR_USER);
-                    } else {
-                        message.setType(REVIEW_FOR_SERVICE);
+                if ((isAfterOrderTime(date, time) && !isCanceled) || (isCanceled && type.equals(REVIEW_FOR_SERVICE))) {
+
+                    if (isMyService && type.equals(REVIEW_FOR_USER) || !isMyService && type.equals(REVIEW_FOR_SERVICE)) {
+                        message.setReviewId(cursor.getString(indexMessageReviewId));
+                        message.setRatingReview(cursor.getString(indexMessageRatingReview));
+                        message.setType(type);
+                        addMessageReviewToScreen(message);
                     }
-                    message.setReviewId(cursor.getString(indexMessageReviewId));
-                    message.setRatingReview(cursor.getString(indexMessageRatingReview));
-
-                    addMessageReviewToScreen(message);
                 } else {
-                    message.setUserId(senderId);
-                    message.setServiceId(serviceId);
-                    message.setWorkingTimeId(cursor.getString(indexMessageWorkingTimeId));
-                    message.setWorkingDayId(cursor.getString(indexMessageWorkingDayId));
-                    message.setOrderId(cursor.getString(indexMessageOrderId));
+                    Log.d(TAG, "addMessages: " + type);
+                    if (type.equals(REVIEW_FOR_SERVICE)) {
+                        message.setUserId(senderId);
+                        message.setServiceId(serviceId);
+                        message.setWorkingTimeId(cursor.getString(indexMessageWorkingTimeId));
+                        message.setWorkingDayId(cursor.getString(indexMessageWorkingDayId));
+                        message.setOrderId(cursor.getString(indexMessageOrderId));
 
-                    addMessageOrderToScreen(message);
+                        addMessageOrderToScreen(message);
+                    }
                 }
             } while (cursor.moveToNext());
 
@@ -232,31 +235,6 @@ public class Messages extends AppCompatActivity {
         return cursor.moveToFirst();
     }
 
-    private String getServiceName(String serviceId) {
-
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        // Получает имя сервиса
-        // Таблицы: services
-        // Условия: уточняем id сервиса
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_NAME_SERVICES
-                        + " FROM "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
-                        + " WHERE "
-                        + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
-
-        if(cursor.moveToFirst()){
-            int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
-
-            return cursor.getString(indexName);
-        }
-        cursor.close();
-        return "";
-    }
-
     private void addMessageOrderToScreen(Message message) {
 
             MessageOrderElement fElement = new MessageOrderElement(message);
@@ -280,12 +258,11 @@ public class Messages extends AppCompatActivity {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    private String getUserMyPhone(){
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
+
+        resultsLayout.removeAllViews();
+        addMessages(senderId);
     }
 }

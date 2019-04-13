@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -32,6 +34,8 @@ public class Dialogs extends AppCompatActivity {
     private WorkWithLocalStorageApi LSApi;
     private DBHelper dbHelper;
 
+    LinearLayout mainLayout;
+
     private FragmentManager manager;
 
     @Override
@@ -45,6 +49,8 @@ public class Dialogs extends AppCompatActivity {
 
     private void init() {
         manager = getSupportFragmentManager();
+
+        mainLayout = findViewById(R.id.mainDialogsLayout);
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerDialogsLayout);
