@@ -31,30 +31,23 @@ import java.util.Map;
 public class MyCalendar extends AppCompatActivity implements View.OnClickListener {
 
     private static final String WORKING_DAYS = "working days";
-
     private static final String SERVICE_ID = "service id";
     private static final String WORKING_DAYS_ID = "working day id";
     private static final String STATUS_USER_BY_SERVICE = "status User";
     private static final String DATE = "date";
     private static final String USER = "user";
     private static final String WORKER = "worker";
-
     private static final String USERS = "users";
     private static final String SERVICES = "services";
-
     private static final int WEEKS_COUNT = 4;
     private static final int DAYS_COUNT = 7;
 
     private String statusUser;
     private String date;
     private String serviceId;
-
     private Button[][] dayBtns;
     private Button nextBtn;
-    private WorkWithTimeApi workWithTimeApi;
-
     private RelativeLayout mainLayout;
-
     private DBHelper dbHelper;
 
     @Override
@@ -67,7 +60,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         dayBtns = new Button[WEEKS_COUNT][DAYS_COUNT];
 
         dbHelper = new DBHelper(this);
-        workWithTimeApi = new WorkWithTimeApi();
 
         // получаем статус, чтобы определить, кто зашел, worker or User
         statusUser = getIntent().getStringExtra(STATUS_USER_BY_SERVICE);
@@ -418,14 +410,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         return false;
     }
 
-    /*private boolean hasMoreThenTwoHours(String date, String time) {
-        long twoHours = 2*60*60*1000;
-
-        long sysdateLong = workWithTimeApi.getSysdateLong() ;
-        long currentLong = workWithTimeApi.getMillisecondsStringDate(date + " " + time);
-
-        return currentLong - sysdateLong >= twoHours;
-    }*/
 
     // Преобразует дату в формат БД
     private String convertDate(String dayAndMonth, String year) {

@@ -55,7 +55,6 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String SERVICE_PHOTO = "service photo";
     private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
-    private static final String OWNER_ID = "owner id";
 
     private EditText nameServiceInput;
     private EditText costAddServiceInput;

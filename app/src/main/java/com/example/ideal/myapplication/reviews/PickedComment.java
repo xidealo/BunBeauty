@@ -109,7 +109,7 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
             @Override
             public void onDataChange(@NonNull DataSnapshot user) {
                 User localUser = new User();
-                localUser.setPhone(ownerId);
+                localUser.setId(ownerId);
                 localUser.setName(String.valueOf(user.child(NAME).getValue()));
                 localUser.setCity(String.valueOf(user.child(CITY).getValue()));
                 addUserInLocalStorage(localUser);
@@ -128,7 +128,7 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
         contentValues.put(DBHelper.KEY_CITY_USERS, localUser.getCity());
 
         database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
-                DBHelper.KEY_USER_ID + " = ?",
-                new String[]{String.valueOf(localUser.getPhone())});
+                DBHelper.KEY_ID + " = ?",
+                new String[]{String.valueOf(localUser.getId())});
     }
 }

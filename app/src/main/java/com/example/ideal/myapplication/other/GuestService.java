@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -170,7 +171,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         // все о сервисе, оценка, количество оценок
         // проверка на удаленный номер
-
         String sqlQuery =
                 "SELECT "
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
@@ -178,11 +178,22 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                         + " FROM "
                         + DBHelper.TABLE_WORKING_DAYS + ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
+                        + DBHelper.TABLE_ORDERS + ", "
                         + DBHelper.TABLE_REVIEWS
                         + " WHERE "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
+                        + DBHelper.KEY_ORDER_ID_REVIEWS
+                        + " = "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
                         + " AND "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " = "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + " = "
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
                         + " AND "
                         + DBHelper.KEY_TYPE_REVIEWS + " = ? "
                         + " AND "
@@ -198,16 +209,16 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
             do {
                 //у каждого ревью беру timeId и смотрю по нему есть ли оценка
-                String workingTimeId = cursor.getString(indexWorkingTimeId);
-                if (workWithLocalStorageApi.isMutualReview(workingTimeId)) {
+                //String workingTimeId = cursor.getString(indexWorkingTimeId);
+                //if (workWithLocalStorageApi.isMutualReview(workingTimeId)) {
                     sumRates += Float.valueOf(cursor.getString(indexRating));
                     counter++;
-                } else {
-                    if (workWithLocalStorageApi.isAfterWeek(workingTimeId)) {
-                        sumRates += Float.valueOf(cursor.getString(indexRating));
-                        counter++;
-                    }
-                }
+                //} else {
+                  //  if (workWithLocalStorageApi.isAfterWeek(workingTimeId)) {
+                        //sumRates += Float.valueOf(cursor.getString(indexRating));
+                       // counter++;
+                  //  }
+               // }
             } while (cursor.moveToNext());
 
             float avgRating = sumRates / counter;

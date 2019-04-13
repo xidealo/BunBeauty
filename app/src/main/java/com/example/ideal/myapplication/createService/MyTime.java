@@ -47,15 +47,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     private static final String SERVICES = "services";
 
     private static final String USERS = "users";
-    private static final String DIALOGS = "dialogs";
-    private static final String MESSAGES = "messages";
     private static final String USER_ID = "user id";
 
     private static final String SERVICE_ID = "service id";
     private static final String STATUS_USER_BY_SERVICE = "status User";
-    private static final String FIRST_PHONE = "first phone";
-    private static final String SECOND_PHONE = "second phone";
-    private static final String MESSAGE_TIME = "message time";
     private static final String TIME = "time";
 
     private static final String WORKER = "worker";
@@ -65,13 +60,11 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     private static final String ORDERS = "orders";
     private static final String REVIEWS = "reviews";
     private static final String IS_CANCELED = "is canceled";
-    private static final String DIALOG_ID = "dialog id";
     private static final String WORKER_ID = "worker id";
 
     private static final String RATING = "rating";
     private static final String REVIEW = "review";
     private static final String TYPE = "type";
-    private static final String ORDER_ID = "order_id";
     private static final String REVIEW_FOR_SERVICE = "review for service";
     private static final String REVIEW_FOR_USER = "review for user";
 
@@ -79,14 +72,11 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     private String userId;
     private String workingDaysId;
     private String serviceId;
-    private String date;
     private int width;
     private int height;
-    private String dialogId = "";
     private WorkWithTimeApi workWithTimeApi;
 
     private Button[][] timeBtns;
-    private Button saveBtn;
 
     //временный буфер добавленного рабочего времени
     private ArrayList<String> workingHours;
@@ -110,7 +100,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         mainLayout = findViewById(R.id.mainMyTimeLayout);
 
         timeBtns = new Button[ROWS_COUNT][COLUMNS_COUNT];
-        saveBtn = findViewById(R.id.saveMyTimeBtn);
+        Button saveBtn = findViewById(R.id.saveMyTimeBtn);
 
         SwitchCompat amOrPmMyTimeSwitch = findViewById(R.id.amOrPmMyTimeSwitch);
 
@@ -130,7 +120,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
-        date = getThisDate();
 
         addButtonsOnScreen(false);
 
@@ -852,9 +841,5 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
                 mainLayout.addView(timeBtns[i][j]);
             }
         }
-    }
-
-    private void attentionBadConnection() {
-        Toast.makeText(this, "Плохое соединение", Toast.LENGTH_SHORT).show();
     }
 }

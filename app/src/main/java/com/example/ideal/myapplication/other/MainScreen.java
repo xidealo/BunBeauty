@@ -34,13 +34,12 @@ public class MainScreen extends AppCompatActivity {
     private static final String NAME = "name";
     private static final String PHONE = "phone";
     private static final String CITY = "city";
+    private static final String REVIEW_FOR_SERVICE = "review for service";
 
     private static final String SERVICES = "services";
     private static final String USER_ID = "user id";
 
-    LinearLayout resultsLayout;
-
-    private int countOfService = 0;
+    private LinearLayout resultsLayout;
 
     private DBHelper dbHelper;
 
@@ -137,7 +136,6 @@ public class MainScreen extends AppCompatActivity {
                 attentionBadConnection();
             }
         });
-        countOfService = 0;
     }
 
     private void updateServicesList(User user) {
@@ -182,11 +180,57 @@ public class MainScreen extends AppCompatActivity {
 
     private void addToScreenOnMainScreen(Service service, User user) {
 
-        /*if(avgRating!=0) {
-            avgRating = sumRates / countOfRates;
-        }*/
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ", "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + ", "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_MIN_COST_SERVICES + ", "
+                        + DBHelper.KEY_RATING_REVIEWS
+                        + " FROM "
+                        + DBHelper.TABLE_WORKING_DAYS + ", "
+                        + DBHelper.TABLE_WORKING_TIME + ", "
+                        + DBHelper.TABLE_ORDERS + ", "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
+                        + DBHelper.TABLE_REVIEWS
+                        + " WHERE "
+                        + DBHelper.KEY_ORDER_ID_REVIEWS
+                        + " = "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " = "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + " = "
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
+                        + " = "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_TYPE_REVIEWS + " = ? ";
 
-        foundServiceElement fElement = new foundServiceElement(0.f, service, user);
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{service.getId(), REVIEW_FOR_SERVICE});
+        int countOfRates = 0;
+        float avgRating  = 0;
+        float sumOfRates = 0;
+        
+        if (cursor.moveToFirst()){
+            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+            do {
+                sumOfRates += cursor.getFloat(indexRating);
+                countOfRates++;
+            }while (cursor.moveToNext());
+
+            avgRating = sumOfRates/countOfRates;
+            cursor.close();
+        }
+
+        foundServiceElement fElement = new foundServiceElement(avgRating, service, user);
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.resultsMainScreenLayout, fElement);
