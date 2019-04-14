@@ -124,7 +124,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         workWithTimeApi = new WorkWithTimeApi();
 
         LSApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
-        date = getThisDate();
 
         addButtonsOnScreen(false);
 

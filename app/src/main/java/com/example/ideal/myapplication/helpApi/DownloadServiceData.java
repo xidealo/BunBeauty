@@ -32,16 +32,14 @@ public class DownloadServiceData {
 
     private static final String TAG = "DBInf";
 
-    private static final String SERVICES = "services";
-    private static final String SERVICE_ID = "service id";
     private static final String DESCRIPTION = "description";
     private static final String COST = "cost";
     private static final String USER_ID = "user id";
+    private static final String USERS = "users";
 
     private static final String TIME = "time";
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
-    private static final String WORKING_DAY_ID = "working day id";
     private static final String DATE = "date";
 
     private static final String ORDERS = "orders";
@@ -49,37 +47,21 @@ public class DownloadServiceData {
     private static final String REVIEWS = "reviews";
     private static final String REVIEW = "review";
     private static final String TYPE = "type";
-    private static final String WORKING_TIME_ID = "working time id";
     private static final String RATING = "rating";
-    private static final String MESSAGE_ID = "message id";
-    private static final String REVIEW_FOR_SERVICE = "review for service";
-
-    private static final String MESSAGES = "messages";
-    private static final String MESSAGE_TIME = "message time";
-    private static final String DIALOG_ID = "dialog id";
 
     private static final String CITY = "city";
     private static final String NAME = "name";
     private static final String PHONE = "phone";
 
-    private static final String DIALOGS = "dialogs";
-    private static final String FIRST_PHONE = "first phone";
-    private static final String SECOND_PHONE = "second phone";
-
     //PHOTOS
     private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
-    private static final String OWNER_ID = "owner id";
     private static final String IS_CANCELED = "is canceled";
 
-
-    private long currentCountOfDays;
     private WorkWithLocalStorageApi LSApi;
     private SQLiteDatabase localDatabase;
 
-    private String ownerId;
     private String status;
-    private boolean addToScreen;
 
     public DownloadServiceData(SQLiteDatabase _database, String _status) {
         localDatabase = _database;
