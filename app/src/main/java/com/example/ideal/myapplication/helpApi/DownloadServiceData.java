@@ -60,7 +60,6 @@ public class DownloadServiceData {
 
     private static final String CITY = "city";
     private static final String NAME = "name";
-    private static final String USERS = "users";
     private static final String PHONE = "phone";
 
     private static final String DIALOGS = "dialogs";
@@ -128,6 +127,7 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_ID, userId);
             localDatabase.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
+
     }
 
     public void loadSchedule(DataSnapshot servicesSnapshot, String userId) {
@@ -223,6 +223,7 @@ public class DownloadServiceData {
             addReviewInLocalStorage(orderSnapshot.child(REVIEWS),orderId);
         }
     }
+
 
     private void loadReviewForUser(String userId, final String orderId) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
