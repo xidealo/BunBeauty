@@ -35,6 +35,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,6 +76,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     private int width;
     private int height;
     private WorkWithTimeApi workWithTimeApi;
+    private WorkWithLocalStorageApi LSApi;
 
     private Button[][] timeBtns;
 
@@ -120,6 +122,9 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
+
+        LSApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
+        date = getThisDate();
 
         addButtonsOnScreen(false);
 
@@ -224,7 +229,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     }
 
     // Спрашиваем, действительно ли записать на срвис
-    public void confirm(String serviceName,String dataDay, String time) {
+    public void confirm(String serviceName, String dataDay, String time) {
         AlertDialog dialog = new AlertDialog.Builder(this).create();
         dialog.setTitle("Запись на услугу");
         dialog.setMessage("Записаться на услугу " + serviceName + " " + dataDay + " числа в " + time);
@@ -245,9 +250,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     // Подгружаем информацию о сервисе
     private void loadInformationAboutService(String workingTimeId) {
 
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
-
-        Cursor cursor = workWithLocalStorageApi.getServiceCursorByTimeId(workingTimeId);
+        Cursor cursor = LSApi.getServiceCursorByTimeId(workingTimeId);
 
         if (cursor.moveToFirst()) {
             int indexNameService = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
@@ -258,7 +261,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
             String dataDay = cursor.getString(indexDateDay);
             String time = cursor.getString(indexTime);
 
-            confirm(serviceName, dataDay,time);
+            confirm(serviceName, dataDay, time);
         }
     }
 
@@ -482,7 +485,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId, userId});
 
         String time = "";
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int timeIndex = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
             time = cursor.getString(timeIndex);
         }
@@ -491,12 +494,20 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         return time;
     }
 
+    // заносим данные о записи в БД
     private void makeOrder() {
-
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         String workingTimeId = getWorkingTimeId();
         String serviceOwnerId = getServiceOwnerId(workingTimeId);
+        String orderId = makeOrderForService(workingTimeId, serviceOwnerId);
+        makeOrderForUser(orderId, serviceOwnerId);
+
+        Toast.makeText(this, "Вы записались на услугу!", Toast.LENGTH_SHORT).show();
+    }
+
+    // Создаёт запись в разделе Сервис
+    private String makeOrderForService(String workingTimeId, String serviceOwnerId) {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         // Добавляем информацию о записи в LocalStorage и Firebase
         DatabaseReference myRef = database
@@ -510,44 +521,30 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
                 .child(workingTimeId)
                 .child(ORDERS);
         String orderId = myRef.push().getKey();
-        addOrderInLocalStorage(orderId, workingTimeId);
 
-        //закрашиваем, чтобы нельзя было заисаться еще раз
-        checkCurrentTimes();
+        String messageTime = workWithTimeApi.getDateInFormatYMDHMS(new Date());
 
         Map<String, Object> items = new HashMap<>();
         items.put(IS_CANCELED, "false");
         items.put(USER_ID, userId);
-        items.put(TIME, workWithTimeApi.getCurDateInFormatYMDHMS());
+        items.put(TIME, messageTime);
 
         myRef = myRef.child(orderId);
         myRef.updateChildren(items);
 
-        String reviewId = makeReviewForService(myRef);
+        addOrderInLocalStorage(orderId, workingTimeId, messageTime);
 
-        makeOrderForUser(orderId, serviceOwnerId, reviewId);
+        //закрашиваем, чтобы нельзя было заисаться еще раз
+        checkCurrentTimes();
 
+        // создаём отзыв дял сервиса
+        makeReview(myRef, REVIEW_FOR_SERVICE);
 
-        Toast.makeText(this, "Вы записались на услугу!", Toast.LENGTH_SHORT).show();
+        return orderId;
     }
 
-    private String makeReviewForService(DatabaseReference myRef) {
-        String reviewId = myRef.push().getKey();
-
-        myRef = myRef.child(REVIEWS).child(reviewId);
-
-        Map<String, Object> items = new HashMap<>();
-        items.put(RATING, "0");
-        items.put(REVIEW, "");
-        items.put(TYPE, REVIEW_FOR_SERVICE);
-        myRef.updateChildren(items);
-
-        return  reviewId;
-    }
-
-
-    // Записаться на данное время
-    private void makeOrderForUser(String orderId, String workerId, String reviewId) {
+    // Создаёт запись в разделе User
+    private void makeOrderForUser(String orderId, String workerId) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database
                 .getReference(USERS)
@@ -561,50 +558,53 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         myRef.updateChildren(items);
 
-        makeReviewForUser(myRef,reviewId);
+        // создаём отзыв для пользователя
+        makeReview(myRef, REVIEW_FOR_USER);
     }
 
-    private void makeReviewForUser(DatabaseReference myRef, String reviewId) {
+    // создаёт пустой отзыв по указанной ссылке на запись и типу
+    private void makeReview(DatabaseReference myRef, String type) {
+        String orderId = myRef.getKey();
 
-        myRef = myRef.child(REVIEWS).child(reviewId);
+        myRef = myRef.child(REVIEWS);
+        String reviewId = myRef.push().getKey();
+        myRef = myRef.child(reviewId);
 
         Map<String, Object> items = new HashMap<>();
         items.put(RATING, "0");
         items.put(REVIEW, "");
-        items.put(TYPE, REVIEW_FOR_USER);
+        items.put(TYPE, type);
         myRef.updateChildren(items);
+
+        addReviewInLocalStorage(orderId, reviewId, type);
+    }
+
+    public void addReviewInLocalStorage(String orderId, String reviewId, String type) {
+        SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
+
+        Log.d(TAG,  " | type = " + type);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, reviewId);
+        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, "");
+        contentValues.put(DBHelper.KEY_RATING_REVIEWS, "0");
+        contentValues.put(DBHelper.KEY_TYPE_REVIEWS, type);
+        contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
+
+        localDatabase.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
     }
 
     private String getServiceOwnerId(String workingTimeId) {
 
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_USER_ID
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
-                        + " WHERE "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = ?"
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " = " + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                        + " = " + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID;
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{ workingTimeId });
+        Cursor cursor = LSApi.getServiceCursorByTimeId(workingTimeId);
 
         String ownerId = "";
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int indexOwnerId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
             ownerId = cursor.getString(indexOwnerId);
         }
 
         cursor.close();
-        return  ownerId;
+        return ownerId;
     }
 
     private String getWorkingTimeId() {
@@ -621,16 +621,16 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingHours.get(0), String.valueOf(workingDaysId)});
         String timeId = "";
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int indexTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
             timeId = cursor.getString(indexTimeId);
         }
 
         cursor.close();
-        return  timeId;
+        return timeId;
     }
 
-    private void addOrderInLocalStorage(String orderId, String timeId) {
+    private void addOrderInLocalStorage(String orderId, String timeId, String messageTime) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -639,6 +639,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, "false");
         contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, timeId);
+        contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, messageTime);
 
         database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
         workingHours.clear();
@@ -773,7 +774,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId, time, workingDaysId});
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             cursor.close();
             return true;
         }

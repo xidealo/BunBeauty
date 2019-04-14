@@ -35,6 +35,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -141,7 +142,8 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         items.put(COST,service.getCost());
         items.put(DESCRIPTION,service.getDescription());
         items.put(IS_PREMIUM,service.getIsPremium());
-        items.put(CREATION_DATE,workWithTimeApi.getCurDateInFormatYMDHMS());
+
+        items.put(CREATION_DATE,workWithTimeApi.getDateInFormatYMDHMS(new Date()));
         String serviceId =  serviceRef.push().getKey();
         serviceRef = serviceRef.child(serviceId);
         serviceRef.updateChildren(items);

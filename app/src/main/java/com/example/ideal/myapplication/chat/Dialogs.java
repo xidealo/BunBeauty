@@ -6,7 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.chatElements.DialogElement;
@@ -17,48 +22,19 @@ import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
+
 public class Dialogs extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
 
-    private static final String USERS = "users";
-    private static final String USER_ID = "user id";
-    private static final String NAME = "name";
-    private static final String CITY = "city";
+    private static final String OWNER_ID = "owner_id";
+    private static final String ORDER_ID = "order_id";
 
-    private static final String MESSAGES = "messages";
-    private static final String ORDERS = "orders";
-    private static final String REVIEWS = "reviews";
-    private static final String RATING = "rating";
-    private static final String REVIEW = "review";
-    private static final String MESSAGE_TIME = "message time";
-    private static final String DIALOG_ID = "dialog id";
-    private static final String IS_CANCELED = "is canceled";
-
-    private static final String WORKING_TIME = "working time";
-
-    private static final String WORKING_TIME_ID = "working time id";
-    private static final String WORKING_DAY_ID = "working day id";
-    private static final String TYPE = "type";
-    private static final String MESSAGE_ID = "message id";
-
-    private static final String WORKING_DAYS = "working days";
-    private static final String SERVICE_ID = "service id";
-
-    private static final String SERVICES = "services";
-    private static final String TIME = "time";
-
-    private static final String REVIEW_FOR_SERVICE = "review for service";
-    private static final String REVIEW_FOR_USER = "review for user";
-
-    //PHOTOS
-    private static final String PHOTOS = "photos";
-    private static final String PHOTO_LINK = "photo link";
-    private static final String OWNER_ID = "owner id";
-
-    private WorkWithTimeApi workWithTimeApi;
-    private WorkWithLocalStorageApi utilitiesApi;
+    private WorkWithLocalStorageApi LSApi;
     private DBHelper dbHelper;
+
+    LinearLayout mainLayout;
 
     private FragmentManager manager;
 
@@ -74,35 +50,31 @@ public class Dialogs extends AppCompatActivity {
     private void init() {
         manager = getSupportFragmentManager();
 
+        mainLayout = findViewById(R.id.mainDialogsLayout);
+
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerDialogsLayout);
         panelBuilder.buildHeader(manager, "Диалоги", R.id.headerDialogsLayout);
 
         dbHelper = new DBHelper(this);
-        workWithTimeApi = new WorkWithTimeApi();
+        // TimeApi = new WorkWithTimeApi();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        utilitiesApi = new WorkWithLocalStorageApi(database);
+        LSApi = new WorkWithLocalStorageApi(database);
     }
 
     private void getDialogs() {
-        //загружаем сначала те, на которые я записан
-        getWorkerOrder();
-        //загружаем те, на которые записаны мои клиенты
-        getClientOrder();
-    }
 
-    private void getClientOrder() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        // вернуть id тех, кто записан на мои сервисы
+        //берем все мои ордеры
         String ordersQuery =
                 "SELECT DISTINCT "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " AS " + ORDER_ID + ", "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID
                         + " FROM "
                         + DBHelper.TABLE_ORDERS + ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
                         + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                        + DBHelper.TABLE_CONTACTS_USERS
+                        + DBHelper.TABLE_CONTACTS_SERVICES
                         + " WHERE "
                         + DBHelper.KEY_WORKING_TIME_ID_ORDERS
                         + " = "
@@ -115,108 +87,62 @@ public class Dialogs extends AppCompatActivity {
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
                         + " = "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ? ";
+                        + " AND ("
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
+                        + " OR "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?)";
 
-        Cursor cursor = database.rawQuery(ordersQuery, new String[]{getUserId()});
+        String myId = getUserId();
+        Cursor cursor = database.rawQuery(ordersQuery, new String[]{ myId, myId });
 
-        if (cursor.moveToFirst()) {
-            int indexClientId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
-            do {
-                createUser(cursor.getString(indexClientId));
-            } while (cursor.moveToNext());
+        if(cursor.moveToFirst()){
+            ArrayList<String> createdDialogs = new ArrayList<>();
+
+            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
+            int indexOwnerId = cursor.getColumnIndex(OWNER_ID);
+
+            do{
+                String orderId = cursor.getString(indexOrderId);
+                String ownerId = cursor.getString(indexOwnerId);
+
+                // Проверка где лежит мой id
+                if (myId.equals(orderId)) {
+                    // Если я записывался на услугу
+                    // Проверяем не создан ли уже диалог с владельцем сервиса
+                    if (!createdDialogs.contains(ownerId)) {
+                        // Если нет создаём и заносим в соданные
+                        createDialogWithUser(ownerId);
+                        createdDialogs.add(orderId);
+                    }
+                } else {
+                    // Если ко мне записывались на услугу
+                    // Проверяем не создан ли уже диалог с клиентом
+                    if (!createdDialogs.contains(orderId)) {
+                        // Если нет создаём и заносим в соданные
+                        createDialogWithUser(orderId);
+                        createdDialogs.add(orderId);
+                    }
+
+                }
+            }while (cursor.moveToNext());
         }
 
         cursor.close();
     }
 
-    private void createUser(String userId) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+    private void createDialogWithUser(String userId) {
 
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+        Cursor cursor = LSApi.getUser(userId);
 
-        Cursor userCursor = workWithLocalStorageApi.getUser(userId);
-
-        if (userCursor.moveToFirst()) {
-            int indexId = userCursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexName = userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
-            int indexPhone = userCursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
-            int indexCity = userCursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
-
-            do {
-                User user = new User();
-                user.setId(userCursor.getString(indexId));
-                user.setName(userCursor.getString(indexName));
-                user.setPhone(userCursor.getString(indexPhone));
-                user.setCity(userCursor.getString(indexCity));
-                //чтобы не выводил сам себя
-                if (!user.getId().equals(getUserId()))
-                    addToScreen(user);
-            } while (userCursor.moveToNext());
+        if(cursor.moveToNext()) {
+            String userName = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
+            User user = new User();
+            user.setId(userId);
+            user.setName(userName);
+            addToScreen(user);
         }
-
     }
 
-    private void getWorkerOrder() {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        // вернуть все заказы, на которые я записан
-        String ordersQuery =
-                "SELECT DISTINCT "
-                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + ", "
-                        + DBHelper.KEY_NAME_USERS + ", "
-                        + DBHelper.KEY_PHONE_USERS + ", "
-                        + DBHelper.KEY_CITY_USERS
-                        + " FROM "
-                        + DBHelper.TABLE_ORDERS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                        + DBHelper.TABLE_CONTACTS_USERS
-                        + " WHERE "
-                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                        + " = "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? ";
-
-        Cursor cursor = database.rawQuery(ordersQuery, new String[]{getUserId()});
-
-        if (cursor.moveToFirst()) {
-
-            int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
-            int indexPhone = cursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
-            int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
-            do {
-                User user = new User();
-                user.setId(cursor.getString(indexId));
-                user.setName(cursor.getString(indexName));
-                user.setPhone(cursor.getString(indexPhone));
-                user.setCity(cursor.getString(indexCity));
-                //чтобы не выводил сам себя
-                if (!user.getId().equals(getUserId()))
-                    addToScreen(user);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-    }
 
     private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();

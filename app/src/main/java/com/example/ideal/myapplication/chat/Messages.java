@@ -22,16 +22,22 @@ public class Messages extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
 
-    private static final String DIALOG_ID = "dialog id";
-
-    private static final String SERVICE_ID = "service_id";
-
     private static final String REVIEW_FOR_SERVICE = "review for service";
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String USER_ID = "user id";
+
+    private static final String ORDER_ID = "order_id";
+    private static final String SERVICE_ID = "service_id";
+    private static final String WORKING_DAY_ID = "working_day_id";
+    private static final String WORKING_TIME_ID = "working_time_id";
+    private static final String REVIEW_ID = "review_id";
+
+    private String senderId;
     private String senderName;
     private DBHelper dbHelper;
     private FragmentManager manager;
+
+    LinearLayout resultsLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,19 +45,16 @@ public class Messages extends AppCompatActivity {
         setContentView(R.layout.messages);
 
         dbHelper = new DBHelper(this);
+        resultsLayout = findViewById(R.id.resultsMessagesLayout);
 
         // получаем телефон нашего собеседеника
         manager = getSupportFragmentManager();
-        String senderId = getIntent().getStringExtra(USER_ID);
+        senderId = getIntent().getStringExtra(USER_ID);
         senderName = getSenderName(senderId);
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
         panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderId);
-        //кто-то записан к нам
-        addMessage(senderId);
-        //мы записаны к кому-то
-        addMessageSecond(senderId);
     }
 
     private String getSenderName(String senderId) {
@@ -77,32 +80,33 @@ public class Messages extends AppCompatActivity {
     }
 
     // получить все ордеры, у которых userId = userId собеседника.
-    private void addMessage(String senderId) {
+    private void addMessages(String senderId) {
 
-    //добавить еще проверку есть ли поля у ревью этого ордера, если да, то добавляем ревью, если нет то ордер
+        //добавить еще проверку есть ли поля у ревью этого ордера, если да, то добавляем ревью, если нет то ордер
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         // вернуть заказы тех, кто записан на мои сервисы
         // нужно ли еще уточнять в serviceTable, что айди владельца равно нашему?
         String orderQuery =
-                "SELECT DISTINCT "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID +", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID +", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_IS_CANCELED_ORDERS +", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_MESSAGE_TIME_ORDERS +", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_WORKING_TIME_ID_ORDERS + ","
+                "SELECT "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID + ", "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_IS_CANCELED_ORDERS + ", "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_MESSAGE_TIME_ORDERS + ", "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " AS " + WORKING_TIME_ID + ","
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_TIME_WORKING_TIME + ","
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " AS " + WORKING_DAY_ID + ","
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_DATE_WORKING_DAYS + ","
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + ","
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ","
-                        + DBHelper.TABLE_REVIEWS + "." + DBHelper.KEY_RATING_REVIEWS
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " AS " + SERVICE_ID + ","
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ", "
+                        + DBHelper.TABLE_REVIEWS + "." + DBHelper.KEY_ID + " AS " + REVIEW_ID + ","
+                        + DBHelper.TABLE_REVIEWS + "." + DBHelper.KEY_TYPE_REVIEWS + ","
+                        + DBHelper.KEY_RATING_REVIEWS
                         + " FROM "
                         + DBHelper.TABLE_ORDERS + ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
                         + DBHelper.TABLE_WORKING_DAYS + ", "
                         + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                        + DBHelper.TABLE_REVIEWS + ", "
-                        + DBHelper.TABLE_CONTACTS_USERS
+                        + DBHelper.TABLE_REVIEWS
                         + " WHERE "
                         + DBHelper.KEY_ORDER_ID_REVIEWS
                         + " = "
@@ -119,142 +123,92 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
                         + " = "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
+                        + " AND ("
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
                         + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?"
+                        + " OR "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?"
                         + " AND "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? ";
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? )" +
+                        " ORDER BY "
+                        + DBHelper.KEY_MESSAGE_TIME_ORDERS;
 
-        Cursor cursor = database.rawQuery(orderQuery, new String[]{senderId});
+        String myId = getUserId();
+        Cursor cursor = database.rawQuery(orderQuery, new String[]{senderId, myId, senderId, myId});
+        //Log.d(TAG, "addMessages: " + cursor.getCount());
 
         if (cursor.moveToFirst()) {
-            int indexMessageId = cursor.getColumnIndex(DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID );
-            int indexMessageUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+
             int indexMessageIsCanceled = cursor.getColumnIndex(DBHelper.KEY_IS_CANCELED_ORDERS);
-            int indexMessageOrderTime = cursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_ORDERS);
-            int indexMessageWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_ORDERS);
-            int indexMessageServiceTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
+
+            int indexMessageServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
             int indexMessageServiceDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
-            int indexMessageServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
-            int indexMessageServiceId = cursor.getColumnIndex(DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID);
+            int indexMessageWorkingTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
+            int indexMessageTime = cursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_ORDERS);
+
+            int indexMessageServiceId = cursor.getColumnIndex(SERVICE_ID);
+            int indexMessageWorkingDayId = cursor.getColumnIndex(WORKING_DAY_ID);
+            int indexMessageWorkingTimeId = cursor.getColumnIndex(WORKING_TIME_ID);
+            int indexMessageOrderId = cursor.getColumnIndex(ORDER_ID);
+            int indexMessageReviewId = cursor.getColumnIndex(REVIEW_ID);
+
             int indexMessageRatingReview = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+            int indexMessageTypeReview = cursor.getColumnIndex(DBHelper.KEY_TYPE_REVIEWS);
 
             do {
+                boolean isCanceled = Boolean.valueOf(cursor.getString(indexMessageIsCanceled));
+                String serviceId = cursor.getString(indexMessageServiceId);
+                boolean isMyService = isMyService(serviceId);
+
                 String date = cursor.getString(indexMessageServiceDate);
-                String time = cursor.getString(indexMessageServiceTime);
-                String commonDate = date + " " + time;
+                String time = cursor.getString(indexMessageWorkingTime);
 
-                String serviceId = cursor.getString(indexMessageServiceId);
                 Message message = new Message();
-                message.setId(cursor.getString(indexMessageId));
-                message.setUserId(cursor.getString(indexMessageUserId));
-                message.setIsCanceled(Boolean.valueOf(cursor.getString(indexMessageIsCanceled)));
-                message.setMessageTime(cursor.getString(indexMessageOrderTime));
-                message.setWorkingTimeId(cursor.getString(indexMessageWorkingTimeId));
-                message.setServiceTime(time);
-                message.setMessageDate(date);
-                message.setServiceName(cursor.getString(indexMessageServiceName));
-                message.setUserName(senderName);
-                message.setIsMyService(isMyService(serviceId));
 
+                message.setIsCanceled(isCanceled);
+                message.setIsMyService(isMyService);
+
+                message.setUserName(senderName);
+                message.setServiceName(cursor.getString(indexMessageServiceName));
+                message.setWorkingDay(date);
+                message.setWorkingTime(time);
+                message.setMessageTime(cursor.getString(indexMessageTime));
+
+                String type = cursor.getString(indexMessageTypeReview);
+
+                // Если сообщение связано с услугой на которую я записался
                 // проверяем, если у ордера время записи прошло + 24 часа, тогда сорздаем не ордер, а ревью.
-                if(isAfterOrderTime(commonDate)){
-                    message.setType(REVIEW_FOR_USER);
-                    //если рейтинг не 0, значит считаем, что оценен
-                    message.setRatingReview(cursor.getString(indexMessageRatingReview));
-                    addMessageReviewToScreen(message);
+                if ((isAfterOrderTime(date, time) && !isCanceled) || (isCanceled && type.equals(REVIEW_FOR_SERVICE))) {
+
+                    if (isMyService && type.equals(REVIEW_FOR_USER) || !isMyService && type.equals(REVIEW_FOR_SERVICE)) {
+                        message.setReviewId(cursor.getString(indexMessageReviewId));
+                        message.setRatingReview(cursor.getString(indexMessageRatingReview));
+                        message.setType(type);
+                        addMessageReviewToScreen(message);
+                    }
+                } else {
+                    Log.d(TAG, "addMessages: " + type);
+                    if (type.equals(REVIEW_FOR_SERVICE)) {
+                        message.setUserId(senderId);
+                        message.setServiceId(serviceId);
+                        message.setWorkingTimeId(cursor.getString(indexMessageWorkingTimeId));
+                        message.setWorkingDayId(cursor.getString(indexMessageWorkingDayId));
+                        message.setOrderId(cursor.getString(indexMessageOrderId));
+
+                        addMessageOrderToScreen(message);
+                    }
                 }
-                else {
-                    addMessageOrderToScreen(message);
-                }
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
 
         }
         cursor.close();
     }
 
-    private void addMessageSecond(String senderId) {
-
-        //добавить еще проверку есть ли поля у ревью этого ордера, если да, то добавляем ревью, если нет то ордер
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-        // вернуть заказы тех, кто записан на мои сервисы
-        String orderQuery =
-                "SELECT DISTINCT "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID +", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID +", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_IS_CANCELED_ORDERS +", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_MESSAGE_TIME_ORDERS +", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_WORKING_TIME_ID_ORDERS + ","
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_TIME_WORKING_TIME + ","
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_DATE_WORKING_DAYS + ","
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + ","
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES
-                        + " FROM "
-                        + DBHelper.TABLE_ORDERS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                        + DBHelper.TABLE_CONTACTS_USERS
-                        + " WHERE "
-                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                        + " = "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ? ";
-
-        Cursor cursor = database.rawQuery(orderQuery, new String[]{senderId});
-
-        if (cursor.moveToFirst()) {
-            int indexMessageId = cursor.getColumnIndex(DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID );
-            int indexMessageUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
-            int indexMessageIsCanceled = cursor.getColumnIndex(DBHelper.KEY_IS_CANCELED_ORDERS);
-            int indexMessageOrderTime = cursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_ORDERS);
-            int indexMessageWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_ORDERS);
-            int indexMessageTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
-            int indexMessageDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
-            int indexMessageServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
-            int indexMessageServiceId = cursor.getColumnIndex(DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID);
-
-            do {
-                String serviceId = cursor.getString(indexMessageServiceId);
-                Message message = new Message();
-                message.setId(cursor.getString(indexMessageId));
-                message.setUserId(cursor.getString(indexMessageUserId));
-                message.setIsCanceled(Boolean.valueOf(cursor.getString(indexMessageIsCanceled)));
-                message.setMessageTime(cursor.getString(indexMessageOrderTime));
-                message.setWorkingTimeId(cursor.getString(indexMessageWorkingTimeId));
-                message.setServiceTime(cursor.getString(indexMessageTime));
-                message.setMessageDate(cursor.getString(indexMessageDate));
-                message.setServiceName(cursor.getString(indexMessageServiceName));
-                message.setUserName(senderName);
-                message.setIsMyService(isMyService(serviceId));
-
-                // проверяем, если у ордера время записи прошло + 24 часа, тогда сорздаем не ордер, а ревью.
-                addMessageOrderToScreen(message);
-
-            }while (cursor.moveToNext());
-
-        }
-        cursor.close();
-    }
-
-    private boolean isAfterOrderTime(String commonDate) {
+    private boolean isAfterOrderTime(String date, String time) {
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
         //3600000 * 24 = 24 часа
+        String commonDate = date + " " + time;
         Long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) +3600000*24;
         Long sysdate = workWithTimeApi.getSysdateLong();
 
@@ -281,31 +235,6 @@ public class Messages extends AppCompatActivity {
         return cursor.moveToFirst();
     }
 
-    private String getServiceName(String serviceId) {
-
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        // Получает имя сервиса
-        // Таблицы: services
-        // Условия: уточняем id сервиса
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_NAME_SERVICES
-                        + " FROM "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
-                        + " WHERE "
-                        + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
-
-        if(cursor.moveToFirst()){
-            int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
-
-            return cursor.getString(indexName);
-        }
-        cursor.close();
-        return "";
-    }
-
     private void addMessageOrderToScreen(Message message) {
 
             MessageOrderElement fElement = new MessageOrderElement(message);
@@ -329,12 +258,11 @@ public class Messages extends AppCompatActivity {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    private String getUserMyPhone(){
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
+
+        resultsLayout.removeAllViews();
+        addMessages(senderId);
     }
 }

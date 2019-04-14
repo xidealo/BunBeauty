@@ -29,12 +29,12 @@ public class WorkWithTimeApi {
         }
         return 0L;
     }
+
     //возвращает время в формате yyyy-MM-dd HH:mm:ss
-    public String getCurDateInFormatYMDHMS() {
-        Date dateNow = new Date();
+    public String getDateInFormatYMDHMS(Date date) {
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
-        return formatForDateNow.format(dateNow);
+        return formatForDateNow.format(date);
     }
 
 

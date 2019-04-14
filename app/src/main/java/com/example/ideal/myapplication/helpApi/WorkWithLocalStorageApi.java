@@ -78,6 +78,7 @@ public class WorkWithLocalStorageApi {
                 "SELECT "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + ", "
                         + DBHelper.KEY_NAME_SERVICES + ", "
+                        + DBHelper.KEY_USER_ID + ", "
                         + DBHelper.KEY_DATE_WORKING_DAYS + ", "
                         + DBHelper.KEY_TIME_WORKING_TIME
                         + " FROM "

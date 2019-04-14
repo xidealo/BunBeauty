@@ -2,57 +2,92 @@ package com.example.ideal.myapplication.fragments.objects;
 
 public class Message {
 
-    // из message
-    private String id;
-    private String messageTime;
-    private String userId;
-    private String workingTimeId;
-    private String messageDate;
-
     // общие
+    private boolean isMyService;
     private boolean isCanceled;
-    private String orderTime;
-
+    private String messageTime;
     private String serviceName;
     private String userName;
-    private String timeId;
+    private String workingTime;
+    private String workingDay;
+
+    //для Reference
+    private String userId;
+    private String serviceId;
+    private String workingDayId;
+    private String workingTimeId;
     private String orderId;
+    private String reviewId;
 
-    // только order
-    private boolean isMyService;
 
-    // только review
     private String type;
     private String ratingReview;
 
-    public void setId(String _id) {
-        id = _id;
+    // время сообщения
+    public void setMessageTime(String _time) {
+        messageTime = _time;
     }
+    public String getMessageTime() {
+        return messageTime;
+    }
+
+    // id отправителя
     public void setUserId(String _userId){
         userId = _userId;
     }
     public String getUserId() {
         return userId;
     }
-    public void setMessageTime(String _time) {
-        messageTime = _time;
+
+    // id услуги
+    public void setServiceId(String _serviceId){
+        serviceId = _serviceId;
     }
-    public void setMessageDate(String _date) {
-        messageDate = _date;
+    public String getServiceId() {
+        return serviceId;
     }
 
-    public String getMessageDate() {
-        return messageDate;
+    // id рабочего дня
+    public void setWorkingDayId(String _workingDayId) {
+        workingDayId = _workingDayId;
+    }
+    public String getWorkingDayId() {
+        return workingDayId;
     }
 
+    // id рабочего времени
     public void setWorkingTimeId(String _workingTimeId) {
         workingTimeId = _workingTimeId;
     }
+    public String getWorkingTimeId() {
+        return workingTimeId;
+    }
 
+    // id записи
+    public void setOrderId(String _orderId) {
+        orderId = _orderId;
+    }
+    public String getOrderId() {
+        return orderId;
+    }
+
+    // id отзыва
+    public void setReviewId(String _reviewId) {
+        reviewId = _reviewId;
+    }
+    public String getReviewId() {
+        return reviewId;
+    }
+
+    // отменён ли?
     public void setIsCanceled(boolean _isCanceled) {
         isCanceled = _isCanceled;
     }
+    public boolean getIsCanceled() {
+        return isCanceled;
+    }
 
+    // мой лиэто сервис
     public void setIsMyService(boolean _isMyService) {
         isMyService = _isMyService;
     }
@@ -60,6 +95,7 @@ public class Message {
         return isMyService;
     }
 
+    // текст ревью
     public void setRatingReview(String _ratingReview) {
         ratingReview = _ratingReview;
     }
@@ -67,66 +103,43 @@ public class Message {
         return ratingReview;
     }
 
-    public void setServiceTime(String _orderTime) {
-        orderTime = _orderTime;
-    }
-
+    // название услуги
     public void setServiceName(String _serviceName) {
         serviceName = _serviceName;
     }
-
-    public void setUserName(String _userName) {
-        userName = _userName;
-    }
-
-    public void setTimeId(String _timeId) {
-        timeId = _timeId;
-    }
-
-    public void setOrderId(String _orderId) {
-        orderId = _orderId;
-    }
-
-
-    public void setType(String _type) {
-        type = _type;
-    }
-
-    // Get
-
-    public String getId() {
-        return id;
-    }
-
-    public String getMessageTime() {
-        return messageTime;
-    }
-
-    public boolean getIsCanceled() {
-        return isCanceled;
-    }
-
-    public String getServiceTime() {
-        return orderTime;
-    }
-
     public String getServiceName(){
         return serviceName;
     }
 
+    // имя отправителя
+    public void setUserName(String _userName) {
+        userName = _userName;
+    }
     public String getUserName(){
         return userName;
     }
 
-    public String getTimeId() {
-        return timeId;
+    // тип ревью
+    public void setType(String _type) {
+        type = _type;
     }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
     public String getType() {
         return type;
+    }
+
+    // время сеанса
+    public void setWorkingTime(String _time) {
+        workingTime = _time;
+    }
+    public String getWorkingTime() {
+        return workingTime;
+    }
+
+    // дата сеанса
+    public void setWorkingDay(String _day) {
+        workingDay = _day;
+    }
+    public String getWorkingDay() {
+        return workingDay;
     }
 }

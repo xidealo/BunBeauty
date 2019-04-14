@@ -24,37 +24,19 @@ public class MyAuthorization {
 
     private static final String TAG = "DBInf";
 
-    private static final String PHONE = "phone";
-
     private static final String USERS = "users";
-    private static final String NAME = "name";
-    private static final String CITY = "city";
-
     private static final String SERVICES = "services";
-    private static final String USER_ID = "user id";
-    private static final String DESCRIPTION = "description";
-    private static final String COST = "cost";
-
-    private static final String WORKING_TIME = "working time";
-    private static final String WORKING_DAY_ID = "working day id";
-    private static final String WORKING_TIME_ID = "working time id";
-
-    private static final String TIME = "time";
-
-    private static final String WORKING_DAYS = "working days";
-    private static final String SERVICE_ID = "service id";
-    private static final String DATE = "data";
-
-    //PHOTOS
-    private static final String PHOTO_LINK = "photo link";
-
-    private static final String SUBSCRIPTIONS = "subscriptions";
-    private static final String WORKER_ID = "worker id";
     private static final String ORDERS = "orders";
+    private static final String REVIEWS = "reviews";
+    private static final String SUBSCRIPTIONS = "subscriptions";
+
+    private static final String PHONE = "phone";
+    private static final String NAME = "name";
+    private static final String SERVICE_ID = "service id";
+    private static final String WORKER_ID = "worker id";
 
     private DBHelper dbHelper;
 
-    private long orderCounter;
     private Context context;
     private String myPhoneNumber;
 
@@ -178,7 +160,6 @@ public class MyAuthorization {
                     // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
                     goToRegistration();
                 } else {
-                    Log.d(TAG, "onDataChange: " + userSnapshot);
                     downloadServiceData.loadUserInfo(userSnapshot);
                 }
             }
@@ -208,7 +189,7 @@ public class MyAuthorization {
             goToProfile();
         }
 
-        for(DataSnapshot orderSnapshot: _ordersSnapshot.getChildren()) {
+        for(final DataSnapshot orderSnapshot: _ordersSnapshot.getChildren()) {
             //получаем "путь" к мастеру, на сервис которого мы записаны
             final String workerId = String.valueOf(orderSnapshot.child(WORKER_ID).getValue());
             final String serviceId = String.valueOf(orderSnapshot.child(SERVICE_ID).getValue());
@@ -223,8 +204,11 @@ public class MyAuthorization {
                     downloadServiceData.loadUserInfo(userSnapshot);
 
                     // Загружаем данные о сервисе на который записаны
-                    DataSnapshot serviceSnapshot = userSnapshot.child(SERVICES).child(serviceId);
-                    downloadServiceData.addServiceInLocalStorage(serviceSnapshot, workerId);
+                    downloadServiceData.addServiceInLocalStorage(userSnapshot.child(SERVICES).child(serviceId), workerId);
+
+                    // Загружаем данные о ревтю для пользователя
+                    // загружаютс review for user для меня, а надо для тех кто записан на мои услуги
+                    //downloadServiceData.addReviewInLocalStorage(orderSnapshot.child(REVIEWS), orderSnapshot.getKey());
 
                     goToProfile();
                 }
