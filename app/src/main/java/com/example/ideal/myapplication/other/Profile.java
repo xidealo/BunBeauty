@@ -130,7 +130,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
         manager = getSupportFragmentManager();
-        //получаем id пользователя
         userId = getUserId();
 
         // Получаем id владельца профиля
@@ -151,7 +150,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         // Проверяем совпадают id пользователя и владельца
         if(userId.equals(ownerId)){
             // Совпадают - это мой профиль
-
             servicesLayout.setVisibility(View.INVISIBLE);
             servicesScroll.setVisibility(View.INVISIBLE);
 
@@ -190,6 +188,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             servicesScroll.setVisibility(View.VISIBLE);
         }
 
+        loadRatingForUser();
         logOutBtn.setOnClickListener(this);
         avatarImage.setOnClickListener(this);
     }
@@ -243,79 +242,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             cityText.setText(city);
             cursor.close();
         }
-    }
-
-    private void loadTimeForReviews() {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        Query query = database.getReference(WORKING_TIME)
-                .orderByChild(USER_ID)
-                .equalTo(ownerId);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getChildrenCount() == 0){
-                    setWithoutRating();
-                }
-
-                for(DataSnapshot workingTimeSnapshot:dataSnapshot.getChildren()){
-                    String timeId = String.valueOf(workingTimeSnapshot.getKey());
-                    String time = String.valueOf(workingTimeSnapshot.child(TIME).getValue());
-                    String timeUserId = String.valueOf(workingTimeSnapshot.child(USER_ID).getValue());
-                    String timeWorkingDayId = String.valueOf(workingTimeSnapshot.child(WORKING_DAY_ID).getValue());
-
-                    addTimeInLocalStorage(timeId, time, timeUserId, timeWorkingDayId);
-                }
-                // Подгружает оценки
-                loadRatingForUser();
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }});
-    }
-
-    private void loadDaysByTime() {
-        isAddToScreen = false;
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        String sqlQuery = "SELECT DISTINCT "
-                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                + " FROM "
-                + DBHelper.TABLE_WORKING_TIME
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{ownerId});
-
-        if (cursor.moveToFirst()) {
-            int indexDayId = cursor.getColumnIndex(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME);
-
-            do {
-                final String dayId = cursor.getString(indexDayId);
-
-                DatabaseReference dayRef = FirebaseDatabase.getInstance().getReference(WORKING_DAYS).child(dayId);
-                dayRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot workingDaySnapshot) {
-                        String date = String.valueOf(workingDaySnapshot.child(DATE).getValue());
-                        String serviceId = String.valueOf(workingDaySnapshot.child(SERVICE_ID).getValue());
-                        addDayInLocalStorage(dayId, date, serviceId);
-
-                        // Подгружаем сервисы по дням >> авторов ревью по сервисам
-                        loadServiceByWorkingDay(serviceId);
-
-                        if(!isAddToScreen) {
-                            isAddToScreen = true;
-                            addRatingToScreen();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
-                });
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
     }
 
     private void loadServiceByWorkingDay(final String serviceId) {
@@ -373,27 +299,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void addServiceInLocalStorage(String serviceId, String userId, String name) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_ID, userId);
-        contentValues.put(DBHelper.KEY_NAME_SERVICES, name);
-
-        boolean isUpdate = workWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES,
-                        serviceId);
-
-        if (isUpdate) {
-            database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{serviceId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, serviceId);
-            database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
-        }
-    }
-
     private void addDayInLocalStorage(String dayId, String date, String serviceId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -441,103 +346,63 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private void loadRatingForUser() {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        String sqlQuery = "SELECT "
-                + DBHelper.KEY_ID
+        String mainSqlQuery = "SELECT "
+                + DBHelper.KEY_RATING_REVIEWS + ", "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                 + " FROM "
-                + DBHelper.TABLE_WORKING_TIME
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_REVIEWS + ", "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
+                + DBHelper.TABLE_CONTACTS_USERS + ", "
+                + DBHelper.TABLE_ORDERS + ", "
+                + DBHelper.TABLE_CONTACTS_SERVICES
                 + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
+                + DBHelper.KEY_ORDER_ID_REVIEWS
+                + " = "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " = "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
+                + " = "
+                + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
+                + " = "
+                + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + " = ? "
+                + " AND "
+                + DBHelper.KEY_TYPE_REVIEWS + " = ? "
+                + " AND "
+                + DBHelper.KEY_RATING_REVIEWS + " != 0";
 
-        final Cursor cursor = database.rawQuery(sqlQuery, new String[]{ownerId});
-
-        if(cursor.moveToFirst()) {
-            int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
-
-            sumRates = 0;
-            countOfRates = 0;
-            do{
-                final String workingTimeId = cursor.getString(indexId);
-                Query query = FirebaseDatabase.getInstance().getReference(REVIEWS)
-                        .orderByChild(WORKING_TIME_ID)
-                        .equalTo(workingTimeId);
-
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot reviewsSnapshot) {
-
-                        //проверить обоюдное это ревью, если нет, то проверить на 72 часа
-                        if(isMutualReview(reviewsSnapshot)) {
-                            addReview(reviewsSnapshot,workingTimeId);
-                        }
-                        else {
-                            //проверка на время, если у timeId время с записи больше 72,
-                            // то в любом случае добавляем в локалку
-                            if(isAfterThreeDays(workingTimeId)){
-                                addReview(reviewsSnapshot,workingTimeId);
-                            }
-                        }
-
-                        counter++;
-                        if(counter==cursor.getCount() && (countOfRates==0)){
-                            setWithoutRating();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) { }
-                });
-
+        // убрать не оценненые
+        final Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{ownerId, REVIEW_FOR_USER});
+        Log.d(TAG, "loadRatingForUser: ");
+        float sumRates = 0;
+        long counter = 0;
+        // если сюда не заходит, значит ревью нет
+        if (cursor.moveToFirst()) {
+            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+            do {
+                Log.d(TAG, "loadRatingForUser: ");
+                sumRates += Float.valueOf(cursor.getString(indexRating));
+                counter++;
             } while (cursor.moveToNext());
+
+            float avgRating = sumRates / counter;
+            addRatingToScreen(avgRating, counter);
+        } else {
+            setWithoutRating();
         }
         cursor.close();
-    }
-
-    private void addReview(DataSnapshot reviewsSnapshot, String workingTimeId) {
-
-        RatingReview ratingReview = new RatingReview();
-        for (DataSnapshot reviewSnapshot : reviewsSnapshot.getChildren()) {
-            String type = String.valueOf(reviewSnapshot.child(TYPE).getValue());
-            float rating = Float.valueOf(String.valueOf(reviewSnapshot.child(RATING).getValue()));
-
-            if (type.equals(REVIEW_FOR_USER) && rating > 0) {
-                countOfRates++;
-                sumRates += rating;
-                ratingReview.setId(String.valueOf(reviewSnapshot.getKey()));
-                ratingReview.setReview(String.valueOf(reviewSnapshot.child(REVIEW).getValue()));
-                ratingReview.setRating(String.valueOf(reviewSnapshot.child(RATING).getValue()));
-                ratingReview.setType(String.valueOf(reviewSnapshot.child(TYPE).getValue()));
-                ratingReview.setWorkingTimeId(workingTimeId);
-                ratingReview.setMessageId(String.valueOf(reviewSnapshot.child(MESSAGE_ID).getValue()));
-
-                addReviewInLocalStorage(ratingReview);
-
-                // Подгружаем дни по времени >> сервисы по дням >> авторов ревью по сервисам
-                loadDaysByTime();
-            }
-        }
-    }
-    private void addReviewInLocalStorage(RatingReview ratingReview) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        String reviewId = ratingReview.getId();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, ratingReview.getReview());
-        contentValues.put(DBHelper.KEY_RATING_REVIEWS, ratingReview.getRating());
-        contentValues.put(DBHelper.KEY_TYPE_REVIEWS, ratingReview.getType());
-
-        boolean isUpdate = workWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_REVIEWS,
-                        reviewId);
-
-        if (isUpdate) {
-            database.update(DBHelper.TABLE_REVIEWS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{reviewId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, reviewId);
-            database.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
-        }
     }
 
     @Override
@@ -713,10 +578,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         return isAfterThreeDays;
     }
 
-    private void addRatingToScreen() {
-        ratingLayout.removeAllViews();
-
-        float avgRating = sumRates/countOfRates;
+    private void addRatingToScreen(Float avgRating, Long countOfRates) {
         RatingBarElement ratingElement
                 = new RatingBarElement(avgRating, countOfRates, ownerId, REVIEW_FOR_USER);
 
