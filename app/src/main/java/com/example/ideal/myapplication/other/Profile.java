@@ -45,23 +45,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String OWNER_ID = "owner id";
 
     private static final String TAG = "DBInf";
+    private static final String REVIEW_FOR_SERVICE = "review for service";
 
-    private static final String WORKING_TIME = "working time";
     private static final String USER_ID = "user id";
-    private static final String TIME = "time";
-    private static final String WORKING_DAY_ID = "working day id";
 
-    private static final String REVIEWS = "reviews";
-    private static final String WORKING_TIME_ID = "working time id";
     private static final String RATING = "rating";
-    private static final String REVIEW = "review";
-    private static final String TYPE = "type";
     private static final String REVIEW_FOR_USER = "review for user";
-    private static final String MESSAGE_ID = "message id";
-
-    private static final String WORKING_DAYS = "working days";
-    private static final String SERVICE_ID = "service id";
-    private static final String DATE = "data";
 
     private static final String SERVICES = "services";
     private static final String NAME = "name";
@@ -72,16 +61,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private String userId;
     private String ownerId;
-    private float sumRates;
-    private long countOfRates;
-    private long counter;
-    private boolean isAddToScreen;
 
     private TextView nameText;
     private TextView cityText;
     private TextView withoutRatingText;
-    private ProgressBar progressBar;
-
 
     private Button subscribersBtn;
 
@@ -89,7 +72,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private ScrollView ordersScroll;
     private LinearLayout servicesLayout;
     private LinearLayout ordersLayout;
-    private LinearLayout ratingLayout;
 
     private DBHelper dbHelper;
 
@@ -103,7 +85,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
         withoutRatingText = findViewById(R.id.withoutRatingProfileText);
-        progressBar = findViewById(R.id.progressBarProfile);
 
         Button logOutBtn = findViewById(R.id.logOutProfileBtn);
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
@@ -116,14 +97,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         ordersScroll = findViewById(R.id.orderProfileScroll);
         servicesLayout = findViewById(R.id.servicesProfileLayout);
         ordersLayout = findViewById(R.id.ordersProfileLayout);
-        ratingLayout = findViewById(R.id.ratingLayout);
 
         nameText = findViewById(R.id.nameProfileText);
         cityText = findViewById(R.id.cityProfileText);
 
-        countOfRates = 0;
-        sumRates = 0;
-        counter =0;
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -344,8 +321,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void loadRatingForUser() {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
 
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        //таким способом я получаю свои ревью, а не о себе
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_RATING_REVIEWS + ", "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
@@ -377,7 +355,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 + " = "
                 + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
                 + " AND "
-                + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + " = ? "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
                 + " AND "
                 + DBHelper.KEY_TYPE_REVIEWS + " = ? "
                 + " AND "
@@ -385,14 +363,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         // убрать не оценненые
         final Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{ownerId, REVIEW_FOR_USER});
-        Log.d(TAG, "loadRatingForUser: ");
         float sumRates = 0;
         long counter = 0;
         // если сюда не заходит, значит ревью нет
         if (cursor.moveToFirst()) {
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
             do {
-                Log.d(TAG, "loadRatingForUser: ");
                 sumRates += Float.valueOf(cursor.getString(indexRating));
                 counter++;
             } while (cursor.moveToNext());
@@ -409,7 +385,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
 
-        //loadTimeForReviews();
         updateProfileData(ownerId);
 
         workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
@@ -453,10 +428,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         servicesLayout.removeAllViews();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        // Возвращает id, название, рэйтинг и количество оценивших
-        // используем таблицу сервисы
-        // уточняем юзера по его id
-        String sqlQuery =
+        String sqlQueryService =
                 "SELECT "
                         + DBHelper.KEY_ID + ", "
                         + DBHelper.KEY_NAME_SERVICES
@@ -465,32 +437,83 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " WHERE "
                         + DBHelper.KEY_USER_ID+ " = ? ";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
-        //Идём с конца
-            if(cursor.moveToFirst()){
-                int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
-                int indexNameService = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
-                do{
-                    String foundId = cursor.getString(indexId);
-                    String foundNameService = cursor.getString(indexNameService);
-                    Service service = new Service();
-                    service.setId(foundId);
-                    service.setName(foundNameService);
+        Cursor cursor = database.rawQuery(sqlQueryService, new String[]{userId});
+        float sumRates = 0;
+        long countOfRates = 0;
 
-                    //DownloadServiceData downloadServiceData = new DownloadServiceData(database);
-                    //downloadServiceData.loadSchedule(ownerId,"Profile", manager);
+        if(cursor.moveToFirst()){
+            int indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            int indexServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
+            do{
 
+                String serviceId = cursor.getString(indexServiceId);
+                String serviceName = cursor.getString(indexServiceName);
+
+                String mainSqlQuery = "SELECT "
+                        + DBHelper.KEY_RATING_REVIEWS
+                        + " FROM "
+                        + DBHelper.TABLE_WORKING_TIME + ", "
+                        + DBHelper.TABLE_REVIEWS + ", "
+                        + DBHelper.TABLE_WORKING_DAYS + ", "
+                        + DBHelper.TABLE_CONTACTS_USERS + ", "
+                        + DBHelper.TABLE_ORDERS + ", "
+                        + DBHelper.TABLE_CONTACTS_SERVICES
+                        + " WHERE "
+                        + DBHelper.KEY_ORDER_ID_REVIEWS
+                        + " = "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " = "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + " = "
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
+                        + " = "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
+                        + " = "
+                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_TYPE_REVIEWS + " = ? ";
+
+                Cursor cursorWithReview = database.rawQuery(mainSqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
+
+                if(cursorWithReview.moveToFirst()){
+                    int indexRating = cursorWithReview.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+                    do {
+                        sumRates += Float.valueOf(cursorWithReview.getString(indexRating));
+                        countOfRates++;
+                    }while (cursorWithReview.moveToNext());
+                }
+                cursorWithReview.close();
+
+                Service service = new Service();
+                service.setId(serviceId);
+                service.setName(serviceName);
+                if(countOfRates !=0){
+                    float avgRating = sumRates / countOfRates;
+                    Log.d(TAG, "updateServicesList: " + avgRating);
+                    addToScreenOnProfile(avgRating,service);
+                    countOfRates = 0;
+                    sumRates = 0;
+                }else {
                     addToScreenOnProfile(0,service);
-                    //пока в курсоре есть строки и есть новые сервисы
-                }while (cursor.moveToNext());
-            }
+                }
+            }while (cursor.moveToNext());
+
+        }
+
         cursor.close();
     }
 
     private void addToScreenOnProfile(float avgRating, Service service) {
-        if(avgRating!=0) {
-            avgRating = sumRates / countOfRates;
-        }
 
         foundServiceProfileElement fElement
                 = new foundServiceProfileElement(avgRating,service);
@@ -625,7 +648,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void setWithoutRating(){
-        progressBar.setVisibility(View.GONE);
         withoutRatingText.setVisibility(View.VISIBLE);
     }
 

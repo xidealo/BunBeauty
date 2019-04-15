@@ -29,12 +29,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "DBInf";
 
-    private static final String CITY = "city";
-    private static final String NAME = "name";
     private static final String WORKER = "worker";
     private static final String USER = "user";
     private static final String SERVICE_ID = "service id";
-    private static final String USERS = "users";
 
     private static final String STATUS_USER_BY_SERVICE = "status User";
 
@@ -56,7 +53,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private LinearLayout ratingLayout;
     private LinearLayout imageFeedLayout;
 
-    private WorkWithLocalStorageApi workWithLocalStorageApi;
 
     private DBHelper dbHelper;
 
@@ -84,8 +80,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         //получаем данные о сервисе
