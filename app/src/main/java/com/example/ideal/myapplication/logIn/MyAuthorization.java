@@ -208,7 +208,7 @@ public class MyAuthorization {
 
                     // Загружаем данные о ревтю для пользователя
                     // загружаютс review for user для меня, а надо для тех кто записан на мои услуги
-                    //downloadServiceData.addReviewInLocalStorage(orderSnapshot.child(REVIEWS), orderSnapshot.getKey());
+                    downloadServiceData.addReviewInLocalStorage(orderSnapshot.child(REVIEWS), orderSnapshot.getKey());
 
                     goToProfile();
                 }

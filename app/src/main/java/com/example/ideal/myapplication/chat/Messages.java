@@ -100,6 +100,7 @@ public class Messages extends AppCompatActivity {
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ", "
                         + DBHelper.TABLE_REVIEWS + "." + DBHelper.KEY_ID + " AS " + REVIEW_ID + ","
                         + DBHelper.TABLE_REVIEWS + "." + DBHelper.KEY_TYPE_REVIEWS + ","
+                        + DBHelper.KEY_REVIEW_REVIEWS + ","
                         + DBHelper.KEY_RATING_REVIEWS
                         + " FROM "
                         + DBHelper.TABLE_ORDERS + ", "
@@ -146,6 +147,7 @@ public class Messages extends AppCompatActivity {
             int indexMessageServiceDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
             int indexMessageWorkingTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
             int indexMessageTime = cursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_ORDERS);
+            //int indexMessageUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
 
             int indexMessageServiceId = cursor.getColumnIndex(SERVICE_ID);
             int indexMessageWorkingDayId = cursor.getColumnIndex(WORKING_DAY_ID);
@@ -155,6 +157,7 @@ public class Messages extends AppCompatActivity {
 
             int indexMessageRatingReview = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
             int indexMessageTypeReview = cursor.getColumnIndex(DBHelper.KEY_TYPE_REVIEWS);
+            int indexMessageReview = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
 
             do {
                 boolean isCanceled = Boolean.valueOf(cursor.getString(indexMessageIsCanceled));
@@ -174,22 +177,23 @@ public class Messages extends AppCompatActivity {
                 message.setWorkingDay(date);
                 message.setWorkingTime(time);
                 message.setMessageTime(cursor.getString(indexMessageTime));
+                //message.setUserId(cursor.getString(indexMessageUserId));
+
+                message.setReviewId(cursor.getString(indexMessageReviewId));
 
                 String type = cursor.getString(indexMessageTypeReview);
+                String review = cursor.getString(indexMessageReview);
 
                 // Если сообщение связано с услугой на которую я записался
                 // проверяем, если у ордера время записи прошло + 24 часа, тогда сорздаем не ордер, а ревью.
-                if ((isAfterOrderTime(date, time) && !isCanceled) || (isCanceled && type.equals(REVIEW_FOR_SERVICE))) {
-
+                if ((isAfterOrderTime(date, time) && !isCanceled) || (isCanceled && !review.equals("-"))) {
                     if (isMyService && type.equals(REVIEW_FOR_USER) || !isMyService && type.equals(REVIEW_FOR_SERVICE)) {
-                        message.setReviewId(cursor.getString(indexMessageReviewId));
                         message.setRatingReview(cursor.getString(indexMessageRatingReview));
                         message.setType(type);
                         addMessageReviewToScreen(message);
                     }
                 } else {
-                    Log.d(TAG, "addMessages: " + type);
-                    if (type.equals(REVIEW_FOR_SERVICE)) {
+                    if (isMyService && type.equals(REVIEW_FOR_USER) || !isMyService && type.equals(REVIEW_FOR_SERVICE)) {
                         message.setUserId(senderId);
                         message.setServiceId(serviceId);
                         message.setWorkingTimeId(cursor.getString(indexMessageWorkingTimeId));

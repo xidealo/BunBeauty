@@ -185,7 +185,6 @@ public class DownloadServiceData {
             }
 
             addOrdersInLocalStorage(timeSnapshot.child(ORDERS), timeId);
-            //loadRating();
         }
     }
 
@@ -241,7 +240,6 @@ public class DownloadServiceData {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-
     }
 
     private String updateMessageTime(String timeId) {
