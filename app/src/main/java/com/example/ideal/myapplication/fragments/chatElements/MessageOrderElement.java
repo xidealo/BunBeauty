@@ -4,7 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQuery;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,11 +39,9 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     private static final String REVIEWS = "reviews";
     private static final String REVIEW = "review";
-    private static final String RATING = "rating";
-    private static final String MESSAGE_ID = "message id";
-    private static final String TYPE = "type";
 
-    private static final String REVIEW_FOR_SERVICE = "review for service";
+    private static final String REVIEW_FOR_SERVICE = "'review for service'";
+    private static final String REVIEW_FOR_USER = "'review for user'";
 
     private static final String USERS = "users";
     private static final String SERVISES = "services";
@@ -50,6 +51,8 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     private static final String IS_CANCELED = "is canceled";
     private static final String TIME = "time";
+
+
 
     private Boolean messageIsCanceled;
     private Boolean messageIsMyService;
@@ -63,11 +66,14 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
     private String workingTimeId;
     private String workingDayId;
     private String orderId;
+    private String reviewId;
 
     private WorkWithTimeApi workWithTimeApi;
 
     private TextView messageText;
     private Button canceledBtn;
+
+    private DBHelper dbHelper;
 
     public MessageOrderElement() { }
 
@@ -90,6 +96,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         workingDayId = message.getWorkingDayId();
         workingTimeId = message.getWorkingTimeId();
         orderId = message.getOrderId();
+        reviewId = message.getReviewId();
 
         if(messageIsCanceled) {
             if (messageIsMyService) {
@@ -134,7 +141,9 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         messageText = view.findViewById(R.id.messageMessageOrderElementText);
         canceledBtn = view.findViewById(R.id.canceledMessageOrderElementBtn);
         canceledBtn.setOnClickListener(this);
+
         workWithTimeApi = new WorkWithTimeApi();
+        dbHelper = new DBHelper(this.getContext());
 
         if (!messageIsMyService) {
             canceledBtn.setVisibility(View.GONE);
@@ -186,13 +195,93 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
         if(isRelevance()) {
             cancel();
+
+            // отнимаем возможность оставить отзыв клиенту (потому что отказали ему в обслуживании)
+            disableReviewForUser();
+
             //за час до
-            if (beforeOneHour()) {
-                // создаём сообщение с возможность написать ревью
+            if (!beforeOneHour()) {
+                // отнимаем возможность оставить отзыв мастеру (потому что он отказал в обслуживании заранее)
+                disableReviewForService();
             }
         }
 
         canceledBtn.setEnabled(false);
+    }
+
+    private void disableReviewForUser() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+
+        DatabaseReference myRef = database.getReference(USERS)
+                .child(userId)
+                .child(ORDERS)
+                .child(orderId)
+                .child(REVIEWS)
+                .child(reviewId);
+
+        Map<String, Object> items = new HashMap<>();
+
+        items.put(REVIEW, "-");
+        myRef.updateChildren(items);
+        updateReviewInLocalStorage(reviewId);
+    }
+
+    private String getServiceReviewId() {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String query = "SELECT " + DBHelper.KEY_ID
+                + " FROM " + DBHelper.TABLE_REVIEWS
+                + " WHERE " + DBHelper.KEY_ORDER_ID_REVIEWS + " = ?"
+                + " AND " + DBHelper.KEY_TYPE_REVIEWS + " = " + REVIEW_FOR_SERVICE;
+
+        Cursor cursor = database.rawQuery(query, new String[] {orderId});
+
+        String userReviewId = "";
+        if (cursor.moveToFirst()) {
+            userReviewId = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_ID));
+        }
+
+        cursor.close();
+        return userReviewId;
+    }
+
+    private void disableReviewForService() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        // id отзыва об услуге
+        String serviceReviewId = getServiceReviewId();
+        String myId = getUserId();
+
+        DatabaseReference  myRef = database.getReference(USERS)
+                .child(myId)
+                .child(SERVISES)
+                .child(serviceId)
+                .child(WORKING_DAYS)
+                .child(workingDayId)
+                .child(WORKING_TIME)
+                .child(workingTimeId)
+                .child(ORDERS)
+                .child(orderId)
+                .child(REVIEWS)
+                .child(serviceReviewId);
+
+        Map<String, Object> items = new HashMap<>();
+
+        items.put(REVIEW, "-");
+        myRef.updateChildren(items);
+        updateReviewInLocalStorage(reviewId);
+    }
+
+    private void updateReviewInLocalStorage(String reviewId) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, "-");
+
+        database.update(DBHelper.TABLE_REVIEWS, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{String.valueOf(reviewId)});
     }
 
     private boolean isRelevance() {
@@ -204,35 +293,22 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         return orderDateLong > sysdateLong;
     }
 
-    private void cancel(){
+    private void cancel() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         String myId = getUserId();
         DatabaseReference myRef;
-        if (messageIsMyService) {
-            myRef = database.getReference(USERS)
-                    .child(myId)
-                    .child(SERVISES)
-                    .child(serviceId)
-                    .child(WORKING_DAYS)
-                    .child(workingDayId)
-                    .child(WORKING_TIME)
-                    .child(workingTimeId)
-                    .child(ORDERS)
-                    .child(orderId);
-        } else {
-            myRef = database.getReference(USERS)
-                    .child(userId)
-                    .child(SERVISES)
-                    .child(serviceId)
-                    .child(WORKING_DAYS)
-                    .child(workingDayId)
-                    .child(WORKING_TIME)
-                    .child(workingTimeId)
-                    .child(ORDERS)
-                    .child(orderId);
-        }
-        Log.d(TAG, "cancel: " + myRef);
+        // if (messageIsMyService) {
+        myRef = database.getReference(USERS)
+                .child(myId)
+                .child(SERVISES)
+                .child(serviceId)
+                .child(WORKING_DAYS)
+                .child(workingDayId)
+                .child(WORKING_TIME)
+                .child(workingTimeId)
+                .child(ORDERS)
+                .child(orderId);
 
         Map<String, Object> items = new HashMap<>();
 
@@ -240,25 +316,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         String newMessageTime = workWithTimeApi.getDateInFormatYMDHMS(new Date());
         items.put(TIME, newMessageTime);
         myRef.updateChildren(items);
-        updateLocalStorage(newMessageTime);
-    }
-
-
-    private void createReview(String messageId){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference myRef = database.getReference(REVIEWS);
-        Map<String,Object> items = new HashMap<>();
-
-        items.put(RATING, "0");
-        items.put(TYPE, REVIEW_FOR_SERVICE);
-        items.put(REVIEW, "");
-        items.put(MESSAGE_ID, messageId);
-        //items.put(WORKING_TIME_ID, messageWorkingTimeId);
-
-        String reviewId =  myRef.push().getKey();
-        myRef = database.getReference(REVIEWS).child(reviewId);
-        myRef.updateChildren(items);
+        updateOrderInLocalStorage(newMessageTime);
     }
 
     private boolean beforeOneHour() {
@@ -269,9 +327,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         return orderDateLong - sysdateLong < 3600000;
     }
 
-    private void updateLocalStorage(String newMessageTime) {
-        // isCancled
-        DBHelper dbHelper = new DBHelper(this.getContext());
+    private void updateOrderInLocalStorage(String newMessageTime) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -281,7 +337,6 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         database.update(DBHelper.TABLE_ORDERS, contentValues,
                 DBHelper.KEY_ID + " = ?",
                 new String[]{String.valueOf(orderId)});
-        contentValues.clear();
     }
 
     private  String getUserId(){
