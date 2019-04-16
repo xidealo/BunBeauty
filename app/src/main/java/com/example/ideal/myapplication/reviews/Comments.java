@@ -29,7 +29,7 @@ public class Comments extends AppCompatActivity {
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String REVIEW_FOR_SERVICE = "review for service";
     private static final String USERS = "users";
-
+    private static final String ORDER_ID = "order_id";
     private static final String OWNER_ID = "owner_id";
 
     private static final String NAME = "name" ;
@@ -74,7 +74,8 @@ public class Comments extends AppCompatActivity {
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
                 + DBHelper.KEY_RATING_REVIEWS + ", "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID + ", "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
                 + " FROM "
                 + DBHelper.TABLE_WORKING_TIME + ", "
                 + DBHelper.TABLE_REVIEWS + ", "
@@ -105,28 +106,31 @@ public class Comments extends AppCompatActivity {
                 + " AND "
                 + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
                 + " AND "
-                + DBHelper.KEY_TYPE_REVIEWS + " = ? "
-                + " AND "
-                + DBHelper.KEY_RATING_REVIEWS + " != 0";
+                + DBHelper.KEY_TYPE_REVIEWS + " = ? ";
 
 
-        Cursor mainCursor = database.rawQuery(mainSqlQuery, new String[]{_serviceId, REVIEW_FOR_SERVICE});
+        Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_serviceId, REVIEW_FOR_SERVICE});
 
-        if (mainCursor.moveToFirst()) {
-            int indexWorkingTimeId = mainCursor.getColumnIndex(DBHelper.KEY_ID);
+        if (cursor.moveToFirst()) {
+            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID);
+            int indexOrderId= cursor.getColumnIndex(ORDER_ID);
             do {
-                //if(workWithLocalStorageApi.isMutualReview(mainCursor.getString(indexWorkingTimeId))) {
-                createServiceComment(mainCursor);
-                //}
-                //else {
-                //    if(workWithLocalStorageApi.isAfterWeek(mainCursor.getString(indexWorkingTimeId))){
-                //       createServiceComment(mainCursor);
-                //   }
-                //}
 
-            } while (mainCursor.moveToNext());
+                String workingTimeId = cursor.getString(indexWorkingTimeId);
+                String orderId = cursor.getString(indexOrderId);
+
+                if(workWithLocalStorageApi.isMutualReview(orderId)) {
+                    createServiceComment(cursor);
+                }
+                else {
+                    if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
+                        createServiceComment(cursor);
+                    }
+                }
+
+            } while (cursor.moveToNext());
         }
-        mainCursor.close();
+        cursor.close();
     }
 
     private void createServiceComment(final Cursor mainCursor) {
@@ -166,7 +170,6 @@ public class Comments extends AppCompatActivity {
 
     private void loadCommentsForUser(String _userId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_RATING_REVIEWS + ", "

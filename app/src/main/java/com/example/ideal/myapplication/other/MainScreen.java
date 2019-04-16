@@ -17,6 +17,7 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,11 +36,13 @@ public class MainScreen extends AppCompatActivity {
     private static final String PHONE = "phone";
     private static final String CITY = "city";
     private static final String REVIEW_FOR_SERVICE = "review for service";
+    private static final String ORDER_ID = "order_id";
 
     private static final String SERVICES = "services";
-    private static final String USER_ID = "user id";
 
     private LinearLayout resultsLayout;
+
+    private WorkWithLocalStorageApi workWithLocalStorageApi;
 
     private DBHelper dbHelper;
 
@@ -61,11 +64,14 @@ public class MainScreen extends AppCompatActivity {
         panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
         panelBuilder.buildHeader(manager, "Главная", R.id.headerMainScreenLayout);
 
+
         createMainScreen();
     }
 
     private void createMainScreen(){
         SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
         //получаем id пользователя
         String userId = getUserId();
@@ -75,6 +81,8 @@ public class MainScreen extends AppCompatActivity {
 
         //получаем все сервисы, которые находятся в городе юзера
         getServicesInThisCity(userCity);
+
+
     }
 
 
@@ -186,6 +194,8 @@ public class MainScreen extends AppCompatActivity {
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ", "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + ", "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_MIN_COST_SERVICES + ", "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID + ", "
                         + DBHelper.KEY_RATING_REVIEWS
                         + " FROM "
                         + DBHelper.TABLE_WORKING_DAYS + ", "
@@ -221,12 +231,27 @@ public class MainScreen extends AppCompatActivity {
         
         if (cursor.moveToFirst()){
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID);
+            int indexOrderId= cursor.getColumnIndex(ORDER_ID);
             do {
-                sumOfRates += cursor.getFloat(indexRating);
-                countOfRates++;
+                String workingTimeId = cursor.getString(indexWorkingTimeId);
+                String orderId = cursor.getString(indexOrderId);
+
+                if(workWithLocalStorageApi.isMutualReview(orderId)) {
+                    sumOfRates += Float.valueOf(cursor.getString(indexRating));
+                    countOfRates++;
+                }
+                else {
+                    if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
+                        sumOfRates += Float.valueOf(cursor.getString(indexRating));
+                        countOfRates++;
+                    }
+                }
             }while (cursor.moveToNext());
 
-            avgRating = sumOfRates/countOfRates;
+            if(countOfRates!=0){
+                avgRating = sumOfRates / countOfRates;
+            }
             cursor.close();
         }
 

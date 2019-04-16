@@ -32,6 +32,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String WORKER = "worker";
     private static final String USER = "user";
     private static final String SERVICE_ID = "service id";
+    private static final String ORDER_ID = "order_id";
 
     private static final String STATUS_USER_BY_SERVICE = "status User";
 
@@ -53,8 +54,13 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private LinearLayout ratingLayout;
     private LinearLayout imageFeedLayout;
 
+    private WorkWithLocalStorageApi workWithLocalStorageApi;
+
 
     private DBHelper dbHelper;
+
+    public GuestService() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +86,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         //получаем данные о сервисе
@@ -167,8 +176,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         // проверка на удаленный номер
         String sqlQuery =
                 "SELECT "
+                        + DBHelper.KEY_RATING_REVIEWS + ", "
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
-                        + DBHelper.KEY_RATING_REVIEWS
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
                         + " FROM "
                         + DBHelper.TABLE_WORKING_DAYS + ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
@@ -189,34 +199,39 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                         + " AND "
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
                         + " AND "
-                        + DBHelper.KEY_TYPE_REVIEWS + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_RATING_REVIEWS + " != 0";
+                        + DBHelper.KEY_TYPE_REVIEWS + " = ? ";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
 
-        float sumRates = 0;
-        long counter = 0;
+        float sumOfRates = 0;
+        float avgRating = 0;
+        long countOfRates = 0;
         // если сюда не заходит, значит ревью нет
         if (cursor.moveToFirst()) {
-            int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID);
+            int indexOrderId= cursor.getColumnIndex(ORDER_ID);
             do {
-                //у каждого ревью беру timeId и смотрю по нему есть ли оценка
-                //String workingTimeId = cursor.getString(indexWorkingTimeId);
-                //if (workWithLocalStorageApi.isMutualReview(workingTimeId)) {
-                    sumRates += Float.valueOf(cursor.getString(indexRating));
-                    counter++;
-                //} else {
-                  //  if (workWithLocalStorageApi.isAfterWeek(workingTimeId)) {
-                        //sumRates += Float.valueOf(cursor.getString(indexRating));
-                       // counter++;
-                  //  }
-               // }
+                String workingTimeId = cursor.getString(indexWorkingTimeId);
+                String orderId = cursor.getString(indexOrderId);
+
+                if(workWithLocalStorageApi.isMutualReview(orderId)) {
+                    sumOfRates += Float.valueOf(cursor.getString(indexRating));
+                    countOfRates++;
+                }
+                else {
+                    if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
+                        sumOfRates += Float.valueOf(cursor.getString(indexRating));
+                        countOfRates++;
+                    }
+                }
             } while (cursor.moveToNext());
 
-            float avgRating = sumRates / counter;
-            addToScreenOnGuestService(avgRating, counter);
+            if(countOfRates!=0){
+                avgRating = sumOfRates / countOfRates;
+            }
+
+            addToScreenOnGuestService(avgRating, countOfRates);
         } else {
             setWithoutRating();
         }

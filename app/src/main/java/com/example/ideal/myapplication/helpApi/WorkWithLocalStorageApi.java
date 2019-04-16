@@ -12,9 +12,6 @@ public class WorkWithLocalStorageApi {
 
     private SQLiteDatabase localDatabase;
 
-    private static final String REVIEW_FOR_USER = "review for user";
-    private static final String REVIEW_FOR_SERVICE = "review for service";
-
     public WorkWithLocalStorageApi(SQLiteDatabase database) {
         localDatabase = database;
     }
@@ -178,71 +175,39 @@ public class WorkWithLocalStorageApi {
         return fullDate;
     }
 
-    public boolean isMutualReview(String workingTimeId) {
-        // все о сервисе, оценка, количество оценок
-        //проверка на удаленный номер
-        Log.d(TAG, "isMutualReview: " + workingTimeId);
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_NAME_SERVICES
-                        + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_REVIEWS
-                        + " WHERE "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                        + " AND "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " AND "
-                       // + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
-                        //+ " AND "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_TYPE_REVIEWS + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_RATING_REVIEWS + " != 0";
+    public boolean isMutualReview(String orderId) {
 
-        Cursor cursorServiceReview = localDatabase.rawQuery(sqlQuery, new String[]{workingTimeId, REVIEW_FOR_SERVICE});
+        String sqlQuery = "SELECT "
+                + DBHelper.KEY_RATING_REVIEWS
+                + " FROM "
+                + DBHelper.TABLE_REVIEWS + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_ORDER_ID_REVIEWS
+                + " = "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " = ?"
+                + " AND "
+                + DBHelper.KEY_RATING_REVIEWS + " != 0";
 
-        if (cursorServiceReview.moveToFirst()) {
-            Log.d(TAG, "FIRST");
-            sqlQuery =
-                    "SELECT "
-                            + DBHelper.KEY_RATING_REVIEWS
-                            + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                            + DBHelper.TABLE_WORKING_DAYS + ", "
-                            + DBHelper.TABLE_WORKING_TIME + ", "
-                            + DBHelper.TABLE_REVIEWS
-                            + " WHERE "
-                            + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                            + " AND "
-                            + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                            + " AND "
-                           // + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_TIME_ID_REVIEWS
-                           // + " AND "
-                            + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " = ? "
-                            + " AND "
-                            + DBHelper.KEY_TYPE_REVIEWS + " = ? "
-                            + " AND "
-                            + DBHelper.KEY_RATING_REVIEWS + " != 0";
-
-            Cursor cursorUserReview = localDatabase.rawQuery(sqlQuery, new String[]{workingTimeId, REVIEW_FOR_USER});
-
-            if (cursorUserReview.moveToFirst()) {
-                Log.d(TAG, "SECOND");
-                cursorUserReview.close();
-                return true;
-            }
+        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[] {orderId});
+        int counter = 0;
+        if(cursor.moveToFirst()){
+            do {
+                counter++;
+            }while (cursor.moveToNext());
+            cursor.close();
+            return counter == 2;
         }
-        cursorServiceReview.close();
         return false;
     }
 
-    public boolean isAfterWeek(String workingTimeId) {
+    public boolean isAfterThreeDays(String workingTimeId) {
         String date  = getDate(workingTimeId);
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
         long dateMilliseconds = workWithTimeApi.getMillisecondsStringDate(date);
-        boolean isAfterWeek = (workWithTimeApi.getSysdateLong() - dateMilliseconds) > 604800000;
+        boolean isAfterWeek = (workWithTimeApi.getSysdateLong() - dateMilliseconds) > 259200000;
 
         return isAfterWeek;
     }

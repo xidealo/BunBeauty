@@ -48,9 +48,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String REVIEW_FOR_SERVICE = "review for service";
 
     private static final String USER_ID = "user id";
-
-    private static final String RATING = "rating";
     private static final String REVIEW_FOR_USER = "review for user";
+    private static final String ORDER_ID = "order_id";
 
     private static final String SERVICES = "services";
     private static final String NAME = "name";
@@ -326,7 +325,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         //таким способом я получаю свои ревью, а не о себе
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_RATING_REVIEWS + ", "
-                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
                 + " FROM "
                 + DBHelper.TABLE_WORKING_TIME + ", "
                 + DBHelper.TABLE_REVIEWS + ", "
@@ -368,13 +368,30 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         // если сюда не заходит, значит ревью нет
         if (cursor.moveToFirst()) {
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID);
+            int indexOrderId= cursor.getColumnIndex(ORDER_ID);
             do {
-                sumRates += Float.valueOf(cursor.getString(indexRating));
-                counter++;
+                String workingTimeId = cursor.getString(indexWorkingTimeId);
+                String orderId = cursor.getString(indexOrderId);
+                if(workWithLocalStorageApi.isMutualReview(orderId)) {
+                    sumRates += Float.valueOf(cursor.getString(indexRating));
+                    counter++;
+                }
+                else {
+                    if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
+                        sumRates += Float.valueOf(cursor.getString(indexRating));
+                        counter++;
+                    }
+                }
             } while (cursor.moveToNext());
 
-            float avgRating = sumRates / counter;
-            addRatingToScreen(avgRating, counter);
+            if(counter!=0){
+                float avgRating = sumRates / counter;
+                addRatingToScreen(avgRating, counter);
+            }
+            else {
+                setWithoutRating();
+            }
         } else {
             setWithoutRating();
         }
@@ -450,7 +467,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 String serviceName = cursor.getString(indexServiceName);
 
                 String mainSqlQuery = "SELECT "
-                        + DBHelper.KEY_RATING_REVIEWS
+                        + DBHelper.KEY_RATING_REVIEWS + ", "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
                         + " FROM "
                         + DBHelper.TABLE_WORKING_TIME + ", "
                         + DBHelper.TABLE_REVIEWS + ", "
@@ -487,9 +506,21 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
                 if(cursorWithReview.moveToFirst()){
                     int indexRating = cursorWithReview.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+                    int indexWorkingTimeId = cursorWithReview.getColumnIndex(DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID);
+                    int indexOrderId= cursorWithReview.getColumnIndex(ORDER_ID);
                     do {
-                        sumRates += Float.valueOf(cursorWithReview.getString(indexRating));
-                        countOfRates++;
+                        String workingTimeId = cursorWithReview.getString(indexWorkingTimeId);
+                        String orderId = cursorWithReview.getString(indexOrderId);
+                        if(workWithLocalStorageApi.isMutualReview(orderId)) {
+                            sumRates += Float.valueOf(cursorWithReview.getString(indexRating));
+                            countOfRates++;
+                        }
+                        else {
+                            if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
+                                sumRates += Float.valueOf(cursorWithReview.getString(indexRating));
+                                countOfRates++;
+                            }
+                        }
                     }while (cursorWithReview.moveToNext());
                 }
                 cursorWithReview.close();
@@ -499,7 +530,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 service.setName(serviceName);
                 if(countOfRates !=0){
                     float avgRating = sumRates / countOfRates;
-                    Log.d(TAG, "updateServicesList: " + avgRating);
                     addToScreenOnProfile(avgRating,service);
                     countOfRates = 0;
                     sumRates = 0;
@@ -590,16 +620,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private String getUserId() {
         return  FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
-  
-    private boolean isAfterThreeDays(String workingTimeId) {
-
-        String date  = workWithLocalStorageApi.getDate(workingTimeId);
-        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
-        long dateMilliseconds = workWithTimeApi.getMillisecondsStringDate(date);
-        boolean isAfterThreeDays = (workWithTimeApi.getSysdateLong() - dateMilliseconds) > 259200000;
-
-        return isAfterThreeDays;
-    }
 
     private void addRatingToScreen(Float avgRating, Long countOfRates) {
         RatingBarElement ratingElement
@@ -660,19 +680,5 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         Intent intent = new Intent(this, Subscribers.class);
         startActivity(intent);
     }
-  
-    //ревью оставили 2 человека?
-    private boolean isMutualReview(DataSnapshot reviewsSnapshot) {
-        if(reviewsSnapshot.getChildrenCount()==0){
-            return false;
-        }
-        for (DataSnapshot rate : reviewsSnapshot.getChildren()) {
-            String rating = String.valueOf(rate.child(RATING).getValue());
-            //если хоть 1 оценка 0, то возвращаем false
-            if (rating.equals("0")) {
-                return false;
-            }
-        }
-        return true;
-    }
+
 }
