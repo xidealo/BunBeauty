@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final  int DATABASE_VERSION = 80;
+    public static final  int DATABASE_VERSION = 87;
     public static final String DATABASE_NAME = "MyFirstDB";
 
     //tables name
@@ -14,8 +14,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_CONTACTS_SERVICES = "services";
     public static final String TABLE_WORKING_DAYS = "working_days";
     public static final String TABLE_WORKING_TIME = "working_time";
-    public static final String TABLE_DIALOGS = "dialogs";
-    public static final String TABLE_MESSAGES = "messages";
     public static final String TABLE_ORDERS = "orders";
     public static final String TABLE_REVIEWS = "reviews";
     public static final String TABLE_PHOTOS = "photos";
@@ -25,16 +23,16 @@ public class DBHelper extends SQLiteOpenHelper {
     public  static final  String KEY_ID = "_id";
 
     // users
-    public  static final  String KEY_USER_ID = "phone";
+    public  static final  String KEY_PHONE_USERS = "phone";
     public  static final  String KEY_NAME_USERS = "user_name";
     public  static final  String KEY_CITY_USERS = "city";
-    public  static final  String KEY_PASS_USERS = "pass";
-    public  static final  String KEY_BIRTHDAY_USERS = "birthday";
 
     //services
     public  static final  String KEY_NAME_SERVICES = "service_name";
     public  static final  String KEY_DESCRIPTION_SERVICES = "description";
     public  static final  String KEY_MIN_COST_SERVICES = "minCost";
+    public  static final  String KEY_IS_PREMIUM_SERVICES = "is_premium";
+    public  static final  String KEY_CREATION_DATE_SERVICES = "creation_date";
 
     //working days
     public  static final  String KEY_DATE_WORKING_DAYS = "date";
@@ -44,31 +42,23 @@ public class DBHelper extends SQLiteOpenHelper {
     public  static final  String KEY_TIME_WORKING_TIME = "time";
     public  static final  String KEY_WORKING_DAYS_ID_WORKING_TIME = "id_working_days";
 
-    // dialogs
-    public  static final  String KEY_FIRST_USER_ID_DIALOGS = "first_phone";
-    public  static final  String KEY_SECOND_USER_ID_DIALOGS = "second_phone";
-
-    //messages
-    public  static final  String KEY_MESSAGE_TIME_MESSAGES = "message_time";
-    public  static final  String KEY_DIALOG_ID_MESSAGES = "dialog_id";
+    //orders
+    public  static final  String KEY_IS_CANCELED_ORDERS = "is_canceled";
+    public  static final  String KEY_WORKING_TIME_ID_ORDERS = "working_time_id";
+    public  static final  String KEY_MESSAGE_TIME_ORDERS = "message_time";
 
     //reviews
     public  static final  String KEY_REVIEW_REVIEWS = "review";
     public  static final  String KEY_RATING_REVIEWS = "rating";
     public  static final  String KEY_TYPE_REVIEWS = "type";
-    public  static final  String KEY_MESSAGE_ID_REVIEWS = "message_id";
-    public  static final  String KEY_WORKING_TIME_ID_REVIEWS = "working_time_id";
-
-    //orders
-    public  static final  String KEY_IS_CANCELED_ORDERS = "is_canceled";
-    public  static final  String KEY_MESSAGE_ID_ORDERS = "message_id";
-    public  static final  String KEY_WORKING_TIME_ID_ORDERS = "working_time_id";
+    public  static final  String KEY_ORDER_ID_REVIEWS = "order_id";
 
     //photos
     public  static final  String KEY_PHOTO_LINK_PHOTOS = "photo_link";
     public  static final  String KEY_OWNER_ID_PHOTOS = "owner_id";
 
     //subscribers
+    public  static final  String KEY_USER_ID = "user_id";
     public  static final  String KEY_WORKER_ID = "worker_id";
 
     public DBHelper(Context context) {
@@ -80,19 +70,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String users = "create table "+ TABLE_CONTACTS_USERS
                 + "("
-                + KEY_USER_ID + " text primary key,"
+                + KEY_ID + " text primary key,"
+                + KEY_PHONE_USERS + " text,"
                 + KEY_NAME_USERS + " text,"
-                + KEY_PASS_USERS + " text,"
-                + KEY_CITY_USERS + " text,"
-                + KEY_BIRTHDAY_USERS + " text"
+                + KEY_CITY_USERS + " text"
                 + ")";
 
         String services = "create table "+ TABLE_CONTACTS_SERVICES
                 + "(" + KEY_ID + " text primary key,"
+                + KEY_USER_ID + " text,"
                 + KEY_NAME_SERVICES + " text,"
                 + KEY_DESCRIPTION_SERVICES+ " text,"
                 + KEY_MIN_COST_SERVICES + " text,"
-                + KEY_USER_ID + " text"
+                + KEY_IS_PREMIUM_SERVICES + " text,"
+                + KEY_CREATION_DATE_SERVICES+ " text"
                 + ")";
 
         String workingDays = "create table "+ TABLE_WORKING_DAYS
@@ -106,22 +97,16 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "("
                 + KEY_ID + " text primary key,"
                 + KEY_TIME_WORKING_TIME + " text,"
-                + KEY_USER_ID + " text,"
                 + KEY_WORKING_DAYS_ID_WORKING_TIME + " integer"
                 + ")";
 
-        String dialogs = "create table "+ TABLE_DIALOGS
+        String orders = "create table "+ TABLE_ORDERS
                 + "("
                 + KEY_ID + " text primary key,"
-                + KEY_FIRST_USER_ID_DIALOGS + " text,"
-                + KEY_SECOND_USER_ID_DIALOGS + " text"
-                + ")";
-
-        String messages = "create table "+ TABLE_MESSAGES
-                + "("
-                + KEY_ID + " text primary key,"
-                + KEY_MESSAGE_TIME_MESSAGES + " text,"
-                + KEY_DIALOG_ID_MESSAGES + " text"
+                + KEY_USER_ID + " text,"
+                + KEY_IS_CANCELED_ORDERS + " text,"
+                + KEY_MESSAGE_TIME_ORDERS + " text,"
+                + KEY_WORKING_TIME_ID_ORDERS + " integer"
                 + ")";
 
         String reviews = "create table "+ TABLE_REVIEWS
@@ -129,16 +114,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_REVIEW_REVIEWS + " text,"
                 + KEY_RATING_REVIEWS + " text,"
                 + KEY_TYPE_REVIEWS + " text,"
-                + KEY_MESSAGE_ID_REVIEWS + " text,"
-                + KEY_WORKING_TIME_ID_REVIEWS + " text"
-                + ")";
-
-        String orders = "create table "+ TABLE_ORDERS
-                + "("
-                + KEY_ID + " text primary key,"
-                + KEY_IS_CANCELED_ORDERS + " text,"
-                + KEY_MESSAGE_ID_ORDERS + " text,"
-                + KEY_WORKING_TIME_ID_ORDERS + " integer"
+                + KEY_ORDER_ID_REVIEWS + " text"
                 + ")";
 
         String photos = "create table "+ TABLE_PHOTOS
@@ -167,12 +143,6 @@ public class DBHelper extends SQLiteOpenHelper {
         // create working time table
         db.execSQL(workingTime);
 
-        //create dialogs
-        db.execSQL(dialogs);
-
-        //create messages
-        db.execSQL(messages);
-
         //create reviews
         db.execSQL(reviews);
 
@@ -193,8 +163,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists " + TABLE_CONTACTS_SERVICES);
         db.execSQL("drop table if exists " + TABLE_WORKING_DAYS);
         db.execSQL("drop table if exists " + TABLE_WORKING_TIME);
-        db.execSQL("drop table if exists " + TABLE_DIALOGS);
-        db.execSQL("drop table if exists " + TABLE_MESSAGES);
         db.execSQL("drop table if exists " + TABLE_REVIEWS);
         db.execSQL("drop table if exists " + TABLE_ORDERS);
         db.execSQL("drop table if exists " + TABLE_PHOTOS);

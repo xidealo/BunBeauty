@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
-import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -29,31 +28,25 @@ import java.util.Map;
 
 public class MyCalendar extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "DBInf";
-    private static final String REF = "working days";
-
+    private static final String WORKING_DAYS = "working days";
     private static final String SERVICE_ID = "service id";
     private static final String WORKING_DAYS_ID = "working day id";
     private static final String STATUS_USER_BY_SERVICE = "status User";
-    private static final String DATE = "data";
+    private static final String DATE = "date";
     private static final String USER = "user";
     private static final String WORKER = "worker";
-
+    private static final String USERS = "users";
+    private static final String SERVICES = "services";
     private static final int WEEKS_COUNT = 4;
     private static final int DAYS_COUNT = 7;
 
-
-    String statusUser;
-    String date;
-    String serviceId;
-
-    Button[][] dayBtns;
-    Button nextBtn;
-    WorkWithTimeApi workWithTimeApi;
-
-    RelativeLayout mainLayout;
-
-    DBHelper dbHelper;
+    private String statusUser;
+    private String date;
+    private String serviceId;
+    private Button[][] dayBtns;
+    private Button nextBtn;
+    private RelativeLayout mainLayout;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +58,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         dayBtns = new Button[WEEKS_COUNT][DAYS_COUNT];
 
         dbHelper = new DBHelper(this);
-        workWithTimeApi = new WorkWithTimeApi();
 
         // получаем статус, чтобы определить, кто зашел, worker or User
         statusUser = getIntent().getStringExtra(STATUS_USER_BY_SERVICE);
@@ -128,6 +120,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         }
     }
 
+    private static final String TAG = "DBInf";
+
     //Выделяет рабочие дни
     private void selectWorkingDayWithTime() {
         String dayAndMonth, year;
@@ -177,10 +171,10 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    // проверяет имеется ли у данного пользователя запись на данную услугу
+    // проверяет имеется ли у данного пользователя запись на услугу
     private void checkOrder(){
         //Если пользователь записан на какой-то день выделить только его
-        date = getOrderDate(); // дата YYYY-mm-dd
+        date = getOrderDate(); // дата YYYY-mm-d
         if(!date.equals("")) {
             String[] arrDate = date.split("-");
             String orderDate = arrDate[2] + " " + monthToString(arrDate[1]);
@@ -237,12 +231,18 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 "SELECT "
                         + DBHelper.KEY_DATE_WORKING_DAYS
                         + " FROM "
+                        + DBHelper.TABLE_ORDERS + ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
                         + DBHelper.TABLE_WORKING_DAYS
                         + " WHERE "
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
                         + " AND "
                         + DBHelper.KEY_USER_ID + " = ? "
+                        + " AND "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                        + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " AND "
+                        + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'"
                         + " AND "
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                         + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
@@ -252,8 +252,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                         + ")) <= 0)";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {String.valueOf(serviceId), userId});
-
+        Cursor cursor = database.rawQuery(sqlQuery, new String[] {serviceId, userId});
         if(cursor.moveToFirst()) {
             int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
             String orderDate = cursor.getString(indexDate);
@@ -339,53 +338,76 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     // Возвращает есть ли в рабочем дне рабочие часы
     private boolean hasSomeTime(String dayId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
+      
+        // Проверяет есть ли доступное время на данный день по его id
+        String takedTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
 
-        // Получает id рабочего дня
-        // Таблицы: рабочие время
-        // Условия: уточняем id рабочего дня
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_TIME_WORKING_TIME + ", "
-                        + DBHelper.KEY_DATE_WORKING_DAYS
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_WORKING_DAYS
-                        + " WHERE "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_USER_ID + " = 0";
+        String myTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_USER_ID + " = ?"
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId});
+        String sqlQuery = "SELECT "
+                + DBHelper.KEY_TIME_WORKING_TIME
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_WORKING_DAYS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                + " AND ((("
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " NOT IN (" + takedTimeQuery + ")"
+                + " AND ("
+                // 3 часа - разница с Гринвичем
+                // 2 часа - минимум времени до сеанса, чтобы за писаться
+                + "(STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ") <= 0)"
+                + ") OR (("
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " IN (" + myTimeQuery + ")"
+                + ") AND ("
+                + "(STRFTIME('%s', 'now')+3*60*60) - (STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ")) <= 0))))";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId, dayId, getUserId()});
 
         if(cursor.moveToFirst()) {
-            int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
-            int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
-            String date, time;
-
-            do {
-                date = cursor.getString(indexDate);
-                time = cursor.getString(indexTime);
-                if(hasMoreThenTwoHours(date, time)) {
-                    cursor.close();
-                    return true;
-                }
-            } while (cursor.moveToNext());
+            cursor.close();
+            return true;
         }
         cursor.close();
         return false;
     }
 
-    private boolean hasMoreThenTwoHours(String date, String time) {
-        long twoHours = 2*60*60*1000;
-
-        long sysdateLong = workWithTimeApi.getSysdateLong() ;
-        long currentLong = workWithTimeApi.getMillisecondsStringDate(date + " " + time);
-
-        return currentLong - sysdateLong >= twoHours;
-    }
 
     // Преобразует дату в формат БД
     private String convertDate(String dayAndMonth, String year) {
@@ -410,15 +432,18 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
             goToMyTime(id,statusUser);
         } else {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference(REF);
+            DatabaseReference dateRef = database.getReference(USERS)
+                    .child(getUserId())
+                    .child(SERVICES)
+                    .child(serviceId)
+                    .child(WORKING_DAYS);
 
             Map<String,Object> items = new HashMap<>();
             items.put(DATE,date);
-            items.put(SERVICE_ID, serviceId);
 
-            Object dayId =  myRef.push().getKey();
-            myRef = database.getReference(REF).child(String.valueOf(dayId));
-            myRef.updateChildren(items);
+            String dayId =  dateRef.push().getKey();
+            dateRef = dateRef.child(dayId);
+            dateRef.updateChildren(items);
 
             putDataInLocalStorage(serviceId, String.valueOf(dayId));
 
@@ -441,7 +466,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     //Возвращает id дня по id данного сервиса и дате
     private String checkCurrentDay(String day) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-
         // Получает id рабочего дня
         // Таблицы: рабочии дни
         // Условия: уточняем id сервиса и дату
@@ -454,8 +478,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? AND "
                         + DBHelper.KEY_DATE_WORKING_DAYS + " = ? ";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{String.valueOf(serviceId), day});
-
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, day});
         if(cursor.moveToFirst()) {
             int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
             return String.valueOf(cursor.getString(indexId));
@@ -465,7 +488,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     }
 
     private  String getUserId(){
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     @Override
@@ -486,6 +509,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         Intent intent = new Intent(this, MyTime.class);
         intent.putExtra(WORKING_DAYS_ID, dayId);
         intent.putExtra(STATUS_USER_BY_SERVICE, statusUser);
+        intent.putExtra(SERVICE_ID, serviceId);
 
         startActivity(intent);
     }

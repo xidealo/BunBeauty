@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,74 +21,67 @@ import com.example.ideal.myapplication.reviews.Review;
 public class MessageReviewElement extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
-
-    //private static final String SERVICE_ID = "service id";
-    private static final String MESSAGE_ID = "message id";
     private static final String TYPE = "type";
-    //private static final String IS_MY_SERVICE = "is my service";
-
     private static final String REVIEW_FOR_USER = "review for user";
+    private static final String REVIEW_ID = "review id";
 
+    private String messageType;
+    private String messageRatingReview;
 
-    String text;
+    private String text;
 
-    String messageTime;
-    Boolean messageIsCanceled;
-    Boolean messageIsRate;
-    String messageType;
-    String messageDate;
-    String messageOrderTime;
-    String messageServiceName;
-    String messageUserName;
+    private String reviewId;
 
-    String messageId;
-
-    TextView messageText;
-    Button reviewBtn;
+    private TextView messageText;
+    private Button reviewBtn;
 
     public MessageReviewElement() {
     }
 
     @SuppressLint("ValidFragment")
     public MessageReviewElement(Message message) {
-        messageTime = message.getMessageTime();
-        messageIsCanceled = message.getIsCanceled();
-        messageIsRate = message.getIsRate();
+
+        // для условий
+        boolean isCanceled = message.getIsCanceled();
         messageType = message.getType();
-        messageDate = message.getDate();
-        messageOrderTime = message.getOrderTime();
-        messageServiceName = message.getServiceName();
-        messageUserName = message.getUserName();
+        messageRatingReview = message.getRatingReview();
+        
+        // содержание сообщения
+        String messageUserName = message.getUserName();
+        String messageServiceName = message.getServiceName();
+        String messageWorkingDay= message.getWorkingDay();
+        String messageWorkingTime = message.getWorkingTime();
+        String messageTime = message.getMessageTime();
 
-        messageId = message.getId();
+        reviewId = message.getReviewId();
 
-        if(messageType.equals(REVIEW_FOR_USER)) {
+        if (messageType.equals(REVIEW_FOR_USER)) {
             text =
-                    messageDate + " в " + messageOrderTime
-                    + " Вы предоставляли услугу " + messageServiceName
-                    + " пользователю " + messageUserName
-                    + ".\nПожалуйста, оставьте отзыв об этом пользователе, чтобы улучшить качество сервиса."
-                    + " Вы также сможете увидеть отзыв, о себе,"
-                    + " как только пользователь оставит его или пройдет 72 часа."
-                    + "\n (" + messageTime + ")";
+                    messageWorkingDay + " в " + messageWorkingTime
+                            + " Вы предоставляли услугу " + messageServiceName
+                            + " пользователю " + messageUserName
+                            + ".\nПожалуйста, оставьте отзыв об этом пользователе."
+                            + " Вы также сможете увидеть отзыв, о себе,"
+                            + " как только пользователь оставит его или пройдет 72 часа."
+                            + "\n (" + messageTime + ")";
         } else {
-            if(messageIsCanceled) {
+            if (isCanceled) {
                 text =
                         "Пользователь " + messageUserName
-                        + " отказал Вам в придоставлении услуги " + messageServiceName
-                        + " в последний момент. Сеанс на " + messageDate
-                        + " в " + messageOrderTime
-                        + " отменён. Вы можете оценить качество данного сервиса."
-                        + "\n (" + messageTime + ")";
+                                + " отказал Вам в придоставлении услуги " + messageServiceName
+                                + " в последний момент. Сеанс на " + messageWorkingDay
+                                + " в " + messageWorkingTime
+                                + " отменён. Вы можете оценить качество данного сервиса."
+                                + "\n (" + messageTime + ")";
             } else {
                 text =
-                        messageDate + " в " + messageOrderTime
-                        + " Вы получали услугу " + messageServiceName
-                        + " у пользователя " + messageUserName
-                        + ".\nПожалуйста, оставьте отзыв о данной услуге, чтобы улучшить качество сервиса."
-                        + " Вы также сможете увидеть отзыв, о себе,"
-                        + " как только пользователь оставит его или пройдет 72 часа."
-                        + "\n (" + messageTime + ")";
+                        messageWorkingDay + " в " + messageWorkingTime
+                                + " Вы получали услугу " + messageServiceName
+                                + " у пользователя " + messageUserName
+                                + ".\nПожалуйста, оставьте отзыв о данной услуге, чтобы улучшить качество сервиса."
+                                + " Вы также сможете увидеть отзыв, о себе,"
+                                + " как только пользователь оставит его или пройдет 72 часа."
+                                + "\n (" + messageTime + ")";
             }
         }
     }
@@ -102,14 +96,20 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
         messageText = view.findViewById(R.id.messageMessageReviewElementText);
         reviewBtn = view.findViewById(R.id.reviewMessageReviewElementBtn);
 
+        Log.d(TAG, "onViewCreated: " + messageRatingReview);
+
         // Проверяем стоит ли оценка
-        if(messageIsRate) {
+        if (isRate()) {
             reviewBtn.setEnabled(false);
         } else {
             reviewBtn.setOnClickListener(this);
         }
-
         setData();
+    }
+
+    //если рейтинг не 0, значит считаем, что оценен
+    private boolean isRate() {
+        return !messageRatingReview.equals("0");
     }
 
     private void setData() {
@@ -124,7 +124,7 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
     private void goToReview() {
         Intent intent = new Intent(this.getContext(), Review.class);
         intent.putExtra(TYPE, messageType);
-        intent.putExtra(MESSAGE_ID, messageId);
+        intent.putExtra(REVIEW_ID, reviewId);
         startActivity(intent);
     }
 }

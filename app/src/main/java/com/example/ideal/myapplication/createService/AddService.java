@@ -22,6 +22,7 @@ import com.example.ideal.myapplication.fragments.ServicePhotoElement;
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,6 +35,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,19 +43,19 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
     private static final String SERVICE_ID = "service id";
     private static final String STATUS_USER_BY_SERVICE = "status User";
+    private static final String USERS = "users";
 
     private static final String SERVICES = "services";
     private static final String NAME = "name";
     private static final String COST = "cost";
     private static final String DESCRIPTION = "description";
-    private static final String USER_ID = "user id";
     private static final String IS_PREMIUM = "is premium";
+    private static final String CREATION_DATE = "creation date";
 
     private static final int PICK_IMAGE_REQUEST = 71;
     private static final String SERVICE_PHOTO = "service photo";
     private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
-    private static final String OWNER_ID = "owner id";
 
     private EditText nameServiceInput;
     private EditText costAddServiceInput;
@@ -114,7 +116,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                     }
 
                     service.setIsPremium(false);
-
+                    service.setUserId(getUserId());
                     uploadService(service);
                 }
                 else {
@@ -130,20 +132,21 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     }
 
     private void uploadService(Service service) {
+        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(SERVICES);
-        String userId = getUserId();
+        DatabaseReference serviceRef = database.getReference(USERS).child(service.getUserId()).child(SERVICES);
 
         Map<String,Object> items = new HashMap<>();
         items.put(NAME,service.getName().toLowerCase());
         items.put(COST,service.getCost());
         items.put(DESCRIPTION,service.getDescription());
-        items.put(USER_ID,userId);
         items.put(IS_PREMIUM,service.getIsPremium());
-        String serviceId =  myRef.push().getKey();
-        myRef = database.getReference(SERVICES).child(serviceId);
-        myRef.updateChildren(items);
+
+        items.put(CREATION_DATE,workWithTimeApi.getDateInFormatYMDHMS(new Date()));
+        String serviceId =  serviceRef.push().getKey();
+        serviceRef = serviceRef.child(serviceId);
+        serviceRef.updateChildren(items);
 
         service.setId(serviceId);
         addServiceInLocalStorage(service);
@@ -157,14 +160,13 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        String userId = getUserId();
         //добавление в БД
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, service.getId());
         contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName().toLowerCase());
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
-        contentValues.put(DBHelper.KEY_USER_ID, userId);
+        contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
 
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES,null,contentValues);
         goToMyCalendar(getString(R.string.status_worker),service.getId());
@@ -216,7 +218,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private void uploadImage(Uri filePath, final String serviceId) {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(PHOTOS);
+        DatabaseReference myRef = database.getReference(USERS);
 
         if(filePath != null)
         {
@@ -243,12 +245,15 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private void uploadPhotos(String storageReference, String serviceId,String photoId) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(PHOTOS).child(photoId);
+        DatabaseReference myRef = database.getReference(USERS)
+                .child(getUserId())
+                .child(SERVICES)
+                .child(serviceId)
+                .child(PHOTOS)
+                .child(photoId);
 
         Map<String,Object> items = new HashMap<>();
         items.put(PHOTO_LINK,storageReference);
-        items.put(OWNER_ID,serviceId);
-
         myRef.updateChildren(items);
 
         Photo photo = new Photo();
@@ -288,7 +293,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     }
 
     private String getUserId(){
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     private void goToMyCalendar(String status, String serviceId) {

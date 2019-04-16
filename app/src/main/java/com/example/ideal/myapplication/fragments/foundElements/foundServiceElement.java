@@ -49,7 +49,7 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         cityString = user.getCity();
         nameServiceString = service.getName();
         costString = service.getCost();
-        userId = user.getPhone();
+        userId = user.getId();
 
         avgRating = _avgRating;
     }

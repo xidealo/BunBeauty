@@ -5,9 +5,18 @@ public class User {
     private String phone;
     private String name;
     private String city;
+    private String id;
 
     public void setPhone(String _phone){
         phone = _phone;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public boolean setName(String _name){
