@@ -205,7 +205,6 @@ public class DownloadServiceData {
         }
     }
 
-
     private void loadReviewForUser(String userId, final String orderId) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
                 .child(userId)
@@ -274,6 +273,7 @@ public class DownloadServiceData {
                 contentValues.put(DBHelper.KEY_ID, reviewId);
                 localDatabase.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
             }
+
         }
     }
 

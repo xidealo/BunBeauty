@@ -150,22 +150,15 @@
 
     <LinearLayout
         android:id="@+id/ratingLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="249dp"
+        android:layout_height="105dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/footerProfileLayout"
         app:layout_constraintEnd_toStartOf="@+id/servicesOrOrdersProfileSwitch"
+        app:layout_constraintHorizontal_bias="0.376"
         app:layout_constraintStart_toEndOf="@+id/addServicesProfileBtn"
         app:layout_constraintTop_toBottomOf="@+id/orderProfileScroll"
-        app:layout_constraintVertical_bias="0.13">
-
-        <ProgressBar
-            android:id="@+id/progressBarProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:scaleX=".7"
-            android:scaleY=".7" />
+        app:layout_constraintVertical_bias="0.597">
 
         <TextView
             android:id="@+id/withoutRatingProfileText"
