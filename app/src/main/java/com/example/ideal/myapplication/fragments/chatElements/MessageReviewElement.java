@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.reviews.Review;
-import com.google.firebase.database.DatabaseReference;
 
 
 public class MessageReviewElement extends Fragment implements View.OnClickListener {

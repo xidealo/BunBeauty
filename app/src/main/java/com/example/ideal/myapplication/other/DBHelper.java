@@ -51,7 +51,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public  static final  String KEY_REVIEW_REVIEWS = "review";
     public  static final  String KEY_RATING_REVIEWS = "rating";
     public  static final  String KEY_TYPE_REVIEWS = "type";
-    public  static final  String KEY_MESSAGE_ID_REVIEWS = "message_id";
     public  static final  String KEY_ORDER_ID_REVIEWS = "order_id";
 
     //photos

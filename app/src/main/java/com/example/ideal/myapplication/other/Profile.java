@@ -10,13 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -24,12 +22,9 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.AddService;
 import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
-import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.fragments.objects.Service;
-import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,7 +32,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class Profile extends AppCompatActivity implements View.OnClickListener {
@@ -119,9 +113,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         PanelBuilder panelBuilder = new PanelBuilder(ownerId);
         panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
         panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
-
-        //установка аватарки
-        loadServiceByWorkingDay(ownerId);
 
         // Проверяем совпадают id пользователя и владельца
         if(userId.equals(ownerId)){
@@ -220,105 +211,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void loadServiceByWorkingDay(final String serviceId) {
-        DatabaseReference serviceRef = FirebaseDatabase.getInstance().getReference(SERVICES).child(serviceId);
-        serviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot serviceSnapshot) {
-                String userId = String.valueOf(serviceSnapshot.child(USER_ID).getValue());
-                String name = String.valueOf(serviceSnapshot.child(NAME).getValue());
-                //addServiceInLocalStorage(serviceId, userId, name);
-
-                // Подгружаем авторов ревью по сервисам
-                //loadUserByService(userId);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
-
-    private void loadUserByService(final String userId) {
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(USERS).child(userId);
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                String name = String.valueOf(userSnapshot.child(NAME).getValue());
-
-                addUserInLocalStorage(userId, name);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
-
-    private void addUserInLocalStorage(String userId, String name) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_NAME_USERS, name);
-
-        boolean isUpdate = workWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS,
-                        userId);
-
-        if (isUpdate) {
-            database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{userId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, userId);
-            database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
-        }
-    }
-
-    private void addDayInLocalStorage(String dayId, String date, String serviceId) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
-        contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
-
-        boolean isUpdate = workWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_WORKING_DAYS,
-                        dayId);
-
-        if (isUpdate) {
-            database.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{dayId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, dayId);
-            database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
-        }
-    }
-
-    private void addTimeInLocalStorage(String timeId, String time,
-                                       String userId, String workingDayId) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, time);
-        contentValues.put(DBHelper.KEY_ID, userId);
-        contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
-
-        boolean isUpdate = workWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_WORKING_TIME,
-                        timeId);
-
-        if (isUpdate) {
-            database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{timeId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, timeId);
-            database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
-        }
-    }
-
     private void loadRatingForUser() {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
@@ -368,7 +260,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         // если сюда не заходит, значит ревью нет
         if (cursor.moveToFirst()) {
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID);
+            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexOrderId= cursor.getColumnIndex(ORDER_ID);
             do {
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
@@ -500,7 +392,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " AND "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = ? "
                         + " AND "
-                        + DBHelper.KEY_TYPE_REVIEWS + " = ? ";
+                        + DBHelper.KEY_TYPE_REVIEWS + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_RATING_REVIEWS + " != 0 ";
 
                 Cursor cursorWithReview = database.rawQuery(mainSqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
 

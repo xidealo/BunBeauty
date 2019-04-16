@@ -41,10 +41,9 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
     private static final String REVIEW = "review";
 
     private static final String REVIEW_FOR_SERVICE = "'review for service'";
-    private static final String REVIEW_FOR_USER = "'review for user'";
 
     private static final String USERS = "users";
-    private static final String SERVISES = "services";
+    private static final String SERVICES = "services";
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
     private static final String ORDERS = "orders";
@@ -255,7 +254,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
         DatabaseReference  myRef = database.getReference(USERS)
                 .child(myId)
-                .child(SERVISES)
+                .child(SERVICES)
                 .child(serviceId)
                 .child(WORKING_DAYS)
                 .child(workingDayId)
@@ -301,7 +300,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         // if (messageIsMyService) {
         myRef = database.getReference(USERS)
                 .child(myId)
-                .child(SERVISES)
+                .child(SERVICES)
                 .child(serviceId)
                 .child(WORKING_DAYS)
                 .child(workingDayId)

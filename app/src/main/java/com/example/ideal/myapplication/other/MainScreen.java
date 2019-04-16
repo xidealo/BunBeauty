@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -222,7 +221,9 @@ public class MainScreen extends AppCompatActivity {
                         + " AND "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = ? "
                         + " AND "
-                        + DBHelper.KEY_TYPE_REVIEWS + " = ? ";
+                        + DBHelper.KEY_TYPE_REVIEWS + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_RATING_REVIEWS + " != 0 ";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{service.getId(), REVIEW_FOR_SERVICE});
         int countOfRates = 0;
@@ -231,7 +232,7 @@ public class MainScreen extends AppCompatActivity {
         
         if (cursor.moveToFirst()){
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID);
+            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexOrderId= cursor.getColumnIndex(ORDER_ID);
             do {
                 String workingTimeId = cursor.getString(indexWorkingTimeId);

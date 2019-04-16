@@ -6,7 +6,6 @@ public class RatingReview {
     private String review;
     private String rating;
     private String workingTimeId;
-    private String messageId;
     private String type;
 
     public void setReview(String _review){
@@ -17,9 +16,6 @@ public class RatingReview {
     }
     public void setWorkingTimeId(String _workingTimeId){
         workingTimeId=_workingTimeId;
-    }
-    public void setMessageId(String _messageId){
-        messageId=_messageId;
     }
     public void setRating(String _rating){
         rating=_rating;
@@ -34,10 +30,6 @@ public class RatingReview {
 
     public String getWorkingTimeId() {
         return workingTimeId;
-    }
-
-    public String getMessageId() {
-        return messageId;
     }
 
     public String getRating() {

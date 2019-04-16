@@ -158,7 +158,7 @@
         app:layout_constraintHorizontal_bias="0.376"
         app:layout_constraintStart_toEndOf="@+id/addServicesProfileBtn"
         app:layout_constraintTop_toBottomOf="@+id/orderProfileScroll"
-        app:layout_constraintVertical_bias="0.597">
+        app:layout_constraintVertical_bias="0.83">
 
         <TextView
             android:id="@+id/withoutRatingProfileText"

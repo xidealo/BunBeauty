@@ -165,6 +165,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             nameText.setText(cursor.getString(indexName));
             costText.setText(cursor.getString(indexMinCost));
             descriptionText.setText(cursor.getString(indexDescription));
+            serviceName = cursor.getString(indexName);
         }
         cursor.close();
     }
@@ -199,7 +200,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                         + " AND "
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
                         + " AND "
-                        + DBHelper.KEY_TYPE_REVIEWS + " = ? ";
+                        + DBHelper.KEY_TYPE_REVIEWS + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_RATING_REVIEWS + " != 0 ";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
 
@@ -209,7 +212,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         // если сюда не заходит, значит ревью нет
         if (cursor.moveToFirst()) {
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID);
+            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexOrderId= cursor.getColumnIndex(ORDER_ID);
             do {
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
@@ -306,29 +309,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                 + ")) <= 0))))";
 
-        /*String query = "SELECT *"
-                + " FROM "
-                + DBHelper.TABLE_WORKING_DAYS + ", "
-                + DBHelper.TABLE_WORKING_TIME + ", "
-                + DBHelper.TABLE_ORDERS
-                + " WHERE "
-                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
-                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                + " AND "
-                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
-                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID;
-
-        Cursor cursor1 = database.rawQuery(query, new String[] {});
-
-        Log.d(TAG, "checkScheduleAndGoToProfile: " + cursor1.getCount());
-
-        if (cursor1.moveToFirst()) {
-            String userId = cursor1.getString(cursor1.getColumnIndex(DBHelper.KEY_USER_ID));
-            String isCanceled = cursor1.getString(cursor1.getColumnIndex(DBHelper.KEY_IS_CANCELED_ORDERS));
-            Log.d(TAG, userId + " " + isCanceled);
-        }
-cursor1.close();*/
-
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {serviceId, serviceId, serviceId, userId});
 
         if (cursor.moveToFirst()) {
@@ -420,7 +400,4 @@ cursor1.close();*/
         startActivity(intent);
     }
 
-    private void attentionBadConnection() {
-        Toast.makeText(this, "Плохое соединение", Toast.LENGTH_SHORT).show();
-    }
 }
