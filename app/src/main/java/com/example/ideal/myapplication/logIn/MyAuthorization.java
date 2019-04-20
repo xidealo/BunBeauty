@@ -48,7 +48,7 @@ public class MyAuthorization {
 
         dbHelper = new DBHelper(context);
         SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
-        downloadServiceData = new DownloadServiceData(localDatabase, "Authorization");
+        downloadServiceData = new DownloadServiceData(localDatabase);
     }
 
     void authorizeUser() {
