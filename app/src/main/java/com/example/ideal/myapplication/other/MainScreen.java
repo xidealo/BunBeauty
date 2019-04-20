@@ -256,7 +256,6 @@ public class MainScreen extends AppCompatActivity {
 
     private void addToMainScreen() {
         for (Object[] serviceData : serviceList) {
-            Log.d(TAG, "addToMainScreen: " + serviceData[0]);
             foundServiceElement fElement = new foundServiceElement((Service) serviceData[1], (User) serviceData[2]);
 
             FragmentTransaction transaction = manager.beginTransaction();
