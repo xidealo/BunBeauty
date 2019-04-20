@@ -1,6 +1,5 @@
 package com.example.ideal.myapplication.other;
 
-import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,16 +19,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.Search;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class SearchService extends FragmentActivity implements View.OnClickListener {
 
@@ -39,21 +42,13 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     private static final String NAME = "name";
     private static final String CITY = "city";
 
-    private static final String SERVICES = "services";
-    private static final String USER_ID = "user id";
-    private static final String DESCRIPTION = "description";
-    private static final String COST = "cost";
-    private static final String RATING = "rating";
-    private static final String COUNT_OF_RATES = "count of rates";
+    private static final String TOWN = "Город";
+    private static final String NAME_OF_SERVICE = "Название сервиса";
 
-    String city = "Город";
-    String searchBy = "название сервиса";
-    int countOfService = 0;
-    long numberOfService;
-    long numberOfUser;
+    String city = TOWN;
+    String searchBy = NAME_OF_SERVICE;
 
     Button findBtn;
-
     EditText searchLineInput;
 
     //Выпадающее меню
@@ -65,7 +60,6 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
     DBHelper dbHelper;
     SharedPreferences sPref;
-
     private FragmentManager manager;
 
     @Override
@@ -76,25 +70,25 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
         findBtn = findViewById(R.id.findServiceSearchServiceBtn);
 
         dbHelper = new DBHelper(this);
-
         manager = getSupportFragmentManager();
+
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerSearchServiceLayout);
         panelBuilder.buildHeader(manager, "Поиск", R.id.headerSearchServiceLayout);
 
         //создаём выпадающее меню на основе массива городов
         citySpinner = findViewById(R.id.citySearchServiceSpinner);
-        citySpinner.setPrompt("Город");
+        citySpinner.setPrompt(TOWN);
         ArrayAdapter<?> cityAdapter = ArrayAdapter.createFromResource(this, R.array.cities, android.R.layout.simple_spinner_item);
         citySpinner.setAdapter(cityAdapter);
 
+        //создаём выпадающее меню "Поиск по"
         searchBySpinner = findViewById(R.id.searchBySearchServiceSpinner);
-        searchBySpinner.setPrompt("название сервиса");
+        searchBySpinner.setPrompt(NAME_OF_SERVICE);
         ArrayAdapter<?> searchByAdapter = ArrayAdapter.createFromResource(this, R.array.searchBy, android.R.layout.simple_spinner_item);
         searchBySpinner.setAdapter(searchByAdapter);
 
         searchLineInput = findViewById(R.id.searchLineSearchServiceInput);
-
         resultLayout = findViewById(R.id.resultSearchServiceLayout);
 
         showServicesInHomeTown();
@@ -134,13 +128,11 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     }
 
     private void showServicesInHomeTown() {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
         //получаем id пользователя
         String userId = getUserId();
 
         //получаем город юзера
-        String userCity = getUserCity(database, userId);
+        String userCity = getUserCity(userId);
 
         //получаем все сервисы, которые находятся в городе юзера
         getServicesInThisCity(userCity);
@@ -152,22 +144,24 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     }
 
     //Получает город пользователя
-    private String getUserCity(SQLiteDatabase database, String userId) {
+    private String getUserCity(String userId) {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         // Получить город юзера
         // Таблица Users
-        // уточняем по id юзера
+        // с фиксированным userId
         String sqlQuery =
                 "SELECT " + DBHelper.KEY_CITY_USERS
                         + " FROM " + DBHelper.TABLE_CONTACTS_USERS
-                        + " WHERE " + DBHelper.KEY_USER_ID + " = ?";
+                        + " WHERE " + DBHelper.KEY_ID + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
 
         int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
+        // дефолтное значение
+        String city="Dubna";
 
-        String city = "dubna"; // дефолтное значение
-        if (cursor.moveToFirst()) {
+        if(cursor.moveToFirst()) {
             city = cursor.getString(indexCity);
         }
         cursor.close();
@@ -175,7 +169,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     }
 
     private void getServicesInThisCity(final String userCity) {
-        final int limitOfService = 3;
+        final Search search = new Search(this);
 
         Query userQuery = FirebaseDatabase.getInstance().getReference(USERS)
                 .orderByChild(CITY)
@@ -183,55 +177,9 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot:dataSnapshot.getChildren()) {
-                    String userName = String.valueOf(snapshot.child(NAME).getValue());
-                    final String userId = snapshot.getKey();
-
-                    final User user = new User();
-                    user.setName(userName);
-                    user.setCity(userCity);
-
-                    Query serviseQuery = FirebaseDatabase.getInstance().getReference(SERVICES)
-                            .orderByChild(USER_ID)
-                            .equalTo(userId);
-
-                    serviseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                String serviceId = snapshot.getKey();
-                                String serviceName = String.valueOf(snapshot.child(NAME).getValue());
-                                String serviceCost = String.valueOf(snapshot.child(COST).getValue());
-                                String serviceDescription = String.valueOf(snapshot.child(DESCRIPTION).getValue());
-
-                                Service service = new Service();
-                                service.setId(serviceId);
-                                service.setName(serviceName);
-                                service.setUserId(userId);
-                                service.setCost(serviceCost);
-                                service.setDescription(serviceDescription);
-
-                                updateServicesInLocalStorage(service);
-                                addToScreen(service, user);
-                                countOfService++;
-                                if(countOfService == limitOfService) {
-                                    return;
-                                }
-                            }
-                        }
-
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            attentionBadConnection();
-                        }
-                    });
-
-                    if(countOfService == limitOfService) {
-                        return;
-                    }
-                }
+            public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
+                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null);
+                addToScreen(serviceList);
             }
 
             @Override
@@ -239,55 +187,9 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
                 attentionBadConnection();
             }
         });
-
-        countOfService = 0;
-    }
-
-    // Добавляет информацию о сервисах в SQLite
-    private void updateServicesInLocalStorage(Service service) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        String serviceId = service.getId();
-
-        // Данные из тыблицы Service
-        // По номеру id
-        String sqlQuery =
-                "SELECT * "
-                        + " FROM "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
-                        + " WHERE "
-                        + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
-
-        // Заполняем contentValues информацией о данном сервисе
-        contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName());
-        contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
-        contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
-        contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
-
-        // Проверка есть ли такой сервис в SQLite
-        if(cursor.moveToFirst()) {
-            // Данный сервис уже есть
-            // Обновляем информацию о нём
-            database.update(
-                    DBHelper.TABLE_CONTACTS_SERVICES,
-                    contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{serviceId});
-        } else {
-            // Данного сервиса нет
-            // Добавляем serviceId в contentValues
-            contentValues.put(DBHelper.KEY_ID, serviceId);
-
-            // Добавляем данный сервис в SQLite
-            database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
-        }
-        cursor.close();
     }
 
     private void search() {
-
         switch (searchBy) {
             case "название сервиса":
                 searchByNameService();
@@ -297,74 +199,31 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
                 searchByWorkerName();
                 break;
         }
-
     }
 
     private void searchByNameService() {
         final String enteredText = searchLineInput.getText().toString().toLowerCase();
-        Query serviceQuery = FirebaseDatabase.getInstance().getReference(SERVICES)
-                .orderByChild(NAME)
-                .equalTo(enteredText);
-        serviceQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        final Search search = new Search(this);
+
+        Query usersQuery = FirebaseDatabase.getInstance().getReference(USERS);
+        if (city != TOWN) {
+            usersQuery = usersQuery.orderByChild(CITY).equalTo(city);
+        }
+
+        usersQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                final long servicesCount;
-                if(dataSnapshot.getValue() == null) {
+            public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
+                if (usersSnapshot.getValue() == null) {
                     attentionNothingFound();
                     return;
+                }
+
+                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, enteredText, null);
+                if (serviceList.isEmpty()) {
+                    attentionNothingFound();
                 } else {
-                    servicesCount = dataSnapshot.getChildrenCount();
-                    numberOfService = 0;
+                    addToScreen(serviceList);
                 }
-
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String serviceId = snapshot.getKey();
-                    String serviceUserId = String.valueOf(snapshot.child(USER_ID).getValue());
-                    String serviceCost = String.valueOf(snapshot.child(COST).getValue());
-                    String serviceDescription = String.valueOf(snapshot.child(DESCRIPTION).getValue());
-                    String serviceRating = String.valueOf(snapshot.child(RATING).getValue());
-                    String serviceCountOfRates = String.valueOf(snapshot.child(COUNT_OF_RATES).getValue());
-
-                    final Service service = new Service();
-                    service.setId(serviceId);
-                    service.setName(enteredText);
-                    service.setUserId(serviceUserId);
-                    service.setCost(serviceCost);
-                    service.setDescription(serviceDescription);
-
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference(USERS).child(serviceUserId);
-                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                            String userCity = String.valueOf(dataSnapshot.child(CITY).getValue());
-                            if (!city.equals("Город")) {
-                                if (!userCity.equals(city)) {
-                                    numberOfService++;
-                                    if(numberOfService == servicesCount) {
-                                        attentionNothingFound();
-                                    }
-                                    return;
-                                }
-                            }
-
-                            String userName = String.valueOf(dataSnapshot.child(NAME).getValue());
-
-                            User user = new User();
-                            user.setName(userName);
-                            user.setCity(userCity);
-
-                            updateServicesInLocalStorage(service);
-                            addToScreen(service, user);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            attentionBadConnection();
-                        }
-                    });
-                }
-
             }
 
             @Override
@@ -376,81 +235,31 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
     private void searchByWorkerName() {
         String enteredText = searchLineInput.getText().toString().toLowerCase();
+        final Search search = new Search(this);
+
         Query userQuery = FirebaseDatabase.getInstance().getReference(USERS)
                 .orderByChild(NAME)
                 .equalTo(enteredText);
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
 
-                final long usersCount;
-                if(dataSnapshot.getValue() == null) {
+                if(usersSnapshot.getValue() == null) {
                     attentionNothingFound();
                     return;
+                }
+
+                ArrayList<Object[]> serviceList;
+                if (city.equals(TOWN)) {
+                    serviceList = search.getServicesOfUsers(usersSnapshot,null, null);
                 } else {
-                    usersCount = dataSnapshot.getChildrenCount();
-                    numberOfUser = 0;
+                    serviceList = search.getServicesOfUsers(usersSnapshot,null, city);
                 }
-
-                for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String userCity = String.valueOf(snapshot.child(CITY).getValue());
-                    if (!city.equals("Город")) {
-                        if (!userCity.equals(city)) {
-                            numberOfUser++;
-                            if(numberOfUser == usersCount) {
-                                attentionNothingFound();
-                            }
-                            return;
-                        }
-                    }
-
-                    String userName = String.valueOf(snapshot.child(NAME).getValue());
-                    final String userId = snapshot.getKey();
-
-                    final User user = new User();
-                    user.setName(userName);
-                    user.setCity(userCity);
-
-                    Query serviceQuery = FirebaseDatabase.getInstance().getReference(SERVICES)
-                            .orderByChild(USER_ID)
-                            .equalTo(userId);
-                    serviceQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.getValue() == null) {
-                                numberOfUser++;
-                                if(numberOfUser == usersCount) {
-                                    attentionNothingFound();
-                                }
-                            }
-
-                            for(DataSnapshot serviceSnapshot:dataSnapshot.getChildren()) {
-                                String serviceId = serviceSnapshot.getKey();
-                                String serviceName = String.valueOf(serviceSnapshot.child(NAME).getValue());
-                                String serviceCost = String.valueOf(serviceSnapshot.child(COST).getValue());
-                                String serviceDescription = String.valueOf(serviceSnapshot.child(DESCRIPTION).getValue());
-                                String serviceRating = String.valueOf(serviceSnapshot.child(RATING).getValue());
-                                String serviceCountOfRates = String.valueOf(serviceSnapshot.child(COUNT_OF_RATES).getValue());
-
-                                final Service service = new Service();
-                                service.setId(serviceId);
-                                service.setName(serviceName);
-                                service.setUserId(userId);
-                                service.setCost(serviceCost);
-                                service.setDescription(serviceDescription);
-
-                                updateServicesInLocalStorage(service);
-                                addToScreen(service, user);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            attentionBadConnection();
-                        }
-                    });
+                if (serviceList.isEmpty()) {
+                    attentionNothingFound();
+                } else {
+                    addToScreen(serviceList);
                 }
-
             }
 
             @Override
@@ -461,11 +270,14 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     }
 
     // Вывод фрагмента сервиса на экран
-    private void addToScreen(Service service, User user) {
-        /*foundServiceElement fElement = new foundServiceElement(service, user);
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.resultSearchServiceLayout, fElement);
-        transaction.commit();*/
+    private void addToScreen(ArrayList<Object[]> serviceList) {
+
+        for (Object[] serviceData : serviceList) {
+            foundServiceElement fElement = new foundServiceElement((Service) serviceData[1], (User) serviceData[2]);
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.add(R.id.resultSearchServiceLayout, fElement);
+            transaction.commit();
+        }
     }
 
     private void attentionNothingFound() {
