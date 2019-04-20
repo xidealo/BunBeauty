@@ -51,7 +51,6 @@ public class DownloadServiceData {
 
     private WorkWithLocalStorageApi LSApi;
     private SQLiteDatabase localDatabase;
-
     public DownloadServiceData(SQLiteDatabase _database) {
         localDatabase = _database;
         LSApi = new WorkWithLocalStorageApi(localDatabase);
@@ -347,32 +346,6 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
             localDatabase.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
-    }
-
-    //время полученное по timeId больше 3 дней
-    private boolean isAfterWeek(String workingTimeId) {
-
-        String date  = LSApi.getDate(workingTimeId);
-        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
-        long dateMilliseconds = workWithTimeApi.getMillisecondsStringDate(date);
-        boolean isAfterWeek = (workWithTimeApi.getSysdateLong() - dateMilliseconds) > 604800000;
-
-        return isAfterWeek;
-    }
-
-    //ревью оставили 2 человека?
-    private boolean isMutualReview(DataSnapshot reviewsSnapshot) {
-        if(reviewsSnapshot.getChildrenCount()==0){
-            return false;
-        }
-        for (DataSnapshot reviewSnapshot : reviewsSnapshot.getChildren()) {
-            String rating = String.valueOf(reviewSnapshot.child(RATING).getValue());
-            //если хоть 1 оценка 0, то возвращаем false
-            if (rating.equals("0")) {
-                return false;
-            }
-        }
-        return true;
     }
 }
 

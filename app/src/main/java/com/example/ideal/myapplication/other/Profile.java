@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -24,6 +25,7 @@ import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
@@ -41,16 +43,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "DBInf";
     private static final String REVIEW_FOR_SERVICE = "review for service";
 
-    private static final String USER_ID = "user id";
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String ORDER_ID = "order_id";
 
-    private static final String SERVICES = "services";
-    private static final String NAME = "name";
-
-    private static final String USERS = "users";
+    private static final String STATUS = "status";
 
     private static final String SUBSCRIPTIONS = "подписки";
+    private static final String SUBSCRIBERS = "подписчики";
 
     private String userId;
     private String ownerId;
@@ -59,6 +58,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private TextView cityText;
     private TextView withoutRatingText;
 
+    private Button subscriptionsBtn;
     private Button subscribersBtn;
 
     private ScrollView servicesScroll;
@@ -81,6 +81,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         Button logOutBtn = findViewById(R.id.logOutProfileBtn);
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
+        subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn);
         subscribersBtn = findViewById(R.id.subscribersProfileBtn);
         avatarImage = findViewById(R.id.avatarProfileImage);
 
@@ -139,6 +140,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 }
             });
             addServicesBtn.setOnClickListener(this);
+            subscriptionsBtn.setOnClickListener(this);
             subscribersBtn.setOnClickListener(this);
         } else {
             // Не совпадает - чужой профиль
@@ -146,6 +148,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             // Скрываем функционал
             servicesOrOrdersSwitch.setVisibility(View.INVISIBLE);
             addServicesBtn.setVisibility(View.INVISIBLE);
+            subscriptionsBtn.setVisibility(View.INVISIBLE);
             subscribersBtn.setVisibility(View.INVISIBLE);
 
             // Отображаем все сервисы пользователя
@@ -171,8 +174,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 goToLogIn();
                 break;
 
+            case R.id.subscriptionsProfileBtn:
+                goToSubscribers(SUBSCRIPTIONS);
+                break;
             case R.id.subscribersProfileBtn:
-                goToSubscribers();
+                goToSubscribers(SUBSCRIBERS);
                 break;
 
             default:
@@ -301,8 +307,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         if(userId.equals(ownerId)){
             // если это мой сервис
             updateOrdersList(userId);
-            updateServicesList(userId);
-            
+
             // выводим кол-во подписок
             long subscriptionsCount = getCountOfSubscriptions();
             String btnText = SUBSCRIPTIONS;
@@ -310,11 +315,19 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             if (subscriptionsCount != 0) {
                 btnText += " (" + subscriptionsCount + ")";
             }
-            subscribersBtn.setText(btnText);
+            subscriptionsBtn.setText(btnText);
+            String subscribersBtnText = SUBSCRIBERS;
+            long subscribersCount = getCountOfSubscribers();
+
+            Log.d(TAG, "onResume: " + subscribersCount);
+            if(subscribersCount!=0){
+                subscribersBtnText += " (" + subscribersCount + ")";
+            }
+            subscribersBtn.setText(subscribersBtnText);
         }
-        else{
-            updateServicesList(ownerId);
-        }
+
+        updateServicesList(userId);
+
     }
 
     private long getCountOfSubscriptions() {
@@ -328,6 +341,19 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " WHERE " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_USER_ID + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
+        return cursor.getCount();
+    }
+
+    private long getCountOfSubscribers() {
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String sqlQuery =
+                "SELECT " + DBHelper.KEY_WORKER_ID
+                        + " FROM " + DBHelper.TABLE_SUBSCRIBERS
+                        + " WHERE " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_WORKER_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[] {ownerId});
         return cursor.getCount();
     }
 
@@ -400,7 +426,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
                 if(cursorWithReview.moveToFirst()){
                     int indexRating = cursorWithReview.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-                    int indexWorkingTimeId = cursorWithReview.getColumnIndex(DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID);
+                    int indexWorkingTimeId = cursorWithReview.getColumnIndex(DBHelper.KEY_ID);
                     int indexOrderId= cursorWithReview.getColumnIndex(ORDER_ID);
                     do {
                         String workingTimeId = cursorWithReview.getString(indexWorkingTimeId);
@@ -570,8 +596,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         startActivity(intent);
     }
   
-    private void goToSubscribers() {
+    private void goToSubscribers(String status) {
         Intent intent = new Intent(this, Subscribers.class);
+        intent.putExtra(STATUS, status);
         startActivity(intent);
     }
 

@@ -29,6 +29,8 @@ public class MyAuthorization {
     private static final String ORDERS = "orders";
     private static final String REVIEWS = "reviews";
     private static final String SUBSCRIPTIONS = "subscriptions";
+    private static final String SUBSCRIBERS = "subscribers";
+    private static final String USER_ID = "user id";
 
     private static final String PHONE = "phone";
     private static final String NAME = "name";
@@ -77,7 +79,8 @@ public class MyAuthorization {
 
                         // Добавляем подписки пользователя
                         loadUserSubscriptions(userSnapshot);
-
+                        //Добавляем подписчиков
+                        loadUserSubscribers(userSnapshot);
                         // Загружаем сервисы пользователя из FireBase
                         downloadServiceData.loadSchedule(
                                 userSnapshot.child(SERVICES),
@@ -146,6 +149,20 @@ public class MyAuthorization {
         }
     }
 
+    private void loadUserSubscribers(DataSnapshot userSnapshot) {
+
+        DataSnapshot subscriptionSnapshot = userSnapshot.child(SUBSCRIBERS);
+        for (DataSnapshot subSnapshot : subscriptionSnapshot.getChildren()) {
+            String id = subSnapshot.getKey();
+            String userId = String.valueOf(subSnapshot.child(USER_ID).getValue());
+
+            //если мы владелец старнички то только тогда загружаем инфу о наших подписчиках
+                loadUserById(userId);
+
+            addUserSubscriberInLocalStorage(id, userId);
+        }
+    }
+
     private void loadUserById(final String userId) {
 
         final DatabaseReference userRef = FirebaseDatabase.getInstance()
@@ -163,7 +180,6 @@ public class MyAuthorization {
                     downloadServiceData.loadUserInfo(userSnapshot);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -180,6 +196,15 @@ public class MyAuthorization {
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
     }
 
+    private void addUserSubscriberInLocalStorage(String id, String userId) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, id);
+        contentValues.put(DBHelper.KEY_USER_ID, userId);
+        contentValues.put(DBHelper.KEY_WORKER_ID, getUserId());
+        database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
+    }
+
     // Получается загружаем все, о человеке, с которым можем взаимодействовать из профиля, возможно в ордереде стоит хранить дату,
     // чтобы считать ее прсорочена она или нет и уже от этого делать onDataChange, если дата просрочена,
     // то мы никак через профиль не взаимодействуем с этим человеком
@@ -188,6 +213,7 @@ public class MyAuthorization {
         if(_ordersSnapshot.getChildrenCount() == 0) {
             goToProfile();
         }
+
 
         for(final DataSnapshot orderSnapshot: _ordersSnapshot.getChildren()) {
             //получаем "путь" к мастеру, на сервис которого мы записаны
@@ -218,6 +244,7 @@ public class MyAuthorization {
 
                 }
             });
+
         }
     }
 

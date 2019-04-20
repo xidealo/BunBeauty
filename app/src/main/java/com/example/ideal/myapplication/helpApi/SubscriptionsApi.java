@@ -46,7 +46,6 @@ public class SubscriptionsApi {
     public void subscribe() {
         createSubscriber();
         createSubscription();
-
     }
 
     private void createSubscriber() {
@@ -84,6 +83,7 @@ public class SubscriptionsApi {
     }
 
     public void unsubscribe() {
+        Log.d(TAG, "unsubscribe: ");
        deleteSubscription();
        deleteSubscriber();
     }
@@ -100,7 +100,7 @@ public class SubscriptionsApi {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot subscriptionsSnapshot) {
-
+                //если 0 значит мы отписываем подписчика
                 DataSnapshot subscriptionSnapshot = subscriptionsSnapshot.getChildren().iterator().next();
 
                     String subscriptionId = subscriptionSnapshot.getKey();
@@ -182,7 +182,7 @@ public class SubscriptionsApi {
             @Override
             public void onDataChange(@NonNull DataSnapshot subscribersSnapshot) {
                 String countOfSubs = String.valueOf(subscribersSnapshot.getChildrenCount());
-                countOfSubsText.setText(countOfSubs);
+                countOfSubsText.setText(countOfSubs + "countOfSubs");
                 countOfSubsText.setVisibility(View.VISIBLE);
             }
 
