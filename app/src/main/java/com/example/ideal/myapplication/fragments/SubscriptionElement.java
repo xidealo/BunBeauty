@@ -25,6 +25,7 @@ import com.example.ideal.myapplication.other.Profile;
 public class SubscriptionElement extends Fragment implements View.OnClickListener {
 
     final String OWNER_ID = "owner id";
+    private static final String SUBSCRIPTIONS = "подписки";
 
     private TextView nameText;
     private Button subscribeBtn;
@@ -32,11 +33,13 @@ public class SubscriptionElement extends Fragment implements View.OnClickListene
 
     private String workerId;
     private String workerName;
+    private boolean isSubscription;
 
     @SuppressLint("ValidFragment")
-    public SubscriptionElement(String _workerId, String _workerName) {
+    public SubscriptionElement(String _workerId, String _workerName, String status) {
         workerId = _workerId;
         workerName = _workerName;
+        isSubscription = status.equals(SUBSCRIPTIONS);
     }
 
     @Override
@@ -53,7 +56,13 @@ public class SubscriptionElement extends Fragment implements View.OnClickListene
 
         nameText.setOnClickListener(this);
         avatarImage.setOnClickListener(this);
-        subscribeBtn.setOnClickListener(this);
+        if(isSubscription) {
+            subscribeBtn.setOnClickListener(this);
+        }
+        else {
+            subscribeBtn.setVisibility(View.GONE);
+        }
+
         setData();
     }
 

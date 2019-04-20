@@ -18,10 +18,16 @@ import com.google.firebase.auth.FirebaseAuth;
 public class Subscribers extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
+    private static final String STATUS = "status";
+    private static final String SUBSCRIPTIONS = "подписки";
+    private static final String SUBSCRIBERS = "подписчики";
+
     private LinearLayout mainLayout;
     private TextView subsText;
 
     private DBHelper dbHelper;
+
+    private boolean isSubscription;
 
     private FragmentManager manager;
 
@@ -36,7 +42,9 @@ public class Subscribers extends AppCompatActivity {
         subsText = findViewById(R.id.subsCountSubscribersText);
 
         dbHelper = new DBHelper(this);
+        String status = getIntent().getStringExtra(STATUS);
 
+        isSubscription = status.equals(SUBSCRIPTIONS);
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
         panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
@@ -47,12 +55,19 @@ public class Subscribers extends AppCompatActivity {
         super.onResume();
 
         mainLayout.removeAllViews();
-        updateSubsText();
-        getMySubscribers();
+
+        if(isSubscription) {
+            updateSubscriptionText();
+            getMySubscriptions();
+        }
+        else {
+            updateSubscribersText();
+            getMySubscribers();
+        }
     }
 
-    private void updateSubsText() {
-        Cursor subsCursor = createSubsCursor();
+    private void updateSubscribersText() {
+        Cursor subsCursor = createSubscriberCursor();
         long subsCount = subsCursor.getCount();
         String subs = "У вас пока нет подписок";
         if (subsCount != 0) {
@@ -61,7 +76,55 @@ public class Subscribers extends AppCompatActivity {
         subsText.setText(subs);
     }
 
-    private Cursor createSubsCursor() {
+    private Cursor createSubscriberCursor() {
+        String userId = getUserId();
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String sqlQuery =
+                "SELECT " + DBHelper.KEY_USER_ID+ ", "
+                        + DBHelper.KEY_NAME_USERS
+                        + " FROM " + DBHelper.TABLE_CONTACTS_USERS + ", "
+                        + DBHelper.TABLE_SUBSCRIBERS
+                        + " WHERE "
+                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
+                        + " = "
+                        + DBHelper.KEY_USER_ID
+                        + " AND "
+                        + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_WORKER_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
+        return cursor;
+    }
+
+    private void getMySubscribers() {
+
+        Cursor subsCursor = createSubscriberCursor();
+
+        if(subsCursor.moveToFirst()) {
+            int indexSubId = subsCursor.getColumnIndex(DBHelper.KEY_USER_ID);
+            int indexSubName = subsCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
+
+            do {
+                String subId = subsCursor.getString(indexSubId);
+                String subName = subsCursor.getString(indexSubName);
+
+                addSubscriptionToScreen(subId, subName);
+            } while (subsCursor.moveToNext());
+        }
+    }
+
+    private void updateSubscriptionText() {
+        Cursor subsCursor = createSubscriptionCursor();
+        long subsCount = subsCursor.getCount();
+        String subs = "У вас пока нет подписок";
+        if (subsCount != 0) {
+            subs = "Подписки: " + subsCount;
+        }
+        subsText.setText(subs);
+    }
+
+    private Cursor createSubscriptionCursor() {
         String userId = getUserId();
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -82,8 +145,8 @@ public class Subscribers extends AppCompatActivity {
         return cursor;
     }
 
-    private void getMySubscribers() {
-        Cursor subsCursor = createSubsCursor();
+    private void getMySubscriptions() {
+        Cursor subsCursor = createSubscriptionCursor();
 
         if(subsCursor.moveToFirst()) {
             int indexWorkerId = subsCursor.getColumnIndex(DBHelper.KEY_WORKER_ID);
@@ -103,7 +166,14 @@ public class Subscribers extends AppCompatActivity {
     }
 
     private void addSubscriptionToScreen(String workerId, String workerName) {
-        SubscriptionElement subscriptionElement = new SubscriptionElement(workerId, workerName);
+        SubscriptionElement subscriptionElement;
+
+        if(isSubscription) {
+            subscriptionElement = new SubscriptionElement(workerId, workerName,SUBSCRIPTIONS);
+        }
+        else {
+            subscriptionElement = new SubscriptionElement(workerId, workerName,SUBSCRIBERS);
+        }
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.mainSubscribersLayout, subscriptionElement);
