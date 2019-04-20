@@ -3,6 +3,7 @@ package com.example.ideal.myapplication.fragments.foundElements;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,17 +42,19 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
     private String nameServiceString;
     private String costString;
     private String userId;
+    private boolean isPremium;
 
     @SuppressLint("ValidFragment")
-    public foundServiceElement(Float _avgRating, Service service, User user) {
+    public foundServiceElement(Service service, User user) {
         serviceId = service.getId();
         nameUserString = user.getName();
         cityString = user.getCity();
         nameServiceString = service.getName();
         costString = service.getCost();
         userId = user.getId();
+        isPremium = service.getIsPremium();
 
-        avgRating = _avgRating;
+        avgRating = service.getAverageRating();
     }
 
     @Override
@@ -65,6 +68,9 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         nameUserText = view.findViewById(R.id.userNameFoundServiceElementText);
         city = view.findViewById(R.id.cityFoundServiceElementText);
         nameServiceText = view.findViewById(R.id.serviceNameFoundServiceElementText);
+        if (isPremium) {
+            nameServiceText.setBackgroundColor(Color.YELLOW);
+        }
         costText = view.findViewById(R.id.costFoundServiceElementText);
         ratingBar = view.findViewById(R.id.ratingBarFondServiceElement);
         avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage);

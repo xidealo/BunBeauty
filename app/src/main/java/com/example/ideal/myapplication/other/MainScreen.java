@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -17,12 +18,16 @@ import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainScreen extends AppCompatActivity {
 
@@ -38,13 +43,15 @@ public class MainScreen extends AppCompatActivity {
     private static final String ORDER_ID = "order_id";
 
     private static final String SERVICES = "services";
+    private static final String MAX_COST = "max_cost";
+
+    private long maxCost;
+    private ArrayList<Object[]> serviceList;
 
     private LinearLayout resultsLayout;
 
-    private WorkWithLocalStorageApi workWithLocalStorageApi;
-
+    private WorkWithTimeApi workWithTimeApi;
     private DBHelper dbHelper;
-
     private FragmentManager manager;
 
     @Override
@@ -53,11 +60,13 @@ public class MainScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
 
-        manager = getSupportFragmentManager();
-
         resultsLayout = findViewById(R.id.resultsMainScreenLayout);
 
+        serviceList = new ArrayList<>();
+
         dbHelper = new DBHelper(this);
+        manager = getSupportFragmentManager();
+        workWithTimeApi = new WorkWithTimeApi();
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
@@ -70,8 +79,6 @@ public class MainScreen extends AppCompatActivity {
     private void createMainScreen(){
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-
         //получаем id пользователя
         String userId = getUserId();
 
@@ -80,8 +87,6 @@ public class MainScreen extends AppCompatActivity {
 
         //получаем все сервисы, которые находятся в городе юзера
         getServicesInThisCity(userCity);
-
-
     }
 
 
@@ -119,6 +124,8 @@ public class MainScreen extends AppCompatActivity {
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
+                maxCost = getMaxCost();
+
                 for (DataSnapshot userSnapshot : usersSnapshot.getChildren()) {
                     String userName = String.valueOf(userSnapshot.child(NAME).getValue());
                     String userPhone = String.valueOf(userSnapshot.child(PHONE).getValue());
@@ -136,6 +143,8 @@ public class MainScreen extends AppCompatActivity {
 
                     updateServicesList(user);
                 }
+
+                addToMainScreen();
             }
 
             @Override
@@ -165,34 +174,122 @@ public class MainScreen extends AppCompatActivity {
             int indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
             int indexServiceCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
-            do{
+            int indexServiceCreationDate = cursor.getColumnIndex(DBHelper.KEY_CREATION_DATE_SERVICES);
+            int indexServiceIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
+
+            do {
                 String serviceId = cursor.getString(indexServiceId);
                 String serviceName = cursor.getString(indexServiceName);
                 String serviceCost = cursor.getString(indexServiceCost);
+
+                boolean isPremium = Boolean.valueOf(cursor.getString(indexServiceIsPremium));
+                String creationDate = cursor.getString(indexServiceCreationDate);
+
                 Service service = new Service();
                 service.setId(serviceId);
                 service.setName(serviceName);
                 service.setCost(serviceCost);
+                service.setIsPremium(isPremium);
+                service.setCreationDate(creationDate);
+                service.setAverageRating(figureAverageRating(serviceId));
 
-                addToScreenOnMainScreen(service, user);
+                addToServiceList(service, user);
                 //пока в курсоре есть строки и есть новые сервисы
             }while (cursor.moveToNext());
         }
         cursor.close();
     }
 
-    private  String getUserId(){
+    private void addToServiceList(Service service, User user) {
+        HashMap<String, Float> coefs = new HashMap<>();
+        coefs.put("creation date", 0.25f);
+        coefs.put("cost", 0.07f);
+        coefs.put("rating", 0.68f);
+
+        float points, creationDatePoints, costPoints, ratingPoints;
+
+        boolean isPremium = service.getIsPremium();
+        if (isPremium) {
+            points = 1;
+            serviceList.add(0, new Object[]{points, service, user});
+        } else {
+            creationDatePoints = figureCreationDatePoints(service.getCreationDate(), coefs.get("creation date"));
+            costPoints = figureCostPoints(Long.valueOf(service.getCost()), coefs.get("cost"));
+            ratingPoints = figureRatingPoints(service.getAverageRating(), coefs.get("rating"));
+            points = creationDatePoints + costPoints + ratingPoints;
+            sortAddition(new Object[]{points, service, user});
+        }
+    }
+
+    private float figureCreationDatePoints(String creationDate, float coefficient) {
+        float creationDatePoints;
+
+        long dateBonus = (workWithTimeApi.getMillisecondsStringDate(creationDate) -
+                workWithTimeApi.getSysdateLong()) / (3600000*24) + 7;
+        if (dateBonus < 0) {
+            creationDatePoints = 0;
+        } else {
+            creationDatePoints = dateBonus * coefficient / 7;
+        }
+
+        return creationDatePoints;
+    }
+
+    private float figureCostPoints(long cost, float coefficient) {
+        return (1 - cost * 1f / maxCost) * coefficient;
+    }
+
+    private float figureRatingPoints(float rating, float coefficient) {
+        return rating * coefficient / 5;
+    }
+
+    private void sortAddition(Object[] serviceData) {
+        for (int i = 0; i < serviceList.size(); i++) {
+            if ((float)(serviceList.get(i)[0]) < (float)(serviceData[0])) {
+                serviceList.add(i, serviceData);
+                return;
+            }
+        }
+
+        serviceList.add(serviceList.size(), serviceData);
+    }
+
+    private void addToMainScreen() {
+        for (Object[] serviceData : serviceList) {
+            foundServiceElement fElement = new foundServiceElement((Service) serviceData[1], (User) serviceData[2]);
+
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.add(R.id.resultsMainScreenLayout, fElement);
+            transaction.commit();
+        }
+    }
+
+    private String getUserId(){
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    private void addToScreenOnMainScreen(Service service, User user) {
-
+    private long getMaxCost() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery =
                 "SELECT "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_MIN_COST_SERVICES + ", "
+                        + " MAX(" + DBHelper.KEY_MIN_COST_SERVICES + ") AS " + MAX_COST
+                        + " FROM "
+                        + DBHelper.TABLE_CONTACTS_SERVICES;
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{});
+
+        long maxCost = 0;
+        if (cursor.moveToFirst()) {
+            maxCost = Long.valueOf(cursor.getString(cursor.getColumnIndex(MAX_COST)));
+        }
+
+        return maxCost;
+    }
+
+    private float figureAverageRating (String serviceId) {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        String sqlQuery =
+                "SELECT "
                         + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
                         + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID + ", "
                         + DBHelper.KEY_RATING_REVIEWS
@@ -200,7 +297,6 @@ public class MainScreen extends AppCompatActivity {
                         + DBHelper.TABLE_WORKING_DAYS + ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
                         + DBHelper.TABLE_ORDERS + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
                         + DBHelper.TABLE_REVIEWS
                         + " WHERE "
                         + DBHelper.KEY_ORDER_ID_REVIEWS
@@ -215,21 +311,20 @@ public class MainScreen extends AppCompatActivity {
                         + " = "
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
                         + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = ? "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
                         + " AND "
                         + DBHelper.KEY_TYPE_REVIEWS + " = ? "
                         + " AND "
-                        + DBHelper.KEY_RATING_REVIEWS + " != 0 ";
+                        + DBHelper.KEY_RATING_REVIEWS + " != 0 "
+                        + " AND "
+                        + DBHelper.KEY_REVIEW_REVIEWS + " != '-'";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{service.getId(), REVIEW_FOR_SERVICE});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
         int countOfRates = 0;
         float avgRating  = 0;
         float sumOfRates = 0;
-        
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+
         if (cursor.moveToFirst()){
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
             int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.KEY_ID);
@@ -256,11 +351,7 @@ public class MainScreen extends AppCompatActivity {
             cursor.close();
         }
 
-        foundServiceElement fElement = new foundServiceElement(avgRating, service, user);
-
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.resultsMainScreenLayout, fElement);
-        transaction.commit();
+        return avgRating;
     }
 
     private void attentionBadConnection() {

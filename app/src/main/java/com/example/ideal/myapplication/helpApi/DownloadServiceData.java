@@ -24,6 +24,8 @@ public class DownloadServiceData {
     private static final String COST = "cost";
     private static final String USER_ID = "user id";
     private static final String USERS = "users";
+    private static final String IS_PREMIUM = "is premium";
+    private static final String CREATION_DATE = "creation date";
 
     private static final String TIME = "time";
     private static final String WORKING_DAYS = "working days";
@@ -44,12 +46,11 @@ public class DownloadServiceData {
     //PHOTOS
     private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
+
     private static final String IS_CANCELED = "is canceled";
 
     private WorkWithLocalStorageApi LSApi;
     private SQLiteDatabase localDatabase;
-
-
     public DownloadServiceData(SQLiteDatabase _database) {
         localDatabase = _database;
         LSApi = new WorkWithLocalStorageApi(localDatabase);
@@ -274,6 +275,8 @@ public class DownloadServiceData {
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, String.valueOf(serviceSnapshot.child(DESCRIPTION).getValue()));
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, String.valueOf(serviceSnapshot.child(COST).getValue()));
+        contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, String.valueOf(serviceSnapshot.child(IS_PREMIUM).getValue()));
+        contentValues.put(DBHelper.KEY_CREATION_DATE_SERVICES, String.valueOf(serviceSnapshot.child(CREATION_DATE).getValue()));
 
         boolean hasSomeData =  LSApi
                 .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
