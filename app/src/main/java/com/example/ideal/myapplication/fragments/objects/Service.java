@@ -7,6 +7,7 @@ public class Service {
     private String description;
     private String cost;
     private String userId;
+    private String category;
     private boolean isPremium;
     private String creationDate;
     private float averageRating;
@@ -79,5 +80,14 @@ public class Service {
         return true;
     }
 
+    //категория
 
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getCategory() {
+        return category;
+    }
 }

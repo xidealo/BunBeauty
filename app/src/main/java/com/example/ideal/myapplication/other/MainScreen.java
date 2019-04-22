@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -29,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainScreen extends AppCompatActivity {
+public class MainScreen extends AppCompatActivity implements View.OnClickListener {
 
     // добавить, чтобы не было видно своих сервисов
     // например номер юзера, возвращаемого сервиса не должен быть равен локальному
@@ -53,6 +55,12 @@ public class MainScreen extends AppCompatActivity {
     private WorkWithTimeApi workWithTimeApi;
     private DBHelper dbHelper;
     private FragmentManager manager;
+    private Button nailsBtn;
+    private Button hairBtn;
+    private Button eyeBtn;
+    private Button makeUpBtn;
+    private Button massageBtn;
+    private Button otherBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,25 +80,105 @@ public class MainScreen extends AppCompatActivity {
         panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
         panelBuilder.buildHeader(manager, "Главная", R.id.headerMainScreenLayout);
 
+        nailsBtn = findViewById(R.id.nailsMainScreenBtn);
 
-        createMainScreen();
+        hairBtn = findViewById(R.id.hairMainScreenBtn);
+
+        eyeBtn = findViewById(R.id.eyeMainScreenBtn);
+
+        makeUpBtn = findViewById(R.id.makeUpMainScreenBtn);
+
+        massageBtn = findViewById(R.id.massageMainScreenBtn);
+
+        otherBtn = findViewById(R.id.otherMainScreenBtn);
+
+        nailsBtn.setOnClickListener(this);
+        eyeBtn.setOnClickListener(this);
+        hairBtn.setOnClickListener(this);
+        makeUpBtn.setOnClickListener(this);
+        massageBtn.setOnClickListener(this);
+        otherBtn.setOnClickListener(this);
+
+        nailsBtn.setTag(R.string.selectedId, false);
+        hairBtn.setTag(R.string.selectedId, false);
+        eyeBtn.setTag(R.string.selectedId, false);
+        makeUpBtn.setTag(R.string.selectedId, false);
+        massageBtn.setTag(R.string.selectedId, false);
+        otherBtn.setTag(R.string.selectedId, false);
+
+        createMainScreen("");
     }
 
-    private void createMainScreen(){
+    @Override
+    public void onClick(View v) {
+        String category = "";
+
+        //очищаем прежний сервис лист
+        serviceList.clear();
+        Button btn = (Button) v;
+
+        if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
+            btn.setBackgroundResource(R.drawable.time_button);
+            btn.setTag(R.string.selectedId, false);
+            category = "";
+        } else {
+
+            nailsBtn.setTag(R.string.selectedId, false);
+            hairBtn.setTag(R.string.selectedId, false);
+            eyeBtn.setTag(R.string.selectedId, false);
+            makeUpBtn.setTag(R.string.selectedId, false);
+            massageBtn.setTag(R.string.selectedId, false);
+            otherBtn.setTag(R.string.selectedId, false);
+            nailsBtn.setBackgroundResource(R.drawable.day_button);
+            hairBtn.setBackgroundResource(R.drawable.day_button);
+            eyeBtn.setBackgroundResource(R.drawable.day_button);
+            makeUpBtn.setBackgroundResource(R.drawable.day_button);
+            massageBtn.setBackgroundResource(R.drawable.day_button);
+            otherBtn.setBackgroundResource(R.drawable.day_button);
+            btn.setBackgroundResource(R.drawable.pressed_button);
+
+            btn.setTag(R.string.selectedId, true);
+
+            switch (v.getId()) {
+                case R.id.nailsMainScreenBtn:
+                    category = nailsBtn.getText().toString();
+                    break;
+                case R.id.hairMainScreenBtn:
+                    category = hairBtn.getText().toString();
+                    break;
+                case R.id.eyeMainScreenBtn:
+                    category = eyeBtn.getText().toString();
+                    break;
+                case R.id.makeUpMainScreenBtn:
+                    category = makeUpBtn.getText().toString();
+                    break;
+                case R.id.massageMainScreenBtn:
+                    category = massageBtn.getText().toString();
+                    break;
+                case R.id.otherMainScreenBtn:
+                    category = otherBtn.getText().toString();
+                    break;
+            }
+        }
+
+        createMainScreen(category);
+    }
+
+    private void createMainScreen(String category) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         //получаем id пользователя
         String userId = getUserId();
 
         //получаем город юзера
-        String userCity = getUserCity(database,userId);
+        String userCity = getUserCity(database, userId);
 
         //получаем все сервисы, которые находятся в городе юзера
-        getServicesInThisCity(userCity);
+        getServicesInThisCity(userCity, category);
     }
 
 
-    private String getUserCity(SQLiteDatabase database,String userId){
+    private String getUserCity(SQLiteDatabase database, String userId) {
         // Получить город юзера
         // Таблица Users
         // с фиксированным userId
@@ -99,20 +187,20 @@ public class MainScreen extends AppCompatActivity {
                         + " FROM " + DBHelper.TABLE_CONTACTS_USERS
                         + " WHERE " + DBHelper.KEY_ID + " = ?";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
 
         int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
         // дефолтное значение
-        String city="Dubna";
+        String city = "Dubna";
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             city = cursor.getString(indexCity);
         }
         cursor.close();
         return city;
     }
 
-    private  void getServicesInThisCity(final String userCity) {
+    private void getServicesInThisCity(final String userCity, final String category) {
 
         final SQLiteDatabase database = dbHelper.getReadableDatabase();
 
@@ -125,7 +213,6 @@ public class MainScreen extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
                 maxCost = getMaxCost();
-
                 for (DataSnapshot userSnapshot : usersSnapshot.getChildren()) {
                     String userName = String.valueOf(userSnapshot.child(NAME).getValue());
                     String userPhone = String.valueOf(userSnapshot.child(PHONE).getValue());
@@ -141,7 +228,7 @@ public class MainScreen extends AppCompatActivity {
                     downloadServiceData.loadUserInfo(userSnapshot);
                     downloadServiceData.loadSchedule(userSnapshot.child(SERVICES), userId);
 
-                    updateServicesList(user);
+                    updateServicesList(user, category);
                 }
 
                 addToMainScreen();
@@ -154,23 +241,35 @@ public class MainScreen extends AppCompatActivity {
         });
     }
 
-    private void updateServicesList(User user) {
+    private void updateServicesList(User user, String category) {
         //количество сервисов отображаемых на данный момент(старых)
         resultsLayout.removeAllViews();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-
+        String sqlQuery;
+        Cursor cursor;
         // Возвращает id, название, рэйтинг и количество оценивших
         // используем таблицу сервисы
         // уточняем юзера по его id
-        String sqlQuery =
-                "SELECT * FROM "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
-                        + " WHERE "
-                        + DBHelper.KEY_USER_ID + " = ? ";
+        if (category.equals("")) {
+            sqlQuery =
+                    "SELECT * FROM "
+                            + DBHelper.TABLE_CONTACTS_SERVICES
+                            + " WHERE "
+                            + DBHelper.KEY_USER_ID + " = ? ";
+            cursor = database.rawQuery(sqlQuery, new String[]{user.getId()});
+        } else {
+            sqlQuery =
+                    "SELECT * FROM "
+                            + DBHelper.TABLE_CONTACTS_SERVICES
+                            + " WHERE "
+                            + DBHelper.KEY_USER_ID + " = ? "
+                            + " AND "
+                            + DBHelper.KEY_CATEGORY_SERVICES + " = ? ";
+            cursor = database.rawQuery(sqlQuery, new String[]{user.getId(), category});
+        }
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{user.getId()});
         //Идём с конца
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             int indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
             int indexServiceCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
@@ -195,7 +294,7 @@ public class MainScreen extends AppCompatActivity {
 
                 addToServiceList(service, user);
                 //пока в курсоре есть строки и есть новые сервисы
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
         cursor.close();
     }
@@ -225,7 +324,7 @@ public class MainScreen extends AppCompatActivity {
         float creationDatePoints;
 
         long dateBonus = (workWithTimeApi.getMillisecondsStringDate(creationDate) -
-                workWithTimeApi.getSysdateLong()) / (3600000*24) + 7;
+                workWithTimeApi.getSysdateLong()) / (3600000 * 24) + 7;
         if (dateBonus < 0) {
             creationDatePoints = 0;
         } else {
@@ -245,7 +344,7 @@ public class MainScreen extends AppCompatActivity {
 
     private void sortAddition(Object[] serviceData) {
         for (int i = 0; i < serviceList.size(); i++) {
-            if ((float)(serviceList.get(i)[0]) < (float)(serviceData[0])) {
+            if ((float) (serviceList.get(i)[0]) < (float) (serviceData[0])) {
                 serviceList.add(i, serviceData);
                 return;
             }
@@ -264,7 +363,7 @@ public class MainScreen extends AppCompatActivity {
         }
     }
 
-    private String getUserId(){
+    private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
@@ -282,11 +381,11 @@ public class MainScreen extends AppCompatActivity {
         if (cursor.moveToFirst()) {
             maxCost = Long.valueOf(cursor.getString(cursor.getColumnIndex(MAX_COST)));
         }
-
+        cursor.close();
         return maxCost;
     }
 
-    private float figureAverageRating (String serviceId) {
+    private float figureAverageRating(String serviceId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery =
                 "SELECT "
@@ -321,31 +420,30 @@ public class MainScreen extends AppCompatActivity {
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
         int countOfRates = 0;
-        float avgRating  = 0;
+        float avgRating = 0;
         float sumOfRates = 0;
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId= cursor.getColumnIndex(ORDER_ID);
+            int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 String orderId = cursor.getString(indexOrderId);
 
-                if(workWithLocalStorageApi.isMutualReview(orderId)) {
+                if (workWithLocalStorageApi.isMutualReview(orderId)) {
                     sumOfRates += Float.valueOf(cursor.getString(indexRating));
                     countOfRates++;
-                }
-                else {
-                    if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
+                } else {
+                    if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
                         sumOfRates += Float.valueOf(cursor.getString(indexRating));
                         countOfRates++;
                     }
                 }
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
 
-            if(countOfRates!=0){
+            if (countOfRates != 0) {
                 avgRating = sumOfRates / countOfRates;
             }
             cursor.close();
@@ -355,6 +453,6 @@ public class MainScreen extends AppCompatActivity {
     }
 
     private void attentionBadConnection() {
-        Toast.makeText(this,"Плохое соединение",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Плохое соединение", Toast.LENGTH_SHORT).show();
     }
 }

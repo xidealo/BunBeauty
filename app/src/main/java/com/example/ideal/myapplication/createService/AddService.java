@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -56,6 +57,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String SERVICE_PHOTO = "service photo";
     private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
+    private static final String CATEGORY = "category";
 
     private EditText nameServiceInput;
     private EditText costAddServiceInput;
@@ -64,6 +66,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private ArrayList<Uri> fpath;
 
     private FragmentManager manager;
+    private Spinner categorySpinner;
 
     private DBHelper dbHelper;
 
@@ -71,13 +74,18 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_service);
+        init();
+    }
 
+    private void init(){
         Button addServicesBtn = findViewById(R.id.addServiceAddServiceBtn);
 
         nameServiceInput = findViewById(R.id.nameAddServiceInput);
         costAddServiceInput = findViewById(R.id.costAddServiceInput);
         descriptionServiceInput = findViewById(R.id.descriptionAddServiceInput);
         ImageView serviceImage = findViewById(R.id.servicePhotoAddServiceImage);
+        categorySpinner = findViewById(R.id.categoryAddServiceSpinner);
+
 
         manager = getSupportFragmentManager();
         PanelBuilder panelBuilder = new PanelBuilder();
@@ -90,7 +98,6 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         addServicesBtn.setOnClickListener(this);
         serviceImage.setOnClickListener(this);
     }
-
     @Override
     public void onClick(View v){
         switch (v.getId()){
@@ -115,8 +122,18 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                         break;
                     }
 
+                    String category = categorySpinner.getSelectedItem().toString();
+
+                    if(category.equals("Выбрать категорию")){
+                        Toast.makeText(
+                                this,
+                                "Не выбрана категория ",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    }
                     service.setIsPremium(false);
                     service.setUserId(getUserId());
+                    service.setCategory(category);
                     uploadService(service);
                 }
                 else {
@@ -142,6 +159,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         items.put(COST,service.getCost());
         items.put(DESCRIPTION,service.getDescription());
         items.put(IS_PREMIUM,service.getIsPremium());
+        items.put(CATEGORY,service.getCategory());
 
         items.put(CREATION_DATE,workWithTimeApi.getDateInFormatYMDHMS(new Date()));
         String serviceId =  serviceRef.push().getKey();
@@ -167,6 +185,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
         contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
+        contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, service.getCategory());
 
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES,null,contentValues);
         goToMyCalendar(getString(R.string.status_worker),service.getId());
