@@ -46,6 +46,8 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     private Button massageBtn;
     private Button otherBtn;
 
+    private LinearLayout resultLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -54,6 +56,8 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
 
         dbHelper = new DBHelper(this);
         manager = getSupportFragmentManager();
+
+        resultLayout = findViewById(R.id.resultsMainScreenLayout);
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
@@ -70,6 +74,8 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         massageBtn = findViewById(R.id.massageMainScreenBtn);
 
         otherBtn = findViewById(R.id.otherMainScreenBtn);
+
+
 
         nailsBtn.setOnClickListener(this);
         eyeBtn.setOnClickListener(this);
@@ -91,9 +97,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         String category = "";
-
-        //очищаем прежний сервис лист
-        serviceList.clear();
         Button btn = (Button) v;
 
         if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
@@ -143,7 +146,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     }
 
     private void createMainScreen(String category) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
         //получаем id пользователя
         String userId = getUserId();
 
@@ -180,7 +182,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
   
     private void getServicesInThisCity(final String userCity, final String category) {
 
-        final SQLiteDatabase database = dbHelper.getReadableDatabase();
+        final Search search = new Search(this);
 
         //возвращение всех пользователей из контретного города
         Query userQuery = FirebaseDatabase.getInstance().getReference(USERS)
@@ -203,6 +205,8 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     }
 
     private void addToMainScreen(ArrayList<Object[]> serviceList) {
+        resultLayout.removeAllViews();
+
         for (Object[] serviceData : serviceList) {
             foundServiceElement fElement = new foundServiceElement((Service) serviceData[1], (User) serviceData[2]);
 
