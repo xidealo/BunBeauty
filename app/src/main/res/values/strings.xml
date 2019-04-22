@@ -45,7 +45,7 @@
 
     //array for spinner
     <string-array name="cities">
-        <item>Город</item>
+        <item>Не выбран</item>
         <item>dubna</item>
         <item>dmitrov</item>
         <item>taldom</item>

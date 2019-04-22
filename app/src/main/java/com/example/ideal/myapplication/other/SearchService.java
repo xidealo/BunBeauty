@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,10 +43,10 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     private static final String NAME = "name";
     private static final String CITY = "city";
 
-    private static final String TOWN = "Город";
+    private static final String NOT_CHOSEN = "Не выбран";
     private static final String NAME_OF_SERVICE = "Название сервиса";
 
-    String city = TOWN;
+    String city = NOT_CHOSEN;
     String searchBy = NAME_OF_SERVICE;
 
     Button findBtn;
@@ -59,7 +60,6 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     LinearLayout resultLayout;
 
     DBHelper dbHelper;
-    SharedPreferences sPref;
     private FragmentManager manager;
 
     @Override
@@ -78,13 +78,14 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
         //создаём выпадающее меню на основе массива городов
         citySpinner = findViewById(R.id.citySearchServiceSpinner);
-        citySpinner.setPrompt(TOWN);
+        citySpinner.setPrompt(NOT_CHOSEN);
         ArrayAdapter<?> cityAdapter = ArrayAdapter.createFromResource(this, R.array.cities, android.R.layout.simple_spinner_item);
         citySpinner.setAdapter(cityAdapter);
 
         //создаём выпадающее меню "Поиск по"
         searchBySpinner = findViewById(R.id.searchBySearchServiceSpinner);
         searchBySpinner.setPrompt(NAME_OF_SERVICE);
+        Log.d(TAG, "onCreate: " + NAME_OF_SERVICE);
         ArrayAdapter<?> searchByAdapter = ArrayAdapter.createFromResource(this, R.array.searchBy, android.R.layout.simple_spinner_item);
         searchBySpinner.setAdapter(searchByAdapter);
 
@@ -140,7 +141,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
     // Получает id пользователя
     private String getUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     //Получает город пользователя
@@ -206,7 +207,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
         final Search search = new Search(this);
 
         Query usersQuery = FirebaseDatabase.getInstance().getReference(USERS);
-        if (city != TOWN) {
+        if (!city.equals(NOT_CHOSEN)) {
             usersQuery = usersQuery.orderByChild(CITY).equalTo(city);
         }
 
@@ -250,11 +251,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
                 }
 
                 ArrayList<Object[]> serviceList;
-                if (city.equals(TOWN)) {
-                    serviceList = search.getServicesOfUsers(usersSnapshot,null, null);
-                } else {
-                    serviceList = search.getServicesOfUsers(usersSnapshot,null, city);
-                }
+                serviceList = search.getServicesOfUsers(usersSnapshot,null, city);
                 if (serviceList.isEmpty()) {
                     attentionNothingFound();
                 } else {
