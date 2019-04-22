@@ -18,45 +18,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/nailsMainScreenBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ногти"
-                android:layout_marginRight="10dp"/>
-
-            <Button
-                android:id="@+id/hairMainScreenBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="волосы" />
-            <Button
-                android:id="@+id/eyeMainScreenBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="глаза"
-                android:layout_marginRight="10dp"/>
-            <Button
-                android:id="@+id/makeUpMainScreenBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="визаж"
-                android:layout_marginRight="10dp"/>
-            <Button
-                android:id="@+id/massageMainScreenBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="массаж"
-                android:layout_marginRight="10dp"/>
-            <Button
-                android:id="@+id/otherMainScreenBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="остальное"
-                android:layout_marginRight="10dp"/>
-
         </LinearLayout>
     </HorizontalScrollView>
 
