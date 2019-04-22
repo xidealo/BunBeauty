@@ -40,7 +40,7 @@ public class Search {
     }
 
     // загружаем услуги мастеров мастеров в LocalStorage
-    public ArrayList<Object[]> getServicesOfUsers(DataSnapshot usersSnapshot, String serviceName, String city) {
+    public ArrayList<Object[]> getServicesOfUsers(DataSnapshot usersSnapshot, String serviceName, String city, String category) {
         serviceList.clear();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
@@ -53,13 +53,13 @@ public class Search {
                 downloadServiceData.loadSchedule(userSnapshot.child(SERVICES), userSnapshot.getKey());
             }
         }
-        updateServicesList(serviceName, city);
+        updateServicesList(serviceName, city, category);
 
         return serviceList;
     }
 
     // Кладём услуги мастеров в список
-    private void updateServicesList(String _serviceName, String _city) {
+    private void updateServicesList(String _serviceName, String _city, String _category) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         maxCost = getMaxCost();
 
@@ -71,6 +71,11 @@ public class Search {
         String cityCondition = "";
         if (_city != null && _city.equals("Не выбран")) {
             cityCondition = " AND " + DBHelper.KEY_CITY_USERS + " = '" + _city + "' ";
+        }
+
+        String categoryCondition = "";
+        if (_category != null && !_category.equals("")) {
+            categoryCondition = " AND " + DBHelper.KEY_CATEGORY_SERVICES + " = '" + _category + "' ";
         }
 
         // Возвращает id, название, рэйтинг и количество оценивших
@@ -86,7 +91,8 @@ public class Search {
                         + DBHelper.KEY_USER_ID + " = "
                         + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
                         + serviceNameCondition
-                        + cityCondition;
+                        + cityCondition
+                        + categoryCondition;
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{});
 

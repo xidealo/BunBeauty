@@ -179,7 +179,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
-                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null);
+                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null, null);
                 addToScreen(serviceList);
             }
 
@@ -219,7 +219,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
                     return;
                 }
 
-                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, enteredText, null);
+                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, enteredText, null, null);
                 if (serviceList.isEmpty()) {
                     attentionNothingFound();
                 } else {
@@ -251,7 +251,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
                 }
 
                 ArrayList<Object[]> serviceList;
-                serviceList = search.getServicesOfUsers(usersSnapshot,null, city);
+                serviceList = search.getServicesOfUsers(usersSnapshot,null, city, null);
                 if (serviceList.isEmpty()) {
                     attentionNothingFound();
                 } else {
@@ -268,6 +268,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
     // Вывод фрагмента сервиса на экран
     private void addToScreen(ArrayList<Object[]> serviceList) {
+        resultLayout.removeAllViews();
 
         for (Object[] serviceData : serviceList) {
             foundServiceElement fElement = new foundServiceElement((Service) serviceData[1], (User) serviceData[2]);
