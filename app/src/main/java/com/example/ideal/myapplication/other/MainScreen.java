@@ -39,7 +39,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
 
     private DBHelper dbHelper;
     private FragmentManager manager;
-
+  
     private Button [] categoriesBtns;
     private String [] categories;
     private  LinearLayout categoryLayout;
@@ -61,13 +61,14 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
         panelBuilder.buildHeader(manager, "Главная", R.id.headerMainScreenLayout);
+        categoryMainScreenLayout = findViewById(R.id.categoryMainScreenLayout);
 
         categoriesBtns = new Button[6];
         categories = new String[]{"ногти", "волосы", "глаза", "визаж", "массаж", "остальные"};
 
         createCategoryFeed();
-
         createMainScreen("");
+
     }
 
     @Override
@@ -87,9 +88,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
             }
 
             btn.setBackgroundResource(R.drawable.pressed_button);
-
             btn.setTag(R.string.selectedId, true);
-
             category = btn.getText().toString();
         }
 
