@@ -55,12 +55,9 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     private WorkWithTimeApi workWithTimeApi;
     private DBHelper dbHelper;
     private FragmentManager manager;
-    private Button nailsBtn;
-    private Button hairBtn;
-    private Button eyeBtn;
-    private Button makeUpBtn;
-    private Button massageBtn;
-    private Button otherBtn;
+    private Button [] categoriesBtns;
+    private String [] categories;
+    private  LinearLayout categoryMainScreenLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,39 +76,19 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
         panelBuilder.buildHeader(manager, "Главная", R.id.headerMainScreenLayout);
+        categoryMainScreenLayout = findViewById(R.id.categoryMainScreenLayout);
 
-        nailsBtn = findViewById(R.id.nailsMainScreenBtn);
+        categoriesBtns = new Button[6];
+        categories = new String[]{"ногти", "волосы", "глаза", "визаж", "массаж", "остальные"};
 
-        hairBtn = findViewById(R.id.hairMainScreenBtn);
-
-        eyeBtn = findViewById(R.id.eyeMainScreenBtn);
-
-        makeUpBtn = findViewById(R.id.makeUpMainScreenBtn);
-
-        massageBtn = findViewById(R.id.massageMainScreenBtn);
-
-        otherBtn = findViewById(R.id.otherMainScreenBtn);
-
-        nailsBtn.setOnClickListener(this);
-        eyeBtn.setOnClickListener(this);
-        hairBtn.setOnClickListener(this);
-        makeUpBtn.setOnClickListener(this);
-        massageBtn.setOnClickListener(this);
-        otherBtn.setOnClickListener(this);
-
-        nailsBtn.setTag(R.string.selectedId, false);
-        hairBtn.setTag(R.string.selectedId, false);
-        eyeBtn.setTag(R.string.selectedId, false);
-        makeUpBtn.setTag(R.string.selectedId, false);
-        massageBtn.setTag(R.string.selectedId, false);
-        otherBtn.setTag(R.string.selectedId, false);
-
+        createCategoryFeed();
         createMainScreen("");
+
     }
 
     @Override
     public void onClick(View v) {
-        String category = "";
+        String category;
 
         //очищаем прежний сервис лист
         serviceList.clear();
@@ -122,48 +99,32 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
             btn.setTag(R.string.selectedId, false);
             category = "";
         } else {
-
-            nailsBtn.setTag(R.string.selectedId, false);
-            hairBtn.setTag(R.string.selectedId, false);
-            eyeBtn.setTag(R.string.selectedId, false);
-            makeUpBtn.setTag(R.string.selectedId, false);
-            massageBtn.setTag(R.string.selectedId, false);
-            otherBtn.setTag(R.string.selectedId, false);
-            nailsBtn.setBackgroundResource(R.drawable.day_button);
-            hairBtn.setBackgroundResource(R.drawable.day_button);
-            eyeBtn.setBackgroundResource(R.drawable.day_button);
-            makeUpBtn.setBackgroundResource(R.drawable.day_button);
-            massageBtn.setBackgroundResource(R.drawable.day_button);
-            otherBtn.setBackgroundResource(R.drawable.day_button);
-            btn.setBackgroundResource(R.drawable.pressed_button);
-
-            btn.setTag(R.string.selectedId, true);
-
-            switch (v.getId()) {
-                case R.id.nailsMainScreenBtn:
-                    category = nailsBtn.getText().toString();
-                    break;
-                case R.id.hairMainScreenBtn:
-                    category = hairBtn.getText().toString();
-                    break;
-                case R.id.eyeMainScreenBtn:
-                    category = eyeBtn.getText().toString();
-                    break;
-                case R.id.makeUpMainScreenBtn:
-                    category = makeUpBtn.getText().toString();
-                    break;
-                case R.id.massageMainScreenBtn:
-                    category = massageBtn.getText().toString();
-                    break;
-                case R.id.otherMainScreenBtn:
-                    category = otherBtn.getText().toString();
-                    break;
+            //for чтобы все сделать неактивынми
+            for (Button categoriesBtn : categoriesBtns) {
+                categoriesBtn.setTag(R.string.selectedId, false);
+                categoriesBtn.setBackgroundResource(R.drawable.day_button);
             }
+
+            btn.setBackgroundResource(R.drawable.pressed_button);
+            btn.setTag(R.string.selectedId, true);
+            category  = btn.getText().toString();
         }
 
         createMainScreen(category);
     }
 
+    private  void createCategoryFeed(){
+        for(int i =0 ;i<categoriesBtns.length; i++){
+            categoriesBtns[i] = new Button(this);
+            categoriesBtns[i].setWidth(50);
+            categoriesBtns[i].setHeight(30);
+            categoriesBtns[i].setTag(R.string.selectedId,false);
+            categoriesBtns[i].setOnClickListener(this);
+            categoriesBtns[i].setText(categories[i]);
+
+            categoryMainScreenLayout.addView(categoriesBtns[i]);
+        }
+    }
     private void createMainScreen(String category) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
