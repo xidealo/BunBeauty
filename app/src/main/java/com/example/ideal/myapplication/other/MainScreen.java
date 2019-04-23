@@ -61,7 +61,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
         panelBuilder.buildHeader(manager, "Главная", R.id.headerMainScreenLayout);
-        categoryMainScreenLayout = findViewById(R.id.categoryMainScreenLayout);
+        categoryLayout = findViewById(R.id.categoryMainScreenLayout);
 
         categoriesBtns = new Button[6];
         categories = new String[]{"ногти", "волосы", "глаза", "визаж", "массаж", "остальные"};
