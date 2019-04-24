@@ -47,6 +47,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private TextView nameText;
     private TextView costText;
+    private TextView addressText;
     private TextView withoutRatingText;
     private ProgressBar progressBar;
     private TextView descriptionText;
@@ -73,6 +74,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private void init(){
         nameText = findViewById(R.id.nameGuestServiceText);
         costText = findViewById(R.id.costGuestServiceText);
+        addressText = findViewById(R.id.addressGuestServiceText);
         descriptionText = findViewById(R.id.descriptionGuestServiceText);
         withoutRatingText = findViewById(R.id.withoutRatingText);
 
@@ -159,12 +161,14 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexMinCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
             int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
             int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+            int indexAddress = cursor.getColumnIndex(DBHelper.KEY_ADDRESS_SERVICES);
 
             ownerId = cursor.getString(indexUserId);
 
             nameText.setText(cursor.getString(indexName));
             costText.setText(cursor.getString(indexMinCost));
             descriptionText.setText(cursor.getString(indexDescription));
+            addressText.setText(cursor.getString(indexAddress));
             serviceName = cursor.getString(indexName);
         }
         cursor.close();
@@ -355,6 +359,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        getInfoAboutService(serviceId);
         imageFeedLayout.removeAllViews();
         setPhotoFeed(serviceId);
     }

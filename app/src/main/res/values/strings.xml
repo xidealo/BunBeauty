@@ -66,6 +66,14 @@
         <item>массаж</item>
     </string-array>
 
+    <string-array name="categoryForEditService">
+        <item>ногти</item>
+        <item>волосы</item>
+        <item>глаза</item>
+        <item>визаж</item>
+        <item>массаж</item>
+    </string-array>
+
     <string name="title_activity_picked_comment">PickedComment</string>
     <string name="saveData">Сохранить данные</string>
     <string name="subscribed"><![CDATA[<B]]></string>
