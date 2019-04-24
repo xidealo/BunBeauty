@@ -98,8 +98,8 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     private  void createCategoryFeed(){
         for(int i =0 ;i<categoriesBtns.length; i++){
             categoriesBtns[i] = new Button(this);
-            categoriesBtns[i].setWidth(50);
-            categoriesBtns[i].setHeight(30);
+            categoriesBtns[i].setWidth(80);
+            categoriesBtns[i].setHeight(40);
             categoriesBtns[i].setTag(R.string.selectedId,false);
             categoriesBtns[i].setOnClickListener(this);
             categoriesBtns[i].setText(categories[i]);

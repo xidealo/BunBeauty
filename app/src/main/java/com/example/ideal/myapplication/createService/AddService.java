@@ -316,11 +316,15 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     }
 
     private void goToMyCalendar(String status, String serviceId) {
+        attentionAllDone();
         Intent intent = new Intent(this, MyCalendar.class);
         intent.putExtra(SERVICE_ID, serviceId);
         intent.putExtra(STATUS_USER_BY_SERVICE, status);
 
         startActivity(intent);
         finish();
+    }
+    private void attentionAllDone() {
+        Toast.makeText(this, "Сирвис успешно создан", Toast.LENGTH_SHORT).show();
     }
 }
