@@ -53,41 +53,17 @@ import java.util.Map;
 
 public class EditService extends AppCompatActivity implements View.OnClickListener {
 
-    private final String SERVICE_ID = "service id";
+    private static final String SERVICE_ID = "service id";
     private final String TAG = "DBInf";
     private static final String USERS = "users";
 
-    //services
-    private final String SERVICES = "services";
-    private final String NAME = "name";
-    private final String COST = "cost";
-    private final String DESCRIPTION = "description";
-    private final String USER_ID = "user id";
-
-    //working  days
-    private final String WORKING_DAYS = "working days";
-    private final String DATA = "data";
-    private final String TIME = "time";
-
-    //working time
-    private static final String WORKING_TIME = "working time";
-    private static final String WORKING_TIME_ID = "working time id";
-    private static final String WORKING_DAY_ID = "working day id";
-
-    //orders
-    private static final String ORDERS = "orders";
-    private static final String IS_CANCELED = "is canceled";
-    private static final String MESSAGE_ID = "message id";
-
-    //reviews
-    private static final String REVIEWS = "reviews";
-    private static final String REVIEW = "review";
-    private static final String RATING = "rating";
-    private static final String TYPE = "type";
-
+    private static final String SERVICES = "services";
+    private static final String NAME = "name";
+    private static final String COST = "cost";
+    private static final String DESCRIPTION = "description";
     private static final String PHOTOS = "photos";
+
     private static final String PHOTO_LINK = "photo link";
-    private static final String OWNER_ID = "owner id";
     private static final String SERVICE_PHOTO = "service photo";
     private static final String CATEGORY = "category";
     private static final String ADDRESS = "address";
@@ -288,7 +264,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private void uploadPhotos(String storageReference, String serviceId, String photoId) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef =  database
+        DatabaseReference myRef = database
                 .getReference(USERS)
                 .child(getUserId())
                 .child(SERVICES)
@@ -383,7 +359,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     String photoId = photo.getKey();
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef =  database
+                    DatabaseReference myRef = database
                             .getReference(USERS)
                             .child(getUserId())
                             .child(SERVICES)
@@ -425,10 +401,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private void deletePhotoFromStorage(String photoId) {
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-
-        final StorageReference storageReference = firebaseStorage.getReference(SERVICE_PHOTO
-                + "/"
-                + photoId);
+        final StorageReference storageReference = firebaseStorage.getReference(SERVICE_PHOTO + "/" + photoId);
 
         storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -457,33 +430,33 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     }
 
     public void deleteThisService() {
-        //if (withoutOrders()) {
-        confirm(this);
-        // } else {
-        //    attentionItHasOrders();
-        //}
+        //Сложно удалить из-за зависимостей, позже можно доработать
+        /*if (withoutOrders()) {
+            confirm(this);
+        } else {
+            attentionItHasOrders();
+        }*/
     }
 
     private boolean withoutOrders() {
         //если есть записи на этот сервис, мы не даем его удалить
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery =
-                "SELECT "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_USER_ID
+                "SELECT *"
                         + " FROM "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
                         + DBHelper.TABLE_WORKING_DAYS + ", "
+                        + DBHelper.TABLE_ORDERS + ", "
                         + DBHelper.TABLE_WORKING_TIME
                         + " WHERE "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = ? "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " = "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                         + " AND "
                         + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
                         + " = "
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
                         + " AND "
                         + " (STRFTIME('%s', 'now')+3*60*60)-(STRFTIME('%s', " + DBHelper.KEY_DATE_WORKING_DAYS
                         + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
@@ -492,13 +465,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
 
         if (cursor.moveToFirst()) {
-            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
-            do {
-                String userId = cursor.getString(indexUserId);
-                if (!userId.equals("0")) {
-                    return false;
-                }
-            } while (cursor.moveToNext());
+            return false;
         }
         cursor.close();
         return true;
