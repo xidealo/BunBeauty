@@ -118,7 +118,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         database.insert(DBHelper.TABLE_CONTACTS_USERS,null,contentValues);
     }
 
-    protected Boolean areInputsCorrect(){
+    private Boolean areInputsCorrect(){
         String name = nameInput.getText().toString();
         if(name.isEmpty()) {
             nameInput.setError("Введите своё имя");
