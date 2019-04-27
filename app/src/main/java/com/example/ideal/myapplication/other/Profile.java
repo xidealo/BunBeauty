@@ -372,7 +372,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " WHERE "
                         + DBHelper.KEY_USER_ID+ " = ? ";
 
-        Cursor cursor = database.rawQuery(sqlQueryService, new String[]{userId});
+        Cursor cursor = database.rawQuery(sqlQueryService, new String[]{ownerId});
         float sumRates = 0;
         long countOfRates = 0;
 
