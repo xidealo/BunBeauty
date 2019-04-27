@@ -58,10 +58,12 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
     private static final String CATEGORY = "category";
+    private static final String ADDRESS = "address";
 
     private EditText nameServiceInput;
     private EditText costAddServiceInput;
     private EditText descriptionServiceInput;
+    private EditText addressServiceInput;
     //храним ссылки на картинки в хранилище
     private ArrayList<Uri> fpath;
 
@@ -85,6 +87,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         descriptionServiceInput = findViewById(R.id.descriptionAddServiceInput);
         ImageView serviceImage = findViewById(R.id.servicePhotoAddServiceImage);
         categorySpinner = findViewById(R.id.categoryAddServiceSpinner);
+        addressServiceInput = findViewById(R.id.addressAddServiceInput);
 
 
         manager = getSupportFragmentManager();
@@ -117,7 +120,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                     if(!service.setCost(costAddServiceInput.getText().toString())){
                         Toast.makeText(
                                 this,
-                                "Цена не может содержать больше 8 символов ",
+                                "Цена не может содержать больше 8 символов",
                                 Toast.LENGTH_SHORT).show();
                         break;
                     }
@@ -127,14 +130,24 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                     if(category.equals("Выбрать категорию")){
                         Toast.makeText(
                                 this,
-                                "Не выбрана категория ",
+                                "Не выбрана категория",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    String address = addressServiceInput.getText().toString();
+                    if(address.isEmpty()){
+                        Toast.makeText(
+                                this,
+                                "Не указан адрес",
                                 Toast.LENGTH_SHORT).show();
                         break;
                     }
                     service.setIsPremium(false);
                     service.setUserId(getUserId());
                     service.setCategory(category);
+                    service.setAddress(address);
                     uploadService(service);
+
                 }
                 else {
                     Toast.makeText(this, getString(R.string.empty_field), Toast.LENGTH_SHORT).show();
@@ -160,6 +173,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         items.put(DESCRIPTION,service.getDescription());
         items.put(IS_PREMIUM,service.getIsPremium());
         items.put(CATEGORY,service.getCategory());
+        items.put(ADDRESS,service.getAddress());
 
         items.put(CREATION_DATE,workWithTimeApi.getDateInFormatYMDHMS(new Date()));
         String serviceId =  serviceRef.push().getKey();
@@ -186,6 +200,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
         contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
         contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, service.getCategory());
+        contentValues.put(DBHelper.KEY_ADDRESS_SERVICES, service.getAddress());
 
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES,null,contentValues);
         goToMyCalendar(getString(R.string.status_worker),service.getId());
@@ -325,6 +340,6 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         finish();
     }
     private void attentionAllDone() {
-        Toast.makeText(this, "Сирвис успешно создан", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Сервис успешно создан", Toast.LENGTH_SHORT).show();
     }
 }

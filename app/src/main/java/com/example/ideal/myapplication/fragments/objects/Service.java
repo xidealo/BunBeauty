@@ -10,6 +10,7 @@ public class Service {
     private String category;
     private boolean isPremium;
     private String creationDate;
+    private String address;
     private float averageRating;
 
     // id
@@ -81,13 +82,19 @@ public class Service {
     }
 
     //категория
-
-
     public void setCategory(String category) {
         this.category = category;
     }
 
     public String getCategory() {
         return category;
+    }
+    //адерс
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getAddress() {
+        return address;
     }
 }

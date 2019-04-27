@@ -12,40 +12,57 @@
         android:id="@+id/nameGuestServiceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/footerGuestServiceLayout"
+        app:layout_constraintBottom_toTopOf="@+id/costGuestServiceText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerGuestServiceLayout"
-        app:layout_constraintVertical_bias="0.05" />
+        app:layout_constraintVertical_bias="0.957" />
 
     <TextView
         android:id="@+id/costGuestServiceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/footerGuestServiceLayout"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionGuestServiceText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerGuestServiceLayout"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.962" />
 
     <TextView
         android:id="@+id/descriptionGuestServiceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/footerGuestServiceLayout"
+        app:layout_constraintBottom_toTopOf="@+id/editScheduleGuestServiceBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerGuestServiceLayout"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintVertical_bias="0.71" />
+
+    <TextView
+        android:id="@+id/addressGuestServiceText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/resultGuestServiceLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerGuestServiceLayout"
+        app:layout_constraintVertical_bias="0.665" />
 
     <Button
         android:id="@+id/editScheduleGuestServiceBtn"

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -17,9 +18,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -31,6 +34,7 @@ import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,50 +47,26 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class EditService extends AppCompatActivity implements View.OnClickListener {
 
-    private final String SERVICE_ID = "service id";
+    private static final String SERVICE_ID = "service id";
     private final String TAG = "DBInf";
+    private static final String USERS = "users";
 
-    //services
-    private final String SERVICES = "services";
-    private final String NAME = "name";
-    private final String COST = "cost";
-    private final String DESCRIPTION = "description";
-    private final String USER_ID = "user id";
-
-    //working  days
-    private final String WORKING_DAYS = "working days";
-    private final String DATA = "data";
-    private final String TIME = "time";
-
-    //working time
-    private static final String WORKING_TIME = "working time";
-    private static final String WORKING_TIME_ID = "working time id";
-    private static final String WORKING_DAY_ID = "working day id";
-
-    //orders
-    private static final String ORDERS = "orders";
-    private static final String IS_CANCELED = "is canceled";
-    private static final String MESSAGE_ID = "message id";
-    private static final String DIALOG_ID = "dialog id";
-
-    //reviews
-    private static final String REVIEWS = "reviews";
-    private static final String REVIEW = "review";
-    private static final String RATING = "rating";
-    private static final String TYPE = "type";
-    //messages
-    private static final String MESSAGES = "messages";
-    private static final String MESSAGE_TIME = "message time";
-
+    private static final String SERVICES = "services";
+    private static final String NAME = "name";
+    private static final String COST = "cost";
+    private static final String DESCRIPTION = "description";
     private static final String PHOTOS = "photos";
+
     private static final String PHOTO_LINK = "photo link";
-    private static final String OWNER_ID = "owner id";
     private static final String SERVICE_PHOTO = "service photo";
+    private static final String CATEGORY = "category";
+    private static final String ADDRESS = "address";
 
     private static final int PICK_IMAGE_REQUEST = 71;
 
@@ -98,8 +78,9 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private EditText nameServiceInput;
     private EditText costServiceInput;
     private EditText descriptionServiceInput;
+    private EditText addressServiceInput;
     private DBHelper dbHelper;
-
+    private Spinner categorySpinner;
     private FragmentManager manager;
 
     @Override
@@ -112,6 +93,8 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         nameServiceInput = findViewById(R.id.nameEditServiceInput);
         costServiceInput = findViewById(R.id.costEditServiceInput);
         descriptionServiceInput = findViewById(R.id.descriptionEditServiceInput);
+        addressServiceInput = findViewById(R.id.addressEditServiceInput);
+        categorySpinner = findViewById(R.id.categoryEditServiceSpinner);
 
         manager = getSupportFragmentManager();
 
@@ -132,11 +115,16 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         //подгружаем фото
         setPhotoFeed(serviceId);
 
+        createEditServiceScreen();
+
+        editServicesBtn.setOnClickListener(this);
+        serviceImage.setOnClickListener(this);
+    }
+
+    private void createEditServiceScreen() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        String sqlQuery = "SELECT "
-                + DBHelper.KEY_NAME_SERVICES + ", "
-                + DBHelper.KEY_DESCRIPTION_SERVICES + ", "
-                + DBHelper.KEY_MIN_COST_SERVICES
+
+        String sqlQuery = "SELECT *"
                 + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES
                 + " WHERE " + DBHelper.KEY_ID + " = ?";
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
@@ -145,15 +133,21 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
             int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
             int indexCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
             int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
+            int indexAddress = cursor.getColumnIndex(DBHelper.KEY_ADDRESS_SERVICES);
+            int indexCategory = cursor.getColumnIndex(DBHelper.KEY_CATEGORY_SERVICES);
 
             nameServiceInput.setText(cursor.getString(indexName));
             costServiceInput.setText(cursor.getString(indexCost));
             descriptionServiceInput.setText(cursor.getString(indexDescription));
-        }
+            addressServiceInput.setText(cursor.getString(indexAddress));
+            String category = cursor.getString(indexCategory);
 
-        cursor.close();
-        editServicesBtn.setOnClickListener(this);
-        serviceImage.setOnClickListener(this);
+            Resources res = getResources();
+            String[] categories = res.getStringArray(R.array.categoryForEditService);
+            categorySpinner.setSelection(Arrays.asList(categories).indexOf(category));
+
+            cursor.close();
+        }
     }
 
     @Override
@@ -161,13 +155,12 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         switch (v.getId()) {
 
             case R.id.editServiceEditServiceBtn:
-                String cost = costServiceInput.getText().toString();
                 String description = descriptionServiceInput.getText().toString();
 
                 // Создание сервса и заполнение информации о нём
                 Service service = new Service();
                 service.setId(serviceId);
-
+                service.setUserId(getUserId());
                 if (!service.setName(nameServiceInput.getText().toString())) {
                     Toast.makeText(
                             this,
@@ -176,15 +169,29 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     break;
                 }
 
-                if (cost.length() != 0) {
-                    service.setCost(cost);
+                if (!service.setCost(costServiceInput.getText().toString())) {
+                    Toast.makeText(
+                            this,
+                            "Цена не может содержать больше 8 символов",
+                            Toast.LENGTH_SHORT).show();
+                    break;
                 }
 
                 if (description.length() != 0) {
                     service.setDescription(description);
                 }
+                //если содержить выбрать категорию, значит не меняем категорию
+                service.setCategory(categorySpinner.getSelectedItem().toString());
 
-                editServiceInLocalStorage(service);
+                String address = addressServiceInput.getText().toString();
+                if (address.isEmpty()) {
+                    Toast.makeText(
+                            this,
+                            "Не указан адрес",
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                service.setAddress(address);
                 editServiceInFireBase(service);
                 break;
 
@@ -210,33 +217,30 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null )
-        {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
             Uri filePath = data.getData();
             try {
                 //установка картинки на activity
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
 
-                addToScreenNewPhoto(bitmap,filePath);
+                addToScreenNewPhoto(bitmap, filePath);
 
                 //serviceImage.setImageBitmap(bitmap);
                 //загрузка картинки в fireStorage
                 fPathToAdd.add(filePath);
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
+
     private void uploadImage(Uri filePath, final String serviceId) {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(PHOTOS);
 
-        if(filePath != null)
-        {
+        if (filePath != null) {
             final String photoId = myRef.push().getKey();
             final StorageReference storageReference = firebaseStorage.getReference(SERVICE_PHOTO + "/" + photoId);
             storageReference.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -245,7 +249,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            uploadPhotos(uri.toString(),serviceId,photoId);
+                            uploadPhotos(uri.toString(), serviceId, photoId);
                         }
                     });
                 }
@@ -257,14 +261,19 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void uploadPhotos(String storageReference, String serviceId,String photoId) {
+    private void uploadPhotos(String storageReference, String serviceId, String photoId) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(PHOTOS).child(photoId);
+        DatabaseReference myRef = database
+                .getReference(USERS)
+                .child(getUserId())
+                .child(SERVICES)
+                .child(serviceId)
+                .child(PHOTOS)
+                .child(photoId);
 
-        Map<String,Object> items = new HashMap<>();
-        items.put(PHOTO_LINK,storageReference);
-        items.put(OWNER_ID,serviceId);
+        Map<String, Object> items = new HashMap<>();
+        items.put(PHOTO_LINK, storageReference);
 
         myRef.updateChildren(items);
 
@@ -284,9 +293,9 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
         contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
-        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getPhotoOwnerId());
 
-        database.insert(DBHelper.TABLE_PHOTOS,null,contentValues);
+        database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
 
         goToService();
     }
@@ -303,37 +312,42 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                         + DBHelper.TABLE_PHOTOS
                         + " WHERE "
                         + DBHelper.KEY_OWNER_ID_PHOTOS + " = ?";
-        Cursor cursor = database.rawQuery(sqlQuery,new String[] {serviceId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
                 int indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS);
 
                 String photoLink = cursor.getString(indexPhotoLink);
                 addToScreen(photoLink);
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
         cursor.close();
 
     }
 
-    private void addToScreen(String photoLink){
+    private void addToScreen(String photoLink) {
         FragmentTransaction transaction = manager.beginTransaction();
         ServicePhotoElement servicePhotoElement = new ServicePhotoElement(photoLink);
         transaction.add(R.id.feedEditServiceLayout, servicePhotoElement);
         transaction.commit();
     }
 
-    private void addToScreenNewPhoto(Bitmap bitmap, Uri filePath){
+    private void addToScreenNewPhoto(Bitmap bitmap, Uri filePath) {
         FragmentTransaction transaction = manager.beginTransaction();
-        ServicePhotoElement servicePhotoElement = new ServicePhotoElement(bitmap,filePath,"");
+        ServicePhotoElement servicePhotoElement = new ServicePhotoElement(bitmap, filePath, "");
         transaction.add(R.id.feedEditServiceLayout, servicePhotoElement);
         transaction.commit();
     }
 
     private void deletePhotoFromDatabase(final String photoLink) {
 
-        Query photoQuery = FirebaseDatabase.getInstance().getReference(PHOTOS)
+        Query photoQuery = FirebaseDatabase.getInstance()
+                .getReference(USERS)
+                .child(getUserId())
+                .child(SERVICES)
+                .child(serviceId)
+                .child(PHOTOS)
                 .orderByChild(PHOTO_LINK)
                 .equalTo(photoLink);
 
@@ -341,33 +355,36 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onDataChange(@NonNull DataSnapshot photosSnapshot) {
 
-                for(DataSnapshot photo: photosSnapshot.getChildren()){
+                for (DataSnapshot photo : photosSnapshot.getChildren()) {
                     String photoId = photo.getKey();
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference(PHOTOS).child(photoId);
+                    DatabaseReference myRef = database
+                            .getReference(USERS)
+                            .child(getUserId())
+                            .child(SERVICES)
+                            .child(serviceId)
+                            .child(PHOTOS);
 
-                    Map<String,Object> items = new HashMap<>();
-                    items.put(PHOTO_LINK,null);
-                    items.put(OWNER_ID,null);
-                    myRef.updateChildren(items);
+                    myRef.child(photoId).removeValue();
 
                     deletePhotoFromStorage(photoId);
                     deletePhotoFromLocalStorage(photoId);
                 }
 
-                for(Uri path: fPathToAdd){
+                for (Uri path : fPathToAdd) {
                     uploadImage(path, serviceId);
                 }
 
-                if(fPathToAdd.isEmpty()){
+                if (fPathToAdd.isEmpty()) {
                     goToService();
                 }
 
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
     }
 
@@ -384,10 +401,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private void deletePhotoFromStorage(String photoId) {
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-
-        final StorageReference storageReference = firebaseStorage.getReference(SERVICE_PHOTO
-                + "/"
-                + photoId);
+        final StorageReference storageReference = firebaseStorage.getReference(SERVICE_PHOTO + "/" + photoId);
 
         storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -401,14 +415,14 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         });
     }
 
-    public void deleteFragment(ServicePhotoElement fr, Uri filePath){
+    public void deleteFragment(ServicePhotoElement fr, Uri filePath) {
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.remove(fr);
         transaction.commit();
         fPathToAdd.remove(filePath);
     }
 
-    public void deleteFragment(ServicePhotoElement fr, String photoLink){
+    public void deleteFragment(ServicePhotoElement fr, String photoLink) {
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.remove(fr);
         transaction.commit();
@@ -416,33 +430,33 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     }
 
     public void deleteThisService() {
-        if (withoutOrders()) {
+        //Сложно удалить из-за зависимостей, позже можно доработать
+        /*if (withoutOrders()) {
             confirm(this);
         } else {
             attentionItHasOrders();
-        }
+        }*/
     }
 
     private boolean withoutOrders() {
         //если есть записи на этот сервис, мы не даем его удалить
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery =
-                "SELECT "
-                        + DBHelper.TABLE_WORKING_TIME +"."+ DBHelper.KEY_USER_ID
+                "SELECT *"
                         + " FROM "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
                         + DBHelper.TABLE_WORKING_DAYS + ", "
+                        + DBHelper.TABLE_ORDERS + ", "
                         + DBHelper.TABLE_WORKING_TIME
                         + " WHERE "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "."+DBHelper.KEY_ID + " = ? "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " = "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
                         + " AND "
                         + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
                         + " = "
                         + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
                         + " AND "
                         + " (STRFTIME('%s', 'now')+3*60*60)-(STRFTIME('%s', " + DBHelper.KEY_DATE_WORKING_DAYS
                         + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
@@ -450,15 +464,8 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
 
-        if(cursor.moveToFirst()){
-            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
-            do{
-                Log.d(TAG, "withoutOrders: ");
-                String userId = cursor.getString(indexUserId);
-                if(!userId.equals("0")){
-                    return false;
-                }
-            }while (cursor.moveToNext());
+        if (cursor.moveToFirst()) {
+            return false;
         }
         cursor.close();
         return true;
@@ -482,163 +489,15 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         dialog.show();
     }
 
-    private void deleteThisServiceFromEverywhere() {
-        deleteThisServiceFromServices();
-    }
 
     private void deleteThisServiceFromServices() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(SERVICES + "/" + serviceId);
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference(USERS)
+                .child(getUserId())
+                .child(SERVICES);
 
-        Map<String, Object> items = new HashMap<>();
-        items.put(NAME, null);
-        items.put(COST, null);
-        items.put(DESCRIPTION, null);
-        items.put(USER_ID, null);
-        reference.updateChildren(items);
-
-        deleteThisServiceDayFromWorkingDays();
-        deleteServiceFromLocalStorage(DBHelper.TABLE_CONTACTS_SERVICES,serviceId);
-    }
-
-    private void deleteThisServiceDayFromWorkingDays() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        final Query query = database.getReference(WORKING_DAYS)
-                .orderByChild(SERVICE_ID)
-                .equalTo(serviceId);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot workingDaysSnapshot) {
-
-                for(DataSnapshot day : workingDaysSnapshot.getChildren()){
-                    //удаление из times
-                    deleteThisServiceTimesFromWorkingTime(day.getKey());
-
-                    DatabaseReference reference = FirebaseDatabase
-                            .getInstance()
-                            .getReference(WORKING_DAYS + "/" + day.getKey());
-
-                    Map<String, Object> items = new HashMap<>();
-                    items.put(DATA, null);
-                    items.put(SERVICE_ID, null);
-                    reference.updateChildren(items);
-
-                    deleteServiceFromLocalStorage(DBHelper.TABLE_WORKING_DAYS,day.getKey());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    private void deleteThisServiceTimesFromWorkingTime(String dayId) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        final Query query = database.getReference(WORKING_TIME)
-                .orderByChild(WORKING_DAY_ID)
-                .equalTo(dayId);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot workingTimesSnapshot) {
-
-                for(DataSnapshot time : workingTimesSnapshot.getChildren()){
-                    //удаление из orders & reviews
-                    deleteThisServiceOrdersFromOrders(time.getKey());
-                    deleteThisServiceReviewsFromReviews(time.getKey());
-
-                    DatabaseReference reference = FirebaseDatabase
-                            .getInstance()
-                            .getReference(WORKING_TIME + "/" + time.getKey());
-
-                    Map<String, Object> items = new HashMap<>();
-                    items.put(WORKING_DAY_ID, null);
-                    items.put(USER_ID, null);
-                    items.put(TIME, null);
-                    reference.updateChildren(items);
-                    deleteServiceFromLocalStorage(DBHelper.TABLE_WORKING_TIME,time.getKey());
-
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
-    }
-
-    private void deleteThisServiceOrdersFromOrders(String timeId) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        final Query query = database.getReference(ORDERS)
-                .orderByChild(WORKING_TIME_ID)
-                .equalTo(timeId);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot ordersSnapshot) {
-
-                for(DataSnapshot order : ordersSnapshot.getChildren()){
-                    //удалять сообщения
-                    DatabaseReference reference = FirebaseDatabase
-                            .getInstance()
-                            .getReference(ORDERS + "/" + order.getKey());
-
-                    Map<String, Object> items = new HashMap<>();
-                    items.put(IS_CANCELED, null);
-                    items.put(MESSAGE_ID, null);
-                    items.put(WORKING_TIME_ID, null);
-                    reference.updateChildren(items);
-                    deleteServiceFromLocalStorage(DBHelper.TABLE_ORDERS,order.getKey());
-
-                }
-                //в конце перезаходим
-                goToAuthorization();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
-
-    }
-
-    private void deleteThisServiceReviewsFromReviews(String timeId) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        final Query query = database.getReference(REVIEWS)
-                .orderByChild(WORKING_TIME_ID)
-                .equalTo(timeId);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot reviewsSnapshot) {
-
-                for(DataSnapshot review : reviewsSnapshot.getChildren()){
-
-
-                    DatabaseReference reference = FirebaseDatabase
-                            .getInstance()
-                            .getReference(REVIEWS + "/" + review.getKey());
-
-                    Map<String, Object> items = new HashMap<>();
-                    items.put(RATING, null);
-                    items.put(MESSAGE_ID, null);
-                    items.put(WORKING_TIME_ID, null);
-                    items.put(REVIEW, null);
-                    items.put(TYPE, null);
-                    reference.updateChildren(items);
-
-                    deleteServiceFromLocalStorage(DBHelper.TABLE_REVIEWS, review.getKey());
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
+        reference.child(serviceId).removeValue();
+        deleteServiceFromLocalStorage(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
     }
 
     private void deleteServiceFromLocalStorage(String tableName, String id) {
@@ -648,57 +507,67 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 new String[]{id});
     }
 
-    private void editServiceInLocalStorage(Service service) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        if (service.getName() != null)
-            contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName());
-        if (service.getCost() != null)
-            contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
-        if (service.getDescription() != null)
-            contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
-        if (contentValues.size() > 0) {
-            database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{service.getId()});
-        }
-    }
-
     private void editServiceInFireBase(Service service) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(SERVICES + "/" + service.getId());
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference(USERS)
+                .child(service.getUserId())
+                .child(SERVICES)
+                .child(service.getId());
 
         Map<String, Object> items = new HashMap<>();
-        if (service.getName() != null) items.put(NAME, service.getName());
-        if (service.getCost() != null) items.put(COST, service.getCost());
-        if (service.getDescription() != null) items.put(DESCRIPTION, service.getDescription());
+        items.put(NAME, service.getName());
+        items.put(COST, service.getCost());
+        items.put(DESCRIPTION, service.getDescription());
+        items.put(ADDRESS, service.getAddress());
+        items.put(CATEGORY, service.getCategory());
         reference.updateChildren(items);
+        editServiceInLocalStorage(service);
 
-        for(String photoLink: phLinToDelete) {
+        for (String photoLink : phLinToDelete) {
             deletePhotoFromDatabase(photoLink);
         }
 
-        if(phLinToDelete.isEmpty()){
+        if (phLinToDelete.isEmpty()) {
             //добавление новых картинок при редактировании
-            for(Uri path: fPathToAdd){
+            for (Uri path : fPathToAdd) {
                 uploadImage(path, serviceId);
             }
-            if(fPathToAdd.isEmpty()){
+            if (fPathToAdd.isEmpty()) {
                 goToService();
             }
         }
     }
 
+    private void editServiceInLocalStorage(Service service) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName());
+        contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
+        contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
+        contentValues.put(DBHelper.KEY_ADDRESS_SERVICES, service.getAddress());
+        contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, service.getCategory());
+        database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{service.getId()});
+
+    }
+
     private void attentionItHasOrders() {
-        Toast.makeText(this,"Нельзя удалить сервис, на который есть записи",
+        Toast.makeText(this, "Нельзя удалить сервис, на который есть записи",
                 Toast.LENGTH_SHORT).show();
     }
+
     private void goToService() {
         super.onBackPressed();
         finish();
     }
 
-    private void goToAuthorization(){
+    private String getUserId() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    private void goToAuthorization() {
         Intent intent = new Intent(EditService.this, Authorization.class);
         startActivity(intent);
         finish();
