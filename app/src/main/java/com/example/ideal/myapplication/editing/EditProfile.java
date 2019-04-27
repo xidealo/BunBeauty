@@ -60,31 +60,17 @@ import java.util.concurrent.TimeUnit;
 
 public class EditProfile extends AppCompatActivity implements View.OnClickListener {
 
-        private final String TAG = "DBInf";
+    private final String TAG = "DBInf";
 
+    private static final String USERS = "users";
     private static final String USER_NAME = "name";
-    private static final String PASS = "password";
     private static final String USER_CITY = "city";
     private static final String PHONE = "phone";
 
     private static final String AVATAR = "avatar";
-    private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
 
     private final int PICK_IMAGE_REQUEST = 71;
-
-    private static final String DIALOGS = "dialogs";
-    private static final String USERS = "users";
-    private static final String WORKING_TIME = "working time";
-    private static final String SERVICE = "services";
-
-    private static final String USER_ID = "user id";
-
-    private static final String PHONE_NUMBER = "Phone number";
-    private static final String OWNER_ID = "owner id";
-    private static final String FILE_NAME = "Info";
-    private static final String FIRST_PHONE = "first phone";
-    private static final String SECOND_PHONE = "second phone";
 
     private String oldPhone;
     private String phone;
