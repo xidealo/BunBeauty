@@ -205,7 +205,6 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     }
 
     private void chooseImage() {
-
         //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         //Тип получаемых объектов - image:

@@ -74,6 +74,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private String oldPhone;
     private String phone;
+    private Uri lastFilePath;
 
     private Button editBtn;
     private Button verifyButton;
@@ -91,13 +92,11 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks verificationCallbacks;
     private PhoneAuthProvider.ForceResendingToken resendToken;
 
-    private WorkWithLocalStorageApi localStorageApi;
     private DBHelper dbHelper;
     private User user;
 
     private ImageView avatarImage;
 
-    private FirebaseAuth fbAuth;
     private String userId;
 
     @Override
@@ -128,14 +127,23 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         panelBuilder.buildFooter(manager, R.id.footerEditProfileLayout);
         panelBuilder.buildHeader(manager, "Редактирование профиля", R.id.headerEditProfileLayout);
 
-        fbAuth = FirebaseAuth.getInstance();
         user = new User();
         dbHelper = new DBHelper(this);
-        localStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
+        WorkWithLocalStorageApi localStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
 
         userId = getUserId();
         localStorageApi.setPhotoAvatar(userId,avatarImage);
         oldPhone = getUserPhone();
+
+        setInformation();
+
+        editBtn.setOnClickListener(this);
+        resendButton.setOnClickListener(this);
+        verifyButton.setOnClickListener(this);
+        avatarImage.setOnClickListener(this);
+    }
+
+    private  void setInformation(){
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery = "SELECT "
                 + DBHelper.KEY_NAME_USERS + ", "
@@ -162,11 +170,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             // Arrays.asList(CountryCodes.codes).indexOf(phone.substring(0, 2))
         }
         cursor.close();
-
-        editBtn.setOnClickListener(this);
-        resendButton.setOnClickListener(this);
-        verifyButton.setOnClickListener(this);
-        avatarImage.setOnClickListener(this);
     }
 
     @Override
@@ -175,7 +178,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
             case R.id.editProfileEditProfileBtn:
                 changeProfileData();
-                //checkPhone();
                 break;
 
             case R.id.verifyCodeEditProfileBtn:
@@ -208,7 +210,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             user.setCity(cityInput.getText().toString());
             if (oldPhone.equals(newPhone)) {
                 saveChanges();
-                goToProfile();
             } else {
                 if (newPhone.length() >= 11) {
                     phone = newPhone;
@@ -308,7 +309,16 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         }
         reference.updateChildren(items);
 
-        updateInfoInLocalStorage();
+        if(lastFilePath!=null) {
+            uploadImage(lastFilePath);
+            updateInfoInLocalStorage();
+        }
+        else {
+            updateInfoInLocalStorage();
+            goToProfile();
+        }
+
+
     }
 
     private void sendVerificationCode(){
@@ -424,6 +434,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
+
+
     private void chooseImage() {
         //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -444,7 +456,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 //установка картинки на activity
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 avatarImage.setImageBitmap(bitmap);
-                uploadImage(filePath);
+                lastFilePath = filePath;
             }
             catch (IOException e)
             {
@@ -458,7 +470,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         if(filePath != null)
         {
-            final String photoId = FirebaseDatabase.getInstance().getReference().push().getKey();
+            final String photoId = userId;
             final StorageReference storageReference = firebaseStorage.getReference(AVATAR + "/" + photoId);
             storageReference.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -466,7 +478,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            updatePhotos(uri.toString(), photoId);
+                            updatePhotos(uri.toString(),photoId);
                         }
                     });
                 }
@@ -519,6 +531,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, ownerId);
             database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
+        goToProfile();
     }
 
     private boolean hasSomePhoto() {
