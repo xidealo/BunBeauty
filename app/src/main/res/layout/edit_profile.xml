@@ -10,20 +10,11 @@
 
     <ImageView
         android:id="@+id/avatarEditProfileImage"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/nameEditProfileInput"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.923"
+        app:layout_constraintTop_toBottomOf="@+id/headerEditProfileLayout"
         app:srcCompat="@mipmap/ic_launcher_round"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -31,51 +22,87 @@
         android:id="@+id/nameEditProfileInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="@string/nameAddServiceTB"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/cityEditProfileInput"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.946" />
+        app:layout_constraintTop_toBottomOf="@+id/avatarEditProfileImage"
+        app:layout_constraintVertical_bias="0" />
+
+    <EditText
+        android:id="@+id/surnameEditProfileInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:hint="@string/surname"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameEditProfileInput"
+        app:layout_constraintVertical_bias="0" />
 
     <EditText
         android:id="@+id/cityEditProfileInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="@string/cityRegistration"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/phoneEditProfileInput"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.973" />
+        app:layout_constraintTop_toBottomOf="@+id/surnameEditProfileInput"
+        app:layout_constraintVertical_bias="0" />
+
+    <Spinner
+        android:id="@+id/codeEditProfileSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
+        app:layout_constraintEnd_toStartOf="@+id/phoneEditProfileInput"
+        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cityEditProfileInput"
+        app:layout_constraintVertical_bias="0" />
 
     <EditText
         android:id="@+id/phoneEditProfileInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="@string/phone"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editProfileEditProfileBtn"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.93" />
+        app:layout_constraintTop_toBottomOf="@+id/cityEditProfileInput"
+        app:layout_constraintVertical_bias="0" />
 
     <Button
         android:id="@+id/editProfileEditProfileBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/edit"
-        app:layout_constraintBottom_toTopOf="@+id/codeEditProfileInput"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.974" />
+        app:layout_constraintTop_toBottomOf="@+id/phoneEditProfileInput"
+        app:layout_constraintVertical_bias="0" />
 
     <EditText
         android:id="@+id/codeEditProfileInput"
@@ -85,27 +112,27 @@
         android:hint="@string/enterCode"
         android:inputType="number"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/verifyProfileEditProfileBtn"
+        app:layout_constraintBottom_toTopOf="@+id/verifyCodeEditProfileBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.977" />
+        app:layout_constraintTop_toBottomOf="@+id/headerEditProfileLayout"
+        app:layout_constraintVertical_bias="0.95" />
 
     <Button
-        android:id="@+id/verifyProfileEditProfileBtn"
+        android:id="@+id/verifyCodeEditProfileBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/verifyCode"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/resendProfileEditProfileBtn"
+        app:layout_constraintBottom_toTopOf="@+id/resendCodeEditProfileBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerEditProfileLayout"
         app:layout_constraintVertical_bias="0.963" />
 
     <Button
-        android:id="@+id/resendProfileEditProfileBtn"
+        android:id="@+id/resendCodeEditProfileBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/resendCode"
@@ -113,7 +140,7 @@
         app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerEditProfileLayout"
         app:layout_constraintVertical_bias="1.0" />
 
     <LinearLayout
@@ -141,7 +168,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/resendProfileEditProfileBtn"
+        app:layout_constraintBottom_toBottomOf="@+id/resendCodeEditProfileBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

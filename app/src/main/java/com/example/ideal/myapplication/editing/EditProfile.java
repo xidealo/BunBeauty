@@ -14,10 +14,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -26,6 +28,7 @@ import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.logIn.Authorization;
+import com.example.ideal.myapplication.logIn.CountryCodes;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -49,18 +52,20 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class EditProfile extends AppCompatActivity implements View.OnClickListener {
 
-    //изменяет номер телефона во всех таблицах, где используется
-    private final String TAG = "DBInf";
+        private final String TAG = "DBInf";
 
     private static final String USER_NAME = "name";
     private static final String PASS = "password";
     private static final String USER_CITY = "city";
+    private static final String PHONE = "phone";
 
     private static final String AVATAR = "avatar";
     private static final String PHOTOS = "photos";
@@ -83,30 +88,31 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private String oldPhone;
     private String phone;
-    private Uri filePath;
 
     private Button editBtn;
     private Button verifyButton;
     private Button resendButton;
 
     private EditText nameInput;
+    private EditText surnameInput;
     private EditText cityInput;
     private EditText phoneInput;
     private EditText codeInput;
     private ProgressBar progressBar;
+    private Spinner codeSpinner;
 
     private String phoneVerificationId;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks
-            verificationCallbacks;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks verificationCallbacks;
     private PhoneAuthProvider.ForceResendingToken resendToken;
 
+    private WorkWithLocalStorageApi localStorageApi;
     private DBHelper dbHelper;
-    private SharedPreferences sPref;
     private User user;
 
     private ImageView avatarImage;
 
     private FirebaseAuth fbAuth;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,18 +120,22 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.edit_profile);
 
         nameInput = findViewById(R.id.nameEditProfileInput);
+        surnameInput = findViewById(R.id.surnameEditProfileInput);
         cityInput = findViewById(R.id.cityEditProfileInput);
         phoneInput = findViewById(R.id.phoneEditProfileInput);
         codeInput = findViewById(R.id.codeEditProfileInput);
 
         editBtn = findViewById(R.id.editProfileEditProfileBtn);
-        resendButton = findViewById(R.id.resendProfileEditProfileBtn);
-        verifyButton = findViewById(R.id.verifyProfileEditProfileBtn);
+        resendButton = findViewById(R.id.resendCodeEditProfileBtn);
+        verifyButton = findViewById(R.id.verifyCodeEditProfileBtn);
 
         progressBar = findViewById(R.id.progressBarEditProfile);
 
         //для работы с картинкой
         avatarImage = findViewById(R.id.avatarEditProfileImage);
+
+        codeSpinner = findViewById(R.id.codeEditProfileSpinner);
+        codeSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, CountryCodes.countryNames));
 
         FragmentManager manager = getSupportFragmentManager();
         PanelBuilder panelBuilder = new PanelBuilder();
@@ -135,7 +145,10 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         fbAuth = FirebaseAuth.getInstance();
         user = new User();
         dbHelper = new DBHelper(this);
+        localStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
 
+        userId = getUserId();
+        localStorageApi.setPhotoAvatar(userId,avatarImage);
         oldPhone = getUserPhone();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery = "SELECT "
@@ -151,9 +164,16 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
             int indexPhone = cursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
 
-            nameInput.setText(cursor.getString(indexName));
+            String[] nickName = cursor.getString(indexName).split(" ");
+            nameInput.setText(nickName[0]);
+            surnameInput.setText(nickName[1]);
             cityInput.setText(cursor.getString(indexCity));
-            phoneInput.setText(cursor.getString(indexPhone));
+
+            String phone = cursor.getString(indexPhone);
+            // не универсальная обрезка кода (возможно стоит хранить отдельно код)
+            phoneInput.setText(phone.substring(2));
+            codeSpinner.setSelection(Arrays.asList(CountryCodes.codes).indexOf(phone.substring(0, 2)));
+            // Arrays.asList(CountryCodes.codes).indexOf(phone.substring(0, 2))
         }
         cursor.close();
 
@@ -163,22 +183,19 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         avatarImage.setOnClickListener(this);
     }
 
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
 
             case R.id.editProfileEditProfileBtn:
-                checkPhone();
-                editBtn.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
+                changeProfileData();
+                //checkPhone();
                 break;
 
-            case R.id.verifyProfileEditProfileBtn:
+            case R.id.verifyCodeEditProfileBtn:
 
-                String code = codeInput.getText().toString();
-                if (!code.trim().equals("")) {
+                String code = codeInput.getText().toString().trim();
+                if (code.length() >= 6) {
                     // подтверждаем код и если все хорошо, создаем юзера
                     verifyCode(code);
                 }
@@ -187,83 +204,132 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             case R.id.avatarEditProfileImage:
                 chooseImage();
                 break;
-            
+
+            case R.id.resendCodeEditProfileBtn:
+                resendCode();
+                break;
+
             default:
                 break;
         }
     }
 
-    private void checkPhone() {
-        int phoneLength = String.valueOf(phoneInput.getText()).length();
-        if (phoneLength > 0) {
-            phone = convertPhoneToNormalView(String.valueOf(phoneInput.getText()));
-
-            user.setName(nameInput.getText().toString().toLowerCase());
-            user.setCity(cityInput.getText().toString().toLowerCase());
-
-            //можно объеденить ссылки?
-            DatabaseReference reference = FirebaseDatabase
-                    .getInstance()
-                    .getReference(USERS).child(phone);
-
-            // Сравниваем телефон в поле ввода и уже имеющийся
-            if (phone.equals(oldPhone)) {
-                // Номер не изменился
-                updateInfo();
+    private void changeProfileData() {
+        if (areInputsCorrect()) {
+            String newPhone = CountryCodes.codes[codeSpinner.getSelectedItemPosition()]
+                    + phoneInput.getText().toString().trim();
+            user.setName(nameInput.getText().toString() + " " + surnameInput.getText().toString());
+            user.setCity(cityInput.getText().toString());
+            if (oldPhone.equals(newPhone)) {
+                saveChanges();
+                goToProfile();
             } else {
-                // Номер изменился
+                if (newPhone.length() >= 11) {
+                    phone = newPhone;
 
-                reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        //такого номера нет
-                        if (dataSnapshot.getChildrenCount() == 0) {
-                            sendCode(phone);
-                        } else {
-                            attentionThisUserAlreadyReg();
+                    Query userQuery = FirebaseDatabase
+                            .getInstance()
+                            .getReference(USERS)
+                            .orderByChild(PHONE)
+                            .equalTo(newPhone);
+
+                    userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                            //такого номера нет
+                            if (userSnapshot.getValue() == null) {
+                                sendVerificationCode();
+                            } else {
+                                attentionThisUserAlreadyReg();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        attentionBadConnection();
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            attentionBadConnection();
+                        }
+                    });
+                } else {
+                    phoneInput.setError("Некорекный номер телефона");
+                    phoneInput.requestFocus();
+                }
+
             }
-        } else {
-            attentionEmptyPhoneNumberField();
         }
     }
 
-    private void updateInfo() {
+    private Boolean areInputsCorrect() {
+        String name = nameInput.getText().toString();
+        if(name.isEmpty()) {
+            nameInput.setError("Введите своё имя");
+            nameInput.requestFocus();
+            return false;
+        }
+
+        if(!name.matches("[a-zA-ZА-Яа-я\\-]+")) {
+            nameInput.setError("Допустимы только буквы и тире");
+            nameInput.requestFocus();
+            return false;
+        }
+
+        String surname = surnameInput.getText().toString();
+        if(surname.isEmpty()) {
+            surnameInput.setError("Введите свою фамилию");
+            surnameInput.requestFocus();
+            return false;
+        }
+
+        if(!surname.matches("[a-zA-ZА-Яа-я\\-]+")) {
+            surnameInput.setError("Допустимы только буквы и тире");
+            surnameInput.requestFocus();
+            return false;
+        }
+
+        String city = cityInput.getText().toString().trim();
+        if(city.isEmpty()) {
+            cityInput.setError("Введите город, в которым вы живёте");
+            cityInput.requestFocus();
+            return false;
+        }
+
+        if(!city.matches("[a-zA-ZА-Яа-я\\-\\s]+")) {
+            cityInput.setError("Допустимы только буквы, тире и пробелы");
+            cityInput.requestFocus();
+            return false;
+        }
+
+        return  true;
+    }
+
+    private void saveChanges() {
+        editBtn.setVisibility(View.GONE);
+        codeInput.setVisibility(View.GONE);
+        resendButton.setVisibility(View.GONE);
+        verifyButton.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
         DatabaseReference reference = FirebaseDatabase
                 .getInstance()
-                .getReference(USERS).child(oldPhone);
+                .getReference(USERS)
+                .child(userId);
 
         Map<String, Object> items = new HashMap<>();
+
         items.put(USER_NAME, user.getName());
         items.put(USER_CITY, user.getCity());
+        if (phone != null) {
+            items.put(PHONE, phone);
+        }
         reference.updateChildren(items);
-
-        //сначала надо проверить нет ли аватарки у пользователя в FB
-        //если есть то просто перезаписать ссылку
-        //загрузка картинки в fireStorage
-        if(filePath != null) {
-            uploadImage(filePath);
-        }
-        else {
-            goToProfile();
-        }
 
         updateInfoInLocalStorage();
     }
 
-    private void sendCode(String phoneNumber) {
-
+    private void sendVerificationCode(){
         setUpVerificationCallbacks();
 
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNumber,        // Phone number to verify
+                phone,        // Phone number to verify
                 60,                 // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
                 this,               // Activity (for callback binding)
@@ -274,7 +340,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         //получаем ответ гугл
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(phoneVerificationId, code);
         //заходим с айфоном и токеном
-        signInWithPhoneAuthCredential(credential);
+        updatePhone(credential);
     }
 
     private void setUpVerificationCallbacks() {
@@ -316,22 +382,18 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     }
 
 
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+    private void updatePhone(PhoneAuthCredential credential) {
 
-        //входим
-        fbAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        FirebaseAuth.getInstance().getCurrentUser().updatePhoneNumber(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    public void onComplete(@NonNull Task<Void> task) {
                         //если введенный код совпадает с присланным кодом
                         if (task.isSuccessful()) {
-                            updatePhone();
-
-                            //сохраняем его в лок данные
-                            savePhone();
+                            saveChanges();
+                            goToProfile();
                         } else {
-                            if (task.getException() instanceof
-                                    FirebaseAuthInvalidCredentialsException) {
+                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 attentionThisCodeWasWrong();
                                 // The verification code entered was invalid
                             }
@@ -340,179 +402,21 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 });
     }
 
-    private void updatePhone() {
-
-    }
-
-    //удаляем старый телефон в таблице юзер
-    private void deleteOldPhoneNumber(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users/" + oldPhone );
-
-        myRef.removeValue();
-    }
-
-    private void createNewPhoneNumber() {
-        //создаем новый номер и данные с ним в таблице юзер
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference  myRef = database.getReference("users/" + phone);
-        Map<String,Object> items = new HashMap<>();
-        items.put("name", user.getName());
-        items.put("city", user.getCity());
-        items.put("password", getUserPass());
-        myRef.updateChildren(items);
-    }
-
-    private void updateOtherPlaceWithPhone() {
-        updateWorkingTime();
-        updateServices();
-        goToAuthorization();
-    }
-
-    private void updateWorkingTime() {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        Query query = database.getReference(WORKING_TIME)
-                .orderByChild(USER_ID)
-                .equalTo(oldPhone);
-        //находим id времени по телефону и меняем в нем телефон
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot timeSnapshot: dataSnapshot.getChildren()){
-
-                    String timeId = timeSnapshot.getKey();
-
-                    DatabaseReference myRef = database.getReference(WORKING_TIME).child(timeId);
-                    Map<String,Object> items = new HashMap<>();
-                    items.put(USER_ID, phone);
-                    myRef.updateChildren(items);
-
-                    updateWorkingTimeInLocalStorage(timeId);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
-    private void updateWorkingTimeInLocalStorage(String timeId) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_USER_ID, phone);
-
-        database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
-                DBHelper.KEY_ID + " = ?",
-                new String[]{String.valueOf(timeId)});
-    }
-
-    private void updateServices() {
-        //аналогично с working days
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        final Query query = database.getReference(SERVICE)
-                .orderByChild(USER_ID)
-                .equalTo(oldPhone);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot serviceSnapshot: dataSnapshot.getChildren()){
-
-                    String serviceId = serviceSnapshot.getKey();
-
-                    DatabaseReference myRef = database.getReference(SERVICE).child(serviceId);
-                    Map<String,Object> items = new HashMap<>();
-                    items.put(USER_ID, phone);
-                    myRef.updateChildren(items);
-
-                    updateServiceInLocalStorage(serviceId);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
-    private void updateServiceInLocalStorage(String serviceId) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_USER_ID, phone);
-
-        database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
-                DBHelper.KEY_ID + " = ?",
-                new String[]{String.valueOf(serviceId)});
-    }
-
-
-    private void checkFirstPhone() {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        Query firstPhoneQuery = database.getReference(DIALOGS)
-                .orderByChild(FIRST_PHONE)
-                .equalTo(oldPhone);
-        firstPhoneQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dialogSnapshot: dataSnapshot.getChildren()) {
-                    DatabaseReference myRef = database.getReference(DIALOGS).child(dialogSnapshot.getKey());
-                    Map<String, Object> items = new HashMap<>();
-                    items.put(FIRST_PHONE, phone);
-                    myRef.updateChildren(items);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
-    private void checkSecondPhone(){
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        Query firstPhoneQuery = database.getReference(DIALOGS)
-                .orderByChild(SECOND_PHONE)
-                .equalTo(oldPhone);
-        firstPhoneQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dialogSnapshot: dataSnapshot.getChildren()) {
-                    DatabaseReference myRef = database.getReference(DIALOGS).child(dialogSnapshot.getKey());
-                    Map<String, Object> items = new HashMap<>();
-                    items.put(SECOND_PHONE, phone);
-                    myRef.updateChildren(items);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }
-
     //Обновление информации в БД
     private void updateInfoInLocalStorage() {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        if(user.getName()!=null) contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
-        if(user.getCity()!=null) contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
-
-        if(contentValues.size()>0) {
-            database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
-                    DBHelper.KEY_PHONE_USERS + " = ?",
-                    new String[]{String.valueOf(oldPhone)});
+        contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
+        contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
+        if (phone != null) {
+            contentValues.put(DBHelper.KEY_CITY_USERS, phone);
         }
+
+        database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{userId});
     }
 
     public void resendCode() {
@@ -534,22 +438,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
-    private String convertPhoneToNormalView(String phone) {
-        if(phone.charAt(0)=='8'){
-            phone = "+7" + phone.substring(1);
-        }
-        return phone;
-    }
-
-    private void attentionThisUserAlreadyReg(){
-        Toast.makeText(
-                this,
-                "Данный пользователь уже зарегестрирован.",
-                Toast.LENGTH_SHORT).show();
-    }
-
     private void chooseImage() {
-
         //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         //Тип получаемых объектов - image:
@@ -558,17 +447,18 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         startActivityForResult(photoPickerIntent, PICK_IMAGE_REQUEST);
     }
 
-    @Override
+   @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null )
         {
-            filePath = data.getData();
+            Uri filePath = data.getData();
             try {
                 //установка картинки на activity
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 avatarImage.setImageBitmap(bitmap);
+                uploadImage(filePath);
             }
             catch (IOException e)
             {
@@ -582,7 +472,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         if(filePath != null)
         {
-            final String photoId = getUserId(); // генерить ключ из фб
+            final String photoId = FirebaseDatabase.getInstance().getReference().push().getKey();
             final StorageReference storageReference = firebaseStorage.getReference(AVATAR + "/" + photoId);
             storageReference.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -590,7 +480,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            updatePhotos(uri.toString());
+                            updatePhotos(uri.toString(), photoId);
                         }
                     });
                 }
@@ -602,19 +492,20 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void updatePhotos(final String storageReference) {
+    private void updatePhotos(String storageReference, String photoId) {
         // проверяем нет ли такого телефона в FB, если есть то перезаписываем только ссылку
         final FirebaseDatabase database =  FirebaseDatabase.getInstance();
 
         DatabaseReference photoRef = database.getReference(USERS)
-                .child(getUserId())
+                .child(userId)
                 .child(PHOTO_LINK);
 
         photoRef.setValue(storageReference);
 
         Photo photo = new Photo();
-        photo.setPhotoId(getUserId());
+        photo.setPhotoId(photoId);
         photo.setPhotoLink(storageReference);
+        photo.setPhotoOwnerId(userId);
 
         addPhotoInLocalStorage(photo);
     }
@@ -622,73 +513,44 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private void addPhotoInLocalStorage(Photo photo) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
+        String ownerId = photo.getPhotoOwnerId();
 
         database.delete(
                 DBHelper.TABLE_PHOTOS,
                 DBHelper.KEY_OWNER_ID_PHOTOS + " = ?",
-                new String[]{photo.getPhotoOwnerId()});
+                new String[]{ownerId});
 
         ContentValues contentValues = new ContentValues();
-
         contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
         contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
 
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-        boolean isUpdate = workWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_PHOTOS,
-                        photo.getPhotoId());
-        if(isUpdate){
+        if(hasSomePhoto()) {
             database.update(DBHelper.TABLE_PHOTOS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{photo.getPhotoId()});
+                    DBHelper.KEY_OWNER_ID_PHOTOS + " = ?",
+                    new String[]{ownerId});
         }
         else {
-            contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+            contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, ownerId);
             database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
-
-        goToProfile();
     }
 
+    private boolean hasSomePhoto() {
 
-    private void attentionInvalidPhoneNumber(){
-        Toast.makeText(
-                this,
-                "Неправильный номер",
-                Toast.LENGTH_SHORT).show();
-    }
+        String sqlQuery = "SELECT * FROM "
+                + DBHelper.TABLE_PHOTOS
+                + " WHERE "
+                + DBHelper.KEY_OWNER_ID_PHOTOS + " = ?";
 
-    private void attentionEmptyPhoneNumberField() {
-        Toast.makeText(
-                this,
-                "Поле с номером телефона не зполнено",
-                Toast.LENGTH_SHORT).show();
-    }
+        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(sqlQuery, new String[]{userId});
 
-    private void attentionThisCodeWasWrong(){
-        Toast.makeText(
-                this,
-                "Код введен неверно",
-                Toast.LENGTH_SHORT).show();
-    }
-
-    private void savePhone() {
-        sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putString(PHONE_NUMBER, phone);
-        editor.putString(OWNER_ID, phone);
-        editor.apply();
-    }
-
-    private String getUserPass() {
-        sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-        return  sPref.getString(PASS, "-");
-    }
-
-    private void goToAuthorization(){
-        Intent intent = new Intent(EditProfile.this, Authorization.class);
-        startActivity(intent);
-        finish();
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
     }
 
     private  String getUserId(){
@@ -701,5 +563,26 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private void attentionBadConnection() {
         Toast.makeText(this,"Плохое соединение",Toast.LENGTH_SHORT).show();
+    }
+
+    private void attentionThisUserAlreadyReg(){
+        Toast.makeText(
+                this,
+                "Данный пользователь уже зарегестрирован.",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void attentionInvalidPhoneNumber(){
+        Toast.makeText(
+                this,
+                "Неправильный номер",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void attentionThisCodeWasWrong(){
+        Toast.makeText(
+                this,
+                "Код введен неверно",
+                Toast.LENGTH_SHORT).show();
     }
 }

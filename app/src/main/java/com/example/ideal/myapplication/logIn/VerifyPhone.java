@@ -53,14 +53,10 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
 
         //получаем id inputs
         codeInput = findViewById(R.id.codeVerifyInput);
-
         changePhoneText = findViewById(R.id.changePhoneVerifyText);
-
         fbAuth = FirebaseAuth.getInstance();
-
         myPhoneNumber = getIntent().getStringExtra(PHONE_NUMBER);
 
-        //setUpVerificationCallbacks();
         sendVerificationCode();
 
         verifyCodeBtn.setOnClickListener(this);
@@ -101,6 +97,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
                         resendCodeBtn.setVisibility(View.VISIBLE);
                     }
                 };
+
 
     private void sendVerificationCode(){
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
