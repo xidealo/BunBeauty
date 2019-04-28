@@ -319,7 +319,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             String subscribersBtnText = SUBSCRIBERS;
             long subscribersCount = getCountOfSubscribers();
 
-            Log.d(TAG, "onResume: " + subscribersCount);
             if(subscribersCount!=0){
                 subscribersBtnText += " (" + subscribersCount + ")";
             }
@@ -581,6 +580,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private void goToLogIn() {
         FirebaseAuth.getInstance().signOut();
+
+        stopService(new Intent(this, MyService.class));
 
         Intent intent = new Intent(this, Authorization.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
