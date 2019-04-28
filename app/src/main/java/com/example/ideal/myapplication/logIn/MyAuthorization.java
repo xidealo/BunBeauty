@@ -5,12 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.other.MyService;
 import com.example.ideal.myapplication.other.Profile;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -273,6 +277,9 @@ public class MyAuthorization {
     }
 
     private void goToProfile() {
+        // тоже самое необходимо прописать для перехода с регистрации
+
+        ContextCompat.startForegroundService(context, new Intent(context, MyService.class));
 
         Intent intent = new Intent(context, Profile.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
