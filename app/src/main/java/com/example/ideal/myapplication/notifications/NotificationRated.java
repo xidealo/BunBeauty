@@ -14,7 +14,7 @@ public class NotificationRated extends NotificationConstructor {
 
     private Resources resources;
     private Context context;
-    private static final String CHANNEL_ID = "NotificationReview";
+    private static final String CHANNEL_ID = "NotificationRated";
 
     public NotificationRated(Resources resources, Context context) {
         this.resources = resources;
