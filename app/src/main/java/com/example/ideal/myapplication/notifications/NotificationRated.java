@@ -38,18 +38,5 @@ public class NotificationRated extends NotificationConstructor {
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(notificationId, builder.build());
     }
-    @Override
-    public void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = resources.getString(R.string.channel_name);
-            String description = resources.getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
+
 }

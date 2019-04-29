@@ -1,8 +1,6 @@
 package com.example.ideal.myapplication.other;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -26,7 +24,6 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.logIn.Authorization;
-import com.example.ideal.myapplication.notifications.NotificationOrder;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -155,10 +152,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         loadRatingForUser();
         logOutBtn.setOnClickListener(this);
         avatarImage.setOnClickListener(this);
-        Resources resources = getResources();
-        NotificationOrder notificationOrder = new NotificationOrder(resources, this);
-        notificationOrder.createNotificationChannel();
-        notificationOrder.createNotification();
 
     }
 
@@ -574,7 +567,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
 
     }
-
     private void goToLogIn() {
         FirebaseAuth.getInstance().signOut();
 
