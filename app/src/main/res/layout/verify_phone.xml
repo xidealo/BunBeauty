@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
+    android:orientation="vertical"
     tools:context=".logIn.VerifyPhone">
 
     <ImageView
@@ -12,13 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1"
-        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginTop="150dp"
         app:srcCompat="@drawable/bun_beauty" />
 
     <EditText
@@ -27,47 +22,39 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/lightText"
         android:ems="10"
+        android:layout_marginTop="10dp"
         android:hint="@string/enterCode"
         android:inputType="number"
         android:textColor="@color/white"
         android:textColorHint="@color/lightText"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
-        app:layout_constraintVertical_bias="0.3" />
+        android:layout_gravity="center"/>
 
     <Button
         android:id="@+id/verifyVerifyBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/verifyCode"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
-        app:layout_constraintVertical_bias="0.42" />
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        />
 
     <Button
         android:id="@+id/resendVerifyBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/resendCode"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
-        app:layout_constraintVertical_bias="0.54" />
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        />
 
     <TextView
         android:id="@+id/changePhoneVerifyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Именить номер"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
-        app:layout_constraintVertical_bias="0.9" />
+        android:layout_marginTop="100dp"
+        android:layout_gravity="center"
+        android:textColor="@color/lightText"
+        />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

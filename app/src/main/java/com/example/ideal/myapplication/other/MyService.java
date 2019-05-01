@@ -82,53 +82,8 @@ public class MyService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                checkSubscribers();
-
-                DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
-                        .child(userId)
-                        .child(ORDERS);
-                myRef.addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        String workerId = dataSnapshot.child(WORKER_ID).getValue().toString();
-
-                        DatabaseReference ownerRef = FirebaseDatabase
-                                .getInstance()
-                                .getReference(USERS)
-                                .child(workerId)
-                                .child(NAME);
-                        ownerRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                createNotification(dataSnapshot.getValue().toString());
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+                checkSubscriberNotifications();
+                checkRatedProfileNotifications();
             }
         }).run();
     }
@@ -154,7 +109,55 @@ public class MyService extends Service {
     private long countOfSubscribers = 0;
     private long counterForSubscribers = 0;
 
-    private void checkSubscribers(){
+    private void checkRatedProfileNotifications(){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
+                .child(userId)
+                .child(ORDERS);
+        myRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String workerId = dataSnapshot.child(WORKER_ID).getValue().toString();
+
+                DatabaseReference ownerRef = FirebaseDatabase
+                        .getInstance()
+                        .getReference(USERS)
+                        .child(workerId)
+                        .child(NAME);
+                ownerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        createNotification(dataSnapshot.getValue().toString());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void checkSubscriberNotifications(){
         final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
                 .child(userId)
                 .child(SUBSCRIBERS);
