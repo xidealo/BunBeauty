@@ -178,8 +178,10 @@ public class MyAuthorization {
                 // Получаем остальные данные о пользователе
                 Object name = userSnapshot.child(NAME).getValue();
                 if (name == null) {
-                    // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
-                    goToRegistration();
+                    if(userId.equals(getUserId())) {
+                        // Имя пользователя в БД отсутствует, значит пользователь не до конца зарегистрировался
+                        goToRegistration();
+                    }
                 } else {
                     downloadServiceData.loadUserInfo(userSnapshot);
                 }
