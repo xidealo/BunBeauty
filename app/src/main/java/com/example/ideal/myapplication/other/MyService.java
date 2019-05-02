@@ -15,6 +15,10 @@ import android.util.Log;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
+import com.example.ideal.myapplication.notifications.NotificationOrder;
+import com.example.ideal.myapplication.notifications.NotificationSubscribers;
+import com.example.ideal.myapplication.notifications.NotificationYouAreRated;
+import com.example.ideal.myapplication.notifications.NotificationYourServiceIsRated;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -22,9 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static android.app.NotificationManager.IMPORTANCE_MAX;
 
@@ -55,7 +56,7 @@ public class MyService extends Service {
     private String serviceName;
     private String workingDate;
     private String workingTime;
-    
+
     private long counterForSubscribers;
     private long countOfSubscribers;
 
@@ -107,10 +108,12 @@ public class MyService extends Service {
                 // слушает не оценил ли кто-то пользователя
                 startReviewForMeListener();
 
-                startOrderListener();
+                startServicesListener();
+
+                startSubscribersListener();
             }
 
-            private void startOrderListener() {
+            private void startServicesListener() {
                 final DatabaseReference myServicesRef = FirebaseDatabase.getInstance().getReference(USERS)
                         .child(userId)
                         .child(SERVICES);
@@ -157,8 +160,11 @@ public class MyService extends Service {
                                                             downloader.loadUserInfo(userSnapshot);
 
                                                             String name = userSnapshot.child(NAME).getValue(String.class);
-                                                            createOrderNotification(name);
-                                                            //Log.d(TAG, name + " " + serviceName + " " + workingDate + " " + workingTime);
+
+                                                            NotificationOrder notificationOrder = new NotificationOrder(context, name, serviceName, workingDate, workingTime);
+                                                            notificationOrder.createNotification();
+                                                            // createOrderNotification(name);
+                                                            // Log.d(TAG, name + " " + serviceName + " " + workingDate + " " + workingTime);
                                                         }
 
                                                         @Override
@@ -199,7 +205,11 @@ public class MyService extends Service {
                                                     ownerRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot nameSnapshot) {
-                                                            createReviewForServiceNotification(nameSnapshot.getValue(String.class));
+
+                                                            String name = nameSnapshot.getValue(String.class);
+                                                            NotificationYourServiceIsRated notification = new NotificationYourServiceIsRated(context, name, serviceName);
+                                                            notification.createNotification();
+                                                            // createReviewForServiceNotification();
                                                         }
 
                                                         @Override
@@ -304,7 +314,11 @@ public class MyService extends Service {
                             ownerRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot nameSnapshot) {
-                                    createReviewNotification(nameSnapshot.getValue(String.class));
+                                    String name = nameSnapshot.getValue(String.class);
+
+                                    NotificationYouAreRated notification = new NotificationYouAreRated(context, name);
+                                    notification.createNotification();
+                                    //createReviewNotification();
                                 }
 
                                 @Override
@@ -335,7 +349,7 @@ public class MyService extends Service {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         countOfSubscribers = dataSnapshot.getChildrenCount();
                         counterForSubscribers = 0;
-                        
+
                         //слушаем подписчиков
                         myRef.addChildEventListener(new ChildEventListener() {
                             @Override
@@ -344,7 +358,7 @@ public class MyService extends Service {
                                 //чтобы не выводить notification о старых подписчиках
                                 if(counterForSubscribers == countOfSubscribers){
                                     String userId = dataSnapshot.child(USER_ID).getValue().toString();
-                                    
+
                                     DatabaseReference userRef = FirebaseDatabase
                                             .getInstance()
                                             .getReference(USERS)
@@ -393,66 +407,6 @@ public class MyService extends Service {
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
-            }
-
-            // оповещение "На вашу услугу записались"
-            private void createOrderNotification(String name) {
-                //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
-                int notificationId = 1;
-                Log.d(TAG, "createOrderNotification: ");
-
-                //создание notification
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.bun_beauty)
-                        .setContentTitle("BunBeauty")
-                        .setContentText("Пользователь " + name
-                                + " записался к вам на услугу " + serviceName
-                                + ". Сеанс состоится " + workingDate
-                                + " в " + workingTime + ".")
-                        .setPriority(NotificationCompat.PRIORITY_HIGH);
-
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-
-                // notificationId is a unique int for each notification that you must define
-                notificationManager.notify(notificationId, builder.build());
-            }
-
-            // оповещение "Вас очценил мастер"
-            public void createReviewNotification(String name) {
-                //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
-                int notificationId = 1;
-                Log.d(TAG, "createReviewNotification: ");
-
-                //создание notification
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.bun_beauty)
-                        .setContentTitle("BunBeauty")
-                        .setContentText("Мастер " + name + " оценил вас!")
-                        .setPriority(NotificationCompat.PRIORITY_HIGH);
-
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-
-                // notificationId is a unique int for each notification that you must define
-                notificationManager.notify(notificationId, builder.build());
-            }
-
-            // оповещение "Клиент оценил вашу услугу"
-            private void createReviewForServiceNotification(String name) {
-                //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
-                int notificationId = 1;
-                Log.d(TAG, "createReviewForServiceNotification: ");
-
-                //создание notification
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.bun_beauty)
-                        .setContentTitle("BunBeauty")
-                        .setContentText("Клиент " + name + " оценил ваш сервис \"" + serviceName + "\"")
-                        .setPriority(NotificationCompat.PRIORITY_HIGH);
-
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-
-                // notificationId is a unique int for each notification that you must define
-                notificationManager.notify(notificationId, builder.build());
             }
 
         }).run();

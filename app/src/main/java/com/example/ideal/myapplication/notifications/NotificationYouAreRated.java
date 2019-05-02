@@ -7,31 +7,35 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.example.ideal.myapplication.R;
 
-public class NotificationRated extends NotificationConstructor {
+public class NotificationYouAreRated extends NotificationConstructor {
 
-    private Resources resources;
+    private static final String TAG = "DBInf";
+    private static final String CHANNEL_ID = "1";
+
     private Context context;
-    private static final String CHANNEL_ID = "NotificationRated";
+    private String name;
 
-    public NotificationRated(Resources resources, Context context) {
-        this.resources = resources;
-        this.context = context;
+    public NotificationYouAreRated(Context _context, String _name) {
+        context = _context;
+        name = _name;
     }
 
     @Override
     public void createNotification() {
         //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
         int notificationId = 1;
+        Log.d(TAG, "createReviewNotification: ");
 
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
-                .setContentTitle("Вам поставили оценку!")
-                .setContentText("Вас оценил пользователь ИМЯ ПОЛЬЗОВАТЕЛЯ")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setContentTitle("BunBeauty")
+                .setContentText("Мастер " + name + " оценил вас!")
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
