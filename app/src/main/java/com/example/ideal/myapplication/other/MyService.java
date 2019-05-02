@@ -47,6 +47,7 @@ public class MyService extends Service {
     private static final String USER_ID = "user id";
     private static final String DATE = "date";
     private static final String RATING = "rating";
+    private static final String SUBSCRIBERS = "subscribers";
 
     private String userId;
     private DBHelper dbHelper;
@@ -54,6 +55,9 @@ public class MyService extends Service {
     private String serviceName;
     private String workingDate;
     private String workingTime;
+    
+    private long counterForSubscribers;
+    private long countOfSubscribers;
 
     public void onCreate() {
         super.onCreate();
@@ -315,6 +319,77 @@ public class MyService extends Service {
                     @Override
                     public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+            }
+
+            private void startSubscribersListener() {
+                final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
+                        .child(userId)
+                        .child(SUBSCRIBERS);
+
+                //получаю изначальное количество подписчиков для флага
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        countOfSubscribers = dataSnapshot.getChildrenCount();
+                        counterForSubscribers = 0;
+                        
+                        //слушаем подписчиков
+                        myRef.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                //чтобы не выводить notification о старых подписчиках
+                                if(counterForSubscribers == countOfSubscribers){
+                                    String userId = dataSnapshot.child(USER_ID).getValue().toString();
+                                    
+                                    DatabaseReference userRef = FirebaseDatabase
+                                            .getInstance()
+                                            .getReference(USERS)
+                                            .child(userId)
+                                            .child(NAME);
+
+                                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            NotificationSubscribers notificationSubscribers = new NotificationSubscribers(context,
+                                                    dataSnapshot.getValue().toString());
+                                            notificationSubscribers.createNotification();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                    countOfSubscribers++;
+                                }
+                                counterForSubscribers++;
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                //кто-то отписался
+                                counterForSubscribers--;
+                                countOfSubscribers--;
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
