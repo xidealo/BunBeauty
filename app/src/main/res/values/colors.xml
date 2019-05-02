@@ -15,4 +15,10 @@
     <color name="dayWithTimes">#0091B7</color>
     <color name="mainColor">#0091FF</color>
 
+
+    <!-- Style for logIn pages -->
+    <color name="rightBorder">#005F89</color>
+    <color name="leftBorder">#007693</color>
+
+
 </resources>

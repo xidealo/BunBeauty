@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
     android:orientation="vertical"
-    tools:context=".logIn.Authorization">
+    tools:context=".logIn.Authorization"
+    android:background="@drawable/bg">
 
     <ImageView
         android:id="@+id/logoAuthImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="150dp"
+        android:layout_gravity="center"
         app:srcCompat="@drawable/bun_beauty" />
 
     <TextView
@@ -35,15 +35,14 @@
         <Spinner
             android:id="@+id/codeAuthSpinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/lightText"/>
 
         <EditText
             android:id="@+id/phoneAuthInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:backgroundTint="@color/lightText"
-            android:ems="10"
             android:hint="@string/phoneRegistration"
             android:inputType="phone"
             android:textColor="@color/white"

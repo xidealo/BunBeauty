@@ -28,12 +28,9 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
     private static final String TAG = "DBInf";
 
     private static final String PHONE_NUMBER = "Phone number";
-
     private Button verifyCodeBtn;
     private Button resendCodeBtn;
-
     private EditText codeInput;
-
     private TextView changePhoneText;
 
     private String myPhoneNumber;
@@ -62,6 +59,34 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
         verifyCodeBtn.setOnClickListener(this);
         resendCodeBtn.setOnClickListener(this);
         changePhoneText.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        WorkWithViewApi.hideKeyboard(this);
+        switch (v.getId()) {
+            case R.id.verifyVerifyBtn:
+                String code = codeInput.getText().toString();
+
+                if (code.trim().length() >= 6) {
+                    // подтверждаем код и если все хорошо, создаем юзера
+                    verifyCode(code);
+                }
+                break;
+
+            case R.id.resendVerifyBtn:
+                if (resendToken != null) {
+                    resendVerificationCode(resendToken);
+                }
+                break;
+
+            case R.id.changePhoneVerifyText:
+                goBackToAuthorization();
+                break;
+
+            default:
+                break;
+        }
     }
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks verificationCallbacks =
@@ -108,33 +133,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
                 verificationCallbacks);
     }
 
-    @Override
-    public void onClick(View v) {
-        WorkWithViewApi.hideKeyboard(this);
-        switch (v.getId()) {
-            case R.id.verifyVerifyBtn:
-                String code = codeInput.getText().toString();
 
-                if (code.trim().length() >= 6) {
-                    // подтверждаем код и если все хорошо, создаем юзера
-                    verifyCode(code);
-                }
-                break;
-
-            case R.id.resendVerifyBtn:
-                if (resendToken != null) {
-                    resendVerificationCode(resendToken);
-                }
-                break;
-
-            case R.id.changePhoneVerifyText:
-                goBackToAuthorization();
-                break;
-
-            default:
-                break;
-        }
-    }
 
     private void resendVerificationCode(PhoneAuthProvider.ForceResendingToken token) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(

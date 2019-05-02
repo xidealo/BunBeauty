@@ -73,6 +73,7 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/btn"
         android:text="@string/saveData"
+        android:gravity="center"
         android:textColor="@color/white"
         android:textStyle="bold" />
 

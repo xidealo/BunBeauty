@@ -38,7 +38,6 @@ public class CommentElement extends Fragment implements View.OnClickListener{
     private String review;
     private float rating;
 
-
     public CommentElement() {
     }
 
