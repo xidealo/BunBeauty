@@ -29,7 +29,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
 
     private static final String PHONE_NUMBER = "Phone number";
     private Button verifyCodeBtn;
-    private Button resendCodeBtn;
+    private TextView resendCodeText;
     private EditText codeInput;
     private TextView changePhoneText;
 
@@ -46,7 +46,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.verify_phone);
         //получаем id btns
         verifyCodeBtn = findViewById(R.id.verifyVerifyBtn);
-        resendCodeBtn = findViewById(R.id.resendVerifyBtn);
+        resendCodeText = findViewById(R.id.resendVerifyText);
 
         //получаем id inputs
         codeInput = findViewById(R.id.codeVerifyInput);
@@ -57,7 +57,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
         sendVerificationCode();
 
         verifyCodeBtn.setOnClickListener(this);
-        resendCodeBtn.setOnClickListener(this);
+        resendCodeText.setOnClickListener(this);
         changePhoneText.setOnClickListener(this);
     }
 
@@ -74,7 +74,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
                 }
                 break;
 
-            case R.id.resendVerifyBtn:
+            case R.id.resendVerifyText:
                 if (resendToken != null) {
                     resendVerificationCode(resendToken);
                 }
@@ -119,7 +119,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
 
                         codeInput.setVisibility(View.VISIBLE);
                         verifyCodeBtn.setVisibility(View.VISIBLE);
-                        resendCodeBtn.setVisibility(View.VISIBLE);
+                        resendCodeText.setVisibility(View.VISIBLE);
                     }
                 };
 
@@ -174,7 +174,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
 
     private void hideViewsOfScreen(){
         verifyCodeBtn.setVisibility(View.INVISIBLE);
-        resendCodeBtn.setVisibility(View.INVISIBLE);
+        resendCodeText.setVisibility(View.INVISIBLE);
 
         codeInput.setVisibility(View.INVISIBLE);
 

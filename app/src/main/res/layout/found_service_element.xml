@@ -1,57 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="330dp"
+    android:layout_height="85dp"
     android:orientation="horizontal"
-    android:theme="@style/allPages"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:background="@color/white">
 
-    <ImageView
-        android:id="@+id/avatarFoundServiceElementImage"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/userNameFoundServiceElementText"
-        android:layout_width="14dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="TextView"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/serviceNameFoundServiceElementText"
-        android:layout_width="5dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=" - "
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/costFoundServiceElementText"
-        android:layout_width="2dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=" - "
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/cityFoundServiceElementText"
-        android:layout_width="1dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=" - "
-        android:textSize="18sp" />
-
-    <RatingBar
-        android:id="@+id/ratingBarFondServiceElement"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:isIndicator="true"
-        style="?android:attr/ratingBarStyleSmall"
-      />
+        android:layout_height="85dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/avatarFoundServiceElementImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@tools:sample/avatars"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/userNameFoundServiceElementText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Имя"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/cityFoundServiceElementText"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Город"
+            android:textSize="18sp" />
+
+        <RatingBar
+            android:id="@+id/ratingBarFondServiceElement"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:layout_gravity="bottom"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/serviceNameFoundServiceElementText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Имя сервиса"
+            android:textSize="12sp"
+            android:layout_gravity="end"
+            />
+
+        <TextView
+            android:id="@+id/costFoundServiceElementText"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Цена"
+            android:textSize="12sp"
+            android:layout_gravity="end"
+            />
+    </LinearLayout>
 </LinearLayout>

@@ -71,11 +71,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:background="@drawable/btn"
         android:text="@string/saveData"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textStyle="bold" />
-
+        android:textStyle="bold"
+        style="@style/mainButton"/>
 
 </LinearLayout>

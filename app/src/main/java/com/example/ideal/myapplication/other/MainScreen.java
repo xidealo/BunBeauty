@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -78,17 +79,21 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         Button btn = (Button) v;
         resultLayout.removeAllViews();
         if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
-            btn.setBackgroundResource(R.drawable.time_button);
+            btn.setBackgroundResource(R.drawable.categories_button);
+            btn.setTextColor(getResources().getColor(R.color.white));
             btn.setTag(R.string.selectedId, false);
             category = "";
         } else {
             //for чтобы все сделать неактивынми
             for (Button categoriesBtn : categoriesBtns) {
                 categoriesBtn.setTag(R.string.selectedId, false);
-                categoriesBtn.setBackgroundResource(R.drawable.day_button);
+                categoriesBtn.setBackgroundResource(R.drawable.categories_button);
+                categoriesBtn.setTextColor(getResources().getColor(R.color.white));
             }
 
             btn.setBackgroundResource(R.drawable.pressed_button);
+            btn.setTextColor(getResources().getColor(R.color.black));
+
             btn.setTag(R.string.selectedId, true);
             category = btn.getText().toString();
         }
@@ -97,13 +102,22 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     }
 
     private  void createCategoryFeed(){
+        int width = getResources().getDimensionPixelSize(R.dimen.categories_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.categories_height);
         for(int i =0 ;i<categoriesBtns.length; i++){
             categoriesBtns[i] = new Button(this);
-            categoriesBtns[i].setWidth(80);
-            categoriesBtns[i].setHeight(40);
             categoriesBtns[i].setTag(R.string.selectedId,false);
             categoriesBtns[i].setOnClickListener(this);
             categoriesBtns[i].setText(categories[i]);
+            categoriesBtns[i].setTextSize(14);
+            categoriesBtns[i].setBackgroundColor(R.drawable.categories_button);
+            categoriesBtns[i].setTextColor(getResources().getColor(R.color.white));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    width,
+                    height);
+            params.setMargins(10,10,10,15);
+            categoriesBtns[i].setLayoutParams(params);
 
             categoryLayout.addView(categoriesBtns[i]);
         }
