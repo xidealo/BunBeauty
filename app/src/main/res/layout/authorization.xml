@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".logIn.Authorization"
-    android:background="@drawable/bg">
+    style="@style/LogInPages">
 
     <ImageView
         android:id="@+id/logoAuthImage"
@@ -53,8 +53,9 @@
         android:id="@+id/verifyAuthBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/log_in"
-        android:visibility="invisible"
+        style="@style/mainButton"
+        android:text="Войти"
+        android:visibility="visible"
         android:layout_marginTop="10dp"
         android:layout_gravity="center"/>
 

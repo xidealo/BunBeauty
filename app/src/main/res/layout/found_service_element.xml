@@ -41,11 +41,12 @@
 
         <RatingBar
             android:id="@+id/ratingBarFondServiceElement"
-            style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:isIndicator="true"
-            android:layout_gravity="bottom"/>
+            style="@android:style/Widget.Holo.RatingBar.Small"
+            android:stepSize="1"
+            android:numStars="5"
+            android:isIndicator="true"/>
     </LinearLayout>
 
     <LinearLayout

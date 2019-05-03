@@ -44,6 +44,11 @@
     <string name="channel_name">q</string>
     <string name="channel_description">qq</string>
 
+    //bottom panel
+    <string name="chat">\uf075</string>
+
+
+
     //array for spinner
     <string-array name="cities">
         <item>Не выбран</item>
