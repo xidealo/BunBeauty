@@ -118,7 +118,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
         avatarImage = view.findViewById(R.id.avatarTopPanelImage);
 
         if (super.getActivity().isTaskRoot()) {
-            backText.setVisibility(View.GONE);
+            backText.setVisibility(View.INVISIBLE);
         } else {
             backText.setOnClickListener(this);
         }
@@ -185,7 +185,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                                 searchText.setVisibility(View.VISIBLE);
                                 // Если это любое другое активити
                             } else {
-                                settingText.setVisibility(View.GONE);
+                                settingText.setVisibility(View.INVISIBLE);
                             }
                         }
                     }
@@ -328,6 +328,5 @@ public class TopPanel extends Fragment implements View.OnClickListener {
         EditService activity = (EditService) this.getActivity();
         activity.deleteThisService();
     }
-
 
 }

@@ -73,6 +73,6 @@
         android:layout_marginTop="30dp"
         android:text="@string/saveData"
         android:gravity="center"
-        style="@style/mainButton"/>
+        style="@style/mainButtonLogIn"/>
 
 </LinearLayout>
