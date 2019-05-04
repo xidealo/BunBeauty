@@ -15,28 +15,15 @@ import android.widget.TextView;
 import com.example.ideal.myapplication.R;
 
 public class RatingBarElement extends Fragment implements View.OnClickListener {
-    private static final String ID = "id";
-    private static final String TYPE = "type";
 
-    private TextView countOfRatesText;
-    private TextView avgRatesText;
-    private RatingBar ratingBar;
 
-    private long countOfRates;
-    private float avgRates;
-
-    private String serviceId;
-    private String type;
 
     public RatingBarElement() {
     }
 
     @SuppressLint("ValidFragment")
     public RatingBarElement(float _avgRating, long _countOfRates, String _serviceId, String _type) {
-        countOfRates = _countOfRates;
-        avgRates = _avgRating;
-        serviceId = _serviceId;
-        type = _type;
+
     }
 
     @Override
@@ -47,34 +34,10 @@ public class RatingBarElement extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        countOfRatesText = view.findViewById(R.id.countOfRatesRatingBarElementText);
-        avgRatesText = view.findViewById(R.id.avgRatingRatingBarElementText);
-        ratingBar = view.findViewById(R.id.ratingBarRatingBarForService);
-
-        avgRatesText.setOnClickListener(this);
-        ratingBar.setOnClickListener(this);
-        countOfRatesText.setOnClickListener(this);
-
-        setData();
     }
 
     @Override
     public void onClick(View v) {
-        goToComments();
     }
 
-    private void goToComments() {
-        Intent intent = new Intent(getContext(), Comments.class);
-        intent.putExtra(ID, serviceId);
-        intent.putExtra(TYPE, type);
-        startActivity(intent);
-    }
-
-    private void setData() {
-        if (countOfRates > 0) {
-            countOfRatesText.setText(String.valueOf(countOfRates));
-            avgRatesText.setText(String.valueOf(avgRates));
-            ratingBar.setRating(avgRates);
-        }
-    }
 }

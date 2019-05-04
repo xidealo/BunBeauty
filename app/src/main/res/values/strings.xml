@@ -46,8 +46,12 @@
 
     //bottom panel
     <string name="chat">\uf075</string>
-
-
+    <string name="user">\uf007</string>
+    <string name="mainScreen">\uf03a</string>
+    <string name="search">\uf002</string>
+    <string name="back">\uf104</string>
+    <string name="settings">\uf303</string>
+    <string name="subscribe_heart">\uf004</string>
 
     //array for spinner
     <string-array name="cities">

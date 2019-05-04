@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Dialogs;
@@ -21,10 +22,6 @@ public class BottomPanel extends Fragment implements View.OnClickListener{
 
     private static final String OWNER_ID = "owner id";
     private static final String TAG = "DBInf";
-
-    private Button profileBtn;
-    private Button mainScreenBtn;
-    private Button chatBtn;
 
     private boolean isMyProfile;
     private String myPhone;
@@ -45,27 +42,27 @@ public class BottomPanel extends Fragment implements View.OnClickListener{
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        profileBtn = view.findViewById(R.id.profileBottomPanelBtn);
-        mainScreenBtn = view.findViewById(R.id.mainScreenBottomPanelBtn);
-        chatBtn = view.findViewById(R.id.chatBottomPanelBtn);
+        TextView profileText = view.findViewById(R.id.profileBottomPanelText);
+        TextView mainScreenText = view.findViewById(R.id.mainScreenBottomPanelText);
+        TextView chatText = view.findViewById(R.id.chatBottomPanelText);
 
-        profileBtn.setOnClickListener(this);
-        mainScreenBtn.setOnClickListener(this);
-        chatBtn.setOnClickListener(this);
+        profileText.setOnClickListener(this);
+        mainScreenText.setOnClickListener(this);
+        chatText.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.profileBottomPanelBtn:
+            case R.id.profileBottomPanelText:
                 goToProfile();
                 break;
 
-            case R.id.mainScreenBottomPanelBtn:
+            case R.id.mainScreenBottomPanelText:
                 goToMainScreen();
                 break;
 
-            case R.id.chatBottomPanelBtn:
+            case R.id.chatBottomPanelText:
                 goToDialogs();
                 break;
         }

@@ -29,7 +29,7 @@ import com.example.ideal.myapplication.other.Profile;
 import com.example.ideal.myapplication.other.SearchService;
 
 
-public class TopPanel extends Fragment implements View.OnClickListener{
+public class TopPanel extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
 
@@ -38,11 +38,15 @@ public class TopPanel extends Fragment implements View.OnClickListener{
     private static final String OWNER_ID = "owner id";
     private static final String SERVICE_ID = "service id";
 
-    private Button backBtn;
+    private TextView backText;
     private TextView titleText;
+    private TextView searchText;
     private TextView countOfSubsText;
     private ImageView avatarImage;
-    private Button multiBtn;
+    private ImageView logoImage;
+    private TextView settingText;
+    private TextView subscribeText;
+    private TextView unsubscribeText;
 
     private String title;
     private boolean isMyProfile;
@@ -50,7 +54,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
     private String serviceId;
     private String serviceOwnerId;
 
-    SubscriptionsApi subsApi;
+    private SubscriptionsApi subsApi;
 
     public TopPanel() {
     }
@@ -102,54 +106,57 @@ public class TopPanel extends Fragment implements View.OnClickListener{
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        backBtn = view.findViewById(R.id.backTopPanelBtn);
+        backText = view.findViewById(R.id.backTopPanelText);
         titleText = view.findViewById(R.id.titleTopPanelText);
         countOfSubsText = view.findViewById(R.id.countOfSubsTopPanelText);
-        multiBtn = view.findViewById(R.id.multiTopPanelBtn);
+        settingText = view.findViewById(R.id.settingTopPanelText);
+        searchText = view.findViewById(R.id.searchTopPanelText);
+        subscribeText = view.findViewById(R.id.subscribeTopPanelText);
+        unsubscribeText = view.findViewById(R.id.unsubscribeTopPanelText);
+        logoImage = view.findViewById(R.id.logoTopPanelImage);
 
         avatarImage = view.findViewById(R.id.avatarTopPanelImage);
 
-        if(super.getActivity().isTaskRoot()){
-            backBtn.setVisibility(View.INVISIBLE);
+        if (super.getActivity().isTaskRoot()) {
+            backText.setVisibility(View.INVISIBLE);
         } else {
-            backBtn.setOnClickListener(this);
+            backText.setOnClickListener(this);
         }
 
-        multiBtn.setOnClickListener(this);
+        settingText.setOnClickListener(this);
+        subscribeText.setOnClickListener(this);
+        unsubscribeText.setOnClickListener(this);
         // Если не мой профиль
-        if(!isMyProfile) {
+        if (!isMyProfile) {
             // Если это профиль
             if (getContext().getClass() == Profile.class) {
-                Profile profile = (Profile)super.getActivity();
+                Profile profile = (Profile) super.getActivity();
                 String ownerId = profile.getIntent().getStringExtra(OWNER_ID);
                 subsApi = new SubscriptionsApi(ownerId, getContext());
                 subsApi.loadCountOfSubscribers(countOfSubsText);
 
-                if(((Profile)super.getActivity()).checkSubscription()) {
-                    multiBtn.setText("<B");
-                    multiBtn.setTag( true);
+                if (((Profile) super.getActivity()).checkSubscription()) {
+                    setSubscribe();
                 } else {
-                    multiBtn.setText("<3");
-                    multiBtn.setTag( false);
+                    setUnsubscribe();
                 }
+                //убираем значок настроек
+                settingText.setVisibility(View.GONE);
                 countOfSubsText.setVisibility(View.VISIBLE);
             } else {
                 // Если это страница сервиса
                 if (getContext().getClass() == GuestService.class) {
                     // Если это мой сервис
                     if (isMyService) {
-                        multiBtn.setText("Редактировать");
                         // Если это чужой сервис
                     } else {
                         DBHelper dbHelper = new DBHelper(getContext());
                         SQLiteDatabase database = dbHelper.getReadableDatabase();
-                        Log.d(TAG, "onViewCreated: " + serviceOwnerId);
                         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
                         workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId, avatarImage);
-                        multiBtn.setVisibility(View.GONE);
+                        settingText.setVisibility(View.GONE);
                         avatarImage.setVisibility(View.VISIBLE);
                         avatarImage.setOnClickListener(this);
-
                     }
                     // Если это не сервис
                 } else {
@@ -161,7 +168,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
 
                         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
                         workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId, avatarImage);
-                        multiBtn.setVisibility(View.GONE);
+                        settingText.setVisibility(View.GONE);
                         avatarImage.setVisibility(View.VISIBLE);
                         avatarImage.setOnClickListener(this);
                         // Если это не диалог
@@ -169,15 +176,16 @@ public class TopPanel extends Fragment implements View.OnClickListener{
                         if (getContext().getClass() == EditService.class) {
                             //multiBtn.setText("Удалить");
                             //Пока что не будет удаления сервиса, потому что много связей и тяжело удалить
-                            multiBtn.setVisibility(View.GONE);
+                            settingText.setVisibility(View.GONE);
                             // Если это не редактирование сервиса
                         } else {
                             // Если это главная страница
                             if (getContext().getClass() == MainScreen.class) {
-                                multiBtn.setText("Поиск");
+                                settingText.setVisibility(View.GONE);
+                                searchText.setVisibility(View.VISIBLE);
                                 // Если это любое другое активити
                             } else {
-                                multiBtn.setVisibility(View.INVISIBLE);
+                                settingText.setVisibility(View.INVISIBLE);
                             }
                         }
                     }
@@ -188,18 +196,32 @@ public class TopPanel extends Fragment implements View.OnClickListener{
     }
 
     private void setTitle() {
-        titleText.setText(title);
+        //если на главной странице, то устанавливаем logo
+        if(title.equals("Главная")){
+            titleText.setVisibility(View.GONE);
+            logoImage.setVisibility(View.VISIBLE);
+        }
+        else {
+            titleText.setText(title);
+        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.backTopPanelBtn:
+            case R.id.backTopPanelText:
                 super.getActivity().onBackPressed();
                 break;
 
-            case R.id.multiTopPanelBtn:
+            case R.id.settingTopPanelText:
                 multiClick();
+                break;
+
+            case R.id.subscribeTopPanelText:
+                checkSubscribe();
+                break;
+            case R.id.unsubscribeTopPanelText:
+                checkSubscribe();
                 break;
 
             case R.id.avatarTopPanelImage:
@@ -214,26 +236,7 @@ public class TopPanel extends Fragment implements View.OnClickListener{
             goToEditProfile();
             return;
         }
-
         Class currentClass = getContext().getClass();
-
-        //чужой профиль
-        if (currentClass == Profile.class) {
-            if((boolean)multiBtn.getTag()) {
-                multiBtn.setTag(false);
-                multiBtn.setText("<3");
-                subsApi.unsubscribe();
-                Toast.makeText(getContext(), "Подписка отменена", Toast.LENGTH_SHORT).show();
-            } else {
-                multiBtn.setTag(true);
-                multiBtn.setText("<B");
-                subsApi.subscribe();
-                Toast.makeText(getContext(), "Вы подписались", Toast.LENGTH_SHORT).show();
-            }
-
-            return;
-        }
-
         // сервис
         if (currentClass == GuestService.class) {
             if (isMyService) {
@@ -264,7 +267,34 @@ public class TopPanel extends Fragment implements View.OnClickListener{
         }
     }
 
+    private void checkSubscribe(){
+        Class currentClass = getContext().getClass();
+        //чужой профиль
+        if (currentClass == Profile.class) {
+            if ((boolean) subscribeText.getTag()) {
+                setUnsubscribe();
+                subsApi.unsubscribe();
+                Toast.makeText(getContext(), "Подписка отменена", Toast.LENGTH_SHORT).show();
+            } else {
+                setSubscribe();
+                subsApi.subscribe();
+                Toast.makeText(getContext(), "Вы подписались", Toast.LENGTH_SHORT).show();
+            }
 
+            return;
+        }
+    }
+    private void setSubscribe() {
+        unsubscribeText.setVisibility(View.GONE);
+        subscribeText.setVisibility(View.VISIBLE);
+        subscribeText.setTag(true);
+    }
+
+    private void setUnsubscribe() {
+        subscribeText.setVisibility(View.GONE);
+        unsubscribeText.setVisibility(View.VISIBLE);
+        subscribeText.setTag(false);
+    }
 
     private void goToEditProfile() {
         Intent intent = new Intent(getContext(), EditProfile.class);
@@ -295,7 +325,9 @@ public class TopPanel extends Fragment implements View.OnClickListener{
     }
 
     private void deleteService() {
-       EditService activity = (EditService)this.getActivity();
-       activity.deleteThisService();
+        EditService activity = (EditService) this.getActivity();
+        activity.deleteThisService();
     }
+
+
 }

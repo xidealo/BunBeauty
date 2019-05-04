@@ -47,10 +47,40 @@
     </style>
 
     <!-- Style for icons -->
-    <style name="textItem">
-        <item name="fontFamily"></item>
+    <style name="textItem" >
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="textItemRegular" parent="textItem">
+        <item name="fontFamily">@font/font_awesome_second_regular</item>
+    </style>
+    <style name="textItemSolid" parent="textItem" >
+        <item name="fontFamily">@font/font_awesome_solid</item>
+    </style>
+
+    <!-- Style for titles -->
+    <style name="myTitle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">24sp</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+    </style>
+
+    <!-- Style for main text -->
+    <style name="TextOnPages">
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:background">@drawable/block_text</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
+    <style name="defaultText" parent="TextOnPages">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="mainText" parent="TextOnPages">
+        <item name="android:textSize">20sp</item>
+    </style>
 
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

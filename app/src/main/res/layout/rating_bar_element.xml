@@ -3,30 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:theme="@style/allPages"
     tools:context=".reviews.RatingBarElement">
 
-    <RatingBar
-        android:id="@+id/ratingBarRatingBarForService"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:isIndicator="true"
-        android:scaleX="0.5"
-        android:scaleY="0.5"
-        />
-    <TextView
-        android:id="@+id/avgRatingRatingBarElementText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="" />
 
-    <TextView
-        android:id="@+id/countOfRatesRatingBarElementText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="" />
 </LinearLayout>

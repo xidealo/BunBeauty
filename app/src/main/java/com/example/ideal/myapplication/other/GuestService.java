@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.reviews.Comments;
 import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
@@ -33,6 +35,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String USER = "user";
     private static final String SERVICE_ID = "service id";
     private static final String ORDER_ID = "order_id";
+    private static final String ID = "id";
+    private static final String TYPE = "type";
 
     private static final String STATUS_USER_BY_SERVICE = "status User";
 
@@ -45,18 +49,17 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private String ownerId;
     private String serviceName;
 
-    private TextView nameText;
     private TextView costText;
     private TextView addressText;
     private TextView withoutRatingText;
-    private ProgressBar progressBar;
     private TextView descriptionText;
+    private TextView countOfRatesText;
+    private TextView avgRatesText;
     private FragmentManager manager;
-    private LinearLayout ratingLayout;
     private LinearLayout imageFeedLayout;
+    private RatingBar ratingBar;
 
     private WorkWithLocalStorageApi workWithLocalStorageApi;
-
 
     private DBHelper dbHelper;
 
@@ -72,19 +75,18 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init(){
-        nameText = findViewById(R.id.nameGuestServiceText);
         costText = findViewById(R.id.costGuestServiceText);
         addressText = findViewById(R.id.addressGuestServiceText);
         descriptionText = findViewById(R.id.descriptionGuestServiceText);
         withoutRatingText = findViewById(R.id.withoutRatingText);
-
-        progressBar = findViewById(R.id.progressBarGuestService);
+        ratingBar = findViewById(R.id.ratingBarGuestServiceRatingBar);
+        countOfRatesText = findViewById(R.id.countOfRatesGuestServiceElementText);
+        avgRatesText = findViewById(R.id.avgRatingGuestServiceElementText);
 
         Button editScheduleBtn = findViewById(R.id.editScheduleGuestServiceBtn);
         Button premiumBtn = findViewById(R.id.premiumGuestServiceBtn);
         manager = getSupportFragmentManager();
 
-        ratingLayout = findViewById(R.id.resultGuestServiceLayout);
         imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
@@ -111,8 +113,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         if (isMyService) {
             status = WORKER;
             editScheduleBtn.setText("Редактировать расписание");
-            premiumBtn.setVisibility(View.VISIBLE);
-            premiumBtn.setOnClickListener(this);
+            //premiumBtn.setVisibility(View.VISIBLE);
+            //premiumBtn.setOnClickListener(this);
         } else {
             status = USER;
             editScheduleBtn.setText("Расписание");
@@ -165,7 +167,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
             ownerId = cursor.getString(indexUserId);
 
-            nameText.setText(cursor.getString(indexName));
             costText.setText(cursor.getString(indexMinCost));
             descriptionText.setText(cursor.getString(indexDescription));
             addressText.setText(cursor.getString(indexAddress));
@@ -237,8 +238,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             if(countOfRates!=0){
                 avgRating = sumOfRates / countOfRates;
             }
-
-            addToScreenOnGuestService(avgRating, countOfRates);
+            createRatingBar(avgRating,countOfRates);
         } else {
             setWithoutRating();
         }
@@ -325,6 +325,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private void setPhotoFeed(String serviceId) {
 
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
+
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         //получаем ссылку на фото по id владельца
         String sqlQuery =
@@ -342,13 +345,22 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
                 String photoLink = cursor.getString(indexPhotoLink);
 
+
                 ImageView serviceImage = new ImageView(getApplicationContext());
-                serviceImage.setLayoutParams(new ViewGroup.LayoutParams(250,250));
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        width,
+                        height);
+                params.setMargins(15,15,15,15);
+                serviceImage.setLayoutParams(params);
+                serviceImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 imageFeedLayout.addView(serviceImage);
 
                 //установка аватарки
                 Picasso.get()
                         .load(photoLink)
+                        .resize(width,height)
+                        .centerCrop()
                         .into(serviceImage);
             }while (cursor.moveToNext());
         }
@@ -376,8 +388,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addToScreenOnGuestService(float avgRating, long countOfRates) {
-
-        ratingLayout.removeAllViews();
         RatingBarElement fElement
                 = new RatingBarElement(avgRating, countOfRates, serviceId, REVIEW_FOR_SERVICE);
         FragmentTransaction transaction = manager.beginTransaction();
@@ -387,8 +397,20 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         transaction.commit();
     }
 
+    private void createRatingBar(float avgRating, long countOfRates){
+
+        if (countOfRates > 0) {
+            countOfRatesText.setVisibility(View.VISIBLE);
+            avgRatesText.setVisibility(View.VISIBLE);
+            ratingBar.setVisibility(View.VISIBLE);
+
+            countOfRatesText.setText("("+ countOfRates + " оценок)");
+            avgRatesText.setText(String.valueOf(avgRating));
+            ratingBar.setRating(avgRating);
+        }
+    }
+
     private void setWithoutRating(){
-        progressBar.setVisibility(View.GONE);
         withoutRatingText.setVisibility(View.VISIBLE);
     }
     private void goToMyCalendar(String status) {
@@ -402,6 +424,13 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private void goToPremium() {
         Intent intent = new Intent(this,Premium.class);
         intent.putExtra(SERVICE_ID, serviceId);
+        startActivity(intent);
+    }
+
+    private void goToComments() {
+        Intent intent = new Intent(this, Comments.class);
+        intent.putExtra(ID, serviceId);
+        intent.putExtra(TYPE, REVIEW_FOR_SERVICE);
         startActivity(intent);
     }
 
