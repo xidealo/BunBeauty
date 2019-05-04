@@ -25,17 +25,18 @@
 
         <LinearLayout
             android:id="@+id/resultGuestServiceLayout"
+            style="@style/block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/block_text">
+            android:background="@drawable/block_text"
+            android:orientation="horizontal">
 
             <TextView
                 style="@style/mainText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Рейтинг: " />
+
             <TextView
                 android:id="@+id/withoutRatingText"
                 style="@style/defaultText"
@@ -50,9 +51,9 @@
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:padding="5dp"
                 android:background="@color/white"
                 android:isIndicator="true"
+                android:padding="5dp"
                 android:visibility="gone" />
 
             <TextView
@@ -68,41 +69,54 @@
                 style="@style/defaultText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:visibility="gone" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/costGuestServiceText"
+        <LinearLayout
+            style="@style/block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            style="@style/mainText"/>
+            android:background="@drawable/block_text">
 
-        <TextView
-            android:id="@+id/addressGuestServiceText"
+            <TextView
+                android:id="@+id/costGuestServiceText"
+                style="@style/mainText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            style="@style/mainText"/>
+            android:background="@drawable/block_text">
+
+            <TextView
+                android:id="@+id/addressGuestServiceText"
+                style="@style/mainText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/block_text"
             android:orientation="vertical"
-            android:background="@drawable/block_text">
+            style="@style/block">
+
             <TextView
+                style="@style/mainText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Описание:"
-                style="@style/mainText"/>
-        <TextView
-            android:id="@+id/descriptionGuestServiceText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            style="@style/defaultText"/>
+                android:text="Описание:" />
+
+            <TextView
+                android:id="@+id/descriptionGuestServiceText"
+                style="@style/defaultText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -112,12 +126,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/guestLinearLayout"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/guestLinearLayout">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
 
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView2"
@@ -130,7 +146,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                 </LinearLayout>
             </HorizontalScrollView>
 
@@ -147,8 +162,7 @@
             style="@style/mainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp" />
+            android:layout_gravity="center" />
 
     </LinearLayout>
 

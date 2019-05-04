@@ -24,7 +24,6 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.logIn.Authorization;
-import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Profile extends AppCompatActivity implements View.OnClickListener {
@@ -276,7 +275,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
             if (counter != 0) {
                 float avgRating = sumRates / counter;
-                addRatingToScreen(avgRating, counter);
+                //addRatingToScreen(avgRating, counter);
+                //метод, который добалвяет оценку
             } else {
                 setWithoutRating();
             }
@@ -528,15 +528,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
-
-    private void addRatingToScreen(Float avgRating, Long countOfRates) {
-        RatingBarElement ratingElement
-                = new RatingBarElement(avgRating, countOfRates, ownerId, REVIEW_FOR_USER);
-
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.ratingLayout, ratingElement);
-        transaction.commit();
     }
 
     private void addOrderToScreen(String id, String name, String date, String time) {

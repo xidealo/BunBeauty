@@ -269,6 +269,14 @@ public class MyAuthorization {
         database.delete(DBHelper.TABLE_ORDERS, null, null);
     }
 
+    private void attentionBadConnection() {
+        Toast.makeText(context, "Плохое соединение", Toast.LENGTH_SHORT).show();
+    }
+
+    private String getUserId() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
     private void goToRegistration() {
         Intent intent = new Intent(context, Registration.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -286,11 +294,5 @@ public class MyAuthorization {
         context.startActivity(intent);
     }
 
-    private void attentionBadConnection() {
-        Toast.makeText(context, "Плохое соединение", Toast.LENGTH_SHORT).show();
-    }
 
-    private String getUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
 }

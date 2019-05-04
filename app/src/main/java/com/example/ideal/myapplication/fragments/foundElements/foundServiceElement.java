@@ -73,7 +73,7 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         }
         costText = view.findViewById(R.id.costFoundServiceElementText);
         ratingBar = view.findViewById(R.id.ratingBarFondServiceElement);
-        avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage);
+        //avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage);
 
         nameUserText.setOnClickListener(this);
         city.setOnClickListener(this);
@@ -92,8 +92,8 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         DBHelper dbHelper = new DBHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-        workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage);
+        //WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+        //workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage);
     }
 
     @Override

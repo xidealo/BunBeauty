@@ -32,6 +32,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">16sp</item>
         <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:elevation">5dp</item>
     </style>
     <!-- Style for extra text -->
     <style name="extraText">
@@ -82,6 +83,11 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <!-- Style for block style -->
+    <style name="block" >
+        <item name="android:elevation">5dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

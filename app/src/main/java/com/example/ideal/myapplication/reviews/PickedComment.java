@@ -90,15 +90,6 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
         goToProfile();
     }
 
-    private void goToProfile() {
-        String ownerId = getIntent().getStringExtra(USER_ID);
-
-        Intent intent = new Intent(this, Profile.class);
-        intent.putExtra(OWNER_ID, ownerId);
-
-        startActivity(intent);
-    }
-
     private void loadOwnerAndAddToScreen(String userId) {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -130,5 +121,14 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
         database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
                 DBHelper.KEY_ID + " = ?",
                 new String[]{String.valueOf(localUser.getId())});
+    }
+
+    private void goToProfile() {
+        String ownerId = getIntent().getStringExtra(USER_ID);
+
+        Intent intent = new Intent(this, Profile.class);
+        intent.putExtra(OWNER_ID, ownerId);
+
+        startActivity(intent);
     }
 }

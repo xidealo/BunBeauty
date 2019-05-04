@@ -33,6 +33,7 @@
         android:layout_weight="1"
         app:srcCompat="@drawable/bun_beauty"
         android:visibility="gone"/>
+
     <TextView
         android:id="@+id/settingTopPanelText"
         style="@style/textItemSolid"

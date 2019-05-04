@@ -7,13 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +20,6 @@ import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.reviews.Comments;
-import com.example.ideal.myapplication.reviews.RatingBarElement;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
@@ -167,7 +163,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
             ownerId = cursor.getString(indexUserId);
 
-            costText.setText(cursor.getString(indexMinCost));
+            costText.setText(cursor.getString(indexMinCost) + "р");
             descriptionText.setText(cursor.getString(indexDescription));
             addressText.setText(cursor.getString(indexAddress));
             serviceName = cursor.getString(indexName);
@@ -385,16 +381,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private  String getUserId(){
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
-
-    private void addToScreenOnGuestService(float avgRating, long countOfRates) {
-        RatingBarElement fElement
-                = new RatingBarElement(avgRating, countOfRates, serviceId, REVIEW_FOR_SERVICE);
-        FragmentTransaction transaction = manager.beginTransaction();
-
-        transaction.add(R.id.resultGuestServiceLayout, fElement);
-
-        transaction.commit();
     }
 
     private void createRatingBar(float avgRating, long countOfRates){

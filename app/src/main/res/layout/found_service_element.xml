@@ -1,29 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="330dp"
-    android:layout_height="85dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@color/white">
-
+    style="@style/block"
+    android:background="@drawable/block_text">
+    <!--
+    <ImageView
+        android:id="@+id/avatarFoundServiceElementImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        tools:srcCompat="@tools:sample/avatars" />
+        -->
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="85dp"
-        android:layout_weight="1">
-
-        <ImageView
-            android:id="@+id/avatarFoundServiceElementImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:srcCompat="@tools:sample/avatars"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/userNameFoundServiceElementText"
@@ -34,43 +28,41 @@
 
         <TextView
             android:id="@+id/cityFoundServiceElementText"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Город"
             android:textSize="18sp" />
 
         <RatingBar
             android:id="@+id/ratingBarFondServiceElement"
+            style="@android:style/Widget.Holo.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@android:style/Widget.Holo.RatingBar.Small"
-            android:stepSize="1"
+            android:isIndicator="true"
             android:numStars="5"
-            android:isIndicator="true"/>
+            android:stepSize="1" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/serviceNameFoundServiceElementText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Имя сервиса"
-            android:textSize="12sp"
             android:layout_gravity="end"
-            />
+            android:text="Имя сервиса"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/costFoundServiceElementText"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Цена"
-            android:textSize="12sp"
+            android:layout_height="wrap_content"
             android:layout_gravity="end"
-            />
+            android:text="Цена"
+            android:textSize="12sp" />
     </LinearLayout>
 </LinearLayout>
