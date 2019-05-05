@@ -153,7 +153,9 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                         DBHelper dbHelper = new DBHelper(getContext());
                         SQLiteDatabase database = dbHelper.getReadableDatabase();
                         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-                        workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId, avatarImage);
+                        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+                        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+                        workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId,avatarImage,width,height);
                         settingText.setVisibility(View.GONE);
                         avatarImage.setVisibility(View.VISIBLE);
                         avatarImage.setOnClickListener(this);
@@ -167,7 +169,10 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
                         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-                        workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId, avatarImage);
+                        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+                        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+                        workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId,avatarImage,width,height);
+
                         settingText.setVisibility(View.GONE);
                         avatarImage.setVisibility(View.VISIBLE);
                         avatarImage.setOnClickListener(this);

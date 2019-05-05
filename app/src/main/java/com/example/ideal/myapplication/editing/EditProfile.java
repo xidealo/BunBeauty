@@ -129,10 +129,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         user = new User();
         dbHelper = new DBHelper(this);
-        WorkWithLocalStorageApi localStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
-
         userId = getUserId();
-        localStorageApi.setPhotoAvatar(userId,avatarImage);
+        WorkWithLocalStorageApi localStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+        localStorageApi.setPhotoAvatar(userId,avatarImage,width,height);
+
         oldPhone = getUserPhone();
 
         setInformation();

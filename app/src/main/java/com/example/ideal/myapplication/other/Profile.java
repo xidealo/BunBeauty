@@ -292,7 +292,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         updateProfileData(ownerId);
 
-        workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage);
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage,width,height);
 
         if (userId.equals(ownerId)) {
             // если это мой сервис

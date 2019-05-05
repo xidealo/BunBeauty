@@ -88,5 +88,6 @@
     <string name="saveData">Сохранить данные</string>
     <string name="subscribed"><![CDATA[<B]]></string>
     <string name="name">Name</string>
+    <string name="change_number"><u>Именить номер</u></string>
 
 </resources>

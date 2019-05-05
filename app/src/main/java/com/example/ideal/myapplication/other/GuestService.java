@@ -163,7 +163,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
             ownerId = cursor.getString(indexUserId);
 
-            costText.setText(cursor.getString(indexMinCost) + "р");
+            costText.setText("Цена от: " + cursor.getString(indexMinCost) + "р");
             descriptionText.setText(cursor.getString(indexDescription));
             addressText.setText(cursor.getString(indexAddress));
             serviceName = cursor.getString(indexName);

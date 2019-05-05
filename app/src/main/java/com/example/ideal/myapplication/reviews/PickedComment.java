@@ -81,8 +81,9 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
-        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
-    }
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage,width,height);    }
 
 
     @Override

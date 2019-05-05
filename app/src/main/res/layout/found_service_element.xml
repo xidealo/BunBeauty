@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/foundServiceElementLayout"
+    style="@style/block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/block_text"
     android:orientation="horizontal"
-    style="@style/block"
-    android:background="@drawable/block_text">
-    <!--
-    <ImageView
-        android:id="@+id/avatarFoundServiceElementImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        tools:srcCompat="@tools:sample/avatars" />
-        -->
+    android:padding="10dp">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_marginEnd="10dp">
+        <ImageView
+            android:id="@+id/avatarFoundServiceElementImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@tools:sample/avatars" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/userNameFoundServiceElementText"
@@ -46,8 +53,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/serviceNameFoundServiceElementText"

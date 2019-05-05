@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -73,12 +74,18 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         }
         costText = view.findViewById(R.id.costFoundServiceElementText);
         ratingBar = view.findViewById(R.id.ratingBarFondServiceElement);
-        //avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage);
+        avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage);
+        LinearLayout layout = view.findViewById(R.id.foundServiceElementLayout);
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+        params.setMargins(10,10,10,15);
+        layout.setLayoutParams(params);
 
         nameUserText.setOnClickListener(this);
         city.setOnClickListener(this);
         nameServiceText.setOnClickListener(this);
         costText.setOnClickListener(this);
+        layout.setOnClickListener(this);
         setData();
     }
 
@@ -92,8 +99,11 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         DBHelper dbHelper = new DBHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        //WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-        //workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage);
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+
+        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+        workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage,width,height);
     }
 
     @Override
