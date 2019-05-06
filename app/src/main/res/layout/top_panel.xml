@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/panelColor"
     android:orientation="horizontal">
@@ -11,8 +11,9 @@
         android:id="@+id/backTopPanelText"
         style="@style/textItemSolid"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center"
         android:layout_weight="1"
         android:text="@string/back" />
 
@@ -20,9 +21,9 @@
         android:id="@+id/titleTopPanelText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_weight="1"
         android:gravity="center"
+        android:layout_gravity="center"
         style="@style/myTitle"
         android:text="Заголовок" />
 
@@ -30,6 +31,7 @@
         android:id="@+id/logoTopPanelImage"
         android:layout_width="wrap_content"
         android:layout_height="70dp"
+        android:layout_gravity="center"
         android:layout_weight="1"
         app:srcCompat="@drawable/bun_beauty"
         android:visibility="gone"/>
@@ -38,10 +40,10 @@
         android:id="@+id/settingTopPanelText"
         style="@style/textItemSolid"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="end"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:text="@string/settings" />
 
     <ImageView
@@ -55,8 +57,10 @@
         android:id="@+id/searchTopPanelText"
         style="@style/textItemSolid"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_weight="1"
         android:text="@string/search"
         android:visibility="gone"
         tools:srcCompat="@tools:sample/avatars" />
@@ -78,8 +82,8 @@
             android:id="@+id/subscribeTopPanelText"
             style="@style/textItemSolid"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/subscribe_heart"
             android:visibility="gone" />
@@ -88,8 +92,8 @@
             android:id="@+id/unsubscribeTopPanelText"
             style="@style/textItemRegular"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/subscribe_heart"
             android:visibility="gone" />

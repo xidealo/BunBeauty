@@ -24,21 +24,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:paddingTop="5dp">
 
         <TextView
             android:id="@+id/userNameFoundServiceElementText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Имя"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            style="@style/mainTextMainScreen"/>
 
         <TextView
             android:id="@+id/cityFoundServiceElementText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Город"
-            android:textSize="18sp" />
+            style="@style/defaultTextMainScreen" />
 
         <RatingBar
             android:id="@+id/ratingBarFondServiceElement"
@@ -61,15 +63,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="Имя сервиса"
-            android:textSize="12sp" />
+            style="@style/defaultTextMainScreen"
+            android:text="Имя сервиса" />
 
         <TextView
             android:id="@+id/costFoundServiceElementText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="Цена"
-            android:textSize="12sp" />
+            style="@style/defaultTextMainScreen"
+            android:text="Цена" />
     </LinearLayout>
 </LinearLayout>

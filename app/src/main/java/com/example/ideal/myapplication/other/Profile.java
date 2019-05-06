@@ -69,7 +69,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.profile);
         withoutRatingText = findViewById(R.id.withoutRatingProfileText);
 
-        Button logOutBtn = findViewById(R.id.logOutProfileBtn);
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
         subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn);
         subscribersBtn = findViewById(R.id.subscribersProfileBtn);
@@ -149,7 +148,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
 
         loadRatingForUser();
-        logOutBtn.setOnClickListener(this);
         avatarImage.setOnClickListener(this);
 
     }
@@ -160,11 +158,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             case R.id.addServicesProfileBtn:
                 goToAddService();
                 break;
-
-            case R.id.logOutProfileBtn:
-                goToLogIn();
-                break;
-
             case R.id.subscriptionsProfileBtn:
                 goToSubscribers(SUBSCRIPTIONS);
                 break;
@@ -560,15 +553,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
 
     }
-    private void goToLogIn() {
-        FirebaseAuth.getInstance().signOut();
 
-        stopService(new Intent(this, MyService.class));
-
-        Intent intent = new Intent(this, Authorization.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-    }
 
     private void setWithoutRating() {
         withoutRatingText.setVisibility(View.VISIBLE);

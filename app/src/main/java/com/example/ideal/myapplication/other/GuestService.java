@@ -51,16 +51,14 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private TextView descriptionText;
     private TextView countOfRatesText;
     private TextView avgRatesText;
-    private FragmentManager manager;
     private LinearLayout imageFeedLayout;
     private RatingBar ratingBar;
-
+    private LinearLayout ratingLL;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
 
     private DBHelper dbHelper;
 
-    public GuestService() {
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +79,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         Button editScheduleBtn = findViewById(R.id.editScheduleGuestServiceBtn);
         Button premiumBtn = findViewById(R.id.premiumGuestServiceBtn);
-        manager = getSupportFragmentManager();
+        ratingLL = findViewById(R.id.ratingGuestServiceLayout);
+
+        FragmentManager manager = getSupportFragmentManager();
 
         imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
 
@@ -135,6 +135,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             case R.id.premiumGuestServiceBtn:
                 goToPremium();
                 break;
+            case R.id.ratingGuestServiceLayout:
+                goToComments();
             default:
                 break;
         }
@@ -394,6 +396,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             avgRatesText.setText(String.valueOf(avgRating));
             ratingBar.setRating(avgRating);
         }
+        ratingLL.setOnClickListener(this);
     }
 
     private void setWithoutRating(){

@@ -41,6 +41,12 @@
     <style name="mainButtonOther" parent="mainButton">
         <item name="android:background">@drawable/main_button</item>
     </style>
+
+    <style name="smallMainButtonOther" parent="mainButton">
+        <item name="android:background">@drawable/main_button</item>
+        <item name="android:width">125dp</item>
+    </style>
+
     <!-- Style for extra text -->
     <style name="extraText">
         <item name="android:textColor">@color/lightText</item>
@@ -79,15 +85,24 @@
         <item name="android:textColor">@color/black</item>
         <item name="fontFamily">@font/roboto_bold</item>
         <item name="android:background">@drawable/block_text</item>
-        <item name="android:padding">10dp</item>
     </style>
 
     <style name="defaultText" parent="TextOnPages">
         <item name="android:textSize">14sp</item>
+        <item name="android:padding">10dp</item>
     </style>
 
     <style name="mainText" parent="TextOnPages">
         <item name="android:textSize">20sp</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="mainTextMainScreen" parent="TextOnPages">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="defaultTextMainScreen" parent="TextOnPages">
+        <item name="android:textSize">14sp</item>
     </style>
 
     <!-- Style for block style -->

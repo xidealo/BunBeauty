@@ -81,19 +81,15 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         params.setMargins(10,10,10,15);
         layout.setLayoutParams(params);
 
-        nameUserText.setOnClickListener(this);
-        city.setOnClickListener(this);
-        nameServiceText.setOnClickListener(this);
-        costText.setOnClickListener(this);
         layout.setOnClickListener(this);
         setData();
     }
 
     private void setData() {
-        nameUserText.setText(nameUserString);
-        city.setText(cityString);
+        nameUserText.setText(nameUserString.toUpperCase());
+        city.setText(cityString.substring(0, 1).toUpperCase() + cityString.substring(1).toLowerCase());
         nameServiceText.setText(nameServiceString);
-        costText.setText(costString);
+        costText.setText("Цена \n" + costString);
         ratingBar.setRating(avgRating);
 
         DBHelper dbHelper = new DBHelper(getContext());

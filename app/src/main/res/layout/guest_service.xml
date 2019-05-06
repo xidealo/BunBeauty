@@ -24,7 +24,7 @@
         app:layout_constraintTop_toBottomOf="@+id/headerGuestServiceLayout">
 
         <LinearLayout
-            android:id="@+id/resultGuestServiceLayout"
+            android:id="@+id/ratingGuestServiceLayout"
             style="@style/block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,7 +119,6 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
-
     </LinearLayout>
 
     <!-- Нижняя часть фотографии и кнопка-->

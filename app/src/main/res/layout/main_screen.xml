@@ -2,23 +2,23 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/allPages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".other.MainScreen"
-    style="@style/allPages">
+    tools:context=".other.MainScreen">
 
     <LinearLayout
         android:id="@+id/headerMainScreenLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Категории -->
     <HorizontalScrollView
+        android:id="@+id/categoryMainScreenScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/categoryMainScreenScroll"
         app:layout_constraintTop_toBottomOf="@+id/headerMainScreenLayout">
 
         <LinearLayout
@@ -26,17 +26,17 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal">
+
         </LinearLayout>
     </HorizontalScrollView>
-
     <!-- Главный экран -->
     <ScrollView
+        android:id="@+id/mainScreenScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/mainScreenScroll"
-        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll"
+        android:layout_margin="10dp"
         android:layout_marginTop="10dp"
-        android:layout_margin="10dp">
+        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll">
 
         <LinearLayout
             android:id="@+id/resultsMainScreenLayout"
