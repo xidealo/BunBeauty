@@ -248,7 +248,6 @@ public class MyAuthorization {
 
                     counter++;
                     if (counter == childrenCount) {
-                        Log.d(TAG, "userReference: ");
                         goToProfile();
                     }
                 }

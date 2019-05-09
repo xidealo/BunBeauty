@@ -521,7 +521,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         String messageTime = workWithTimeApi.getDateInFormatYMDHMS(new Date());
 
         Map<String, Object> items = new HashMap<>();
-        items.put(IS_CANCELED, "false");
+        items.put(IS_CANCELED, false);
         items.put(USER_ID, userId);
         items.put(TIME, messageTime);
 

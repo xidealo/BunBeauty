@@ -121,9 +121,9 @@ public class MyService extends Service {
         Log.d(TAG, "MyService onDestroy");
     }
 
+    @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "MyService onBind");
-    return null;
+        return null;
     }
 
     void startMyListener() {
@@ -136,10 +136,13 @@ public class MyService extends Service {
                 // слушает не оценил ли кто-то пользователя
                 startReviewForMeListener();
 
+                // слушает изменение моих услуг
                 startServicesListener();
 
+                // слушает не подписался ли кто-то на меня
                 startSubscribersListener();
 
+                // слушает не отказался ли кто-то от пользователя
                 startMyOrdersListener();
             }
 
@@ -178,14 +181,15 @@ public class MyService extends Service {
                                                 // срабатывает на добавление ордера
                                                 WorkWithTimeApi timeApi = new WorkWithTimeApi();
                                                 String orderCreationTime = orderSnapshot.child(TIME).getValue(String.class);
-                                                long delay = Math.abs(timeApi.getMillisecondsStringDate(orderCreationTime)-timeApi.getSysdateLong());
+                                                long delay = Math.abs(timeApi.getMillisecondsStringDateWithSeconds(orderCreationTime)-timeApi.getSysdateLong());
 
                                                 String orderId = orderSnapshot.getKey();
                                                 // устанавливаем таймер, чтобы через день после обслуживания дать оценить
-                                                if (!Boolean.valueOf(orderSnapshot.child(IS_CANCELED).getValue().toString())) {
+                                                if (!orderSnapshot.child(IS_CANCELED).getValue(Boolean.class)) {
                                                     setTimerForReview(orderId, workingDate, workingTime, serviceName, false);
                                                 }
 
+                                                Log.d(TAG, delay + "");
                                                 // исправить на 5000
                                                 if(delay < 35000) {
                                                     String userId = orderSnapshot.child(USER_ID).getValue(String.class);
@@ -218,13 +222,11 @@ public class MyService extends Service {
 
                                             @Override
                                             public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                                                boolean isCanceled = Boolean.valueOf(orderSnapshot.child(IS_CANCELED).getValue(String.class));
-                                                Log.d(TAG, "onChildChanged: " + isCanceled);
+                                                boolean isCanceled = orderSnapshot.child(IS_CANCELED).getValue(Boolean.class);
                                                 if (isCanceled) {
                                                     String orderId = orderSnapshot.getKey();
                                                     CDTimers.get(orderId).cancel();
                                                     CDTimers.remove(orderId);
-                                                    Log.d(TAG, "CDTimers: " + CDTimers.keySet());
                                                 }
 
                                                 String review = orderSnapshot
@@ -297,7 +299,9 @@ public class MyService extends Service {
                             }
 
                             @Override
-                            public void onChildChanged(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) { }
+                            public void onChildChanged(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) { 
+                                
+                            }
 
                             @Override
                             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { }
@@ -342,15 +346,15 @@ public class MyService extends Service {
                                 .child(REVIEW)
                                 .getValue(String.class);
 
-                        String rating = orderSnapshot
+                        long rating = orderSnapshot
                                 .child(REVIEWS)
                                 .getChildren()
                                 .iterator()
                                 .next()
                                 .child(RATING)
-                                .getValue(String.class);
+                                .getValue(Long.class);
 
-                        if (!review.equals("-") && !rating.equals("0")) {
+                        if (!review.equals("-") && rating!=0) {
                             String workerId = orderSnapshot.child(WORKER_ID).getValue(String.class);
 
                             DatabaseReference ownerRef = FirebaseDatabase
@@ -365,7 +369,6 @@ public class MyService extends Service {
 
                                     NotificationYouAreRated notification = new NotificationYouAreRated(context, name);
                                     notification.createNotification();
-                                    //createReviewNotification();
                                 }
 
                                 @Override
@@ -538,7 +541,7 @@ public class MyService extends Service {
                             public void onDataChange(@NonNull DataSnapshot isCanceledSnapshot) {
                                 // отправляет сообщение об отказе, тк. соответвующий isCanceled поменялся на false
                                 if(!firstFlag) {
-                                    if (Boolean.valueOf(isCanceledSnapshot.getValue(String.class))) {
+                                    if (isCanceledSnapshot.getValue(Boolean.class)) {
                                         NotificationCancel notification = new NotificationCancel(context,
                                                 finalWorkerName,
                                                 finalServiceName,
@@ -547,12 +550,11 @@ public class MyService extends Service {
                                         notification.createNotification();
                                         CDTimers.get(orderId).cancel();
                                         CDTimers.remove(orderId);
-                                        Log.d(TAG, "CDTimers: " + CDTimers.keySet());
                                     }
                                 } else {
                                     firstFlag = false;
 
-                                    if (!Boolean.valueOf(isCanceledSnapshot.getValue(String.class))) {
+                                    if (!isCanceledSnapshot.getValue(Boolean.class)) {
                                         setTimerForReview(orderId, finalOrderDate, finalOrderTime, finalServiceName, true);
                                     }
                                 }
