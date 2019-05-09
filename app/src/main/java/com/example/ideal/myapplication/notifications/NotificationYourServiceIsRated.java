@@ -1,36 +1,44 @@
+
 package com.example.ideal.myapplication.notifications;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.res.Resources;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.example.ideal.myapplication.R;
 
-public class NotificationSubscribers extends NotificationConstructor {
+public class NotificationYourServiceIsRated extends NotificationConstructor {
 
     private static final String TAG = "DBInf";
     private static final String CHANNEL_ID = "1";
 
-    private String name;
     private Context context;
+    private String name;
+    private String serviceName;
 
-    public NotificationSubscribers(Context _context, String subscriberName){
-        name = subscriberName;
+    public NotificationYourServiceIsRated(Context _context, String _name, String _serviceName) {
         context = _context;
+        name = _name;
+        serviceName = _serviceName;
     }
 
     @Override
     public void createNotification() {
-
         //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
         int notificationId = 1;
+        Log.d(TAG, "NotificationYourServiceIsRated: ");
 
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
-                .setContentTitle("Новый подписчик")
-                .setContentText("На вас подписался " + name)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setContentTitle("BunBeauty")
+                .setContentText("Клиент " + name + " оценил ваш сервис \"" + serviceName + "\"")
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 

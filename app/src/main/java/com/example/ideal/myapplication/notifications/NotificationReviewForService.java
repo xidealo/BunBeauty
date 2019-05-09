@@ -1,3 +1,7 @@
+/*package com.example.ideal.myapplication.notifications;
+
+public class NotificationReviewForService {
+}*/
 package com.example.ideal.myapplication.notifications;
 
 import android.content.Context;
@@ -7,13 +11,16 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.example.ideal.myapplication.R;
 
-public class NotificationReview extends NotificationConstructor {
+public class NotificationReviewForService extends NotificationConstructor {
 
     private Context context;
-    private static final String CHANNEL_ID = "NotificationReview";
+    private static final String CHANNEL_ID = "1";
 
-    public NotificationReview(Resources resources, Context context) {
-        this.context = context;
+    private String servixeName;
+
+    public NotificationReviewForService(Context _context, String _servixeName) {
+        context = _context;
+        servixeName = _servixeName;
     }
 
     @Override
@@ -24,9 +31,9 @@ public class NotificationReview extends NotificationConstructor {
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
-                .setContentTitle("Поставьте оценку!")
-                .setContentText("Вы можете поставить оценку ИМЯ ПОЛЬЗОВАТЕЛЯ")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setContentTitle("Возможность оценить")
+                .setContentText("У вас есть возможность оценить услугу \"" + servixeName + "\"")
+                .setPriority(NotificationCompat.PRIORITY_MAX);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 

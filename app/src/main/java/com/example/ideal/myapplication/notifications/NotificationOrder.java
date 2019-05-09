@@ -9,38 +9,46 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Dialogs;
 
 public class NotificationOrder extends NotificationConstructor {
 
-    private Resources resources;
-    private Context context;
-    private static final String CHANNEL_ID = "NotificationOrder";
+    private static final String TAG = "DBInf";
+    private static final String CHANNEL_ID = "1";
 
-    public NotificationOrder(Resources resources, Context context) {
-        this.resources = resources;
-        this.context = context;
+    private Context context;
+    private String name;
+    private String serviceName;
+    private String workingDate;
+    private String workingTime;
+
+    public NotificationOrder(Context _context, String _name, String _serviceName,
+                             String _workingDate, String _workingTime) {
+        context = _context;
+        name = _name;
+        serviceName = _serviceName;
+        workingDate = _workingDate;
+        workingTime = _workingTime;
     }
 
     @Override
     public void createNotification() {
-        Intent intent = new Intent(context, Dialogs.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
         //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
         int notificationId = 1;
+        Log.d(TAG, "createOrderNotification: ");
 
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
-                .setContentTitle("Новая запись на услугу")
-                .setContentText("К вам записались на услугу в ВРЕМЯ на СЕРВИС")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
+                .setContentTitle("BunBeauty")
+                .setContentText("Пользователь " + name
+                        + " записался к вам на услугу " + serviceName
+                        + ". Сеанс состоится " + workingDate
+                        + " в " + workingTime + ".")
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 

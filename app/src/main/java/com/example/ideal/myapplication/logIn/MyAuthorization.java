@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -43,6 +45,8 @@ public class MyAuthorization {
 
     private Context context;
     private String myPhoneNumber;
+
+    private int counter;
 
     private DownloadServiceData downloadServiceData;
 
@@ -176,8 +180,10 @@ public class MyAuthorization {
                 // Получаем остальные данные о пользователе
                 Object name = userSnapshot.child(NAME).getValue();
                 if (name == null) {
-                    // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
-                    goToRegistration();
+                    if(userId.equals(getUserId())) {
+                        // Имя пользователя в БД отсутствует, значит пользователь не до конца зарегистрировался
+                        goToRegistration();
+                    }
                 } else {
                     downloadServiceData.loadUserInfo(userSnapshot);
                 }
@@ -216,7 +222,8 @@ public class MyAuthorization {
             goToProfile();
         }
 
-
+        counter = 0;
+        final long childrenCount = _ordersSnapshot.getChildrenCount();
         for(final DataSnapshot orderSnapshot: _ordersSnapshot.getChildren()) {
             //получаем "путь" к мастеру, на сервис которого мы записаны
             final String workerId = String.valueOf(orderSnapshot.child(WORKER_ID).getValue());
@@ -238,7 +245,10 @@ public class MyAuthorization {
                     // загружаютс review for user для меня, а надо для тех кто записан на мои услуги
                     downloadServiceData.addReviewInLocalStorage(orderSnapshot.child(REVIEWS), orderSnapshot.getKey());
 
-                    goToProfile();
+                    counter++;
+                    if (counter == childrenCount) {
+                        goToProfile();
+                    }
                 }
 
                 @Override

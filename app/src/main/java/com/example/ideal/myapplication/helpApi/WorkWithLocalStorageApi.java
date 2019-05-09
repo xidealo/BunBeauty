@@ -119,13 +119,22 @@ public class WorkWithLocalStorageApi {
         }
     }
 
-    public Cursor getUser(String userId){
+    public Cursor getUser(String userId) {
         String sqlQuery = "SELECT * FROM "
                 + DBHelper.TABLE_CONTACTS_USERS
                 + " WHERE "
                 + DBHelper.KEY_ID + " = ?";
 
         return localDatabase.rawQuery(sqlQuery, new String[]{userId});
+    }
+
+    public Cursor getService(String serviceId) {
+        String sqlQuery = "SELECT * FROM "
+                + DBHelper.TABLE_CONTACTS_SERVICES
+                + " WHERE "
+                + DBHelper.KEY_ID + " = ?";
+
+        return localDatabase.rawQuery(sqlQuery, new String[]{serviceId});
     }
 
     public boolean hasSomeDataForUsers(String tableName, String id) {

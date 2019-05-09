@@ -1,11 +1,7 @@
 package com.example.ideal.myapplication.notifications;
 
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
-import android.content.res.Resources;
-import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -13,13 +9,21 @@ import com.example.ideal.myapplication.R;
 
 public class NotificationCancel extends NotificationConstructor {
 
-    private Resources resources;
-    private Context context;
-    private static final String CHANNEL_ID = "NotificationCancel";
+    public static final String TAG = "DBInf";
+    private static final String CHANNEL_ID = "1";
 
-    public NotificationCancel(Resources resources, Context context) {
-        this.resources = resources;
-        this.context = context;
+    private Context context;
+    private String workerName;
+    private String serviceName;
+    private String orderTime;
+    private String orderDate;
+
+    public NotificationCancel(Context _context, String _workerName, String _serviceName, String _orderDate, String _orderTime) {
+        context = _context;
+        workerName = _workerName;
+        serviceName = _serviceName;
+        orderDate = _orderDate;
+        orderTime = _orderTime;
     }
 
     @Override
@@ -31,8 +35,10 @@ public class NotificationCancel extends NotificationConstructor {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
                 .setContentTitle("Отказ в предоставлении услуги")
-                .setContentText("Пользователя ИМЯ ПОЛЬЗОВАТЕЛЯ отказал вам в предоставлении ИМЯ УСЛУГИ")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setContentText("Мастер " + workerName
+                        + " отказал Вам в предоставлении услуги " + serviceName
+                        + ". Сеанс на " + orderDate + " в " + orderTime + " отменён.")
+                .setPriority(NotificationCompat.PRIORITY_MAX);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
