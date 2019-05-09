@@ -1,11 +1,10 @@
-package com.example.ideal.myapplication.other;
+package com.example.ideal.myapplication.searchService;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +18,9 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.reviews.Comments;
+import com.example.ideal.myapplication.searchService.Premium;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
@@ -166,8 +167,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             ownerId = cursor.getString(indexUserId);
 
             costText.setText("Цена от: " + cursor.getString(indexMinCost) + "р");
+            addressText.setText("Адрес: " + cursor.getString(indexAddress));
             descriptionText.setText(cursor.getString(indexDescription));
-            addressText.setText(cursor.getString(indexAddress));
             serviceName = cursor.getString(indexName);
         }
         cursor.close();
@@ -411,7 +412,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void goToPremium() {
-        Intent intent = new Intent(this,Premium.class);
+        Intent intent = new Intent(this, Premium.class);
         intent.putExtra(SERVICE_ID, serviceId);
         startActivity(intent);
     }

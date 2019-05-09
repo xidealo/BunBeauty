@@ -1,4 +1,4 @@
-package com.example.ideal.myapplication.other;
+package com.example.ideal.myapplication.searchService;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,6 +20,7 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.Search;
+import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -183,10 +184,8 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     }
 
     private void addToMainScreen(ArrayList<Object[]> serviceList) {
-
         for (Object[] serviceData : serviceList) {
             foundServiceElement fElement = new foundServiceElement((Service) serviceData[1], (User) serviceData[2]);
-
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.add(R.id.resultsMainScreenLayout, fElement);
             transaction.commit();

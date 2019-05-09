@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Service;
-import com.example.ideal.myapplication.other.GuestService;
+import com.example.ideal.myapplication.searchService.GuestService;
 
 @SuppressLint("ValidFragment")
 public class foundServiceProfileElement extends Fragment implements View.OnClickListener {

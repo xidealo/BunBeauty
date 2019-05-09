@@ -46,7 +46,6 @@ public class Search {
 
         for (DataSnapshot userSnapshot : usersSnapshot.getChildren()) {
             String userCity = String.valueOf(userSnapshot.child(CITY).getValue());
-
             if((city == null) || city.equals(userCity) || city.equals("Не выбран")) {
                 DownloadServiceData downloadServiceData = new DownloadServiceData(database);
                 downloadServiceData.loadUserInfo(userSnapshot);

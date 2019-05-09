@@ -23,14 +23,14 @@ import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfi
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.example.ideal.myapplication.logIn.Authorization;
+import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Profile extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String OWNER_ID = "owner id";
 
     private static final String TAG = "DBInf";
+    private static final String OWNER_ID = "owner id";
     private static final String REVIEW_FOR_SERVICE = "review for service";
 
     private static final String REVIEW_FOR_USER = "review for user";
@@ -285,8 +285,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         updateProfileData(ownerId);
 
-        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
-        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
         workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage,width,height);
 
         if (userId.equals(ownerId)) {

@@ -73,13 +73,25 @@
             style="@style/block"
             android:background="@drawable/block_text"
             android:layout_width="match_parent"
-            android:layout_height="40dp">
-
-            <Spinner
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
                 style="@style/mainText"
-                android:id="@+id/categoryAddServiceSpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:hint="Категория"
+                />
+
+            <Spinner
+                android:id="@+id/categoryAddServiceSpinner"
+                style="@style/mainText"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@color/panelColor"
                 android:entries="@array/category" />
         </LinearLayout>
 
@@ -101,16 +113,15 @@
         </LinearLayout>
 
         <HorizontalScrollView
-            android:layout_width="395dp"
-            android:layout_height="130dp"
-            android:layout_marginTop="8dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
 
             <LinearLayout
                 android:id="@+id/feedAddServiceLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
-
                 <ImageView
                     android:id="@+id/servicePhotoAddServiceImage"
                     android:layout_width="wrap_content"
@@ -118,6 +129,7 @@
                     app:srcCompat="@mipmap/ic_launcher_round"
                     tools:srcCompat="@tools:sample/avatars" />
             </LinearLayout>
+
         </HorizontalScrollView>
 
         <Button
@@ -126,6 +138,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:text="@string/addServices" />
     </LinearLayout>
 

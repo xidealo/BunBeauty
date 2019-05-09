@@ -7,11 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,10 +21,10 @@ import com.example.ideal.myapplication.editing.EditService;
 import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
-import com.example.ideal.myapplication.other.GuestService;
-import com.example.ideal.myapplication.other.MainScreen;
+import com.example.ideal.myapplication.searchService.GuestService;
+import com.example.ideal.myapplication.searchService.MainScreen;
 import com.example.ideal.myapplication.other.Profile;
-import com.example.ideal.myapplication.other.SearchService;
+import com.example.ideal.myapplication.searchService.SearchService;
 
 
 public class TopPanel extends Fragment implements View.OnClickListener {

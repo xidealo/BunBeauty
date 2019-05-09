@@ -5,20 +5,24 @@
     style="@style/allPages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".other.MainScreen">
+    tools:context=".searchService.MainScreen">
 
     <LinearLayout
         android:id="@+id/headerMainScreenLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Категории -->
     <HorizontalScrollView
         android:id="@+id/categoryMainScreenScroll"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerMainScreenLayout">
 
         <LinearLayout
@@ -29,19 +33,22 @@
 
         </LinearLayout>
     </HorizontalScrollView>
+
     <!-- Главный экран -->
     <ScrollView
         android:id="@+id/mainScreenScroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_margin="10dp"
-        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerMainScreenLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll">
 
         <LinearLayout
             android:id="@+id/resultsMainScreenLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:isScrollContainer="true"
             android:orientation="vertical" />
     </ScrollView>
@@ -49,8 +56,10 @@
     <LinearLayout
         android:id="@+id/footerMainScreenLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -10,12 +10,11 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Dialogs;
-import com.example.ideal.myapplication.other.MainScreen;
+import com.example.ideal.myapplication.searchService.MainScreen;
 import com.example.ideal.myapplication.other.Profile;
 
 
