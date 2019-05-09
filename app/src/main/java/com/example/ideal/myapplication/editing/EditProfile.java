@@ -160,13 +160,13 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             int indexPhone = cursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
 
             String[] nickName = cursor.getString(indexName).split(" ");
-            nameInput.setHint(nickName[0]);
-            surnameInput.setHint(nickName[1]);
-            cityInput.setHint(cursor.getString(indexCity));
+            nameInput.setText(nickName[0]);
+            surnameInput.setText(nickName[1]);
+            cityInput.setText(cursor.getString(indexCity));
 
             String phone = cursor.getString(indexPhone);
             // не универсальная обрезка кода (возможно стоит хранить отдельно код)
-            phoneInput.setHint(phone.substring(2));
+            phoneInput.setText(phone.substring(2));
             codeSpinner.setSelection(Arrays.asList(CountryCodes.codes).indexOf(phone.substring(0, 2)));
             // Arrays.asList(CountryCodes.codes).indexOf(phone.substring(0, 2))
         }

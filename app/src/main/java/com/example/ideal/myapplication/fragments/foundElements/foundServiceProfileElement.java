@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -46,6 +47,12 @@ public class foundServiceProfileElement extends Fragment implements View.OnClick
         nameText = view.findViewById(R.id.serviceNameFoundServiceProfileElementText);
         ratingBar = view.findViewById(R.id.ratingBarFondServiceProfileElement);
         nameText.setOnClickListener(this);
+        LinearLayout layout = view.findViewById(R.id.foundServiceProfileElementLayout);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+        params.setMargins(10,10,10,15);
+        layout.setLayoutParams(params);
+
+        layout.setOnClickListener(this);
         setData();
     }
 

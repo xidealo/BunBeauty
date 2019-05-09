@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp">
+
         <ImageView
             android:id="@+id/avatarFoundServiceElementImage"
             android:layout_width="wrap_content"
@@ -23,24 +24,24 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_weight="1"
+        android:orientation="vertical"
         android:paddingTop="5dp">
 
         <TextView
             android:id="@+id/userNameFoundServiceElementText"
+            style="@style/mainTextMainScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Имя"
-            android:textSize="18sp"
-            style="@style/mainTextMainScreen"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/cityFoundServiceElementText"
+            style="@style/defaultTextMainScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Город"
-            style="@style/defaultTextMainScreen" />
+            android:text="Город" />
 
         <RatingBar
             android:id="@+id/ratingBarFondServiceElement"
@@ -55,23 +56,23 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/serviceNameFoundServiceElementText"
+            style="@style/defaultTextMainScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            style="@style/defaultTextMainScreen"
             android:text="Имя сервиса" />
 
         <TextView
             android:id="@+id/costFoundServiceElementText"
+            style="@style/defaultTextMainScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            style="@style/defaultTextMainScreen"
             android:text="Цена" />
     </LinearLayout>
 </LinearLayout>

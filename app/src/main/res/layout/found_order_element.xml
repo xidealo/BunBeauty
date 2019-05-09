@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/foundOrderProfileElementLayout"
+    style="@style/block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/profile_block"
     android:orientation="horizontal"
-    android:theme="@style/allPages"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/nameFoundOrderElementText"
+        style="@style/foundProfileElement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="TextView"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/costFoundOrderElementText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="TextView"
-        android:textSize="18sp" />
+        android:layout_weight="1"/>
 
     <TextView
         android:id="@+id/descriptionFoundOrderElementText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_weight="1"
-        android:text=" - "
-        android:textSize="18sp" />
+        android:gravity="end"
+        android:textSize="14sp"
+        android:textColor="@color/panelColor"
+        android:fontFamily="@font/roboto_bold"/>
 </LinearLayout>
