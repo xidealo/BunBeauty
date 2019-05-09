@@ -3,32 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@color/mainColor"
+    android:background="@color/panelColor"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Button
-        android:id="@+id/profileBottomPanelBtn"
+    <TextView
+        android:id="@+id/profileBottomPanelText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_margin="20dp"
-        android:text="Профиль" />
+        android:gravity="center"
+        android:background="@color/panelColor"
+        style="@style/textItemRegular"
+        android:text="@string/user" />
 
-    <Button
-        android:id="@+id/mainScreenBottomPanelBtn"
+    <TextView
+        android:id="@+id/mainScreenBottomPanelText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_weight="1"
-        android:text="Главная" />
+        android:gravity="center"
+        android:background="@color/panelColor"
+        style="@style/textItemSolid"
+        android:text="@string/mainScreen" />
 
-    <Button
-        android:id="@+id/chatBottomPanelBtn"
+    <TextView
+        android:id="@+id/chatBottomPanelText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_margin="20dp"
-        android:text="Диалоги" />
-
+        android:text="@string/chat"
+        android:gravity="center"
+        android:background="@color/panelColor"
+        style="@style/textItemRegular"/>
 
 </LinearLayout>

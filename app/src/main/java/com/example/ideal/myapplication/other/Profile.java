@@ -23,15 +23,14 @@ import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfi
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.example.ideal.myapplication.logIn.Authorization;
-import com.example.ideal.myapplication.reviews.RatingBarElement;
+import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Profile extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String OWNER_ID = "owner id";
 
     private static final String TAG = "DBInf";
+    private static final String OWNER_ID = "owner id";
     private static final String REVIEW_FOR_SERVICE = "review for service";
 
     private static final String REVIEW_FOR_USER = "review for user";
@@ -47,10 +46,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private TextView nameText;
     private TextView cityText;
+    private TextView phoneText;
     private TextView withoutRatingText;
+    private TextView subscribersText;
 
     private Button subscriptionsBtn;
-    private Button subscribersBtn;
 
     private ScrollView servicesScroll;
     private ScrollView ordersScroll;
@@ -70,10 +70,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.profile);
         withoutRatingText = findViewById(R.id.withoutRatingProfileText);
 
-        Button logOutBtn = findViewById(R.id.logOutProfileBtn);
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
         subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn);
-        subscribersBtn = findViewById(R.id.subscribersProfileBtn);
         avatarImage = findViewById(R.id.avatarProfileImage);
 
         SwitchCompat servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
@@ -85,7 +83,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         nameText = findViewById(R.id.nameProfileText);
         cityText = findViewById(R.id.cityProfileText);
-
+        phoneText = findViewById(R.id.phoneProfileText);
+        subscribersText = findViewById(R.id.subscribersProfileText);
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -109,22 +108,22 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         // Проверяем совпадают id пользователя и владельца
         if (userId.equals(ownerId)) {
             // Совпадают - это мой профиль
-            servicesLayout.setVisibility(View.INVISIBLE);
-            servicesScroll.setVisibility(View.INVISIBLE);
+            servicesLayout.setVisibility(View.GONE);
+            servicesScroll.setVisibility(View.GONE);
 
             servicesOrOrdersSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
                         buttonView.setText("My services");
-                        ordersLayout.setVisibility(View.INVISIBLE);
-                        ordersScroll.setVisibility(View.INVISIBLE);
+                        ordersLayout.setVisibility(View.GONE);
+                        ordersScroll.setVisibility(View.GONE);
                         servicesLayout.setVisibility(View.VISIBLE);
                         servicesScroll.setVisibility(View.VISIBLE);
                     } else {
                         buttonView.setText("My orders");
-                        servicesLayout.setVisibility(View.INVISIBLE);
-                        servicesScroll.setVisibility(View.INVISIBLE);
+                        servicesLayout.setVisibility(View.GONE);
+                        servicesScroll.setVisibility(View.GONE);
                         ordersLayout.setVisibility(View.VISIBLE);
                         ordersScroll.setVisibility(View.VISIBLE);
                     }
@@ -132,25 +131,22 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             });
             addServicesBtn.setOnClickListener(this);
             subscriptionsBtn.setOnClickListener(this);
-            subscribersBtn.setOnClickListener(this);
         } else {
             // Не совпадает - чужой профиль
 
             // Скрываем функционал
-            servicesOrOrdersSwitch.setVisibility(View.INVISIBLE);
-            addServicesBtn.setVisibility(View.INVISIBLE);
-            subscriptionsBtn.setVisibility(View.INVISIBLE);
-            subscribersBtn.setVisibility(View.INVISIBLE);
+            servicesOrOrdersSwitch.setVisibility(View.GONE);
+            addServicesBtn.setVisibility(View.GONE);
+            subscriptionsBtn.setVisibility(View.GONE);
 
             // Отображаем все сервисы пользователя
-            ordersLayout.setVisibility(View.INVISIBLE);
-            ordersScroll.setVisibility(View.INVISIBLE);
+            ordersLayout.setVisibility(View.GONE);
+            ordersScroll.setVisibility(View.GONE);
             servicesLayout.setVisibility(View.VISIBLE);
             servicesScroll.setVisibility(View.VISIBLE);
         }
 
         loadRatingForUser();
-        logOutBtn.setOnClickListener(this);
         avatarImage.setOnClickListener(this);
 
     }
@@ -161,17 +157,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             case R.id.addServicesProfileBtn:
                 goToAddService();
                 break;
-
-            case R.id.logOutProfileBtn:
-                goToLogIn();
-                break;
-
             case R.id.subscriptionsProfileBtn:
                 goToSubscribers(SUBSCRIPTIONS);
                 break;
-            case R.id.subscribersProfileBtn:
+
+           /* case R.id.subscribersProfileBtn:
                 goToSubscribers(SUBSCRIBERS);
-                break;
+                break;*/
 
             default:
                 break;
@@ -185,6 +177,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         String sqlQuery =
                 "SELECT "
                         + DBHelper.KEY_NAME_USERS + ", "
+                        + DBHelper.KEY_PHONE_USERS + ", "
                         + DBHelper.KEY_CITY_USERS
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_USERS
@@ -195,6 +188,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         if (cursor.moveToFirst()) {
             int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
             int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
+            int indexPhone = cursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
+
             String[] names = cursor.getString(indexName).split(" ");
             for (int i = 0; i < names.length; i++) {
                 names[i] = names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
@@ -203,8 +198,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
             String city = cursor.getString(indexCity).substring(0, 1).toUpperCase()
                     + cursor.getString(indexCity).substring(1);
+            String phone = cursor.getString(indexPhone);
             nameText.setText(name);
             cityText.setText(city);
+            phoneText.setText(phone);
             cursor.close();
         }
     }
@@ -276,7 +273,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
             if (counter != 0) {
                 float avgRating = sumRates / counter;
-                addRatingToScreen(avgRating, counter);
+                //addRatingToScreen(avgRating, counter);
+                //метод, который добалвяет оценку
             } else {
                 setWithoutRating();
             }
@@ -292,7 +290,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         updateProfileData(ownerId);
 
-        workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage);
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
+        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage,width,height);
 
         if (userId.equals(ownerId)) {
             // если это мой сервис
@@ -306,13 +306,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 btnText += " (" + subscriptionsCount + ")";
             }
             subscriptionsBtn.setText(btnText);
-            String subscribersBtnText = SUBSCRIBERS;
+            String subscribersBtnText = "Кол-во подписчиков:";
             long subscribersCount = getCountOfSubscribers();
 
             if (subscribersCount != 0) {
-                subscribersBtnText += " (" + subscribersCount + ")";
+                subscribersBtnText += " " + subscribersCount;
             }
-            subscribersBtn.setText(subscribersBtnText);
+            subscribersText.setText(subscribersBtnText);
         }
 
         updateServicesList(userId);
@@ -530,15 +530,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    private void addRatingToScreen(Float avgRating, Long countOfRates) {
-        RatingBarElement ratingElement
-                = new RatingBarElement(avgRating, countOfRates, ownerId, REVIEW_FOR_USER);
-
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.ratingLayout, ratingElement);
-        transaction.commit();
-    }
-
     private void addOrderToScreen(String id, String name, String date, String time) {
         foundOrderElement fOrderElement = new foundOrderElement(id, name, date, time);
 
@@ -567,15 +558,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         }
 
     }
-    private void goToLogIn() {
-        FirebaseAuth.getInstance().signOut();
 
-        stopService(new Intent(this, MyService.class));
-
-        Intent intent = new Intent(this, Authorization.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-    }
 
     private void setWithoutRating() {
         withoutRatingText.setVisibility(View.VISIBLE);

@@ -1,57 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/foundServiceElementLayout"
+    style="@style/block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/block_text"
     android:orientation="horizontal"
-    android:theme="@style/allPages"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:padding="10dp">
 
-    <ImageView
-        android:id="@+id/avatarFoundServiceElementImage"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/userNameFoundServiceElementText"
-        android:layout_width="14dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="TextView"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/serviceNameFoundServiceElementText"
-        android:layout_width="5dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=" - "
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/costFoundServiceElementText"
-        android:layout_width="2dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=" - "
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/cityFoundServiceElementText"
-        android:layout_width="1dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=" - "
-        android:textSize="18sp" />
-
-    <RatingBar
-        android:id="@+id/ratingBarFondServiceElement"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:isIndicator="true"
-        style="?android:attr/ratingBarStyleSmall"
-      />
+        android:layout_marginEnd="10dp">
+
+        <ImageView
+            android:id="@+id/avatarFoundServiceElementImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@tools:sample/avatars" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingTop="5dp">
+
+        <TextView
+            android:id="@+id/userNameFoundServiceElementText"
+            style="@style/mainTextMainScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Имя"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/cityFoundServiceElementText"
+            style="@style/defaultTextMainScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Город" />
+
+        <RatingBar
+            android:id="@+id/ratingBarFondServiceElement"
+            style="@android:style/Widget.Holo.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/serviceNameFoundServiceElementText"
+            style="@style/defaultTextMainScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Имя сервиса" />
+
+        <TextView
+            android:id="@+id/costFoundServiceElementText"
+            style="@style/defaultTextMainScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Цена" />
+    </LinearLayout>
 </LinearLayout>

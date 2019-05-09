@@ -2,7 +2,6 @@ package com.example.ideal.myapplication.editing;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -18,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -30,13 +28,13 @@ import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.logIn.CountryCodes;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.other.MyService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -55,7 +53,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class EditProfile extends AppCompatActivity implements View.OnClickListener {
@@ -85,7 +82,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private EditText cityInput;
     private EditText phoneInput;
     private EditText codeInput;
-    private ProgressBar progressBar;
+    //private ProgressBar progressBar;
     private Spinner codeSpinner;
 
     private String phoneVerificationId;
@@ -109,12 +106,13 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         cityInput = findViewById(R.id.cityEditProfileInput);
         phoneInput = findViewById(R.id.phoneEditProfileInput);
         codeInput = findViewById(R.id.codeEditProfileInput);
+        Button logOutBtn = findViewById(R.id.logOutEditProfileBtn);
 
         editBtn = findViewById(R.id.editProfileEditProfileBtn);
         resendButton = findViewById(R.id.resendCodeEditProfileBtn);
         verifyButton = findViewById(R.id.verifyCodeEditProfileBtn);
 
-        progressBar = findViewById(R.id.progressBarEditProfile);
+        //progressBar = findViewById(R.id.progressBarEditProfile);
 
         //для работы с картинкой
         avatarImage = findViewById(R.id.avatarEditProfileImage);
@@ -129,10 +127,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         user = new User();
         dbHelper = new DBHelper(this);
-        WorkWithLocalStorageApi localStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
-
         userId = getUserId();
-        localStorageApi.setPhotoAvatar(userId,avatarImage);
+        WorkWithLocalStorageApi localStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
+        localStorageApi.setPhotoAvatar(userId,avatarImage,width,height);
+
         oldPhone = getUserPhone();
 
         setInformation();
@@ -141,6 +141,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         resendButton.setOnClickListener(this);
         verifyButton.setOnClickListener(this);
         avatarImage.setOnClickListener(this);
+        logOutBtn.setOnClickListener(this);
     }
 
     private  void setInformation(){
@@ -191,6 +192,10 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
             case R.id.avatarEditProfileImage:
                 chooseImage();
+                break;
+
+            case R.id.logOutEditProfileBtn:
+                goToLogIn();
                 break;
 
             case R.id.resendCodeEditProfileBtn:
@@ -293,7 +298,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         codeInput.setVisibility(View.GONE);
         resendButton.setVisibility(View.GONE);
         verifyButton.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
+        //progressBar.setVisibility(View.VISIBLE);
 
         DatabaseReference reference = FirebaseDatabase
                 .getInstance()
@@ -576,6 +581,16 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 this,
                 "Неправильный номер",
                 Toast.LENGTH_SHORT).show();
+    }
+
+    private void goToLogIn() {
+        FirebaseAuth.getInstance().signOut();
+
+        stopService(new Intent(this, MyService.class));
+
+        Intent intent = new Intent(this, Authorization.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     private void attentionThisCodeWasWrong(){

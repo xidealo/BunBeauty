@@ -1,51 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@color/mainColor"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="100dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/panelColor"
+    android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/backTopPanelBtn"
+    <TextView
+        android:id="@+id/backTopPanelText"
+        style="@style/textItemSolid"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center"
         android:layout_weight="1"
-        android:layout_margin="20dp"
-        android:text="Назад" />
+        android:text="@string/back" />
 
     <TextView
         android:id="@+id/titleTopPanelText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
         android:layout_weight="1"
+        android:gravity="center"
+        android:layout_gravity="center"
+        style="@style/myTitle"
         android:text="Заголовок" />
 
-    <Button
-        android:id="@+id/multiTopPanelBtn"
+    <ImageView
+        android:id="@+id/logoTopPanelImage"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
         android:layout_weight="1"
-        android:layout_margin="20dp"
-        android:text="Настройки" />
+        app:srcCompat="@drawable/bun_beauty"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/settingTopPanelText"
+        style="@style/textItemSolid"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/settings" />
 
     <ImageView
         android:id="@+id/avatarTopPanelImage"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
         android:layout_weight="1"
         android:visibility="gone"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/countOfSubsTopPanelText"
+        android:id="@+id/searchTopPanelText"
+        style="@style/textItemSolid"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:text="@string/search"
+        android:visibility="gone"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_margin="5dp"
-        android:visibility="gone"
-        android:text="кол-во" />
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/countOfSubsTopPanelText"
+            style="@style/extraText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/subscribeTopPanelText"
+            style="@style/textItemSolid"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/subscribe_heart"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/unsubscribeTopPanelText"
+            style="@style/textItemRegular"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/subscribe_heart"
+            android:visibility="gone" />
+
+    </LinearLayout>
 </LinearLayout>

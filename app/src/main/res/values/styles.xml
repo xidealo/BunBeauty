@@ -1,5 +1,4 @@
 <resources>
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Reg pages -->
@@ -18,6 +17,120 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <!-- Style for logIn pages -->
+    <style name="LogInPages">
+        <item name="windowActionBar">false</item>
+        <item name="android:background">@color/logInBackGround</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <!-- Style for main buttons -->
+    <style name="mainButton">
+        <item name="android:width">250dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:elevation">5dp</item>
+    </style>
+
+    <style name="mainButtonLogIn" parent="mainButton">
+        <item name="android:background">@drawable/main_button_login_background</item>
+    </style>
+
+    <style name="mainButtonOther" parent="mainButton">
+        <item name="android:background">@drawable/main_button</item>
+    </style>
+
+    <style name="smallMainButtonOther" parent="mainButton">
+        <item name="android:background">@drawable/main_button</item>
+        <item name="android:width">162dp</item>
+        <item name="android:height">36dp</item>
+    </style>
+
+    <!-- Style for extra text -->
+    <style name="extraText">
+        <item name="android:textColor">@color/lightText</item>
+        <item name="android:textSize">14sp</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+    </style>
+
+    <style name="ImageRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/ratingbar_selector</item>
+        <item name="android:minHeight">50dp</item>
+        <item name="android:maxHeight">50dp</item>
+    </style>
+
+    <!-- Style for icons -->
+    <style name="textItem" >
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="textItemRegular" parent="textItem">
+        <item name="fontFamily">@font/font_awesome_second_regular</item>
+    </style>
+    <style name="textItemSolid" parent="textItem" >
+        <item name="fontFamily">@font/font_awesome_solid</item>
+    </style>
+
+    <!-- Style for titles -->
+    <style name="myTitle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">24sp</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+    </style>
+
+    <!-- Style for main text -->
+    <style name="TextOnPages">
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:background">@drawable/block_text</item>
+    </style>
+
+    <style name="defaultText" parent="TextOnPages">
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="mainText" parent="TextOnPages">
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="mainTextMainScreen" parent="TextOnPages">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="defaultTextMainScreen" parent="TextOnPages">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="defaultTextProfile">
+        <item name="fontFamily">@font/roboto_black</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
+    <style name="mainTextProfile">
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
+    <style name="foundProfileElement">
+        <item name="android:textColor">@color/panelColor</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">5dp</item>
+    </style>
+    <!-- Style for block style -->
+    <style name="block" >
+        <item name="android:elevation">5dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

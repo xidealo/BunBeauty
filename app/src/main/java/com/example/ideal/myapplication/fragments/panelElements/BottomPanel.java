@@ -6,28 +6,28 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Dialogs;
-import com.example.ideal.myapplication.other.MainScreen;
+import com.example.ideal.myapplication.searchService.MainScreen;
 import com.example.ideal.myapplication.other.Profile;
 
 
-public class BottomPanel extends Fragment implements View.OnClickListener{
+public class BottomPanel extends Fragment implements View.OnClickListener {
 
     private static final String OWNER_ID = "owner id";
     private static final String TAG = "DBInf";
 
-    private Button profileBtn;
-    private Button mainScreenBtn;
-    private Button chatBtn;
-
     private boolean isMyProfile;
     private String myPhone;
+    private TextView profileText;
+    private TextView mainScreenText;
+    private TextView chatText;
 
     public BottomPanel() {
     }
@@ -45,27 +45,27 @@ public class BottomPanel extends Fragment implements View.OnClickListener{
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        profileBtn = view.findViewById(R.id.profileBottomPanelBtn);
-        mainScreenBtn = view.findViewById(R.id.mainScreenBottomPanelBtn);
-        chatBtn = view.findViewById(R.id.chatBottomPanelBtn);
+        profileText = view.findViewById(R.id.profileBottomPanelText);
+        mainScreenText = view.findViewById(R.id.mainScreenBottomPanelText);
+        chatText = view.findViewById(R.id.chatBottomPanelText);
 
-        profileBtn.setOnClickListener(this);
-        mainScreenBtn.setOnClickListener(this);
-        chatBtn.setOnClickListener(this);
+        profileText.setOnClickListener(this);
+        mainScreenText.setOnClickListener(this);
+        chatText.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.profileBottomPanelBtn:
+            case R.id.profileBottomPanelText:
                 goToProfile();
                 break;
 
-            case R.id.mainScreenBottomPanelBtn:
+            case R.id.mainScreenBottomPanelText:
                 goToMainScreen();
                 break;
 
-            case R.id.chatBottomPanelBtn:
+            case R.id.chatBottomPanelText:
                 goToDialogs();
                 break;
         }
@@ -73,24 +73,26 @@ public class BottomPanel extends Fragment implements View.OnClickListener{
 
     private void goToProfile() {
 
-        if(!isMyProfile) {
+        if (!isMyProfile) {
             Intent intent = new Intent(getContext(), Profile.class);
             intent.putExtra(OWNER_ID, myPhone);
-
+            profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
             startActivity(intent);
         }
     }
 
     private void goToMainScreen() {
-        if(getContext().getClass() != MainScreen.class){
+        if (getContext().getClass() != MainScreen.class) {
             Intent intent = new Intent(getContext(), MainScreen.class);
+            mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
             startActivity(intent);
         }
     }
 
     private void goToDialogs() {
-        if(getContext().getClass() != Dialogs.class) {
+        if (getContext().getClass() != Dialogs.class) {
             Intent intent = new Intent(getContext(), Dialogs.class);
+            chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
             startActivity(intent);
         }
     }

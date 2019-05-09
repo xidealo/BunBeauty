@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
     android:orientation="vertical"
-    tools:context=".logIn.Authorization">
+    tools:context=".logIn.Authorization"
+    style="@style/LogInPages">
 
     <ImageView
         android:id="@+id/logoAuthImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="150dp"
+        android:layout_gravity="center"
         app:srcCompat="@drawable/bun_beauty" />
 
     <TextView
@@ -22,8 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Введите номер телефона"
-        android:textColor="@color/lightText"
         android:layout_marginTop="10dp"
+        style="@style/extraText"
         android:visibility="invisible"/>
 
     <LinearLayout
@@ -35,15 +35,14 @@
         <Spinner
             android:id="@+id/codeAuthSpinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/lightText"/>
 
         <EditText
             android:id="@+id/phoneAuthInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:backgroundTint="@color/lightText"
-            android:ems="10"
             android:hint="@string/phoneRegistration"
             android:inputType="phone"
             android:textColor="@color/white"
@@ -54,8 +53,9 @@
         android:id="@+id/verifyAuthBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/log_in"
-        android:visibility="invisible"
+        style="@style/mainButtonLogIn"
+        android:text="Войти"
+        android:visibility="visible"
         android:layout_marginTop="10dp"
         android:layout_gravity="center"/>
 

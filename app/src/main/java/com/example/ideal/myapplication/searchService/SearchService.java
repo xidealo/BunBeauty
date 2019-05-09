@@ -1,4 +1,4 @@
-package com.example.ideal.myapplication.other;
+package com.example.ideal.myapplication.searchService;
 
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -25,6 +25,7 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.Search;
+import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,20 +47,15 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     private static final String NOT_CHOSEN = "Не выбран";
     private static final String NAME_OF_SERVICE = "Название сервиса";
 
-    String city = NOT_CHOSEN;
-    String searchBy = NAME_OF_SERVICE;
+    private String city = NOT_CHOSEN;
+    private String searchBy = NAME_OF_SERVICE;
 
-    Button findBtn;
-    EditText searchLineInput;
-
-    //Выпадающее меню
-    Spinner citySpinner;
-    Spinner searchBySpinner;
+    private EditText searchLineInput;
 
     //Вертикальный лэйаут
-    LinearLayout resultLayout;
+    private LinearLayout resultLayout;
 
-    DBHelper dbHelper;
+    private DBHelper dbHelper;
     private FragmentManager manager;
 
     @Override
@@ -67,7 +63,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_service);
 
-        findBtn = findViewById(R.id.findServiceSearchServiceBtn);
+        Button findBtn = findViewById(R.id.findServiceSearchServiceBtn);
 
         dbHelper = new DBHelper(this);
         manager = getSupportFragmentManager();
@@ -77,15 +73,15 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
         panelBuilder.buildHeader(manager, "Поиск", R.id.headerSearchServiceLayout);
 
         //создаём выпадающее меню на основе массива городов
-        citySpinner = findViewById(R.id.citySearchServiceSpinner);
+        //Выпадающее меню
+        Spinner citySpinner = findViewById(R.id.citySearchServiceSpinner);
         citySpinner.setPrompt(NOT_CHOSEN);
         ArrayAdapter<?> cityAdapter = ArrayAdapter.createFromResource(this, R.array.cities, android.R.layout.simple_spinner_item);
         citySpinner.setAdapter(cityAdapter);
 
         //создаём выпадающее меню "Поиск по"
-        searchBySpinner = findViewById(R.id.searchBySearchServiceSpinner);
+        Spinner searchBySpinner = findViewById(R.id.searchBySearchServiceSpinner);
         searchBySpinner.setPrompt(NAME_OF_SERVICE);
-        Log.d(TAG, "onCreate: " + NAME_OF_SERVICE);
         ArrayAdapter<?> searchByAdapter = ArrayAdapter.createFromResource(this, R.array.searchBy, android.R.layout.simple_spinner_item);
         searchBySpinner.setAdapter(searchByAdapter);
 
@@ -137,11 +133,6 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
         //получаем все сервисы, которые находятся в городе юзера
         getServicesInThisCity(userCity);
-    }
-
-    // Получает id пользователя
-    private String getUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     //Получает город пользователя
@@ -277,7 +268,10 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
             transaction.commit();
         }
     }
-
+    // Получает id пользователя
+    private String getUserId() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
     private void attentionNothingFound() {
         Toast.makeText(this, "Ничего не найдено", Toast.LENGTH_SHORT).show();
     }
