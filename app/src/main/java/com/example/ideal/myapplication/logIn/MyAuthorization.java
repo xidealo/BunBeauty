@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -278,6 +277,14 @@ public class MyAuthorization {
         database.delete(DBHelper.TABLE_ORDERS, null, null);
     }
 
+    private void attentionBadConnection() {
+        Toast.makeText(context, "Плохое соединение", Toast.LENGTH_SHORT).show();
+    }
+
+    private String getUserId() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
     private void goToRegistration() {
         Intent intent = new Intent(context, Registration.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -287,7 +294,6 @@ public class MyAuthorization {
 
     private void goToProfile() {
         // тоже самое необходимо прописать для перехода с регистрации
-
         ContextCompat.startForegroundService(context, new Intent(context, MyService.class));
 
         Intent intent = new Intent(context, Profile.class);
@@ -295,11 +301,5 @@ public class MyAuthorization {
         context.startActivity(intent);
     }
 
-    private void attentionBadConnection() {
-        Toast.makeText(context, "Плохое соединение", Toast.LENGTH_SHORT).show();
-    }
 
-    private String getUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
 }

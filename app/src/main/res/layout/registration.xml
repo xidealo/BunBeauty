@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
+    style="@style/LogInPages"
     android:orientation="vertical"
     tools:context=".logIn.Registration">
 
@@ -71,10 +71,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:background="@drawable/btn"
         android:text="@string/saveData"
-        android:textColor="@color/white"
-        android:textStyle="bold" />
-
+        android:gravity="center"
+        style="@style/mainButtonLogIn"/>
 
 </LinearLayout>

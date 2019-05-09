@@ -182,7 +182,7 @@ public class SubscriptionsApi {
             @Override
             public void onDataChange(@NonNull DataSnapshot subscribersSnapshot) {
                 String countOfSubs = String.valueOf(subscribersSnapshot.getChildrenCount());
-                countOfSubsText.setText(countOfSubs + "countOfSubs");
+                countOfSubsText.setText("Подисчики " +countOfSubs);
                 countOfSubsText.setVisibility(View.VISIBLE);
             }
 

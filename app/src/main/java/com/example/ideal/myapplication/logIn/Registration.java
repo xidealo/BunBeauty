@@ -28,12 +28,15 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
     private static final String NAME = "name";
     private static final String CITY = "city";
+    private static final String PHOTO_LINK = "photo link";
 
     private EditText nameInput;
     private EditText surnameInput;
     private EditText cityInput;
     private EditText phoneInput;
-
+    private String defaultPhotoLink = "https://firebasestorage." +
+            "googleapis.com/v0/b/bun-beauty.appspot.com/o/avatar%2FdefaultAva." +
+            "jpg?alt=media&token=f15dbe15-0541-46cc-8272-2578627ed311";
     private DBHelper dbHelper;
 
     @Override
@@ -93,6 +96,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         items.put(NAME, user.getName());
         items.put(CITY, user.getCity());
         items.put(PHONE, user.getPhone());
+        items.put(PHOTO_LINK, defaultPhotoLink);
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         user.setId(userId);
@@ -116,6 +120,20 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
 
         database.insert(DBHelper.TABLE_CONTACTS_USERS,null,contentValues);
+
+        putPhotoInLocalStorage(user);
+    }
+
+    private void putPhotoInLocalStorage(User user) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, user.getId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, defaultPhotoLink);
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, user.getId());
+
+        database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
     }
 
     private Boolean areInputsCorrect(){

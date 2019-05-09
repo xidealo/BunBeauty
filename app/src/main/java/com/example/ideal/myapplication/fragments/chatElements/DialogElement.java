@@ -57,8 +57,9 @@ public class DialogElement extends Fragment implements View.OnClickListener {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-
-        workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage);
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+        workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage,width,height);
     }
 
     @Override

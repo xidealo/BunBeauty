@@ -1,4 +1,4 @@
-package com.example.ideal.myapplication.other;
+package com.example.ideal.myapplication.subscriptions;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.SubscriptionElement;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Subscribers extends AppCompatActivity {
@@ -161,9 +162,6 @@ public class Subscribers extends AppCompatActivity {
         }
     }
 
-    private  String getUserId(){
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
 
     private void addSubscriptionToScreen(String workerId, String workerName) {
         SubscriptionElement subscriptionElement;
@@ -178,6 +176,9 @@ public class Subscribers extends AppCompatActivity {
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.mainSubscribersLayout, subscriptionElement);
         transaction.commit();
+    }
+    private  String getUserId(){
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
 }

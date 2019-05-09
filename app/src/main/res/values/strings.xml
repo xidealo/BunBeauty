@@ -28,7 +28,6 @@
     <string name="selectedId">selectedId</string>
     <string name="yearId">yearId</string>
 
-
     <string name="BunBeauty">BunBeauty</string>
     <string name="hello_blank_fragment">hello blank fragment</string>
     <string name="status_worker">worker</string>
@@ -44,6 +43,15 @@
     <string name="deleteService">Удалить</string>
     <string name="channel_name">q</string>
     <string name="channel_description">qq</string>
+
+    //bottom panel
+    <string name="chat">\uf075</string>
+    <string name="user">\uf007</string>
+    <string name="mainScreen">\uf03a</string>
+    <string name="search">\uf002</string>
+    <string name="back">\uf104</string>
+    <string name="settings">\uf303</string>
+    <string name="subscribe_heart">\uf004</string>
 
     //array for spinner
     <string-array name="cities">
@@ -80,5 +88,6 @@
     <string name="saveData">Сохранить данные</string>
     <string name="subscribed"><![CDATA[<B]]></string>
     <string name="name">Name</string>
+    <string name="change_number"><u>Именить номер</u></string>
 
 </resources>

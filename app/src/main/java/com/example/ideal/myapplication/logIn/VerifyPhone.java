@@ -28,12 +28,9 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
     private static final String TAG = "DBInf";
 
     private static final String PHONE_NUMBER = "Phone number";
-
     private Button verifyCodeBtn;
-    private Button resendCodeBtn;
-
+    private TextView resendCodeText;
     private EditText codeInput;
-
     private TextView changePhoneText;
 
     private String myPhoneNumber;
@@ -49,7 +46,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.verify_phone);
         //получаем id btns
         verifyCodeBtn = findViewById(R.id.verifyVerifyBtn);
-        resendCodeBtn = findViewById(R.id.resendVerifyBtn);
+        resendCodeText = findViewById(R.id.resendVerifyText);
 
         //получаем id inputs
         codeInput = findViewById(R.id.codeVerifyInput);
@@ -60,8 +57,36 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
         sendVerificationCode();
 
         verifyCodeBtn.setOnClickListener(this);
-        resendCodeBtn.setOnClickListener(this);
+        resendCodeText.setOnClickListener(this);
         changePhoneText.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        WorkWithViewApi.hideKeyboard(this);
+        switch (v.getId()) {
+            case R.id.verifyVerifyBtn:
+                String code = codeInput.getText().toString();
+
+                if (code.trim().length() >= 6) {
+                    // подтверждаем код и если все хорошо, создаем юзера
+                    verifyCode(code);
+                }
+                break;
+
+            case R.id.resendVerifyText:
+                if (resendToken != null) {
+                    resendVerificationCode(resendToken);
+                }
+                break;
+
+            case R.id.changePhoneVerifyText:
+                goBackToAuthorization();
+                break;
+
+            default:
+                break;
+        }
     }
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks verificationCallbacks =
@@ -94,7 +119,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
 
                         codeInput.setVisibility(View.VISIBLE);
                         verifyCodeBtn.setVisibility(View.VISIBLE);
-                        resendCodeBtn.setVisibility(View.VISIBLE);
+                        resendCodeText.setVisibility(View.VISIBLE);
                     }
                 };
 
@@ -108,33 +133,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
                 verificationCallbacks);
     }
 
-    @Override
-    public void onClick(View v) {
-        WorkWithViewApi.hideKeyboard(this);
-        switch (v.getId()) {
-            case R.id.verifyVerifyBtn:
-                String code = codeInput.getText().toString();
 
-                if (code.trim().length() >= 6) {
-                    // подтверждаем код и если все хорошо, создаем юзера
-                    verifyCode(code);
-                }
-                break;
-
-            case R.id.resendVerifyBtn:
-                if (resendToken != null) {
-                    resendVerificationCode(resendToken);
-                }
-                break;
-
-            case R.id.changePhoneVerifyText:
-                goBackToAuthorization();
-                break;
-
-            default:
-                break;
-        }
-    }
 
     private void resendVerificationCode(PhoneAuthProvider.ForceResendingToken token) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
@@ -175,7 +174,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
 
     private void hideViewsOfScreen(){
         verifyCodeBtn.setVisibility(View.INVISIBLE);
-        resendCodeBtn.setVisibility(View.INVISIBLE);
+        resendCodeText.setVisibility(View.INVISIBLE);
 
         codeInput.setVisibility(View.INVISIBLE);
 
