@@ -64,8 +64,8 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
       
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
 
-        categoriesBtns = new Button[6];
-        categories = new String[]{"ногти", "волосы", "глаза", "визаж", "массаж", "остальные"};
+        categoriesBtns = new Button[5];
+        categories = new String[]{"ногти", "волосы", "глаза", "визаж", "массаж"};
 
         createCategoryFeed();
         createMainScreen("");
@@ -76,7 +76,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
         String category;
         Button btn = (Button) v;
-
+        resultLayout.removeAllViews();
         if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
             btn.setBackgroundResource(R.drawable.time_button);
             btn.setTag(R.string.selectedId, false);
@@ -169,7 +169,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     }
 
     private void addToMainScreen(ArrayList<Object[]> serviceList) {
-        resultLayout.removeAllViews();
 
         for (Object[] serviceData : serviceList) {
             foundServiceElement fElement = new foundServiceElement((Service) serviceData[1], (User) serviceData[2]);
