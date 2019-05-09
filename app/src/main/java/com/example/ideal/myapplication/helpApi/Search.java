@@ -156,7 +156,6 @@ public class Search {
 
         long maxCost = 0;
         if (cursor.moveToFirst()) {
-            Log.d(TAG, "" + cursor.getInt(cursor.getColumnIndex(MAX_COST)));
             maxCost = cursor.getInt(cursor.getColumnIndex(MAX_COST));
         }
 

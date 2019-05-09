@@ -4,18 +4,27 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQuery;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
+import com.example.ideal.myapplication.notifications.NotificationCancel;
+import com.example.ideal.myapplication.notifications.NotificationConstructor;
 import com.example.ideal.myapplication.notifications.NotificationOrder;
+import com.example.ideal.myapplication.notifications.NotificationReviewForService;
+import com.example.ideal.myapplication.notifications.NotificationReviewForUser;
 import com.example.ideal.myapplication.notifications.NotificationSubscribers;
 import com.example.ideal.myapplication.notifications.NotificationYouAreRated;
 import com.example.ideal.myapplication.notifications.NotificationYourServiceIsRated;
@@ -27,35 +36,51 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.invoke.WrongMethodTypeException;
+import java.util.HashMap;
+
 import static android.app.NotificationManager.IMPORTANCE_MAX;
 
 public class MyService extends Service {
 
     private static final String TAG = "DBInf";
 
+    private static final String CHANNEL_ID = "1";
+
     private static final String USERS = "users";
-    private static final String ORDERS = "orders";
-    private static final String REVIEWS = "reviews";
-    private static final String REVIEW = "review";
-    private static final String WORKER_ID = "worker id";
     private static final String NAME = "name";
 
-    private static final String CHANNEL_ID = "1";
-    private static final String SERVICES = "services";
-    private static final String WORKING_DAYS = "working days";
-    private static final String WORKING_TIME = "working time";
-    private static final String TIME = "time";
-    private static final String USER_ID = "user id";
-    private static final String DATE = "date";
-    private static final String RATING = "rating";
     private static final String SUBSCRIBERS = "subscribers";
 
-    private String userId;
-    private DBHelper dbHelper;
+    private static final String SERVICES = "services";
+    private static final String USER_ID = "user id";
 
+    private static final String WORKING_DAYS = "working days";
+    private static final String DATE = "date";
+    private static final String SERVICE_ID = "service id";
+
+    private static final String WORKING_TIME = "working time";
+    private static final String TIME = "time";
+
+    private static final String ORDERS = "orders";
+    private static final String IS_CANCELED = "is canceled";
+    private static final String WORKER_ID = "worker id";
+
+    private static final String REVIEWS = "reviews";
+    private static final String REVIEW = "review";
+    private static final String RATING = "rating";
+
+    private DBHelper dbHelper;
+    private WorkWithLocalStorageApi LSApi;
+    private WorkWithTimeApi timeApi;
+
+    private String userId;
     private String serviceName;
     private String workingDate;
     private String workingTime;
+
+    // таймеры для оповешений о возможности оценить спустя сутки
+    private HashMap<String, CountDownTimer> CDTimers;
 
     private long counterForSubscribers;
     private long countOfSubscribers;
@@ -69,7 +94,10 @@ public class MyService extends Service {
         Log.d(TAG, "MyService onStartCommand");
 
         dbHelper = new DBHelper(this);
+        LSApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
+        timeApi = new WorkWithTimeApi();
         userId = getUserId();
+        CDTimers = new HashMap<>();
 
         Intent notificationIntent = new Intent(this, Profile.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -92,7 +120,7 @@ public class MyService extends Service {
         super.onDestroy();
         Log.d(TAG, "MyService onDestroy");
     }
- 
+
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "MyService onBind");
     return null;
@@ -111,6 +139,8 @@ public class MyService extends Service {
                 startServicesListener();
 
                 startSubscribersListener();
+
+                startMyOrdersListener();
             }
 
             private void startServicesListener() {
@@ -121,18 +151,24 @@ public class MyService extends Service {
                 myServicesRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
+                        serviceName = serviceSnapshot.child(NAME).getValue(String.class);
+
                         final DatabaseReference myWorkingDaysRef = myServicesRef
                                 .child(serviceSnapshot.getKey())
                                 .child(WORKING_DAYS);
                         myWorkingDaysRef.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) {
+                                workingDate = workingDaySnapshot.child(DATE).getValue(String.class);
+
                                 final DatabaseReference myWorkingTimeRef = myWorkingDaysRef
                                         .child(workingDaySnapshot.getKey())
                                         .child(WORKING_TIME);
                                 myWorkingTimeRef.addChildEventListener(new ChildEventListener() {
                                     @Override
                                     public void onChildAdded(@NonNull DataSnapshot workingTimeSnapshot, @Nullable String s) {
+                                        workingTime = workingTimeSnapshot.child(TIME).getValue(String.class);
+
                                         final DatabaseReference myOrdersRef = myWorkingTimeRef
                                                 .child(workingTimeSnapshot.getKey())
                                                 .child(ORDERS);
@@ -141,11 +177,16 @@ public class MyService extends Service {
                                             public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
                                                 // срабатывает на добавление ордера
                                                 WorkWithTimeApi timeApi = new WorkWithTimeApi();
-                                                String orderTime = orderSnapshot.child(TIME).getValue(String.class);
-                                                long delay = Math.abs(timeApi.getMillisecondsStringDate(orderTime)-timeApi.getSysdateLong());
+                                                String orderCreationTime = orderSnapshot.child(TIME).getValue(String.class);
+                                                long delay = Math.abs(timeApi.getMillisecondsStringDate(orderCreationTime)-timeApi.getSysdateLong());
 
-                                                // Log.d(TAG, "delay: " + delay);
-                                                // не срабатывает
+                                                String orderId = orderSnapshot.getKey();
+                                                // устанавливаем таймер, чтобы через день после обслуживания дать оценить
+                                                if (!Boolean.valueOf(orderSnapshot.child(IS_CANCELED).getValue().toString())) {
+                                                    setTimerForReview(orderId, workingDate, workingTime, serviceName, false);
+                                                }
+
+                                                // исправить на 5000
                                                 if(delay < 35000) {
                                                     String userId = orderSnapshot.child(USER_ID).getValue(String.class);
 
@@ -159,12 +200,14 @@ public class MyService extends Service {
                                                             DownloadServiceData downloader = new DownloadServiceData(db);
                                                             downloader.loadUserInfo(userSnapshot);
 
-                                                            String name = userSnapshot.child(NAME).getValue(String.class);
+                                                            String userName = userSnapshot.child(NAME).getValue(String.class);
 
-                                                            NotificationOrder notificationOrder = new NotificationOrder(context, name, serviceName, workingDate, workingTime);
+                                                            NotificationOrder notificationOrder = new NotificationOrder(context,
+                                                                    userName,
+                                                                    serviceName,
+                                                                    workingDate,
+                                                                    workingTime);
                                                             notificationOrder.createNotification();
-                                                            // createOrderNotification(name);
-                                                            // Log.d(TAG, name + " " + serviceName + " " + workingDate + " " + workingTime);
                                                         }
 
                                                         @Override
@@ -175,6 +218,14 @@ public class MyService extends Service {
 
                                             @Override
                                             public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
+                                                boolean isCanceled = Boolean.valueOf(orderSnapshot.child(IS_CANCELED).getValue(String.class));
+                                                Log.d(TAG, "onChildChanged: " + isCanceled);
+                                                if (isCanceled) {
+                                                    String orderId = orderSnapshot.getKey();
+                                                    CDTimers.get(orderId).cancel();
+                                                    CDTimers.remove(orderId);
+                                                    Log.d(TAG, "CDTimers: " + CDTimers.keySet());
+                                                }
 
                                                 String review = orderSnapshot
                                                         .child(REVIEWS)
@@ -190,7 +241,8 @@ public class MyService extends Service {
                                                         .iterator()
                                                         .next()
                                                         .child(RATING)
-                                                        .getValue(String.class);
+                                                        .getValue()
+                                                        .toString();
 
                                                 if(!review.equals("-") && !rating.equals("0")) {
                                                     String userId = orderSnapshot
@@ -207,7 +259,8 @@ public class MyService extends Service {
                                                         public void onDataChange(@NonNull DataSnapshot nameSnapshot) {
 
                                                             String name = nameSnapshot.getValue(String.class);
-                                                            NotificationYourServiceIsRated notification = new NotificationYourServiceIsRated(context, name, serviceName);
+                                                            NotificationYourServiceIsRated notification =
+                                                                    new NotificationYourServiceIsRated(context, name, serviceName);
                                                             notification.createNotification();
                                                             // createReviewForServiceNotification();
                                                         }
@@ -230,9 +283,7 @@ public class MyService extends Service {
                                     }
 
                                     @Override
-                                    public void onChildChanged(@NonNull DataSnapshot workingTimeSnapshot, @Nullable String s) {
-                                        workingTime = workingTimeSnapshot.child(TIME).getValue(String.class);
-                                    }
+                                    public void onChildChanged(@NonNull DataSnapshot workingTimeSnapshot, @Nullable String s) { }
 
                                     @Override
                                     public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { }
@@ -246,9 +297,7 @@ public class MyService extends Service {
                             }
 
                             @Override
-                            public void onChildChanged(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) {
-                                workingDate = workingDaySnapshot.child(DATE).getValue(String.class);
-                            }
+                            public void onChildChanged(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) { }
 
                             @Override
                             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { }
@@ -262,9 +311,7 @@ public class MyService extends Service {
                     }
 
                     @Override
-                    public void onChildChanged(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
-                        serviceName = serviceSnapshot.child(NAME).getValue(String.class);
-                    }
+                    public void onChildChanged(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) { }
 
                     @Override
                     public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { }
@@ -352,11 +399,12 @@ public class MyService extends Service {
 
                         //слушаем подписчиков
                         myRef.addChildEventListener(new ChildEventListener() {
+
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                                 //чтобы не выводить notification о старых подписчиках
-                                if(counterForSubscribers == countOfSubscribers){
+                                if(countOfSubscribers==counterForSubscribers) {
                                     String userId = dataSnapshot.child(USER_ID).getValue().toString();
 
                                     DatabaseReference userRef = FirebaseDatabase
@@ -375,7 +423,6 @@ public class MyService extends Service {
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
                                         }
                                     });
                                     countOfSubscribers++;
@@ -407,6 +454,161 @@ public class MyService extends Service {
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
+            }
+
+            private void startMyOrdersListener() {
+                DatabaseReference ordersRef = FirebaseDatabase.getInstance()
+                        .getReference(USERS)
+                        .child(userId)
+                        .child(ORDERS);
+
+                ordersRef.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
+                        final String orderId = orderSnapshot.getKey();
+                        String workerId = orderSnapshot.child(WORKER_ID).getValue(String.class);
+                        String serviceId = orderSnapshot.child(SERVICE_ID).getValue(String.class);
+
+                        SQLiteDatabase database = dbHelper.getReadableDatabase();
+                        String orderQuery = "SELECT "
+                                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + ", "
+                                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + ", "
+                                + DBHelper.KEY_TIME_WORKING_TIME + ", "
+                                + DBHelper.KEY_DATE_WORKING_DAYS
+                                + " FROM "
+                                + DBHelper.TABLE_ORDERS + ", "
+                                + DBHelper.TABLE_WORKING_TIME + ", "
+                                + DBHelper.TABLE_WORKING_DAYS
+                                + " WHERE "
+                                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " = ? AND "
+                                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                                + " AND "
+                                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID;
+
+                        Cursor orderCursor = database.rawQuery(orderQuery, new String[]{orderId});
+
+                        String workingTimeId = "";
+                        String workingDayId = "";
+                        String orderDate = "";
+                        String orderTime = "";
+                        if(orderCursor.moveToFirst()) {
+                            workingTimeId = orderCursor.getString(orderCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_ORDERS));
+                            workingDayId = orderCursor.getString(orderCursor.getColumnIndex(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME));
+                            orderDate = orderCursor.getString(orderCursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS));
+                            orderTime = orderCursor.getString(orderCursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME));
+                        }
+
+                        Cursor userCursor = LSApi.getUser(workerId);
+                        String workerName = "";
+                        if (userCursor.moveToFirst()) {
+                            workerName = userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
+                        }
+
+                        Cursor serviceCursor = LSApi.getService(serviceId);
+                        String serviceName = "";
+                        if (serviceCursor.moveToFirst()) {
+                            serviceName = serviceCursor.getString(serviceCursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES));
+                        }
+
+                        // можно добавить условие на актуальность записи
+                        DatabaseReference isCanceledRef = FirebaseDatabase.getInstance()
+                                .getReference(USERS)
+                                .child(workerId)
+                                .child(SERVICES)
+                                .child(serviceId)
+                                .child(WORKING_DAYS)
+                                .child(workingDayId)
+                                .child(WORKING_TIME)
+                                .child(workingTimeId)
+                                .child(ORDERS)
+                                .child(orderId)
+                                .child(IS_CANCELED);
+
+                        final String finalOrderDate = orderDate;
+                        final String finalOrderTime = orderTime;
+                        final String finalWorkerName = workerName;
+                        final String finalServiceName = serviceName;
+
+                        isCanceledRef.addValueEventListener(new ValueEventListener() {
+                            boolean firstFlag = true;
+
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot isCanceledSnapshot) {
+                                // отправляет сообщение об отказе, тк. соответвующий isCanceled поменялся на false
+                                if(!firstFlag) {
+                                    if (Boolean.valueOf(isCanceledSnapshot.getValue(String.class))) {
+                                        NotificationCancel notification = new NotificationCancel(context,
+                                                finalWorkerName,
+                                                finalServiceName,
+                                                finalOrderDate,
+                                                finalOrderTime);
+                                        notification.createNotification();
+                                        CDTimers.get(orderId).cancel();
+                                        CDTimers.remove(orderId);
+                                        Log.d(TAG, "CDTimers: " + CDTimers.keySet());
+                                    }
+                                } else {
+                                    firstFlag = false;
+
+                                    if (!Boolean.valueOf(isCanceledSnapshot.getValue(String.class))) {
+                                        setTimerForReview(orderId, finalOrderDate, finalOrderTime, finalServiceName, true);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) { }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+            }
+
+            private void setTimerForReview(final String orderId, String date, String time, final String commentedName, final boolean isForService) {
+                long timeLeftInMillis = timeApi.getMillisecondsStringDate(date + " " + time)
+                        - timeApi.getSysdateLong()
+                        + 24*60*60*1000; // Время до сеанса + сутки
+
+                if (timeLeftInMillis > 0) {
+                    // Настраиваем таймер
+                    CountDownTimer CDTimer = new CountDownTimer(timeLeftInMillis, 60*1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) { }
+
+                        @Override
+                        public void onFinish() {
+                            // создаётся необходимое оповещение дял Услуги ил для Клиента
+                            NotificationConstructor notification;
+                            if (isForService) {
+                                notification = new NotificationReviewForService(context, commentedName);
+                            } else {
+                                notification = new NotificationReviewForUser(context, commentedName);
+                            }
+
+                            notification.createNotification();
+                            // удаляется из Мапы, тк оповещение отправлено
+                            CDTimers.remove(orderId);
+                        }
+                    }.start();
+                    // кладём таймер в Мапу, чтобы если что удалить
+                    CDTimers.put(orderId, CDTimer);
+                }
+
             }
 
         }).run();
