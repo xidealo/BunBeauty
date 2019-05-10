@@ -16,11 +16,11 @@ public class NotificationReviewForService extends NotificationConstructor {
     private Context context;
     private static final String CHANNEL_ID = "1";
 
-    private String servixeName;
+    private String serviceName;
 
     public NotificationReviewForService(Context _context, String _servixeName) {
         context = _context;
-        servixeName = _servixeName;
+        serviceName = _servixeName;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class NotificationReviewForService extends NotificationConstructor {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
                 .setContentTitle("Возможность оценить")
-                .setContentText("У вас есть возможность оценить услугу \"" + servixeName + "\"")
+                .setContentText("У вас есть возможность оценить услугу \"" + serviceName + "\"")
                 .setPriority(NotificationCompat.PRIORITY_MAX);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

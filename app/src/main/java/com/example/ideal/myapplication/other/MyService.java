@@ -247,7 +247,7 @@ public class MyService extends Service {
                                                         .toString();
 
                                                 if(!review.equals("-") && !rating.equals("0")) {
-                                                    String userId = orderSnapshot
+                                                    final String userId = orderSnapshot
                                                             .child(USER_ID)
                                                             .getValue(String.class);
 
@@ -262,7 +262,7 @@ public class MyService extends Service {
 
                                                             String name = nameSnapshot.getValue(String.class);
                                                             NotificationYourServiceIsRated notification =
-                                                                    new NotificationYourServiceIsRated(context, name, serviceName);
+                                                                    new NotificationYourServiceIsRated(context, name, serviceName,userId);
                                                             notification.createNotification();
                                                             // createReviewForServiceNotification();
                                                         }
@@ -355,7 +355,7 @@ public class MyService extends Service {
                                 .getValue(Long.class);
 
                         if (!review.equals("-") && rating!=0) {
-                            String workerId = orderSnapshot.child(WORKER_ID).getValue(String.class);
+                            final String workerId = orderSnapshot.child(WORKER_ID).getValue(String.class);
 
                             DatabaseReference ownerRef = FirebaseDatabase
                                     .getInstance()
@@ -367,7 +367,7 @@ public class MyService extends Service {
                                 public void onDataChange(@NonNull DataSnapshot nameSnapshot) {
                                     String name = nameSnapshot.getValue(String.class);
 
-                                    NotificationYouAreRated notification = new NotificationYouAreRated(context, name);
+                                    NotificationYouAreRated notification = new NotificationYouAreRated(context, name, workerId);
                                     notification.createNotification();
                                 }
 
