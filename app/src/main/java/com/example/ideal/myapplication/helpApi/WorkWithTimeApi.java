@@ -13,13 +13,11 @@ public class WorkWithTimeApi {
     public Long getSysdateLong(){
         //3600000*3 для москвы это +3 часа
         Date sysdate = new Date();
-        Log.d(TAG, "getSysdateLong: " + sysdate.toString());
         return sysdate.getTime()+3600000*3;
     }
 
     public Long getMillisecondsStringDate(String date){
 
-        Log.d(TAG, "getSysdateLong: " + date);
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
             Date orderDate;
@@ -34,7 +32,6 @@ public class WorkWithTimeApi {
 
     public Long getMillisecondsStringDateWithSeconds(String date){
 
-        Log.d(TAG, "getSysdateLong: " + date);
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date orderDate;
