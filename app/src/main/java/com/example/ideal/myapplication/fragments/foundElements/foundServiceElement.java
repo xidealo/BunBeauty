@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -20,7 +21,7 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
-import com.example.ideal.myapplication.other.GuestService;
+import com.example.ideal.myapplication.searchService.GuestService;
 
 @SuppressLint("ValidFragment")
 public class foundServiceElement extends Fragment implements View.OnClickListener {
@@ -74,26 +75,31 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         costText = view.findViewById(R.id.costFoundServiceElementText);
         ratingBar = view.findViewById(R.id.ratingBarFondServiceElement);
         avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage);
+        LinearLayout layout = view.findViewById(R.id.foundServiceElementLayout);
 
-        nameUserText.setOnClickListener(this);
-        city.setOnClickListener(this);
-        nameServiceText.setOnClickListener(this);
-        costText.setOnClickListener(this);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+        params.setMargins(10,10,10,15);
+        layout.setLayoutParams(params);
+
+        layout.setOnClickListener(this);
         setData();
     }
 
     private void setData() {
-        nameUserText.setText(nameUserString);
-        city.setText(cityString);
+        nameUserText.setText(nameUserString.toUpperCase());
+        city.setText(cityString.substring(0, 1).toUpperCase() + cityString.substring(1).toLowerCase());
         nameServiceText.setText(nameServiceString);
-        costText.setText(costString);
+        costText.setText("Цена \n" + costString);
         ratingBar.setRating(avgRating);
 
         DBHelper dbHelper = new DBHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-        workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage);
+        workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage,width,height);
     }
 
     @Override

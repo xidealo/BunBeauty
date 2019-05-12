@@ -302,7 +302,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 dayBtns[i][j].setTextSize(11);
                 dayBtns[i][j].setText(dayOfMonth + " " + stringMonth);
 
-
                 //отрисовываем прошедше дни
                 if ((j < dayOfWeek) && (i == 0)) {
                     dayBtns[i][j].setEnabled(false);

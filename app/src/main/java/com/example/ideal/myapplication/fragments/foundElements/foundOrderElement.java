@@ -9,24 +9,24 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.other.GuestService;
+import com.example.ideal.myapplication.searchService.GuestService;
 
 @SuppressLint("ValidFragment")
 public class foundOrderElement extends Fragment implements View.OnClickListener {
 
     final String SERVICE_ID = "service id";
 
-    TextView nameText;
-    TextView dateText;
-    TextView timeText;
+    private TextView nameText;
+    private TextView timeText;
 
-    String idString;
-    String nameString;
-    String dateString;
-    String timeString;
+    private String idString;
+    private String nameString;
+    private String dateString;
+    private String timeString;
 
     @SuppressLint("ValidFragment")
     public foundOrderElement(String id, String name, String date, String time) {
@@ -45,19 +45,24 @@ public class foundOrderElement extends Fragment implements View.OnClickListener 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         nameText = view.findViewById(R.id.nameFoundOrderElementText);
-        dateText = view.findViewById(R.id.costFoundOrderElementText);
         timeText = view.findViewById(R.id.descriptionFoundOrderElementText);
 
         nameText.setOnClickListener(this);
-        dateText.setOnClickListener(this);
         timeText.setOnClickListener(this);
+
+        LinearLayout layout = view.findViewById(R.id.foundOrderProfileElementLayout);
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+        params.setMargins(10,10,10,15);
+        layout.setLayoutParams(params);
+
+        layout.setOnClickListener(this);
         setData();
     }
 
     private void setData() {
         nameText.setText(nameString);
-        dateText.setText(dateString);
-        timeText.setText(timeString);
+        timeText.setText(dateString + " "+ timeString);
     }
 
     @Override

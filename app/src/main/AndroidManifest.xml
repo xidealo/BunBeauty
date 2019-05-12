@@ -4,22 +4,18 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
+        android:name=".other.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/BunBeauty"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".other.Premium"></activity>
-        <activity android:name=".other.Subscribers" />
-        <activity android:name=".logIn.CreatingNewPassword" />
-        <activity android:name=".logIn.PasswordRecovery" />
-        <activity android:name=".test.VerifyPhoneActivity" />
-        <activity android:name=".test.ProfileActivity" />
-        <activity android:name=".test.MainActivity" />
-        <activity android:name=".fragments.panelElements.TopPanel" />
+        <activity android:name=".searchService.Premium"></activity>
+        <activity android:name=".subscriptions.Subscribers" />
         <activity
             android:name=".reviews.PickedComment"
             android:theme="@style/Theme.AppCompat.Dialog" />
@@ -36,15 +32,19 @@
             </intent-filter>
         </activity>
         <activity android:name=".other.Profile" />
-        <activity android:name=".other.SearchService" />
+        <activity android:name=".searchService.SearchService" />
         <activity android:name=".createService.AddService" />
-        <activity android:name=".other.GuestService" />
-        <activity android:name=".other.MainScreen" />
+        <activity android:name=".searchService.GuestService" />
+        <activity android:name=".searchService.MainScreen" />
         <activity android:name=".createService.MyTime" />
         <activity android:name=".createService.MyCalendar" />
         <activity android:name=".editing.EditService" />
         <activity android:name=".editing.EditProfile" />
         <activity android:name=".logIn.VerifyPhone" />
+
+        <service
+            android:name=".other.MyService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

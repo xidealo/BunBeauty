@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
+    style="@style/LogInPages"
+    android:orientation="vertical"
     tools:context=".logIn.VerifyPhone">
 
     <ImageView
@@ -12,62 +13,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1"
-        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginTop="150dp"
         app:srcCompat="@drawable/bun_beauty" />
 
     <EditText
         android:id="@+id/codeVerifyInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:backgroundTint="@color/lightText"
         android:ems="10"
         android:hint="@string/enterCode"
         android:inputType="number"
         android:textColor="@color/white"
-        android:textColorHint="@color/lightText"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
-        app:layout_constraintVertical_bias="0.3" />
+        android:textColorHint="@color/lightText" />
 
     <Button
         android:id="@+id/verifyVerifyBtn"
+        style="@style/mainButtonLogIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/verifyCode"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
-        app:layout_constraintVertical_bias="0.42" />
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="@string/verifyCode" />
 
-    <Button
-        android:id="@+id/resendVerifyBtn"
+    <TextView
+        android:id="@+id/resendVerifyText"
+        style="@style/extraText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/resendCode"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
-        app:layout_constraintVertical_bias="0.54" />
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:text="@string/resendCode" />
 
     <TextView
         android:id="@+id/changePhoneVerifyText"
+        style="@style/extraText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Именить номер"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoVerifyImage"
-        app:layout_constraintVertical_bias="0.9" />
-
-</android.support.constraint.ConstraintLayout>
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:textColor="@color/white"
+        android:text="@string/change_number" />
+</LinearLayout>

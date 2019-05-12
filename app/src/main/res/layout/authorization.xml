@@ -1,77 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
-    tools:context=".logIn.Authorization">
+    android:orientation="vertical"
+    tools:context=".logIn.Authorization"
+    style="@style/LogInPages">
 
     <ImageView
         android:id="@+id/logoAuthImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
         android:layout_gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1"
-        app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/bun_beauty" />
 
     <TextView
         android:id="@+id/titleAuthText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:text="Введите номер телефона"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoAuthImage"
-        app:layout_constraintVertical_bias="0.1" />
+        android:layout_marginTop="10dp"
+        style="@style/extraText"
+        android:visibility="invisible"/>
 
-    <Spinner
-        android:id="@+id/codeAuthSpinner"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/phoneAuthInput"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoAuthImage"
-        app:layout_constraintVertical_bias="0.3" />
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp">
 
-    <EditText
-        android:id="@+id/phoneAuthInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/lightText"
-        android:ems="10"
-        android:hint="@string/phoneRegistration"
-        android:inputType="phone"
-        android:textColor="@color/white"
-        android:textColorHint="@color/lightText"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.656"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoAuthImage"
-        app:layout_constraintVertical_bias="0.3" />
+        <Spinner
+            android:id="@+id/codeAuthSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/lightText"/>
+
+        <EditText
+            android:id="@+id/phoneAuthInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/lightText"
+            android:hint="@string/phoneRegistration"
+            android:inputType="phone"
+            android:textColor="@color/white"
+            android:textColorHint="@color/lightText" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/verifyAuthBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/log_in"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoAuthImage"
-        app:layout_constraintVertical_bias="0.45" />
+        style="@style/mainButtonLogIn"
+        android:text="Войти"
+        android:visibility="visible"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"/>
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

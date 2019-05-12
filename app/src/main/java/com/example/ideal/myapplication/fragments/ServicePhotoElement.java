@@ -48,6 +48,10 @@ public class ServicePhotoElement extends Fragment implements View.OnClickListene
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
+
         cancelPhoto = view.findViewById(R.id.cancelServicePhotoElement);
         photo = view.findViewById(R.id.imageServicePhotoElementImage);
         cancelPhoto.setOnClickListener(this);
@@ -62,6 +66,8 @@ public class ServicePhotoElement extends Fragment implements View.OnClickListene
             //установка аватарки
             Picasso.get()
                     .load(photoLink)
+                    .resize(width,height)
+                    .centerCrop()
                     .into(photo);
         }
     }

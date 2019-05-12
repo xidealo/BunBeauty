@@ -81,22 +81,14 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
-        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
-    }
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage,width,height);    }
 
 
     @Override
     public void onClick(View v) {
         goToProfile();
-    }
-
-    private void goToProfile() {
-        String ownerId = getIntent().getStringExtra(USER_ID);
-
-        Intent intent = new Intent(this, Profile.class);
-        intent.putExtra(OWNER_ID, ownerId);
-
-        startActivity(intent);
     }
 
     private void loadOwnerAndAddToScreen(String userId) {
@@ -130,5 +122,14 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
         database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
                 DBHelper.KEY_ID + " = ?",
                 new String[]{String.valueOf(localUser.getId())});
+    }
+
+    private void goToProfile() {
+        String ownerId = getIntent().getStringExtra(USER_ID);
+
+        Intent intent = new Intent(this, Profile.class);
+        intent.putExtra(OWNER_ID, ownerId);
+
+        startActivity(intent);
     }
 }

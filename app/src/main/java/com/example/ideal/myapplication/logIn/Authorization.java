@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.helpApi.WorkWithViewApi;
@@ -20,6 +21,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     private static final String PHONE_NUMBER = "Phone number";
 
     private Button verifyBtn;
+    private TextView enterPhoneText;
     private EditText phoneInput;
     private Spinner codeSpinner;
     private String myPhoneNumber;
@@ -31,6 +33,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
         verifyBtn = findViewById(R.id.verifyAuthBtn);
         phoneInput = findViewById(R.id.phoneAuthInput);
+        enterPhoneText = findViewById(R.id.titleAuthText);
 
         codeSpinner = findViewById(R.id.codeAuthSpinner);
         codeSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, CountryCodes.countryNames));
@@ -90,7 +93,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
     private void showViewsOnScreen(){
         codeSpinner.setVisibility(View.VISIBLE);
-
+        enterPhoneText.setVisibility(View.VISIBLE);
         phoneInput.setVisibility(View.VISIBLE);
 
         verifyBtn.setVisibility(View.VISIBLE);

@@ -1,16 +1,13 @@
 package com.example.ideal.myapplication.other;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -25,22 +22,15 @@ import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
-import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.example.ideal.myapplication.logIn.Authorization;
-import com.example.ideal.myapplication.reviews.RatingBarElement;
+import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class Profile extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String OWNER_ID = "owner id";
 
     private static final String TAG = "DBInf";
+    private static final String OWNER_ID = "owner id";
     private static final String REVIEW_FOR_SERVICE = "review for service";
 
     private static final String REVIEW_FOR_USER = "review for user";
@@ -56,10 +46,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     private TextView nameText;
     private TextView cityText;
+    private TextView phoneText;
     private TextView withoutRatingText;
+    private TextView subscribersText;
 
     private Button subscriptionsBtn;
-    private Button subscribersBtn;
 
     private ScrollView servicesScroll;
     private ScrollView ordersScroll;
@@ -79,10 +70,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.profile);
         withoutRatingText = findViewById(R.id.withoutRatingProfileText);
 
-        Button logOutBtn = findViewById(R.id.logOutProfileBtn);
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
         subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn);
-        subscribersBtn = findViewById(R.id.subscribersProfileBtn);
         avatarImage = findViewById(R.id.avatarProfileImage);
 
         SwitchCompat servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
@@ -94,7 +83,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         nameText = findViewById(R.id.nameProfileText);
         cityText = findViewById(R.id.cityProfileText);
-
+        phoneText = findViewById(R.id.phoneProfileText);
+        subscribersText = findViewById(R.id.subscribersProfileText);
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -106,7 +96,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         // Получаем id владельца профиля
         ownerId = getIntent().getStringExtra(OWNER_ID);
         // Проверяем id владельца профиля
-        if(ownerId == null) {
+        if (ownerId == null) {
             // Если null значит пользователь только что вошёл и это его сервис
             ownerId = userId;
         }
@@ -116,24 +106,24 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
 
         // Проверяем совпадают id пользователя и владельца
-        if(userId.equals(ownerId)){
+        if (userId.equals(ownerId)) {
             // Совпадают - это мой профиль
-            servicesLayout.setVisibility(View.INVISIBLE);
-            servicesScroll.setVisibility(View.INVISIBLE);
+            servicesLayout.setVisibility(View.GONE);
+            servicesScroll.setVisibility(View.GONE);
 
             servicesOrOrdersSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(isChecked) {
+                    if (isChecked) {
                         buttonView.setText("My services");
-                        ordersLayout.setVisibility(View.INVISIBLE);
-                        ordersScroll.setVisibility(View.INVISIBLE);
+                        ordersLayout.setVisibility(View.GONE);
+                        ordersScroll.setVisibility(View.GONE);
                         servicesLayout.setVisibility(View.VISIBLE);
                         servicesScroll.setVisibility(View.VISIBLE);
                     } else {
                         buttonView.setText("My orders");
-                        servicesLayout.setVisibility(View.INVISIBLE);
-                        servicesScroll.setVisibility(View.INVISIBLE);
+                        servicesLayout.setVisibility(View.GONE);
+                        servicesScroll.setVisibility(View.GONE);
                         ordersLayout.setVisibility(View.VISIBLE);
                         ordersScroll.setVisibility(View.VISIBLE);
                     }
@@ -141,45 +131,39 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             });
             addServicesBtn.setOnClickListener(this);
             subscriptionsBtn.setOnClickListener(this);
-            subscribersBtn.setOnClickListener(this);
         } else {
             // Не совпадает - чужой профиль
 
             // Скрываем функционал
-            servicesOrOrdersSwitch.setVisibility(View.INVISIBLE);
-            addServicesBtn.setVisibility(View.INVISIBLE);
-            subscriptionsBtn.setVisibility(View.INVISIBLE);
-            subscribersBtn.setVisibility(View.INVISIBLE);
+            servicesOrOrdersSwitch.setVisibility(View.GONE);
+            addServicesBtn.setVisibility(View.GONE);
+            subscriptionsBtn.setVisibility(View.GONE);
 
             // Отображаем все сервисы пользователя
-            ordersLayout.setVisibility(View.INVISIBLE);
-            ordersScroll.setVisibility(View.INVISIBLE);
+            ordersLayout.setVisibility(View.GONE);
+            ordersScroll.setVisibility(View.GONE);
             servicesLayout.setVisibility(View.VISIBLE);
             servicesScroll.setVisibility(View.VISIBLE);
         }
 
         loadRatingForUser();
-        logOutBtn.setOnClickListener(this);
         avatarImage.setOnClickListener(this);
+
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.addServicesProfileBtn:
                 goToAddService();
                 break;
-
-            case R.id.logOutProfileBtn:
-                goToLogIn();
-                break;
-
             case R.id.subscriptionsProfileBtn:
                 goToSubscribers(SUBSCRIPTIONS);
                 break;
-            case R.id.subscribersProfileBtn:
+
+           /* case R.id.subscribersProfileBtn:
                 goToSubscribers(SUBSCRIBERS);
-                break;
+                break;*/
 
             default:
                 break;
@@ -187,32 +171,37 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     }
 
     // получаем данные о пользователе и отображаем в прфоиле
-    private void updateProfileData(String userId){
+    private void updateProfileData(String userId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         //получаем имя, фамилию и город пользователя по его id
         String sqlQuery =
                 "SELECT "
                         + DBHelper.KEY_NAME_USERS + ", "
+                        + DBHelper.KEY_PHONE_USERS + ", "
                         + DBHelper.KEY_CITY_USERS
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_USERS
                         + " WHERE "
                         + DBHelper.KEY_ID + " = ?";
-        Cursor cursor = database.rawQuery(sqlQuery,new String[] {userId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
-            int indexCity = cursor . getColumnIndex(DBHelper.KEY_CITY_USERS);
+            int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
+            int indexPhone = cursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
+
             String[] names = cursor.getString(indexName).split(" ");
-            for (int i=0; i<names.length; i++) {
+            for (int i = 0; i < names.length; i++) {
                 names[i] = names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
             }
             String name = names[0] + " " + names[1];
 
             String city = cursor.getString(indexCity).substring(0, 1).toUpperCase()
                     + cursor.getString(indexCity).substring(1);
+            String phone = cursor.getString(indexPhone);
             nameText.setText(name);
             cityText.setText(city);
+            phoneText.setText(phone);
             cursor.close();
         }
     }
@@ -266,28 +255,27 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         // если сюда не заходит, значит ревью нет
         if (cursor.moveToFirst()) {
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId= cursor.getColumnIndex(ORDER_ID);
+            int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 String orderId = cursor.getString(indexOrderId);
-                if(workWithLocalStorageApi.isMutualReview(orderId)) {
+                if (workWithLocalStorageApi.isMutualReview(orderId)) {
                     sumRates += Float.valueOf(cursor.getString(indexRating));
                     counter++;
-                }
-                else {
-                    if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
+                } else {
+                    if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
                         sumRates += Float.valueOf(cursor.getString(indexRating));
                         counter++;
                     }
                 }
             } while (cursor.moveToNext());
 
-            if(counter!=0){
+            if (counter != 0) {
                 float avgRating = sumRates / counter;
-                addRatingToScreen(avgRating, counter);
-            }
-            else {
+                //addRatingToScreen(avgRating, counter);
+                //метод, который добалвяет оценку
+            } else {
                 setWithoutRating();
             }
         } else {
@@ -302,9 +290,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         updateProfileData(ownerId);
 
-        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage);
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
+        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage,width,height);
 
-        if(userId.equals(ownerId)){
+        if (userId.equals(ownerId)) {
             // если это мой сервис
             updateOrdersList(userId);
 
@@ -316,14 +306,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 btnText += " (" + subscriptionsCount + ")";
             }
             subscriptionsBtn.setText(btnText);
-            String subscribersBtnText = SUBSCRIBERS;
+            String subscribersBtnText = "Кол-во подписчиков:";
             long subscribersCount = getCountOfSubscribers();
 
-            Log.d(TAG, "onResume: " + subscribersCount);
-            if(subscribersCount!=0){
-                subscribersBtnText += " (" + subscribersCount + ")";
+            if (subscribersCount != 0) {
+                subscribersBtnText += " " + subscribersCount;
             }
-            subscribersBtn.setText(subscribersBtnText);
+            subscribersText.setText(subscribersBtnText);
         }
 
         updateServicesList(userId);
@@ -340,7 +329,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " FROM " + DBHelper.TABLE_SUBSCRIBERS
                         + " WHERE " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_USER_ID + " = ?";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
         return cursor.getCount();
     }
 
@@ -353,7 +342,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " FROM " + DBHelper.TABLE_SUBSCRIBERS
                         + " WHERE " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_WORKER_ID + " = ?";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {ownerId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{ownerId});
         return cursor.getCount();
     }
 
@@ -370,16 +359,16 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_SERVICES
                         + " WHERE "
-                        + DBHelper.KEY_USER_ID+ " = ? ";
+                        + DBHelper.KEY_USER_ID + " = ? ";
 
         Cursor cursor = database.rawQuery(sqlQueryService, new String[]{ownerId});
         float sumRates = 0;
         long countOfRates = 0;
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             int indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
-            do{
+            do {
 
                 String serviceId = cursor.getString(indexServiceId);
                 String serviceName = cursor.getString(indexServiceName);
@@ -424,39 +413,38 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
                 Cursor cursorWithReview = database.rawQuery(mainSqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
 
-                if(cursorWithReview.moveToFirst()){
+                if (cursorWithReview.moveToFirst()) {
                     int indexRating = cursorWithReview.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
                     int indexWorkingTimeId = cursorWithReview.getColumnIndex(DBHelper.KEY_ID);
-                    int indexOrderId= cursorWithReview.getColumnIndex(ORDER_ID);
+                    int indexOrderId = cursorWithReview.getColumnIndex(ORDER_ID);
                     do {
                         String workingTimeId = cursorWithReview.getString(indexWorkingTimeId);
                         String orderId = cursorWithReview.getString(indexOrderId);
-                        if(workWithLocalStorageApi.isMutualReview(orderId)) {
+                        if (workWithLocalStorageApi.isMutualReview(orderId)) {
                             sumRates += Float.valueOf(cursorWithReview.getString(indexRating));
                             countOfRates++;
-                        }
-                        else {
-                            if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
+                        } else {
+                            if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
                                 sumRates += Float.valueOf(cursorWithReview.getString(indexRating));
                                 countOfRates++;
                             }
                         }
-                    }while (cursorWithReview.moveToNext());
+                    } while (cursorWithReview.moveToNext());
                 }
                 cursorWithReview.close();
 
                 Service service = new Service();
                 service.setId(serviceId);
                 service.setName(serviceName);
-                if(countOfRates !=0){
+                if (countOfRates != 0) {
                     float avgRating = sumRates / countOfRates;
-                    addToScreenOnProfile(avgRating,service);
+                    addToScreenOnProfile(avgRating, service);
                     countOfRates = 0;
                     sumRates = 0;
-                }else {
-                    addToScreenOnProfile(0,service);
+                } else {
+                    addToScreenOnProfile(0, service);
                 }
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
 
         }
 
@@ -466,7 +454,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     private void addToScreenOnProfile(float avgRating, Service service) {
 
         foundServiceProfileElement fElement
-                = new foundServiceProfileElement(avgRating,service);
+                = new foundServiceProfileElement(avgRating, service);
         FragmentTransaction transaction = manager.beginTransaction();
 
         transaction.add(R.id.servicesProfileLayout, fElement);
@@ -509,20 +497,20 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                         + " STRFTIME('%s', " + DBHelper.KEY_DATE_WORKING_DAYS
                         + ")>=STRFTIME('%s', DATE('now'))";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
 
         int cursorCount = cursor.getCount();
 
         //если есть новые записи
-        if(cursorCount > visibleCount) {
+        if (cursorCount > visibleCount) {
             //Идём с конца
-            if(cursor.moveToLast()){
+            if (cursor.moveToLast()) {
                 int indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID);
                 int indexServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
                 int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
                 int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
 
-                do{
+                do {
                     String foundId = cursor.getString(indexServiceId);
                     String foundName = cursor.getString(indexServiceName);
                     String foundDate = cursor.getString(indexDate);
@@ -532,22 +520,14 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                     visibleCount++;
 
                     //пока в курсоре есть строки и есть новые записи
-                }while (cursor.moveToPrevious() && (cursorCount > visibleCount));
+                } while (cursor.moveToPrevious() && (cursorCount > visibleCount));
             }
         }
         cursor.close();
     }
+
     private String getUserId() {
-        return  FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
-
-    private void addRatingToScreen(Float avgRating, Long countOfRates) {
-        RatingBarElement ratingElement
-                = new RatingBarElement(avgRating, countOfRates, ownerId, REVIEW_FOR_USER);
-
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.ratingLayout, ratingElement);
-        transaction.commit();
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     private void addOrderToScreen(String id, String name, String date, String time) {
@@ -563,13 +543,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery =
                 "SELECT * FROM "
-                + DBHelper.TABLE_SUBSCRIBERS
-                + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ? AND "
-                + DBHelper.KEY_WORKER_ID + " = ?";
+                        + DBHelper.TABLE_SUBSCRIBERS
+                        + " WHERE "
+                        + DBHelper.KEY_USER_ID + " = ? AND "
+                        + DBHelper.KEY_WORKER_ID + " = ?";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId, ownerId});
-        if(cursor.moveToFirst()) {
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId, ownerId});
+        if (cursor.moveToFirst()) {
             cursor.close();
             return true;
         } else {
@@ -579,15 +559,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    private void goToLogIn() {
-        FirebaseAuth.getInstance().signOut();
 
-        Intent intent = new Intent(this, Authorization.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-    }
-
-    private void setWithoutRating(){
+    private void setWithoutRating() {
         withoutRatingText.setVisibility(View.VISIBLE);
     }
 
@@ -595,7 +568,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         Intent intent = new Intent(this, AddService.class);
         startActivity(intent);
     }
-  
+
     private void goToSubscribers(String status) {
         Intent intent = new Intent(this, Subscribers.class);
         intent.putExtra(STATUS, status);

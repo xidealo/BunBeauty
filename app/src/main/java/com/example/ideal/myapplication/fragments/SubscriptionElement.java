@@ -75,8 +75,9 @@ public class SubscriptionElement extends Fragment implements View.OnClickListene
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
-        workWithLocalStorageApi.setPhotoAvatar(workerId,avatarImage);
-    }
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+        workWithLocalStorageApi.setPhotoAvatar(workerId,avatarImage,width,height);    }
 
     @Override
     public void onClick(View v) {

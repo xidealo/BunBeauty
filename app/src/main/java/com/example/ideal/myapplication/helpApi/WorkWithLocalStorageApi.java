@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.squareup.picasso.Picasso;
 
@@ -43,8 +44,9 @@ public class WorkWithLocalStorageApi {
 
     private static final String TAG = "DBInf";
 
-    public void setPhotoAvatar(String userId, ImageView avatarImage) {
+    public void setPhotoAvatar(String userId, ImageView avatarImage, int width, int height) {
         //получаем имя, фамилию и город пользователя по его id
+
         String sqlQuery =
                 "SELECT "
                         + DBHelper.KEY_PHOTO_LINK_PHOTOS
@@ -62,6 +64,8 @@ public class WorkWithLocalStorageApi {
             //установка аватарки
             Picasso.get()
                     .load(photoLink)
+                    .resize(width,height)
+                    .centerCrop()
                     .into(avatarImage);
         }
         cursor.close();
@@ -115,13 +119,22 @@ public class WorkWithLocalStorageApi {
         }
     }
 
-    public Cursor getUser(String userId){
+    public Cursor getUser(String userId) {
         String sqlQuery = "SELECT * FROM "
                 + DBHelper.TABLE_CONTACTS_USERS
                 + " WHERE "
                 + DBHelper.KEY_ID + " = ?";
 
         return localDatabase.rawQuery(sqlQuery, new String[]{userId});
+    }
+
+    public Cursor getService(String serviceId) {
+        String sqlQuery = "SELECT * FROM "
+                + DBHelper.TABLE_CONTACTS_SERVICES
+                + " WHERE "
+                + DBHelper.KEY_ID + " = ?";
+
+        return localDatabase.rawQuery(sqlQuery, new String[]{serviceId});
     }
 
     public boolean hasSomeDataForUsers(String tableName, String id) {
