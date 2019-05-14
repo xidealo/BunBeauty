@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +29,7 @@ public class SubscriptionElement extends Fragment implements View.OnClickListene
     private static final String SUBSCRIPTIONS = "подписки";
 
     private TextView nameText;
-    private Button subscribeBtn;
+    private TextView subscribeText;
     private ImageView avatarImage;
 
     private String workerId;
@@ -51,24 +52,29 @@ public class SubscriptionElement extends Fragment implements View.OnClickListene
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         nameText = view.findViewById(R.id.workerNameSubscriptionElementText);
-        subscribeBtn = view.findViewById(R.id.subscribeSubscriptionElementBtn);
+        subscribeText = view.findViewById(R.id.subscribeSubscriptionElementText);
         avatarImage = view.findViewById(R.id.avatarSubscriptionElementImage);
 
         nameText.setOnClickListener(this);
         avatarImage.setOnClickListener(this);
         if(isSubscription) {
-            subscribeBtn.setOnClickListener(this);
+            subscribeText.setOnClickListener(this);
         }
         else {
-            subscribeBtn.setVisibility(View.GONE);
+            subscribeText.setVisibility(View.GONE);
         }
+        LinearLayout layout = view.findViewById(R.id.subscriptionElementLayout);
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+        params.setMargins(10,10,10,15);
+        layout.setLayoutParams(params);
 
         setData();
     }
 
     private void setData() {
         nameText.setText(workerName);
-        subscribeBtn.setTag(true);
+        subscribeText.setTag(true);
 
         DBHelper dbHelper = new DBHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -82,17 +88,17 @@ public class SubscriptionElement extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.subscribeSubscriptionElementBtn:
+            case R.id.subscribeSubscriptionElementText:
                 SubscriptionsApi subsApi = new SubscriptionsApi(workerId, getContext());
                 
-                if ((boolean) subscribeBtn.getTag()) {
-                    subscribeBtn.setTag(false);
-                    subscribeBtn.setText("<3");
+                if ((boolean) subscribeText.getTag()) {
+                    subscribeText.setTag(false);
+                    subscribeText.setText("\uf004");
                     subsApi.unsubscribe();
                     Toast.makeText(getContext(), "Подписка отменена", Toast.LENGTH_SHORT).show();
                 } else {
-                    subscribeBtn.setTag(true);
-                    subscribeBtn.setText("<B");
+                    subscribeText.setTag(true);
+                    subscribeText.setText("<B");
                     subsApi.subscribe();
                     Toast.makeText(getContext(), "Вы подписались", Toast.LENGTH_SHORT).show();
                 }

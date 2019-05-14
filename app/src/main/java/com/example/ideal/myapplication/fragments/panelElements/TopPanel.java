@@ -179,7 +179,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                         if (getContext().getClass() == EditService.class) {
                             //multiBtn.setText("Удалить");
                             //Пока что не будет удаления сервиса, потому что много связей и тяжело удалить
-                            settingText.setVisibility(View.GONE);
+                            settingText.setVisibility(View.INVISIBLE);
                             // Если это не редактирование сервиса
                         } else {
                             // Если это главная страница

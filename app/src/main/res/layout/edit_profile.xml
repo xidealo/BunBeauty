@@ -35,8 +35,8 @@
 
                 <ImageView
                     android:id="@+id/avatarEditProfileImage"
-                    android:layout_width="125dp"
-                    android:layout_height="125dp"
+                    android:layout_width="@dimen/photo_width"
+                    android:layout_height="@dimen/photo_height"
                     android:layout_gravity="center"
                     tools:srcCompat="@tools:sample/avatars" />
             </LinearLayout>
@@ -136,7 +136,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/edit" />
+            android:text="@string/saveData" />
 
         <EditText
             android:id="@+id/codeEditProfileInput"
