@@ -59,7 +59,7 @@ public class MyAuthorization {
         downloadServiceData = new DownloadServiceData(localDatabase);
     }
 
-    void authorizeUser() {
+   void authorizeUser() {
         // скарываем Views и запукаем прогресс бар
 
         Query query = FirebaseDatabase.getInstance().getReference(USERS).
