@@ -1,40 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/commentElementLayout"
+    style="@style/block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:theme="@style/allPages">
+    android:background="@drawable/block_text"
+    android:orientation="vertical"
+    android:padding="5dp">
 
-    <ImageView
-        android:id="@+id/avatarCommentElementImage"
-        android:layout_width="77dp"
-        android:layout_height="39dp"
-        android:layout_weight="1"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/nameCommentElementText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=" "
-        android:textSize="18sp" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/reviewCommentElementText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=" "
-        android:textSize="18sp" />
+        <ImageView
+            android:id="@+id/avatarCommentElementImage"
+            android:layout_width="@dimen/photo_avatar_width"
+            android:layout_height="@dimen/photo_avatar_height"
+            android:layout_marginEnd="10dp"
+            tools:srcCompat="@tools:sample/avatars" />
 
-    <RatingBar
-        android:id="@+id/ratingCommentElementBar"
-        style="?android:attr/ratingBarStyleSmall"
-        android:layout_width="1dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.5"
-        android:isIndicator="true"
-        android:numStars="5" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+
+            <TextView
+                android:id="@+id/nameCommentElementText"
+                style="@style/mainTextMainScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Имя"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/reviewCommentElementText"
+                style="@style/defaultTextMainScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Комментарий" />
+
+        </LinearLayout>
+
+        <RatingBar
+            android:id="@+id/ratingCommentElementBar"
+            style="@android:style/Widget.Holo.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="1"
+            android:theme="@style/myRatingBar" />
+    </LinearLayout>
+
+
 </LinearLayout>

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -19,7 +20,7 @@ import com.example.ideal.myapplication.fragments.objects.Comment;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
 
-public class CommentElement extends Fragment implements View.OnClickListener{
+public class CommentElement extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
 
@@ -62,18 +63,20 @@ public class CommentElement extends Fragment implements View.OnClickListener{
         ratingBar = view.findViewById(R.id.ratingCommentElementBar);
         avatarImage = view.findViewById(R.id.avatarCommentElementImage);
 
-        userNameText.setOnClickListener(this);
-        reviewText.setOnClickListener(this);
+        LinearLayout layout = view.findViewById(R.id.commentElementLayout);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+        params.setMargins(10,10,10,15);
+        layout.setLayoutParams(params);
+        layout.setOnClickListener(this);
 
         setData();
     }
 
     private void setData() {
         String abbreviatedReview;
-        if(review.length()>3) {
-            abbreviatedReview = review.substring(0, 2) + "...";
-        }
-        else {
+        if (review.length() > 26) {
+            abbreviatedReview = review.substring(0, 25) + "...";
+        } else {
             abbreviatedReview = review;
         }
 
@@ -88,7 +91,8 @@ public class CommentElement extends Fragment implements View.OnClickListener{
 
         int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
         int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
-        workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage,width,height);    }
+        workWithLocalStorageApi.setPhotoAvatar(userId, avatarImage, width, height);
+    }
 
     @Override
     public void onClick(View v) {
