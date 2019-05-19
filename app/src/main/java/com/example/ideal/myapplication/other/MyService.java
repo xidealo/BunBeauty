@@ -187,7 +187,6 @@ public class MyService extends Service {
                                                 if (!orderSnapshot.child(IS_CANCELED).getValue(Boolean.class)) {
                                                     setTimerForReview(orderId, workingDate, workingTime, serviceName, false);
                                                 }
-                                                Log.d(TAG, "delay: " + delay);
                                                 // исправить на 5000
                                                 if(delay < 10000) {
                                                     String userId = orderSnapshot.child(USER_ID).getValue(String.class);
