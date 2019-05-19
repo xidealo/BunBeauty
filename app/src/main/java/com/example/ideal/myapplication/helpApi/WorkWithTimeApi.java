@@ -13,18 +13,15 @@ public class WorkWithTimeApi {
     public Long getSysdateLong(){
         //3600000*3 для москвы это +3 часа
         Date sysdate = new Date();
-        Log.d(TAG, "getSysdateLong: " + sysdate.toString());
-        return sysdate.getTime()+3600000*3;
+        return sysdate.getTime() + 3600000*3;
     }
 
-    public Long getMillisecondsStringDate(String date){
-
-        Log.d(TAG, "getSysdateLong: " + date);
+    public Long getMillisecondsStringDate(String date) {
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
         try {
-            Date orderDate;
-            orderDate = formatForDateNow.parse(date);
-            return orderDate.getTime();
+            Date orderDate = formatForDateNow.parse(date);
+            return orderDate.getTime() + 3600000*3;
         }
         catch (Exception e){
             Log.d(TAG, "getMillisecondsStringDate error: " + e );
@@ -32,14 +29,13 @@ public class WorkWithTimeApi {
         return 0L;
     }
 
-    public Long getMillisecondsStringDateWithSeconds(String date){
+    public Long getMillisecondsStringDateWithSeconds(String date) {
 
-        Log.d(TAG, "getSysdateLong: " + date);
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
         try {
-            Date orderDate;
-            orderDate = formatForDateNow.parse(date);
-            return orderDate.getTime();
+            Date orderDate = formatForDateNow.parse(date);
+            return orderDate.getTime() + 3600000*3;
         }
         catch (Exception e){
             Log.d(TAG, "getMillisecondsStringDate error: " + e );

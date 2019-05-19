@@ -63,7 +63,8 @@ public class Dialogs extends AppCompatActivity {
         String ordersQuery =
                 "SELECT DISTINCT "
                         + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " AS " + ORDER_ID + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID + ", "
+                        + DBHelper.KEY_MESSAGE_TIME_ORDERS
                         + " FROM "
                         + DBHelper.TABLE_ORDERS + ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
@@ -84,7 +85,8 @@ public class Dialogs extends AppCompatActivity {
                         + " AND ("
                         + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
                         + " OR "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?)";
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?)"
+                        + " ORDER BY " + DBHelper.KEY_MESSAGE_TIME_ORDERS;
 
         String myId = getUserId();
         Cursor cursor = database.rawQuery(ordersQuery, new String[]{ myId, myId });

@@ -182,16 +182,14 @@ public class MyService extends Service {
                                                 WorkWithTimeApi timeApi = new WorkWithTimeApi();
                                                 String orderCreationTime = orderSnapshot.child(TIME).getValue(String.class);
                                                 long delay = Math.abs(timeApi.getMillisecondsStringDateWithSeconds(orderCreationTime)-timeApi.getSysdateLong());
-
                                                 String orderId = orderSnapshot.getKey();
                                                 // устанавливаем таймер, чтобы через день после обслуживания дать оценить
                                                 if (!orderSnapshot.child(IS_CANCELED).getValue(Boolean.class)) {
                                                     setTimerForReview(orderId, workingDate, workingTime, serviceName, false);
                                                 }
-
-                                                Log.d(TAG, delay + "");
+                                                Log.d(TAG, "delay: " + delay);
                                                 // исправить на 5000
-                                                if(delay < 35000) {
+                                                if(delay < 10000) {
                                                     String userId = orderSnapshot.child(USER_ID).getValue(String.class);
 
                                                     final DatabaseReference userRef = FirebaseDatabase.getInstance()
