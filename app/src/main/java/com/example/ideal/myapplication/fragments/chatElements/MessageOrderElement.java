@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
@@ -52,7 +53,6 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
     private static final String TIME = "time";
 
 
-
     private Boolean messageIsCanceled;
     private Boolean messageIsMyService;
 
@@ -74,7 +74,8 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
     private DBHelper dbHelper;
 
-    public MessageOrderElement() { }
+    public MessageOrderElement() {
+    }
 
     @SuppressLint("ValidFragment")
     public MessageOrderElement(Message message) {
@@ -85,7 +86,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         // содержание сообщения
         String messageUserName = message.getUserName();
         String messageServiceName = message.getServiceName();
-        messageWorkingDay= message.getWorkingDay();
+        messageWorkingDay = message.getWorkingDay();
         messageWorkingTime = message.getWorkingTime();
         String messageTime = message.getMessageTime();
 
@@ -97,34 +98,34 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         orderId = message.getOrderId();
         reviewId = message.getReviewId();
 
-        if(messageIsCanceled) {
+        if (messageIsCanceled) {
             if (messageIsMyService) {
-                text = "Вы отказали пользователю " + messageUserName
+                text = "(" + messageTime + ") \n"
+                        + "Вы отказали пользователю " + messageUserName
                         + " в предоставлении услуги " + messageServiceName
                         + ". Сеанс на " + messageWorkingDay
-                        + " в " + messageWorkingTime + " отменён."
-                        + "\n (" + messageTime + ")";
+                        + " в " + messageWorkingTime + " отменён.";
             } else {
-                text = "Пользователь " + messageUserName
+                text = "(" + messageTime + ") \n"
+                        + "Пользователь " + messageUserName
                         + " отказал Вам в придоставлении услуги " + messageServiceName
                         + ". Сеанс на " + messageWorkingDay
-                        + " в " + messageWorkingTime + " отменён."
-                        + "\n (" + messageTime + ")";
+                        + " в " + messageWorkingTime + " отменён.";
             }
         } else {
             if (messageIsMyService) {
-                text = "Пользователь " + messageUserName
+                text = "(" + messageTime + ") \n"
+                        + "Пользователь " + messageUserName
                         + " записался к вам на услугу " + messageServiceName
                         + ". Сеанс состоится " + messageWorkingDay
                         + " в " + messageWorkingTime
-                        + ". Вы можете отказаться, указав причину, однако, если вы сделаете это слишком поздно, у пользователя будет возможность оценить Ваш сервис."
-                        + "\n (" + messageTime + ")";
+                        + ". Вы можете отказаться, указав причину, однако, если вы сделаете это слишком поздно, у пользователя будет возможность оценить Ваш сервис.";
             } else {
-                text = "Вы записались к " + messageUserName
+                text = "(" + messageTime + ") \n"
+                        + "Вы записались к " + messageUserName
                         + " на услугу " + messageServiceName
                         + ". Сеанс состоится " + messageWorkingDay
-                        + " в " + messageWorkingTime
-                        + "\n (" + messageTime + ")";
+                        + " в " + messageWorkingTime;
             }
         }
     }
@@ -147,10 +148,16 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         if (!messageIsMyService) {
             canceledBtn.setVisibility(View.GONE);
         } else {
-            if(!isRelevance() || messageIsCanceled){
-                canceledBtn.setEnabled(false);
+            if (!isRelevance() || messageIsCanceled) {
+                canceledBtn.setVisibility(View.GONE);
             }
         }
+
+        LinearLayout layout = view.findViewById(R.id.messageOrderElementLayout);
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+        params.setMargins(10, 10, 10, 15);
+        layout.setLayoutParams(params);
 
         setData();
     }
@@ -192,7 +199,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         // isRelevance нужен, чтобы пользователь, как прошло время, не смог отменить заказ,
         // будучи на активити
 
-        if(isRelevance()) {
+        if (isRelevance()) {
             cancel();
 
             // отнимаем возможность оставить отзыв клиенту (потому что отказали ему в обслуживании)
@@ -234,7 +241,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
                 + " WHERE " + DBHelper.KEY_ORDER_ID_REVIEWS + " = ?"
                 + " AND " + DBHelper.KEY_TYPE_REVIEWS + " = " + REVIEW_FOR_SERVICE;
 
-        Cursor cursor = database.rawQuery(query, new String[] {orderId});
+        Cursor cursor = database.rawQuery(query, new String[]{orderId});
 
         String userReviewId = "";
         if (cursor.moveToFirst()) {
@@ -252,7 +259,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         String serviceReviewId = getServiceReviewId();
         String myId = getUserId();
 
-        DatabaseReference  myRef = database.getReference(USERS)
+        DatabaseReference myRef = database.getReference(USERS)
                 .child(myId)
                 .child(SERVICES)
                 .child(serviceId)
@@ -338,7 +345,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
                 new String[]{String.valueOf(orderId)});
     }
 
-    private  String getUserId(){
+    private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 

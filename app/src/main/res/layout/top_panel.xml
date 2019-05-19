@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/panelColor"
     android:orientation="horizontal">
 
@@ -12,20 +12,31 @@
         style="@style/textItemSolid"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:gravity="center"
         android:text="@string/back" />
 
     <TextView
         android:id="@+id/titleTopPanelText"
-        android:layout_width="wrap_content"
+        style="@style/myTitle"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_weight="1"
         android:gravity="center"
-        android:layout_gravity="center"
-        style="@style/myTitle"
         android:text="Заголовок" />
+
+
+    <TextView
+        android:id="@+id/settingTopPanelText"
+        style="@style/textItemSolid"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/settings" />
 
     <ImageView
         android:id="@+id/logoTopPanelImage"
@@ -33,27 +44,23 @@
         android:layout_height="70dp"
         android:layout_gravity="center"
         android:layout_weight="1"
-        app:srcCompat="@drawable/bun_beauty"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:srcCompat="@drawable/bun_beauty" />
 
-    <TextView
-        android:id="@+id/settingTopPanelText"
-        style="@style/textItemSolid"
+    <LinearLayout
+        android:id="@+id/avatarTopPanelLayout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/settings" />
+        android:layout_weight="0.3"
+        android:visibility="gone">
 
-    <ImageView
-        android:id="@+id/avatarTopPanelImage"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:visibility="gone"
-        tools:srcCompat="@tools:sample/avatars" />
+        <ImageView
+            android:id="@+id/avatarTopPanelImage"
+            android:layout_width="@dimen/photo_avatar_height"
+            android:layout_height="@dimen/photo_avatar_height"
+            android:layout_gravity="center"
+            tools:srcCompat="@tools:sample/avatars" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/searchTopPanelText"
@@ -61,8 +68,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:gravity="center"
         android:layout_weight="1"
+        android:gravity="center"
         android:text="@string/search"
         android:visibility="gone"
         tools:srcCompat="@tools:sample/avatars" />
@@ -70,6 +77,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:orientation="vertical">
 
         <TextView

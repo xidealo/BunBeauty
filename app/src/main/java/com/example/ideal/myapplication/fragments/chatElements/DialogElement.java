@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
@@ -46,7 +47,13 @@ public class DialogElement extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         nameText = view.findViewById(R.id.nameDialogElementText);
         avatarImage = view.findViewById(R.id.avatarDialogElementImage);
-        nameText.setOnClickListener(this);
+        LinearLayout layout = view.findViewById(R.id.dialogElementLayout);
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+        params.setMargins(10,10,10,15);
+        layout.setLayoutParams(params);
+
+        layout.setOnClickListener(this);
         setData();
     }
 
@@ -64,6 +71,7 @@ public class DialogElement extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+
         goToDialog();
     }
 

@@ -24,6 +24,8 @@ import com.example.ideal.myapplication.searchService.Premium;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
+
 public class GuestService extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
@@ -394,7 +396,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             ratingBar.setVisibility(View.VISIBLE);
 
             countOfRatesText.setText("("+ countOfRates + " оценок)");
-            avgRatesText.setText(String.valueOf(avgRating));
+
+            //приводим цифры к виду, чтобы было 2 число после запятой
+            String avgRatingWithFormat = new DecimalFormat("#0.00").format(avgRating);
+            avgRatesText.setText(avgRatingWithFormat);
+
             ratingBar.setRating(avgRating);
         }
         ratingLL.setOnClickListener(this);

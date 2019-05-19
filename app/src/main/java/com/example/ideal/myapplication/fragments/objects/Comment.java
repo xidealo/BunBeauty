@@ -5,9 +5,17 @@ public class Comment {
     private String userName;
     private float rating;
     private String review;
+    private String serviceName;
 
     public void setUserId(String _id) {
         userId = _id;
+    }
+    public void setServiceName(String _serviceName) {
+        serviceName = _serviceName;
+    }
+
+    public String getServiceName() {
+        return serviceName;
     }
 
     public void setUserName(String _name) {

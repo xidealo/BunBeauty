@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
     private TextView searchText;
     private TextView countOfSubsText;
     private ImageView avatarImage;
+    private LinearLayout avatarTopPanelLayout;
     private ImageView logoImage;
     private TextView settingText;
     private TextView subscribeText;
@@ -114,6 +116,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
         logoImage = view.findViewById(R.id.logoTopPanelImage);
 
         avatarImage = view.findViewById(R.id.avatarTopPanelImage);
+        avatarTopPanelLayout = view.findViewById(R.id.avatarTopPanelLayout);
 
         if (super.getActivity().isTaskRoot()) {
             backText.setVisibility(View.INVISIBLE);
@@ -153,9 +156,9 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
                         int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
                         int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+                        avatarTopPanelLayout.setVisibility(View.VISIBLE);
                         workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId,avatarImage,width,height);
                         settingText.setVisibility(View.GONE);
-                        avatarImage.setVisibility(View.VISIBLE);
                         avatarImage.setOnClickListener(this);
                     }
                     // Если это не сервис
@@ -170,16 +173,15 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                         int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
                         int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
                         workWithLocalStorageApi.setPhotoAvatar(serviceOwnerId,avatarImage,width,height);
-
+                        avatarTopPanelLayout.setVisibility(View.VISIBLE);
                         settingText.setVisibility(View.GONE);
-                        avatarImage.setVisibility(View.VISIBLE);
                         avatarImage.setOnClickListener(this);
                         // Если это не диалог
                     } else {
                         if (getContext().getClass() == EditService.class) {
                             //multiBtn.setText("Удалить");
                             //Пока что не будет удаления сервиса, потому что много связей и тяжело удалить
-                            settingText.setVisibility(View.GONE);
+                            settingText.setVisibility(View.INVISIBLE);
                             // Если это не редактирование сервиса
                         } else {
                             // Если это главная страница

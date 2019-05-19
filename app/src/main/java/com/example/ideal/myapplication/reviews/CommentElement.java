@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -19,7 +20,7 @@ import com.example.ideal.myapplication.fragments.objects.Comment;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
 
-public class CommentElement extends Fragment implements View.OnClickListener{
+public class CommentElement extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
 
@@ -27,15 +28,18 @@ public class CommentElement extends Fragment implements View.OnClickListener{
     private static final String USER_NAME = "user name";
     private static final String REVIEW = "review";
     private static final String RATING = "rating";
+    private static final String REVIEW_FOR_USER = "review for user";
 
     private TextView reviewText;
     private TextView userNameText;
+    private TextView serviceNameText;
     private ImageView avatarImage;
     private RatingBar ratingBar;
 
     private String userId;
     private String userName;
     private String review;
+    private String serviceName;
     private float rating;
 
     public CommentElement() {
@@ -47,6 +51,7 @@ public class CommentElement extends Fragment implements View.OnClickListener{
         userName = comment.getUserName();
         review = comment.getReview();
         rating = comment.getRating();
+        serviceName = comment.getServiceName();
     }
 
     @Override
@@ -61,25 +66,34 @@ public class CommentElement extends Fragment implements View.OnClickListener{
         reviewText = view.findViewById(R.id.reviewCommentElementText);
         ratingBar = view.findViewById(R.id.ratingCommentElementBar);
         avatarImage = view.findViewById(R.id.avatarCommentElementImage);
+        serviceNameText = view.findViewById(R.id.serviceNameCommentElementText);
 
-        userNameText.setOnClickListener(this);
-        reviewText.setOnClickListener(this);
+        LinearLayout layout = view.findViewById(R.id.commentElementLayout);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+        params.setMargins(10,10,10,15);
+        layout.setLayoutParams(params);
+        layout.setOnClickListener(this);
 
         setData();
     }
 
     private void setData() {
         String abbreviatedReview;
-        if(review.length()>3) {
-            abbreviatedReview = review.substring(0, 2) + "...";
-        }
-        else {
+        if (review.length() > 26) {
+            abbreviatedReview = review.substring(0, 25) + "...";
+        } else {
             abbreviatedReview = review;
         }
 
         userNameText.setText(userName);
         reviewText.setText(abbreviatedReview);
         ratingBar.setRating(rating);
+
+        //если там не лежит константа, а лежит имя сервиса
+        if(!serviceName.equals(REVIEW_FOR_USER)){
+            serviceNameText.setText(serviceName);
+            serviceNameText.setVisibility(View.VISIBLE);
+        }
 
         DBHelper dbHelper = new DBHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -88,7 +102,8 @@ public class CommentElement extends Fragment implements View.OnClickListener{
 
         int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
         int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
-        workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage,width,height);    }
+        workWithLocalStorageApi.setPhotoAvatar(userId, avatarImage, width, height);
+    }
 
     @Override
     public void onClick(View v) {

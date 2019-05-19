@@ -13,10 +13,12 @@ public class WorkWithTimeApi {
     public Long getSysdateLong(){
         //3600000*3 для москвы это +3 часа
         Date sysdate = new Date();
-        return sysdate.getTime() + 3600000*3;
+        return sysdate.getTime()+3600000*3;
     }
 
-    public Long getMillisecondsStringDate(String date) {
+    public Long getMillisecondsStringDate(String date){
+
+
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
         try {

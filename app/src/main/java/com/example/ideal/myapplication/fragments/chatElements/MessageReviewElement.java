@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
@@ -100,10 +101,16 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
 
         // Проверяем стоит ли оценка
         if (isRate()) {
-            reviewBtn.setEnabled(false);
+            reviewBtn.setVisibility(View.GONE);
         } else {
             reviewBtn.setOnClickListener(this);
         }
+
+        LinearLayout layout = view.findViewById(R.id.messageReviewElementLayout);
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+        params.setMargins(10,10,10,15);
+        layout.setLayoutParams(params);
         setData();
     }
 

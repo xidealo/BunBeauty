@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -438,6 +439,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 service.setName(serviceName);
                 if (countOfRates != 0) {
                     float avgRating = sumRates / countOfRates;
+                    Log.d(TAG, "updateServicesList: " + avgRating);
                     addToScreenOnProfile(avgRating, service);
                     countOfRates = 0;
                     sumRates = 0;

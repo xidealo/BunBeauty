@@ -10,4 +10,5 @@
     <dimen name="photo_avatar_width">65dp</dimen>
     <dimen name="photo_avatar_height">65dp</dimen>
 
+    <dimen name="bottom_panel_height">60dp</dimen>
 </resources>

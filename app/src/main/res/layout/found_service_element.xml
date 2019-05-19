@@ -10,8 +10,8 @@
     android:padding="10dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/photo_avatar_width"
+        android:layout_height="@dimen/photo_avatar_height"
         android:layout_marginEnd="10dp">
 
         <ImageView
@@ -23,7 +23,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
         android:paddingTop="5dp">
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Имя"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/cityFoundServiceElementText"
@@ -46,6 +46,7 @@
         <RatingBar
             android:id="@+id/ratingBarFondServiceElement"
             style="@android:style/Widget.Holo.RatingBar.Small"
+            android:theme="@style/myRatingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:isIndicator="true"
@@ -55,24 +56,26 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/serviceNameFoundServiceElementText"
             style="@style/defaultTextMainScreen"
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:gravity="center"
             android:text="Имя сервиса" />
 
         <TextView
             android:id="@+id/costFoundServiceElementText"
             style="@style/defaultTextMainScreen"
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:gravity="center"
             android:text="Цена" />
     </LinearLayout>
 </LinearLayout>

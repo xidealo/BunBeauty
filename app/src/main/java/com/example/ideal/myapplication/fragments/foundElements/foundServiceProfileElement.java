@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.example.ideal.myapplication.searchService.GuestService;
 public class foundServiceProfileElement extends Fragment implements View.OnClickListener {
 
     final String SERVICE_ID = "service id";
+    private static final String TAG = "DBInf";
 
     private TextView nameText;
     private RatingBar ratingBar;
@@ -53,7 +55,9 @@ public class foundServiceProfileElement extends Fragment implements View.OnClick
         layout.setLayoutParams(params);
 
         layout.setOnClickListener(this);
+        Log.d(TAG, "onViewCreated: " + avgRating);
         setData();
+
     }
 
     private void setData() {
