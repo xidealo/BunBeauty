@@ -23,7 +23,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
             android:paddingTop="5dp">
@@ -45,16 +45,33 @@
 
         </LinearLayout>
 
-        <RatingBar
-            android:id="@+id/ratingCommentElementBar"
-            style="@android:style/Widget.Holo.RatingBar.Small"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:isIndicator="true"
-            android:numStars="5"
-            android:stepSize="1"
-            android:theme="@style/myRatingBar" />
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/serviceNameCommentElementText"
+                style="@style/defaultTextMainScreen"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text=""
+                android:visibility="gone" />
+
+            <RatingBar
+                android:id="@+id/ratingCommentElementBar"
+                style="@android:style/Widget.Holo.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:stepSize="1"
+                android:theme="@style/myRatingBar" />
+        </LinearLayout>
+        Linear
     </LinearLayout>
 
 

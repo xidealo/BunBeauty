@@ -31,11 +31,12 @@ public class Comments extends AppCompatActivity {
     private static final String ORDER_ID = "order_id";
     private static final String OWNER_ID = "owner_id";
 
-    private static final String NAME = "name" ;
+    private static final String NAME = "name";
 
     private DBHelper dbHelper;
     private FragmentManager manager;
-    private  WorkWithLocalStorageApi workWithLocalStorageApi;
+    private WorkWithLocalStorageApi workWithLocalStorageApi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +73,7 @@ public class Comments extends AppCompatActivity {
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
                 + DBHelper.KEY_RATING_REVIEWS + ", "
+                + DBHelper.KEY_NAME_SERVICES + ", "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
                 + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID + ", "
                 + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
@@ -113,18 +115,17 @@ public class Comments extends AppCompatActivity {
         Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_serviceId, REVIEW_FOR_SERVICE});
 
         if (cursor.moveToFirst()) {
-            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId= cursor.getColumnIndex(ORDER_ID);
+            int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
 
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 String orderId = cursor.getString(indexOrderId);
 
-                if(workWithLocalStorageApi.isMutualReview(orderId)) {
+                if (workWithLocalStorageApi.isMutualReview(orderId)) {
                     createServiceComment(cursor);
-                }
-                else {
-                    if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
+                } else {
+                    if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
                         createServiceComment(cursor);
                     }
                 }
@@ -136,12 +137,11 @@ public class Comments extends AppCompatActivity {
 
     private void createServiceComment(final Cursor mainCursor) {
 
-        //у нас есть id того, кто оставил комментарий, его придется подгружать из firebase
-
-
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
         final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
         final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
+        final int nameServiceIndex = mainCursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
+
         do {
             String ownerId = mainCursor.getString(ownerIdIndex);
 
@@ -151,6 +151,40 @@ public class Comments extends AppCompatActivity {
             comment.setUserId(mainCursor.getString(ownerIdIndex));
             comment.setReview(mainCursor.getString(reviewIndex));
             comment.setRating(mainCursor.getFloat(ratingIndex));
+            comment.setServiceName(mainCursor.getString(nameServiceIndex));
+
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                    comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
+                    addCommentToScreen(comment);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        } while (mainCursor.moveToNext());
+    }
+
+
+    private void createUserComment(final Cursor mainCursor) {
+        final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
+        final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+        final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
+
+        do {
+            String ownerId = mainCursor.getString(ownerIdIndex);
+
+            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
+                    .child(ownerId);
+            final Comment comment = new Comment();
+            comment.setUserId(mainCursor.getString(ownerIdIndex));
+            comment.setReview(mainCursor.getString(reviewIndex));
+            comment.setRating(mainCursor.getFloat(ratingIndex));
+            comment.setServiceName(REVIEW_FOR_USER);
 
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -175,7 +209,7 @@ public class Comments extends AppCompatActivity {
                 + DBHelper.KEY_RATING_REVIEWS + ", "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
                 + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_NAME_USERS + ", "
-                + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID +", "
+                + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + ", "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
                 + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID + ", "
                 + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
@@ -216,19 +250,18 @@ public class Comments extends AppCompatActivity {
         // убрать не оценненые
         final Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_userId, REVIEW_FOR_USER});
         if (cursor.moveToFirst()) {
-            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId= cursor.getColumnIndex(ORDER_ID);
+            int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
 
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 String orderId = cursor.getString(indexOrderId);
 
-                if(workWithLocalStorageApi.isMutualReview(orderId)) {
-                    createServiceComment(cursor);
-                }
-                else {
-                    if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
-                        createServiceComment(cursor);
+                if (workWithLocalStorageApi.isMutualReview(orderId)) {
+                    createUserComment(cursor);
+                } else {
+                    if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
+                        createUserComment(cursor);
                     }
                 }
 
