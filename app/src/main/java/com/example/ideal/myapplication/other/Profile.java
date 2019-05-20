@@ -69,7 +69,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
-        withoutRatingText = findViewById(R.id.withoutRatingProfileText);
 
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
         subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn);
@@ -277,10 +276,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 //addRatingToScreen(avgRating, counter);
                 //метод, который добалвяет оценку
             } else {
-                setWithoutRating();
+                //setWithoutRating();
             }
         } else {
-            setWithoutRating();
+            //setWithoutRating();
         }
         cursor.close();
     }
@@ -559,11 +558,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             return false;
         }
 
-    }
-
-
-    private void setWithoutRating() {
-        withoutRatingText.setVisibility(View.VISIBLE);
     }
 
     private void goToAddService() {

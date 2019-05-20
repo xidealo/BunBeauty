@@ -30,12 +30,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/block_text"
+            style="@style/block"
+            >
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:padding="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/block_text"
                 android:orientation="vertical">
 
                 <ImageView
@@ -43,39 +49,51 @@
                     android:layout_width="@dimen/photo_width"
                     android:layout_height="@dimen/photo_height"
                     android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
                     tools:srcCompat="@tools:sample/avatars" />
 
                 <LinearLayout
                     android:id="@+id/ratingLayout"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:orientation="vertical">
+                    android:background="@color/white">
 
-                    <TextView
-                        android:id="@+id/withoutRatingProfileText"
+                    <!-- Rating bar -->
+
+                    <Button
+                        android:id="@+id/ratingProfileBtn"
+                        style="@style/smallMainButtonOther"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_gravity="bottom"
                         android:text="Оценок еще нет" />
+
                 </LinearLayout>
+
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:background="@drawable/block_text"
+                android:orientation="vertical"
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/nameProfileText"
                     style="@style/mainTextProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:text="TextView" />
 
                 <TextView
                     android:id="@+id/cityProfileText"
                     style="@style/defaultTextProfile"
+                    android:background="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView" />
@@ -85,20 +103,24 @@
                     style="@style/defaultTextProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:text="TextView" />
+
                 <TextView
                     android:id="@+id/subscribersProfileText"
                     style="@style/defaultTextProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:text="TextView" />
 
                 <Button
-                    android:layout_marginTop="5dp"
                     android:id="@+id/subscriptionsProfileBtn"
                     style="@style/smallMainButtonOther"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
                     android:text="Подписки" />
 
             </LinearLayout>
@@ -107,8 +129,7 @@
         <ScrollView
             android:id="@+id/servicesProfileScroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_height="200dp">
 
             <LinearLayout
                 android:id="@+id/servicesProfileLayout"
@@ -121,7 +142,7 @@
         <ScrollView
             android:id="@+id/orderProfileScroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="200dp">
 
             <LinearLayout
                 android:id="@+id/ordersProfileLayout"
@@ -156,7 +177,7 @@
     <LinearLayout
         android:id="@+id/footerProfileLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/bottom_panel_height"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent" />
 
