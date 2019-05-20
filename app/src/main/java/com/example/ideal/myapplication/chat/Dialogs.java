@@ -88,18 +88,17 @@ public class Dialogs extends AppCompatActivity {
                         + " ORDER BY " + DBHelper.KEY_MESSAGE_TIME_ORDERS;
 
         String myId = getUserId();
-        Cursor cursor = database.rawQuery(ordersQuery, new String[]{ myId, myId });
+        Cursor cursor = database.rawQuery(ordersQuery, new String[]{myId, myId});
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             ArrayList<String> createdDialogs = new ArrayList<>();
 
             int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             int indexOwnerId = cursor.getColumnIndex(OWNER_ID);
 
-            do{
+            do {
                 String orderId = cursor.getString(indexOrderId);
                 String ownerId = cursor.getString(indexOwnerId);
-
                 // Проверка где лежит мой id
                 if (myId.equals(orderId)) {
                     // Если я записывался на услугу
@@ -107,7 +106,7 @@ public class Dialogs extends AppCompatActivity {
                     if (!createdDialogs.contains(ownerId)) {
                         // Если нет создаём и заносим в соданные
                         createDialogWithUser(ownerId);
-                        createdDialogs.add(orderId);
+                        createdDialogs.add(ownerId);
                     }
                 } else {
                     // Если ко мне записывались на услугу
@@ -119,7 +118,7 @@ public class Dialogs extends AppCompatActivity {
                     }
 
                 }
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
 
         cursor.close();
@@ -129,7 +128,7 @@ public class Dialogs extends AppCompatActivity {
 
         Cursor cursor = LSApi.getUser(userId);
 
-        if(cursor.moveToNext()) {
+        if (cursor.moveToNext()) {
             String userName = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
             User user = new User();
             user.setId(userId);

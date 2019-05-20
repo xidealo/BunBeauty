@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -168,17 +169,18 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
     }
 
     public void confirm() {
-        AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
         dialog.setTitle("Отказ");
         dialog.setMessage("Отказать в предоставлении услуги?");
         dialog.setCancelable(false);
-        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Да", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int buttonId) {
+
+        dialog.setPositiveButton(Html.fromHtml("<b><font color='#FF7F27'>Да</font></b>"), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
                 setIsCanceled();
             }
         });
-        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Нет", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int buttonId) {
+        dialog.setNegativeButton(Html.fromHtml("<b><font color='#FF7F27'>Нет</font></b>"), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
             }
         });
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
