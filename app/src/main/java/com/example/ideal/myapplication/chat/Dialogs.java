@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.R;
@@ -99,6 +100,7 @@ public class Dialogs extends AppCompatActivity {
             do {
                 String orderId = cursor.getString(indexOrderId);
                 String ownerId = cursor.getString(indexOwnerId);
+
                 // Проверка где лежит мой id
                 if (myId.equals(orderId)) {
                     // Если я записывался на услугу
