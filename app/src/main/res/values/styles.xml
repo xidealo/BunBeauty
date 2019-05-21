@@ -110,7 +110,7 @@
     <style name="defaultTextProfile">
         <item name="fontFamily">@font/roboto_black</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:padding">5dp</item>
+        <item name="android:padding">3dp</item>
     </style>
 
     <style name="mainTextProfile">

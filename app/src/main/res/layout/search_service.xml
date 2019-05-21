@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".searchService.SearchService"
-    android:theme="@style/allPages">
+    android:background="@color/mainColorBG">
 
     <EditText
         android:id="@+id/searchLineSearchServiceInput"
