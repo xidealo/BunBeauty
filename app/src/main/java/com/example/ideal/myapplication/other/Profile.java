@@ -138,6 +138,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             servicesOrOrdersSwitch.setVisibility(View.GONE);
             addServicesBtn.setVisibility(View.GONE);
             subscriptionsBtn.setVisibility(View.GONE);
+            subscribersText.setVisibility(View.GONE);
 
             // Отображаем все сервисы пользователя
             ordersLayout.setVisibility(View.GONE);
@@ -275,6 +276,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                 float avgRating = sumRates / counter;
                 //addRatingToScreen(avgRating, counter);
                 //метод, который добалвяет оценку
+                Log.d(TAG, "loadRatingForUser: " + avgRating);
             } else {
                 //setWithoutRating();
             }

@@ -32,6 +32,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
     private TextView resendCodeText;
     private EditText codeInput;
     private TextView changePhoneText;
+    private TextView alertCodeText;
 
     private String myPhoneNumber;
     private String phoneVerificationId;
@@ -47,6 +48,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
         //получаем id btns
         verifyCodeBtn = findViewById(R.id.verifyVerifyBtn);
         resendCodeText = findViewById(R.id.resendVerifyText);
+        alertCodeText = findViewById(R.id.alertCodeVerifyText);
 
         //получаем id inputs
         codeInput = findViewById(R.id.codeVerifyInput);
@@ -175,10 +177,9 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
     private void hideViewsOfScreen(){
         verifyCodeBtn.setVisibility(View.INVISIBLE);
         resendCodeText.setVisibility(View.INVISIBLE);
-
         codeInput.setVisibility(View.INVISIBLE);
-
         changePhoneText.setVisibility(View.INVISIBLE);
+        alertCodeText.setVisibility(View.INVISIBLE);
     }
 
     private void goBackToAuthorization() {

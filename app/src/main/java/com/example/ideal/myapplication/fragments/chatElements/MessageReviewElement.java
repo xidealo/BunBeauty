@@ -97,8 +97,6 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
         messageText = view.findViewById(R.id.messageMessageReviewElementText);
         reviewBtn = view.findViewById(R.id.reviewMessageReviewElementBtn);
 
-        Log.d(TAG, "onViewCreated: " + messageRatingReview);
-
         // Проверяем стоит ли оценка
         if (isRate()) {
             reviewBtn.setVisibility(View.GONE);

@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LogInPages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/LogInPages"
     android:orientation="vertical"
     tools:context=".logIn.VerifyPhone">
 
@@ -28,6 +28,22 @@
         android:inputType="number"
         android:textColor="@color/white"
         android:textColorHint="@color/lightText" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/alertCodeVerifyText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            style="@style/extraText"
+            android:text="На укказанный вами номер,\nбыл отправлен код подтверждения"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/verifyVerifyBtn"
@@ -54,6 +70,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:textColor="@color/white"
-        android:text="@string/change_number" />
+        android:text="@string/change_number"
+        android:textColor="@color/white" />
 </LinearLayout>

@@ -55,7 +55,6 @@ public class foundServiceProfileElement extends Fragment implements View.OnClick
         layout.setLayoutParams(params);
 
         layout.setOnClickListener(this);
-        Log.d(TAG, "onViewCreated: " + avgRating);
         setData();
 
     }

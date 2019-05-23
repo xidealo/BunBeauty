@@ -35,12 +35,5 @@
             android:layout_height="wrap_content"
             android:text="Name" />
 
-        <TextView
-            style="@style/defaultTextMainScreen"
-            android:padding="5dp"
-            android:id="@+id/textDialogElementText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="text" />
     </LinearLayout>
 </LinearLayout>
