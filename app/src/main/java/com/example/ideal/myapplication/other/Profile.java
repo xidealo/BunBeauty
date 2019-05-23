@@ -294,7 +294,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
         int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
-        workWithLocalStorageApi.setPhotoAvatar(ownerId,avatarImage,width,height);
+        workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width,height);
 
         if (userId.equals(ownerId)) {
             // если это мой сервис

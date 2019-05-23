@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
+
+import java.util.List;
 
 public class WorkWithLocalStorageApi {
 
@@ -66,6 +69,7 @@ public class WorkWithLocalStorageApi {
                     .load(photoLink)
                     .resize(width,height)
                     .centerCrop()
+                    .transform(new CircularTransformation())
                     .into(avatarImage);
         }
         cursor.close();
@@ -224,5 +228,4 @@ public class WorkWithLocalStorageApi {
 
         return isAfterWeek;
     }
-
 }
