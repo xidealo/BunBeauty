@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/allPages"
+    android:background="@color/mainColorBG"
     tools:context=".editing.EditService">
 
     <LinearLayout
@@ -91,12 +91,9 @@
 
                 <Spinner
                     android:id="@+id/categoryEditServiceSpinner"
-                    style="@style/mainText"
-                    android:layout_width="150dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:background="@color/panelColor"
                     android:entries="@array/category" />
             </LinearLayout>
 

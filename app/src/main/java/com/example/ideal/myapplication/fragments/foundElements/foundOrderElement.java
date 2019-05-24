@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.searchService.GuestService;
 
 @SuppressLint("ValidFragment")
@@ -27,6 +28,8 @@ public class foundOrderElement extends Fragment implements View.OnClickListener 
     private String nameString;
     private String dateString;
     private String timeString;
+    private WorkWithStringsApi workWithStringsApi;
+
 
     @SuppressLint("ValidFragment")
     public foundOrderElement(String id, String name, String date, String time) {
@@ -34,6 +37,7 @@ public class foundOrderElement extends Fragment implements View.OnClickListener 
         nameString = name;
         dateString = date;
         timeString = time;
+        workWithStringsApi = new WorkWithStringsApi();
     }
 
     @Override
@@ -61,7 +65,7 @@ public class foundOrderElement extends Fragment implements View.OnClickListener 
     }
 
     private void setData() {
-        nameText.setText(nameString);
+        nameText.setText(workWithStringsApi.cutString(nameString,27));
         timeText.setText(dateString + " "+ timeString);
     }
 

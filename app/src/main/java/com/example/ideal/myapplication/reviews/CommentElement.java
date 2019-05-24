@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Comment;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.other.DBHelper;
 
 public class CommentElement extends Fragment implements View.OnClickListener {
@@ -41,6 +42,7 @@ public class CommentElement extends Fragment implements View.OnClickListener {
     private String review;
     private String serviceName;
     private float rating;
+    private WorkWithStringsApi workWithStringsApi;
 
     public CommentElement() {
     }
@@ -52,6 +54,7 @@ public class CommentElement extends Fragment implements View.OnClickListener {
         review = comment.getReview();
         rating = comment.getRating();
         serviceName = comment.getServiceName();
+        workWithStringsApi = new WorkWithStringsApi();
     }
 
     @Override
@@ -79,19 +82,15 @@ public class CommentElement extends Fragment implements View.OnClickListener {
 
     private void setData() {
         String abbreviatedReview;
-        if (review.length() > 26) {
-            abbreviatedReview = review.substring(0, 25) + "...";
-        } else {
-            abbreviatedReview = review;
-        }
+        abbreviatedReview = workWithStringsApi.cutString(review,25);
 
-        userNameText.setText(userName);
+        userNameText.setText(workWithStringsApi.cutString(userName.toUpperCase(),18));
         reviewText.setText(abbreviatedReview);
         ratingBar.setRating(rating);
 
         //если там не лежит константа, а лежит имя сервиса
         if(!serviceName.equals(REVIEW_FOR_USER)){
-            serviceNameText.setText(serviceName);
+            serviceNameText.setText(workWithStringsApi.cutString(serviceName,8));
             serviceNameText.setVisibility(View.VISIBLE);
         }
 

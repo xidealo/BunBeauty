@@ -4,7 +4,7 @@ public class WorkWithStringsApi {
 
     public String cutString (String text, int limit) {
         if (text.length() > limit) {
-            return text.substring(0, limit) + "...";
+            return text.substring(0, limit).trim() + "...";
         } else {
             return text;
         }

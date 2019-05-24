@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Service;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.searchService.GuestService;
 
 @SuppressLint("ValidFragment")
@@ -30,12 +31,14 @@ public class foundServiceProfileElement extends Fragment implements View.OnClick
     private String idString;
     private String nameString;
     private float avgRating;
+    private WorkWithStringsApi workWithStringsApi;
 
     @SuppressLint("ValidFragment")
     public foundServiceProfileElement(float _avgRating,Service service) {
         idString = service.getId();
         nameString = service.getName();
         avgRating = _avgRating;
+        workWithStringsApi = new WorkWithStringsApi();
     }
 
     @Override
@@ -60,7 +63,7 @@ public class foundServiceProfileElement extends Fragment implements View.OnClick
     }
 
     private void setData() {
-        nameText.setText(nameString);
+        nameText.setText(workWithStringsApi.cutString(nameString,27));
         ratingBar.setRating(avgRating);
     }
 

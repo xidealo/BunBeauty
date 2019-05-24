@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.helpApi.WorkWithViewApi;
@@ -78,6 +79,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
 
             case R.id.resendVerifyText:
                 if (resendToken != null) {
+                    assertResendCode();
                     resendVerificationCode(resendToken);
                 }
                 break;
@@ -182,6 +184,9 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
         alertCodeText.setVisibility(View.INVISIBLE);
     }
 
+    private void assertResendCode() {
+        Toast.makeText(this, "Код был отправлен", Toast.LENGTH_SHORT).show();
+    }
     private void goBackToAuthorization() {
         super.onBackPressed();
     }

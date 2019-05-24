@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.User;
@@ -64,22 +65,35 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
         WorkWithViewApi.hideKeyboard(this);
 
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.saveDataRegistrationBtn:
                 //получение данных с инпутов
 
                 //проверка на незаполенные поля
-                if(areInputsCorrect()) {
+                if (areInputsCorrect()) {
                     User user = new User();
                     //если имя не устанавлявается, значит выводим тоаст и выходим из кейса
-                    String fullName = nameInput.getText().toString().toLowerCase() + " " + surnameInput.getText().toString().toLowerCase();
-                    String phone = phoneInput.getText().toString();
-                    user.setName(fullName);
-                    user.setCity(cityInput.getText().toString().toLowerCase());
-                    user.setPhone(phone);
-                    registration(user);
-                    //идем в профиль
-                    goToProfile();
+                    String name = nameInput.getText().toString().toLowerCase();
+                    String surname = surnameInput.getText().toString().toLowerCase();
+
+                    if (name.length() > 20) {
+                        assertNameSoLong();
+                        break;
+                    } else {
+                        if (surname.length() > 20) {
+                            assertSurnameSoLong();
+                            break;
+                        } else {
+                            String fullName = name + " " + surname;
+                            String phone = phoneInput.getText().toString();
+                            user.setName(fullName);
+                            user.setCity(cityInput.getText().toString().toLowerCase());
+                            user.setPhone(phone);
+                            registration(user);
+                            //идем в профиль
+                            goToProfile();
+                        }
+                    }
                 }
                 break;
 
@@ -92,7 +106,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(USERS);
 
-        Map<String,Object> items = new HashMap<>();
+        Map<String, Object> items = new HashMap<>();
         items.put(NAME, user.getName());
         items.put(CITY, user.getCity());
         items.put(PHONE, user.getPhone());
@@ -119,7 +133,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
         contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
 
-        database.insert(DBHelper.TABLE_CONTACTS_USERS,null,contentValues);
+        database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
 
         putPhotoInLocalStorage(user);
     }
@@ -136,52 +150,59 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
     }
 
-    private Boolean areInputsCorrect(){
+    private Boolean areInputsCorrect() {
         String name = nameInput.getText().toString();
-        if(name.isEmpty()) {
+        if (name.isEmpty()) {
             nameInput.setError("Введите своё имя");
             nameInput.requestFocus();
             return false;
         }
 
-        if(!name.matches("[a-zA-ZА-Яа-я\\-]+")) {
+        if (!name.matches("[a-zA-ZА-Яа-я\\-]+")) {
             nameInput.setError("Допустимы только буквы и тире");
             nameInput.requestFocus();
             return false;
         }
 
         String surname = surnameInput.getText().toString();
-        if(surname.isEmpty()) {
+        if (surname.isEmpty()) {
             surnameInput.setError("Введите свою фамилию");
             surnameInput.requestFocus();
             return false;
         }
 
-        if(!surname.matches("[a-zA-ZА-Яа-я\\-]+")) {
+        if (!surname.matches("[a-zA-ZА-Яа-я\\-]+")) {
             surnameInput.setError("Допустимы только буквы и тире");
             surnameInput.requestFocus();
             return false;
         }
 
         String city = cityInput.getText().toString();
-        if(city.isEmpty()) {
+        if (city.isEmpty()) {
             cityInput.setError("Введите город, в которым вы живёте");
             cityInput.requestFocus();
             return false;
         }
 
-        if(!city.matches("[a-zA-ZА-Яа-я\\-]+")) {
+        if (!city.matches("[a-zA-ZА-Яа-я\\-]+")) {
             cityInput.setError("Допустимы только буквы и тире");
             cityInput.requestFocus();
             return false;
         }
 
-        return  true;
+        return true;
     }
 
-    private  void goToProfile(){
+    private void goToProfile() {
         Intent intent = new Intent(this, Profile.class);
         startActivity(intent);
         finish();
+    }
+
+    private void assertNameSoLong() {
+        Toast.makeText(this, "Слишком длинное имя", Toast.LENGTH_SHORT).show();
+    }
+    private void assertSurnameSoLong() {
+        Toast.makeText(this, "Слишком длинная фамилия", Toast.LENGTH_SHORT).show();
     }
 }

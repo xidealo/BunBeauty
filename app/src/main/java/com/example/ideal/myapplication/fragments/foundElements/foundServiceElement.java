@@ -20,6 +20,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.searchService.GuestService;
 
@@ -42,7 +43,9 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
     private String cityString;
     private String nameServiceString;
     private String costString;
+    private WorkWithStringsApi workWithStringsApi;
     private String userId;
+
     private boolean isPremium;
 
     @SuppressLint("ValidFragment")
@@ -54,6 +57,7 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         costString = service.getCost();
         userId = user.getId();
         isPremium = service.getIsPremium();
+        workWithStringsApi = new WorkWithStringsApi();
 
         avgRating = service.getAverageRating();
     }
@@ -86,9 +90,9 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
     }
 
     private void setData() {
-        nameUserText.setText(nameUserString.toUpperCase());
+        nameUserText.setText(workWithStringsApi.cutString(nameUserString.toUpperCase(),18));
         city.setText(cityString.substring(0, 1).toUpperCase() + cityString.substring(1).toLowerCase());
-        nameServiceText.setText(nameServiceString);
+        nameServiceText.setText(workWithStringsApi.cutString(nameServiceString,9));
         costText.setText("Цена \n" + costString);
         ratingBar.setRating(avgRating);
 
