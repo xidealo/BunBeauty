@@ -58,10 +58,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private RatingBar ratingBar;
     private LinearLayout ratingLL;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
-
+    private boolean isMyService;
     private DBHelper dbHelper;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +82,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         Button premiumBtn = findViewById(R.id.premiumGuestServiceBtn);
         ratingLL = findViewById(R.id.ratingGuestServiceLayout);
 
-        FragmentManager manager = getSupportFragmentManager();
-
         imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
@@ -103,11 +99,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         userId = getUserId();
 
         // мой сервис или нет?
-        boolean isMyService = userId.equals(ownerId);
-
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildHeader(manager, serviceName, R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
-        panelBuilder.buildFooter(manager, R.id.footerGuestServiceLayout);
+        isMyService = userId.equals(ownerId);
 
         if (isMyService) {
             status = WORKER;
@@ -372,6 +364,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        PanelBuilder panelBuilder = new PanelBuilder();
+        FragmentManager manager = getSupportFragmentManager();
+
+        panelBuilder.buildHeader(manager, serviceName, R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
+        panelBuilder.buildFooter(manager, R.id.footerGuestServiceLayout);
         getInfoAboutService(serviceId);
         imageFeedLayout.removeAllViews();
         setPhotoFeed(serviceId);

@@ -98,11 +98,6 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         ImageView serviceImage = findViewById(R.id.servicePhotoEditServiceImage);
 
-        FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
-        panelBuilder.buildHeader(manager, "Настройки", R.id.headerEditServiceLayout);
-
         // Получаем id сервиса
         serviceId = getIntent().getStringExtra(SERVICE_ID);
 
@@ -179,7 +174,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     service.setDescription(description);
                 }
                 //если содержить выбрать категорию, значит не меняем категорию
-                service.setCategory(categorySpinner.getSelectedItem().toString());
+                service.setCategory(categorySpinner.getSelectedItem().toString().toLowerCase());
 
                 String address = addressServiceInput.getText().toString();
                 if (address.isEmpty()) {
@@ -209,6 +204,16 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         photoPickerIntent.setType("image/*");
         //Запускаем переход с ожиданием обратного результата в виде информации об изображении:
         startActivityForResult(photoPickerIntent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        FragmentManager manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
+        panelBuilder.buildHeader(manager, "Настройки", R.id.headerEditServiceLayout);
     }
 
     @Override

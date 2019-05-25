@@ -36,13 +36,19 @@
             android:id="@+id/codeAuthSpinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/lightText"/>
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:background="@color/panelColor"
+            android:popupBackground="@color/panelColor"
+            style="@style/mainText"
+            android:entries="@array/countryCode" />
 
         <EditText
             android:id="@+id/phoneAuthInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/lightText"
+            android:textStyle="bold"
             android:hint="@string/phoneRegistration"
             android:inputType="phone"
             android:textColor="@color/white"

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".createService.AddService"
-    android:background="@color/mainColorBG">
+    android:background="@color/mainColorBG"
+    tools:context=".createService.AddService">
 
     <LinearLayout
         android:id="@+id/headerAddServiceLayout"
@@ -89,12 +89,20 @@
                     android:layout_weight="1"
                     android:hint="Категория" />
 
-                <Spinner
-                    android:id="@+id/categoryAddServiceSpinner"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:entries="@array/category" />
+                    android:layout_weight="1">
+                    <Spinner
+                        android:id="@+id/categoryAddServiceSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/panelColor"
+                        android:backgroundTint="@color/panelColor"
+                        android:popupBackground="@color/panelColor"
+                        android:entries="@array/category" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout

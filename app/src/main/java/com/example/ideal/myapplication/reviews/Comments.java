@@ -1,9 +1,11 @@
 package com.example.ideal.myapplication.reviews;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -45,9 +47,6 @@ public class Comments extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         manager = getSupportFragmentManager();
 
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerCommentsLayout);
-        panelBuilder.buildHeader(manager, "Отзывы", R.id.headerCommentsLayout);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
         loadComments();
@@ -268,6 +267,14 @@ public class Comments extends AppCompatActivity {
             } while (cursor.moveToNext());
         }
         cursor.close();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerCommentsLayout);
+        panelBuilder.buildHeader(manager, "Отзывы", R.id.headerCommentsLayout);
     }
 
     private void addCommentToScreen(Comment comment) {

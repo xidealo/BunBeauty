@@ -36,7 +36,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         enterPhoneText = findViewById(R.id.titleAuthText);
 
         codeSpinner = findViewById(R.id.codeAuthSpinner);
-        codeSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, CountryCodes.countryNames));
 
         verifyBtn.setOnClickListener(this);
 

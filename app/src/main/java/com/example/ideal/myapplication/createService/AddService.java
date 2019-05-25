@@ -89,11 +89,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         categorySpinner = findViewById(R.id.categoryAddServiceSpinner);
         addressServiceInput = findViewById(R.id.addressAddServiceInput);
 
-
         manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerAddServiceLayout);
-        panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerAddServiceLayout);
 
         dbHelper = new DBHelper(this);
         fpath = new ArrayList<>();
@@ -125,7 +121,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                         break;
                     }
 
-                    String category = categorySpinner.getSelectedItem().toString();
+                    String category = categorySpinner.getSelectedItem().toString().toLowerCase();
 
                     if(category.equals("Выбрать категорию")){
                         Toast.makeText(
@@ -186,6 +182,15 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         for(Uri path: fpath){
             uploadImage(path, serviceId);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerAddServiceLayout);
+        panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerAddServiceLayout);
     }
 
     private void addServiceInLocalStorage(Service service){

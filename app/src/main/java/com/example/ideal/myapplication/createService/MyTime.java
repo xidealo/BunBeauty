@@ -104,11 +104,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         SwitchCompat amOrPmMyTimeSwitch = findViewById(R.id.amOrPmMyTimeSwitch);
 
-        FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerMyTimeLayout);
-        panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyTimeLayout);
-
         //инициализация буферов
         workingHours = new ArrayList<>();
         removedHours = new ArrayList<>();
@@ -778,6 +773,15 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         }
         cursor.close();
         return false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FragmentManager manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerMyTimeLayout);
+        panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyTimeLayout);
     }
 
     private String getUserId() {

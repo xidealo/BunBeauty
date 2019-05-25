@@ -58,11 +58,6 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
 
         myRating = 0;
 
-        FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerReviewLayout);
-        panelBuilder.buildHeader(manager, "Оценить", R.id.headerReviewLayout);
-
         dbHelper = new DBHelper(this);
 
         addListenerOnRatingBar();
@@ -194,6 +189,17 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
             goToMessages();
         }
         cursor.close();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FragmentManager manager = getSupportFragmentManager();
+
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerReviewLayout);
+        panelBuilder.buildHeader(manager, "Оценить", R.id.headerReviewLayout);
+
     }
 
     private void updateReviewLocalStorage(RatingReview ratingReview) {

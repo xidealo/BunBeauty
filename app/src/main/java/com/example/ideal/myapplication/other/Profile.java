@@ -117,10 +117,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             ownerId = userId;
         }
 
-        PanelBuilder panelBuilder = new PanelBuilder(ownerId);
-        panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
-        panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
-
         // Проверяем совпадают id пользователя и владельца
         if (userId.equals(ownerId)) {
             // Совпадают - это мой профиль
@@ -316,6 +312,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
         int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
         workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width,height);
+
+        PanelBuilder panelBuilder = new PanelBuilder(ownerId);
+        panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
+        panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
 
         if (userId.equals(ownerId)) {
             // если это мой сервис

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string name="regUser">Зарегестрироваться</string>
     <string name="logOut">Выйти</string>
     <string name="addServices">Добавить сервис</string>
@@ -68,20 +68,25 @@
     </string-array>
 
     <string-array name="category">
-        <item>Выбрать категорию</item>
-        <item>ногти</item>
-        <item>волосы</item>
-        <item>глаза</item>
-        <item>визаж</item>
-        <item>массаж</item>
+        <item><font android:color="@color/white">Выбрать категорию</font></item>
+        <item><b><font android:color="@color/white">Ногти</font></b></item>
+        <item><b><font android:color="@color/white">Волосы </font></b></item>
+        <item><b><font android:color="@color/white">Глаза</font></b></item>
+        <item><b><font android:color="@color/white">Визаж</font></b></item>
+        <item><b><font android:color="@color/white">Массаж</font></b></item>
     </string-array>
 
     <string-array name="categoryForEditService">
-        <item>ногти</item>
-        <item>волосы</item>
-        <item>глаза</item>
-        <item>визаж</item>
-        <item>массаж</item>
+        <item><b><font android:color="@color/white">Ногти</font></b></item>
+        <item><b><font android:color="@color/white">Волосы</font></b></item>
+        <item><b><font android:color="@color/white">Глаза</font></b></item>
+        <item><b><font android:color="@color/white">Визаж</font></b></item>
+        <item><b><font android:color="@color/white">Массаж</font></b></item>
+    </string-array>
+
+    <string-array name="countryCode">
+        <item><b><font android:color="@color/white">+7</font></b></item>
+        <item><b><font android:color="@color/white">+1</font></b></item>
     </string-array>
 
     <string name="title_activity_picked_comment">PickedComment</string>
