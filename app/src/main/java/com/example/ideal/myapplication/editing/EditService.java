@@ -568,12 +568,4 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
-
-    private void goToAuthorization() {
-        Intent intent = new Intent(EditService.this, Authorization.class);
-        startActivity(intent);
-        finish();
-    }
-
-
 }

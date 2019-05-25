@@ -120,9 +120,11 @@
 
             <Spinner
                 android:id="@+id/codeEditProfileSpinner"
-                style="@style/mainText"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                style="@style/mainText"
+                android:entries="@array/countryCodeForEditService" />
 
             <EditText
                 android:id="@+id/phoneEditProfileInput"

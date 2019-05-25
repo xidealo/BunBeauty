@@ -118,7 +118,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         avatarImage = findViewById(R.id.avatarEditProfileImage);
 
         codeSpinner = findViewById(R.id.codeEditProfileSpinner);
-        codeSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, CountryCodes.countryNames));
 
         user = new User();
         dbHelper = new DBHelper(this);

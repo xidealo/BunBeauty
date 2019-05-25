@@ -89,6 +89,11 @@
         <item><b><font android:color="@color/white">+1</font></b></item>
     </string-array>
 
+    <string-array name="countryCodeForEditService">
+        <item><b><font android:color="@color/black">+7</font></b></item>
+        <item><b><font android:color="@color/black">+1</font></b></item>
+    </string-array>
+
     <string name="title_activity_picked_comment">PickedComment</string>
     <string name="saveData">Сохранить данные</string>
     <string name="subscribed"><![CDATA[<B]]></string>

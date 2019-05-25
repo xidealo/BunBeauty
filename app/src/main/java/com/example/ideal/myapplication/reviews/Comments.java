@@ -1,15 +1,12 @@
 package com.example.ideal.myapplication.reviews;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Comment;
@@ -33,7 +30,6 @@ public class Comments extends AppCompatActivity {
     private static final String USERS = "users";
     private static final String ORDER_ID = "order_id";
     private static final String OWNER_ID = "owner_id";
-
     private static final String NAME = "name";
 
     private DBHelper dbHelper;
@@ -68,7 +64,6 @@ public class Comments extends AppCompatActivity {
 
     private void loadCommentsForService(String _serviceId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-
 
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
@@ -111,14 +106,12 @@ public class Comments extends AppCompatActivity {
                 + " AND "
                 + DBHelper.KEY_RATING_REVIEWS + " != 0 ";
 
-
         Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_serviceId, REVIEW_FOR_SERVICE});
 
         if (cursor.moveToFirst()) {
             int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
-
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 String orderId = cursor.getString(indexOrderId);
 
@@ -247,7 +240,6 @@ public class Comments extends AppCompatActivity {
                 + DBHelper.KEY_TYPE_REVIEWS + " = ? "
                 + " AND "
                 + DBHelper.KEY_RATING_REVIEWS + " != 0";
-
         // убрать не оценненые
         final Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_userId, REVIEW_FOR_USER});
         if (cursor.moveToFirst()) {
