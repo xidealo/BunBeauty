@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Comment;
@@ -173,11 +174,12 @@ public class Comments extends AppCompatActivity {
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
         final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
         final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
-
         do {
             String ownerId = mainCursor.getString(ownerIdIndex);
 
-            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
+            DatabaseReference myRef = FirebaseDatabase
+                    .getInstance()
+                    .getReference(USERS)
                     .child(ownerId);
             final Comment comment = new Comment();
             comment.setUserId(mainCursor.getString(ownerIdIndex));
@@ -208,9 +210,9 @@ public class Comments extends AppCompatActivity {
                 + DBHelper.KEY_RATING_REVIEWS + ", "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
                 + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_NAME_USERS + ", "
-                + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + ", "
+                + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + " AS " + OWNER_ID + ", "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID + ", "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + ", "
                 + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
                 + " FROM "
                 + DBHelper.TABLE_WORKING_TIME + ", "
