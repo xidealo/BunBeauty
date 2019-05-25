@@ -46,12 +46,11 @@
         <RatingBar
             android:id="@+id/ratingBarFondServiceElement"
             style="@android:style/Widget.Holo.RatingBar.Small"
-            android:theme="@style/myRatingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:isIndicator="true"
-            android:numStars="5"
-            android:stepSize="1" />
+            android:theme="@style/ratingBarColors" />
     </LinearLayout>
 
     <LinearLayout
