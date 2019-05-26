@@ -186,6 +186,7 @@ public class MyAuthorization {
                     }
                 } else {
                     downloadServiceData.loadUserInfo(userSnapshot);
+                    downloadServiceData.loadSchedule(userSnapshot.child(SERVICES), userSnapshot.getKey());
                 }
             }
             @Override
