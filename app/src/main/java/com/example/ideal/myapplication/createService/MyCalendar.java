@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.Gravity;
@@ -282,10 +284,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
             weekDayText.setX(i * (btnWidth + margin) + margin);
             weekDayText.setY(margin);
             weekDayText.setText(weekDays[i]);
-            //weekDayText.setBackgroundResource(R.drawable.main_button);
-            //weekDayText.setGravity(Gravity.CENTER_HORIZONTAL);
             weekDayText.setGravity(Gravity.CENTER);
-            //weekDayText.setBackgroundResource(R.drawable.day_button);
+            weekDayText.setTypeface(ResourcesCompat.getFont(this, R.font.roboto_bold));
             weekDayText.setLayoutParams(new ViewGroup.LayoutParams(btnWidth, btnHeight));
 
             mainLayout.addView(weekDayText);
