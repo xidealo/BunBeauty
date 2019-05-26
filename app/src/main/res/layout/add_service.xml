@@ -41,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/nameAddServiceTB"
-                    android:inputType="textPersonName|textCapWords" />
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -70,8 +70,7 @@
                     style="@style/mainText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Адрес"
-                    android:inputType="textPersonName|textCapWords" />
+                    android:hint="Адрес" />
             </LinearLayout>
 
             <LinearLayout
@@ -116,9 +115,8 @@
                     style="@style/mainText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:hint="Описание"
-                    android:inputType="textMultiLine" />
+                    android:inputType="textMultiLine|textCapSentences" />
             </LinearLayout>
 
             <HorizontalScrollView

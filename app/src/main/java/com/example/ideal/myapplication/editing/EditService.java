@@ -381,7 +381,6 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 if (fPathToAdd.isEmpty()) {
                     goToService();
                 }
-
             }
 
             @Override
