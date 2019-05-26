@@ -70,7 +70,6 @@
                 android:numStars="5"
                 android:theme="@style/ratingBarColors" />
         </LinearLayout>
-        Linear
     </LinearLayout>
 
 
