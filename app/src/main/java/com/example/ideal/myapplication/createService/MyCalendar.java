@@ -4,15 +4,18 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -78,15 +81,14 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.continueMyCalendarBtn:
-                if(statusUser.equals(WORKER)){
-                    if(isDaySelected()) {
+                if (statusUser.equals(WORKER)) {
+                    if (isDaySelected()) {
                         addWorkingDay();
                     } else {
                         Toast.makeText(this, "Выбирите дату, на которую хотите настроить расписание", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else {
-                    if(isDaySelected()) {
+                } else {
+                    if (isDaySelected()) {
                         goToMyTime(checkCurrentDay(date), statusUser);
                     } else {
                         Toast.makeText(this, "Выбирите дату, на которую хотите записаться", Toast.LENGTH_SHORT).show();
@@ -98,11 +100,11 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 Button btn = (Button) v;
                 // Проверка былв ли кнопка выбрана
                 if (!Boolean.valueOf(btn.getTag(R.string.selectedId).toString())) {
-                    // На была выбрана - фокусируемся на ней
+                    // Не была выбрана - фокусируемся на ней
                     btn.setBackgroundResource(R.drawable.selected_day_button);
                     for (int i = 0; i < WEEKS_COUNT; i++) {
                         for (int j = 0; j < DAYS_COUNT; j++) {
-                            if(Boolean.valueOf(dayBtns[i][j].getTag(R.string.selectedId).toString())) {
+                            if (Boolean.valueOf(dayBtns[i][j].getTag(R.string.selectedId).toString())) {
                                 dayBtns[i][j].setTag(R.string.selectedId, false);
                                 dayBtns[i][j].setBackgroundResource(R.drawable.day_button);
                                 break;
@@ -134,11 +136,10 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 year = dayBtns[i][j].getTag(R.string.yearId).toString();
 
                 dayId = checkCurrentDay(convertDate(dayAndMonth, year));
-                if (!dayId.equals("0") ) {
+                if (!dayId.equals("0")) {
                     if (hasSomeWork(dayId)) {
                         dayBtns[i][j].setTextColor(dayWithTimesColor);
-                    }
-                    else {
+                    } else {
                         dayBtns[i][j].setTextColor(dayWithoutTimesColor);
                     }
                 }
@@ -162,7 +163,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId});
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             cursor.close();
             return true;
         } else {
@@ -172,19 +173,19 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     }
 
     // проверяет имеется ли у данного пользователя запись на услугу
-    private void checkOrder(){
+    private void checkOrder() {
         //Если пользователь записан на какой-то день выделить только его
         date = getOrderDate(); // дата YYYY-mm-d
-        if(!date.equals("")) {
+        if (!date.equals("")) {
             String[] arrDate = date.split("-");
             String orderDate = arrDate[2] + " " + monthToString(arrDate[1]);
-            if(orderDate.charAt(0) == '0') {
+            if (orderDate.charAt(0) == '0') {
                 orderDate = orderDate.substring(1);
             }
 
             for (int i = 0; i < WEEKS_COUNT; i++) {
                 for (int j = 0; j < DAYS_COUNT; j++) {
-                    if(orderDate.equals(dayBtns[i][j].getText().toString()) && arrDate[0].equals(dayBtns[i][j].getTag(R.string.yearId).toString())) {
+                    if (orderDate.equals(dayBtns[i][j].getText().toString()) && arrDate[0].equals(dayBtns[i][j].getTag(R.string.yearId).toString())) {
                         dayBtns[i][j].setBackgroundResource(R.drawable.selected_day_button);
                         dayBtns[i][j].setTag(R.string.selectedId, true);
                         dayBtns[i][j].setClickable(false);
@@ -206,7 +207,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                     year = dayBtns[i][j].getTag(R.string.yearId).toString();
 
                     dayId = checkCurrentDay(convertDate(dayAndMonth, year));
-                    if (dayId.equals("0") ) {
+                    if (dayId.equals("0")) {
                         dayBtns[i][j].setEnabled(false);
                         dayBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
                     } else {
@@ -252,8 +253,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                         + ")) <= 0)";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {serviceId, userId});
-        if(cursor.moveToFirst()) {
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, userId});
+        if (cursor.moveToFirst()) {
             int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
             String orderDate = cursor.getString(indexDate);
             cursor.close();
@@ -268,24 +269,43 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         Calendar calendar = Calendar.getInstance();
 
         Display display = getWindowManager().getDefaultDisplay();
-        int width = display.getWidth();
-        int height = display.getHeight();
 
-        int dayOfWeek = (calendar.get(Calendar.DAY_OF_WEEK)+5)%DAYS_COUNT;
+        int margin = 6;
+        int btnWidth = (display.getWidth() - (DAYS_COUNT + 1) * margin) / DAYS_COUNT;
+        int btnHeight = btnWidth;
+        //(display.getHeight()/2 - (WEEKS_COUNT+1)*6) / WEEKS_COUNT;
+
+        String[] weekDays = {"ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"};
+        for (int i = 0; i < DAYS_COUNT; i++) {
+            TextView weekDayText = new TextView(this);
+
+            weekDayText.setX(i * (btnWidth + margin) + margin);
+            weekDayText.setY(margin);
+            weekDayText.setText(weekDays[i]);
+            //weekDayText.setBackgroundResource(R.drawable.main_button);
+            //weekDayText.setGravity(Gravity.CENTER_HORIZONTAL);
+            weekDayText.setGravity(Gravity.CENTER);
+            //weekDayText.setBackgroundResource(R.drawable.day_button);
+            weekDayText.setLayoutParams(new ViewGroup.LayoutParams(btnWidth, btnHeight));
+
+            mainLayout.addView(weekDayText);
+        }
+
+        int dayOfWeek = (calendar.get(Calendar.DAY_OF_WEEK) + 5) % DAYS_COUNT;
         int dayOfMonth, year;
         String stringMonth, month;
 
         //Создание календаря
         calendar.add(Calendar.DATE, -dayOfWeek);
-        for(int i = 0; i < WEEKS_COUNT; i++) {
+        for (int i = 0; i < WEEKS_COUNT; i++) {
             for (int j = 0; j < DAYS_COUNT; j++) {
                 dayBtns[i][j] = new Button(this);
 
                 //положение, бэкграунд, размеры
-                dayBtns[i][j].setX(j * width / DAYS_COUNT);
-                dayBtns[i][j].setY(i * height / (2*WEEKS_COUNT));
+                dayBtns[i][j].setX(j * (btnWidth + margin) + margin);
+                dayBtns[i][j].setY((i + 1) * (btnHeight + margin) + margin);
                 dayBtns[i][j].setBackgroundResource(R.drawable.day_button);
-                dayBtns[i][j].setLayoutParams(new ViewGroup.LayoutParams(width / DAYS_COUNT-5, height / (2*WEEKS_COUNT)-35));
+                dayBtns[i][j].setLayoutParams(new ViewGroup.LayoutParams(btnWidth, btnHeight));
 
                 //тэги
                 dayBtns[i][j].setTag(R.string.selectedId, false);
@@ -294,8 +314,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
 
                 //надпись
                 dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                month = String.valueOf(calendar.get(Calendar.MONTH)+1);
-                if (month.length()==1) {
+                month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+                if (month.length() == 1) {
                     month = "0" + month;
                 }
                 stringMonth = monthToString(month);
@@ -323,8 +343,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     private boolean isDaySelected() {
         for (int i = 0; i < WEEKS_COUNT; i++) {
             for (int j = 0; j < DAYS_COUNT; j++) {
-                if(dayBtns[i][j].isEnabled()) {
-                    if(Boolean.valueOf(dayBtns[i][j].getTag(R.string.selectedId).toString())) {
+                if (dayBtns[i][j].isEnabled()) {
+                    if (Boolean.valueOf(dayBtns[i][j].getTag(R.string.selectedId).toString())) {
                         date = convertDate(dayBtns[i][j].getText().toString(), dayBtns[i][j].getTag(R.string.yearId).toString());
                         return true;
                     }
@@ -337,7 +357,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     // Возвращает есть ли в рабочем дне рабочие часы
     private boolean hasSomeTime(String dayId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-      
+
         // Проверяет есть ли доступное время на данный день по его id
         String takedTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS
@@ -399,7 +419,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId, dayId, getUserId()});
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             cursor.close();
             return true;
         }
@@ -412,7 +432,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     private String convertDate(String dayAndMonth, String year) {
         String[] arrDate = dayAndMonth.split(" ");
         String day = arrDate[0];
-        if(day.length() == 1) {
+        if (day.length() == 1) {
             day = "0" + day;
         }
         String month = monthToNumber(arrDate[1]);
@@ -427,8 +447,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         String id = checkCurrentDay(date);
 
         // Проверка на существование такого дня
-        if(!id.equals("0") ){
-            goToMyTime(id,statusUser);
+        if (!id.equals("0")) {
+            goToMyTime(id, statusUser);
         } else {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference dateRef = database.getReference(USERS)
@@ -437,10 +457,10 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                     .child(serviceId)
                     .child(WORKING_DAYS);
 
-            Map<String,Object> items = new HashMap<>();
-            items.put(DATE,date);
+            Map<String, Object> items = new HashMap<>();
+            items.put(DATE, date);
 
-            String dayId =  dateRef.push().getKey();
+            String dayId = dateRef.push().getKey();
             dateRef = dateRef.child(dayId);
             dateRef.updateChildren(items);
 
@@ -459,7 +479,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
 
         database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
 
-        goToMyTime(dayId,statusUser);
+        goToMyTime(dayId, statusUser);
     }
 
     //Возвращает id дня по id данного сервиса и дате
@@ -478,7 +498,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         + DBHelper.KEY_DATE_WORKING_DAYS + " = ? ";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, day});
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
             return String.valueOf(cursor.getString(indexId));
         }
@@ -486,7 +506,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         return "0";
     }
 
-    private  String getUserId(){
+    private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
@@ -495,15 +515,14 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         super.onResume();
 
         // проверяем имеется ли у данного пользователя запись на данную услугу
-        if(statusUser.equals(USER)){
+        if (statusUser.equals(USER)) {
             checkOrder();
-        }
-        else {
+        } else {
             selectWorkingDayWithTime();
         }
     }
 
-    private void goToMyTime(String dayId, String statusUser){
+    private void goToMyTime(String dayId, String statusUser) {
 
         Intent intent = new Intent(this, MyTime.class);
         intent.putExtra(WORKING_DAYS_ID, dayId);
