@@ -7,11 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -20,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.AddService;
+import com.example.ideal.myapplication.fragments.SwitcherElement;
 import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
@@ -29,10 +28,8 @@ import com.example.ideal.myapplication.reviews.Comments;
 import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.text.DecimalFormat;
 
-public class Profile extends AppCompatActivity implements View.OnClickListener {
-
+public class Profile extends AppCompatActivity implements View.OnClickListener, ISwitcher {
 
     private static final String TAG = "DBInf";
     private static final String OWNER_ID = "owner id";
@@ -86,8 +83,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
 
         avatarImage = findViewById(R.id.avatarProfileImage);
 
-        SwitchCompat servicesOrOrdersSwitch = findViewById(R.id.servicesOrOrdersProfileSwitch);
-
         servicesScroll = findViewById(R.id.servicesProfileScroll);
         ordersScroll = findViewById(R.id.orderProfileScroll);
         servicesLayout = findViewById(R.id.servicesProfileLayout);
@@ -123,31 +118,17 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
             servicesLayout.setVisibility(View.GONE);
             servicesScroll.setVisibility(View.GONE);
 
-            servicesOrOrdersSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        buttonView.setText("My services");
-                        ordersLayout.setVisibility(View.GONE);
-                        ordersScroll.setVisibility(View.GONE);
-                        servicesLayout.setVisibility(View.VISIBLE);
-                        servicesScroll.setVisibility(View.VISIBLE);
-                    } else {
-                        buttonView.setText("My orders");
-                        servicesLayout.setVisibility(View.GONE);
-                        servicesScroll.setVisibility(View.GONE);
-                        ordersLayout.setVisibility(View.VISIBLE);
-                        ordersScroll.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
+            SwitcherElement switcherElement = new SwitcherElement("Записи", "Услуги");
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.add(R.id.swicherProfileLayout, switcherElement);
+            transaction.commit();
+
             addServicesBtn.setOnClickListener(this);
             subscriptionsLayout.setOnClickListener(this);
         } else {
             // Не совпадает - чужой профиль
 
             // Скрываем функционал
-            servicesOrOrdersSwitch.setVisibility(View.GONE);
             addServicesBtn.setVisibility(View.GONE);
             subscriptionsLayout.setVisibility(View.INVISIBLE);
             subscribersText.setVisibility(View.GONE);
@@ -610,5 +591,20 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         intent.putExtra(ID, ownerId);
         intent.putExtra(TYPE, status);
         startActivity(intent);
+    }
+    @Override
+    public void firstSwitcherAct() {
+        servicesLayout.setVisibility(View.GONE);
+        servicesScroll.setVisibility(View.GONE);
+        ordersLayout.setVisibility(View.VISIBLE);
+        ordersScroll.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void secondSwitcherAct() {
+        ordersLayout.setVisibility(View.GONE);
+        ordersScroll.setVisibility(View.GONE);
+        servicesLayout.setVisibility(View.VISIBLE);
+        servicesScroll.setVisibility(View.VISIBLE);
     }
 }

@@ -7,24 +7,25 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.SwitcherElement;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.other.ISwitcher;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,7 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MyTime extends AppCompatActivity implements View.OnClickListener {
+public class MyTime extends AppCompatActivity implements View.OnClickListener, ISwitcher {
 
     private static final String TAG = "DBInf";
     private static final String WORKING_DAYS_ID = "working day id";
@@ -71,11 +72,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     private String userId;
     private String workingDaysId;
     private String serviceId;
-    private int width;
-    private int height;
     private WorkWithTimeApi workWithTimeApi;
     private WorkWithLocalStorageApi LSApi;
 
+    private Display display;
     private Button[][] timeBtns;
 
     //временный буфер добавленного рабочего времени
@@ -99,19 +99,23 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         mainLayout = findViewById(R.id.mainMyTimeLayout);
 
+        display = getWindowManager().getDefaultDisplay();
         timeBtns = new Button[ROWS_COUNT][COLUMNS_COUNT];
         Button saveBtn = findViewById(R.id.saveMyTimeBtn);
 
-        SwitchCompat amOrPmMyTimeSwitch = findViewById(R.id.amOrPmMyTimeSwitch);
+        FragmentManager manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerMyTimeLayout);
+        panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyTimeLayout);
+
+        SwitcherElement switcherElement = new SwitcherElement("1-я половина", "2-я половина");
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(R.id.swicherMyTimeLayout, switcherElement);
+        transaction.commit();
 
         //инициализация буферов
         workingHours = new ArrayList<>();
         removedHours = new ArrayList<>();
-
-        //получение парамтров экрана
-        Display display = getWindowManager().getDefaultDisplay();
-        width = display.getWidth();
-        height = display.getHeight();
 
         dbHelper = new DBHelper(this);
         workWithTimeApi = new WorkWithTimeApi();
@@ -121,30 +125,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
         addButtonsOnScreen(false);
 
         checkCurrentTimes();
-
-        amOrPmMyTimeSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isPm) {
-                // Очищаем layout
-                mainLayout.removeAllViews();
-                if (isPm) {
-                    buttonView.setText("Вторая половина дня");
-                    // создаем кнопки с нужным временем
-                    addButtonsOnScreen(true);
-
-                } else {
-                    buttonView.setText("Первая половина дня");
-                    // создаем кнопки с нужным временем
-                    addButtonsOnScreen(false);
-                }
-                // Выделяет кнопки
-                checkCurrentTimes();
-                // Выделяет кнопки хронящиеся в буфере рабочих дней
-                checkWorkingHours();
-                // Снимает выделение с кнопок хронящихся в буфере удалённых дней
-                checkRemovedHours();
-            }
-        });
 
         saveBtn.setOnClickListener(this);
     }
@@ -575,7 +555,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
     public void addReviewInLocalStorage(String orderId, String reviewId, String type) {
         SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
 
-        Log.d(TAG,  " | type = " + type);
+        Log.d(TAG, " | type = " + type);
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, reviewId);
         contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, "");
@@ -821,14 +801,20 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
             extraHours = 12;
         }
 
+        //получение парамтров экрана
+        int margin = 8;
+        int btnWidth = (display.getWidth() - (COLUMNS_COUNT + 1) * margin) / COLUMNS_COUNT;
+        int btnHeight = (display.getHeight() / 2 - (ROWS_COUNT + 1) * 6) / ROWS_COUNT;
+
+
         for (int i = 0; i < ROWS_COUNT; i++) {
             for (int j = 0; j < COLUMNS_COUNT; j++) {
                 timeBtns[i][j] = new Button(this);
                 // установка параметров
                 timeBtns[i][j].setWidth(50);
                 timeBtns[i][j].setHeight(30);
-                timeBtns[i][j].setX(j * width / COLUMNS_COUNT);
-                timeBtns[i][j].setY(i * height / (2 * ROWS_COUNT));
+                timeBtns[i][j].setX(j * (btnWidth + margin) + margin);
+                timeBtns[i][j].setY(i * (btnHeight + margin) + margin);
                 timeBtns[i][j].setBackgroundResource(R.drawable.time_button);
 
                 timeBtns[i][j].setTag(R.string.selectedId, false);
@@ -844,5 +830,26 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
                 mainLayout.addView(timeBtns[i][j]);
             }
         }
+    }
+
+    @Override
+    public void firstSwitcherAct() {
+        switchTime(false);
+    }
+
+    @Override
+    public void secondSwitcherAct() {
+        switchTime(true);
+    }
+
+    private void switchTime(boolean isPm) {
+        mainLayout.removeAllViews();
+        addButtonsOnScreen(isPm);
+        // Выделяет кнопки
+        checkCurrentTimes();
+        // Выделяет кнопки хронящиеся в буфере рабочих дней
+        checkWorkingHours();
+        // Снимает выделение с кнопок хронящихся в буфере удалённых дней
+        checkRemovedHours();
     }
 }

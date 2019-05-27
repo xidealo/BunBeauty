@@ -101,7 +101,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="2dp">
-
                 <LinearLayout
                     android:id="@+id/ratingProfileLayout"
                     android:layout_width="match_parent"
@@ -150,16 +149,12 @@
         </LinearLayout>
 
 
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/servicesOrOrdersProfileSwitch"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/swicherProfileLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:checked="false"
-            android:text="My orders"
-            android:textOff="OFF"
-            android:textOn="ON"
-            app:showText="true" />
+            android:orientation="horizontal"
+            android:gravity="center"/>
     </LinearLayout>
 
     <ScrollView
