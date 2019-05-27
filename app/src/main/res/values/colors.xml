@@ -24,5 +24,7 @@
     <color name="rightBorder">#005F89</color>
     <color name="leftBorder">#007693</color>
 
+    <!-- transparent -->
+    <color name="transparent">#8C007693</color>
 
 </resources>

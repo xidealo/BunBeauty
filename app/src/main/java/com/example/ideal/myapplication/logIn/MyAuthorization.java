@@ -59,7 +59,7 @@ public class MyAuthorization {
         downloadServiceData = new DownloadServiceData(localDatabase);
     }
 
-   void authorizeUser() {
+    void authorizeUser() {
         // скарываем Views и запукаем прогресс бар
 
         Query query = FirebaseDatabase.getInstance().getReference(USERS).
@@ -133,7 +133,7 @@ public class MyAuthorization {
 
         Cursor cursor = database.rawQuery(ordersQuery, new String[]{getUserId()});
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
 
             do {
@@ -163,7 +163,7 @@ public class MyAuthorization {
             String userId = String.valueOf(subSnapshot.child(USER_ID).getValue());
 
             //если мы владелец старнички то только тогда загружаем инфу о наших подписчиках
-                loadUserById(userId);
+            loadUserById(userId);
 
             addUserSubscriberInLocalStorage(id, userId);
         }
@@ -180,7 +180,7 @@ public class MyAuthorization {
                 // Получаем остальные данные о пользователе
                 Object name = userSnapshot.child(NAME).getValue();
                 if (name == null) {
-                    if(userId.equals(getUserId())) {
+                    if (userId.equals(getUserId())) {
                         // Имя пользователя в БД отсутствует, значит пользователь не до конца зарегистрировался
                         goToRegistration();
                     }
@@ -188,6 +188,7 @@ public class MyAuthorization {
                     downloadServiceData.loadUserInfo(userSnapshot);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 attentionBadConnection();
@@ -218,13 +219,13 @@ public class MyAuthorization {
     // то мы никак через профиль не взаимодействуем с этим человеком
     private void loadMyOrders(DataSnapshot _ordersSnapshot) {
 
-        if(_ordersSnapshot.getChildrenCount() == 0) {
+        if (_ordersSnapshot.getChildrenCount() == 0) {
             goToProfile();
         }
 
         counter = 0;
         final long childrenCount = _ordersSnapshot.getChildrenCount();
-        for(final DataSnapshot orderSnapshot: _ordersSnapshot.getChildren()) {
+        for (final DataSnapshot orderSnapshot : _ordersSnapshot.getChildren()) {
             //получаем "путь" к мастеру, на сервис которого мы записаны
             final String workerId = String.valueOf(orderSnapshot.child(WORKER_ID).getValue());
             final String serviceId = String.valueOf(orderSnapshot.child(SERVICE_ID).getValue());
