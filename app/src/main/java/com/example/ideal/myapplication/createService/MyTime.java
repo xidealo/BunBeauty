@@ -755,6 +755,15 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         return false;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FragmentManager manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerMyTimeLayout);
+        panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyTimeLayout);
+    }
+
     private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }

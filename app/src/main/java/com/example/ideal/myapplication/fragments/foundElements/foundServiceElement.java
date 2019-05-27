@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,7 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         layout.setOnClickListener(this);
         setData();
     }
+    private static final String TAG = "DBInf";
 
     private void setData() {
         nameUserText.setText(workWithStringsApi.cutString(nameUserString.toUpperCase(),18));
@@ -95,6 +97,7 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         nameServiceText.setText(workWithStringsApi.cutString(nameServiceString,9));
         costText.setText("Цена \n" + costString);
         ratingBar.setRating(avgRating);
+        Log.d(TAG, "setData: " + avgRating);
 
         DBHelper dbHelper = new DBHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();

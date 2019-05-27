@@ -14,158 +14,178 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerEditProfileLayout">
 
-        <!-- Топ бар -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
+            <!-- Топ бар -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                style="@style/block"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:background="@drawable/block_text"
+                android:orientation="horizontal"
+                android:padding="5dp">
 
-                <ImageView
-                    android:id="@+id/avatarEditProfileImage"
-                    android:layout_width="@dimen/photo_width"
-                    android:layout_height="@dimen/photo_height"
-                    android:layout_gravity="center"
-                    tools:srcCompat="@tools:sample/avatars" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-                <Button
-                    android:id="@+id/logOutEditProfileBtn"
-                    style="@style/smallMainButtonOther"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:text="@string/logOut" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:id="@+id/avatarEditProfileImage"
+                        android:layout_width="@dimen/photo_width"
+                        android:layout_height="@dimen/photo_height"
+                        android:layout_gravity="center"
+                        tools:srcCompat="@tools:sample/avatars" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <Button
+                        android:id="@+id/logOutEditProfileBtn"
+                        style="@style/smallMainButtonOther"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/main_button_height"
+                        android:text="@string/logOut" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-        <LinearLayout
-            style="@style/block"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/block_text"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/nameEditProfileInput"
-                style="@style/mainText"
+            <LinearLayout
+                style="@style/block"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="@string/nameAddServiceTB"
-                android:inputType="textPersonName" />
-        </LinearLayout>
+                android:layout_marginTop="10dp"
+                android:background="@drawable/block_text"
+                android:orientation="horizontal">
 
-        <LinearLayout
-            style="@style/block"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/block_text"
-            android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/nameEditProfileInput"
+                    style="@style/mainText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/nameAddServiceTB" />
+            </LinearLayout>
 
-            <EditText
-                android:id="@+id/surnameEditProfileInput"
-                style="@style/mainText"
+            <LinearLayout
+                style="@style/block"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="@string/surname"
-                android:inputType="textPersonName" />
-        </LinearLayout>
+                android:background="@drawable/block_text"
+                android:orientation="horizontal">
 
-        <LinearLayout
-            style="@style/block"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/block_text"
-            android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/surnameEditProfileInput"
+                    style="@style/mainText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/surname" />
+            </LinearLayout>
 
-            <EditText
-                android:id="@+id/cityEditProfileInput"
-                style="@style/mainText"
+            <LinearLayout
+                style="@style/block"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="@string/cityRegistration"
-                android:inputType="textPersonName" />
-        </LinearLayout>
+                android:background="@drawable/block_text"
+                android:orientation="horizontal">
 
-        <!-- Телефон -->
-        <LinearLayout
-            style="@style/block"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/block_text"
-            android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/cityEditProfileInput"
+                    style="@style/mainText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/cityRegistration" />
+            </LinearLayout>
 
-            <Spinner
-                android:id="@+id/codeEditProfileSpinner"
+            <!-- Телефон -->
+            <LinearLayout
+                style="@style/block"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/block_text"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/codeEditProfileSpinner"
+                    style="@style/mainText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:entries="@array/countryCodeForEditService" />
+
+                <EditText
+                    android:id="@+id/phoneEditProfileInput"
+                    style="@style/mainText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/phone"
+                    android:layout_marginBottom="5dp"
+                    android:inputType="phone" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/editProfileEditProfileBtn"
+                style="@style/mainButtonOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:text="@string/saveData" />
+
+            <EditText
+                android:id="@+id/codeEditProfileInput"
                 style="@style/mainText"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <EditText
-                android:id="@+id/phoneEditProfileInput"
-                style="@style/mainText"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="@string/phone"
-                android:inputType="textPersonName" />
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:hint="@string/enterCode"
+                android:inputType="number"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/verifyCodeEditProfileBtn"
+                style="@style/mainButtonOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/verifyCode"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/resendCodeEditProfileBtn"
+                style="@style/mainButtonOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/resendCode"
+                android:visibility="gone" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/editProfileEditProfileBtn"
-            style="@style/mainButtonOther"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/saveData" />
-
-        <EditText
-            android:id="@+id/codeEditProfileInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/enterCode"
-            android:inputType="number"
-            android:visibility="invisible" />
-
-        <Button
-            android:id="@+id/verifyCodeEditProfileBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/verifyCode"
-            android:visibility="invisible" />
-
-        <Button
-            android:id="@+id/resendCodeEditProfileBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/resendCode"
-            android:visibility="invisible" />
-    </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/footerEditProfileLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/bottom_panel_height"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent" />
 

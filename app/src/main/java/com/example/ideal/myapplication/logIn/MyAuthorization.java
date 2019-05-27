@@ -185,7 +185,10 @@ public class MyAuthorization {
                         goToRegistration();
                     }
                 } else {
+                    //загрузка данных о пользователе
                     downloadServiceData.loadUserInfo(userSnapshot);
+                    //загрузка данных о сервисах пользователя, и оценок о нем
+                    downloadServiceData.loadSchedule(userSnapshot.child(SERVICES), userSnapshot.getKey());
                 }
             }
 
@@ -301,6 +304,5 @@ public class MyAuthorization {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
-
 
 }

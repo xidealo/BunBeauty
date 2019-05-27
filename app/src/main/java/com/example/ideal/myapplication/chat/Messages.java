@@ -50,10 +50,6 @@ public class Messages extends AppCompatActivity {
         manager = getSupportFragmentManager();
         senderId = getIntent().getStringExtra(USER_ID);
         senderName = getSenderName(senderId);
-
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
-        panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderId);
     }
 
     private String getSenderName(String senderId) {
@@ -136,7 +132,6 @@ public class Messages extends AppCompatActivity {
 
         String myId = getUserId();
         Cursor cursor = database.rawQuery(orderQuery, new String[]{senderId, myId, senderId, myId});
-        //Log.d(TAG, "addMessages: " + cursor.getCount());
 
         if (cursor.moveToFirst()) {
 
@@ -263,7 +258,11 @@ public class Messages extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+
         super.onResume();
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
+        panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderId);
 
         resultsLayout.removeAllViews();
         addMessages(senderId);

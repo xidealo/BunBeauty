@@ -46,14 +46,16 @@ public class Subscribers extends AppCompatActivity {
         String status = getIntent().getStringExtra(STATUS);
 
         isSubscription = status.equals(SUBSCRIPTIONS);
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
-        panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
+        panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
 
         mainLayout.removeAllViews();
 

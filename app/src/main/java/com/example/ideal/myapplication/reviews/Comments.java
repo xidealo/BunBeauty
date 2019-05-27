@@ -30,7 +30,6 @@ public class Comments extends AppCompatActivity {
     private static final String USERS = "users";
     private static final String ORDER_ID = "order_id";
     private static final String OWNER_ID = "owner_id";
-
     private static final String NAME = "name";
 
     private DBHelper dbHelper;
@@ -45,9 +44,6 @@ public class Comments extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         manager = getSupportFragmentManager();
 
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerCommentsLayout);
-        panelBuilder.buildHeader(manager, "Отзывы", R.id.headerCommentsLayout);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
         loadComments();
@@ -68,7 +64,6 @@ public class Comments extends AppCompatActivity {
 
     private void loadCommentsForService(String _serviceId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-
 
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
@@ -111,14 +106,12 @@ public class Comments extends AppCompatActivity {
                 + " AND "
                 + DBHelper.KEY_RATING_REVIEWS + " != 0 ";
 
-
         Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_serviceId, REVIEW_FOR_SERVICE});
 
         if (cursor.moveToFirst()) {
             int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
-
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 String orderId = cursor.getString(indexOrderId);
 
@@ -174,11 +167,12 @@ public class Comments extends AppCompatActivity {
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
         final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
         final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
-
         do {
             String ownerId = mainCursor.getString(ownerIdIndex);
 
-            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
+            DatabaseReference myRef = FirebaseDatabase
+                    .getInstance()
+                    .getReference(USERS)
                     .child(ownerId);
             final Comment comment = new Comment();
             comment.setUserId(mainCursor.getString(ownerIdIndex));
@@ -209,9 +203,9 @@ public class Comments extends AppCompatActivity {
                 + DBHelper.KEY_RATING_REVIEWS + ", "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
                 + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_NAME_USERS + ", "
-                + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + ", "
+                + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + " AS " + OWNER_ID + ", "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID + ", "
+                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + ", "
                 + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
                 + " FROM "
                 + DBHelper.TABLE_WORKING_TIME + ", "
@@ -246,7 +240,6 @@ public class Comments extends AppCompatActivity {
                 + DBHelper.KEY_TYPE_REVIEWS + " = ? "
                 + " AND "
                 + DBHelper.KEY_RATING_REVIEWS + " != 0";
-
         // убрать не оценненые
         final Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_userId, REVIEW_FOR_USER});
         if (cursor.moveToFirst()) {
@@ -268,6 +261,14 @@ public class Comments extends AppCompatActivity {
             } while (cursor.moveToNext());
         }
         cursor.close();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerCommentsLayout);
+        panelBuilder.buildHeader(manager, "Отзывы", R.id.headerCommentsLayout);
     }
 
     private void addCommentToScreen(Comment comment) {

@@ -49,8 +49,8 @@
 
                     <ImageView
                         android:id="@+id/avatarProfileImage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/photo_width"
+                        android:layout_height="@dimen/photo_height"
                         android:layout_gravity="center"
                         tools:srcCompat="@tools:sample/avatars" />
                 </LinearLayout>
@@ -66,7 +66,7 @@
                     <TextView
                         android:id="@+id/nameProfileText"
                         style="@style/mainTextProfile"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
                         android:text="TextView" />
@@ -100,36 +100,51 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="5dp">
-
+                android:padding="2dp">
                 <LinearLayout
+                    android:id="@+id/ratingProfileLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/main_button"
+                    android:gravity="center">
 
-                    <Button
-                        android:id="@+id/ratingProfileBtn"
-                        style="@style/smallMainButtonOther"
+                    <RatingBar
+                        android:id="@+id/ratingBarProfile"
+                        style="@android:style/Widget.Holo.RatingBar.Small"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:text="Оценок еще нет" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:theme="@style/ratingBarColors" />
 
+                    <TextView
+                        android:id="@+id/withoutRatingProfileText"
+                        style="@style/buttonText"
+                        android:layout_width="250dp"
+                        android:layout_height="@dimen/main_button_height"
+                        android:gravity="center"
+                        android:text="Оценок еще нет"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/subscriptionsProfileLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:background="@drawable/main_button"
+                    android:gravity="center">
 
-                    <Button
-                        android:id="@+id/subscriptionsProfileBtn"
-                        style="@style/smallMainButtonOther"
+                    <TextView
+                        android:id="@+id/subscriptionsProfileText"
+                        style="@style/buttonText"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
+                        android:gravity="center"
                         android:text="Подписки" />
-
                 </LinearLayout>
-
             </LinearLayout>
         </LinearLayout>
 
@@ -146,6 +161,7 @@
         android:id="@+id/servicesProfileScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@+id/orderProfileScroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -177,6 +193,7 @@
         android:id="@+id/orderProfileScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@+id/footerProfileLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

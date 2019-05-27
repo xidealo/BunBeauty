@@ -59,10 +59,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
 
         resultLayout = findViewById(R.id.resultsMainScreenLayout);
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
-
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
-        panelBuilder.buildHeader(manager, "Главная", R.id.headerMainScreenLayout);
       
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
 
@@ -122,6 +118,15 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
 
             categoryLayout.addView(categoriesBtns[i]);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
+        panelBuilder.buildHeader(manager, "Главная", R.id.headerMainScreenLayout);
     }
 
     private void createMainScreen(String category) {

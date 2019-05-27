@@ -118,12 +118,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         avatarImage = findViewById(R.id.avatarEditProfileImage);
 
         codeSpinner = findViewById(R.id.codeEditProfileSpinner);
-        codeSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, CountryCodes.countryNames));
-
-        FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerEditProfileLayout);
-        panelBuilder.buildHeader(manager, "Редактирование профиля", R.id.headerEditProfileLayout);
 
         user = new User();
         dbHelper = new DBHelper(this);
@@ -248,6 +242,15 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FragmentManager manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerEditProfileLayout);
+        panelBuilder.buildHeader(manager, "Редактирование профиля", R.id.headerEditProfileLayout);
     }
 
     private Boolean areInputsCorrect() {

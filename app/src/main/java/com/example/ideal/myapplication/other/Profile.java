@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -23,11 +24,12 @@ import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfi
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.reviews.Comments;
 import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class Profile extends AppCompatActivity implements View.OnClickListener, ISwitcher {
 
+public class Profile extends AppCompatActivity implements View.OnClickListener, ISwitcher {
 
     private static final String TAG = "DBInf";
     private static final String OWNER_ID = "owner id";
@@ -39,7 +41,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static final String STATUS = "status";
 
     private static final String SUBSCRIPTIONS = "подписки";
-    private static final String SUBSCRIBERS = "подписчики";
+
+    private static final String ID = "id";
+    private static final String TYPE = "type";
 
     private String userId;
     private String ownerId;
@@ -49,13 +53,17 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private TextView phoneText;
     private TextView withoutRatingText;
     private TextView subscribersText;
+    private TextView subscribtionsText;
 
-    private Button subscriptionsBtn;
+    private RatingBar ratingBar;
+
+    private LinearLayout subscriptionsLayout;
 
     private ScrollView servicesScroll;
     private ScrollView ordersScroll;
     private LinearLayout servicesLayout;
     private LinearLayout ordersLayout;
+    private LinearLayout ratingForUserLayout;
 
     private DBHelper dbHelper;
 
@@ -70,13 +78,19 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         setContentView(R.layout.profile);
 
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
-        subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn);
+        subscriptionsLayout = findViewById(R.id.subscriptionsProfileLayout);
+        subscribtionsText = findViewById(R.id.subscriptionsProfileText);
+
         avatarImage = findViewById(R.id.avatarProfileImage);
 
         servicesScroll = findViewById(R.id.servicesProfileScroll);
         ordersScroll = findViewById(R.id.orderProfileScroll);
         servicesLayout = findViewById(R.id.servicesProfileLayout);
         ordersLayout = findViewById(R.id.ordersProfileLayout);
+        withoutRatingText = findViewById(R.id.withoutRatingProfileText);
+        ratingBar = findViewById(R.id.ratingBarProfile);
+
+        ratingForUserLayout = findViewById(R.id.ratingProfileLayout);
 
         nameText = findViewById(R.id.nameProfileText);
         cityText = findViewById(R.id.cityProfileText);
@@ -98,10 +112,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             ownerId = userId;
         }
 
-        PanelBuilder panelBuilder = new PanelBuilder(ownerId);
-        panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
-        panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
-
         // Проверяем совпадают id пользователя и владельца
         if (userId.equals(ownerId)) {
             // Совпадают - это мой профиль
@@ -114,13 +124,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             transaction.commit();
 
             addServicesBtn.setOnClickListener(this);
-            subscriptionsBtn.setOnClickListener(this);
+            subscriptionsLayout.setOnClickListener(this);
         } else {
             // Не совпадает - чужой профиль
 
             // Скрываем функционал
             addServicesBtn.setVisibility(View.GONE);
-            subscriptionsBtn.setVisibility(View.GONE);
+            subscriptionsLayout.setVisibility(View.INVISIBLE);
             subscribersText.setVisibility(View.GONE);
 
             // Отображаем все сервисы пользователя
@@ -132,7 +142,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
         loadRatingForUser();
         avatarImage.setOnClickListener(this);
-
     }
 
     @Override
@@ -141,9 +150,14 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             case R.id.addServicesProfileBtn:
                 goToAddService();
                 break;
-            case R.id.subscriptionsProfileBtn:
+            case R.id.subscriptionsProfileLayout:
                 goToSubscribers(SUBSCRIPTIONS);
                 break;
+
+            case R.id.ratingProfileLayout:
+                goToUserComments(REVIEW_FOR_USER);
+                break;
+
 
            /* case R.id.subscribersProfileBtn:
                 goToSubscribers(SUBSCRIBERS);
@@ -257,14 +271,14 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
             if (counter != 0) {
                 float avgRating = sumRates / counter;
-                //addRatingToScreen(avgRating, counter);
+                addRatingToScreen(avgRating, counter);
                 //метод, который добалвяет оценку
                 Log.d(TAG, "loadRatingForUser: " + avgRating);
             } else {
-                //setWithoutRating();
+                setWithoutRating();
             }
         } else {
-            //setWithoutRating();
+            setWithoutRating();
         }
         cursor.close();
     }
@@ -279,19 +293,23 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
         workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width,height);
 
+        PanelBuilder panelBuilder = new PanelBuilder(ownerId);
+        panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
+        panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
+
         if (userId.equals(ownerId)) {
             // если это мой сервис
             updateOrdersList(userId);
 
             // выводим кол-во подписок
             long subscriptionsCount = getCountOfSubscriptions();
-            String btnText = SUBSCRIPTIONS;
+            String subscriptionText = "Подписки";
 
             if (subscriptionsCount != 0) {
-                btnText += " (" + subscriptionsCount + ")";
+                subscriptionText += " (" + subscriptionsCount + ")";
             }
-            subscriptionsBtn.setText(btnText);
-            String subscribersBtnText = "Кол-во подписчиков:";
+            subscribtionsText.setText(subscriptionText);
+            String subscribersBtnText = "Подписчики:";
             long subscribersCount = getCountOfSubscribers();
 
             if (subscribersCount != 0) {
@@ -301,7 +319,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         }
 
         updateServicesList(userId);
-
     }
 
     private long getCountOfSubscriptions() {
@@ -542,7 +559,20 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             cursor.close();
             return false;
         }
+    }
 
+    private void addRatingToScreen(float avgRating, long countOfRates){
+
+        if (countOfRates > 0) {
+            ratingBar.setVisibility(View.VISIBLE);
+            ratingBar.setRating(avgRating);
+            ratingForUserLayout.setOnClickListener(this);
+        }
+    }
+
+    private void setWithoutRating(){
+        ratingBar.setVisibility(View.GONE);
+        withoutRatingText.setVisibility(View.VISIBLE);
     }
 
     private void goToAddService() {
@@ -556,6 +586,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         startActivity(intent);
     }
 
+    private void goToUserComments(String status) {
+        Intent intent = new Intent(this, Comments.class);
+        intent.putExtra(ID, ownerId);
+        intent.putExtra(TYPE, status);
+        startActivity(intent);
+    }
     @Override
     public void firstSwitcherAct() {
         servicesLayout.setVisibility(View.GONE);

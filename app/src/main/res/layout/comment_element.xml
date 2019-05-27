@@ -68,10 +68,8 @@
                 android:layout_gravity="center"
                 android:isIndicator="true"
                 android:numStars="5"
-                android:stepSize="1"
-                android:theme="@style/myRatingBar" />
+                android:theme="@style/ratingBarColors" />
         </LinearLayout>
-        Linear
     </LinearLayout>
 
 

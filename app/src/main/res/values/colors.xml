@@ -10,7 +10,7 @@
 
     <color name="logInBackGround">#0093B7</color>
 
-    <color name="yellow1">#f5a235</color>
+    <color name="yellow">#f6db40</color>
     <color name="grey05">#64d1d1d1</color>
     <color name="activeButton">#FFFFFF</color>
     <color name="disabledButton">#7fffffff</color>

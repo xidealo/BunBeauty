@@ -29,8 +29,6 @@ public class Dialogs extends AppCompatActivity {
     private WorkWithLocalStorageApi LSApi;
     private DBHelper dbHelper;
 
-    LinearLayout mainLayout;
-
     private FragmentManager manager;
 
     @Override
@@ -44,12 +42,6 @@ public class Dialogs extends AppCompatActivity {
 
     private void init() {
         manager = getSupportFragmentManager();
-
-        mainLayout = findViewById(R.id.mainDialogsLayout);
-
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerDialogsLayout);
-        panelBuilder.buildHeader(manager, "Диалоги", R.id.headerDialogsLayout);
 
         dbHelper = new DBHelper(this);
         // TimeApi = new WorkWithTimeApi();
@@ -147,6 +139,11 @@ public class Dialogs extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerDialogsLayout);
+        panelBuilder.buildHeader(manager, "Диалоги", R.id.headerDialogsLayout);
+
     }
 
     private void addToScreen(User user) {

@@ -68,11 +68,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         statusUser = getIntent().getStringExtra(STATUS_USER_BY_SERVICE);
         serviceId = getIntent().getStringExtra(SERVICE_ID);
 
-        FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerMyCalendarLayout);
-        panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyCalendarLayout);
-
         // создаём календарь
         createCalendar();
 
@@ -513,6 +508,11 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
+
+        FragmentManager manager = getSupportFragmentManager();
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerMyCalendarLayout);
+        panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyCalendarLayout);
 
         // проверяем имеется ли у данного пользователя запись на данную услугу
         if (statusUser.equals(USER)) {
