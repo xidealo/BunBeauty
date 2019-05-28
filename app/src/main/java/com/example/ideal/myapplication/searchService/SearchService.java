@@ -1,18 +1,15 @@
 package com.example.ideal.myapplication.searchService;
 
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -35,7 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class SearchService extends FragmentActivity implements View.OnClickListener {
+public class SearchService extends AppCompatActivity implements View.OnClickListener {
 
     // сначала идут константы
     private static final String TAG = "DBInf";
@@ -44,8 +41,8 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     private static final String NAME = "name";
     private static final String CITY = "city";
 
-    private static final String NOT_CHOSEN = "Не выбран";
-    private static final String NAME_OF_SERVICE = "Название сервиса";
+    private static final String NOT_CHOSEN = "не выбран";
+    private static final String NAME_OF_SERVICE = "название сервиса";
 
     private String city = NOT_CHOSEN;
     private String searchBy = NAME_OF_SERVICE;
@@ -63,27 +60,22 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_service);
 
-        Button findBtn = findViewById(R.id.findServiceSearchServiceBtn);
+        TextView findBtn = findViewById(R.id.findServiceSearchServiceText);
 
         dbHelper = new DBHelper(this);
         manager = getSupportFragmentManager();
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerSearchServiceLayout);
-        panelBuilder.buildHeader(manager, "Поиск", R.id.headerSearchServiceLayout);
 
         //создаём выпадающее меню на основе массива городов
         //Выпадающее меню
         Spinner citySpinner = findViewById(R.id.citySearchServiceSpinner);
         citySpinner.setPrompt(NOT_CHOSEN);
-        ArrayAdapter<?> cityAdapter = ArrayAdapter.createFromResource(this, R.array.cities, android.R.layout.simple_spinner_item);
-        citySpinner.setAdapter(cityAdapter);
 
         //создаём выпадающее меню "Поиск по"
         Spinner searchBySpinner = findViewById(R.id.searchBySearchServiceSpinner);
         searchBySpinner.setPrompt(NAME_OF_SERVICE);
-        ArrayAdapter<?> searchByAdapter = ArrayAdapter.createFromResource(this, R.array.searchBy, android.R.layout.simple_spinner_item);
-        searchBySpinner.setAdapter(searchByAdapter);
 
         searchLineInput = findViewById(R.id.searchLineSearchServiceInput);
         resultLayout = findViewById(R.id.resultSearchServiceLayout);
@@ -115,9 +107,14 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.findServiceSearchServiceBtn:
+            case R.id.findServiceSearchServiceText:
                 resultLayout.removeAllViews();
-                search();
+                if(!searchLineInput.getText().toString().toLowerCase().equals("")) {
+                    search();
+                }
+                else {
+                    showServicesInHomeTown();
+                }
                 break;
             default:
                 break;
@@ -151,7 +148,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
 
         int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
         // дефолтное значение
-        String city="Dubna";
+        String city="dubna";
 
         if(cursor.moveToFirst()) {
             city = cursor.getString(indexCity);
@@ -170,7 +167,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
-                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null, null);
+                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null, null, null);
                 addToScreen(serviceList);
             }
 
@@ -211,7 +208,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
                     return;
                 }
 
-                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, enteredText, null, null);
+                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, enteredText, null,null, null);
                 if (serviceList.isEmpty()) {
                     attentionNothingFound();
                 } else {
@@ -227,7 +224,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     }
 
     private void searchByWorkerName() {
-        String enteredText = searchLineInput.getText().toString().toLowerCase();
+        final String enteredText = searchLineInput.getText().toString().toLowerCase();
         final Search search = new Search(this);
 
         Query userQuery = FirebaseDatabase.getInstance().getReference(USERS)
@@ -243,7 +240,8 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
                 }
 
                 ArrayList<Object[]> serviceList;
-                serviceList = search.getServicesOfUsers(usersSnapshot,null, city, null);
+                serviceList = search.getServicesOfUsers(usersSnapshot,null, enteredText, city, null);
+                Log.d(TAG, "getChildrenCount: " + usersSnapshot.getChildrenCount());
                 if (serviceList.isEmpty()) {
                     attentionNothingFound();
                 } else {

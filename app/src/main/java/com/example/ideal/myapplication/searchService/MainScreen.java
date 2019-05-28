@@ -177,7 +177,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
 
-                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null, category);
+                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null, null, category);
                 addToMainScreen(serviceList);
             }
 

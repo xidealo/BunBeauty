@@ -237,6 +237,10 @@ public class TopPanel extends Fragment implements View.OnClickListener {
             case R.id.avatarTopPanelImage:
                 goToProfile();
                 break;
+
+            case R.id.searchTopPanelText:
+                goToSearchService();
+                break;
         }
     }
 

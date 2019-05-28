@@ -158,7 +158,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 goToUserComments(REVIEW_FOR_USER);
                 break;
 
-
            /* case R.id.subscribersProfileBtn:
                 goToSubscribers(SUBSCRIBERS);
                 break;*/

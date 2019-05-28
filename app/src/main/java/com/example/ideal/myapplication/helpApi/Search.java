@@ -17,6 +17,8 @@ public class Search {
 
     private static final String TAG = "DBInf";
 
+    private static final String NOT_CHOSEN = "не выбран";
+
     private static final String NAME = "name";
     private static final String PHONE = "phone";
     private static final String CITY = "city";
@@ -40,41 +42,53 @@ public class Search {
     }
 
     // загружаем услуги мастеров мастеров в LocalStorage
-    public ArrayList<Object[]> getServicesOfUsers(DataSnapshot usersSnapshot, String serviceName, String city, String category) {
+    public ArrayList<Object[]> getServicesOfUsers(DataSnapshot usersSnapshot, String serviceName, String userName, String city, String category) {
         serviceList.clear();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
+        Log.d(TAG, "usersSnapshot: " + usersSnapshot.getChildrenCount());
         for (DataSnapshot userSnapshot : usersSnapshot.getChildren()) {
+            Log.d(TAG, "userSnapshot: " + userSnapshot.getKey());
             String userCity = String.valueOf(userSnapshot.child(CITY).getValue());
-            if((city == null) || city.equals(userCity) || city.equals("Не выбран")) {
+            Log.d(TAG, "city: " + city + " | userCity:" + userCity);
+            if((city == null) || city.equals(userCity) || city.equals(NOT_CHOSEN)) {
                 DownloadServiceData downloadServiceData = new DownloadServiceData(database);
                 downloadServiceData.loadUserInfo(userSnapshot);
                 downloadServiceData.loadSchedule(userSnapshot.child(SERVICES), userSnapshot.getKey());
             }
         }
-        updateServicesList(serviceName, city, category);
+        updateServicesList(serviceName, userName, city, category);
 
         return serviceList;
     }
 
     // Кладём услуги мастеров в список
-    private void updateServicesList(String _serviceName, String _city, String _category) {
+    private void updateServicesList(String _serviceName, String _userName, String _city, String _category) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         maxCost = getMaxCost();
 
         String serviceNameCondition = "";
         if (_serviceName != null) {
+            Log.d(TAG, "serviceNameCondition: ");
             serviceNameCondition = " AND " + DBHelper.KEY_NAME_SERVICES + " = '" + _serviceName + "' ";
         }
 
         String cityCondition = "";
-        if (_city != null && _city.equals("Не выбран")) {
+        if (_city != null && !_city.equals(NOT_CHOSEN)) {
+            Log.d(TAG, "cityCondition: ");
             cityCondition = " AND " + DBHelper.KEY_CITY_USERS + " = '" + _city + "' ";
         }
 
         String categoryCondition = "";
         if (_category != null && !_category.equals("")) {
+            Log.d(TAG, "categoryCondition: ");
             categoryCondition = " AND " + DBHelper.KEY_CATEGORY_SERVICES + " = '" + _category + "' ";
+        }
+
+        String userNameCondition = "";
+        if (_userName != null) {
+            Log.d(TAG, "userNameCondition: ");
+            userNameCondition = " AND " + DBHelper.KEY_NAME_USERS + " = '" + _userName + "' ";
         }
 
         // Возвращает id, название, рэйтинг и количество оценивших
@@ -91,10 +105,12 @@ public class Search {
                         + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
                         + serviceNameCondition
                         + cityCondition
-                        + categoryCondition;
+                        + categoryCondition
+                        + userNameCondition;
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{});
 
+        Log.d(TAG, "cursor: " + cursor.getCount());
         if(cursor.moveToFirst()) {
             int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
             int indexUserName = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);

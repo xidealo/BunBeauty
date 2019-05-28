@@ -53,7 +53,6 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
     private static final String IS_CANCELED = "is canceled";
     private static final String TIME = "time";
 
-
     private Boolean messageIsCanceled;
     private Boolean messageIsMyService;
 
