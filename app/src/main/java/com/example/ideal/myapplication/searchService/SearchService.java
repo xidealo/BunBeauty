@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -40,8 +41,8 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
     private static final String NAME = "name";
     private static final String CITY = "city";
 
-    private static final String NOT_CHOSEN = "Не выбран";
-    private static final String NAME_OF_SERVICE = "Название сервиса";
+    private static final String NOT_CHOSEN = "не выбран";
+    private static final String NAME_OF_SERVICE = "название сервиса";
 
     private String city = NOT_CHOSEN;
     private String searchBy = NAME_OF_SERVICE;
@@ -147,7 +148,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
 
         int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
         // дефолтное значение
-        String city="Dubna";
+        String city="dubna";
 
         if(cursor.moveToFirst()) {
             city = cursor.getString(indexCity);
@@ -166,7 +167,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
-                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null, null);
+                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null, null, null);
                 addToScreen(serviceList);
             }
 
@@ -206,7 +207,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
                     return;
                 }
 
-                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, enteredText, null, null);
+                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, enteredText, null,null, null);
                 if (serviceList.isEmpty()) {
                     attentionNothingFound();
                 } else {
@@ -222,7 +223,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
     }
 
     private void searchByWorkerName() {
-        String enteredText = searchLineInput.getText().toString().toLowerCase();
+        final String enteredText = searchLineInput.getText().toString().toLowerCase();
         final Search search = new Search(this);
 
         Query userQuery = FirebaseDatabase.getInstance().getReference(USERS)
@@ -238,7 +239,8 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
                 }
 
                 ArrayList<Object[]> serviceList;
-                serviceList = search.getServicesOfUsers(usersSnapshot,null, city, null);
+                serviceList = search.getServicesOfUsers(usersSnapshot,null, enteredText, city, null);
+                Log.d(TAG, "getChildrenCount: " + usersSnapshot.getChildrenCount());
                 if (serviceList.isEmpty()) {
                     attentionNothingFound();
                 } else {

@@ -97,7 +97,6 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         nameServiceText.setText(workWithStringsApi.cutString(nameServiceString,9));
         costText.setText("Цена \n" + costString);
         ratingBar.setRating(avgRating);
-        Log.d(TAG, "setData: " + avgRating);
 
         DBHelper dbHelper = new DBHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
