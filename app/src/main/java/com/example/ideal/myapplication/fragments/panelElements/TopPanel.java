@@ -25,6 +25,7 @@ import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.searchService.GuestService;
 import com.example.ideal.myapplication.searchService.MainScreen;
 import com.example.ideal.myapplication.other.Profile;
+import com.example.ideal.myapplication.searchService.SearchServ;
 import com.example.ideal.myapplication.searchService.SearchService;
 
 
@@ -188,6 +189,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                             if (getContext().getClass() == MainScreen.class) {
                                 settingText.setVisibility(View.GONE);
                                 searchText.setVisibility(View.VISIBLE);
+                                searchText.setOnClickListener(this);
                                 // Если это любое другое активити
                             } else {
                                 settingText.setVisibility(View.INVISIBLE);
@@ -231,6 +233,10 @@ public class TopPanel extends Fragment implements View.OnClickListener {
 
             case R.id.avatarTopPanelImage:
                 goToProfile();
+                break;
+
+            case R.id.searchTopPanelText:
+                goToSearchService();
                 break;
         }
     }
@@ -325,7 +331,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
     }
 
     private void goToSearchService() {
-        Intent intent = new Intent(getContext(), SearchService.class);
+        Intent intent = new Intent(getContext(), SearchServ.class);
         startActivity(intent);
     }
 
