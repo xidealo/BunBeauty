@@ -25,7 +25,6 @@ import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.searchService.GuestService;
 import com.example.ideal.myapplication.searchService.MainScreen;
 import com.example.ideal.myapplication.other.Profile;
-import com.example.ideal.myapplication.searchService.SearchServ;
 import com.example.ideal.myapplication.searchService.SearchService;
 
 
@@ -331,7 +330,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
     }
 
     private void goToSearchService() {
-        Intent intent = new Intent(getContext(), SearchServ.class);
+        Intent intent = new Intent(getContext(), SearchService.class);
         startActivity(intent);
     }
 
