@@ -41,7 +41,7 @@ import java.util.HashMap;
 
 import static android.app.NotificationManager.IMPORTANCE_MAX;
 
-public class MyService extends Service {
+public class MyService extends Service implements Runnable {
 
     private static final String TAG = "DBInf";
 
@@ -76,8 +76,8 @@ public class MyService extends Service {
 
     private String userId;
     private String serviceName;
-    private String workingDate;
-    private String workingTime;
+
+    Thread thread;
 
     // таймеры для оповешений о возможности оценить спустя сутки
     private HashMap<String, CountDownTimer> CDTimers;
@@ -118,6 +118,7 @@ public class MyService extends Service {
  
     public void onDestroy() {
         super.onDestroy();
+        thread.destroy();
         Log.d(TAG, "MyService onDestroy");
     }
 
@@ -128,7 +129,7 @@ public class MyService extends Service {
 
     void startMyListener() {
 
-        new Thread(new Runnable() {
+        Thread thread = new Thread(new Thread(new Runnable() {
             private final Context context = MyService.this;
 
             @Override
@@ -161,17 +162,13 @@ public class MyService extends Service {
                                 .child(WORKING_DAYS);
                         myWorkingDaysRef.addChildEventListener(new ChildEventListener() {
                             @Override
-                            public void onChildAdded(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) {
-                                workingDate = workingDaySnapshot.child(DATE).getValue(String.class);
-
+                            public void onChildAdded(@NonNull final DataSnapshot workingDaySnapshot, @Nullable String s) {
                                 final DatabaseReference myWorkingTimeRef = myWorkingDaysRef
                                         .child(workingDaySnapshot.getKey())
                                         .child(WORKING_TIME);
                                 myWorkingTimeRef.addChildEventListener(new ChildEventListener() {
                                     @Override
-                                    public void onChildAdded(@NonNull DataSnapshot workingTimeSnapshot, @Nullable String s) {
-                                        workingTime = workingTimeSnapshot.child(TIME).getValue(String.class);
-
+                                    public void onChildAdded(@NonNull final DataSnapshot workingTimeSnapshot, @Nullable String s) {
                                         final DatabaseReference myOrdersRef = myWorkingTimeRef
                                                 .child(workingTimeSnapshot.getKey())
                                                 .child(ORDERS);
@@ -183,9 +180,12 @@ public class MyService extends Service {
                                                 String orderCreationTime = orderSnapshot.child(TIME).getValue(String.class);
                                                 long delay = Math.abs(timeApi.getMillisecondsStringDateWithSeconds(orderCreationTime)-timeApi.getSysdateLong());
                                                 String orderId = orderSnapshot.getKey();
+                                                final String date = workingDaySnapshot.child(DATE).getValue(String.class);
+                                                final String time = workingTimeSnapshot.child(TIME).getValue(String.class);
+
                                                 // устанавливаем таймер, чтобы через день после обслуживания дать оценить
                                                 if (!orderSnapshot.child(IS_CANCELED).getValue(Boolean.class)) {
-                                                    setTimerForReview(orderId, workingDate, workingTime, serviceName, false);
+                                                    setTimerForReview(orderId, date, time, serviceName, false);
                                                 }
                                                 // исправить на 5000
                                                 if(delay < 10000) {
@@ -206,8 +206,8 @@ public class MyService extends Service {
                                                             NotificationOrder notificationOrder = new NotificationOrder(context,
                                                                     userName,
                                                                     serviceName,
-                                                                    workingDate,
-                                                                    workingTime);
+                                                                    date,
+                                                                    time);
                                                             notificationOrder.createNotification();
                                                         }
 
@@ -222,8 +222,10 @@ public class MyService extends Service {
                                                 boolean isCanceled = orderSnapshot.child(IS_CANCELED).getValue(Boolean.class);
                                                 if (isCanceled) {
                                                     String orderId = orderSnapshot.getKey();
-                                                    CDTimers.get(orderId).cancel();
-                                                    CDTimers.remove(orderId);
+                                                    if (CDTimers.get(orderId) != null) {
+                                                        CDTimers.get(orderId).cancel();
+                                                        CDTimers.remove(orderId);
+                                                    }
                                                 }
 
                                                 String review = orderSnapshot
@@ -466,7 +468,7 @@ public class MyService extends Service {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
                         final String orderId = orderSnapshot.getKey();
-                        String workerId = orderSnapshot.child(WORKER_ID).getValue(String.class);
+                        final String workerId = orderSnapshot.child(WORKER_ID).getValue(String.class);
                         String serviceId = orderSnapshot.child(SERVICE_ID).getValue(String.class);
 
                         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -607,13 +609,18 @@ public class MyService extends Service {
                     // кладём таймер в Мапу, чтобы если что удалить
                     CDTimers.put(orderId, CDTimer);
                 }
-
             }
 
-        }).run();
+        }));
+        thread.run();
     }
 
     private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    @Override
+    public void run() {
+
     }
 }

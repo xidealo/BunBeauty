@@ -188,6 +188,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                             if (getContext().getClass() == MainScreen.class) {
                                 settingText.setVisibility(View.GONE);
                                 searchText.setVisibility(View.VISIBLE);
+                                searchText.setOnClickListener(this);
                                 // Если это любое другое активити
                             } else {
                                 settingText.setVisibility(View.INVISIBLE);
@@ -220,6 +221,10 @@ public class TopPanel extends Fragment implements View.OnClickListener {
 
             case R.id.settingTopPanelText:
                 multiClick();
+                break;
+
+            case R.id.searchTopPanelText:
+                goToSearchService();
                 break;
 
             case R.id.subscribeTopPanelText:
@@ -256,12 +261,6 @@ public class TopPanel extends Fragment implements View.OnClickListener {
         // Сообщения
         if (currentClass == Messages.class) {
             goToProfile();
-            return;
-        }
-
-        // главная
-        if (currentClass == MainScreen.class) {
-            goToSearchService();
             return;
         }
 

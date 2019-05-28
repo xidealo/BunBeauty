@@ -182,6 +182,7 @@ public class SearchService extends FragmentActivity implements View.OnClickListe
     }
 
     private void search() {
+        Log.d(TAG, "search: " + searchBy);
         switch (searchBy) {
             case "название сервиса":
                 searchByNameService();
