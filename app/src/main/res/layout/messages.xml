@@ -17,7 +17,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@+id/footerEditServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,8 +25,10 @@
         <LinearLayout
             android:id="@+id/resultsMessagesLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:layout_height="0dp"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:layoutDirection="ltr"/>
     </ScrollView>
 
     <LinearLayout

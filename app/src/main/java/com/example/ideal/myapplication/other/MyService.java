@@ -6,17 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQuery;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
-import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
@@ -36,7 +32,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.invoke.WrongMethodTypeException;
 import java.util.HashMap;
 
 import static android.app.NotificationManager.IMPORTANCE_MAX;

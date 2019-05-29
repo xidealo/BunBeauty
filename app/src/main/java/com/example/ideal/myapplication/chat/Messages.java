@@ -36,7 +36,7 @@ public class Messages extends AppCompatActivity {
     private DBHelper dbHelper;
     private FragmentManager manager;
 
-    LinearLayout resultsLayout;
+    private LinearLayout resultsLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -45,6 +46,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     private Button [] categoriesBtns;
     private String [] categories;
     private  LinearLayout categoryLayout;
+    private ProgressBar progressBar;
 
     private LinearLayout resultLayout;
 
@@ -61,6 +63,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
       
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
+        progressBar = findViewById(R.id.progressBarMainScreen);
 
         categoriesBtns = new Button[5];
         categories = new String[]{"ногти", "волосы", "глаза", "визаж", "массаж"};
@@ -195,6 +198,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
             transaction.add(R.id.resultsMainScreenLayout, fElement);
             transaction.commit();
         }
+        progressBar.setVisibility(View.GONE);
     }
 
     private String getUserId() {

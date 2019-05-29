@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
     private EditText codeInput;
     private TextView changePhoneText;
     private TextView alertCodeText;
+    private ProgressBar progressBar;
 
     private String myPhoneNumber;
     private String phoneVerificationId;
@@ -51,11 +53,14 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
         resendCodeText = findViewById(R.id.resendVerifyText);
         alertCodeText = findViewById(R.id.alertCodeVerifyText);
 
+
         //получаем id inputs
         codeInput = findViewById(R.id.codeVerifyInput);
         changePhoneText = findViewById(R.id.changePhoneVerifyText);
         fbAuth = FirebaseAuth.getInstance();
         myPhoneNumber = getIntent().getStringExtra(PHONE_NUMBER);
+
+        progressBar = findViewById(R.id.progressBarVerifyCode);
 
         sendVerificationCode();
 
@@ -162,12 +167,14 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         //если введен верный код
+                        hideViewsOfScreen();
                         if (task.isSuccessful()) {
-                            hideViewsOfScreen();
                             MyAuthorization myAuth = new MyAuthorization(VerifyPhone.this, myPhoneNumber);
                             myAuth.authorizeUser();
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                showViewsOfScreen();
+                                assertWrongCode();
                                 codeInput.setError("Неправильный код");
                                 codeInput.requestFocus();
                             }
@@ -177,15 +184,27 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
     }
 
     private void hideViewsOfScreen(){
-        verifyCodeBtn.setVisibility(View.INVISIBLE);
-        resendCodeText.setVisibility(View.INVISIBLE);
-        codeInput.setVisibility(View.INVISIBLE);
-        changePhoneText.setVisibility(View.INVISIBLE);
-        alertCodeText.setVisibility(View.INVISIBLE);
+        verifyCodeBtn.setVisibility(View.GONE);
+        resendCodeText.setVisibility(View.GONE);
+        codeInput.setVisibility(View.GONE);
+        changePhoneText.setVisibility(View.GONE);
+        alertCodeText.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+    private void showViewsOfScreen(){
+        verifyCodeBtn.setVisibility(View.VISIBLE);
+        resendCodeText.setVisibility(View.VISIBLE);
+        codeInput.setVisibility(View.VISIBLE);
+        changePhoneText.setVisibility(View.VISIBLE);
+        alertCodeText.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
     private void assertResendCode() {
         Toast.makeText(this, "Код был отправлен", Toast.LENGTH_SHORT).show();
+    }
+    private void assertWrongCode() {
+        Toast.makeText(this, "Вы ввели неверный код", Toast.LENGTH_SHORT).show();
     }
     private void goBackToAuthorization() {
         super.onBackPressed();
