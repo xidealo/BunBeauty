@@ -26,21 +26,20 @@ import com.example.ideal.myapplication.other.Profile;
 public class SubscriptionElement extends Fragment implements View.OnClickListener {
 
     final String OWNER_ID = "owner id";
-    private static final String SUBSCRIPTIONS = "подписки";
 
     private TextView nameText;
     private TextView subscribeText;
+    private TextView unsubscribeText;
     private ImageView avatarImage;
+    private SubscriptionsApi subsApi;
 
     private String workerId;
     private String workerName;
-    private boolean isSubscription;
 
     @SuppressLint("ValidFragment")
     public SubscriptionElement(String _workerId, String _workerName, String status) {
         workerId = _workerId;
         workerName = _workerName;
-        isSubscription = status.equals(SUBSCRIPTIONS);
     }
 
     @Override
@@ -54,19 +53,17 @@ public class SubscriptionElement extends Fragment implements View.OnClickListene
         nameText = view.findViewById(R.id.workerNameSubscriptionElementText);
         subscribeText = view.findViewById(R.id.subscribeSubscriptionElementText);
         avatarImage = view.findViewById(R.id.avatarSubscriptionElementImage);
+        unsubscribeText = view.findViewById(R.id.unsubscribeSubscriptionElementText);
 
         nameText.setOnClickListener(this);
         avatarImage.setOnClickListener(this);
-        if(isSubscription) {
-            subscribeText.setOnClickListener(this);
-        }
-        else {
-            subscribeText.setVisibility(View.GONE);
-        }
+        subscribeText.setOnClickListener(this);
+        unsubscribeText.setOnClickListener(this);
+
         LinearLayout layout = view.findViewById(R.id.subscriptionElementLayout);
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-        params.setMargins(10,10,10,15);
+        params.setMargins(10, 10, 10, 15);
         layout.setLayoutParams(params);
 
         setData();
@@ -83,25 +80,26 @@ public class SubscriptionElement extends Fragment implements View.OnClickListene
 
         int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
         int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
-        workWithLocalStorageApi.setPhotoAvatar(workerId,avatarImage,width,height);    }
+        workWithLocalStorageApi.setPhotoAvatar(workerId, avatarImage, width, height);
+    }
 
     @Override
     public void onClick(View v) {
+        subsApi = new SubscriptionsApi(workerId, getContext());
+
         switch (v.getId()) {
             case R.id.subscribeSubscriptionElementText:
-                SubscriptionsApi subsApi = new SubscriptionsApi(workerId, getContext());
-                
-                if ((boolean) subscribeText.getTag()) {
-                    subscribeText.setTag(false);
-                    subscribeText.setText("\uf004");
-                    subsApi.unsubscribe();
-                    Toast.makeText(getContext(), "Подписка отменена", Toast.LENGTH_SHORT).show();
-                } else {
-                    subscribeText.setTag(true);
-                    subscribeText.setText("<B");
-                    subsApi.subscribe();
-                    Toast.makeText(getContext(), "Вы подписались", Toast.LENGTH_SHORT).show();
-                }
+                unsubscribeText.setVisibility(View.VISIBLE);
+                subscribeText.setVisibility(View.GONE);
+                subsApi.unsubscribe();
+                Toast.makeText(getContext(), "Подписка отменена", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.unsubscribeSubscriptionElementText:
+                unsubscribeText.setVisibility(View.GONE);
+                subscribeText.setVisibility(View.VISIBLE);
+                subsApi.subscribe();
+                Toast.makeText(getContext(), "Вы подписались", Toast.LENGTH_SHORT).show();
                 break;
 
             default:
@@ -110,7 +108,7 @@ public class SubscriptionElement extends Fragment implements View.OnClickListene
         }
     }
 
-    private void goToProfile(){
+    private void goToProfile() {
         Intent intent = new Intent(getContext(), Profile.class);
         intent.putExtra(OWNER_ID, workerId);
 
