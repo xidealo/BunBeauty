@@ -77,6 +77,7 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
                 String code = codeInput.getText().toString();
 
                 if (code.trim().length() >= 6) {
+                    hideViewsOfScreen();
                     // подтверждаем код и если все хорошо, создаем юзера
                     verifyCode(code);
                 }
@@ -167,7 +168,6 @@ public class VerifyPhone extends AppCompatActivity implements View.OnClickListen
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         //если введен верный код
-                        hideViewsOfScreen();
                         if (task.isSuccessful()) {
                             MyAuthorization myAuth = new MyAuthorization(VerifyPhone.this, myPhoneNumber);
                             myAuth.authorizeUser();

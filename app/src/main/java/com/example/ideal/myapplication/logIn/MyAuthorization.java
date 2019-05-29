@@ -298,11 +298,12 @@ public class MyAuthorization {
 
     private void goToProfile() {
         // тоже самое необходимо прописать для перехода с регистрации
-        ContextCompat.startForegroundService(context, new Intent(context, MyService.class));
+        //ContextCompat.startForegroundService(context, new Intent(context, MyService.class));
 
         Intent intent = new Intent(context, Profile.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
+        context.startService(new Intent(context, MyService.class));
     }
 
 }

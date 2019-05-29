@@ -124,7 +124,7 @@ public class MyService extends Service implements Runnable {
 
     void startMyListener() {
 
-         thread = new Thread(new Thread(new Runnable() {
+        thread = new Thread(new Thread(new Runnable() {
             private final Context context = MyService.this;
 
             @Override
