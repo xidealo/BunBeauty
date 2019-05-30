@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -19,6 +20,7 @@ public class Premium extends AppCompatActivity implements View.OnClickListener {
     private static final String SERVICE_ID = "service id";
     private static final String SERVICES = "services";
     private static final String IS_PREMIUM = "is premium";
+    private static final String SERVICE = "service";
 
     private String serviceId;
 
@@ -43,7 +45,15 @@ public class Premium extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        uploadServiceIsPremium(true);
+
+        //if(checkCode()){}
+
+        if(!serviceId.isEmpty()) {
+            uploadServiceIsPremium(true);
+        }
+        else {
+
+        }
     }
 
     private void uploadServiceIsPremium(boolean isPremium) {
@@ -54,6 +64,5 @@ public class Premium extends AppCompatActivity implements View.OnClickListener {
         items.put(IS_PREMIUM,isPremium);
 
         myRef.updateChildren(items);
-
     }
 }

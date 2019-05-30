@@ -54,9 +54,12 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private TextView descriptionText;
     private TextView countOfRatesText;
     private TextView avgRatesText;
-    private LinearLayout imageFeedLayout;
+    private TextView premiumText;
+    private TextView noPremiumText;
+
     private RatingBar ratingBar;
     private LinearLayout ratingLL;
+    private LinearLayout imageFeedLayout;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private boolean isMyService;
     private DBHelper dbHelper;
@@ -78,8 +81,10 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         countOfRatesText = findViewById(R.id.countOfRatesGuestServiceElementText);
         avgRatesText = findViewById(R.id.avgRatingGuestServiceElementText);
 
+        premiumText = findViewById(R.id.yesPremiumGuestServiceText);
+        noPremiumText = findViewById(R.id.noPremiumGuestServiceText);
+
         Button editScheduleBtn = findViewById(R.id.editScheduleGuestServiceBtn);
-        Button premiumBtn = findViewById(R.id.premiumGuestServiceBtn);
         ratingLL = findViewById(R.id.ratingGuestServiceLayout);
 
         imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
@@ -104,8 +109,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         if (isMyService) {
             status = WORKER;
             editScheduleBtn.setText("Редактировать расписание");
-            //premiumBtn.setVisibility(View.VISIBLE);
-            //premiumBtn.setOnClickListener(this);
+            premiumText.setOnClickListener(this);
+            noPremiumText.setOnClickListener(this);
+            premiumText.setOnClickListener(this);
         } else {
             status = USER;
             editScheduleBtn.setText("Расписание");
@@ -127,9 +133,14 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                     checkScheduleAndGoToProfile();
                 }
                 break;
-            case R.id.premiumGuestServiceBtn:
+            case R.id.noPremiumGuestServiceText:
                 goToPremium();
                 break;
+
+            case R.id.yesPremiumGuestServiceText:
+                goToPremium();
+                break;
+
             case R.id.ratingGuestServiceLayout:
                 goToComments();
             default:
@@ -157,6 +168,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
             int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
             int indexAddress = cursor.getColumnIndex(DBHelper.KEY_ADDRESS_SERVICES);
+            int indexIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
 
             ownerId = cursor.getString(indexUserId);
 
@@ -164,6 +176,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             addressText.setText("Адрес: " + cursor.getString(indexAddress));
             descriptionText.setText(cursor.getString(indexDescription));
             serviceName = cursor.getString(indexName);
+            boolean isPremium= Boolean.valueOf(cursor.getString(indexIsPremium));
+
+            if(isPremium){
+                setWithPremium();
+            }
         }
         cursor.close();
     }
@@ -406,6 +423,12 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private void setWithoutRating(){
         withoutRatingText.setVisibility(View.VISIBLE);
     }
+
+    private void setWithPremium(){
+        noPremiumText.setVisibility(View.GONE);
+        premiumText.setVisibility(View.VISIBLE);
+    }
+
     private void goToMyCalendar(String status) {
         Intent intent = new Intent(this, MyCalendar.class);
         intent.putExtra(SERVICE_ID, serviceId);

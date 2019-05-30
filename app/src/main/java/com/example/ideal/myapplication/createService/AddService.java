@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -25,6 +26,7 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.searchService.Premium;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,6 +54,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String DESCRIPTION = "description";
     private static final String IS_PREMIUM = "is premium";
     private static final String CREATION_DATE = "creation date";
+    private static final String SERVICE = "service";
 
     private static final int PICK_IMAGE_REQUEST = 71;
     private static final String SERVICE_PHOTO = "service photo";
@@ -64,11 +67,15 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private EditText costAddServiceInput;
     private EditText descriptionServiceInput;
     private EditText addressServiceInput;
+
+    private TextView premiumText;
+    private TextView noPremiumText;
     //храним ссылки на картинки в хранилище
     private ArrayList<Uri> fpath;
 
     private FragmentManager manager;
     private Spinner categorySpinner;
+    private Service service;
 
     private DBHelper dbHelper;
 
@@ -79,7 +86,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         init();
     }
 
-    private void init(){
+    private void init() {
         Button addServicesBtn = findViewById(R.id.addServiceAddServiceBtn);
 
         nameServiceInput = findViewById(R.id.nameAddServiceInput);
@@ -88,21 +95,28 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         ImageView serviceImage = findViewById(R.id.servicePhotoAddServiceImage);
         categorySpinner = findViewById(R.id.categoryAddServiceSpinner);
         addressServiceInput = findViewById(R.id.addressAddServiceInput);
+        premiumText = findViewById(R.id.yesPremiumAddServiceText);
+        noPremiumText = findViewById(R.id.noPremiumAddServiceText);
 
         manager = getSupportFragmentManager();
 
         dbHelper = new DBHelper(this);
         fpath = new ArrayList<>();
 
+        service = new Service();
+        service.setIsPremium(false);
+
         addServicesBtn.setOnClickListener(this);
         serviceImage.setOnClickListener(this);
+        premiumText.setOnClickListener(this);
+        noPremiumText.setOnClickListener(this);
     }
+
     @Override
-    public void onClick(View v){
-        switch (v.getId()){
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.addServiceAddServiceBtn:
-                if(isFullInputs()) {
-                    Service service = new Service();
+                if (isFullInputs()) {
                     if (!service.setName(nameServiceInput.getText().toString())) {
                         Toast.makeText(
                                 this,
@@ -113,7 +127,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
                     service.setDescription(descriptionServiceInput.getText().toString());
 
-                    if(!service.setCost(costAddServiceInput.getText().toString())){
+                    if (!service.setCost(costAddServiceInput.getText().toString())) {
                         Toast.makeText(
                                 this,
                                 "Цена не может содержать больше 8 символов",
@@ -123,7 +137,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
                     String category = categorySpinner.getSelectedItem().toString().toLowerCase();
 
-                    if(category.equals("Выбрать категорию")){
+                    if (category.equals("Выбрать категорию")) {
                         Toast.makeText(
                                 this,
                                 "Не выбрана категория",
@@ -131,27 +145,31 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                         break;
                     }
                     String address = addressServiceInput.getText().toString();
-                    if(address.isEmpty()){
+                    if (address.isEmpty()) {
                         Toast.makeText(
                                 this,
                                 "Не указан адрес",
                                 Toast.LENGTH_SHORT).show();
                         break;
                     }
-                    service.setIsPremium(false);
                     service.setUserId(getUserId());
                     service.setCategory(category);
                     service.setAddress(address);
                     uploadService(service);
-
-                }
-                else {
+                } else {
                     Toast.makeText(this, getString(R.string.empty_field), Toast.LENGTH_SHORT).show();
                 }
                 break;
-                case R.id.servicePhotoAddServiceImage:
-                        chooseImage();
-                    break;
+            case R.id.servicePhotoAddServiceImage:
+                chooseImage();
+                break;
+            case R.id.noPremiumGuestServiceText:
+                goToPremium();
+                break;
+
+            case R.id.yesPremiumGuestServiceText:
+                goToPremium();
+                break;
             default:
                 break;
         }
@@ -163,23 +181,23 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference serviceRef = database.getReference(USERS).child(service.getUserId()).child(SERVICES);
 
-        Map<String,Object> items = new HashMap<>();
-        items.put(NAME,service.getName().toLowerCase());
-        items.put(COST,service.getCost());
-        items.put(DESCRIPTION,service.getDescription());
-        items.put(IS_PREMIUM,service.getIsPremium());
-        items.put(CATEGORY,service.getCategory());
-        items.put(ADDRESS,service.getAddress());
+        Map<String, Object> items = new HashMap<>();
+        items.put(NAME, service.getName().toLowerCase());
+        items.put(COST, service.getCost());
+        items.put(DESCRIPTION, service.getDescription());
+        items.put(IS_PREMIUM, service.getIsPremium());
+        items.put(CATEGORY, service.getCategory());
+        items.put(ADDRESS, service.getAddress());
 
-        items.put(CREATION_DATE,workWithTimeApi.getDateInFormatYMDHMS(new Date()));
-        String serviceId =  serviceRef.push().getKey();
+        items.put(CREATION_DATE, workWithTimeApi.getDateInFormatYMDHMS(new Date()));
+        String serviceId = serviceRef.push().getKey();
         serviceRef = serviceRef.child(serviceId);
         serviceRef.updateChildren(items);
 
         service.setId(serviceId);
         addServiceInLocalStorage(service);
 
-        for(Uri path: fpath){
+        for (Uri path : fpath) {
             uploadImage(path, serviceId);
         }
     }
@@ -188,12 +206,16 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     protected void onResume() {
         super.onResume();
 
+        if (service.getIsPremium()) {
+            setWithPremium();
+        }
+
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerAddServiceLayout);
         panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerAddServiceLayout);
     }
 
-    private void addServiceInLocalStorage(Service service){
+    private void addServiceInLocalStorage(Service service) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -207,17 +229,17 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, service.getCategory());
         contentValues.put(DBHelper.KEY_ADDRESS_SERVICES, service.getAddress());
 
-        database.insert(DBHelper.TABLE_CONTACTS_SERVICES,null,contentValues);
-        goToMyCalendar(getString(R.string.status_worker),service.getId());
+        database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
+        goToMyCalendar(getString(R.string.status_worker), service.getId());
 
     }
 
-    protected Boolean isFullInputs(){
-        if(nameServiceInput.getText().toString().isEmpty()) return false;
-        if(descriptionServiceInput.getText().toString().isEmpty()) return false;
-        if(costAddServiceInput.getText().toString().isEmpty()) return false;
+    protected Boolean isFullInputs() {
+        if (nameServiceInput.getText().toString().isEmpty()) return false;
+        if (descriptionServiceInput.getText().toString().isEmpty()) return false;
+        if (costAddServiceInput.getText().toString().isEmpty()) return false;
 
-        return  true;
+        return true;
     }
 
     private void chooseImage() {
@@ -233,22 +255,19 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null )
-        {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
             Uri filePath = data.getData();
             try {
                 //установка картинки на activity
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
 
-                addToScreen(bitmap,filePath);
+                addToScreen(bitmap, filePath);
 
                 //serviceImage.setImageBitmap(bitmap);
                 //загрузка картинки в fireStorage
                 fpath.add(filePath);
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -259,8 +278,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(USERS);
 
-        if(filePath != null)
-        {
+        if (filePath != null) {
             final String photoId = myRef.push().getKey();
             final StorageReference storageReference = firebaseStorage.getReference(SERVICE_PHOTO + "/" + photoId);
             storageReference.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -269,7 +287,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            uploadPhotos(uri.toString(),serviceId,photoId);
+                            uploadPhotos(uri.toString(), serviceId, photoId);
                         }
                     });
                 }
@@ -281,7 +299,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    private void uploadPhotos(String storageReference, String serviceId,String photoId) {
+    private void uploadPhotos(String storageReference, String serviceId, String photoId) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(USERS)
@@ -291,8 +309,8 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
                 .child(PHOTOS)
                 .child(photoId);
 
-        Map<String,Object> items = new HashMap<>();
-        items.put(PHOTO_LINK,storageReference);
+        Map<String, Object> items = new HashMap<>();
+        items.put(PHOTO_LINK, storageReference);
         myRef.updateChildren(items);
 
         Photo photo = new Photo();
@@ -311,28 +329,33 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
         contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
         contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
-        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS,photo.getPhotoOwnerId());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getPhotoOwnerId());
 
-        database.insert(DBHelper.TABLE_PHOTOS,null,contentValues);
+        database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
     }
 
-    private void addToScreen(Bitmap bitmap, Uri filePath){
+    private void addToScreen(Bitmap bitmap, Uri filePath) {
         FragmentTransaction transaction = manager.beginTransaction();
-        ServicePhotoElement servicePhotoElement = new ServicePhotoElement(bitmap,filePath,"add service");
+        ServicePhotoElement servicePhotoElement = new ServicePhotoElement(bitmap, filePath, "add service");
         transaction.add(R.id.feedAddServiceLayout, servicePhotoElement);
         transaction.commit();
     }
 
 
-    public void deleteFragment(ServicePhotoElement fr, Uri filePath){
+    public void deleteFragment(ServicePhotoElement fr, Uri filePath) {
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.remove(fr);
         transaction.commit();
         fpath.remove(filePath);
     }
 
-    private String getUserId(){
+    private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    private void setWithPremium() {
+        noPremiumText.setVisibility(View.GONE);
+        premiumText.setVisibility(View.VISIBLE);
     }
 
     private void goToMyCalendar(String status, String serviceId) {
@@ -344,7 +367,14 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         startActivity(intent);
         finish();
     }
+
     private void attentionAllDone() {
         Toast.makeText(this, "Сервис успешно создан", Toast.LENGTH_SHORT).show();
+    }
+
+    private void goToPremium() {
+        Intent intent = new Intent(this, Premium.class);
+        intent.putExtra(SERVICE, service);
+        startActivity(intent);
     }
 }
