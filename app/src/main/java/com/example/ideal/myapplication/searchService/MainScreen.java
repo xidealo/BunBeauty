@@ -123,7 +123,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: ");
+        resultLayout.removeAllViews();
         createMainScreen("");
 
         PanelBuilder panelBuilder = new PanelBuilder();
