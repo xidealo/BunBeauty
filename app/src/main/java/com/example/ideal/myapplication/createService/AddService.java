@@ -26,7 +26,6 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
-import com.example.ideal.myapplication.searchService.Premium;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,7 +53,6 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String DESCRIPTION = "description";
     private static final String IS_PREMIUM = "is premium";
     private static final String CREATION_DATE = "creation date";
-    private static final String SERVICE = "service";
 
     private static final int PICK_IMAGE_REQUEST = 71;
     private static final String SERVICE_PHOTO = "service photo";
@@ -373,8 +371,5 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     }
 
     private void goToPremium() {
-        Intent intent = new Intent(this, Premium.class);
-        intent.putExtra(SERVICE, service);
-        startActivity(intent);
     }
 }

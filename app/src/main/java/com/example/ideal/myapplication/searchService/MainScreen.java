@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -67,8 +68,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         categories = new String[]{"ногти", "волосы", "глаза", "визаж", "массаж"};
 
         createCategoryFeed();
-        createMainScreen("");
-
     }
 
     @Override
@@ -124,6 +123,8 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume: ");
+        createMainScreen("");
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);

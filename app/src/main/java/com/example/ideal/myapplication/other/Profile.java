@@ -120,7 +120,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
             SwitcherElement switcherElement = new SwitcherElement("Записи", "Услуги");
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.swicherProfileLayout, switcherElement);
+            transaction.add(R.id.switcherProfileLayout, switcherElement);
             transaction.commit();
 
             addServicesBtn.setOnClickListener(this);
