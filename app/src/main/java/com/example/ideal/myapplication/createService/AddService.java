@@ -15,17 +15,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.PremiumElement;
 import com.example.ideal.myapplication.fragments.ServicePhotoElement;
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.other.IPremium;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,7 +44,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddService extends AppCompatActivity implements View.OnClickListener {
+public class AddService extends AppCompatActivity implements View.OnClickListener, IPremium {
 
     private static final String SERVICE_ID = "service id";
     private static final String STATUS_USER_BY_SERVICE = "status User";
@@ -65,6 +68,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private EditText costAddServiceInput;
     private EditText descriptionServiceInput;
     private EditText addressServiceInput;
+    private LinearLayout premiumLayout;
 
     private TextView premiumText;
     private TextView noPremiumText;
@@ -74,6 +78,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private FragmentManager manager;
     private Spinner categorySpinner;
     private Service service;
+    private boolean isPremiumLayoutSelected;
 
     private DBHelper dbHelper;
 
@@ -96,7 +101,16 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         premiumText = findViewById(R.id.yesPremiumAddServiceText);
         noPremiumText = findViewById(R.id.noPremiumAddServiceText);
 
+        premiumLayout = findViewById(R.id.premiumAddServiceLayout);
+
         manager = getSupportFragmentManager();
+
+        PremiumElement premiumElement = new PremiumElement();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(R.id.premiumAddServiceLayout, premiumElement);
+        transaction.commit();
+
+        isPremiumLayoutSelected = false;
 
         dbHelper = new DBHelper(this);
         fpath = new ArrayList<>();
@@ -161,12 +175,11 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
             case R.id.servicePhotoAddServiceImage:
                 chooseImage();
                 break;
-            case R.id.noPremiumGuestServiceText:
-                goToPremium();
+            case R.id.noPremiumAddServiceText:
+                showPremium();
                 break;
-
-            case R.id.yesPremiumGuestServiceText:
-                goToPremium();
+            case R.id.yesPremiumAddServiceText:
+                showPremium();
                 break;
             default:
                 break;
@@ -351,6 +364,27 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
+    private void showPremium() {
+        if (isPremiumLayoutSelected) {
+            premiumLayout.setVisibility(View.GONE);
+            isPremiumLayoutSelected = false;
+        } else {
+            premiumLayout.setVisibility(View.VISIBLE);
+            isPremiumLayoutSelected = true;
+        }
+    }
+
+    @Override
+    public void setPremium() {
+        service.setIsPremium(true);
+        setWithPremium();
+        premiumLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean checkCode() {
+        return true;
+    }
     private void setWithPremium() {
         noPremiumText.setVisibility(View.GONE);
         premiumText.setVisibility(View.VISIBLE);
@@ -370,6 +404,5 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         Toast.makeText(this, "Сервис успешно создан", Toast.LENGTH_SHORT).show();
     }
 
-    private void goToPremium() {
-    }
+
 }
