@@ -35,6 +35,18 @@
         </LinearLayout>
     </HorizontalScrollView>
 
+    <ProgressBar
+        android:id="@+id/progressBarMainScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint= "@color/panelColor"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/mainScreenScroll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll"/>
+
+
     <!-- Главный экран -->
     <ScrollView
         android:id="@+id/mainScreenScroll"
@@ -45,7 +57,7 @@
         app:layout_constraintBottom_toTopOf="@+id/footerMainScreenLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll">
+        app:layout_constraintTop_toBottomOf="@+id/progressBarMainScreen">
 
         <LinearLayout
             android:id="@+id/resultsMainScreenLayout"
@@ -53,13 +65,7 @@
             android:layout_height="0dp"
             android:isScrollContainer="true"
             android:orientation="vertical" >
-            <ProgressBar
-                android:id="@+id/progressBarMainScreen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminateTint= "@color/panelColor"
-                android:layout_gravity="center"
-                />
+
         </LinearLayout>
     </ScrollView>
 
