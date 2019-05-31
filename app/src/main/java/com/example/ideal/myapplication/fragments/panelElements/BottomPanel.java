@@ -53,6 +53,7 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
         profileText.setOnClickListener(this);
         mainScreenText.setOnClickListener(this);
         chatText.setOnClickListener(this);
+
     }
 
     @Override
@@ -105,5 +106,22 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
         chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+
+        highlightCurrentPage();
+    }
+
+    private void highlightCurrentPage() {
+        if (isMyProfile) {
+            profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+        }
+
+        if (getContext().getClass() == MainScreen.class) {
+            mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+        }
+
+        if (getContext().getClass() == Dialogs.class) {
+            chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+        }
     }
 }
+

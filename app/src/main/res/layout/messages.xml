@@ -26,9 +26,8 @@
             android:id="@+id/resultsMessagesLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:gravity="bottom"
             android:orientation="vertical"
-            android:layoutDirection="ltr"/>
+            android:layout_gravity="bottom"/>
     </ScrollView>
 
     <LinearLayout
