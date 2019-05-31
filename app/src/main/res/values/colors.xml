@@ -16,6 +16,7 @@
     <color name="disabledButton">#7fffffff</color>
     <color name="selectedButton">#ffd646</color>
     <color name="dayWithTimes">#0091B7</color>
+    <color name="hintColor">#808080</color>
 
     <color name="panelColor">#0093B7</color>
 

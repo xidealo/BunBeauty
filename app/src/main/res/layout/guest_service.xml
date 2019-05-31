@@ -52,7 +52,7 @@
 
                     <TextView
                         android:id="@+id/withoutRatingText"
-                        style="@style/defaultText"
+                        style="@style/mainText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Оценок еще нет"
@@ -155,7 +155,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:hint="Премиум" />
+                        android:text="Премиум" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
