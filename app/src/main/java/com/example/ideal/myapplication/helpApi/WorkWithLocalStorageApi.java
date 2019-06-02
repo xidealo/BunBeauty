@@ -14,7 +14,7 @@ import java.util.List;
 
 public class WorkWithLocalStorageApi {
 
-    private SQLiteDatabase localDatabase;
+    static private SQLiteDatabase localDatabase;
 
     public WorkWithLocalStorageApi(SQLiteDatabase database) {
         localDatabase = database;
@@ -227,5 +227,28 @@ public class WorkWithLocalStorageApi {
         boolean isAfterWeek = (workWithTimeApi.getSysdateLong() - dateMilliseconds) > 259200000;
 
         return isAfterWeek;
+    }
+
+    //Возвращает id дня по id данного сервиса и дате
+    static public String checkCurrentDay(String day, String serviceId) {
+        // Получает id рабочего дня
+        // Таблицы: рабочии дни
+        // Условия: уточняем id сервиса и дату
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_ID
+                        + " FROM "
+                        + DBHelper.TABLE_WORKING_DAYS
+                        + " WHERE "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? AND "
+                        + DBHelper.KEY_DATE_WORKING_DAYS + " = ? ";
+
+        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{serviceId, day});
+        if (cursor.moveToFirst()) {
+            int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            return String.valueOf(cursor.getString(indexId));
+        }
+        cursor.close();
+        return "0";
     }
 }

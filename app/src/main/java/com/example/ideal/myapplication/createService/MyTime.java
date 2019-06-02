@@ -50,7 +50,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
     private static final String USER_ID = "user id";
 
     private static final String SERVICE_ID = "service id";
-    private static final String STATUS_USER_BY_SERVICE = "status User";
+    private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
     private static final String TIME = "time";
 
     private static final String WORKER = "worker";
@@ -172,7 +172,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         btn.setTag(R.string.selectedId, true);
                     }
                 } else {
-                    // Это не мой сервис (я - User)
+                    // Это не мой сервис (я - UserCreateService)
 
                     // Проверка была ли кнопка выбрана до нажатия
                     if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
@@ -276,7 +276,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
             // Это мой сервис (я - worker)
             selectBtsForWorker();
         } else {
-            // Это не мой сервис (я - User)
+            // Это не мой сервис (я - UserCreateService)
             selectBtsForUser();
         }
     }
@@ -305,7 +305,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         }
     }
 
-    // Выделяет кнопки (User)
+    // Выделяет кнопки (UserCreateService)
     private void selectBtsForUser() {
         // Время на которое я записан
         String myOrderTime = checkMyOrder();
@@ -516,7 +516,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         return orderId;
     }
 
-    // Создаёт запись в разделе User
+    // Создаёт запись в разделе UserCreateService
     private void makeOrderForUser(String orderId, String workerId) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database

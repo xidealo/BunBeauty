@@ -47,7 +47,7 @@ import java.util.Map;
 public class AddService extends AppCompatActivity implements View.OnClickListener, IPremium {
 
     private static final String SERVICE_ID = "service id";
-    private static final String STATUS_USER_BY_SERVICE = "status User";
+    private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
     private static final String USERS = "users";
 
     private static final String SERVICES = "services";
