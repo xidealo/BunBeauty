@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.user.UserCreateService;
+import com.example.ideal.myapplication.createService.worker.WorkerCreateService;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
@@ -34,25 +35,23 @@ import java.util.Map;
 
 public class MyCalendar extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String WORKING_DAYS = "working days";
     private static final String SERVICE_ID = "service id";
     private static final String WORKING_DAYS_ID = "working day id";
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
-    private static final String DATE = "date";
     private static final String WORKER = "worker";
-    private static final String USERS = "users";
-    private static final String SERVICES = "services";
     private static final int WEEKS_COUNT = 4;
     private static final int DAYS_COUNT = 7;
 
     private String statusUser;
     private String date;
     private String serviceId;
+    private String userId;
     private Button[][] dayBtns;
     private Button nextBtn;
     private RelativeLayout mainLayout;
     private DBHelper dbHelper;
     private UserCreateService userCreateService;
+    private WorkerCreateService workerCreateService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +61,14 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         mainLayout = findViewById(R.id.mainMyCalendarLayout);
         nextBtn = findViewById(R.id.continueMyCalendarBtn);
         dayBtns = new Button[WEEKS_COUNT][DAYS_COUNT];
-
+        userId = getUserId();
         dbHelper = new DBHelper(this);
 
         // получаем статус, чтобы определить, кто зашел, worker or UserCreateService
         statusUser = getIntent().getStringExtra(STATUS_USER_BY_SERVICE);
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         if (statusUser.equals(WORKER)) {
-
-        } else {
-            userCreateService = new UserCreateService(dbHelper, getUserId(), serviceId);
+            workerCreateService = new WorkerCreateService(userId, serviceId, dbHelper);
         }
         // создаём календарь
         createCalendar();
@@ -85,7 +82,14 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
             case R.id.continueMyCalendarBtn:
                 if (statusUser.equals(WORKER)) {
                     if (isDaySelected()) {
-                        addWorkingDay();
+                        // Проверка на существование такого дня
+                        if (!WorkWithLocalStorageApi.checkCurrentDay(date, serviceId).equals("0")) {
+                            goToMyTime(WorkWithLocalStorageApi.checkCurrentDay(date, serviceId), statusUser);
+                        } else {
+                            //add
+                            String dayId = workerCreateService.addWorkingDay(date);
+                            goToMyTime(dayId, statusUser);
+                        }
                     } else {
                         Toast.makeText(this, "Выбирите дату, на которую хотите настроить расписание", Toast.LENGTH_SHORT).show();
                     }
@@ -267,42 +271,170 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         return false;
     }
 
-    // Добавляе рабочий день в БД
-    private void addWorkingDay() {
+    // проверяет имеется ли у данного пользователя запись на услугу
+    public void checkOrder() {
+        //Если пользователь записан на какой-то день выделить только его
+        String date = getOrderDate(); // дата YYYY-mm-d
+        if (!date.equals("")) {
+            String[] arrDate = date.split("-");
+            String orderDate = arrDate[2] + " " + WorkWithStringsApi.monthToString(arrDate[1]);
+            if (orderDate.charAt(0) == '0') {
+                orderDate = orderDate.substring(1);
+            }
 
-        // Проверка на существование такого дня
-        if (!WorkWithLocalStorageApi.checkCurrentDay(date, serviceId).equals("0")) {
-            goToMyTime(WorkWithLocalStorageApi.checkCurrentDay(date, serviceId), statusUser);
+            for (int i = 0; i < WEEKS_COUNT; i++) {
+                for (int j = 0; j < DAYS_COUNT; j++) {
+                    if (orderDate.equals(dayBtns[i][j].getText().toString()) && arrDate[0].equals(dayBtns[i][j].getTag(R.string.yearId).toString())) {
+                        dayBtns[i][j].setBackgroundResource(R.drawable.selected_day_button);
+                        dayBtns[i][j].setTag(R.string.selectedId, true);
+                        dayBtns[i][j].setClickable(false);
+                    } else {
+                        dayBtns[i][j].setTag(R.string.selectedId, false);
+                        dayBtns[i][j].setEnabled(false);
+                        dayBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
+                    }
+                }
+            }
         } else {
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference dateRef = database.getReference(USERS)
-                    .child(getUserId())
-                    .child(SERVICES)
-                    .child(serviceId)
-                    .child(WORKING_DAYS);
+            // Если записи на данный сервис нет, отключаем всё нерабочие дни
+            String dayAndMonth, year;
+            String dayId;
 
-            Map<String, Object> items = new HashMap<>();
-            items.put(DATE, date);
+            for (int i = 0; i < WEEKS_COUNT; i++) {
+                for (int j = 0; j < DAYS_COUNT; j++) {
+                    dayAndMonth = dayBtns[i][j].getText().toString();
+                    year = dayBtns[i][j].getTag(R.string.yearId).toString();
 
-            String dayId = dateRef.push().getKey();
-            dateRef = dateRef.child(dayId);
-            dateRef.updateChildren(items);
-
-            putDataInLocalStorage(serviceId, dayId);
-
+                    dayId = WorkWithLocalStorageApi
+                            .checkCurrentDay(WorkWithStringsApi.convertDateToYMD(dayAndMonth, year), serviceId);
+                    if (dayId.equals("0")) {
+                        dayBtns[i][j].setEnabled(false);
+                        dayBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
+                    } else {
+                        if (!hasSomeTime(dayId)) {
+                            dayBtns[i][j].setEnabled(false);
+                            dayBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
+                        }
+                    }
+                }
+            }
         }
     }
 
-    private void putDataInLocalStorage(String serviceId, String dayId) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_ID, dayId);
-        contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
-        contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
+    // Возвращает есть ли в рабочем дне рабочие часы
+    private boolean hasSomeTime(String dayId) {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
+        // Проверяет есть ли доступное время на данный день по его id
+        String takedTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
 
-        goToMyTime(dayId, statusUser);
+        String myTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_USER_ID + " = ?"
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
+
+        String sqlQuery = "SELECT "
+                + DBHelper.KEY_TIME_WORKING_TIME
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_WORKING_DAYS
+                + " WHERE "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                + " AND ((("
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " NOT IN (" + takedTimeQuery + ")"
+                + " AND ("
+                // 3 часа - разница с Гринвичем
+                // 2 часа - минимум времени до сеанса, чтобы за писаться
+                + "(STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ") <= 0)"
+                + ") OR (("
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " IN (" + myTimeQuery + ")"
+                + ") AND ("
+                + "(STRFTIME('%s', 'now')+3*60*60) - (STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ")) <= 0))))";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId, dayId, userId});
+
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        }
+        cursor.close();
+        return false;
+    }
+
+    //Возвращает дату записи
+    private String getOrderDate() {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        // Получает дату записи
+        // Таблицы: рабочии дни, рабочие время
+        // Условия: связываем таблицы по id рабочего дня; уточняем id сервиса и id пользователя
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_DATE_WORKING_DAYS
+                        + " FROM "
+                        + DBHelper.TABLE_ORDERS + ", "
+                        + DBHelper.TABLE_WORKING_TIME + ", "
+                        + DBHelper.TABLE_WORKING_DAYS
+                        + " WHERE "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
+                        + " AND "
+                        + DBHelper.KEY_USER_ID + " = ? "
+                        + " AND "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                        + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " AND "
+                        + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'"
+                        + " AND "
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                        + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + " AND ("
+                        + "(STRFTIME('%s', 'now')+3*60*60) - (STRFTIME('%s',"
+                        + DBHelper.KEY_DATE_WORKING_DAYS
+                        + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                        + ")) <= 0)";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, userId});
+        if (cursor.moveToFirst()) {
+            int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
+            String orderDate = cursor.getString(indexDate);
+            cursor.close();
+            return orderDate;
+        } else {
+            cursor.close();
+            return "";
+        }
     }
 
     private String getUserId() {
@@ -322,8 +454,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         if (statusUser.equals(WORKER)) {
             selectWorkingDayWithTime();
         } else {
-            userCreateService = new UserCreateService(dbHelper, getUserId(), serviceId);
-            userCreateService.checkOrder(dayBtns);
+            checkOrder();
         }
     }
 
