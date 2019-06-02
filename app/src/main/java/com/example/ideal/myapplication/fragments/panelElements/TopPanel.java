@@ -208,7 +208,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
             logoImage.setVisibility(View.VISIBLE);
         }
         else {
-            titleText.setText(title);
+            titleText.setText(title.toUpperCase());
         }
     }
 
@@ -230,6 +230,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
             case R.id.subscribeTopPanelText:
                 checkSubscribe();
                 break;
+
             case R.id.unsubscribeTopPanelText:
                 checkSubscribe();
                 break;

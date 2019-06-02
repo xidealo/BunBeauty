@@ -9,9 +9,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -45,6 +45,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     private Button [] categoriesBtns;
     private String [] categories;
     private  LinearLayout categoryLayout;
+    private ProgressBar progressBar;
 
     private LinearLayout resultLayout;
 
@@ -61,13 +62,12 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
       
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
+        progressBar = findViewById(R.id.progressBarMainScreen);
 
         categoriesBtns = new Button[5];
         categories = new String[]{"ногти", "волосы", "глаза", "визаж", "массаж"};
 
         createCategoryFeed();
-        createMainScreen("");
-
     }
 
     @Override
@@ -123,6 +123,8 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
+        resultLayout.removeAllViews();
+        createMainScreen("");
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
@@ -195,6 +197,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
             transaction.add(R.id.resultsMainScreenLayout, fElement);
             transaction.commit();
         }
+        progressBar.setVisibility(View.GONE);
     }
 
     private String getUserId() {

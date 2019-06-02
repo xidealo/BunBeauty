@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
 
     //Вертикальный лэйаут
     private LinearLayout resultLayout;
+    private ProgressBar progressBar;
 
     private DBHelper dbHelper;
     private FragmentManager manager;
@@ -79,6 +81,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
 
         searchLineInput = findViewById(R.id.searchLineSearchServiceInput);
         resultLayout = findViewById(R.id.resultSearchServiceLayout);
+        progressBar = findViewById(R.id.progressBarSearchService);
 
         showServicesInHomeTown();
 
@@ -109,6 +112,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.findServiceSearchServiceText:
                 resultLayout.removeAllViews();
+                resultLayout.addView(progressBar);
                 if(!searchLineInput.getText().toString().toLowerCase().equals("")) {
                     search();
                 }

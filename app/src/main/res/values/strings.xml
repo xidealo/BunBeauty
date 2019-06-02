@@ -52,6 +52,7 @@
     <string name="back">\uf104</string>
     <string name="settings">\uf303</string>
     <string name="subscribe_heart">\uf004</string>
+    <string name="premium">\uf091</string>
 
     //array for spinner
     <string-array name="cities">

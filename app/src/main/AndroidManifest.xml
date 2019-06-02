@@ -15,7 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".searchService.SearchService"/>
-        <activity android:name=".searchService.Premium" />
         <activity android:name=".subscriptions.Subscribers" />
         <activity
             android:name=".reviews.PickedComment"
@@ -41,7 +40,7 @@
         <activity android:name=".editing.EditService" />
         <activity android:name=".editing.EditProfile" />
         <activity android:name=".logIn.VerifyPhone" />
-
+        
         <service
             android:name=".other.MyService"
             android:permission="android.permission.BIND_JOB_SERVICE" />

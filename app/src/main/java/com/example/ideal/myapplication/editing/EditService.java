@@ -213,7 +213,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         FragmentManager manager = getSupportFragmentManager();
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
-        panelBuilder.buildHeader(manager, "Настройки", R.id.headerEditServiceLayout);
+        panelBuilder.buildHeader(manager, "Редактирование услуги", R.id.headerEditServiceLayout);
     }
 
     @Override

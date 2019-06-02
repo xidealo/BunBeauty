@@ -1,7 +1,9 @@
 package com.example.ideal.myapplication.fragments.foundElements;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +34,12 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
     final String SERVICE_ID = "service id";
 
     private TextView nameUserText;
-    private TextView city;
+    private TextView cityText;
     private TextView nameServiceText;
     private TextView costText;
     private ImageView avatarImage;
     private RatingBar ratingBar;
+    private LinearLayout layout;
 
     private float avgRating;
 
@@ -71,30 +75,36 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
+        layout = view.findViewById(R.id.foundServiceElementLayout);
         nameUserText = view.findViewById(R.id.userNameFoundServiceElementText);
-        city = view.findViewById(R.id.cityFoundServiceElementText);
+        cityText = view.findViewById(R.id.cityFoundServiceElementText);
         nameServiceText = view.findViewById(R.id.serviceNameFoundServiceElementText);
-        if (isPremium) {
-            nameServiceText.setBackgroundColor(Color.YELLOW);
-        }
         costText = view.findViewById(R.id.costFoundServiceElementText);
         ratingBar = view.findViewById(R.id.ratingBarFondServiceElement);
+
+        if (isPremium) {
+            setPremiumBackground();
+
+            ColorStateList sl  = ColorStateList.valueOf(getResources().getColor(R.color.panelColor));
+            ratingBar.setProgressTintList(sl);
+        }
+
         avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage);
-        LinearLayout layout = view.findViewById(R.id.foundServiceElementLayout);
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-        params.setMargins(10,10,10,15);
+        params.setMargins(10, 10, 10, 15);
         layout.setLayoutParams(params);
 
         layout.setOnClickListener(this);
         setData();
     }
+
     private static final String TAG = "DBInf";
 
     private void setData() {
-        nameUserText.setText(workWithStringsApi.cutString(nameUserString.toUpperCase(),18));
-        city.setText(cityString.substring(0, 1).toUpperCase() + cityString.substring(1).toLowerCase());
-        nameServiceText.setText(workWithStringsApi.cutString(nameServiceString,9));
+        nameUserText.setText(workWithStringsApi.cutString(nameUserString.toUpperCase(), 18));
+        cityText.setText(cityString.substring(0, 1).toUpperCase() + cityString.substring(1).toLowerCase());
+        nameServiceText.setText(workWithStringsApi.cutString(nameServiceString, 9));
         costText.setText("Цена \n" + costString);
         ratingBar.setRating(avgRating);
 
@@ -105,7 +115,7 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-        workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage,width,height);
+        workWithLocalStorageApi.setPhotoAvatar(userId, avatarImage, width, height);
     }
 
     @Override
@@ -113,9 +123,18 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         goToGuestService();
     }
 
-    private void goToGuestService(){
+    private void goToGuestService() {
         Intent intent = new Intent(this.getContext(), GuestService.class);
         intent.putExtra(SERVICE_ID, serviceId);
         startActivity(intent);
+    }
+
+    private void setPremiumBackground() {
+        layout.setBackgroundResource(R.drawable.block_text_premium);;
+        nameUserText.setBackgroundColor(getResources().getColor(R.color.yellow));
+        cityText.setBackgroundColor(getResources().getColor(R.color.yellow));
+        nameServiceText.setBackgroundColor(getResources().getColor(R.color.yellow));
+        costText.setBackgroundColor(getResources().getColor(R.color.yellow));
+        ratingBar.setBackgroundColor(getResources().getColor(R.color.yellow));
     }
 }

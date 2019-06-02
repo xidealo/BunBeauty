@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     private EditText phoneInput;
     private Spinner codeSpinner;
     private String myPhoneNumber;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         verifyBtn = findViewById(R.id.verifyAuthBtn);
         phoneInput = findViewById(R.id.phoneAuthInput);
         enterPhoneText = findViewById(R.id.titleAuthText);
+        progressBar = findViewById(R.id.progressBarAuthorization);
 
         codeSpinner = findViewById(R.id.codeAuthSpinner);
 
@@ -83,18 +86,16 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     }
 
     private void hideViewsOfScreen(){
-        codeSpinner.setVisibility(View.INVISIBLE);
-
-        phoneInput.setVisibility(View.INVISIBLE);
-
-        verifyBtn.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        codeSpinner.setVisibility(View.GONE);
+        phoneInput.setVisibility(View.GONE);
+        verifyBtn.setVisibility(View.GONE);
     }
 
     private void showViewsOnScreen(){
         codeSpinner.setVisibility(View.VISIBLE);
         enterPhoneText.setVisibility(View.VISIBLE);
         phoneInput.setVisibility(View.VISIBLE);
-
         verifyBtn.setVisibility(View.VISIBLE);
     }
 

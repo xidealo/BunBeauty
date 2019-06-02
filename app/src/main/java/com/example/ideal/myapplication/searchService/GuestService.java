@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,17 +18,22 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
+import com.example.ideal.myapplication.fragments.PremiumElement;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.other.IPremium;
 import com.example.ideal.myapplication.reviews.Comments;
-import com.example.ideal.myapplication.searchService.Premium;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
-public class GuestService extends AppCompatActivity implements View.OnClickListener {
+public class GuestService extends AppCompatActivity implements View.OnClickListener, IPremium {
 
     private static final String TAG = "DBInf";
 
@@ -36,6 +43,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String ORDER_ID = "order_id";
     private static final String ID = "id";
     private static final String TYPE = "type";
+    private static final String SERVICES = "services";
+    private static final String IS_PREMIUM = "is premium";
+    private static final String USERS = "users";
 
     private static final String STATUS_USER_BY_SERVICE = "status User";
 
@@ -54,11 +64,16 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private TextView descriptionText;
     private TextView countOfRatesText;
     private TextView avgRatesText;
-    private LinearLayout imageFeedLayout;
+    private TextView premiumText;
+    private TextView noPremiumText;
+
     private RatingBar ratingBar;
     private LinearLayout ratingLL;
+    private LinearLayout imageFeedLayout;
+    private LinearLayout premiumLayout;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private boolean isMyService;
+    private boolean isPremiumLayoutSelected;
     private DBHelper dbHelper;
 
     @Override
@@ -69,7 +84,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         init();
     }
 
-    private void init(){
+    private void init() {
+        FragmentManager manager = getSupportFragmentManager();
+
         costText = findViewById(R.id.costGuestServiceText);
         addressText = findViewById(R.id.addressGuestServiceText);
         descriptionText = findViewById(R.id.descriptionGuestServiceText);
@@ -78,9 +95,12 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         countOfRatesText = findViewById(R.id.countOfRatesGuestServiceElementText);
         avgRatesText = findViewById(R.id.avgRatingGuestServiceElementText);
 
+        premiumText = findViewById(R.id.yesPremiumGuestServiceText);
+        noPremiumText = findViewById(R.id.noPremiumGuestServiceText);
+
         Button editScheduleBtn = findViewById(R.id.editScheduleGuestServiceBtn);
-        Button premiumBtn = findViewById(R.id.premiumGuestServiceBtn);
         ratingLL = findViewById(R.id.ratingGuestServiceLayout);
+        premiumLayout = findViewById(R.id.premiumGuestServiceLayout);
 
         imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
 
@@ -95,17 +115,24 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         //получаем рейтинг сервиса
         getServiceRating(serviceId);
-
         userId = getUserId();
 
         // мой сервис или нет?
         isMyService = userId.equals(ownerId);
 
+        //убрана панель премиума
+        isPremiumLayoutSelected = false;
         if (isMyService) {
             status = WORKER;
             editScheduleBtn.setText("Редактировать расписание");
-            //premiumBtn.setVisibility(View.VISIBLE);
-            //premiumBtn.setOnClickListener(this);
+            premiumText.setOnClickListener(this);
+            noPremiumText.setOnClickListener(this);
+            premiumText.setOnClickListener(this);
+
+            PremiumElement premiumElement = new PremiumElement();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.add(R.id.premiumGuestServiceLayout, premiumElement);
+            transaction.commit();
         } else {
             status = USER;
             editScheduleBtn.setText("Расписание");
@@ -127,9 +154,14 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                     checkScheduleAndGoToProfile();
                 }
                 break;
-            case R.id.premiumGuestServiceBtn:
-                goToPremium();
+            case R.id.noPremiumGuestServiceText:
+                showPremium();
                 break;
+
+            case R.id.yesPremiumGuestServiceText:
+                showPremium();
+                break;
+
             case R.id.ratingGuestServiceLayout:
                 goToComments();
             default:
@@ -157,6 +189,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
             int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
             int indexAddress = cursor.getColumnIndex(DBHelper.KEY_ADDRESS_SERVICES);
+            int indexIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
 
             ownerId = cursor.getString(indexUserId);
 
@@ -164,6 +197,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             addressText.setText("Адрес: " + cursor.getString(indexAddress));
             descriptionText.setText(cursor.getString(indexDescription));
             serviceName = cursor.getString(indexName);
+            boolean isPremium = Boolean.valueOf(cursor.getString(indexIsPremium));
+
+            if (isPremium) {
+                setWithPremium();
+            }
         }
         cursor.close();
     }
@@ -210,35 +248,34 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         // если сюда не заходит, значит ревью нет
         if (cursor.moveToFirst()) {
             int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId= cursor.getColumnIndex(ORDER_ID);
+            int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 String orderId = cursor.getString(indexOrderId);
 
-                if(workWithLocalStorageApi.isMutualReview(orderId)) {
+                if (workWithLocalStorageApi.isMutualReview(orderId)) {
                     sumOfRates += Float.valueOf(cursor.getString(indexRating));
                     countOfRates++;
-                }
-                else {
-                    if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
+                } else {
+                    if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
                         sumOfRates += Float.valueOf(cursor.getString(indexRating));
                         countOfRates++;
                     }
                 }
             } while (cursor.moveToNext());
 
-            if(countOfRates!=0){
+            if (countOfRates != 0) {
                 avgRating = sumOfRates / countOfRates;
             }
-            createRatingBar(avgRating,countOfRates);
+            createRatingBar(avgRating, countOfRates);
         } else {
             setWithoutRating();
         }
         cursor.close();
     }
 
-    private void checkScheduleAndGoToProfile(){
+    private void checkScheduleAndGoToProfile() {
 
         // Получаем всё время данного сервиса, которое доступно данному юзеру
         SQLiteDatabase database = dbHelper.getWritableDatabase();
@@ -306,7 +343,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                 + ")) <= 0))))";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {serviceId, serviceId, serviceId, userId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, serviceId, serviceId, userId});
 
         if (cursor.moveToFirst()) {
             goToMyCalendar(USER);
@@ -330,9 +367,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                         + DBHelper.TABLE_PHOTOS
                         + " WHERE "
                         + DBHelper.KEY_OWNER_ID_PHOTOS + " = ?";
-        Cursor cursor = database.rawQuery(sqlQuery,new String[] {serviceId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
                 int indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS);
 
@@ -344,7 +381,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         width,
                         height);
-                params.setMargins(15,15,15,15);
+                params.setMargins(15, 15, 15, 15);
                 serviceImage.setLayoutParams(params);
                 serviceImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 imageFeedLayout.addView(serviceImage);
@@ -352,10 +389,10 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 //установка аватарки
                 Picasso.get()
                         .load(photoLink)
-                        .resize(width,height)
+                        .resize(width, height)
                         .centerCrop()
                         .into(serviceImage);
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
         cursor.close();
 
@@ -381,18 +418,18 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 Toast.LENGTH_SHORT).show();
     }
 
-    private  String getUserId(){
+    private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    private void createRatingBar(float avgRating, long countOfRates){
+    private void createRatingBar(float avgRating, long countOfRates) {
 
         if (countOfRates > 0) {
             countOfRatesText.setVisibility(View.VISIBLE);
             avgRatesText.setVisibility(View.VISIBLE);
             ratingBar.setVisibility(View.VISIBLE);
 
-            countOfRatesText.setText("("+ countOfRates + " оценок)");
+            countOfRatesText.setText("(" + countOfRates + " оценок)");
 
             //приводим цифры к виду, чтобы было 2 число после запятой
             String avgRatingWithFormat = new DecimalFormat("#0.00").format(avgRating);
@@ -403,9 +440,25 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         ratingLL.setOnClickListener(this);
     }
 
-    private void setWithoutRating(){
+    private void showPremium() {
+        if (isPremiumLayoutSelected) {
+            premiumLayout.setVisibility(View.GONE);
+            isPremiumLayoutSelected = false;
+        } else {
+            premiumLayout.setVisibility(View.VISIBLE);
+            isPremiumLayoutSelected = true;
+        }
+    }
+
+    private void setWithoutRating() {
         withoutRatingText.setVisibility(View.VISIBLE);
     }
+
+    private void setWithPremium() {
+        noPremiumText.setVisibility(View.GONE);
+        premiumText.setVisibility(View.VISIBLE);
+    }
+
     private void goToMyCalendar(String status) {
         Intent intent = new Intent(this, MyCalendar.class);
         intent.putExtra(SERVICE_ID, serviceId);
@@ -414,17 +467,34 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    private void goToPremium() {
-        Intent intent = new Intent(this, Premium.class);
-        intent.putExtra(SERVICE_ID, serviceId);
-        startActivity(intent);
-    }
-
     private void goToComments() {
         Intent intent = new Intent(this, Comments.class);
         intent.putExtra(ID, serviceId);
         intent.putExtra(TYPE, REVIEW_FOR_SERVICE);
         startActivity(intent);
+    }
+
+    @Override
+    public void setPremium() {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(USERS)
+                .child(getUserId())
+                .child(SERVICES)
+                .child(serviceId);
+
+        Map<String, Object> items = new HashMap<>();
+        items.put(IS_PREMIUM, true);
+
+        myRef.updateChildren(items);
+        setWithPremium();
+        premiumLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean checkCode() {
+        //проверка кода
+        return true;
     }
 
 }

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
         profileText.setOnClickListener(this);
         mainScreenText.setOnClickListener(this);
         chatText.setOnClickListener(this);
+
     }
 
     @Override
@@ -96,4 +98,30 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
             startActivity(intent);
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //при возврате перекрашиваем в белый
+        chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+
+        highlightCurrentPage();
+    }
+
+    private void highlightCurrentPage() {
+        if (isMyProfile) {
+            profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+        }
+
+        if (getContext().getClass() == MainScreen.class) {
+            mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+        }
+
+        if (getContext().getClass() == Dialogs.class) {
+            chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+        }
+    }
 }
+
