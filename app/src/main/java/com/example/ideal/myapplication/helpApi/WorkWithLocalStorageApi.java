@@ -58,16 +58,16 @@ public class WorkWithLocalStorageApi {
                         + " WHERE "
                         + DBHelper.KEY_ID + " = ?";
 
-        Cursor cursor = localDatabase.rawQuery(sqlQuery,new String[] {userId});
+        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{userId});
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             int indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS);
 
             String photoLink = cursor.getString(indexPhotoLink);
             //установка аватарки
             Picasso.get()
                     .load(photoLink)
-                    .resize(width,height)
+                    .resize(width, height)
                     .centerCrop()
                     .transform(new CircularTransformation())
                     .into(avatarImage);
@@ -75,7 +75,7 @@ public class WorkWithLocalStorageApi {
         cursor.close();
     }
 
-    public Cursor getServiceCursorByTimeId(String workingTimeId) {
+    static public Cursor getServiceCursorByTimeId(String workingTimeId) {
         //Возвращает serviceId, использую workingTimeId
         //таблицы working time, working days, services
         //связь таблиц, уточнение по workingTimeId
@@ -105,7 +105,7 @@ public class WorkWithLocalStorageApi {
         return cursor;
     }
 
-    public boolean hasSomeData(String tableName, String id) {
+    boolean hasSomeData(String tableName, String id) {
 
         String sqlQuery = "SELECT * FROM "
                 + tableName
@@ -141,24 +141,7 @@ public class WorkWithLocalStorageApi {
         return localDatabase.rawQuery(sqlQuery, new String[]{serviceId});
     }
 
-    public boolean hasSomeDataForUsers(String tableName, String id) {
-        String sqlQuery = "SELECT * FROM "
-                + tableName
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{id});
-
-        if (cursor.moveToFirst()) {
-            cursor.close();
-            return true;
-        } else {
-            cursor.close();
-            return false;
-        }
-    }
-
-    public String getDate(String workingTimeId) {
+    private String getDate(String workingTimeId) {
         String fullDate = "";
 
         // Получает дату в формате yyyy-MM-dd HH:mm
@@ -192,6 +175,29 @@ public class WorkWithLocalStorageApi {
         return fullDate;
     }
 
+    static public boolean hasSomeWork(String dayId) {
+        // Получает id рабочего дня
+        // Таблицы: рабочие время
+        // Условия: уточняем id рабочего дня
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_ID
+                        + " FROM "
+                        + DBHelper.TABLE_WORKING_TIME
+                        + " WHERE "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ? ";
+
+        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{dayId});
+
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
+    }
+
     public boolean isMutualReview(String orderId) {
 
         String sqlQuery = "SELECT "
@@ -208,12 +214,12 @@ public class WorkWithLocalStorageApi {
                 + " AND "
                 + DBHelper.KEY_RATING_REVIEWS + " != 0";
 
-        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[] {orderId});
+        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{orderId});
         int counter = 0;
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
                 counter++;
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
             cursor.close();
             return counter == 2;
         }
@@ -221,7 +227,7 @@ public class WorkWithLocalStorageApi {
     }
 
     public boolean isAfterThreeDays(String workingTimeId) {
-        String date  = getDate(workingTimeId);
+        String date = getDate(workingTimeId);
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
         long dateMilliseconds = workWithTimeApi.getMillisecondsStringDate(date);
         boolean isAfterWeek = (workWithTimeApi.getSysdateLong() - dateMilliseconds) > 259200000;
@@ -250,5 +256,49 @@ public class WorkWithLocalStorageApi {
         }
         cursor.close();
         return "0";
+    }
+
+    // Проверяет есть ли какие-либо записи на данное время
+    static public boolean checkTimeForWorker(String workingDaysId, String time) {
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_TIME_WORKING_TIME
+                        + " FROM "
+                        + DBHelper.TABLE_WORKING_TIME
+                        + " WHERE "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
+                        + " AND "
+                        + DBHelper.KEY_TIME_WORKING_TIME + " = ?";
+
+        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{workingDaysId, time});
+
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        }
+
+        cursor.close();
+        return false;
+    }
+
+    static public String getWorkingTimeId(String time, String workingDaysId) {
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_ID
+                        + " FROM "
+                        + DBHelper.TABLE_WORKING_TIME
+                        + " WHERE "
+                        + DBHelper.KEY_TIME_WORKING_TIME + " = ? AND "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?";
+
+        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{time, workingDaysId});
+        String timeId = "";
+        if (cursor.moveToFirst()) {
+            int indexTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            timeId = cursor.getString(indexTimeId);
+        }
+
+        cursor.close();
+        return timeId;
     }
 }

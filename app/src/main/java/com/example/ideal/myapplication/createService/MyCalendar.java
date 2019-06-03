@@ -47,10 +47,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     private String serviceId;
     private String userId;
     private Button[][] dayBtns;
-    private Button nextBtn;
     private RelativeLayout mainLayout;
     private DBHelper dbHelper;
-    private UserCreateService userCreateService;
     private WorkerCreateService workerCreateService;
 
     @Override
@@ -59,7 +57,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         setContentView(R.layout.my_calendar);
 
         mainLayout = findViewById(R.id.mainMyCalendarLayout);
-        nextBtn = findViewById(R.id.continueMyCalendarBtn);
+        Button nextBtn = findViewById(R.id.continueMyCalendarBtn);
         dayBtns = new Button[WEEKS_COUNT][DAYS_COUNT];
         userId = getUserId();
         dbHelper = new DBHelper(this);
@@ -144,37 +142,13 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 dayId = WorkWithLocalStorageApi
                         .checkCurrentDay(WorkWithStringsApi.convertDateToYMD(dayAndMonth, year), serviceId);
                 if (!dayId.equals("0")) {
-                    if (hasSomeWork(dayId)) {
+                    if (WorkWithLocalStorageApi.hasSomeWork(dayId)) {
                         dayBtns[i][j].setTextColor(dayWithTimesColor);
                     } else {
                         dayBtns[i][j].setTextColor(dayWithoutTimesColor);
                     }
                 }
             }
-        }
-    }
-
-    private boolean hasSomeWork(String dayId) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        // Получает id рабочего дня
-        // Таблицы: рабочие время
-        // Условия: уточняем id рабочего дня
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_ID
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_TIME
-                        + " WHERE "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ? ";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{dayId});
-
-        if (cursor.moveToFirst()) {
-            cursor.close();
-            return true;
-        } else {
-            cursor.close();
-            return false;
         }
     }
 
@@ -186,7 +160,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         int margin = 6;
         int btnWidth = (display.getWidth() - (DAYS_COUNT + 1) * margin) / DAYS_COUNT;
         int btnHeight = btnWidth;
-        //(display.getHeight()/2 - (WEEKS_COUNT+1)*6) / WEEKS_COUNT;
 
         String[] weekDays = {"ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"};
         for (int i = 0; i < DAYS_COUNT; i++) {
