@@ -44,7 +44,7 @@ public class WorkWithTimeApi {
     }
 
     //возвращает время в формате yyyy-MM-dd HH:mm:ss
-    public String getDateInFormatYMDHMS(Date date) {
+    static public String getDateInFormatYMDHMS(Date date) {
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
         return formatForDateNow.format(date);

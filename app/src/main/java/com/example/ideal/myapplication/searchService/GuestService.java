@@ -47,7 +47,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String IS_PREMIUM = "is premium";
     private static final String USERS = "users";
 
-    private static final String STATUS_USER_BY_SERVICE = "status User";
+    private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
 
     private static final String REVIEW_FOR_SERVICE = "review for service";
 
