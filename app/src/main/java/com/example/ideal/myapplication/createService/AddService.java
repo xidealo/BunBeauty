@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,8 +33,12 @@ import com.example.ideal.myapplication.other.IPremium;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -63,6 +68,10 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String PHOTO_LINK = "photo link";
     private static final String CATEGORY = "category";
     private static final String ADDRESS = "address";
+    private static final String TAG = "DBInf";
+    private static final String CODES = "codes";
+    private static final String CODE = "code";
+    private static final String COUNT = "count";
 
     private EditText nameServiceInput;
     private EditText costAddServiceInput;
@@ -379,12 +388,48 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         service.setIsPremium(true);
         setWithPremium();
         premiumLayout.setVisibility(View.GONE);
+        attentionPremiumActivated();
     }
 
     @Override
-    public boolean checkCode() {
-        return true;
+    public void checkCode(final String code) {
+        //проверка кода
+        Query query = FirebaseDatabase.getInstance().getReference(CODES).
+                orderByChild(CODE).
+                equalTo(code);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot codesSnapshot) {
+                if(codesSnapshot.getChildrenCount() == 0){
+                    attentionWrongCode();
+                }
+                else {
+                    DataSnapshot userSnapshot = codesSnapshot.getChildren().iterator().next();
+                    int  count = userSnapshot.child(COUNT).getValue(int.class);
+                    if(count>0){
+                        setPremium();
+
+                        String codeId = userSnapshot.getKey();
+
+                        DatabaseReference myRef = FirebaseDatabase.getInstance()
+                                .getReference(CODES)
+                                .child(codeId);
+                        Map<String, Object> items = new HashMap<>();
+                        items.put(COUNT, count-1);
+                        myRef.updateChildren(items);
+                    }
+                    else {
+                        attentionOldCode();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
+
     private void setWithPremium() {
         noPremiumText.setVisibility(View.GONE);
         premiumText.setVisibility(View.VISIBLE);
@@ -404,5 +449,14 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         Toast.makeText(this, "Сервис успешно создан", Toast.LENGTH_SHORT).show();
     }
 
+    private void attentionWrongCode() {
+        Toast.makeText(this, "Неверно введен код", Toast.LENGTH_SHORT).show();
+    }
+    private void attentionOldCode() {
+        Toast.makeText(this, "Код больше не действителен", Toast.LENGTH_SHORT).show();
+    }
+    private void attentionPremiumActivated() {
+        Toast.makeText(this, "Премиум активирован", Toast.LENGTH_SHORT).show();
+    }
 
 }
