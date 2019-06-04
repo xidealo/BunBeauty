@@ -79,6 +79,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private LinearLayout ratingLL;
     private LinearLayout imageFeedLayout;
     private LinearLayout premiumLayout;
+    private LinearLayout premiumIconLayout;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private boolean isMyService;
     private boolean isPremiumLayoutSelected;
@@ -109,8 +110,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         Button editScheduleBtn = findViewById(R.id.editScheduleGuestServiceBtn);
         ratingLL = findViewById(R.id.ratingGuestServiceLayout);
         premiumLayout = findViewById(R.id.premiumGuestServiceLayout);
-
         imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
+        premiumIconLayout = findViewById(R.id.premiumIconGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -144,7 +145,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         } else {
             status = USER;
             editScheduleBtn.setText("Расписание");
-
+            premiumIconLayout.setVisibility(View.GONE);
         }
         editScheduleBtn.setOnClickListener(this);
     }

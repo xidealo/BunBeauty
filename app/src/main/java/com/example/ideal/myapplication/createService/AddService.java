@@ -232,7 +232,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerAddServiceLayout);
-        panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerAddServiceLayout);
+        panelBuilder.buildHeader(manager, "Создание услуги", R.id.headerAddServiceLayout);
     }
 
     private void addServiceInLocalStorage(Service service) {
@@ -433,6 +433,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private void setWithPremium() {
         noPremiumText.setVisibility(View.GONE);
         premiumText.setVisibility(View.VISIBLE);
+        premiumText.setEnabled(false);
     }
 
     private void goToMyCalendar(String status, String serviceId) {

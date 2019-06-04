@@ -44,7 +44,7 @@
 
     <style name="smallMainButtonOther" parent="mainButton">
         <item name="android:background">@drawable/main_button</item>
-        <item name="android:width">162dp</item>
+        <item name="android:width">172dp</item>
         <item name="android:height">36dp</item>
     </style>
 
@@ -128,7 +128,7 @@
     </style>
 
     <style name="mainTextMainScreen" parent="TextOnPages">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">19sp</item>
     </style>
 
     <style name="defaultTextMainScreen" parent="TextOnPages">
