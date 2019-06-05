@@ -17,7 +17,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.createService.AddService;
+import com.example.ideal.myapplication.createService.AdditionService;
 import com.example.ideal.myapplication.fragments.SwitcherElement;
 import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement;
 import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
@@ -575,7 +575,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     }
 
     private void goToAddService() {
-        Intent intent = new Intent(this, AddService.class);
+        Intent intent = new Intent(this, AdditionService.class);
         startActivity(intent);
     }
 

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/block_text"
     android:orientation="vertical"
-    tools:context=".fragments.chatElements.MessageOrderElement"
+    tools:context=".adapters.chatElements.MessageOrderElement"
     android:padding="10dp">
 
     <TextView

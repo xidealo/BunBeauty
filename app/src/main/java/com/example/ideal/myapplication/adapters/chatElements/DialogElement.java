@@ -1,4 +1,4 @@
-package com.example.ideal.myapplication.fragments.chatElements;
+package com.example.ideal.myapplication.adapters.chatElements;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

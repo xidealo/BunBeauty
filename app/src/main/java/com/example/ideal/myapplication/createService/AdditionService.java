@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,7 +48,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddService extends AppCompatActivity implements View.OnClickListener, IPremium {
+public class AdditionService extends AppCompatActivity implements View.OnClickListener, IPremium {
 
     private static final String SERVICE_ID = "service id";
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
@@ -94,7 +93,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_service);
+        setContentView(R.layout.addition_service);
         init();
     }
 

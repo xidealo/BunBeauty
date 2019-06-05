@@ -6,13 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.fragments.chatElements.MessageOrderElement;
+import com.example.ideal.myapplication.adapters.chatElements.MessageOrderElement;
+import com.example.ideal.myapplication.adapters.chatElements.MessageReviewElement;
 import com.example.ideal.myapplication.fragments.objects.Message;
-import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 
 import java.util.ArrayList;
@@ -23,8 +21,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private  ArrayList<Message> messageList;
     private Context context;
     private DBHelper dbHelper;
+    private static final String ORDER_STATUS = "order status";
 
-    public MessageAdapter(int numberItems, ArrayList<Message> messages, DBHelper dbHelper) {
+    public MessageAdapter(int numberItems, ArrayList<Message> messages, DBHelper dbHelper){
         this.numberItems = numberItems;
         messageList = messages;
         this.dbHelper = dbHelper;
@@ -62,9 +61,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             super(itemView);
             view = itemView;
         }
-        void bind(Message message){
-            MessageOrderElement messageOrderElement = new MessageOrderElement(message,view,context,dbHelper);
 
+        void bind(Message message){
+            if(message.getStatus().equals(ORDER_STATUS)){
+                MessageOrderElement messageOrderElement = new MessageOrderElement(message, view, context, dbHelper);
+            }else {
+                MessageReviewElement messageReviewElement = new MessageReviewElement(message,view,context);
+            }
         }
     }
 

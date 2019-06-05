@@ -1,4 +1,4 @@
-package com.example.ideal.myapplication.fragments.chatElements;
+package com.example.ideal.myapplication.adapters.chatElements;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -194,8 +194,7 @@ public class MessageOrderElement implements View.OnClickListener {
                 disableReviewForService();
             }
         }
-
-        canceledBtn.setEnabled(false);
+        canceledBtn.setVisibility(View.GONE);
     }
 
     private void disableReviewForUser() {

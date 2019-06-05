@@ -4,16 +4,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.MessageAdapter;
-import com.example.ideal.myapplication.fragments.chatElements.MessageOrderElement;
-import com.example.ideal.myapplication.fragments.chatElements.MessageReviewElement;
 import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
@@ -21,7 +17,6 @@ import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Messages extends AppCompatActivity {
 
@@ -36,6 +31,8 @@ public class Messages extends AppCompatActivity {
     private static final String WORKING_DAY_ID = "working_day_id";
     private static final String WORKING_TIME_ID = "working_time_id";
     private static final String REVIEW_ID = "review_id";
+    private static final String ORDER_STATUS = "order status";
+
     private String senderId;
     private String senderName;
     private DBHelper dbHelper;
@@ -56,7 +53,10 @@ public class Messages extends AppCompatActivity {
         messageList = new ArrayList<>();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
+
 
         // получаем телефон нашего собеседеника
         manager = getSupportFragmentManager();
@@ -197,7 +197,8 @@ public class Messages extends AppCompatActivity {
                     if (isMyService && type.equals(REVIEW_FOR_USER) || !isMyService && type.equals(REVIEW_FOR_SERVICE)) {
                         message.setRatingReview(cursor.getString(indexMessageRatingReview));
                         message.setType(type);
-                        //addMessageReviewToScreen(message);
+                        message.setStatus("no");
+                        messageList.add(message);
                     }
                 } else {
                     if (isMyService && type.equals(REVIEW_FOR_USER) || !isMyService && type.equals(REVIEW_FOR_SERVICE)) {
@@ -206,15 +207,13 @@ public class Messages extends AppCompatActivity {
                         message.setWorkingTimeId(cursor.getString(indexMessageWorkingTimeId));
                         message.setWorkingDayId(cursor.getString(indexMessageWorkingDayId));
                         message.setOrderId(cursor.getString(indexMessageOrderId));
+                        message.setStatus(ORDER_STATUS);
 
                         messageList.add(message);
-                        //addMessageOrderToScreen(message);
                     }
                 }
             } while (cursor.moveToNext());
-
         }
-
         messageAdapter = new MessageAdapter(messageList.size(),messageList,dbHelper);
         recyclerView.setAdapter(messageAdapter);
 
@@ -251,25 +250,6 @@ public class Messages extends AppCompatActivity {
         return cursor.moveToFirst();
     }
 
-    /*private void addMessageOrderToScreen(Message message) {
-
-            MessageOrderElement fElement = new MessageOrderElement(message);
-
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.resultsMessagesLayout, fElement);
-            transaction.commit();
-    }
-
-    private void addMessageReviewToScreen(Message message) {
-        if (!message.getServiceName().isEmpty() && !message.getServiceName().equals("null")) {
-            MessageReviewElement fElement = new MessageReviewElement(message);
-
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.resultsMessagesLayout, fElement);
-            transaction.commit();
-        }
-    }
-*/
     private  String getUserId(){
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
@@ -281,7 +261,7 @@ public class Messages extends AppCompatActivity {
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
         panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderId);
-
+        messageList.clear();
         addMessages(senderId);
     }
 }

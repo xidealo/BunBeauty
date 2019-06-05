@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mainColorBG"
-    tools:context=".createService.AddService">
+    tools:context=".createService.AdditionService">
 
     <LinearLayout
         android:id="@+id/headerAddServiceLayout"

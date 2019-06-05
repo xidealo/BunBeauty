@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.fragments.chatElements.DialogElement;
+import com.example.ideal.myapplication.adapters.chatElements.DialogElement;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
