@@ -560,7 +560,6 @@ public class MyService extends Service implements Runnable {
 
 
                     }
-
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
 

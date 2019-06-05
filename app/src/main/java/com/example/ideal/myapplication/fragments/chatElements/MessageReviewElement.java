@@ -90,13 +90,14 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.message_review_element, null);
+       // return inflater.inflate(R.layout.message_review_element, null);
+        return null;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        messageText = view.findViewById(R.id.messageMessageReviewElementText);
-        reviewBtn = view.findViewById(R.id.reviewMessageReviewElementBtn);
+       // messageText = view.findViewById(R.id.messageMessageReviewElementText);
+       // reviewBtn = view.findViewById(R.id.reviewMessageReviewElementBtn);
 
         // Проверяем стоит ли оценка
         if (isRate()) {
@@ -105,12 +106,12 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
             reviewBtn.setOnClickListener(this);
         }
 
-        LinearLayout layout = view.findViewById(R.id.messageReviewElementLayout);
+      //  LinearLayout layout = view.findViewById(R.id.messageReviewElementLayout);
 
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-        params.setMargins(10,10,10,15);
-        params.gravity = Gravity.BOTTOM;
-        layout.setLayoutParams(params);
+      //  LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+     //   params.setMargins(10,10,10,15);
+     //   params.gravity = Gravity.BOTTOM;
+     //   layout.setLayoutParams(params);
         setData();
     }
 

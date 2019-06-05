@@ -44,7 +44,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
   
     private Button [] categoriesBtns;
     private String [] categories;
-    private  LinearLayout categoryLayout;
+    private LinearLayout categoryLayout;
     private ProgressBar progressBar;
 
     private LinearLayout resultLayout;

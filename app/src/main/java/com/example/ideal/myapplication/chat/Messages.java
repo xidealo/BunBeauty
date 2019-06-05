@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.adapters.MessageAdapter;
 import com.example.ideal.myapplication.fragments.chatElements.MessageOrderElement;
 import com.example.ideal.myapplication.fragments.chatElements.MessageReviewElement;
 import com.example.ideal.myapplication.fragments.objects.Message;
@@ -16,6 +19,9 @@ import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Messages extends AppCompatActivity {
 
@@ -30,13 +36,14 @@ public class Messages extends AppCompatActivity {
     private static final String WORKING_DAY_ID = "working_day_id";
     private static final String WORKING_TIME_ID = "working_time_id";
     private static final String REVIEW_ID = "review_id";
-
     private String senderId;
     private String senderName;
     private DBHelper dbHelper;
     private FragmentManager manager;
 
-    private LinearLayout resultsLayout;
+    private ArrayList<Message> messageList;
+    private RecyclerView recyclerView;
+    private MessageAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +51,16 @@ public class Messages extends AppCompatActivity {
         setContentView(R.layout.messages);
 
         dbHelper = new DBHelper(this);
-        resultsLayout = findViewById(R.id.resultsMessagesLayout);
+
+        recyclerView = findViewById(R.id.resultsMessagesRecycleView);
+        messageList = new ArrayList<>();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
         // получаем телефон нашего собеседеника
         manager = getSupportFragmentManager();
+
         senderId = getIntent().getStringExtra(USER_ID);
         senderName = getSenderName(senderId);
     }
@@ -184,7 +197,7 @@ public class Messages extends AppCompatActivity {
                     if (isMyService && type.equals(REVIEW_FOR_USER) || !isMyService && type.equals(REVIEW_FOR_SERVICE)) {
                         message.setRatingReview(cursor.getString(indexMessageRatingReview));
                         message.setType(type);
-                        addMessageReviewToScreen(message);
+                        //addMessageReviewToScreen(message);
                     }
                 } else {
                     if (isMyService && type.equals(REVIEW_FOR_USER) || !isMyService && type.equals(REVIEW_FOR_SERVICE)) {
@@ -194,12 +207,17 @@ public class Messages extends AppCompatActivity {
                         message.setWorkingDayId(cursor.getString(indexMessageWorkingDayId));
                         message.setOrderId(cursor.getString(indexMessageOrderId));
 
-                        addMessageOrderToScreen(message);
+                        messageList.add(message);
+                        //addMessageOrderToScreen(message);
                     }
                 }
             } while (cursor.moveToNext());
 
         }
+
+        messageAdapter = new MessageAdapter(messageList.size(),messageList,dbHelper);
+        recyclerView.setAdapter(messageAdapter);
+
         cursor.close();
     }
 
@@ -233,7 +251,7 @@ public class Messages extends AppCompatActivity {
         return cursor.moveToFirst();
     }
 
-    private void addMessageOrderToScreen(Message message) {
+    /*private void addMessageOrderToScreen(Message message) {
 
             MessageOrderElement fElement = new MessageOrderElement(message);
 
@@ -251,7 +269,7 @@ public class Messages extends AppCompatActivity {
             transaction.commit();
         }
     }
-
+*/
     private  String getUserId(){
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
@@ -264,7 +282,6 @@ public class Messages extends AppCompatActivity {
         panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
         panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderId);
 
-        resultsLayout.removeAllViews();
         addMessages(senderId);
     }
 }
