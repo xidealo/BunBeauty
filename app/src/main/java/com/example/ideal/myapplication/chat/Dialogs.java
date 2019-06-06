@@ -56,7 +56,8 @@ public class Dialogs extends AppCompatActivity {
         String ordersQuery =
                 "SELECT DISTINCT "
                         + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " AS " + ORDER_ID + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID + ", "
+                        + DBHelper.KEY_MESSAGE_TIME_ORDERS
                         + " FROM "
                         + DBHelper.TABLE_ORDERS + ", "
                         + DBHelper.TABLE_WORKING_TIME + ", "
@@ -78,7 +79,7 @@ public class Dialogs extends AppCompatActivity {
                         + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
                         + " OR "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?)"
-                        + " ORDER BY " + DBHelper.KEY_MESSAGE_TIME_ORDERS;
+                        + " ORDER BY " + DBHelper.KEY_MESSAGE_TIME_ORDERS + " DESC";
 
         String myId = getUserId();
         Cursor cursor = database.rawQuery(ordersQuery, new String[]{myId, myId});
@@ -88,7 +89,6 @@ public class Dialogs extends AppCompatActivity {
 
             int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             int indexOwnerId = cursor.getColumnIndex(OWNER_ID);
-
             do {
                 String orderId = cursor.getString(indexOrderId);
                 String ownerId = cursor.getString(indexOwnerId);

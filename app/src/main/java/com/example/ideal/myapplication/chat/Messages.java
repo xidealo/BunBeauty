@@ -13,6 +13,7 @@ import com.example.ideal.myapplication.fragments.chatElements.MessageOrderElemen
 import com.example.ideal.myapplication.fragments.chatElements.MessageReviewElement;
 import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -170,8 +171,7 @@ public class Messages extends AppCompatActivity {
                 message.setServiceName(cursor.getString(indexMessageServiceName));
                 message.setWorkingDay(date);
                 message.setWorkingTime(time);
-                message.setMessageTime(cursor.getString(indexMessageTime));
-                //message.setUserId(cursor.getString(indexMessageUserId));
+                message.setMessageTime(WorkWithStringsApi.dateToUserFormat(cursor.getString(indexMessageTime)));
 
                 message.setReviewId(cursor.getString(indexMessageReviewId));
 
