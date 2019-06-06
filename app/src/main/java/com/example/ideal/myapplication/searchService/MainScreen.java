@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -15,7 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.fragments.foundElements.foundServiceElement;
+import com.example.ideal.myapplication.adapters.foundElements.foundServiceElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -44,7 +43,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
   
     private Button [] categoriesBtns;
     private String [] categories;
-    private  LinearLayout categoryLayout;
+    private LinearLayout categoryLayout;
     private ProgressBar progressBar;
 
     private LinearLayout resultLayout;

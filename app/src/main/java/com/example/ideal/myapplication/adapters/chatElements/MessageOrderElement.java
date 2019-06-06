@@ -1,24 +1,13 @@
-package com.example.ideal.myapplication.fragments.chatElements;
+package com.example.ideal.myapplication.adapters.chatElements;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQuery;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MessageOrderElement extends Fragment implements View.OnClickListener {
+public class MessageOrderElement implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
 
@@ -74,12 +63,9 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
     private Button canceledBtn;
 
     private DBHelper dbHelper;
+    private Context context;
 
-    public MessageOrderElement() {
-    }
-
-    @SuppressLint("ValidFragment")
-    public MessageOrderElement(Message message) {
+    public MessageOrderElement(Message message, View view, Context context) {
         // для условий
         messageIsCanceled = message.getIsCanceled();
         messageIsMyService = message.getIsMyService();
@@ -98,6 +84,8 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
         workingTimeId = message.getWorkingTimeId();
         orderId = message.getOrderId();
         reviewId = message.getReviewId();
+        this.context = context;
+        dbHelper = new DBHelper(context);
 
         if (messageIsCanceled) {
             if (messageIsMyService) {
@@ -129,22 +117,15 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
                         + " в " + messageWorkingTime;
             }
         }
+        onViewCreated(view);
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.message_order_element, null);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
+    private void onViewCreated(View view) {
         messageText = view.findViewById(R.id.messageMessageOrderElementText);
         canceledBtn = view.findViewById(R.id.canceledMessageOrderElementBtn);
         canceledBtn.setOnClickListener(this);
 
         workWithTimeApi = new WorkWithTimeApi();
-        dbHelper = new DBHelper(this.getContext());
 
         if (!messageIsMyService) {
             canceledBtn.setVisibility(View.GONE);
@@ -156,21 +137,20 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
 
         LinearLayout layout = view.findViewById(R.id.messageOrderElementLayout);
 
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-        params.setMargins(10, 10, 10, 15);
-        params.gravity = Gravity.BOTTOM;
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(10, 20, 10, 10);
         layout.setLayoutParams(params);
 
         setData();
     }
 
-    @SuppressLint("SetTextI18n")
     private void setData() {
         messageText.setText(text);
     }
 
-    public void confirm() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+    private void confirm() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle("Отказ");
         dialog.setMessage("Отказать в предоставлении услуги?");
         dialog.setCancelable(false);
@@ -214,8 +194,7 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
                 disableReviewForService();
             }
         }
-
-        canceledBtn.setEnabled(false);
+        canceledBtn.setVisibility(View.GONE);
     }
 
     private void disableReviewForUser() {

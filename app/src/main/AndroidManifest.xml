@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".other.Profile" />
-        <activity android:name=".createService.AddService" />
+        <activity android:name=".createService.AdditionService" />
         <activity android:name=".searchService.GuestService" />
         <activity android:name=".searchService.MainScreen" />
         <activity android:name=".createService.MyTime" />

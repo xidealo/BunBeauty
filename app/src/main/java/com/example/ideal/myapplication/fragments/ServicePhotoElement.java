@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.createService.AddService;
+import com.example.ideal.myapplication.createService.AdditionService;
 import com.example.ideal.myapplication.editing.EditService;
 import com.squareup.picasso.Picasso;
 
@@ -88,7 +88,7 @@ public class ServicePhotoElement extends Fragment implements View.OnClickListene
             //удаление фрагмента
             //если мы на addService
             if (status.equals(ADD_SERVICE)) {
-                AddService activity = (AddService) this.getActivity();
+                AdditionService activity = (AdditionService) this.getActivity();
                 if (activity != null) {
                     activity.deleteFragment(this, filePath);
                 }
