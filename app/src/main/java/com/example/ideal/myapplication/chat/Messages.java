@@ -57,7 +57,6 @@ public class Messages extends AppCompatActivity {
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
 
-
         // получаем телефон нашего собеседеника
         manager = getSupportFragmentManager();
 
@@ -214,7 +213,7 @@ public class Messages extends AppCompatActivity {
                 }
             } while (cursor.moveToNext());
         }
-        messageAdapter = new MessageAdapter(messageList.size(),messageList,dbHelper);
+        messageAdapter = new MessageAdapter(messageList.size(),messageList);
         recyclerView.setAdapter(messageAdapter);
 
         cursor.close();

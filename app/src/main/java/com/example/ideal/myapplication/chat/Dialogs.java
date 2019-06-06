@@ -6,9 +6,15 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.adapters.DialogAdapter;
+import com.example.ideal.myapplication.adapters.MessageAdapter;
 import com.example.ideal.myapplication.adapters.chatElements.DialogElement;
+import com.example.ideal.myapplication.fragments.objects.Dialog;
+import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
@@ -29,6 +35,10 @@ public class Dialogs extends AppCompatActivity {
 
     private FragmentManager manager;
 
+    private ArrayList<Dialog> dialogList;
+    private RecyclerView recyclerView;
+    private DialogAdapter dialogAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +50,13 @@ public class Dialogs extends AppCompatActivity {
 
     private void init() {
         manager = getSupportFragmentManager();
+
+        recyclerView = findViewById(R.id.resultsDialogsRecycleView);
+        dialogList = new ArrayList<>();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
 
         dbHelper = new DBHelper(this);
         // TimeApi = new WorkWithTimeApi();
@@ -113,6 +130,9 @@ public class Dialogs extends AppCompatActivity {
             } while (cursor.moveToNext());
         }
 
+        dialogAdapter = new DialogAdapter(dialogList.size(),dialogList, dbHelper);
+        recyclerView.setAdapter(dialogAdapter);
+
         cursor.close();
     }
 
@@ -122,10 +142,10 @@ public class Dialogs extends AppCompatActivity {
 
         if (cursor.moveToNext()) {
             String userName = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
-            User user = new User();
-            user.setId(userId);
-            user.setName(userName);
-            addToScreen(user);
+            Dialog dialog = new Dialog();
+            dialog.setUserId(userId);
+            dialog.setUserName(userName);
+            dialogList.add(dialog);
         }
     }
 
@@ -142,12 +162,5 @@ public class Dialogs extends AppCompatActivity {
         panelBuilder.buildFooter(manager, R.id.footerDialogsLayout);
         panelBuilder.buildHeader(manager, "Диалоги", R.id.headerDialogsLayout);
 
-    }
-
-    private void addToScreen(User user) {
-        DialogElement dElement = new DialogElement(user);
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.mainDialogsLayout, dElement);
-        transaction.commit();
     }
 }

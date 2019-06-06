@@ -1,12 +1,14 @@
 package com.example.ideal.myapplication.adapters.chatElements;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +18,14 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Messages;
+import com.example.ideal.myapplication.fragments.objects.Dialog;
+import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
 
 @SuppressLint("ValidFragment")
-public class DialogElement extends Fragment implements View.OnClickListener {
+public class DialogElement implements View.OnClickListener {
 
     private static final String USER_ID = "user id";
 
@@ -31,41 +35,38 @@ public class DialogElement extends Fragment implements View.OnClickListener {
     private String userName;
     private String userId;
     private static final String TAG = "DBInf";
+    private Context context;
 
-    @SuppressLint("ValidFragment")
-    public DialogElement(User user) {
-        userName = user.getName();
-        userId= user.getId();
+    public DialogElement(Dialog dialog, View view, Context context, DBHelper dbHelper) {
+        userName = dialog.getUserName();
+        userId= dialog.getUserId();
+        this.context = context;
+        onViewCreated(view);
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_element, null);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view) {
         nameText = view.findViewById(R.id.nameDialogElementText);
         avatarImage = view.findViewById(R.id.avatarDialogElementImage);
         LinearLayout layout = view.findViewById(R.id.dialogElementLayout);
 
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-        params.setMargins(10,10,10,15);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(10, 20, 10, 10);
         layout.setLayoutParams(params);
-
         layout.setOnClickListener(this);
+
         setData();
     }
 
     private void setData() {
         nameText.setText(userName);
+        DBHelper dbHelper = new DBHelper(context);
 
-        DBHelper dbHelper = new DBHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
-        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+        int width = context.getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+        int height = context.getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
         workWithLocalStorageApi.setPhotoAvatar(userId,avatarImage,width,height);
     }
 
@@ -76,8 +77,8 @@ public class DialogElement extends Fragment implements View.OnClickListener {
     }
 
     private void goToDialog(){
-        Intent intent = new Intent(this.getContext(), Messages.class);
+        Intent intent = new Intent(context, Messages.class);
         intent.putExtra(USER_ID, userId);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 }

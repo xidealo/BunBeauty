@@ -65,7 +65,7 @@ public class MessageOrderElement implements View.OnClickListener {
     private DBHelper dbHelper;
     private Context context;
 
-    public MessageOrderElement(Message message, View view, Context context, DBHelper dbHelper) {
+    public MessageOrderElement(Message message, View view, Context context) {
         // для условий
         messageIsCanceled = message.getIsCanceled();
         messageIsMyService = message.getIsMyService();
@@ -84,8 +84,8 @@ public class MessageOrderElement implements View.OnClickListener {
         workingTimeId = message.getWorkingTimeId();
         orderId = message.getOrderId();
         reviewId = message.getReviewId();
-        this.dbHelper = dbHelper;
         this.context = context;
+        dbHelper = new DBHelper(context);
 
         if (messageIsCanceled) {
             if (messageIsMyService) {

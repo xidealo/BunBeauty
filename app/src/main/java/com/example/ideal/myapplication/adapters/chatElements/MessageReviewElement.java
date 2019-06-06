@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Message;
+import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.reviews.Review;
 
 

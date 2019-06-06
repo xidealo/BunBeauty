@@ -12,18 +12,19 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/avatarDialogElementImage"
             android:layout_marginEnd="10dp"
+            android:background="@color/white"
             android:layout_width="@dimen/photo_avatar_width"
             android:layout_height="@dimen/photo_avatar_height"
             tools:src="@tools:sample/avatars" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
@@ -31,8 +32,8 @@
         <TextView
             android:id="@+id/nameDialogElementText"
             style="@style/mainTextMainScreen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:text="Name" />
 
     </LinearLayout>

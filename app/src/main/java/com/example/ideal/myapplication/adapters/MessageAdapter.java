@@ -20,13 +20,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private int numberItems;
     private  ArrayList<Message> messageList;
     private Context context;
-    private DBHelper dbHelper;
     private static final String ORDER_STATUS = "order status";
 
-    public MessageAdapter(int numberItems, ArrayList<Message> messages, DBHelper dbHelper){
+    public MessageAdapter(int numberItems, ArrayList<Message> messages){
         this.numberItems = numberItems;
         messageList = messages;
-        this.dbHelper = dbHelper;
     }
 
     @Override
@@ -64,7 +62,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         void bind(Message message){
             if(message.getStatus().equals(ORDER_STATUS)){
-                MessageOrderElement messageOrderElement = new MessageOrderElement(message, view, context, dbHelper);
+                MessageOrderElement messageOrderElement = new MessageOrderElement(message, view, context);
             }else {
                 MessageReviewElement messageReviewElement = new MessageReviewElement(message,view,context);
             }
