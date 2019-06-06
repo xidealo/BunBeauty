@@ -3,7 +3,6 @@ package com.example.ideal.myapplication.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.view.ViewGroup;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.chatElements.DialogElement;
 import com.example.ideal.myapplication.fragments.objects.Dialog;
-import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.other.DBHelper;
 
 import java.util.ArrayList;

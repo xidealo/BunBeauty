@@ -11,7 +11,6 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.chatElements.MessageOrderElement;
 import com.example.ideal.myapplication.adapters.chatElements.MessageReviewElement;
 import com.example.ideal.myapplication.fragments.objects.Message;
-import com.example.ideal.myapplication.other.DBHelper;
 
 import java.util.ArrayList;
 

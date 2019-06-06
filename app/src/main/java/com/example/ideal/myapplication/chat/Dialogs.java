@@ -4,18 +4,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.DialogAdapter;
-import com.example.ideal.myapplication.adapters.MessageAdapter;
-import com.example.ideal.myapplication.adapters.chatElements.DialogElement;
 import com.example.ideal.myapplication.fragments.objects.Dialog;
-import com.example.ideal.myapplication.fragments.objects.Message;
-import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
