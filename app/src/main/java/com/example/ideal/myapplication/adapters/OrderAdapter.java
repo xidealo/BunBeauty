@@ -8,39 +8,39 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.adapters.chatElements.DialogElement;
-import com.example.ideal.myapplication.fragments.objects.Dialog;
+import com.example.ideal.myapplication.adapters.foundElements.FoundOrderElement;
+import com.example.ideal.myapplication.fragments.objects.Order;
 
 import java.util.ArrayList;
 
-public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogViewHolder> {
+public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
     private int numberItems;
-    private ArrayList<Dialog> dialogList;
+    private ArrayList<Order> orderList;
     private Context context;
 
-    public DialogAdapter(int numberItems, ArrayList<Dialog> dialogList) {
+    public OrderAdapter(int numberItems, ArrayList<Order> orderList) {
         this.numberItems = numberItems;
-        this.dialogList = dialogList;
+        this.orderList = orderList;
     }
 
     @NonNull
     @Override
-    public DialogViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.dialog_element;
+        int layoutIdForListItem = R.layout.found_order_element;
         //Класс, который позволяет создавать представления из xml файла
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         // откуда, куда, необходимо ли помещать в родителя
         View view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false);
 
-        DialogViewHolder viewHolder = new DialogViewHolder(view);
+        OrderViewHolder viewHolder = new OrderViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DialogViewHolder dialogViewHolder, int i) {
-        dialogViewHolder.bind(dialogList.get(i));
+    public void onBindViewHolder(@NonNull OrderViewHolder orderViewHolder, int i) {
+        orderViewHolder.bind(orderList.get(i));
     }
 
     @Override
@@ -48,17 +48,17 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogView
         return numberItems;
     }
 
-    class DialogViewHolder extends RecyclerView.ViewHolder {
+    class OrderViewHolder extends RecyclerView.ViewHolder {
 
-        View view;
+        private View view;
 
-        DialogViewHolder(@NonNull View itemView) {
+        OrderViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
         }
 
-        void bind(Dialog dialog) {
-            DialogElement dialogElement = new DialogElement(dialog,view,context);
+        void bind(Order order) {
+            FoundOrderElement foundOrderElement = new FoundOrderElement(order,view,context);
         }
     }
 }

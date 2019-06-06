@@ -49,8 +49,6 @@ public class Dialogs extends AppCompatActivity {
         recyclerView = findViewById(R.id.resultsDialogsRecycleView);
         dialogList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
 
         dbHelper = new DBHelper(this);
@@ -125,7 +123,7 @@ public class Dialogs extends AppCompatActivity {
             } while (cursor.moveToNext());
         }
 
-        dialogAdapter = new DialogAdapter(dialogList.size(),dialogList, dbHelper);
+        dialogAdapter = new DialogAdapter(dialogList.size(),dialogList);
         recyclerView.setAdapter(dialogAdapter);
 
         cursor.close();

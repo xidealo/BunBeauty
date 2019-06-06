@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,16 +19,19 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.adapters.OrderAdapter;
 import com.example.ideal.myapplication.createService.AdditionService;
 import com.example.ideal.myapplication.fragments.SwitcherElement;
-import com.example.ideal.myapplication.fragments.foundElements.foundOrderElement;
-import com.example.ideal.myapplication.fragments.foundElements.foundServiceProfileElement;
+import com.example.ideal.myapplication.adapters.foundElements.foundServiceProfileElement;
+import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.reviews.Comments;
 import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
 
 
 public class Profile extends AppCompatActivity implements View.OnClickListener, ISwitcher {
@@ -60,9 +65,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private LinearLayout subscriptionsLayout;
 
     private ScrollView servicesScroll;
-    private ScrollView ordersScroll;
     private LinearLayout servicesLayout;
-    private LinearLayout ordersLayout;
     private LinearLayout ratingForUserLayout;
 
     private DBHelper dbHelper;
@@ -71,6 +74,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private ImageView avatarImage;
 
     private FragmentManager manager;
+
+    private ArrayList<Order> orderList;
+    private RecyclerView recyclerView;
+    private OrderAdapter orderAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +91,16 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         avatarImage = findViewById(R.id.avatarProfileImage);
 
         servicesScroll = findViewById(R.id.servicesProfileScroll);
-        ordersScroll = findViewById(R.id.orderProfileScroll);
         servicesLayout = findViewById(R.id.servicesProfileLayout);
-        ordersLayout = findViewById(R.id.ordersProfileLayout);
         withoutRatingText = findViewById(R.id.withoutRatingProfileText);
         ratingBar = findViewById(R.id.ratingBarProfile);
 
         ratingForUserLayout = findViewById(R.id.ratingProfileLayout);
+
+        recyclerView = findViewById(R.id.resultsProfileRecycleView);
+        orderList = new ArrayList<>();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
         nameText = findViewById(R.id.nameProfileText);
         cityText = findViewById(R.id.cityProfileText);
@@ -134,8 +144,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             subscribersText.setVisibility(View.GONE);
 
             // Отображаем все сервисы пользователя
-            ordersLayout.setVisibility(View.GONE);
-            ordersScroll.setVisibility(View.GONE);
             servicesLayout.setVisibility(View.VISIBLE);
             servicesScroll.setVisibility(View.VISIBLE);
         }
@@ -467,7 +475,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     //добавляет вновь добавленные записи (обновление ordersList)
     private void updateOrdersList(String userId) {
         // количство записей отображаемых на данный момент(старых)
-        int visibleCount = ordersLayout.getChildCount();
+        int visibleCount = orderList.size();
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // получаем id сервиса, имя сервиса, дату и время всех записей
@@ -513,31 +521,25 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
 
                 do {
-                    String foundId = cursor.getString(indexServiceId);
-                    String foundName = cursor.getString(indexServiceName);
-                    String foundDate = cursor.getString(indexDate);
-                    String foundTime = cursor.getString(indexTime);
-
-                    addOrderToScreen(foundId, foundName, foundDate, foundTime);
+                    Order order = new Order();
+                    order.setOrderId(cursor.getString(indexServiceId));
+                    order.setOrderName(cursor.getString(indexServiceName));
+                    order.setOrderDate(cursor.getString(indexDate));
+                    order.setOrderTime(cursor.getString(indexTime));
+                    orderList.add(order);
                     visibleCount++;
-
                     //пока в курсоре есть строки и есть новые записи
                 } while (cursor.moveToPrevious() && (cursorCount > visibleCount));
             }
         }
+
+        orderAdapter = new OrderAdapter(orderList.size(),orderList);
+        recyclerView.setAdapter(orderAdapter);
         cursor.close();
     }
 
     private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
-
-    private void addOrderToScreen(String id, String name, String date, String time) {
-        foundOrderElement fOrderElement = new foundOrderElement(id, name, date, time);
-
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.ordersProfileLayout, fOrderElement);
-        transaction.commit();
     }
 
     public boolean checkSubscription() {
@@ -595,14 +597,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     public void firstSwitcherAct() {
         servicesLayout.setVisibility(View.GONE);
         servicesScroll.setVisibility(View.GONE);
-        ordersLayout.setVisibility(View.VISIBLE);
-        ordersScroll.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void secondSwitcherAct() {
-        ordersLayout.setVisibility(View.GONE);
-        ordersScroll.setVisibility(View.GONE);
         servicesLayout.setVisibility(View.VISIBLE);
         servicesScroll.setVisibility(View.VISIBLE);
     }

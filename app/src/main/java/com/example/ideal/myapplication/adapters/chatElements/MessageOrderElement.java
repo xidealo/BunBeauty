@@ -120,7 +120,7 @@ public class MessageOrderElement implements View.OnClickListener {
         onViewCreated(view);
     }
 
-    public void onViewCreated(View view) {
+    private void onViewCreated(View view) {
         messageText = view.findViewById(R.id.messageMessageOrderElementText);
         canceledBtn = view.findViewById(R.id.canceledMessageOrderElementBtn);
         canceledBtn.setOnClickListener(this);
@@ -149,7 +149,7 @@ public class MessageOrderElement implements View.OnClickListener {
         messageText.setText(text);
     }
 
-    public void confirm() {
+    private void confirm() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle("Отказ");
         dialog.setMessage("Отказать в предоставлении услуги?");

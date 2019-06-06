@@ -80,7 +80,7 @@ public class MessageReviewElement implements View.OnClickListener {
         onViewCreated(view);
     }
 
-    public void onViewCreated(@NonNull View view) {
+    private void onViewCreated(@NonNull View view) {
         messageText = view.findViewById(R.id.messageMessageOrderElementText);
         reviewBtn = view.findViewById(R.id.canceledMessageOrderElementBtn);
         reviewBtn.setText("ОЦЕНИТЬ");

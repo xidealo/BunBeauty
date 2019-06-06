@@ -28,14 +28,14 @@ public class DialogElement implements View.OnClickListener {
     private static final String TAG = "DBInf";
     private Context context;
 
-    public DialogElement(Dialog dialog, View view, Context context, DBHelper dbHelper) {
+    public DialogElement(Dialog dialog, View view, Context context) {
         userName = dialog.getUserName();
         userId= dialog.getUserId();
         this.context = context;
         onViewCreated(view);
     }
 
-    public void onViewCreated(@NonNull View view) {
+    private void onViewCreated(@NonNull View view) {
         nameText = view.findViewById(R.id.nameDialogElementText);
         avatarImage = view.findViewById(R.id.avatarDialogElementImage);
         LinearLayout layout = view.findViewById(R.id.dialogElementLayout);
