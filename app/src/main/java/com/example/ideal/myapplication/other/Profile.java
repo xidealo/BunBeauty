@@ -597,10 +597,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     public void firstSwitcherAct() {
         servicesLayout.setVisibility(View.GONE);
         servicesScroll.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void secondSwitcherAct() {
+        recyclerView.setVisibility(View.GONE);
         servicesLayout.setVisibility(View.VISIBLE);
         servicesScroll.setVisibility(View.VISIBLE);
     }
