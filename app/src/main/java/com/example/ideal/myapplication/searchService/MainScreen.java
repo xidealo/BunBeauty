@@ -119,10 +119,13 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         }
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
         resultLayout.removeAllViews();
+        progressBar.setVisibility(View.VISIBLE);
         createMainScreen("");
 
         PanelBuilder panelBuilder = new PanelBuilder();

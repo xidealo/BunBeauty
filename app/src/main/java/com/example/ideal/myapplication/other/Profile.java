@@ -142,6 +142,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             addServicesBtn.setVisibility(View.GONE);
             subscriptionsLayout.setVisibility(View.INVISIBLE);
             subscribersText.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
 
             // Отображаем все сервисы пользователя
             servicesLayout.setVisibility(View.VISIBLE);
