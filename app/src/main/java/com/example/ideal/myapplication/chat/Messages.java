@@ -53,7 +53,6 @@ public class Messages extends AppCompatActivity {
         messageList = new ArrayList<>();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -214,8 +213,9 @@ public class Messages extends AppCompatActivity {
             } while (cursor.moveToNext());
         }
         messageAdapter = new MessageAdapter(messageList.size(),messageList);
+        //опускаемся к полседнему элементу
+        recyclerView.scrollToPosition(messageAdapter.getItemCount()-1);
         recyclerView.setAdapter(messageAdapter);
-
         cursor.close();
     }
 
