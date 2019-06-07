@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -116,6 +117,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         }
                     }
                     date = WorkWithStringsApi.convertDateToYMD(btn.getText().toString(), btn.getTag(R.string.yearId).toString());
+                    Log.d(TAG, "addWorkingDay: " + date);
                     btn.setTag(R.string.selectedId, true);
                 } else {
                     // Была выбрана - снимаем выделение

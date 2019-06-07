@@ -12,6 +12,7 @@ import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class Search {
 
@@ -19,8 +20,6 @@ public class Search {
 
     private static final String NOT_CHOSEN = "не выбран";
 
-    private static final String NAME = "name";
-    private static final String PHONE = "phone";
     private static final String CITY = "city";
     private static final String REVIEW_FOR_SERVICE = "review for service";
     private static final String ORDER_ID = "order_id";
@@ -29,8 +28,13 @@ public class Search {
     private static final String MAX_COST = "max_cost";
     private static final String SERVICE_ID = "servise_id";
 
+    private static final String CREATION_DATE = "creation date";
+    private static final String COST = "cost";
+    private static final String RATING = "rating";
+
     private long maxCost;
     private ArrayList<Object[]> serviceList;
+    private ArrayList<Object[]> premiumList;
 
     private WorkWithTimeApi workWithTimeApi;
     private DBHelper dbHelper;
@@ -38,19 +42,18 @@ public class Search {
     public Search (Context _context) {
         dbHelper = new DBHelper(_context);
         serviceList = new ArrayList<>();
+        premiumList = new ArrayList<>();
         workWithTimeApi = new WorkWithTimeApi();
     }
 
     // загружаем услуги мастеров мастеров в LocalStorage
     public ArrayList<Object[]> getServicesOfUsers(DataSnapshot usersSnapshot, String serviceName, String userName, String city, String category) {
         serviceList.clear();
+        premiumList.clear();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        Log.d(TAG, "usersSnapshot: " + usersSnapshot.getChildrenCount());
         for (DataSnapshot userSnapshot : usersSnapshot.getChildren()) {
-            Log.d(TAG, "userSnapshot: " + userSnapshot.getKey());
             String userCity = String.valueOf(userSnapshot.child(CITY).getValue());
-            Log.d(TAG, "city: " + city + " | userCity:" + userCity);
             if((city == null) || city.equals(userCity) || city.equals(NOT_CHOSEN)) {
                 DownloadServiceData downloadServiceData = new DownloadServiceData(database);
                 downloadServiceData.loadUserInfo(userSnapshot);
@@ -58,6 +61,7 @@ public class Search {
             }
         }
         updateServicesList(serviceName, userName, city, category);
+        choosePremiumServices();
 
         return serviceList;
     }
@@ -69,25 +73,21 @@ public class Search {
 
         String serviceNameCondition = "";
         if (_serviceName != null) {
-            Log.d(TAG, "serviceNameCondition: ");
             serviceNameCondition = " AND " + DBHelper.KEY_NAME_SERVICES + " = '" + _serviceName + "' ";
         }
 
         String cityCondition = "";
         if (_city != null && !_city.equals(NOT_CHOSEN)) {
-            Log.d(TAG, "cityCondition: ");
             cityCondition = " AND " + DBHelper.KEY_CITY_USERS + " = '" + _city + "' ";
         }
 
         String categoryCondition = "";
         if (_category != null && !_category.equals("")) {
-            Log.d(TAG, "categoryCondition: ");
             categoryCondition = " AND " + DBHelper.KEY_CATEGORY_SERVICES + " = '" + _category + "' ";
         }
 
         String userNameCondition = "";
         if (_userName != null) {
-            Log.d(TAG, "userNameCondition: ");
             userNameCondition = " AND " + DBHelper.KEY_NAME_USERS + " = '" + _userName + "' ";
         }
 
@@ -109,8 +109,6 @@ public class Search {
                         + userNameCondition;
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{});
-
-        Log.d(TAG, "cursor: " + cursor.getCount());
         if(cursor.moveToFirst()) {
             int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
             int indexUserName = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
@@ -159,6 +157,24 @@ public class Search {
         cursor.close();
     }
 
+    private void choosePremiumServices() {
+        final Random random = new Random();
+        int limit = 3;
+
+        if (premiumList.size() <= limit) {
+            serviceList.addAll(premiumList);
+        } else {
+            for (int i = 0; i < limit; i++) {
+                Object[] premiumService;
+                do {
+                    int index = random.nextInt(premiumList.size());
+                    premiumService = premiumList.get(index);
+                } while (serviceList.contains(premiumService));
+                serviceList.add(0, premiumService);
+            }
+        }
+    }
+
     private long getMaxCost() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery =
@@ -180,21 +196,22 @@ public class Search {
     // Добавляем конкретную услугу в список в сообветствии с её коэфициентом
     private void addToServiceList(Service service, User user) {
         HashMap<String, Float> coefficients = new HashMap<>();
-        coefficients.put("creation date", 0.25f);
-        coefficients.put("cost", 0.07f);
-        coefficients.put("rating", 0.68f);
-
-        float points, creationDatePoints, costPoints, ratingPoints;
+        coefficients.put(CREATION_DATE, 0.25f);
+        coefficients.put(COST, 0.07f);
+        coefficients.put(RATING, 0.68f);
+        float points, creationDatePoints, costPoints, ratingPoints, penaltyPoints;
 
         boolean isPremium = service.getIsPremium();
+
         if (isPremium) {
             points = 1;
-            serviceList.add(0, new Object[]{points, service, user});
+            premiumList.add(0, new Object[]{points, service, user});
         } else {
-            creationDatePoints = figureCreationDatePoints(service.getCreationDate(), coefficients.get("creation date"));
-            costPoints = figureCostPoints(Long.valueOf(service.getCost()), coefficients.get("cost"));
-            ratingPoints = figureRatingPoints(service.getAverageRating(), coefficients.get("rating"));
-            points = creationDatePoints + costPoints + ratingPoints;
+            creationDatePoints = figureCreationDatePoints(service.getCreationDate(), coefficients.get(CREATION_DATE));
+            costPoints = figureCostPoints(Long.valueOf(service.getCost()), coefficients.get(COST));
+            ratingPoints = figureRatingPoints(service.getAverageRating(), coefficients.get(RATING));
+            penaltyPoints = figurePenaltyPoints(service.getId(), user.getId());
+            points = creationDatePoints + costPoints + ratingPoints - penaltyPoints;
             sortAddition(new Object[]{points, service, user});
         }
     }
@@ -220,6 +237,17 @@ public class Search {
     private float figureRatingPoints(float rating, float coefficient) {
         return rating * coefficient / 5;
     }
+
+    private float figurePenaltyPoints(String serviceId, String userId) {
+        float penaltyPoints = 0;
+
+        if (!WorkWithLocalStorageApi.hasAvailableTime(serviceId, userId, dbHelper.getReadableDatabase())) {
+            penaltyPoints = 0.3f;
+        }
+
+        return penaltyPoints;
+    }
+
 
     private void sortAddition(Object[] serviceData) {
         for (int i = 0; i < serviceList.size(); i++) {

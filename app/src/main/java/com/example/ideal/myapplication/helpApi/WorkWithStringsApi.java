@@ -1,5 +1,9 @@
 package com.example.ideal.myapplication.helpApi;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class WorkWithStringsApi {
 
     public WorkWithStringsApi(){
@@ -26,6 +30,27 @@ public class WorkWithStringsApi {
         return convertedDate;
     }
 
+    static public String dateToUserFormat(String date) {
+
+        SimpleDateFormat databaseFormat = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
+
+        Date parsingDate = null;
+        try {
+            parsingDate = databaseFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String month = date.split("-")[1];
+        SimpleDateFormat userFormat = new SimpleDateFormat ("dd '" + monthToString(month) + "' hh:mm:ss");
+        String userDate = userFormat.format(parsingDate);
+
+        if(userDate.charAt(0)=='0') {
+            userDate = userDate.substring(1);
+        }
+
+        return userDate;
+    }
+
     static public String monthToString(String month) {
         switch (month) {
             case "01":
@@ -39,9 +64,9 @@ public class WorkWithStringsApi {
             case "05":
                 return "май";
             case "06":
-                return "июнь";
+                return "июня";
             case "07":
-                return "июль";
+                return "июля";
             case "08":
                 return "авг";
             case "09":
@@ -68,9 +93,9 @@ public class WorkWithStringsApi {
                 return "04";
             case "май":
                 return "05";
-            case "июнь":
+            case "июня":
                 return "06";
-            case "июль":
+            case "июля":
                 return "07";
             case "авг":
                 return "08";

@@ -2,15 +2,10 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import android.widget.ImageView;
 
-import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
-
-import java.util.List;
 
 public class WorkWithLocalStorageApi {
 
@@ -121,6 +116,80 @@ public class WorkWithLocalStorageApi {
             cursor.close();
             return false;
         }
+    }
+
+    static public boolean hasAvailableTime(String serviceId, String userId, SQLiteDatabase database) {
+        // Получаем всё время данного сервиса, которое доступно данному юзеру
+        String busyTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
+
+        String myTimeQuery = "SELECT "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                + " FROM "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
+                + DBHelper.TABLE_WORKING_TIME + ", "
+                + DBHelper.TABLE_ORDERS
+                + " WHERE "
+                + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_USER_ID + " = ?"
+                + " AND "
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
+
+        String sqlQuery = "SELECT "
+                + DBHelper.KEY_TIME_WORKING_TIME
+                + " FROM "
+                + DBHelper.TABLE_WORKING_DAYS + ", "
+                + DBHelper.TABLE_WORKING_TIME
+                + " WHERE "
+                + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
+                + " AND "
+                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
+                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND ((("
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                + " NOT IN (" + busyTimeQuery + ")"
+                + " AND ("
+                // 3 часа - разница с Гринвичем
+                // 2 часа - минимум времени до сеанса, чтобы за писаться
+                + "(STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ") <= 0)"
+                + ") OR (("
+                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + " IN (" + myTimeQuery + ")"
+                + ") AND ("
+                + "(STRFTIME('%s', 'now')+3*60*60) - (STRFTIME('%s',"
+                + DBHelper.KEY_DATE_WORKING_DAYS
+                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
+                + ")) <= 0))))";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, serviceId, serviceId, userId});
+
+        boolean result = cursor.moveToFirst();
+        cursor.close();
+
+        return result;
     }
 
     public Cursor getUser(String userId) {
