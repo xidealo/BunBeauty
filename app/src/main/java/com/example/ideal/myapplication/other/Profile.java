@@ -272,7 +272,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 float avgRating = sumRates / counter;
                 addRatingToScreen(avgRating, counter);
                 //метод, который добалвяет оценку
-                Log.d(TAG, "loadRatingForUser: " + avgRating);
             } else {
                 setWithoutRating();
             }
@@ -439,7 +438,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 service.setName(serviceName);
                 if (countOfRates != 0) {
                     float avgRating = sumRates / countOfRates;
-                    Log.d(TAG, "updateServicesList: " + avgRating);
                     addToScreenOnProfile(avgRating, service);
                     countOfRates = 0;
                     sumRates = 0;

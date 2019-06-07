@@ -1,18 +1,11 @@
 package com.example.ideal.myapplication.helpApi;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.widget.ImageView;
 
-import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
-
-import java.util.List;
 
 public class WorkWithLocalStorageApi {
 
@@ -125,7 +118,6 @@ public class WorkWithLocalStorageApi {
         }
     }
 
-    // теперь не заботает ???
     static public boolean hasAvailableTime(String serviceId, String userId, SQLiteDatabase database) {
         // Получаем всё время данного сервиса, которое доступно данному юзеру
         String busyTimeQuery = "SELECT "
@@ -191,38 +183,6 @@ public class WorkWithLocalStorageApi {
                 + DBHelper.KEY_DATE_WORKING_DAYS
                 + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                 + ")) <= 0))))";
-
-
-       /* String sqlQuery1 = "SELECT "
-                + "(STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
-                        + DBHelper.KEY_DATE_WORKING_DAYS
-                        + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
-                        + ") AS dif"
-                + " FROM "
-                + DBHelper.TABLE_WORKING_DAYS + ", "
-                + DBHelper.TABLE_WORKING_TIME
-                + " WHERE "
-                + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ?"
-                + " AND "
-                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
-                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                + " AND "
-                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                + " NOT IN (" + busyTimeQuery + ")"
-                *//*+ " AND ("
-                // 3 часа - разница с Гринвичем
-                // 2 часа - минимум времени до сеанса, чтобы записаться
-                + "(STRFTIME('%s', 'now')+(3+2)*60*60) - STRFTIME('%s',"
-                + DBHelper.KEY_DATE_WORKING_DAYS
-                + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
-                + ") <= 0)"*//*;
-
-        Cursor cursor1 = database.rawQuery(sqlQuery1, new String[]{serviceId});
-
-        // returns null
-        if (cursor1.moveToFirst()) {
-            Log.d(TAG, "hasAvailableTime: " + cursor1.getString(cursor1.getColumnIndex("dif")));
-        }*/
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, serviceId, serviceId, userId});
 

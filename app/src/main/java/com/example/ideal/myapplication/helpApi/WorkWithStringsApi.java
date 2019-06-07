@@ -93,9 +93,9 @@ public class WorkWithStringsApi {
                 return "04";
             case "май":
                 return "05";
-            case "июнь":
+            case "июня":
                 return "06";
-            case "июль":
+            case "июля":
                 return "07";
             case "авг":
                 return "08";

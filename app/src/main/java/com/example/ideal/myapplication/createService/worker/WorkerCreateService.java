@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -18,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WorkerCreateService implements IWorker {
+
+    private static final String TAG =  "DBInf";
 
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
