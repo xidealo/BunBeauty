@@ -28,7 +28,6 @@ import com.example.ideal.myapplication.fragments.ServicePhotoElement;
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
-import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

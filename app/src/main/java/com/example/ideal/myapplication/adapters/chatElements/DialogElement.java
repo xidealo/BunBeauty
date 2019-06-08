@@ -1,6 +1,5 @@
 package com.example.ideal.myapplication.adapters.chatElements;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;

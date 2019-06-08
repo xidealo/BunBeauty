@@ -204,7 +204,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
 
             ownerId = cursor.getString(indexUserId);
-
             costText.setText("Цена от: " + cursor.getString(indexMinCost) + "р");
             addressText.setText("Адрес: " + cursor.getString(indexAddress));
             descriptionText.setText(cursor.getString(indexDescription));
@@ -345,10 +344,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         PanelBuilder panelBuilder = new PanelBuilder();
         FragmentManager manager = getSupportFragmentManager();
-
+        getInfoAboutService(serviceId);
         panelBuilder.buildHeader(manager, serviceName, R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
         panelBuilder.buildFooter(manager, R.id.footerGuestServiceLayout);
-        getInfoAboutService(serviceId);
         imageFeedLayout.removeAllViews();
         setPhotoFeed(serviceId);
     }

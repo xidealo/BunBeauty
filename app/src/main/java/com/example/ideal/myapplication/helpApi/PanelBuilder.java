@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.fragments.panelElements.BottomPanel;
@@ -40,11 +41,11 @@ public class PanelBuilder {
         transaction.add(layoutId, bottomPanel);
         transaction.commit();
     }
+    private static final String TAG = "DBInf";
 
     // для GuestService
     public void buildHeader (FragmentManager manager, String title, int layoutId, boolean isMyService, String serviceId, String serviceOwnerId) {
         topPanel = new TopPanel(title, isMyService, serviceId, serviceOwnerId);
-
         transaction = manager.beginTransaction();
         transaction.add(layoutId, topPanel);
         transaction.commit();

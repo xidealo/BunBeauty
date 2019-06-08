@@ -1,6 +1,5 @@
 package com.example.ideal.myapplication.createService;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,19 +19,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.createService.user.UserCreateService;
 import com.example.ideal.myapplication.createService.worker.WorkerCreateService;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MyCalendar extends AppCompatActivity implements View.OnClickListener {
 
