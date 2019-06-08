@@ -1,20 +1,19 @@
-package com.example.ideal.myapplication.fragments.foundElements;
+package com.example.ideal.myapplication.adapters.foundElements;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.ContextThemeWrapper;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -102,9 +101,16 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
     private static final String TAG = "DBInf";
 
     private void setData() {
-        nameUserText.setText(workWithStringsApi.cutString(nameUserString.toUpperCase(), 18));
+        double inches = getScreenInches();
+        //устанавливаем сокращения названий и имен в зависимости от размера экрана
+        if(inches<5){
+            nameUserText.setText(workWithStringsApi.cutString(nameUserString, 10));
+            nameServiceText.setText(workWithStringsApi.cutString(nameServiceString.toUpperCase(), 14));
+        }else{
+            nameUserText.setText(workWithStringsApi.cutString(nameUserString, 10));
+            nameServiceText.setText(workWithStringsApi.cutString(nameServiceString.toUpperCase(), 18));
+        }
         cityText.setText(cityString.substring(0, 1).toUpperCase() + cityString.substring(1).toLowerCase());
-        nameServiceText.setText(workWithStringsApi.cutString(nameServiceString, 9));
         costText.setText("Цена \n" + costString);
         ratingBar.setRating(avgRating);
 
@@ -136,5 +142,20 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         nameServiceText.setBackgroundColor(getResources().getColor(R.color.yellow));
         costText.setBackgroundColor(getResources().getColor(R.color.yellow));
         ratingBar.setBackgroundColor(getResources().getColor(R.color.yellow));
+    }
+    private double getScreenInches(){
+        DisplayMetrics dm = new DisplayMetrics();
+
+        WindowManager windowManager = (WindowManager) this.getContext()
+                .getSystemService(Context.WINDOW_SERVICE);
+
+        windowManager.getDefaultDisplay().getMetrics(dm);
+        int width=dm.widthPixels;
+        int height=dm.heightPixels;
+        double wi=(double)width/(double)dm.xdpi;
+        double hi=(double)height/(double)dm.ydpi;
+        double x = Math.pow(wi,2);
+        double y = Math.pow(hi,2);
+        return Math.sqrt(x+y)+0.3;
     }
 }

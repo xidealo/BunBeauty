@@ -32,8 +32,12 @@ import com.example.ideal.myapplication.other.IPremium;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -44,7 +48,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddService extends AppCompatActivity implements View.OnClickListener, IPremium {
+public class AdditionService extends AppCompatActivity implements View.OnClickListener, IPremium {
 
     private static final String SERVICE_ID = "service id";
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
@@ -63,6 +67,10 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     private static final String PHOTO_LINK = "photo link";
     private static final String CATEGORY = "category";
     private static final String ADDRESS = "address";
+    private static final String TAG = "DBInf";
+    private static final String CODES = "codes";
+    private static final String CODE = "code";
+    private static final String COUNT = "count";
 
     private EditText nameServiceInput;
     private EditText costAddServiceInput;
@@ -85,7 +93,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_service);
+        setContentView(R.layout.addition_service);
         init();
     }
 
@@ -223,7 +231,7 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerAddServiceLayout);
-        panelBuilder.buildHeader(manager, "Создание сервиса", R.id.headerAddServiceLayout);
+        panelBuilder.buildHeader(manager, "Создание услуги", R.id.headerAddServiceLayout);
     }
 
     private void addServiceInLocalStorage(Service service) {
@@ -379,15 +387,52 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         service.setIsPremium(true);
         setWithPremium();
         premiumLayout.setVisibility(View.GONE);
+        attentionPremiumActivated();
     }
 
     @Override
-    public boolean checkCode() {
-        return true;
+    public void checkCode(final String code) {
+        //проверка кода
+        Query query = FirebaseDatabase.getInstance().getReference(CODES).
+                orderByChild(CODE).
+                equalTo(code);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot codesSnapshot) {
+                if(codesSnapshot.getChildrenCount() == 0){
+                    attentionWrongCode();
+                }
+                else {
+                    DataSnapshot userSnapshot = codesSnapshot.getChildren().iterator().next();
+                    int  count = userSnapshot.child(COUNT).getValue(int.class);
+                    if(count>0){
+                        setPremium();
+
+                        String codeId = userSnapshot.getKey();
+
+                        DatabaseReference myRef = FirebaseDatabase.getInstance()
+                                .getReference(CODES)
+                                .child(codeId);
+                        Map<String, Object> items = new HashMap<>();
+                        items.put(COUNT, count-1);
+                        myRef.updateChildren(items);
+                    }
+                    else {
+                        attentionOldCode();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
+
     private void setWithPremium() {
         noPremiumText.setVisibility(View.GONE);
         premiumText.setVisibility(View.VISIBLE);
+        premiumText.setEnabled(false);
     }
 
     private void goToMyCalendar(String status, String serviceId) {
@@ -404,5 +449,14 @@ public class AddService extends AppCompatActivity implements View.OnClickListene
         Toast.makeText(this, "Сервис успешно создан", Toast.LENGTH_SHORT).show();
     }
 
+    private void attentionWrongCode() {
+        Toast.makeText(this, "Неверно введен код", Toast.LENGTH_SHORT).show();
+    }
+    private void attentionOldCode() {
+        Toast.makeText(this, "Код больше не действителен", Toast.LENGTH_SHORT).show();
+    }
+    private void attentionPremiumActivated() {
+        Toast.makeText(this, "Премиум активирован", Toast.LENGTH_SHORT).show();
+    }
 
 }

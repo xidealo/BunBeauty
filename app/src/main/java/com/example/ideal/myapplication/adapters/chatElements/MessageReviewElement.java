@@ -1,16 +1,9 @@
-package com.example.ideal.myapplication.fragments.chatElements;
+package com.example.ideal.myapplication.adapters.chatElements;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +13,7 @@ import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.reviews.Review;
 
 
-public class MessageReviewElement extends Fragment implements View.OnClickListener {
+public class MessageReviewElement implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
     private static final String TYPE = "type";
@@ -36,12 +29,9 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
 
     private TextView messageText;
     private Button reviewBtn;
+    private Context context;
 
-    public MessageReviewElement() {
-    }
-
-    @SuppressLint("ValidFragment")
-    public MessageReviewElement(Message message) {
+    public MessageReviewElement(Message message, View view, Context context) {
 
         // для условий
         boolean isCanceled = message.getIsCanceled();
@@ -54,6 +44,7 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
         String messageWorkingDay= message.getWorkingDay();
         String messageWorkingTime = message.getWorkingTime();
         String messageTime = message.getMessageTime();
+        this.context = context;
 
         reviewId = message.getReviewId();
 
@@ -86,18 +77,13 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
                                 + "\n (" + messageTime + ")";
             }
         }
+        onViewCreated(view);
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.message_review_element, null);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        messageText = view.findViewById(R.id.messageMessageReviewElementText);
-        reviewBtn = view.findViewById(R.id.reviewMessageReviewElementBtn);
-
+    private void onViewCreated(@NonNull View view) {
+        messageText = view.findViewById(R.id.messageMessageOrderElementText);
+        reviewBtn = view.findViewById(R.id.canceledMessageOrderElementBtn);
+        reviewBtn.setText("ОЦЕНИТЬ");
         // Проверяем стоит ли оценка
         if (isRate()) {
             reviewBtn.setVisibility(View.GONE);
@@ -105,12 +91,12 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
             reviewBtn.setOnClickListener(this);
         }
 
-        LinearLayout layout = view.findViewById(R.id.messageReviewElementLayout);
-
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-        params.setMargins(10,10,10,15);
-        params.gravity = Gravity.BOTTOM;
+        LinearLayout layout = view.findViewById(R.id.messageOrderElementLayout);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(10, 20, 10, 10);
         layout.setLayoutParams(params);
+
         setData();
     }
 
@@ -129,9 +115,9 @@ public class MessageReviewElement extends Fragment implements View.OnClickListen
     }
 
     private void goToReview() {
-        Intent intent = new Intent(this.getContext(), Review.class);
+        Intent intent = new Intent(context, Review.class);
         intent.putExtra(TYPE, messageType);
         intent.putExtra(REVIEW_ID, reviewId);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 }

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.other.IPremium;
@@ -19,7 +20,8 @@ public class PremiumElement extends Fragment implements View.OnClickListener {
     private static final String TAG = "DBInf";
 
     private IPremium iPremium;
-
+    private String code;
+    private TextView codeText;
     @SuppressLint("ValidFragment")
     public PremiumElement() {
 
@@ -34,17 +36,15 @@ public class PremiumElement extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         Button setPremiumBtn = view.findViewById(R.id.setPremiumPremiumElementBtn);
-
+        codeText = view.findViewById(R.id.codePremiumElement);
         setPremiumBtn.setOnClickListener(this);
         iPremium = (IPremium) this.getContext();
     }
-
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.setPremiumPremiumElementBtn) {
-            if (iPremium.checkCode()) {
-                iPremium.setPremium();
-            }
+            code = codeText.getText().toString().toLowerCase().trim();
+            iPremium.checkCode(code);
         }
     }
 }

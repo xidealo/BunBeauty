@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mainColorBG"
-    tools:context=".createService.AddService">
+    tools:context=".createService.AdditionService">
 
     <LinearLayout
         android:id="@+id/headerAddServiceLayout"
@@ -133,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:hint="Премиум" />
+                    android:text="Премиум" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"

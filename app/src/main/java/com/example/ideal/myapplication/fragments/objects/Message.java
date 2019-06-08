@@ -18,7 +18,7 @@ public class Message {
     private String workingTimeId;
     private String orderId;
     private String reviewId;
-
+    private String status;
 
     private String type;
     private String ratingReview;
@@ -29,6 +29,14 @@ public class Message {
     }
     public String getMessageTime() {
         return messageTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     // id отправителя

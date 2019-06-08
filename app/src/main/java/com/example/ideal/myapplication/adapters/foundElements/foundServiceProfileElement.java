@@ -1,4 +1,4 @@
-package com.example.ideal.myapplication.fragments.foundElements;
+package com.example.ideal.myapplication.adapters.foundElements;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -10,63 +10,60 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.searchService.GuestService;
 
 @SuppressLint("ValidFragment")
-public class foundOrderElement extends Fragment implements View.OnClickListener {
+public class foundServiceProfileElement extends Fragment implements View.OnClickListener {
 
     final String SERVICE_ID = "service id";
+    private static final String TAG = "DBInf";
 
     private TextView nameText;
-    private TextView timeText;
+    private RatingBar ratingBar;
 
     private String idString;
     private String nameString;
-    private String dateString;
-    private String timeString;
+    private float avgRating;
     private WorkWithStringsApi workWithStringsApi;
 
-
     @SuppressLint("ValidFragment")
-    public foundOrderElement(String id, String name, String date, String time) {
-        idString = id;
-        nameString = name;
-        dateString = date;
-        timeString = time;
+    public foundServiceProfileElement(float _avgRating,Service service) {
+        idString = service.getId();
+        nameString = service.getName();
+        avgRating = _avgRating;
         workWithStringsApi = new WorkWithStringsApi();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.found_order_element, null);
+        return inflater.inflate(R.layout.found_service_profile_element, null);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        nameText = view.findViewById(R.id.nameFoundOrderElementText);
-        timeText = view.findViewById(R.id.descriptionFoundOrderElementText);
-
+        nameText = view.findViewById(R.id.serviceNameFoundServiceProfileElementText);
+        ratingBar = view.findViewById(R.id.ratingBarFondServiceProfileElement);
         nameText.setOnClickListener(this);
-        timeText.setOnClickListener(this);
-
-        LinearLayout layout = view.findViewById(R.id.foundOrderProfileElementLayout);
-
+        LinearLayout layout = view.findViewById(R.id.foundServiceProfileElementLayout);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
         params.setMargins(10,10,10,15);
         layout.setLayoutParams(params);
 
         layout.setOnClickListener(this);
         setData();
+
     }
 
     private void setData() {
         nameText.setText(workWithStringsApi.cutString(nameString,27));
-        timeText.setText(dateString + " "+ timeString);
+        ratingBar.setRating(avgRating);
     }
 
     @Override

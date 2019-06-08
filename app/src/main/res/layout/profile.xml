@@ -162,7 +162,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/orderProfileScroll"
+        app:layout_constraintBottom_toTopOf="@+id/resultsProfileRecycleView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mainLayoutProfile">
@@ -182,15 +182,15 @@
                 android:id="@+id/addServicesProfileBtn"
                 style="@style/smallMainButtonOther"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="@dimen/main_button_height"
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
                 android:text="@string/addServices" />
         </LinearLayout>
     </ScrollView>
 
-    <ScrollView
-        android:id="@+id/orderProfileScroll"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/resultsProfileRecycleView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
@@ -198,13 +198,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/servicesProfileScroll">
-
-        <LinearLayout
-            android:id="@+id/ordersProfileLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+    </android.support.v7.widget.RecyclerView>
 
     <LinearLayout
         android:id="@+id/footerProfileLayout"

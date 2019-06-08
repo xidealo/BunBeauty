@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -25,8 +26,12 @@ import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.IPremium;
 import com.example.ideal.myapplication.reviews.Comments;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -46,6 +51,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String SERVICES = "services";
     private static final String IS_PREMIUM = "is premium";
     private static final String USERS = "users";
+    private static final String CODES = "codes";
+    private static final String CODE = "code";
+    private static final String COUNT = "count";
 
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
 
@@ -71,6 +79,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private LinearLayout ratingLL;
     private LinearLayout imageFeedLayout;
     private LinearLayout premiumLayout;
+    private LinearLayout premiumIconLayout;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private boolean isMyService;
     private boolean isPremiumLayoutSelected;
@@ -101,8 +110,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         Button editScheduleBtn = findViewById(R.id.editScheduleGuestServiceBtn);
         ratingLL = findViewById(R.id.ratingGuestServiceLayout);
         premiumLayout = findViewById(R.id.premiumGuestServiceLayout);
-
         imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
+        premiumIconLayout = findViewById(R.id.premiumIconGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -136,6 +145,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         } else {
             status = USER;
             editScheduleBtn.setText("Расписание");
+            premiumIconLayout.setVisibility(View.GONE);
         }
         editScheduleBtn.setOnClickListener(this);
     }
@@ -406,7 +416,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void setPremium() {
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(USERS)
                 .child(getUserId())
@@ -419,12 +428,56 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         myRef.updateChildren(items);
         setWithPremium();
         premiumLayout.setVisibility(View.GONE);
+        attentionPremiumActivated();
     }
 
     @Override
-    public boolean checkCode() {
+    public void checkCode(final String code) {
         //проверка кода
-        return true;
+        Query query = FirebaseDatabase.getInstance().getReference(CODES).
+                orderByChild(CODE).
+                equalTo(code);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot codesSnapshot) {
+                if(codesSnapshot.getChildrenCount() == 0){
+                    attentionWrongCode();
+                }
+                else {
+                    DataSnapshot userSnapshot = codesSnapshot.getChildren().iterator().next();
+                    int  count = userSnapshot.child(COUNT).getValue(int.class);
+                    if(count>0){
+                        setPremium();
+
+                        String codeId = userSnapshot.getKey();
+
+                        DatabaseReference myRef = FirebaseDatabase.getInstance()
+                                .getReference(CODES)
+                                .child(codeId);
+                        Map<String, Object> items = new HashMap<>();
+                        items.put(COUNT, count-1);
+                        myRef.updateChildren(items);
+                    }
+                    else {
+                     attentionOldCode();   
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void attentionWrongCode() {
+        Toast.makeText(this, "Неверно введен код", Toast.LENGTH_SHORT).show();
+    }
+    private void attentionOldCode() {
+        Toast.makeText(this, "Код больше не действителен", Toast.LENGTH_SHORT).show();
+    }
+    private void attentionPremiumActivated() {
+        Toast.makeText(this, "Премиум активирован", Toast.LENGTH_LONG).show();
     }
 
 }

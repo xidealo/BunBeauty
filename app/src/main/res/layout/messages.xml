@@ -14,21 +14,14 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/resultsMessagesRecycleView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/footerEditServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerEditServiceLayout">
-
-        <LinearLayout
-            android:id="@+id/resultsMessagesLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:layout_gravity="bottom"/>
-    </ScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/headerEditServiceLayout" />
 
     <LinearLayout
         android:id="@+id/footerEditServiceLayout"
