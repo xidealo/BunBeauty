@@ -174,18 +174,22 @@ public class MyService extends Service implements Runnable {
                                                 WorkWithTimeApi timeApi = new WorkWithTimeApi();
                                                 String orderCreationTime = orderSnapshot.child(TIME).getValue(String.class);
                                                 long delay = Math.abs(timeApi.getMillisecondsStringDateWithSeconds(orderCreationTime)-timeApi.getSysdateLong());
+                                                final String userId = orderSnapshot.child(USER_ID).getValue(String.class);
                                                 String orderId = orderSnapshot.getKey();
                                                 final String date = workingDaySnapshot.child(DATE).getValue(String.class);
                                                 final String time = workingTimeSnapshot.child(TIME).getValue(String.class);
 
                                                 // устанавливаем таймер, чтобы через день после обслуживания дать оценить
                                                 if (!orderSnapshot.child(IS_CANCELED).getValue(Boolean.class)) {
-                                                    setTimerForReview(orderId, date, time, serviceName, false);
+                                                    setTimerForReview(userId,
+                                                            orderId,
+                                                            date,
+                                                            time,
+                                                            serviceName,
+                                                            false);
                                                 }
-                                                // исправить на 5000
-                                                if(delay < 10000) {
-                                                    String userId = orderSnapshot.child(USER_ID).getValue(String.class);
 
+                                                if(delay < 10000) {
                                                     final DatabaseReference userRef = FirebaseDatabase.getInstance()
                                                             .getReference(USERS)
                                                             .child(userId);
@@ -199,6 +203,7 @@ public class MyService extends Service implements Runnable {
                                                             String userName = userSnapshot.child(NAME).getValue(String.class);
 
                                                             NotificationOrder notificationOrder = new NotificationOrder(context,
+                                                                    userId,
                                                                     userName,
                                                                     serviceName,
                                                                     date,
@@ -402,7 +407,7 @@ public class MyService extends Service implements Runnable {
 
                                 //чтобы не выводить notification о старых подписчиках
                                 if(countOfSubscribers==counterForSubscribers) {
-                                    String userId = dataSnapshot.child(USER_ID).getValue().toString();
+                                    final String userId = dataSnapshot.child(USER_ID).getValue().toString();
 
                                     DatabaseReference userRef = FirebaseDatabase
                                             .getInstance()
@@ -413,8 +418,10 @@ public class MyService extends Service implements Runnable {
                                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            String userName = dataSnapshot.getValue().toString();
                                             NotificationSubscribers notificationSubscribers = new NotificationSubscribers(context,
-                                                    dataSnapshot.getValue().toString());
+                                                    userId,
+                                                    userName);
                                             notificationSubscribers.createNotification();
                                         }
 
@@ -537,6 +544,7 @@ public class MyService extends Service implements Runnable {
                                 if(!firstFlag) {
                                     if (isCanceledSnapshot.getValue(Boolean.class)) {
                                         NotificationCancel notification = new NotificationCancel(context,
+                                                workerId,
                                                 finalWorkerName,
                                                 finalServiceName,
                                                 finalOrderDate,
@@ -549,7 +557,12 @@ public class MyService extends Service implements Runnable {
                                     firstFlag = false;
 
                                     if (!isCanceledSnapshot.getValue(Boolean.class)) {
-                                        setTimerForReview(orderId, finalOrderDate, finalOrderTime, finalServiceName, true);
+                                        setTimerForReview(workerId,
+                                                orderId,
+                                                finalOrderDate,
+                                                finalOrderTime,
+                                                finalServiceName,
+                                                true);
                                     }
                                 }
                             }
@@ -575,10 +588,11 @@ public class MyService extends Service implements Runnable {
                 });
             }
 
-            private void setTimerForReview(final String orderId, String date, String time, final String commentedName, final boolean isForService) {
-                long timeLeftInMillis = timeApi.getMillisecondsStringDate(date + " " + time)
+            private void setTimerForReview(final String userId, final String orderId, String date,
+                                           String time, final String commentedName, final boolean isForService) {
+                long timeLeftInMillis = 5000;/*timeApi.getMillisecondsStringDate(date + " " + time)
                         - timeApi.getSysdateLong()
-                        + 24*60*60*1000; // Время до сеанса + сутки
+                        + 24*60*60*1000; // Время до сеанса + сутки*/
 
                 if (timeLeftInMillis > 0) {
                     // Настраиваем таймер
@@ -591,9 +605,9 @@ public class MyService extends Service implements Runnable {
                             // создаётся необходимое оповещение дял Услуги ил для Клиента
                             NotificationConstructor notification;
                             if (isForService) {
-                                notification = new NotificationReviewForService(context, commentedName);
+                                notification = new NotificationReviewForService(context, userId ,commentedName);
                             } else {
-                                notification = new NotificationReviewForUser(context, commentedName);
+                                notification = new NotificationReviewForUser(context, userId, commentedName);
                             }
 
                             notification.createNotification();

@@ -276,7 +276,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkScheduleAndGoToProfile() {
-        if (WorkWithLocalStorageApi.hasAvailableTime(serviceId, userId, dbHelper.getReadableDatabase())) {
+        if (WorkWithLocalStorageApi.hasAvailableTime(serviceId, userId)) {
             goToMyCalendar(USER);
         } else {
             attentionThisScheduleIsEmpty();

@@ -81,7 +81,7 @@ public class Dialogs extends AppCompatActivity {
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?)"
                         + " ORDER BY " + DBHelper.KEY_MESSAGE_TIME_ORDERS + " DESC";
 
-        String myId = getUserId();
+        String myId = WorkWithLocalStorageApi.getUserId();
         Cursor cursor = database.rawQuery(ordersQuery, new String[]{myId, myId});
 
         if (cursor.moveToFirst()) {
@@ -131,11 +131,6 @@ public class Dialogs extends AppCompatActivity {
         }
     }
 
-
-    private String getUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -143,7 +138,6 @@ public class Dialogs extends AppCompatActivity {
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerDialogsLayout);
         panelBuilder.buildHeader(manager, "Диалоги", R.id.headerDialogsLayout);
-
     }
 
     private void addToScreen(User user) {

@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.widget.ImageView;
 
 import com.example.ideal.myapplication.other.DBHelper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 public class WorkWithLocalStorageApi {
@@ -118,7 +119,7 @@ public class WorkWithLocalStorageApi {
         }
     }
 
-    static public boolean hasAvailableTime(String serviceId, String userId, SQLiteDatabase database) {
+    static public boolean hasAvailableTime(String serviceId, String userId) {
         // Получаем всё время данного сервиса, которое доступно данному юзеру
         String busyTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS
@@ -184,8 +185,7 @@ public class WorkWithLocalStorageApi {
                 + "||' '||" + DBHelper.KEY_TIME_WORKING_TIME
                 + ")) <= 0))))";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, serviceId, serviceId, userId});
-
+        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{serviceId, serviceId, serviceId, userId});
         boolean result = cursor.moveToFirst();
         cursor.close();
 
@@ -369,5 +369,9 @@ public class WorkWithLocalStorageApi {
 
         cursor.close();
         return timeId;
+    }
+
+    static public String getUserId() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 }

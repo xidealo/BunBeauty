@@ -241,7 +241,7 @@ public class Search {
     private float figurePenaltyPoints(String serviceId, String userId) {
         float penaltyPoints = 0;
 
-        if (!WorkWithLocalStorageApi.hasAvailableTime(serviceId, userId, dbHelper.getReadableDatabase())) {
+        if (!WorkWithLocalStorageApi.hasAvailableTime(serviceId, userId)) {
             penaltyPoints = 0.3f;
         }
 

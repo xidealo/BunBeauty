@@ -68,7 +68,6 @@ public class ServicePhotoElement extends Fragment implements View.OnClickListene
         if (bitmap != null) {
             photo.setImageBitmap(bitmap);
             photo.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Log.d(TAG, "onViewCreated: ");
         }
 
         //если из editService

@@ -117,7 +117,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         }
                     }
                     date = WorkWithStringsApi.convertDateToYMD(btn.getText().toString(), btn.getTag(R.string.yearId).toString());
-                    Log.d(TAG, "addWorkingDay: " + date);
                     btn.setTag(R.string.selectedId, true);
                 } else {
                     // Была выбрана - снимаем выделение
