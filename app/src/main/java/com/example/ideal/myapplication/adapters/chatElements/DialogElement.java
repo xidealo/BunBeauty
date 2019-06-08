@@ -42,7 +42,7 @@ public class DialogElement implements View.OnClickListener {
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(10, 20, 10, 10);
+        params.setMargins(10, 10, 10, 10);
         layout.setLayoutParams(params);
         layout.setOnClickListener(this);
 

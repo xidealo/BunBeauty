@@ -8,8 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.fragments.objects.Order;
+import com.example.ideal.myapplication.adapters.foundElements.FoundServiceElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
+import com.example.ideal.myapplication.fragments.objects.User;
 
 import java.util.ArrayList;
 
@@ -17,12 +18,14 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
 
     private int numberItems;
     private ArrayList<Service> serviceList;
+    private ArrayList<User> userList;
 
     private Context context;
 
-    public ServiceAdapter(int numberItems, ArrayList<Service> serviceList) {
+    public ServiceAdapter(int numberItems, ArrayList<Service> serviceList, ArrayList<User> userList) {
         this.numberItems = numberItems;
         this.serviceList = serviceList;
+        this.userList = userList;
     }
 
     @NonNull
@@ -36,16 +39,17 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
         View view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false);
 
         ServiceViewHolder viewHolder = new ServiceViewHolder(view);
-        return viewHolder;    }
+        return viewHolder;
+    }
 
     @Override
     public void onBindViewHolder(@NonNull ServiceViewHolder serviceViewHolder, int i) {
-        serviceViewHolder.bind(serviceList.get(i));
+        serviceViewHolder.bind(serviceList.get(i), userList.get(i));
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return numberItems;
     }
 
     class ServiceViewHolder extends RecyclerView.ViewHolder {
@@ -57,8 +61,8 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
             view = itemView;
         }
 
-        void bind(Service service) {
-
+        void bind(Service service, User user) {
+            FoundServiceElement foundServiceElement = new FoundServiceElement(service,user,view,context);
         }
     }
 }

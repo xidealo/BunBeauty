@@ -41,33 +41,25 @@
         android:layout_height="wrap_content"
         android:indeterminateTint= "@color/panelColor"
         android:layout_gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/mainScreenScroll"
+        app:layout_constraintBottom_toTopOf="@+id/resultsMainScreenRecycleView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll"/>
 
 
     <!-- Главный экран -->
-    <ScrollView
-        android:id="@+id/mainScreenScroll"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/resultsMainScreenRecycleView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="10dp"
+        android:layout_marginTop="5dp"
         android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@+id/footerMainScreenLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBarMainScreen">
-
-        <LinearLayout
-            android:id="@+id/resultsMainScreenLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:isScrollContainer="true"
-            android:orientation="vertical" >
-
-        </LinearLayout>
-    </ScrollView>
+    </android.support.v7.widget.RecyclerView>
 
     <LinearLayout
         android:id="@+id/footerMainScreenLayout"

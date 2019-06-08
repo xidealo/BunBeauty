@@ -133,13 +133,16 @@ public class MessageOrderElement implements View.OnClickListener {
             if (!isRelevance() || messageIsCanceled) {
                 canceledBtn.setVisibility(View.GONE);
             }
+            else {
+                canceledBtn.setVisibility(View.VISIBLE);
+            }
         }
 
         LinearLayout layout = view.findViewById(R.id.messageOrderElementLayout);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(10, 20, 10, 10);
+        params.setMargins(10,10,10,10);
         layout.setLayoutParams(params);
 
         setData();

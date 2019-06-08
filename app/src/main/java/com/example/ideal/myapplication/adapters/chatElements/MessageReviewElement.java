@@ -88,13 +88,14 @@ public class MessageReviewElement implements View.OnClickListener {
         if (isRate()) {
             reviewBtn.setVisibility(View.GONE);
         } else {
+            reviewBtn.setVisibility(View.VISIBLE);
             reviewBtn.setOnClickListener(this);
         }
 
         LinearLayout layout = view.findViewById(R.id.messageOrderElementLayout);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(10, 20, 10, 10);
+        params.setMargins(10,10,10,10);
         layout.setLayoutParams(params);
 
         setData();

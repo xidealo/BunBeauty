@@ -1,18 +1,12 @@
 package com.example.ideal.myapplication.adapters.foundElements;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,10 +21,10 @@ import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.searchService.GuestService;
 
-@SuppressLint("ValidFragment")
-public class foundServiceElement extends Fragment implements View.OnClickListener {
+public class FoundServiceElement implements View.OnClickListener {
 
     final String SERVICE_ID = "service id";
+    private static final String TAG = "DBInf";
 
     private TextView nameUserText;
     private TextView cityText;
@@ -49,11 +43,10 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
     private String costString;
     private WorkWithStringsApi workWithStringsApi;
     private String userId;
-
+    private Context context;
     private boolean isPremium;
 
-    @SuppressLint("ValidFragment")
-    public foundServiceElement(Service service, User user) {
+    public FoundServiceElement(Service service, User user, View view, Context context) {
         serviceId = service.getId();
         nameUserString = user.getName();
         cityString = user.getCity();
@@ -62,17 +55,12 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         userId = user.getId();
         isPremium = service.getIsPremium();
         workWithStringsApi = new WorkWithStringsApi();
-
+        this.context = context;
         avgRating = service.getAverageRating();
+        onViewCreated(view);
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.found_service_element, null);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view) {
 
         layout = view.findViewById(R.id.foundServiceElementLayout);
         nameUserText = view.findViewById(R.id.userNameFoundServiceElementText);
@@ -84,21 +72,27 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         if (isPremium) {
             setPremiumBackground();
 
-            ColorStateList sl  = ColorStateList.valueOf(getResources().getColor(R.color.panelColor));
+            ColorStateList sl  = ColorStateList.valueOf(context.getResources().getColor(R.color.panelColor));
+            ratingBar.setProgressTintList(sl);
+        }
+        else {
+            setDefaultBackground();
+            ColorStateList sl  = ColorStateList.valueOf(context.getResources().getColor(R.color.yellow));
             ratingBar.setProgressTintList(sl);
         }
 
         avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage);
 
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-        params.setMargins(10, 10, 10, 15);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(10, 10, 10, 10);
         layout.setLayoutParams(params);
 
         layout.setOnClickListener(this);
         setData();
     }
 
-    private static final String TAG = "DBInf";
+
 
     private void setData() {
         double inches = getScreenInches();
@@ -114,11 +108,11 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
         costText.setText("Цена \n" + costString);
         ratingBar.setRating(avgRating);
 
-        DBHelper dbHelper = new DBHelper(getContext());
+        DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
-        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+        int width = context.getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+        int height = context.getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
         workWithLocalStorageApi.setPhotoAvatar(userId, avatarImage, width, height);
@@ -130,23 +124,32 @@ public class foundServiceElement extends Fragment implements View.OnClickListene
     }
 
     private void goToGuestService() {
-        Intent intent = new Intent(this.getContext(), GuestService.class);
+        Intent intent = new Intent(context, GuestService.class);
         intent.putExtra(SERVICE_ID, serviceId);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 
     private void setPremiumBackground() {
-        layout.setBackgroundResource(R.drawable.block_text_premium);;
-        nameUserText.setBackgroundColor(getResources().getColor(R.color.yellow));
-        cityText.setBackgroundColor(getResources().getColor(R.color.yellow));
-        nameServiceText.setBackgroundColor(getResources().getColor(R.color.yellow));
-        costText.setBackgroundColor(getResources().getColor(R.color.yellow));
-        ratingBar.setBackgroundColor(getResources().getColor(R.color.yellow));
+        layout.setBackgroundResource(R.drawable.block_text_premium);
+        nameUserText.setBackgroundColor(context.getResources().getColor(R.color.yellow));
+        cityText.setBackgroundColor(context.getResources().getColor(R.color.yellow));
+        nameServiceText.setBackgroundColor(context.getResources().getColor(R.color.yellow));
+        costText.setBackgroundColor(context.getResources().getColor(R.color.yellow));
+        ratingBar.setBackgroundColor(context.getResources().getColor(R.color.yellow));
+    }
+
+    private void setDefaultBackground() {
+        layout.setBackgroundResource(R.drawable.block_text);
+        nameUserText.setBackgroundColor(context.getResources().getColor(R.color.white));
+        cityText.setBackgroundColor(context.getResources().getColor(R.color.white));
+        nameServiceText.setBackgroundColor(context.getResources().getColor(R.color.white));
+        costText.setBackgroundColor(context.getResources().getColor(R.color.white));
+        ratingBar.setBackgroundColor(context.getResources().getColor(R.color.white));
     }
     private double getScreenInches(){
         DisplayMetrics dm = new DisplayMetrics();
 
-        WindowManager windowManager = (WindowManager) this.getContext()
+        WindowManager windowManager = (WindowManager) context
                 .getSystemService(Context.WINDOW_SERVICE);
 
         windowManager.getDefaultDisplay().getMetrics(dm);

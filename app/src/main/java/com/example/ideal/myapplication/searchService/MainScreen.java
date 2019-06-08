@@ -7,6 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -14,7 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.adapters.foundElements.foundServiceElement;
+import com.example.ideal.myapplication.adapters.MessageAdapter;
+import com.example.ideal.myapplication.adapters.ServiceAdapter;
+import com.example.ideal.myapplication.adapters.foundElements.FoundServiceElement;
+import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -46,7 +52,10 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     private LinearLayout categoryLayout;
     private ProgressBar progressBar;
 
-    private LinearLayout resultLayout;
+    private ArrayList<Service> serviceList;
+    private ArrayList<User> userList;
+    private RecyclerView recyclerView;
+    private ServiceAdapter serviceAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +66,15 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         dbHelper = new DBHelper(this);
         manager = getSupportFragmentManager();
 
-        resultLayout = findViewById(R.id.resultsMainScreenLayout);
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
-      
+
+        serviceList = new ArrayList<>();
+        userList = new ArrayList<>();
+
+        recyclerView = findViewById(R.id.resultsMainScreenRecycleView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
         progressBar = findViewById(R.id.progressBarMainScreen);
 
@@ -73,7 +88,10 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
         String category;
         Button btn = (Button) v;
-        resultLayout.removeAllViews();
+
+        serviceList.clear();
+        userList.clear();
+
         if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
             btn.setBackgroundResource(R.drawable.categories_button);
             btn.setTextColor(getResources().getColor(R.color.white));
@@ -124,8 +142,11 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        resultLayout.removeAllViews();
         progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        serviceList.clear();
+        userList.clear();
+
         createMainScreen("");
 
         PanelBuilder panelBuilder = new PanelBuilder();
@@ -181,8 +202,15 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
 
-                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null, null, category);
-                addToMainScreen(serviceList);
+                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot, null, null, null, category);
+                for (Object[] serviceData : commonList) {
+                    serviceList.add((Service) serviceData[1]);
+                    userList.add((User) serviceData[2]);
+                }
+                serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
+                recyclerView.setAdapter(serviceAdapter);
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -190,16 +218,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
                 attentionBadConnection();
             }
         });
-    }
-
-    private void addToMainScreen(ArrayList<Object[]> serviceList) {
-        for (Object[] serviceData : serviceList) {
-            foundServiceElement fElement = new foundServiceElement((Service) serviceData[1], (User) serviceData[2]);
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.resultsMainScreenLayout, fElement);
-            transaction.commit();
-        }
-        progressBar.setVisibility(View.GONE);
     }
 
     private String getUserId() {

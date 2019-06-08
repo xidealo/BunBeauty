@@ -1,5 +1,6 @@
 package com.example.ideal.myapplication.searchService;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.fragments.PremiumElement;
+import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -429,6 +431,19 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         setWithPremium();
         premiumLayout.setVisibility(View.GONE);
         attentionPremiumActivated();
+        updatePremiumLocalStorage(serviceId);
+    }
+
+    private void updatePremiumLocalStorage(String serviceId) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, "true");
+        //update
+        database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{serviceId});
     }
 
     @Override

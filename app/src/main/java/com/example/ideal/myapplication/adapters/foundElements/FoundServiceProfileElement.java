@@ -19,7 +19,7 @@ import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.searchService.GuestService;
 
 @SuppressLint("ValidFragment")
-public class foundServiceProfileElement extends Fragment implements View.OnClickListener {
+public class FoundServiceProfileElement extends Fragment implements View.OnClickListener {
 
     final String SERVICE_ID = "service id";
     private static final String TAG = "DBInf";
@@ -33,7 +33,7 @@ public class foundServiceProfileElement extends Fragment implements View.OnClick
     private WorkWithStringsApi workWithStringsApi;
 
     @SuppressLint("ValidFragment")
-    public foundServiceProfileElement(float _avgRating,Service service) {
+    public FoundServiceProfileElement(float _avgRating, Service service) {
         idString = service.getId();
         nameString = service.getName();
         avgRating = _avgRating;
@@ -53,7 +53,7 @@ public class foundServiceProfileElement extends Fragment implements View.OnClick
         nameText.setOnClickListener(this);
         LinearLayout layout = view.findViewById(R.id.foundServiceProfileElementLayout);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-        params.setMargins(10,10,10,15);
+        params.setMargins(10,0,10,10);
         layout.setLayoutParams(params);
 
         layout.setOnClickListener(this);

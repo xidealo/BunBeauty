@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,7 +21,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.OrderAdapter;
 import com.example.ideal.myapplication.createService.AdditionService;
 import com.example.ideal.myapplication.fragments.SwitcherElement;
-import com.example.ideal.myapplication.adapters.foundElements.foundServiceProfileElement;
+import com.example.ideal.myapplication.adapters.foundElements.FoundServiceProfileElement;
 import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -462,8 +461,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     private void addToScreenOnProfile(float avgRating, Service service) {
 
-        foundServiceProfileElement fElement
-                = new foundServiceProfileElement(avgRating, service);
+        FoundServiceProfileElement fElement
+                = new FoundServiceProfileElement(avgRating, service);
         FragmentTransaction transaction = manager.beginTransaction();
 
         transaction.add(R.id.servicesProfileLayout, fElement);

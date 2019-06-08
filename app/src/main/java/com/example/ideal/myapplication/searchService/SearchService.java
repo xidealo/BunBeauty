@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.adapters.foundElements.foundServiceElement;
+import com.example.ideal.myapplication.adapters.foundElements.FoundServiceElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -172,7 +172,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
                 ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null, null, null);
-                addToScreen(serviceList);
+                //addToScreen(serviceList);
             }
 
             @Override
@@ -216,7 +216,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
                 if (serviceList.isEmpty()) {
                     attentionNothingFound();
                 } else {
-                    addToScreen(serviceList);
+                    //addToScreen(serviceList);
                 }
             }
 
@@ -249,7 +249,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
                 if (serviceList.isEmpty()) {
                     attentionNothingFound();
                 } else {
-                    addToScreen(serviceList);
+                    //addToScreen(serviceList);
                 }
             }
 
@@ -261,16 +261,16 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
     }
 
     // Вывод фрагмента сервиса на экран
-    private void addToScreen(ArrayList<Object[]> serviceList) {
+    /*private void addToScreen(ArrayList<Object[]> serviceList) {
         resultLayout.removeAllViews();
 
         for (Object[] serviceData : serviceList) {
-            foundServiceElement fElement = new foundServiceElement((Service) serviceData[1], (User) serviceData[2]);
+            FoundServiceElement fElement = new FoundServiceElement((Service) serviceData[1], (User) serviceData[2]);
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.add(R.id.resultSearchServiceLayout, fElement);
             transaction.commit();
         }
-    }
+    }*/
     // Получает id пользователя
     private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
