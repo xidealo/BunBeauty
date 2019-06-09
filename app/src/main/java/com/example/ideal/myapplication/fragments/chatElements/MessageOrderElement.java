@@ -215,12 +215,12 @@ public class MessageOrderElement extends Fragment implements View.OnClickListene
             }
         }
 
+        canceledBtn.setBackgroundResource(R.drawable.main_button_disabled);
         canceledBtn.setEnabled(false);
     }
 
     private void disableReviewForUser() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
 
         DatabaseReference myRef = database.getReference(USERS)
                 .child(userId)

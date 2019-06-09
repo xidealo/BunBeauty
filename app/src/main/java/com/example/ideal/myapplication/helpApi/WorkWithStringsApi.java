@@ -1,10 +1,14 @@
 package com.example.ideal.myapplication.helpApi;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class WorkWithStringsApi {
+
+    private static final String TAG = "DBInf";
 
     public WorkWithStringsApi(){
     }
@@ -30,9 +34,9 @@ public class WorkWithStringsApi {
         return convertedDate;
     }
 
-    static public String dateToUserFormat(String date) {
+    static public String convertDateToUserFormat(String date) {
 
-        SimpleDateFormat databaseFormat = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat databaseFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 
         Date parsingDate = null;
         try {
@@ -41,7 +45,7 @@ public class WorkWithStringsApi {
             e.printStackTrace();
         }
         String month = date.split("-")[1];
-        SimpleDateFormat userFormat = new SimpleDateFormat ("dd '" + monthToString(month) + "' hh:mm:ss");
+        SimpleDateFormat userFormat = new SimpleDateFormat ("dd '" + monthToString(month) + "' HH:mm:ss");
         String userDate = userFormat.format(parsingDate);
 
         if(userDate.charAt(0)=='0') {

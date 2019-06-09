@@ -21,9 +21,13 @@
     <color name="panelColor">#0093B7</color>
 
 
-    <!-- Style for logIn pages -->
+    <!-- Enabled colors -->
     <color name="rightBorder">#005F89</color>
     <color name="leftBorder">#007693</color>
+
+    <!-- Disabled colors -->
+    <color name="rightBorderDisabled">#80005F89</color>
+    <color name="leftBorderDisabled">#80007693</color>
 
     <!-- transparent -->
     <color name="transparent">#8C007693</color>
