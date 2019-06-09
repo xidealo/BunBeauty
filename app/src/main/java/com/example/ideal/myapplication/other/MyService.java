@@ -1,6 +1,5 @@
 package com.example.ideal.myapplication.other;
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
@@ -33,8 +33,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
-
-import static android.app.NotificationManager.IMPORTANCE_MAX;
 
 public class MyService extends Service implements Runnable {
 
@@ -83,6 +81,15 @@ public class MyService extends Service implements Runnable {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "MyService onCreate");
+
+        Notification notification = new NotificationCompat
+                .Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.bun_beauty)
+                .build();
+        startForeground(1, notification);
+
+        /* Intent hideIntent = new Intent(this, HideNotificationService.class);
+        startService(hideIntent); */
     }
    
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -93,18 +100,6 @@ public class MyService extends Service implements Runnable {
         timeApi = new WorkWithTimeApi();
         userId = getUserId();
         CDTimers = new HashMap<>();
-
-        Intent notificationIntent = new Intent(this, Profile.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
-
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("My Service")
-                .setContentText("lol")
-                .setContentIntent(pendingIntent)
-                .setPriority(IMPORTANCE_MAX)
-                .build();
-        startForeground(1, notification);
 
         startMyListener();
 
@@ -590,9 +585,9 @@ public class MyService extends Service implements Runnable {
 
             private void setTimerForReview(final String userId, final String orderId, String date,
                                            String time, final String commentedName, final boolean isForService) {
-                long timeLeftInMillis = 5000;/*timeApi.getMillisecondsStringDate(date + " " + time)
+                long timeLeftInMillis = timeApi.getMillisecondsStringDate(date + " " + time)
                         - timeApi.getSysdateLong()
-                        + 24*60*60*1000; // Время до сеанса + сутки*/
+                        + 24*60*60*1000; // Время до сеанса + сутки
 
                 if (timeLeftInMillis > 0) {
                     // Настраиваем таймер

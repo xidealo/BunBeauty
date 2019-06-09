@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class Authorization extends AppCompatActivity implements View.OnClickListener {
 
     private static final String PHONE_NUMBER = "Phone number";
+    private static final String PREVIOUS_ACTIVITY = "previous activity";
 
     private Button verifyBtn;
     private TextView enterPhoneText;
@@ -108,6 +109,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     private void goToVerifyPhone() {
         Intent intent = new Intent(this, VerifyPhone.class);
         intent.putExtra(PHONE_NUMBER, myPhoneNumber);
+        intent.putExtra(PREVIOUS_ACTIVITY, Authorization.class.getName());
         startActivity(intent);
     }
 }

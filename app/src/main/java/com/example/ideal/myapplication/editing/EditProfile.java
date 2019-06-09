@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,6 +26,7 @@ import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.logIn.CountryCodes;
+import com.example.ideal.myapplication.logIn.VerifyPhone;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.MyService;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,10 +59,13 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private final String TAG = "DBInf";
 
+    private static final String PHONE_NUMBER = "Phone number";
+    private static final String PREVIOUS_ACTIVITY = "previous activity";
+
     private static final String USERS = "users";
     private static final String USER_NAME = "name";
     private static final String USER_CITY = "city";
-    private static final String PHONE = "phone";
+    private static final String PHONE = "phoneNumber";
 
     private static final String AVATAR = "avatar";
     private static final String PHOTO_LINK = "photo link";
@@ -70,7 +73,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private final int PICK_IMAGE_REQUEST = 71;
 
     private String oldPhone;
-    private String phone;
+    private String phoneNumber;
     private Uri lastFilePath;
 
     private Button editBtn;
@@ -84,10 +87,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private EditText codeInput;
     //private ProgressBar progressBar;
     private Spinner codeSpinner;
-
-    private String phoneVerificationId;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks verificationCallbacks;
-    private PhoneAuthProvider.ForceResendingToken resendToken;
 
     private DBHelper dbHelper;
     private User user;
@@ -121,13 +120,13 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         user = new User();
         dbHelper = new DBHelper(this);
-        userId = getUserId();
+        userId = WorkWithLocalStorageApi.getUserId();
         WorkWithLocalStorageApi localStorageApi = new WorkWithLocalStorageApi(dbHelper.getReadableDatabase());
         int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
         int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
-        localStorageApi.setPhotoAvatar(userId,avatarImage,width,height);
+        localStorageApi.setPhotoAvatar(userId, avatarImage, width, height);
 
-        oldPhone = getUserPhone();
+        oldPhone = WorkWithLocalStorageApi.getUserPhone();
 
         setInformation();
 
@@ -162,7 +161,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             // не универсальная обрезка кода (возможно стоит хранить отдельно код)
             phoneInput.setText(phone.substring(2));
             codeSpinner.setSelection(Arrays.asList(CountryCodes.codes).indexOf(phone.substring(0, 2)));
-            // Arrays.asList(CountryCodes.codes).indexOf(phone.substring(0, 2))
         }
         cursor.close();
     }
@@ -175,25 +173,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 changeProfileData();
                 break;
 
-            case R.id.verifyCodeEditProfileBtn:
-
-                String code = codeInput.getText().toString().trim();
-                if (code.length() >= 6) {
-                    // подтверждаем код и если все хорошо, создаем юзера
-                    verifyCode(code);
-                }
-                break;
-
             case R.id.avatarEditProfileImage:
                 chooseImage();
                 break;
 
             case R.id.logOutEditProfileBtn:
                 goToLogIn();
-                break;
-
-            case R.id.resendCodeEditProfileBtn:
-                resendCode();
                 break;
 
             default:
@@ -207,40 +192,46 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                     + phoneInput.getText().toString().trim();
             user.setName(nameInput.getText().toString() + " " + surnameInput.getText().toString());
             user.setCity(cityInput.getText().toString());
+            saveChanges();
+
             if (oldPhone.equals(newPhone)) {
-                saveChanges();
+                goToProfile();
+                attentionInfoChanged();
             } else {
-                if (newPhone.length() >= 11) {
-                    phone = newPhone;
+                checkPhone(newPhone);
+            }
+        }
+    }
 
-                    Query userQuery = FirebaseDatabase
-                            .getInstance()
-                            .getReference(USERS)
-                            .orderByChild(PHONE)
-                            .equalTo(newPhone);
+    private void checkPhone(String newPhone) {
+        if (newPhone.length() >= 11) {
+            phoneNumber = newPhone;
 
-                    userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                            //такого номера нет
-                            if (userSnapshot.getValue() == null) {
-                                sendVerificationCode();
-                            } else {
-                                attentionThisUserAlreadyReg();
-                            }
-                        }
+            Query userQuery = FirebaseDatabase
+                    .getInstance()
+                    .getReference(USERS)
+                    .orderByChild(PHONE)
+                    .equalTo(newPhone);
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            attentionBadConnection();
-                        }
-                    });
-                } else {
-                    phoneInput.setError("Некорекный номер телефона");
-                    phoneInput.requestFocus();
+            userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                    //такого номера нет
+                    if (userSnapshot.getValue() == null) {
+                        goToVerifyPhone();
+                    } else {
+                        attentionThisUserAlreadyReg();
+                    }
                 }
 
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    attentionBadConnection();
+                }
+            });
+        } else {
+            phoneInput.setError("Некорекный номер телефона");
+            phoneInput.requestFocus();
         }
     }
 
@@ -307,142 +298,29 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 .getInstance()
                 .getReference(USERS)
                 .child(userId);
-
         Map<String, Object> items = new HashMap<>();
-
         items.put(USER_NAME, user.getName());
         items.put(USER_CITY, user.getCity());
-        if (phone != null) {
-            items.put(PHONE, phone);
-        }
         reference.updateChildren(items);
 
+        updateInfoInLocalStorage();
         if(lastFilePath!=null) {
             uploadImage(lastFilePath);
-            updateInfoInLocalStorage();
         }
-        else {
-            updateInfoInLocalStorage();
-            goToProfile();
-        }
-
-
-    }
-
-    private void sendVerificationCode(){
-        setUpVerificationCallbacks();
-
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phone,        // Phone number to verify
-                60,                 // Timeout duration
-                TimeUnit.SECONDS,   // Unit of timeout
-                this,               // Activity (for callback binding)
-                verificationCallbacks);
-    }
-
-    public void verifyCode(String code) {
-        //получаем ответ гугл
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(phoneVerificationId, code);
-        //заходим с айфоном и токеном
-        updatePhone(credential);
-    }
-
-    private void setUpVerificationCallbacks() {
-
-        verificationCallbacks =
-                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                    @Override
-                    public void onVerificationCompleted(PhoneAuthCredential credential) {
-                        //вызывается, если номер подтвержден
-                        codeInput.setText("");
-                        //выводит соообщение о том, что пользователь уже зарегестрирован
-                        //пользователь уже проверен, значит зарегестрирован
-                        attentionThisUserAlreadyReg();
-                    }
-
-                    @Override
-                    public void onVerificationFailed(FirebaseException e) {
-
-                        if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                            // Invalid request
-                            attentionInvalidPhoneNumber();
-                        } else if (e instanceof FirebaseTooManyRequestsException) {
-                            // SMS quota exceeded
-                            Log.d(TAG, "SMS Quota exceeded.");
-                        }
-                    }
-
-                    @Override
-                    public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken token) {
-                        //происходит, когда отослали код
-                        phoneVerificationId = verificationId;
-                        resendToken = token;
-
-                        codeInput.setVisibility(View.VISIBLE);
-                        resendButton.setVisibility(View.VISIBLE);
-                        verifyButton.setVisibility(View.VISIBLE);
-                    }
-                };
-    }
-
-
-    private void updatePhone(PhoneAuthCredential credential) {
-
-        FirebaseAuth.getInstance().getCurrentUser().updatePhoneNumber(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        //если введенный код совпадает с присланным кодом
-                        if (task.isSuccessful()) {
-                            saveChanges();
-                            goToProfile();
-                        } else {
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                attentionThisCodeWasWrong();
-                                // The verification code entered was invalid
-                            }
-                        }
-                    }
-                });
     }
 
     //Обновление информации в БД
     private void updateInfoInLocalStorage() {
-
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
-        if (phone != null) {
-            contentValues.put(DBHelper.KEY_CITY_USERS, phone);
-        }
 
         database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
                 DBHelper.KEY_ID + " = ?",
                 new String[]{userId});
     }
-
-    public void resendCode() {
-
-        String phoneNumber = phoneInput.getText().toString();
-
-        setUpVerificationCallbacks();
-
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNumber,
-                60,
-                TimeUnit.SECONDS,
-                this,
-                verificationCallbacks,
-                resendToken);
-    }
-
-    private String getUserPhone() {
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-    }
-
-
 
     private void chooseImage() {
         //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
@@ -560,12 +438,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private  String getUserId(){
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
-
     private void goToProfile() {
         super.onBackPressed();
+    }
+
+    private void attentionInfoChanged() {
+        Toast.makeText(this,"Профиль обновлён",Toast.LENGTH_SHORT).show();
     }
 
     private void attentionBadConnection() {
@@ -575,14 +453,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private void attentionThisUserAlreadyReg(){
         Toast.makeText(
                 this,
-                "Данный пользователь уже зарегестрирован.",
-                Toast.LENGTH_SHORT).show();
-    }
-
-    private void attentionInvalidPhoneNumber(){
-        Toast.makeText(
-                this,
-                "Неправильный номер",
+                "Пользователь с таким номером уже зарегестрирован",
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -596,10 +467,10 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         startActivity(intent);
     }
 
-    private void attentionThisCodeWasWrong(){
-        Toast.makeText(
-                this,
-                "Код введен неверно",
-                Toast.LENGTH_SHORT).show();
+    private void goToVerifyPhone() {
+        Intent intent = new Intent(this, VerifyPhone.class);
+        intent.putExtra(PHONE_NUMBER, phoneNumber);
+        intent.putExtra(PREVIOUS_ACTIVITY, EditProfile.class.getName());
+        startActivity(intent);
     }
 }

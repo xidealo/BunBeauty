@@ -371,6 +371,10 @@ public class WorkWithLocalStorageApi {
         return timeId;
     }
 
+    static public String getUserPhone() {
+        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+    }
+
     static public String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }

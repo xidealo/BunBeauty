@@ -44,6 +44,10 @@
         <service
             android:name=".other.MyService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name=".other.HideNotificationService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

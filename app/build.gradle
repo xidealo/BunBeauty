@@ -18,6 +18,10 @@ android {
         }
     }
     buildToolsVersion '28.0.3'
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
@@ -35,4 +39,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.6.2'
     implementation 'com.google.firebase:firebase-storage:16.0.5'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.github.euzee:serviceManager:1.0.3'
 }
