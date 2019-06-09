@@ -81,7 +81,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private LinearLayout ratingLL;
     private LinearLayout imageFeedLayout;
     private LinearLayout premiumLayout;
-    private LinearLayout premiumIconLayout;
+    private LinearLayout topPanelLayout;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private boolean isMyService;
     private boolean isPremiumLayoutSelected;
@@ -113,10 +113,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         ratingLL = findViewById(R.id.ratingGuestServiceLayout);
         premiumLayout = findViewById(R.id.premiumGuestServiceLayout);
         imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
-        premiumIconLayout = findViewById(R.id.premiumIconGuestServiceLayout);
+        LinearLayout premiumIconLayout = findViewById(R.id.premiumIconGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
+        topPanelLayout = findViewById(R.id.headerGuestServiceLayout);
 
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
@@ -345,6 +346,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         PanelBuilder panelBuilder = new PanelBuilder();
         FragmentManager manager = getSupportFragmentManager();
         getInfoAboutService(serviceId);
+
+        topPanelLayout.removeAllViews();
+
         panelBuilder.buildHeader(manager, serviceName, R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
         panelBuilder.buildFooter(manager, R.id.footerGuestServiceLayout);
         imageFeedLayout.removeAllViews();

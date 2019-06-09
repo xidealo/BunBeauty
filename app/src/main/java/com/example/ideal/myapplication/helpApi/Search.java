@@ -162,7 +162,7 @@ public class Search {
         int limit = 3;
 
         if (premiumList.size() <= limit) {
-            serviceList.addAll(premiumList);
+            serviceList.addAll(0,premiumList);
         } else {
             for (int i = 0; i < limit; i++) {
                 Object[] premiumService;

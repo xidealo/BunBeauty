@@ -37,11 +37,11 @@ public class MessageReviewElement implements View.OnClickListener {
         boolean isCanceled = message.getIsCanceled();
         messageType = message.getType();
         messageRatingReview = message.getRatingReview();
-        
+
         // содержание сообщения
         String messageUserName = message.getUserName();
         String messageServiceName = message.getServiceName();
-        String messageWorkingDay= message.getWorkingDay();
+        String messageWorkingDay = message.getWorkingDay();
         String messageWorkingTime = message.getWorkingTime();
         String messageTime = message.getMessageTime();
         this.context = context;
@@ -50,31 +50,31 @@ public class MessageReviewElement implements View.OnClickListener {
 
         if (messageType.equals(REVIEW_FOR_USER)) {
             text =
-                    messageWorkingDay + " в " + messageWorkingTime
+                    "(" + messageTime + ") \n"
+                            + messageWorkingDay + " в " + messageWorkingTime
                             + " Вы предоставляли услугу " + messageServiceName
                             + " пользователю " + messageUserName
                             + ".\nПожалуйста, оставьте отзыв об этом пользователе."
                             + " Вы также сможете увидеть отзыв, о себе,"
-                            + " как только пользователь оставит его или пройдет 72 часа."
-                            + "\n (" + messageTime + ")";
+                            + " как только пользователь оставит его или пройдет 72 часа.";
         } else {
             if (isCanceled) {
                 text =
-                        "Пользователь " + messageUserName
+                        "(" + messageTime + ") \n"
+                                + "Пользователь " + messageUserName
                                 + " отказал Вам в придоставлении услуги " + messageServiceName
                                 + " в последний момент. Сеанс на " + messageWorkingDay
                                 + " в " + messageWorkingTime
-                                + " отменён. Вы можете оценить качество данного сервиса."
-                                + "\n (" + messageTime + ")";
+                                + " отменён. Вы можете оценить качество данного сервиса.";
             } else {
                 text =
-                        messageWorkingDay + " в " + messageWorkingTime
+                        "(" + messageTime + ") \n"
+                                + messageWorkingDay + " в " + messageWorkingTime
                                 + " Вы получали услугу " + messageServiceName
                                 + " у пользователя " + messageUserName
                                 + ".\nПожалуйста, оставьте отзыв о данной услуге, чтобы улучшить качество сервиса."
                                 + " Вы также сможете увидеть отзыв, о себе,"
-                                + " как только пользователь оставит его или пройдет 72 часа."
-                                + "\n (" + messageTime + ")";
+                                + " как только пользователь оставит его или пройдет 72 часа.";
             }
         }
         onViewCreated(view);
@@ -95,7 +95,7 @@ public class MessageReviewElement implements View.OnClickListener {
         LinearLayout layout = view.findViewById(R.id.messageOrderElementLayout);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(10,10,10,10);
+        params.setMargins(10, 10, 10, 10);
         layout.setLayoutParams(params);
 
         setData();
