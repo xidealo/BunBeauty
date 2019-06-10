@@ -28,8 +28,8 @@ public class MessageReviewElement implements View.OnClickListener {
     private String reviewId;
 
     private TextView messageText;
-    private Button reviewBtn;
     private Context context;
+    private View view;
 
     public MessageReviewElement(Message message, View view, Context context) {
 
@@ -45,6 +45,7 @@ public class MessageReviewElement implements View.OnClickListener {
         String messageWorkingTime = message.getWorkingTime();
         String messageTime = message.getMessageTime();
         this.context = context;
+        this.view = view;
 
         reviewId = message.getReviewId();
 
@@ -77,12 +78,15 @@ public class MessageReviewElement implements View.OnClickListener {
                                 + " как только пользователь оставит его или пройдет 72 часа.";
             }
         }
+    }
+
+    public void createElement(){
         onViewCreated(view);
     }
 
     private void onViewCreated(@NonNull View view) {
         messageText = view.findViewById(R.id.messageMessageOrderElementText);
-        reviewBtn = view.findViewById(R.id.canceledMessageOrderElementBtn);
+        Button reviewBtn = view.findViewById(R.id.canceledMessageOrderElementBtn);
         reviewBtn.setText("ОЦЕНИТЬ");
         // Проверяем стоит ли оценка
         if (isRate()) {

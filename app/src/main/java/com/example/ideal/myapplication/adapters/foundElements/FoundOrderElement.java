@@ -24,6 +24,7 @@ public class FoundOrderElement implements View.OnClickListener {
     private String orderDate;
     private String orderTime;
     private Context context;
+    private View view;
     private WorkWithStringsApi workWithStringsApi;
 
     public FoundOrderElement(Order order, View view, Context context) {
@@ -32,7 +33,11 @@ public class FoundOrderElement implements View.OnClickListener {
         orderDate = order.getOrderDate();
         orderTime = order.getOrderTime();
         this.context = context;
+        this.view = view;
         workWithStringsApi = new WorkWithStringsApi();
+    }
+
+    public void createElement(){
         onViewCreated(view);
     }
 

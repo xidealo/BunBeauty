@@ -59,6 +59,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
         void bind(Order order) {
             FoundOrderElement foundOrderElement = new FoundOrderElement(order,view,context);
+            foundOrderElement.createElement();
         }
     }
 }

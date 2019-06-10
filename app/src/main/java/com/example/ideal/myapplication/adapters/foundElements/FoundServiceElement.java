@@ -23,7 +23,7 @@ import com.example.ideal.myapplication.searchService.GuestService;
 
 public class FoundServiceElement implements View.OnClickListener {
 
-    final String SERVICE_ID = "service id";
+    private final static String SERVICE_ID = "service id";
     private static final String TAG = "DBInf";
 
     private TextView nameUserText;
@@ -41,9 +41,9 @@ public class FoundServiceElement implements View.OnClickListener {
     private String cityString;
     private String nameServiceString;
     private String costString;
-    private WorkWithStringsApi workWithStringsApi;
     private String userId;
     private Context context;
+    private View view;
     private boolean isPremium;
 
     public FoundServiceElement(Service service, User user, View view, Context context) {
@@ -54,12 +54,14 @@ public class FoundServiceElement implements View.OnClickListener {
         costString = service.getCost();
         userId = user.getId();
         isPremium = service.getIsPremium();
-        workWithStringsApi = new WorkWithStringsApi();
         this.context = context;
+        this.view= view;
         avgRating = service.getAverageRating();
-        onViewCreated(view);
     }
 
+    public void createElement(){
+        onViewCreated(view);
+    }
     public void onViewCreated(@NonNull View view) {
 
         layout = view.findViewById(R.id.foundServiceElementLayout);
@@ -98,13 +100,13 @@ public class FoundServiceElement implements View.OnClickListener {
         double inches = getScreenInches();
         //устанавливаем сокращения названий и имен в зависимости от размера экрана
         if(inches<5){
-            nameUserText.setText(workWithStringsApi.cutString(nameUserString, 10));
-            nameServiceText.setText(workWithStringsApi.cutString(nameServiceString.toUpperCase(), 14));
+            nameUserText.setText(WorkWithStringsApi.cutString(nameUserString, 10));
+            nameServiceText.setText(WorkWithStringsApi.cutString(nameServiceString.toUpperCase(), 14));
         }else{
-            nameUserText.setText(workWithStringsApi.cutString(nameUserString, 10));
-            nameServiceText.setText(workWithStringsApi.cutString(nameServiceString.toUpperCase(), 18));
+            nameUserText.setText(WorkWithStringsApi.doubleCapitalSymbols(WorkWithStringsApi.cutString(nameUserString, 10)));
+            nameServiceText.setText(WorkWithStringsApi.cutString(nameServiceString.toUpperCase(), 18));
         }
-        cityText.setText(cityString.substring(0, 1).toUpperCase() + cityString.substring(1).toLowerCase());
+        cityText.setText(WorkWithStringsApi.firstCapitalSymbol(cityString));
         costText.setText("Цена \n" + costString);
         ratingBar.setRating(avgRating);
 

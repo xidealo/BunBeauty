@@ -59,6 +59,7 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogView
 
         void bind(Dialog dialog) {
             DialogElement dialogElement = new DialogElement(dialog,view,context);
+            dialogElement.createElement();
         }
     }
 }

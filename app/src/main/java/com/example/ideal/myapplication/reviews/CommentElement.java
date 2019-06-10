@@ -42,7 +42,6 @@ public class CommentElement extends Fragment implements View.OnClickListener {
     private String review;
     private String serviceName;
     private float rating;
-    private WorkWithStringsApi workWithStringsApi;
 
     public CommentElement() {
     }
@@ -54,7 +53,6 @@ public class CommentElement extends Fragment implements View.OnClickListener {
         review = comment.getReview();
         rating = comment.getRating();
         serviceName = comment.getServiceName();
-        workWithStringsApi = new WorkWithStringsApi();
     }
 
     @Override
@@ -82,15 +80,15 @@ public class CommentElement extends Fragment implements View.OnClickListener {
 
     private void setData() {
         String abbreviatedReview;
-        abbreviatedReview = workWithStringsApi.cutString(review,25);
+        abbreviatedReview = WorkWithStringsApi.cutString(review,25);
 
-        userNameText.setText(workWithStringsApi.cutString(userName.toUpperCase(),18));
+        userNameText.setText(WorkWithStringsApi.cutString(WorkWithStringsApi.doubleCapitalSymbols(userName),18));
         reviewText.setText(abbreviatedReview);
         ratingBar.setRating(rating);
 
         //если там не лежит константа, а лежит имя сервиса
         if(!serviceName.equals(REVIEW_FOR_USER)){
-            serviceNameText.setText(workWithStringsApi.cutString(serviceName,8));
+            serviceNameText.setText(WorkWithStringsApi.cutString(serviceName,8));
             serviceNameText.setVisibility(View.VISIBLE);
         }
 

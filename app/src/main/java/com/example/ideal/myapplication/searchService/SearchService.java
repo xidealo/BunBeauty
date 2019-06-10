@@ -124,9 +124,14 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
             case R.id.findServiceSearchServiceText:
                 if(!searchLineInput.getText().toString().toLowerCase().equals("")) {
                     clearArrays();
+                    recyclerView.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
                     search();
                 }
                 else {
+                    recyclerView.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
+                    clearArrays();
                     showServicesInHomeTown();
                 }
                 break;

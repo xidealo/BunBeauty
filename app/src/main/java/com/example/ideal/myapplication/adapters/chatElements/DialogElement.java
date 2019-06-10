@@ -13,6 +13,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.chat.Messages;
 import com.example.ideal.myapplication.fragments.objects.Dialog;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.other.DBHelper;
 
 public class DialogElement implements View.OnClickListener {
@@ -26,11 +27,16 @@ public class DialogElement implements View.OnClickListener {
     private String userId;
     private static final String TAG = "DBInf";
     private Context context;
+    private View view;
 
     public DialogElement(Dialog dialog, View view, Context context) {
         userName = dialog.getUserName();
         userId= dialog.getUserId();
         this.context = context;
+        this.view = view;
+    }
+
+    public void createElement(){
         onViewCreated(view);
     }
 
@@ -49,7 +55,7 @@ public class DialogElement implements View.OnClickListener {
     }
 
     private void setData() {
-        nameText.setText(userName);
+        nameText.setText(WorkWithStringsApi.doubleCapitalSymbols(userName));
         DBHelper dbHelper = new DBHelper(context);
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();

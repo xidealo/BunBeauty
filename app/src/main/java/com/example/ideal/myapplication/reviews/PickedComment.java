@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.Profile;
 import com.google.firebase.database.DataSnapshot;
@@ -72,7 +73,7 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
         String review = getIntent().getStringExtra(REVIEW);
         float rating = getIntent().getFloatExtra(RATING, 0);
 
-        userNameText.setText(userName);
+        userNameText.setText(WorkWithStringsApi.doubleCapitalSymbols(userName));
         reviewText.setText(review);
         ratingBar.setRating(rating);
 

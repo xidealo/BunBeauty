@@ -62,8 +62,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         void bind(Message message){
             if(message.getStatus().equals(ORDER_STATUS)){
                 MessageOrderElement messageOrderElement = new MessageOrderElement(message, view, context);
+                messageOrderElement.createElement();
             }else {
                 MessageReviewElement messageReviewElement = new MessageReviewElement(message,view,context);
+                messageReviewElement.createElement();
             }
         }
     }

@@ -88,7 +88,8 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
         String category;
         Button btn = (Button) v;
-
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
         serviceList.clear();
         userList.clear();
 

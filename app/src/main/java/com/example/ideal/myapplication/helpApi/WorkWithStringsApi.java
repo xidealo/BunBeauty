@@ -8,7 +8,7 @@ public class WorkWithStringsApi {
 
     public WorkWithStringsApi(){
     }
-    public String cutString (String text, int limit) {
+    static public String cutString (String text, int limit) {
         if (text.length() > limit) {
             return text.substring(0, limit).trim() + "...";
         } else {
@@ -25,9 +25,7 @@ public class WorkWithStringsApi {
         }
         String month = monthToNumber(arrDate[1]);
 
-        String convertedDate = year + "-" + month + "-" + day;
-
-        return convertedDate;
+        return year + "-" + month + "-" + day;
     }
 
     static public String dateToUserFormat(String date) {
@@ -111,4 +109,14 @@ public class WorkWithStringsApi {
         return "";
     }
 
+    static public String firstCapitalSymbol(String text){
+        return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
+    }
+    public static String doubleCapitalSymbols(String text){
+        String[] names = text.split(" ");
+        for (int i = 0; i < names.length; i++) {
+            names[i] = names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
+        }
+        return names[0] + " " + names[1];
+    }
 }

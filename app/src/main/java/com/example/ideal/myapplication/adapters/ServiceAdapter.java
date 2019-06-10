@@ -63,6 +63,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
 
         void bind(Service service, User user) {
             FoundServiceElement foundServiceElement = new FoundServiceElement(service,user,view,context);
+            foundServiceElement.createElement();
         }
     }
 }

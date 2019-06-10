@@ -64,6 +64,7 @@ public class MessageOrderElement implements View.OnClickListener {
 
     private DBHelper dbHelper;
     private Context context;
+    private View view;
 
     public MessageOrderElement(Message message, View view, Context context) {
         // для условий
@@ -85,6 +86,7 @@ public class MessageOrderElement implements View.OnClickListener {
         orderId = message.getOrderId();
         reviewId = message.getReviewId();
         this.context = context;
+        this.view = view;
         dbHelper = new DBHelper(context);
 
         if (messageIsCanceled) {
@@ -117,6 +119,8 @@ public class MessageOrderElement implements View.OnClickListener {
                         + " в " + messageWorkingTime;
             }
         }
+    }
+    public void createElement(){
         onViewCreated(view);
     }
 
