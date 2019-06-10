@@ -92,31 +92,21 @@
                         android:popupBackground="@color/white" />
                 </LinearLayout>
             </LinearLayout>
-
-
         </LinearLayout>
+        <ProgressBar
+            android:id="@+id/progressBarSearchService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint= "@color/panelColor"
+            android:layout_gravity="center"/>
 
-        <ScrollView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/resultsSearchServiceRecycleView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp">
 
-            <LinearLayout
-                android:id="@+id/resultSearchServiceLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <ProgressBar
-                    android:id="@+id/progressBarSearchService"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:indeterminateTint= "@color/panelColor"
-                    android:layout_gravity="center"
-                    />
-
-            </LinearLayout>
-        </ScrollView>
+        </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 

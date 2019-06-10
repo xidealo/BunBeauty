@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.adapters.ServiceAdapter;
 import com.example.ideal.myapplication.adapters.foundElements.FoundServiceElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
@@ -50,12 +53,13 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
 
     private EditText searchLineInput;
 
-    //Вертикальный лэйаут
-    private LinearLayout resultLayout;
-    private ProgressBar progressBar;
+    private ArrayList<Service> serviceList;
+    private ArrayList<User> userList;
+    private RecyclerView recyclerView;
+    private ServiceAdapter serviceAdapter;
 
+    private ProgressBar progressBar;
     private DBHelper dbHelper;
-    private FragmentManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +69,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
         TextView findBtn = findViewById(R.id.findServiceSearchServiceText);
 
         dbHelper = new DBHelper(this);
-        manager = getSupportFragmentManager();
+        FragmentManager manager = getSupportFragmentManager();
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerSearchServiceLayout);
@@ -80,8 +84,15 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
         searchBySpinner.setPrompt(NAME_OF_SERVICE);
 
         searchLineInput = findViewById(R.id.searchLineSearchServiceInput);
-        resultLayout = findViewById(R.id.resultSearchServiceLayout);
         progressBar = findViewById(R.id.progressBarSearchService);
+
+        //RV
+        serviceList = new ArrayList<>();
+        userList = new ArrayList<>();
+
+        recyclerView = findViewById(R.id.resultsSearchServiceRecycleView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
         showServicesInHomeTown();
 
@@ -111,9 +122,8 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.findServiceSearchServiceText:
-                resultLayout.removeAllViews();
-                resultLayout.addView(progressBar);
                 if(!searchLineInput.getText().toString().toLowerCase().equals("")) {
+                    clearArrays();
                     search();
                 }
                 else {
@@ -171,8 +181,15 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
-                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, null, null, null, null);
-                //addToScreen(serviceList);
+                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot, null, null, null, null);
+                for (Object[] serviceData : commonList) {
+                    serviceList.add((Service) serviceData[1]);
+                    userList.add((User) serviceData[2]);
+                }
+                serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
+                recyclerView.setAdapter(serviceAdapter);
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -183,7 +200,6 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
     }
 
     private void search() {
-        Log.d(TAG, "search: " + searchBy);
         switch (searchBy) {
             case "название сервиса":
                 searchByNameService();
@@ -212,12 +228,20 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
                     return;
                 }
 
-                ArrayList<Object[]> serviceList = search.getServicesOfUsers(usersSnapshot, enteredText, null,null, null);
-                if (serviceList.isEmpty()) {
+                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot, enteredText, null,null, null);
+                for (Object[] serviceData : commonList) {
+                    serviceList.add((Service) serviceData[1]);
+                    userList.add((User) serviceData[2]);
+                }
+                if (commonList.isEmpty()) {
                     attentionNothingFound();
                 } else {
-                    //addToScreen(serviceList);
+                    serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
+                    recyclerView.setAdapter(serviceAdapter);
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                 }
+
             }
 
             @Override
@@ -243,13 +267,18 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
                     return;
                 }
 
-                ArrayList<Object[]> serviceList;
-                serviceList = search.getServicesOfUsers(usersSnapshot,null, enteredText, city, null);
-                Log.d(TAG, "getChildrenCount: " + usersSnapshot.getChildrenCount());
+                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot,null, enteredText, city, null);
+                for (Object[] serviceData : commonList) {
+                    serviceList.add((Service) serviceData[1]);
+                    userList.add((User) serviceData[2]);
+                }
                 if (serviceList.isEmpty()) {
                     attentionNothingFound();
                 } else {
-                    //addToScreen(serviceList);
+                    serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
+                    recyclerView.setAdapter(serviceAdapter);
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -260,17 +289,11 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    // Вывод фрагмента сервиса на экран
-    /*private void addToScreen(ArrayList<Object[]> serviceList) {
-        resultLayout.removeAllViews();
+    private void clearArrays() {
+        serviceList.clear();
+        userList.clear();
+    }
 
-        for (Object[] serviceData : serviceList) {
-            FoundServiceElement fElement = new FoundServiceElement((Service) serviceData[1], (User) serviceData[2]);
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.resultSearchServiceLayout, fElement);
-            transaction.commit();
-        }
-    }*/
     // Получает id пользователя
     private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
