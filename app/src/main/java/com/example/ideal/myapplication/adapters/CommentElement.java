@@ -1,15 +1,10 @@
-package com.example.ideal.myapplication.reviews;
+package com.example.ideal.myapplication.adapters;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -20,8 +15,9 @@ import com.example.ideal.myapplication.fragments.objects.Comment;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.reviews.PickedComment;
 
-public class CommentElement extends Fragment implements View.OnClickListener {
+public class CommentElement implements View.OnClickListener {
 
     private static final String TAG = "DBInf";
 
@@ -41,27 +37,25 @@ public class CommentElement extends Fragment implements View.OnClickListener {
     private String userName;
     private String review;
     private String serviceName;
+    private Context context;
+    private View view;
     private float rating;
 
-    public CommentElement() {
-    }
-
-    @SuppressLint("ValidFragment")
-    public CommentElement(Comment comment) {
+    public CommentElement(Comment comment, View view, Context context) {
         userId = comment.getUserId();
         userName = comment.getUserName();
         review = comment.getReview();
         rating = comment.getRating();
         serviceName = comment.getServiceName();
+        this.context = context;
+        this.view= view;
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.comment_element, null);
+    public void createElement(){
+        onViewCreated(view);
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    private void onViewCreated(@NonNull View view) {
 
         userNameText = view.findViewById(R.id.nameCommentElementText);
         reviewText = view.findViewById(R.id.reviewCommentElementText);
@@ -70,11 +64,13 @@ public class CommentElement extends Fragment implements View.OnClickListener {
         serviceNameText = view.findViewById(R.id.serviceNameCommentElementText);
 
         LinearLayout layout = view.findViewById(R.id.commentElementLayout);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-        params.setMargins(10,10,10,15);
-        layout.setLayoutParams(params);
-        layout.setOnClickListener(this);
 
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(10, 10, 10, 10);
+        layout.setLayoutParams(params);
+
+        layout.setOnClickListener(this);
         setData();
     }
 
@@ -92,13 +88,13 @@ public class CommentElement extends Fragment implements View.OnClickListener {
             serviceNameText.setVisibility(View.VISIBLE);
         }
 
-        DBHelper dbHelper = new DBHelper(getContext());
+        DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
-        int width = getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
-        int height = getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
+        int width = context.getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
+        int height = context.getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
         workWithLocalStorageApi.setPhotoAvatar(userId, avatarImage, width, height);
     }
 
@@ -108,11 +104,11 @@ public class CommentElement extends Fragment implements View.OnClickListener {
     }
 
     private void goToThisComment() {
-        Intent intent = new Intent(this.getContext(), PickedComment.class);
+        Intent intent = new Intent(context, PickedComment.class);
         intent.putExtra(USER_ID, userId);
         intent.putExtra(USER_NAME, userName);
         intent.putExtra(REVIEW, review);
         intent.putExtra(RATING, rating);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 }

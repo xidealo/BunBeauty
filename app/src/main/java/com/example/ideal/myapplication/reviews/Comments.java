@@ -7,9 +7,15 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.adapters.CommentAdapter;
+import com.example.ideal.myapplication.adapters.CommentElement;
+import com.example.ideal.myapplication.adapters.DialogAdapter;
 import com.example.ideal.myapplication.fragments.objects.Comment;
+import com.example.ideal.myapplication.fragments.objects.Dialog;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -18,6 +24,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class Comments extends AppCompatActivity {
 
@@ -36,6 +44,10 @@ public class Comments extends AppCompatActivity {
     private FragmentManager manager;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
 
+    private ArrayList<Comment> commentList;
+    private RecyclerView recyclerView;
+    private CommentAdapter commentAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +55,11 @@ public class Comments extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
         manager = getSupportFragmentManager();
+
+        recyclerView = findViewById(R.id.resultsCommentsRecycleView);
+        commentList = new ArrayList<>();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
@@ -150,7 +167,9 @@ public class Comments extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                     comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
-                    addCommentToScreen(comment);
+                    commentList.add(comment);
+                    commentAdapter = new CommentAdapter(commentList.size(),commentList);
+                    recyclerView.setAdapter(commentAdapter);
                 }
 
                 @Override
@@ -184,7 +203,10 @@ public class Comments extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                     comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
-                    addCommentToScreen(comment);
+
+                    commentList.add(comment);
+                    commentAdapter = new CommentAdapter(commentList.size(),commentList);
+                    recyclerView.setAdapter(commentAdapter);
                 }
 
                 @Override
@@ -271,11 +293,4 @@ public class Comments extends AppCompatActivity {
         panelBuilder.buildHeader(manager, "Отзывы", R.id.headerCommentsLayout);
     }
 
-    private void addCommentToScreen(Comment comment) {
-        CommentElement cElement = new CommentElement(comment);
-
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.mainCommentsLayout, cElement);
-        transaction.commit();
-    }
 }
