@@ -112,7 +112,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
             btn.setTag(R.string.selectedId, true);
             category = btn.getText().toString();
         }
-
         createMainScreen(category);
     }
 
@@ -137,9 +136,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
             categoryLayout.addView(categoriesBtns[i]);
         }
     }
-
-
-
+    
     @Override
     protected void onResume() {
         super.onResume();
