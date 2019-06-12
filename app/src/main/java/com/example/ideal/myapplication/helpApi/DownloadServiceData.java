@@ -245,7 +245,6 @@ public class DownloadServiceData {
                 updatedTime = workWithTimeApi.getDateInFormatYMDHMS(new Date(messageDateLong - 3600000 * 3));
             }
         }
-
         cursor.close();
         return updatedTime;
     }
@@ -310,8 +309,6 @@ public class DownloadServiceData {
             // Добавляем данный сервис в SQLite
             localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
-        Log.d(TAG, "addServiceInLocalStorage: " + serviceId);
-
         // Добавление рабочего времени данного сервиса
         addWorkingDaysInLocalStorage(serviceSnapshot.child(WORKING_DAYS), serviceId);
     }

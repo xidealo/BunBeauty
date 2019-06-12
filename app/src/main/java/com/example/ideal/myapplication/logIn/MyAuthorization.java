@@ -13,8 +13,11 @@ import android.support.v7.recyclerview.extensions.AsyncDifferConfig;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.LoadingProfileData;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.MyService;
 import com.example.ideal.myapplication.other.Profile;
@@ -25,6 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Date;
 
 public class MyAuthorization {
 
@@ -37,6 +42,14 @@ public class MyAuthorization {
     private static final String SUBSCRIPTIONS = "subscriptions";
     private static final String SUBSCRIBERS = "subscribers";
     private static final String USER_ID = "user id";
+    private static final String IS_CANCELED = "is canceled";
+
+    private static final String WORKING_DAY_ID = "working day id";
+    private static final String WORKING_TIME_ID = "working time id";
+    private static final String WORKING_DAYS = "working days";
+    private static final String WORKING_TIME = "working time";
+    private static final String TIME = "time";
+    private static final String DATE = "date";
 
     private static final String PHONE = "phone";
     private static final String NAME = "name";
@@ -85,8 +98,7 @@ public class MyAuthorization {
                         // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
                         goToRegistration();
                     } else {
-                        //clearSQLite();
-                        Log.d(TAG, "update info ");
+                        clearSQLite();
 
                         SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
                         LoadingProfileData.loadUserInfo(userSnapshot, localDatabase);
@@ -251,8 +263,11 @@ public class MyAuthorization {
         final long childrenCount = _ordersSnapshot.getChildrenCount();
         for (final DataSnapshot orderSnapshot : _ordersSnapshot.getChildren()) {
             //получаем "путь" к мастеру, на сервис которого мы записаны
+            final String orderId = orderSnapshot.getKey();
             final String workerId = String.valueOf(orderSnapshot.child(WORKER_ID).getValue());
             final String serviceId = String.valueOf(orderSnapshot.child(SERVICE_ID).getValue());
+            final String workingDayId = String.valueOf(orderSnapshot.child(WORKING_DAY_ID).getValue());
+            final String workingTimeId = String.valueOf(orderSnapshot.child(WORKING_TIME_ID).getValue());
             DatabaseReference serviceReference = FirebaseDatabase.getInstance()
                     .getReference(USERS)
                     .child(workerId)
@@ -263,6 +278,30 @@ public class MyAuthorization {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot serviceSnapshot) {
 
+                    //получаем данные для нашего ордера
+                    String serviceName = serviceSnapshot.child(NAME).getValue(String.class);
+                    addUserServicesInLocalStorage(serviceId,serviceName,workerId);
+                    //поток 2
+                    DataSnapshot daySnapshot = serviceSnapshot.child(WORKING_DAYS)
+                            .child(workingDayId);
+                    addWorkingDaysInLocalStorage(daySnapshot,serviceId);
+
+                    //поток 3
+                    DataSnapshot timeSnapshot = serviceSnapshot.child(WORKING_DAYS)
+                            .child(workingDayId)
+                            .child(WORKING_TIME)
+                            .child(workingTimeId);
+                    addTimeInLocalStorage(timeSnapshot,workingDayId);
+
+                    //поток 4
+                    DataSnapshot serviceOrderSnapshot = serviceSnapshot.child(WORKING_DAYS)
+                            .child(workingDayId)
+                            .child(WORKING_TIME)
+                            .child(workingTimeId)
+                            .child(ORDERS)
+                            .child(orderId);
+
+                    addOrdersInLocalStorage(serviceOrderSnapshot, workingTimeId);
 
                     counter++;
                     if (counter == childrenCount) {
@@ -277,6 +316,129 @@ public class MyAuthorization {
             });
 
         }
+    }
+
+    private void addUserServicesInLocalStorage(String serviceId, String serviceName,String workerId) {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_NAME_SERVICES, serviceName);
+        contentValues.put(DBHelper.KEY_USER_ID, workerId);
+
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
+
+        // Проверка есть ли такой сервис в SQLite
+        if (hasSomeData) {
+            database.update(
+                    DBHelper.TABLE_CONTACTS_SERVICES,
+                    contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{serviceId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, serviceId);
+            database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
+        }
+
+    }
+
+    private void addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId) {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        String dayId = workingDaySnapshot.getKey();
+        String date = String.valueOf(workingDaySnapshot.child(DATE).getValue());
+        contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
+        contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
+
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_WORKING_DAYS, dayId);
+        if (hasSomeData) {
+            database.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{dayId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, dayId);
+            database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
+        }
+    }
+
+    private void addTimeInLocalStorage(DataSnapshot timeSnapshot, String workingDayId) {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        String timeId = timeSnapshot.getKey();
+        contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, String.valueOf(timeSnapshot.child(TIME).getValue()));
+        contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
+
+        boolean hasSomeData = WorkWithLocalStorageApi
+                .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
+
+        if (hasSomeData) {
+            database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{timeId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, timeId);
+            database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
+        }
+    }
+    private void addOrdersInLocalStorage(DataSnapshot orderSnapshot, String timeId) {
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        String orderId = orderSnapshot.getKey();
+        String userId = String.valueOf(orderSnapshot.child(USER_ID).getValue());
+
+        contentValues.put(DBHelper.KEY_ID, orderId);
+        contentValues.put(DBHelper.KEY_USER_ID, userId);
+        contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, String.valueOf(orderSnapshot.child(IS_CANCELED).getValue()));
+        contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, timeId);
+
+        String updatedTime = updateMessageTime(timeId);
+        if (!updatedTime.equals("")) {
+            contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, updatedTime);
+        } else {
+            contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, String.valueOf(orderSnapshot.child(TIME).getValue()));
+        }
+
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_ORDERS, orderId);
+
+        if (hasSomeData) {
+            database.update(DBHelper.TABLE_ORDERS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{orderId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, orderId);
+            database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
+        }
+    }
+
+    private String updateMessageTime(String timeId) {
+        String updatedTime = "";
+
+        Cursor cursor = WorkWithLocalStorageApi.getServiceCursorByTimeId(timeId);
+
+        if (cursor.moveToFirst()) {
+            int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
+            int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
+
+            String time = cursor.getString(indexTime);
+            String date = cursor.getString(indexDate);
+
+            WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
+            //3600000 * 24 = 24 часа
+            String commonDate = date + " " + time;
+            Long messageDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000 * 24;
+            Long sysdate = workWithTimeApi.getSysdateLong();
+
+            if (sysdate > messageDateLong) {
+                // вычитаем 3 часа, т.к. метод работает с датой по Гринвичу
+                updatedTime = WorkWithTimeApi.getDateInFormatYMDHMS(new Date(messageDateLong - 3600000 * 3));
+            }
+        }
+        cursor.close();
+        return updatedTime;
     }
 
     // Удаляет все данные о пользователях, сервисах, рабочих днях и рабочем времени из SQLite
