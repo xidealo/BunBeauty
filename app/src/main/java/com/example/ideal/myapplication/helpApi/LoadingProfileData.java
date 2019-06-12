@@ -45,22 +45,18 @@ public class LoadingProfileData {
     private static final String IS_CANCELED = "is canceled";
 
     private static SQLiteDatabase localDatabase;
-    private static DataSnapshot userSnapshot;
-    private static Thread photoThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            loadPhotos(userSnapshot);
-        }
-    });
+    private static Thread photoThread;
+    //private static DataSnapshot userSnapshot;
 
-    /* public LoadingProfileData(SQLiteDatabase localDatabase) {
-        this.localDatabase = localDatabase;
-    }*/
-
-    public static void loadUserInfo(DataSnapshot _userSnapshot, SQLiteDatabase _localDatabase) {
+    public static void loadUserInfo(final DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
         localDatabase = _localDatabase;
-        userSnapshot = _userSnapshot;
 
+        photoThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loadPhotos(userSnapshot);
+            }
+        });
         photoThread.run();
 
         String userId = userSnapshot.getKey();
