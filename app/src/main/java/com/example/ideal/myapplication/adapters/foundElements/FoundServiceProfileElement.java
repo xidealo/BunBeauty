@@ -33,10 +33,10 @@ public class FoundServiceProfileElement extends Fragment implements View.OnClick
     private WorkWithStringsApi workWithStringsApi;
 
     @SuppressLint("ValidFragment")
-    public FoundServiceProfileElement(float _avgRating, Service service) {
+    public FoundServiceProfileElement(Service service) {
         idString = service.getId();
         nameString = service.getName();
-        avgRating = _avgRating;
+        avgRating = service.getAverageRating();
         workWithStringsApi = new WorkWithStringsApi();
     }
 

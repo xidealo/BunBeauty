@@ -4,6 +4,7 @@ public class Service {
 
     private String id;
     private String name;
+    private float averageRating;
     private String description;
     private String cost;
     private String userId;
@@ -11,7 +12,6 @@ public class Service {
     private boolean isPremium;
     private String creationDate;
     private String address;
-    private float averageRating;
 
     // id
     public String getId(){return id;}

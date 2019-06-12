@@ -6,7 +6,7 @@ public class User {
     private String name;
     private String city;
     private String id;
-    private String rating;
+    private float rating;
 
     public void setPhone(String _phone){
         phone = _phone;
@@ -54,11 +54,11 @@ public class User {
         return true;
     }
 
-    public void setRating(String rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
-    public String getRating() {
+    public float getRating() {
         return rating;
     }
 }

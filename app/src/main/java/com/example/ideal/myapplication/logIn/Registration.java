@@ -30,6 +30,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     private static final String NAME = "name";
     private static final String CITY = "city";
     private static final String PHOTO_LINK = "photo link";
+    private static final String AVG_RATING = "avg rating";
 
     private EditText nameInput;
     private EditText surnameInput;
@@ -108,6 +109,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
         Map<String, Object> items = new HashMap<>();
         items.put(NAME, user.getName());
+        items.put(AVG_RATING, 0);
         items.put(CITY, user.getCity());
         items.put(PHONE, user.getPhone());
         items.put(PHOTO_LINK, defaultPhotoLink);
@@ -130,6 +132,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, user.getId());
         contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
+        contentValues.put(DBHelper.KEY_RATING_USERS, "0");
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
         contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
 

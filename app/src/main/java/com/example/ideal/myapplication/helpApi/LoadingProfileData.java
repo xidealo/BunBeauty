@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.ideal.myapplication.fragments.objects.Photo;
+import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
@@ -32,7 +33,7 @@ public class LoadingProfileData {
     private static final String REVIEWS = "reviews";
     private static final String REVIEW = "review";
     private static final String TYPE = "type";
-    private static final String RATING = "rating";
+    private static final String AVG_RATING = "avg rating";
 
     private static final String CITY = "city";
     private static final String NAME = "name";
@@ -43,10 +44,11 @@ public class LoadingProfileData {
     private static final String PHOTO_LINK = "photo link";
 
     private static final String IS_CANCELED = "is canceled";
+    private static final String SERVICES = "services";
 
     private static SQLiteDatabase localDatabase;
     private static Thread photoThread;
-    //private static DataSnapshot userSnapshot;
+    private static Thread serviceThread;
 
     public static void loadUserInfo(final DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
         localDatabase = _localDatabase;
@@ -59,12 +61,19 @@ public class LoadingProfileData {
         });
         photoThread.run();
 
+        serviceThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loadUserServices(userSnapshot.getKey(), userSnapshot.child(SERVICES));
+            }
+        });
+        serviceThread.run();
+
         String userId = userSnapshot.getKey();
-        String userPhone = String.valueOf(userSnapshot.child(PHONE).getValue());
-        String userName = String.valueOf(userSnapshot.child(NAME).getValue());
-        String userCity = String.valueOf(userSnapshot.child(CITY).getValue());
-        String userRating = "0";//String.valueOf(userSnapshot.child(RATING).getValue());
-        Log.d(TAG, "loadUserInfo: " + userName);
+        String userPhone = userSnapshot.child(PHONE).getValue(String.class);
+        String userName = userSnapshot.child(NAME).getValue(String.class);
+        String userCity = userSnapshot.child(CITY).getValue(String.class);
+        float userRating = userSnapshot.child(AVG_RATING).getValue(float.class);
 
         User user = new User();
         user.setId(userId);
@@ -73,7 +82,6 @@ public class LoadingProfileData {
         user.setCity(userCity);
         user.setRating(userRating);
 
-        // Добавляем все данные о пользователе в SQLite
         addUserInfoInLocalStorage(user);
     }
 
@@ -93,11 +101,50 @@ public class LoadingProfileData {
             localDatabase.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
                     DBHelper.KEY_ID + " = ?",
                     new String[]{userId});
-            Log.d(TAG, "update: ");
         } else {
             contentValues.put(DBHelper.KEY_ID, userId);
             localDatabase.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
-            Log.d(TAG, "insert: ");
+        }
+    }
+
+    private static void loadUserServices(String userId, DataSnapshot servicesSnapshot) {
+
+        for (DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
+            String serviceId = serviceSnapshot.getKey();
+            String serviceName = serviceSnapshot.child(NAME).getValue(String.class);
+            float serviceRating = serviceSnapshot.child(AVG_RATING).getValue(Float.class);
+
+            Service service = new Service();
+            service.setId(serviceId);
+            service.setName(serviceName);
+            service.setUserId(userId);
+            service.setAverageRating(serviceRating);
+
+            addUserServicesInLocalStorage(service);
+        }
+    }
+
+    private static void addUserServicesInLocalStorage(Service service) {
+        String serviceId = service.getId();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName());
+        contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
+        contentValues.put(DBHelper.KEY_RATING_SERVICES, service.getAverageRating());
+
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
+
+        // Проверка есть ли такой сервис в SQLite
+        if (hasSomeData) {
+            localDatabase.update(
+                    DBHelper.TABLE_CONTACTS_SERVICES,
+                    contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{serviceId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, serviceId);
+            localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
     }
 

@@ -71,6 +71,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     private static final String CODES = "codes";
     private static final String CODE = "code";
     private static final String COUNT = "count";
+    private static final String AVG_RATING = "avg rating";
 
     private EditText nameServiceInput;
     private EditText costAddServiceInput;
@@ -202,6 +203,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
 
         Map<String, Object> items = new HashMap<>();
         items.put(NAME, service.getName().toLowerCase());
+        items.put(AVG_RATING, 0);
         items.put(COST, service.getCost());
         items.put(DESCRIPTION, service.getDescription());
         items.put(IS_PREMIUM, service.getIsPremium());
@@ -242,6 +244,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, service.getId());
         contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName().toLowerCase());
+        contentValues.put(DBHelper.KEY_RATING_SERVICES, "0");
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.getCost());
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.getDescription());
         contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());

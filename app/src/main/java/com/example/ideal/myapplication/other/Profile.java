@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -215,77 +216,25 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         //таким способом я получаю свои ревью, а не о себе
-        String mainSqlQuery = "SELECT "
-                + DBHelper.KEY_RATING_REVIEWS + ", "
-                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
+        String ratingQuery = "SELECT "
+                + DBHelper.KEY_RATING_USERS
                 + " FROM "
-                + DBHelper.TABLE_WORKING_TIME + ", "
-                + DBHelper.TABLE_REVIEWS + ", "
-                + DBHelper.TABLE_WORKING_DAYS + ", "
-                + DBHelper.TABLE_CONTACTS_USERS + ", "
-                + DBHelper.TABLE_ORDERS + ", "
-                + DBHelper.TABLE_CONTACTS_SERVICES
+                + DBHelper.TABLE_CONTACTS_USERS
                 + " WHERE "
-                + DBHelper.KEY_ORDER_ID_REVIEWS
-                + " = "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
-                + " AND "
-                + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                + " = "
-                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                + " AND "
-                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                + " = "
-                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                + " AND "
-                + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                + " = "
-                + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
-                + " AND "
-                + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
-                + " = "
-                + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
-                + " AND "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
-                + " AND "
-                + DBHelper.KEY_TYPE_REVIEWS + " = ? "
-                + " AND "
-                + DBHelper.KEY_RATING_REVIEWS + " != 0";
+                + DBHelper.KEY_ID + " = ?";
+        Cursor cursor = database.rawQuery(ratingQuery, new String[]{ownerId});
 
-        // убрать не оценненые
-        final Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{ownerId, REVIEW_FOR_USER});
-        float sumRates = 0;
-        long counter = 0;
-        // если сюда не заходит, значит ревью нет
         if (cursor.moveToFirst()) {
-            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
-            do {
-                String workingTimeId = cursor.getString(indexWorkingTimeId);
-                String orderId = cursor.getString(indexOrderId);
-                if (workWithLocalStorageApi.isMutualReview(orderId)) {
-                    sumRates += Float.valueOf(cursor.getString(indexRating));
-                    counter++;
-                } else {
-                    if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                        sumRates += Float.valueOf(cursor.getString(indexRating));
-                        counter++;
-                    }
-                }
-            } while (cursor.moveToNext());
+            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_USERS);
+            float rating = Float.valueOf(cursor.getString(indexRating));
 
-            if (counter != 0) {
-                float avgRating = sumRates / counter;
-                addRatingToScreen(avgRating, counter);
-                //метод, который добалвяет оценку
-            } else {
+            if (rating == 0) {
                 setWithoutRating();
+            } else {
+                addRatingToScreen(rating);
             }
-        } else {
-            setWithoutRating();
         }
+
         cursor.close();
     }
 
@@ -363,95 +312,31 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         String sqlQueryService =
                 "SELECT "
                         + DBHelper.KEY_ID + ", "
-                        + DBHelper.KEY_NAME_SERVICES
+                        + DBHelper.KEY_NAME_SERVICES + ", "
+                        + DBHelper.KEY_RATING_SERVICES
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_SERVICES
                         + " WHERE "
                         + DBHelper.KEY_USER_ID + " = ? ";
 
         Cursor cursor = database.rawQuery(sqlQueryService, new String[]{ownerId});
-        float sumRates = 0;
-        long countOfRates = 0;
 
         if (cursor.moveToFirst()) {
             int indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
+            int indexServiceRating = cursor.getColumnIndex(DBHelper.KEY_RATING_SERVICES);
             do {
 
                 String serviceId = cursor.getString(indexServiceId);
                 String serviceName = cursor.getString(indexServiceName);
-
-                String mainSqlQuery = "SELECT "
-                        + DBHelper.KEY_RATING_REVIEWS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_REVIEWS + ", "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_CONTACTS_USERS + ", "
-                        + DBHelper.TABLE_ORDERS + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
-                        + " WHERE "
-                        + DBHelper.KEY_ORDER_ID_REVIEWS
-                        + " = "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                        + " = "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_TYPE_REVIEWS + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_RATING_REVIEWS + " != 0 ";
-
-                Cursor cursorWithReview = database.rawQuery(mainSqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
-
-                if (cursorWithReview.moveToFirst()) {
-                    int indexRating = cursorWithReview.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-                    int indexWorkingTimeId = cursorWithReview.getColumnIndex(DBHelper.KEY_ID);
-                    int indexOrderId = cursorWithReview.getColumnIndex(ORDER_ID);
-                    do {
-                        String workingTimeId = cursorWithReview.getString(indexWorkingTimeId);
-                        String orderId = cursorWithReview.getString(indexOrderId);
-                        if (workWithLocalStorageApi.isMutualReview(orderId)) {
-                            sumRates += Float.valueOf(cursorWithReview.getString(indexRating));
-                            countOfRates++;
-                        } else {
-                            if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                                sumRates += Float.valueOf(cursorWithReview.getString(indexRating));
-                                countOfRates++;
-                            }
-                        }
-                    } while (cursorWithReview.moveToNext());
-                }
-                cursorWithReview.close();
+                float serviceRating = Float.valueOf(cursor.getString(indexServiceRating));
 
                 Service service = new Service();
                 service.setId(serviceId);
                 service.setName(serviceName);
-                if (countOfRates != 0) {
-                    float avgRating = sumRates / countOfRates;
-                    addToScreenOnProfile(avgRating, service);
-                    countOfRates = 0;
-                    sumRates = 0;
-                } else {
-                    addToScreenOnProfile(0, service);
-                }
+                service.setAverageRating(serviceRating);
+
+                addToScreenOnProfile(service);
             } while (cursor.moveToNext());
 
         }
@@ -459,10 +344,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         cursor.close();
     }
 
-    private void addToScreenOnProfile(float avgRating, Service service) {
+    private void addToScreenOnProfile(Service service) {
 
         FoundServiceProfileElement fElement
-                = new FoundServiceProfileElement(avgRating, service);
+                = new FoundServiceProfileElement(service);
         FragmentTransaction transaction = manager.beginTransaction();
 
         transaction.add(R.id.servicesProfileLayout, fElement);
@@ -560,13 +445,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         }
     }
 
-    private void addRatingToScreen(float avgRating, long countOfRates){
-
-        if (countOfRates > 0) {
+    private void addRatingToScreen(float avgRating){
             ratingBar.setVisibility(View.VISIBLE);
             ratingBar.setRating(avgRating);
             ratingForUserLayout.setOnClickListener(this);
-        }
     }
 
     private void setWithoutRating(){
