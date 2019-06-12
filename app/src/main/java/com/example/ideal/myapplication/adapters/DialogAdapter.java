@@ -34,8 +34,7 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogView
         // откуда, куда, необходимо ли помещать в родителя
         View view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false);
 
-        DialogViewHolder viewHolder = new DialogViewHolder(view);
-        return viewHolder;
+        return new DialogViewHolder(view);
     }
 
     @Override
@@ -50,7 +49,7 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogView
 
     class DialogViewHolder extends RecyclerView.ViewHolder {
 
-        View view;
+        private View view;
 
         DialogViewHolder(@NonNull View itemView) {
             super(itemView);

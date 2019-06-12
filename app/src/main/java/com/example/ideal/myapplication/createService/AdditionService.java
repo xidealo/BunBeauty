@@ -138,7 +138,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.addServiceAddServiceBtn:
                 if (isFullInputs()) {
-                    if (!service.setName(nameServiceInput.getText().toString())) {
+                    if (!service.setName(nameServiceInput.getText().toString().trim())) {
                         Toast.makeText(
                                 this,
                                 "Имя сервиса должно содержать только буквы",
@@ -146,9 +146,9 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
                         break;
                     }
 
-                    service.setDescription(descriptionServiceInput.getText().toString());
+                    service.setDescription(descriptionServiceInput.getText().toString().trim());
 
-                    if (!service.setCost(costAddServiceInput.getText().toString())) {
+                    if (!service.setCost(costAddServiceInput.getText().toString().trim())) {
                         Toast.makeText(
                                 this,
                                 "Цена не может содержать больше 8 символов",
@@ -156,7 +156,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
                         break;
                     }
 
-                    String category = categorySpinner.getSelectedItem().toString().toLowerCase();
+                    String category = categorySpinner.getSelectedItem().toString().toLowerCase().trim();
 
                     if (category.equals("Выбрать категорию")) {
                         Toast.makeText(
@@ -165,7 +165,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
                                 Toast.LENGTH_SHORT).show();
                         break;
                     }
-                    String address = addressServiceInput.getText().toString();
+                    String address = addressServiceInput.getText().toString().trim();
                     if (address.isEmpty()) {
                         Toast.makeText(
                                 this,

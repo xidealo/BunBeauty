@@ -8,38 +8,37 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.adapters.foundElements.FoundOrderElement;
-import com.example.ideal.myapplication.fragments.objects.Order;
+import com.example.ideal.myapplication.fragments.objects.Comment;
 
 import java.util.ArrayList;
 
-public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
+public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
 
     private int numberItems;
-    private ArrayList<Order> orderList;
+    private ArrayList<Comment> commentList;
     private Context context;
 
-    public OrderAdapter(int numberItems, ArrayList<Order> orderList) {
+    public CommentAdapter(int numberItems, ArrayList<Comment> commentList) {
         this.numberItems = numberItems;
-        this.orderList = orderList;
+        this.commentList = commentList;
     }
 
     @NonNull
     @Override
-    public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.found_order_element;
+        int layoutIdForListItem = R.layout.comment_element;
         //Класс, который позволяет создавать представления из xml файла
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         // откуда, куда, необходимо ли помещать в родителя
         View view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false);
 
-        return new OrderViewHolder(view);
+        return new CommentAdapter.CommentViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull OrderViewHolder orderViewHolder, int i) {
-        orderViewHolder.bind(orderList.get(i));
+    public void onBindViewHolder(@NonNull CommentViewHolder commentViewHolder, int i) {
+        commentViewHolder.bind(commentList.get(i));
     }
 
     @Override
@@ -47,18 +46,17 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         return numberItems;
     }
 
-    class OrderViewHolder extends RecyclerView.ViewHolder {
-
+    class CommentViewHolder extends RecyclerView.ViewHolder {
         private View view;
-
-        OrderViewHolder(@NonNull View itemView) {
+        CommentViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
         }
 
-        void bind(Order order) {
-            FoundOrderElement foundOrderElement = new FoundOrderElement(order,view,context);
-            foundOrderElement.createElement();
+        void bind(Comment comment) {
+            CommentElement commentElement = new CommentElement(comment,view,context);
+            commentElement.createElement();
         }
     }
+
 }

@@ -38,8 +38,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
         // откуда, куда, необходимо ли помещать в родителя
         View view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false);
 
-        ServiceViewHolder viewHolder = new ServiceViewHolder(view);
-        return viewHolder;
+        return new ServiceViewHolder(view);
     }
 
     @Override

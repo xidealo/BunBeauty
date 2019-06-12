@@ -71,7 +71,7 @@
     <string-array name="category">
         <item><font android:color="@color/white">Выбрать категорию</font></item>
         <item><b><font android:color="@color/white">Ногти</font></b></item>
-        <item><b><font android:color="@color/white">Волосы </font></b></item>
+        <item><b><font android:color="@color/white">Волосы</font></b></item>
         <item><b><font android:color="@color/white">Глаза</font></b></item>
         <item><b><font android:color="@color/white">Визаж</font></b></item>
         <item><b><font android:color="@color/white">Массаж</font></b></item>
