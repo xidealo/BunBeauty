@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.User;
@@ -74,6 +75,8 @@ public class DownloadServiceData {
         user.setName(userName);
         user.setCity(userCity);
 
+        Log.d(TAG, "loadUserInfo: " + userId);
+
         // Добавляем все данные о пользователе в SQLite
         addUserInfoInLocalStorage(user);
     }
@@ -99,7 +102,6 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_ID, userId);
             localDatabase.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
-
     }
 
     public void loadSchedule(DataSnapshot servicesSnapshot, String userId) {
@@ -133,6 +135,8 @@ public class DownloadServiceData {
                 contentValues.put(DBHelper.KEY_ID, dayId);
                 localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
             }
+
+            Log.d(TAG, "addWorkingDaysInLocalStorage: " + dayId);
             addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME), dayId);
         }
     }
@@ -155,6 +159,7 @@ public class DownloadServiceData {
                 contentValues.put(DBHelper.KEY_ID, timeId);
                 localDatabase.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
             }
+            Log.d(TAG, "addTimeInLocalStorage: " + timeId);
 
             addOrdersInLocalStorage(timeSnapshot.child(ORDERS), timeId);
         }
@@ -191,6 +196,8 @@ public class DownloadServiceData {
                 contentValues.put(DBHelper.KEY_ID, orderId);
                 localDatabase.insert(DBHelper.TABLE_ORDERS, null, contentValues);
             }
+
+            Log.d(TAG, "addOrdersInLocalStorage: " + orderId);
             addReviewInLocalStorage(orderSnapshot.child(REVIEWS), orderId);
         }
     }
@@ -205,6 +212,7 @@ public class DownloadServiceData {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot reviewsSnapshot) {
+                Log.d(TAG, "loadReviewForUser: " + orderId);
                 addReviewInLocalStorage(reviewsSnapshot, orderId);
             }
 
@@ -263,7 +271,7 @@ public class DownloadServiceData {
                 contentValues.put(DBHelper.KEY_ID, reviewId);
                 localDatabase.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
             }
-
+            Log.d(TAG, "addReviewInLocalStorage: " + reviewId);
         }
     }
 
@@ -302,6 +310,7 @@ public class DownloadServiceData {
             // Добавляем данный сервис в SQLite
             localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
+        Log.d(TAG, "addServiceInLocalStorage: " + serviceId);
 
         // Добавление рабочего времени данного сервиса
         addWorkingDaysInLocalStorage(serviceSnapshot.child(WORKING_DAYS), serviceId);
@@ -317,6 +326,8 @@ public class DownloadServiceData {
             photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
             photo.setPhotoOwnerId(serviceId);
 
+            Log.d(TAG, "loadPhotosByServiceId: " + serviceId);
+
             addPhotoInLocalStorage(photo);
         }
     }
@@ -326,6 +337,8 @@ public class DownloadServiceData {
         Photo photo = new Photo();
         photo.setPhotoId(userSnapshot.getKey());
         photo.setPhotoLink(String.valueOf(userSnapshot.child(PHOTO_LINK).getValue()));
+
+        Log.d(TAG, "loadPhotosByPhoneNumber: " + userSnapshot.getKey());
 
         addPhotoInLocalStorage(photo);
     }
@@ -350,6 +363,8 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
             localDatabase.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
+
+        Log.d(TAG, "addPhotoInLocalStorage: " + photo.getPhotoOwnerId());
     }
 }
 

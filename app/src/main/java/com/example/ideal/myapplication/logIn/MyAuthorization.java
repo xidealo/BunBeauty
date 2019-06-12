@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
+import com.example.ideal.myapplication.helpApi.LoadingProfileData;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.MyService;
 import com.example.ideal.myapplication.other.Profile;
@@ -81,7 +82,11 @@ public class MyAuthorization {
                     } else {
                         clearSQLite();
 
-                        downloadServiceData.loadUserInfo(userSnapshot);
+                        SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
+                        LoadingProfileData.loadUserInfo(userSnapshot, localDatabase);
+                        goToProfile();
+
+                        /*downloadServiceData.loadUserInfo(userSnapshot);
 
                         // Добавляем подписки пользователя
                         loadUserSubscriptions(userSnapshot);
@@ -96,7 +101,7 @@ public class MyAuthorization {
                         loadMyServiceOrders();
 
                         // Загружаем записи пользователя
-                        loadMyOrders(userSnapshot.child(ORDERS));
+                        loadMyOrders(userSnapshot.child(ORDERS));*/
                     }
                 }
             }
@@ -140,6 +145,7 @@ public class MyAuthorization {
                 loadUserById(cursor.getString(indexUserId));
             } while (cursor.moveToNext());
         }
+        Log.d(TAG, "loadMyServiceOrders: ");
         cursor.close();
     }
 
@@ -148,6 +154,7 @@ public class MyAuthorization {
         DataSnapshot subscriptionSnapshot = userSnapshot.child(SUBSCRIPTIONS);
         for (DataSnapshot subSnapshot : subscriptionSnapshot.getChildren()) {
             String id = subSnapshot.getKey();
+            Log.d(TAG, "loadUserSubscriptions: " + id);
             String workerId = String.valueOf(subSnapshot.child(WORKER_ID).getValue());
             loadUserById(workerId);
 
@@ -160,6 +167,7 @@ public class MyAuthorization {
         DataSnapshot subscriptionSnapshot = userSnapshot.child(SUBSCRIBERS);
         for (DataSnapshot subSnapshot : subscriptionSnapshot.getChildren()) {
             String id = subSnapshot.getKey();
+            Log.d(TAG, "loadUserSubscribers: " + id);
             String userId = String.valueOf(subSnapshot.child(USER_ID).getValue());
 
             //если мы владелец старнички то только тогда загружаем инфу о наших подписчиках
@@ -206,6 +214,8 @@ public class MyAuthorization {
         contentValues.put(DBHelper.KEY_USER_ID, getUserId());
         contentValues.put(DBHelper.KEY_WORKER_ID, workerId);
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
+
+        Log.d(TAG, "addUserSubscriptionInLocalStorage: " + id);
     }
 
     private void addUserSubscriberInLocalStorage(String id, String userId) {
@@ -215,6 +225,8 @@ public class MyAuthorization {
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_WORKER_ID, getUserId());
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
+
+        Log.d(TAG, "addUserSubscriberInLocalStorage: " + id);
     }
 
     // Получается загружаем все, о человеке, с которым можем взаимодействовать из профиля, возможно в ордереде стоит хранить дату,
@@ -239,6 +251,8 @@ public class MyAuthorization {
             userReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                    Log.d(TAG, "loadMyOrders: " + workerId);
+
                     // Загружаем данные о пользователе
                     downloadServiceData.loadUserInfo(userSnapshot);
 
@@ -303,7 +317,7 @@ public class MyAuthorization {
         Intent intent = new Intent(context, Profile.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
-        context.startService(new Intent(context, MyService.class));
+        //context.startService(new Intent(context, MyService.class));
     }
 
 }

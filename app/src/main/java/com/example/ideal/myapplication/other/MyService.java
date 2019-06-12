@@ -31,8 +31,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import static android.app.NotificationManager.IMPORTANCE_MAX;
 
@@ -123,6 +129,16 @@ public class MyService extends Service implements Runnable {
     }
 
     void startMyListener() {
+        try {
+            FirebaseInstanceId.getInstance().getToken("", "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, String> map = new HashMap<>();
+        map.put("1", "1");
+
+        FirebaseMessaging.getInstance().send(new RemoteMessage.Builder("lol").setData(map).build());
 
         thread = new Thread(new Thread(new Runnable() {
             private final Context context = MyService.this;

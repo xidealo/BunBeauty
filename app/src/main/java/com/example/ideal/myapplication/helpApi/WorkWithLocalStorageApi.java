@@ -100,7 +100,7 @@ public class WorkWithLocalStorageApi {
         return cursor;
     }
 
-    boolean hasSomeData(String tableName, String id) {
+    static boolean hasSomeData(String tableName, String id) {
 
         String sqlQuery = "SELECT * FROM "
                 + tableName

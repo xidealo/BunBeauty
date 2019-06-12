@@ -6,6 +6,7 @@ public class User {
     private String name;
     private String city;
     private String id;
+    private String rating;
 
     public void setPhone(String _phone){
         phone = _phone;
@@ -51,5 +52,13 @@ public class User {
         if(!city.matches("[a-zA-ZА-Яа-я\\-]+")) return false;
 
         return true;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    public String getRating() {
+        return rating;
     }
 }
