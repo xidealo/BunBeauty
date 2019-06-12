@@ -2,7 +2,6 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
@@ -46,12 +45,17 @@ public class LoadingProfileData {
     private static final String IS_CANCELED = "is canceled";
     private static final String SERVICES = "services";
 
+    private static final String SUBSCRIBERS = "subscribers";
+    private static final String SUBSCRIPTIONS = "subscriptions";
+
     private static SQLiteDatabase localDatabase;
     private static Thread photoThread;
     private static Thread serviceThread;
 
     public static void loadUserInfo(final DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
         localDatabase = _localDatabase;
+
+        String userId = userSnapshot.getKey();
 
         photoThread = new Thread(new Runnable() {
             @Override
@@ -69,7 +73,6 @@ public class LoadingProfileData {
         });
         serviceThread.run();
 
-        String userId = userSnapshot.getKey();
         String userPhone = userSnapshot.child(PHONE).getValue(String.class);
         String userName = userSnapshot.child(NAME).getValue(String.class);
         String userCity = userSnapshot.child(CITY).getValue(String.class);
@@ -85,10 +88,27 @@ public class LoadingProfileData {
         addUserInfoInLocalStorage(user);
     }
 
+    public static void loadMyInfo(DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
+        loadUserInfo(userSnapshot, _localDatabase);
+        addSubscriptionsCountInLocalStorage(userSnapshot);
+    }
+
+    private static void addSubscriptionsCountInLocalStorage(DataSnapshot userSnapshot) {
+        ContentValues contentValues = new ContentValues();
+        long subscriptionsCount = userSnapshot.child(SUBSCRIPTIONS).getChildrenCount();
+        long subscribersCount = userSnapshot.child(SUBSCRIBERS).getChildrenCount();
+
+        contentValues.put(DBHelper.KEY_SUBSCRIBERS_COUNT_USERS, subscribersCount);
+        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, subscriptionsCount);
+
+        localDatabase.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{userSnapshot.getKey()});
+    }
+
     private static void addUserInfoInLocalStorage(User user) {
         ContentValues contentValues = new ContentValues();
 
-        // Заполняем contentValues информацией о данном пользователе
         contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
         contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
@@ -146,6 +166,8 @@ public class LoadingProfileData {
             contentValues.put(DBHelper.KEY_ID, serviceId);
             localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
+
+        serviceThread.interrupt();
     }
 
     private static void loadPhotos(DataSnapshot userSnapshot) {

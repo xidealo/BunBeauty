@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.recyclerview.extensions.AsyncDifferConfig;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -49,6 +50,8 @@ public class MyAuthorization {
 
     private int counter;
 
+    private boolean isFirst;
+
     private DownloadServiceData downloadServiceData;
 
     MyAuthorization(Context _context, String _myPhoneNumber) {
@@ -67,7 +70,9 @@ public class MyAuthorization {
                 orderByChild(PHONE).
                 equalTo(myPhoneNumber);
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        isFirst = true;
+
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
                 if (usersSnapshot.getChildrenCount() == 0) {
@@ -80,11 +85,15 @@ public class MyAuthorization {
                         // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
                         goToRegistration();
                     } else {
-                        clearSQLite();
+                        //clearSQLite();
+                        Log.d(TAG, "update info ");
 
                         SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
                         LoadingProfileData.loadUserInfo(userSnapshot, localDatabase);
-                        goToProfile();
+                        if (isFirst) {
+                            isFirst = false;
+                            loadMyOrders(userSnapshot.child(ORDERS));
+                        }
 
                         /*downloadServiceData.loadUserInfo(userSnapshot);
 
@@ -244,24 +253,16 @@ public class MyAuthorization {
             //получаем "путь" к мастеру, на сервис которого мы записаны
             final String workerId = String.valueOf(orderSnapshot.child(WORKER_ID).getValue());
             final String serviceId = String.valueOf(orderSnapshot.child(SERVICE_ID).getValue());
-            DatabaseReference userReference = FirebaseDatabase.getInstance()
+            DatabaseReference serviceReference = FirebaseDatabase.getInstance()
                     .getReference(USERS)
-                    .child(workerId);
+                    .child(workerId)
+                    .child(SERVICES)
+                    .child(serviceId);
 
-            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                    Log.d(TAG, "loadMyOrders: " + workerId);
+                public void onDataChange(@NonNull DataSnapshot serviceSnapshot) {
 
-                    // Загружаем данные о пользователе
-                    downloadServiceData.loadUserInfo(userSnapshot);
-
-                    // Загружаем данные о сервисе на который записаны
-                    downloadServiceData.addServiceInLocalStorage(userSnapshot.child(SERVICES).child(serviceId), workerId);
-
-                    // Загружаем данные о ревтю для пользователя
-                    // загружаютс review for user для меня, а надо для тех кто записан на мои услуги
-                    downloadServiceData.addReviewInLocalStorage(orderSnapshot.child(REVIEWS), orderSnapshot.getKey());
 
                     counter++;
                     if (counter == childrenCount) {

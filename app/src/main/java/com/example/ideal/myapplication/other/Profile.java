@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -58,7 +57,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private TextView phoneText;
     private TextView withoutRatingText;
     private TextView subscribersText;
-    private TextView subscribtionsText;
+    private TextView subscriptionsText;
 
     private RatingBar ratingBar;
 
@@ -86,7 +85,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
         subscriptionsLayout = findViewById(R.id.subscriptionsProfileLayout);
-        subscribtionsText = findViewById(R.id.subscriptionsProfileText);
+        subscriptionsText = findViewById(R.id.subscriptionsProfileText);
 
         avatarImage = findViewById(R.id.avatarProfileImage);
 
@@ -137,6 +136,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             subscriptionsLayout.setOnClickListener(this);
         } else {
             // Не совпадает - чужой профиль
+
 
             // Скрываем функционал
             addServicesBtn.setVisibility(View.GONE);
@@ -263,7 +263,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             if (subscriptionsCount != 0) {
                 subscriptionText += " (" + subscriptionsCount + ")";
             }
-            subscribtionsText.setText(subscriptionText);
+            subscriptionsText.setText(subscriptionText);
             String subscribersBtnText = "Подписчики:";
             long subscribersCount = getCountOfSubscribers();
 
