@@ -5,21 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.recyclerview.extensions.AsyncDifferConfig;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.LoadingProfileData;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
-import com.example.ideal.myapplication.other.MyService;
 import com.example.ideal.myapplication.other.Profile;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -288,7 +282,6 @@ public class MyAuthorization {
                     dayThread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d(TAG, "dayThread start ");
                             DataSnapshot daySnapshot = serviceSnapshot.child(WORKING_DAYS)
                                     .child(workingDayId);
                             addWorkingDaysInLocalStorage(daySnapshot, serviceId);
@@ -299,7 +292,6 @@ public class MyAuthorization {
                     timeThread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d(TAG, "timeThread start ");
                             DataSnapshot timeSnapshot = serviceSnapshot.child(WORKING_DAYS)
                                     .child(workingDayId)
                                     .child(WORKING_TIME)
@@ -313,22 +305,32 @@ public class MyAuthorization {
                     orderThread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d(TAG, "orderThread start ");
-                            DataSnapshot ordersSnapshot = serviceSnapshot.child(WORKING_DAYS)
+                            DataSnapshot orderSnapshot = serviceSnapshot.child(WORKING_DAYS)
                                     .child(workingDayId)
                                     .child(WORKING_TIME)
                                     .child(workingTimeId)
                                     .child(ORDERS)
                                     .child(orderId);
 
-                            addOrdersInLocalStorage(ordersSnapshot, workingTimeId);
+                            addOrderInLocalStorage(orderSnapshot, workingTimeId);
                         }
                     });
                     orderThread.start();
 
                     counter++;
                     if (counter == childrenCount) {
-                        goToProfile();
+                        if (dayThread.isAlive() || timeThread.isAlive() || orderThread.isAlive()) {
+                            try {
+                                dayThread.join();
+                                timeThread.join();
+                                orderThread.join();
+                                goToProfile();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            goToProfile();
+                        }
                     }
                 }
 
@@ -382,7 +384,6 @@ public class MyAuthorization {
             database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
         }
 
-        Log.d(TAG, "dayThread stop ");
         dayThread.interrupt();
     }
 
@@ -406,11 +407,9 @@ public class MyAuthorization {
             database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
         }
 
-        Log.d(TAG, "timeThread stop ");
         timeThread.interrupt();
     }
-    private void addOrdersInLocalStorage(DataSnapshot orderSnapshot, String timeId) {
-
+    private void addOrderInLocalStorage(DataSnapshot orderSnapshot, String timeId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -440,7 +439,6 @@ public class MyAuthorization {
             database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
         }
 
-        Log.d(TAG, "orderThread stop ");
         orderThread.interrupt();
     }
 
