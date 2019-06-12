@@ -54,6 +54,7 @@ public class LoadingProfileData {
 
     public static void loadUserInfo(final DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
         localDatabase = _localDatabase;
+        new WorkWithLocalStorageApi(_localDatabase);
 
         String userId = userSnapshot.getKey();
 

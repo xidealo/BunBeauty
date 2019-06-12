@@ -57,9 +57,6 @@ public class MyAuthorization {
 
     private int counter;
 
-    private boolean isFirst;
-
-    private DownloadServiceData downloadServiceData;
     private Thread dayThread;
     private Thread timeThread;
     private Thread orderThread;
@@ -69,8 +66,6 @@ public class MyAuthorization {
         myPhoneNumber = _myPhoneNumber;
 
         dbHelper = new DBHelper(context);
-        SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
-        downloadServiceData = new DownloadServiceData(localDatabase);
     }
 
     void authorizeUser() {
@@ -80,9 +75,7 @@ public class MyAuthorization {
                 orderByChild(PHONE).
                 equalTo(myPhoneNumber);
 
-        isFirst = true;
-
-        query.addValueEventListener(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
                 if (usersSnapshot.getChildrenCount() == 0) {
@@ -99,27 +92,7 @@ public class MyAuthorization {
 
                         SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
                         LoadingProfileData.loadUserInfo(userSnapshot, localDatabase);
-                        if (isFirst) {
-                            isFirst = false;
-                            loadMyOrders(userSnapshot.child(ORDERS));
-                        }
-
-                        /*downloadServiceData.loadUserInfo(userSnapshot);
-
-                        // Добавляем подписки пользователя
-                        loadUserSubscriptions(userSnapshot);
-                        //Добавляем подписчиков
-                        loadUserSubscribers(userSnapshot);
-                        // Загружаем сервисы пользователя из FireBase
-                        downloadServiceData.loadSchedule(
-                                userSnapshot.child(SERVICES),
-                                userSnapshot.getKey());
-
-                        // Загружаем пользователей записанных на мои сервисы
-                        loadMyServiceOrders();
-
-                        // Загружаем записи пользователя
-                        loadMyOrders(userSnapshot.child(ORDERS));*/
+                        loadMyOrders(userSnapshot.child(ORDERS));
                     }
                 }
             }
@@ -131,7 +104,7 @@ public class MyAuthorization {
         });
     }
 
-    private void loadMyServiceOrders() {
+   /* private void loadMyServiceOrders() {
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String ordersQuery =
@@ -165,9 +138,9 @@ public class MyAuthorization {
         }
         Log.d(TAG, "loadMyServiceOrders: ");
         cursor.close();
-    }
+    }*/
 
-    private void loadUserSubscriptions(DataSnapshot userSnapshot) {
+    /*private void loadUserSubscriptions(DataSnapshot userSnapshot) {
 
         DataSnapshot subscriptionSnapshot = userSnapshot.child(SUBSCRIPTIONS);
         for (DataSnapshot subSnapshot : subscriptionSnapshot.getChildren()) {
@@ -178,9 +151,9 @@ public class MyAuthorization {
 
             addUserSubscriptionInLocalStorage(id, workerId);
         }
-    }
+    }*/
 
-    private void loadUserSubscribers(DataSnapshot userSnapshot) {
+    /*private void loadUserSubscribers(DataSnapshot userSnapshot) {
 
         DataSnapshot subscriptionSnapshot = userSnapshot.child(SUBSCRIBERS);
         for (DataSnapshot subSnapshot : subscriptionSnapshot.getChildren()) {
@@ -193,9 +166,9 @@ public class MyAuthorization {
 
             addUserSubscriberInLocalStorage(id, userId);
         }
-    }
+    }*/
 
-    private void loadUserById(final String userId) {
+    /*private void loadUserById(final String userId) {
 
         final DatabaseReference userRef = FirebaseDatabase.getInstance()
                 .getReference(USERS)
@@ -223,33 +196,26 @@ public class MyAuthorization {
                 attentionBadConnection();
             }
         });
-    }
+    }*/
 
-    private void addUserSubscriptionInLocalStorage(String id, String workerId) {
+    /*private void addUserSubscriptionInLocalStorage(String id, String workerId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, id);
         contentValues.put(DBHelper.KEY_USER_ID, getUserId());
         contentValues.put(DBHelper.KEY_WORKER_ID, workerId);
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
+    }*/
 
-        Log.d(TAG, "addUserSubscriptionInLocalStorage: " + id);
-    }
-
-    private void addUserSubscriberInLocalStorage(String id, String userId) {
+    /*private void addUserSubscriberInLocalStorage(String id, String userId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, id);
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_WORKER_ID, getUserId());
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
+    }*/
 
-        Log.d(TAG, "addUserSubscriberInLocalStorage: " + id);
-    }
-
-    // Получается загружаем все, о человеке, с которым можем взаимодействовать из профиля, возможно в ордереде стоит хранить дату,
-    // чтобы считать ее прсорочена она или нет и уже от этого делать onDataChange, если дата просрочена,
-    // то мы никак через профиль не взаимодействуем с этим человеком
     private void loadMyOrders(DataSnapshot _ordersSnapshot) {
 
         if (_ordersSnapshot.getChildrenCount() == 0) {
@@ -274,48 +240,44 @@ public class MyAuthorization {
             serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull final DataSnapshot serviceSnapshot) {
-
                     //получаем данные для нашего ордера
-                    String serviceName = serviceSnapshot.child(NAME).getValue(String.class);
-                    addServiceInLocalStorage(serviceId,serviceName,workerId);
+                    final DataSnapshot daySnapshot = serviceSnapshot.child(WORKING_DAYS)
+                            .child(workingDayId);
 
-                    dayThread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            DataSnapshot daySnapshot = serviceSnapshot.child(WORKING_DAYS)
-                                    .child(workingDayId);
-                            addWorkingDaysInLocalStorage(daySnapshot, serviceId);
-                        }
-                    });
-                    dayThread.start();
+                    if (isActualOrder(daySnapshot, workingTimeId, orderId)) {
 
-                    timeThread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            DataSnapshot timeSnapshot = serviceSnapshot.child(WORKING_DAYS)
-                                    .child(workingDayId)
-                                    .child(WORKING_TIME)
-                                    .child(workingTimeId);
+                        dayThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                addWorkingDaysInLocalStorage(daySnapshot, serviceId);
+                            }
+                        });
+                        dayThread.start();
 
-                            addTimeInLocalStorage(timeSnapshot, workingDayId);
-                        }
-                    });
-                    timeThread.start();
+                        final DataSnapshot timeSnapshot = daySnapshot.child(WORKING_TIME)
+                                .child(workingTimeId);
+                        timeThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                addTimeInLocalStorage(timeSnapshot, workingDayId);
+                            }
+                        });
+                        timeThread.start();
 
-                    orderThread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            DataSnapshot orderSnapshot = serviceSnapshot.child(WORKING_DAYS)
-                                    .child(workingDayId)
-                                    .child(WORKING_TIME)
-                                    .child(workingTimeId)
-                                    .child(ORDERS)
-                                    .child(orderId);
+                        final DataSnapshot orderSnapshot = timeSnapshot.child(ORDERS)
+                                .child(orderId);
+                        orderThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                addOrderInLocalStorage(orderSnapshot, workingTimeId);
+                            }
+                        });
+                        orderThread.start();
 
-                            addOrderInLocalStorage(orderSnapshot, workingTimeId);
-                        }
-                    });
-                    orderThread.start();
+                        String serviceName = serviceSnapshot.child(NAME).getValue(String.class);
+                        addServiceInLocalStorage(serviceId, serviceName, workerId);
+                        Log.d(TAG, "addServiceInLocalStorage: " + serviceId);
+                    }
 
                     counter++;
                     if (counter == childrenCount) {
@@ -324,10 +286,10 @@ public class MyAuthorization {
                                 dayThread.join();
                                 timeThread.join();
                                 orderThread.join();
-                                goToProfile();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
+                            goToProfile();
                         } else {
                             goToProfile();
                         }
@@ -342,27 +304,38 @@ public class MyAuthorization {
         }
     }
 
-    private void addServiceInLocalStorage(String serviceId, String serviceName,String workerId) {
+    private boolean isActualOrder(DataSnapshot daySnapshot, String timeId, String orderId) {
+        String date = daySnapshot.child(DATE).getValue(String.class);
+        String time = daySnapshot.child(WORKING_TIME).child(timeId).child(TIME).getValue(String.class);
+        boolean isCanceled = daySnapshot.child(WORKING_TIME)
+                .child(timeId)
+                .child(ORDERS)
+                .child(orderId)
+                .child(IS_CANCELED)
+                .getValue(Boolean.class);
+
+        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
+        //3600000 * 24 = 24 часа
+        String commonDate = date + " " + time;
+        long orderDate = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000;
+        long sysdate = workWithTimeApi.getSysdateLong();
+
+        if ((orderDate < sysdate) || isCanceled) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void addServiceInLocalStorage(String serviceId, String serviceName, String workerId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         ContentValues contentValues = new ContentValues();
-
+        contentValues.put(DBHelper.KEY_ID, serviceId);
         contentValues.put(DBHelper.KEY_NAME_SERVICES, serviceName);
         contentValues.put(DBHelper.KEY_USER_ID, workerId);
 
-        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
-
-        // Проверка есть ли такой сервис в SQLite
-        if (hasSomeData) {
-            database.update(
-                    DBHelper.TABLE_CONTACTS_SERVICES,
-                    contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{serviceId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, serviceId);
-            database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
-        }
+        database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
     }
 
     private void addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId) {
@@ -371,18 +344,11 @@ public class MyAuthorization {
         ContentValues contentValues = new ContentValues();
         String dayId = workingDaySnapshot.getKey();
         String date = String.valueOf(workingDaySnapshot.child(DATE).getValue());
+        contentValues.put(DBHelper.KEY_ID, dayId);
         contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
         contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
 
-        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_WORKING_DAYS, dayId);
-        if (hasSomeData) {
-            database.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{dayId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, dayId);
-            database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
-        }
+        database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
 
         dayThread.interrupt();
     }
@@ -392,57 +358,33 @@ public class MyAuthorization {
 
         ContentValues contentValues = new ContentValues();
         String timeId = timeSnapshot.getKey();
+        contentValues.put(DBHelper.KEY_ID, timeId);
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, String.valueOf(timeSnapshot.child(TIME).getValue()));
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
 
-        boolean hasSomeData = WorkWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
-
-        if (hasSomeData) {
-            database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{timeId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, timeId);
-            database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
-        }
+        database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
 
         timeThread.interrupt();
     }
+
     private void addOrderInLocalStorage(DataSnapshot orderSnapshot, String timeId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        ContentValues contentValues = new ContentValues();
         String orderId = orderSnapshot.getKey();
         String userId = String.valueOf(orderSnapshot.child(USER_ID).getValue());
 
+        ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, orderId);
         contentValues.put(DBHelper.KEY_USER_ID, userId);
-        contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, String.valueOf(orderSnapshot.child(IS_CANCELED).getValue()));
+        contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, "false");
         contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, timeId);
 
-        String updatedTime = updateMessageTime(timeId);
-        if (!updatedTime.equals("")) {
-            contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, updatedTime);
-        } else {
-            contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, String.valueOf(orderSnapshot.child(TIME).getValue()));
-        }
-
-        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_ORDERS, orderId);
-
-        if (hasSomeData) {
-            database.update(DBHelper.TABLE_ORDERS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{orderId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, orderId);
-            database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
-        }
+        database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
 
         orderThread.interrupt();
     }
 
-    private String updateMessageTime(String timeId) {
+    /*private String updateMessageTime(String timeId) {
         String updatedTime = "";
 
         Cursor cursor = WorkWithLocalStorageApi.getServiceCursorByTimeId(timeId);
@@ -457,8 +399,8 @@ public class MyAuthorization {
             WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
             //3600000 * 24 = 24 часа
             String commonDate = date + " " + time;
-            Long messageDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000 * 24;
-            Long sysdate = workWithTimeApi.getSysdateLong();
+            long messageDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000 * 24;
+            long sysdate = workWithTimeApi.getSysdateLong();
 
             if (sysdate > messageDateLong) {
                 // вычитаем 3 часа, т.к. метод работает с датой по Гринвичу
@@ -467,7 +409,7 @@ public class MyAuthorization {
         }
         cursor.close();
         return updatedTime;
-    }
+    }*/
 
     // Удаляет все данные о пользователях, сервисах, рабочих днях и рабочем времени из SQLite
     private void clearSQLite() {
@@ -488,10 +430,6 @@ public class MyAuthorization {
 
     private void attentionBadConnection() {
         Toast.makeText(context, "Плохое соединение", Toast.LENGTH_SHORT).show();
-    }
-
-    private String getUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     private void goToRegistration() {

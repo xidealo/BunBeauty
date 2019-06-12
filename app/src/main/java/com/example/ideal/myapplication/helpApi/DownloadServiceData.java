@@ -225,7 +225,7 @@ public class DownloadServiceData {
     private String updateMessageTime(String timeId) {
         String updatedTime = "";
 
-        Cursor cursor = LSApi.getServiceCursorByTimeId(timeId);
+        Cursor cursor = WorkWithLocalStorageApi.getServiceCursorByTimeId(timeId);
 
         if (cursor.moveToFirst()) {
             int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
