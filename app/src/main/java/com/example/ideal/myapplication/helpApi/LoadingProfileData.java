@@ -63,7 +63,7 @@ public class LoadingProfileData {
                 loadPhotos(userSnapshot);
             }
         });
-        photoThread.run();
+        photoThread.start();
 
         serviceThread = new Thread(new Runnable() {
             @Override
@@ -71,7 +71,7 @@ public class LoadingProfileData {
                 loadUserServices(userSnapshot.getKey(), userSnapshot.child(SERVICES));
             }
         });
-        serviceThread.run();
+        serviceThread.start();
 
         String userPhone = userSnapshot.child(PHONE).getValue(String.class);
         String userName = userSnapshot.child(NAME).getValue(String.class);

@@ -66,6 +66,9 @@ public class MyAuthorization {
     private boolean isFirst;
 
     private DownloadServiceData downloadServiceData;
+    private Thread dayThread;
+    private Thread timeThread;
+    private Thread orderThread;
 
     MyAuthorization(Context _context, String _myPhoneNumber) {
         context = _context;
@@ -276,32 +279,52 @@ public class MyAuthorization {
 
             serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot serviceSnapshot) {
+                public void onDataChange(@NonNull final DataSnapshot serviceSnapshot) {
 
                     //получаем данные для нашего ордера
                     String serviceName = serviceSnapshot.child(NAME).getValue(String.class);
-                    addUserServicesInLocalStorage(serviceId,serviceName,workerId);
-                    //поток 2
-                    DataSnapshot daySnapshot = serviceSnapshot.child(WORKING_DAYS)
-                            .child(workingDayId);
-                    addWorkingDaysInLocalStorage(daySnapshot,serviceId);
+                    addServiceInLocalStorage(serviceId,serviceName,workerId);
 
-                    //поток 3
-                    DataSnapshot timeSnapshot = serviceSnapshot.child(WORKING_DAYS)
-                            .child(workingDayId)
-                            .child(WORKING_TIME)
-                            .child(workingTimeId);
-                    addTimeInLocalStorage(timeSnapshot,workingDayId);
+                    dayThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "dayThread start ");
+                            DataSnapshot daySnapshot = serviceSnapshot.child(WORKING_DAYS)
+                                    .child(workingDayId);
+                            addWorkingDaysInLocalStorage(daySnapshot, serviceId);
+                        }
+                    });
+                    dayThread.start();
 
-                    //поток 4
-                    DataSnapshot serviceOrderSnapshot = serviceSnapshot.child(WORKING_DAYS)
-                            .child(workingDayId)
-                            .child(WORKING_TIME)
-                            .child(workingTimeId)
-                            .child(ORDERS)
-                            .child(orderId);
+                    timeThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "timeThread start ");
+                            DataSnapshot timeSnapshot = serviceSnapshot.child(WORKING_DAYS)
+                                    .child(workingDayId)
+                                    .child(WORKING_TIME)
+                                    .child(workingTimeId);
 
-                    addOrdersInLocalStorage(serviceOrderSnapshot, workingTimeId);
+                            addTimeInLocalStorage(timeSnapshot, workingDayId);
+                        }
+                    });
+                    timeThread.start();
+
+                    orderThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "orderThread start ");
+                            DataSnapshot ordersSnapshot = serviceSnapshot.child(WORKING_DAYS)
+                                    .child(workingDayId)
+                                    .child(WORKING_TIME)
+                                    .child(workingTimeId)
+                                    .child(ORDERS)
+                                    .child(orderId);
+
+                            addOrdersInLocalStorage(ordersSnapshot, workingTimeId);
+                        }
+                    });
+                    orderThread.start();
 
                     counter++;
                     if (counter == childrenCount) {
@@ -311,14 +334,13 @@ public class MyAuthorization {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    attentionBadConnection();
                 }
             });
-
         }
     }
 
-    private void addUserServicesInLocalStorage(String serviceId, String serviceName,String workerId) {
+    private void addServiceInLocalStorage(String serviceId, String serviceName,String workerId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -339,7 +361,6 @@ public class MyAuthorization {
             contentValues.put(DBHelper.KEY_ID, serviceId);
             database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
-
     }
 
     private void addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId) {
@@ -360,6 +381,9 @@ public class MyAuthorization {
             contentValues.put(DBHelper.KEY_ID, dayId);
             database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
         }
+
+        Log.d(TAG, "dayThread stop ");
+        dayThread.interrupt();
     }
 
     private void addTimeInLocalStorage(DataSnapshot timeSnapshot, String workingDayId) {
@@ -381,6 +405,9 @@ public class MyAuthorization {
             contentValues.put(DBHelper.KEY_ID, timeId);
             database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
         }
+
+        Log.d(TAG, "timeThread stop ");
+        timeThread.interrupt();
     }
     private void addOrdersInLocalStorage(DataSnapshot orderSnapshot, String timeId) {
 
@@ -412,6 +439,9 @@ public class MyAuthorization {
             contentValues.put(DBHelper.KEY_ID, orderId);
             database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
         }
+
+        Log.d(TAG, "orderThread stop ");
+        orderThread.interrupt();
     }
 
     private String updateMessageTime(String timeId) {
