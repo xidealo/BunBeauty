@@ -137,7 +137,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         } else {
             // Не совпадает - чужой профиль
 
-
             // Скрываем функционал
             addServicesBtn.setVisibility(View.GONE);
             subscriptionsLayout.setVisibility(View.INVISIBLE);

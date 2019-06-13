@@ -34,18 +34,12 @@
             style="@style/mainText"
             android:text="У вас пока нет подписок" />
 
-        <ScrollView
-            android:id="@+id/nestedScrollView"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/resultsSubscribersRecycleView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/mainSubscribersLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
+        </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 
