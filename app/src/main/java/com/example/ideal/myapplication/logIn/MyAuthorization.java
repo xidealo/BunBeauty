@@ -140,18 +140,6 @@ public class MyAuthorization {
         cursor.close();
     }*/
 
-    /*private void loadUserSubscriptions(DataSnapshot userSnapshot) {
-
-        DataSnapshot subscriptionSnapshot = userSnapshot.child(SUBSCRIPTIONS);
-        for (DataSnapshot subSnapshot : subscriptionSnapshot.getChildren()) {
-            String id = subSnapshot.getKey();
-            Log.d(TAG, "loadUserSubscriptions: " + id);
-            String workerId = String.valueOf(subSnapshot.child(WORKER_ID).getValue());
-            loadUserById(workerId);
-
-            addUserSubscriptionInLocalStorage(id, workerId);
-        }
-    }*/
 
     /*private void loadUserSubscribers(DataSnapshot userSnapshot) {
 
@@ -198,14 +186,7 @@ public class MyAuthorization {
         });
     }*/
 
-    /*private void addUserSubscriptionInLocalStorage(String id, String workerId) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_ID, id);
-        contentValues.put(DBHelper.KEY_USER_ID, getUserId());
-        contentValues.put(DBHelper.KEY_WORKER_ID, workerId);
-        database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
-    }*/
+
 
     /*private void addUserSubscriberInLocalStorage(String id, String userId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
@@ -276,7 +257,6 @@ public class MyAuthorization {
 
                         String serviceName = serviceSnapshot.child(NAME).getValue(String.class);
                         addServiceInLocalStorage(serviceId, serviceName, workerId);
-                        Log.d(TAG, "addServiceInLocalStorage: " + serviceId);
                     }
 
                     counter++;

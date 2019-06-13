@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -190,6 +191,21 @@ public class SubscriptionsApi {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    static public long getCountOfSubscriptions(SQLiteDatabase database, String userId) {
+        String sqlQuery =
+                "SELECT " + DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS
+                        + " FROM " + DBHelper.TABLE_CONTACTS_USERS
+                        + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
+        if (cursor.moveToFirst()) {
+            int indexSubscriptionsCount = cursor.getColumnIndex(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS);
+            return Long.valueOf(cursor.getString(indexSubscriptionsCount));
+        }
+        cursor.close();
+        return 0;
     }
 
 }

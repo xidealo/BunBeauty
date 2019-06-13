@@ -1,13 +1,17 @@
 package com.example.ideal.myapplication.subscriptions;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,9 +21,20 @@ import com.example.ideal.myapplication.adapters.SubscriptionAdapter;
 import com.example.ideal.myapplication.adapters.SubscriptionElement;
 import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.LoadingProfileData;
+import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -27,15 +42,18 @@ public class Subscribers extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
     private static final String STATUS = "status";
-    private static final String SUBSCRIPTIONS = "подписки";
+    private static final String SUBSCRIPTIONS = "subscriptions";
+    private static final String USERS = "users";
+    private static final String WORKER_ID = "worker id";
 
     private TextView subsText;
     private DBHelper dbHelper;
-    private boolean isSubscription;
     private FragmentManager manager;
+    private long countOfLoadedUser = 0;
 
     private ArrayList<User> userList;
     private RecyclerView recyclerView;
+    private SQLiteDatabase database;
 
 
     @Override
@@ -51,14 +69,12 @@ public class Subscribers extends AppCompatActivity {
         userList = new ArrayList<>();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
 
         dbHelper = new DBHelper(this);
+        database = dbHelper.getReadableDatabase();
+
         String status = getIntent().getStringExtra(STATUS);
-
-        isSubscription = status.equals(SUBSCRIPTIONS);
-
     }
 
     @Override
@@ -69,17 +85,103 @@ public class Subscribers extends AppCompatActivity {
         panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
         panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
 
-        if(isSubscription) {
-            updateSubscriptionText();
-            getMySubscriptions();
+        updateSubscriptionText();
+        if (!getMySubscriptions()) {
+            Log.d(TAG, "onResume: ");
+            loadUserSubscriptions();
         }
+
+
         /*else {
             updateSubscribersText();
             getMySubscribers();
         }*/
     }
 
+    private void loadUserSubscriptions() {
 
+        final DatabaseReference userRef = FirebaseDatabase.getInstance()
+                .getReference(USERS)
+                .child(getUserId())
+                .child(SUBSCRIPTIONS);
+
+        //повесить другой листенер, который срабатывает на полседнего, который только добавился
+        userRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
+                    String id = userSnapshot.getKey();
+                    String workerId = String.valueOf(userSnapshot.child(WORKER_ID).getValue());
+                    loadUserById(workerId);
+                    addUserSubscriptionInLocalStorage(id, workerId);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot userSnapshot) {
+                Log.d(TAG, "onChildRemoved: " + userSnapshot);
+                String id = userSnapshot.getKey();
+                database.delete(
+                        DBHelper.TABLE_SUBSCRIBERS,
+                        DBHelper.KEY_ID + " = ?",
+                        new String[]{id});
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadUserById(final String userId) {
+        final SQLiteDatabase database = dbHelper.getWritableDatabase();
+        final DatabaseReference userRef = FirebaseDatabase.getInstance()
+                .getReference(USERS)
+                .child(userId);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                //загрузка данных о пользователе
+                LoadingUserElementData.loadUserInfoForSubElement(userSnapshot, database);
+                countOfLoadedUser++;
+
+                if(countOfLoadedUser == SubscriptionsApi.getCountOfSubscriptions(database,getUserId())){
+                    getMySubscriptions();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void addUserSubscriptionInLocalStorage(String id, String workerId) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, id);
+        contentValues.put(DBHelper.KEY_USER_ID, getUserId());
+        contentValues.put(DBHelper.KEY_WORKER_ID, workerId);
+
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_SUBSCRIBERS, id);
+        if (hasSomeData) {
+            database.update(DBHelper.TABLE_SUBSCRIBERS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{id});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, id);
+            database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
+        }
+    }
 
     private Cursor createSubscriberCursor() {
         String userId = getUserId();
@@ -87,7 +189,7 @@ public class Subscribers extends AppCompatActivity {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         String sqlQuery =
-                "SELECT " + DBHelper.KEY_USER_ID+ ", "
+                "SELECT " + DBHelper.KEY_USER_ID + ", "
                         + DBHelper.KEY_NAME_USERS
                         + " FROM " + DBHelper.TABLE_CONTACTS_USERS + ", "
                         + DBHelper.TABLE_SUBSCRIBERS
@@ -98,13 +200,57 @@ public class Subscribers extends AppCompatActivity {
                         + " AND "
                         + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_WORKER_ID + " = ?";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
         return cursor;
     }
+
+    private Cursor createSubscriptionCursor() {
+        String userId = getUserId();
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String sqlQuery =
+                "SELECT " + DBHelper.KEY_WORKER_ID + ", "
+                        + DBHelper.KEY_NAME_USERS
+                        + " FROM " + DBHelper.TABLE_CONTACTS_USERS + ", "
+                        + DBHelper.TABLE_SUBSCRIBERS
+                        + " WHERE "
+                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
+                        + " = "
+                        + DBHelper.KEY_WORKER_ID
+                        + " AND "
+                        + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_USER_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
+        return cursor;
+    }
+
+    private boolean getMySubscriptions() {
+        Cursor subsCursor = createSubscriptionCursor();
+        if (subsCursor.getCount() != 0) {
+            if (subsCursor.moveToFirst()) {
+                int indexWorkerId = subsCursor.getColumnIndex(DBHelper.KEY_WORKER_ID);
+                int indexWorkerName = subsCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
+                do {
+                    User user = new User();
+                    user.setId(subsCursor.getString(indexWorkerId));
+                    user.setName(subsCursor.getString(indexWorkerName));
+                    userList.add(user);
+                } while (subsCursor.moveToNext());
+            }
+            SubscriptionAdapter subscribersAdapter = new SubscriptionAdapter(userList.size(), userList);
+            //опускаемся к полседнему элементу
+            recyclerView.setAdapter(subscribersAdapter);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     //мои подписчики (в разработке)
     private void getMySubscribers() {
         Cursor subsCursor = createSubscriberCursor();
-        if(subsCursor.moveToFirst()) {
+        if (subsCursor.moveToFirst()) {
             int indexSubId = subsCursor.getColumnIndex(DBHelper.KEY_USER_ID);
             int indexSubName = subsCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
 
@@ -127,8 +273,7 @@ public class Subscribers extends AppCompatActivity {
     }
 
     private void updateSubscriptionText() {
-        Cursor subsCursor = createSubscriptionCursor();
-        long subsCount = subsCursor.getCount();
+        long subsCount = SubscriptionsApi.getCountOfSubscriptions(database, getUserId());
         String subs = "У вас пока нет подписок";
         if (subsCount != 0) {
             subs = "Подписки: " + subsCount;
@@ -136,48 +281,7 @@ public class Subscribers extends AppCompatActivity {
         subsText.setText(subs);
     }
 
-    private Cursor createSubscriptionCursor() {
-        String userId = getUserId();
-
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-        String sqlQuery =
-                "SELECT " + DBHelper.KEY_WORKER_ID + ", "
-                        + DBHelper.KEY_NAME_USERS
-                        + " FROM " + DBHelper.TABLE_CONTACTS_USERS + ", "
-                        + DBHelper.TABLE_SUBSCRIBERS
-                        + " WHERE "
-                        + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
-                        + " = "
-                         + DBHelper.KEY_WORKER_ID
-                        + " AND "
-                        + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_USER_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[] {userId});
-        return cursor;
-    }
-
-    private void getMySubscriptions() {
-        Cursor subsCursor = createSubscriptionCursor();
-
-        if(subsCursor.moveToFirst()) {
-            int indexWorkerId = subsCursor.getColumnIndex(DBHelper.KEY_WORKER_ID);
-            int indexWorkerName = subsCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
-
-           do {
-               User user = new User();
-               user.setId(subsCursor.getString(indexWorkerId));
-               user.setName(subsCursor.getString(indexWorkerName));
-               userList.add(user);
-           } while (subsCursor.moveToNext());
-        }
-        SubscriptionAdapter subscribersAdapter = new SubscriptionAdapter(userList.size(), userList);
-        //опускаемся к полседнему элементу
-        recyclerView.setAdapter(subscribersAdapter);
-    }
-
-    private  String getUserId(){
+    private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
-
 }

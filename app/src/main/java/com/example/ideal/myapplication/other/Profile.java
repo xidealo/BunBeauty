@@ -25,6 +25,7 @@ import com.example.ideal.myapplication.adapters.foundElements.FoundServiceProfil
 import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.reviews.Comments;
 import com.example.ideal.myapplication.subscriptions.Subscribers;
@@ -61,13 +62,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     private RatingBar ratingBar;
 
-    private LinearLayout subscriptionsLayout;
-
     private ScrollView servicesScroll;
     private LinearLayout servicesLayout;
     private LinearLayout ratingForUserLayout;
-
-    private DBHelper dbHelper;
 
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private ImageView avatarImage;
@@ -77,6 +74,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private ArrayList<Order> orderList;
     private RecyclerView recyclerView;
     private OrderAdapter orderAdapter;
+    private SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +82,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         setContentView(R.layout.profile);
 
         Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
-        subscriptionsLayout = findViewById(R.id.subscriptionsProfileLayout);
+        LinearLayout subscriptionsLayout = findViewById(R.id.subscriptionsProfileLayout);
         subscriptionsText = findViewById(R.id.subscriptionsProfileText);
 
         avatarImage = findViewById(R.id.avatarProfileImage);
@@ -106,8 +104,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         phoneText = findViewById(R.id.phoneProfileText);
         subscribersText = findViewById(R.id.subscribersProfileText);
 
-        dbHelper = new DBHelper(this);
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        DBHelper dbHelper = new DBHelper(this);
+        database = dbHelper.getReadableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
 
         manager = getSupportFragmentManager();
@@ -177,7 +175,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     // получаем данные о пользователе и отображаем в прфоиле
     private void updateProfileData(String userId) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
         //получаем имя, фамилию и город пользователя по его id
         String sqlQuery =
                 "SELECT "
@@ -213,7 +210,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     private void loadRatingForUser() {
 
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
         //таким способом я получаю свои ревью, а не о себе
         String ratingQuery = "SELECT "
                 + DBHelper.KEY_RATING_USERS
@@ -256,7 +252,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             updateOrdersList(userId);
 
             // выводим кол-во подписок
-            long subscriptionsCount = getCountOfSubscriptions();
+            long subscriptionsCount = SubscriptionsApi.getCountOfSubscriptions(database,userId);
             String subscriptionText = "Подписки";
 
             if (subscriptionsCount != 0) {
@@ -271,32 +267,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             }
             subscribersText.setText(subscribersBtnText);
         }
-
         updateServicesList(userId);
     }
 
-    private long getCountOfSubscriptions() {
-        String userId = getUserId();
-
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-        String sqlQuery =
-                "SELECT " + DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS
-                        + " FROM " + DBHelper.TABLE_CONTACTS_USERS
-                        + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
-        if (cursor.moveToFirst()) {
-            int indexSubscriptionsCount = cursor.getColumnIndex(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS);
-            return Long.valueOf(cursor.getString(indexSubscriptionsCount));
-        }
-        cursor.close();
-        return 0;
-    }
-
     private long getCountOfSubscribers() {
-
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         String sqlQuery =
                 "SELECT " + DBHelper.KEY_SUBSCRIBERS_COUNT_USERS
@@ -316,7 +290,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private void updateServicesList(String userId) {
         //количество сервисов отображаемых на данный момент(старых)
         servicesLayout.removeAllViews();
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         String sqlQueryService =
                 "SELECT "
@@ -369,7 +342,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         // количство записей отображаемых на данный момент(старых)
         int visibleCount = orderList.size();
 
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
         // получаем id сервиса, имя сервиса, дату и время всех записей
         // Из 3-х таблиц: сервисы, рабочие дни, рабочие время
         // Условие: связка таблиц по id сервиса и id рабочего дня; уточняем пользователя по id
@@ -436,7 +408,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     public boolean checkSubscription() {
 
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery =
                 "SELECT * FROM "
                         + DBHelper.TABLE_SUBSCRIBERS
