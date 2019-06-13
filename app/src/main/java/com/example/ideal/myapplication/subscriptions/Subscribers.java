@@ -3,25 +3,20 @@ package com.example.ideal.myapplication.subscriptions;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.LinearLayout;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.adapters.MessageAdapter;
 import com.example.ideal.myapplication.adapters.SubscriptionAdapter;
-import com.example.ideal.myapplication.adapters.SubscriptionElement;
-import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.fragments.objects.User;
-import com.example.ideal.myapplication.helpApi.LoadingProfileData;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
@@ -33,12 +28,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Subscribers extends AppCompatActivity {
 
@@ -56,16 +48,16 @@ public class Subscribers extends AppCompatActivity {
     private ArrayList<User> userList;
     private RecyclerView recyclerView;
     private SQLiteDatabase database;
-
-
+    private ProgressBar progressBar;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.subscribers);
 
         manager = getSupportFragmentManager();
-
         subsText = findViewById(R.id.subsCountSubscribersText);
+        progressBar = findViewById(R.id.progressBarSubscribers);
 
         recyclerView = findViewById(R.id.resultsSubscribersRecycleView);
         userList = new ArrayList<>();
@@ -88,7 +80,6 @@ public class Subscribers extends AppCompatActivity {
         panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
 
         if (!getMySubscriptions()) {
-            Log.d(TAG, "onResume: ");
             loadUserSubscriptions();
         }
 
@@ -114,7 +105,6 @@ public class Subscribers extends AppCompatActivity {
                 String workerId = String.valueOf(userSnapshot.child(WORKER_ID).getValue());
                 loadUserById(workerId);
                 addUserSubscriptionInLocalStorage(id, workerId);
-
             }
 
             @Override
@@ -130,7 +120,6 @@ public class Subscribers extends AppCompatActivity {
                         DBHelper.KEY_ID + " = ?",
                         new String[]{id});
                 countOfLoadedUser--;
-                Log.d(TAG, "onDataChange: " + countOfLoadedUser);
                 updateLocalCountOfSubs(countOfLoadedUser);
             }
 
@@ -167,9 +156,11 @@ public class Subscribers extends AppCompatActivity {
                 //загрузка данных о пользователе
                 LoadingUserElementData.loadUserInfoForSubElement(userSnapshot, database);
                 countOfLoadedUser++;
-                Log.d(TAG, "onDataChange: " + countOfLoadedUser);
-                if (countOfLoadedUser >= SubscriptionsApi.getCountOfSubscriptions(database, getUserId())) {
-                    updateLocalCountOfSubs(countOfLoadedUser);
+                long currentCountOfSub = SubscriptionsApi.getCountOfSubscriptions(database, getUserId());
+                if (countOfLoadedUser >= currentCountOfSub){
+                    if(countOfLoadedUser!=currentCountOfSub){
+                        updateLocalCountOfSubs(countOfLoadedUser);
+                    }
                     getMySubscriptions();
                 }
             }
@@ -259,6 +250,7 @@ public class Subscribers extends AppCompatActivity {
             SubscriptionAdapter subscribersAdapter = new SubscriptionAdapter(userList.size(), userList);
             //опускаемся к полседнему элементу
             recyclerView.setAdapter(subscribersAdapter);
+            progressBar.setVisibility(View.GONE);
             return true;
         } else {
             return false;

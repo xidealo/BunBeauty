@@ -33,7 +33,13 @@
             android:layout_gravity="center"
             style="@style/mainText"
             android:text="У вас пока нет подписок" />
-
+        <ProgressBar
+            android:id="@+id/progressBarSubscribers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint= "@color/panelColor"
+            />
         <android.support.v7.widget.RecyclerView
             android:id="@+id/resultsSubscribersRecycleView"
             android:layout_width="match_parent"
