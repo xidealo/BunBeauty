@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,12 +26,18 @@ import com.example.ideal.myapplication.fragments.SwitcherElement;
 import com.example.ideal.myapplication.adapters.foundElements.FoundServiceProfileElement;
 import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.Service;
+import com.example.ideal.myapplication.helpApi.LoadingProfileData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.reviews.Comments;
 import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -39,6 +47,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static final String TAG = "DBInf";
     private static final String OWNER_ID = "owner id";
     private static final String REVIEW_FOR_SERVICE = "review for service";
+    private static final String USERS = "users";
 
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String ORDER_ID = "order_id";
@@ -134,7 +143,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             subscriptionsLayout.setOnClickListener(this);
         } else {
             // Не совпадает - чужой профиль
-
             // Скрываем функционал
             addServicesBtn.setVisibility(View.GONE);
             subscriptionsLayout.setVisibility(View.INVISIBLE);
@@ -146,7 +154,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             servicesScroll.setVisibility(View.VISIBLE);
         }
 
-        loadRatingForUser();
         avatarImage.setOnClickListener(this);
     }
 
@@ -174,8 +181,44 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     }
 
     // получаем данные о пользователе и отображаем в прфоиле
-    private void updateProfileData(String userId) {
+    private boolean updateProfileData(String ownerId) {
         //получаем имя, фамилию и город пользователя по его id
+        Cursor userCursor = createUserCursor(ownerId);
+        if (userCursor.moveToFirst()) {
+            if (userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_PHONE_USERS)) != null) {
+                int indexName = userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
+                int indexCity = userCursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
+                int indexPhone = userCursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
+
+                String[] names = userCursor.getString(indexName).split(" ");
+                for (int i = 0; i < names.length; i++) {
+                    names[i] = names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
+                }
+                String name = names[0] + " " + names[1];
+
+                String city = userCursor.getString(indexCity).substring(0, 1).toUpperCase()
+                        + userCursor.getString(indexCity).substring(1);
+                String phone = userCursor.getString(indexPhone);
+                nameText.setText(name);
+                cityText.setText(city);
+                phoneText.setText(phone);
+                userCursor.close();
+
+                //загрузка рейтинга пользователя
+                loadRatingForUser();
+                //загрузка аватарки
+                int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
+                int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
+                workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width, height);
+                //updateServicesList(ownerId);
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Cursor createUserCursor(String ownerId) {
         String sqlQuery =
                 "SELECT "
                         + DBHelper.KEY_NAME_USERS + ", "
@@ -185,27 +228,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                         + DBHelper.TABLE_CONTACTS_USERS
                         + " WHERE "
                         + DBHelper.KEY_ID + " = ?";
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{ownerId});
 
-        if (cursor.moveToFirst()) {
-            int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
-            int indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
-            int indexPhone = cursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
-
-            String[] names = cursor.getString(indexName).split(" ");
-            for (int i = 0; i < names.length; i++) {
-                names[i] = names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
-            }
-            String name = names[0] + " " + names[1];
-
-            String city = cursor.getString(indexCity).substring(0, 1).toUpperCase()
-                    + cursor.getString(indexCity).substring(1);
-            String phone = cursor.getString(indexPhone);
-            nameText.setText(name);
-            cityText.setText(city);
-            phoneText.setText(phone);
-            cursor.close();
-        }
+        return cursor;
     }
 
     private void loadRatingForUser() {
@@ -229,19 +254,20 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 addRatingToScreen(rating);
             }
         }
-
         cursor.close();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        updateProfileData(ownerId);
-
-        int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
-        int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
-        workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width, height);
+        if (userId.equals(ownerId)) {
+            updateProfileData(ownerId);
+        } else {
+            if (!updateProfileData(ownerId)) {
+                //загрузка из фб
+                loadProfileData(ownerId);
+            }
+        }
 
         PanelBuilder panelBuilder = new PanelBuilder(ownerId);
         panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
@@ -252,7 +278,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             updateOrdersList(userId);
 
             // выводим кол-во подписок
-            long subscriptionsCount = SubscriptionsApi.getCountOfSubscriptions(database,userId);
+            long subscriptionsCount = SubscriptionsApi.getCountOfSubscriptions(database, userId);
             String subscriptionText = "Подписки";
 
             if (subscriptionsCount != 0) {
@@ -267,7 +293,24 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             }
             subscribersText.setText(subscribersBtnText);
         }
-        updateServicesList(userId);
+    }
+
+    private void loadProfileData(final String ownerId) {
+        DatabaseReference userReference = FirebaseDatabase.getInstance()
+                .getReference(USERS)
+                .child(ownerId);
+        userReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                LoadingProfileData.loadUserInfo(userSnapshot, database);
+                updateProfileData(ownerId);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private long getCountOfSubscribers() {
@@ -287,7 +330,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     }
 
     //подгрузка сервисов на serviceList
-    private void updateServicesList(String userId) {
+    private void updateServicesList(String ownerId) {
         //количество сервисов отображаемых на данный момент(старых)
         servicesLayout.removeAllViews();
 
@@ -322,7 +365,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             } while (cursor.moveToNext());
 
         }
-
         cursor.close();
     }
 

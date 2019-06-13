@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
@@ -87,6 +88,14 @@ public class LoadingProfileData {
         user.setRating(userRating);
 
         addUserInfoInLocalStorage(user);
+        
+        if(serviceThread.isAlive()) {
+            try {
+                serviceThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void loadMyInfo(DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
@@ -167,7 +176,7 @@ public class LoadingProfileData {
             contentValues.put(DBHelper.KEY_ID, serviceId);
             localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
-
+        Log.d(TAG, "addUserServicesInLocalStorage: ");
         serviceThread.interrupt();
     }
 
