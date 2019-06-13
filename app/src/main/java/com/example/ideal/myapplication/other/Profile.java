@@ -245,7 +245,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
         int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
         int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
-        workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width,height);
+        workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width, height);
 
         PanelBuilder panelBuilder = new PanelBuilder(ownerId);
         panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
@@ -281,12 +281,17 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         String sqlQuery =
-                "SELECT " + DBHelper.KEY_WORKER_ID
-                        + " FROM " + DBHelper.TABLE_SUBSCRIBERS
-                        + " WHERE " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_USER_ID + " = ?";
+                "SELECT " + DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS
+                        + " FROM " + DBHelper.TABLE_CONTACTS_USERS
+                        + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + " = ?";
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
-        return cursor.getCount();
+        if (cursor.moveToFirst()) {
+            int indexSubscriptionsCount = cursor.getColumnIndex(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS);
+            return Long.valueOf(cursor.getString(indexSubscriptionsCount));
+        }
+        cursor.close();
+        return 0;
     }
 
     private long getCountOfSubscribers() {
@@ -294,12 +299,17 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         String sqlQuery =
-                "SELECT " + DBHelper.KEY_WORKER_ID
-                        + " FROM " + DBHelper.TABLE_SUBSCRIBERS
-                        + " WHERE " + DBHelper.TABLE_SUBSCRIBERS + "." + DBHelper.KEY_WORKER_ID + " = ?";
+                "SELECT " + DBHelper.KEY_SUBSCRIBERS_COUNT_USERS
+                        + " FROM " + DBHelper.TABLE_CONTACTS_USERS
+                        + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + " = ?";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{ownerId});
-        return cursor.getCount();
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
+        if (cursor.moveToFirst()) {
+            int indexSubscribersCount = cursor.getColumnIndex(DBHelper.KEY_SUBSCRIBERS_COUNT_USERS);
+            return Long.valueOf(cursor.getString(indexSubscribersCount));
+        }
+        cursor.close();
+        return 0;
     }
 
     //подгрузка сервисов на serviceList
@@ -415,7 +425,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             }
         }
 
-        orderAdapter = new OrderAdapter(orderList.size(),orderList);
+        orderAdapter = new OrderAdapter(orderList.size(), orderList);
         recyclerView.setAdapter(orderAdapter);
         cursor.close();
     }
@@ -444,13 +454,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         }
     }
 
-    private void addRatingToScreen(float avgRating){
-            ratingBar.setVisibility(View.VISIBLE);
-            ratingBar.setRating(avgRating);
-            ratingForUserLayout.setOnClickListener(this);
+    private void addRatingToScreen(float avgRating) {
+        ratingBar.setVisibility(View.VISIBLE);
+        ratingBar.setRating(avgRating);
+        ratingForUserLayout.setOnClickListener(this);
     }
 
-    private void setWithoutRating(){
+    private void setWithoutRating() {
         ratingBar.setVisibility(View.GONE);
         withoutRatingText.setVisibility(View.VISIBLE);
     }
@@ -472,6 +482,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         intent.putExtra(TYPE, status);
         startActivity(intent);
     }
+
     @Override
     public void firstSwitcherAct() {
         servicesLayout.setVisibility(View.GONE);

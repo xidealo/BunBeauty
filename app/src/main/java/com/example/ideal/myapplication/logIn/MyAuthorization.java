@@ -91,7 +91,7 @@ public class MyAuthorization {
                         clearSQLite();
 
                         SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
-                        LoadingProfileData.loadUserInfo(userSnapshot, localDatabase);
+                        LoadingProfileData.loadMyInfo(userSnapshot, localDatabase);
                         loadMyOrders(userSnapshot.child(ORDERS));
                     }
                 }
