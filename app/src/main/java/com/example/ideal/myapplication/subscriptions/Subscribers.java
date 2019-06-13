@@ -37,6 +37,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Subscribers extends AppCompatActivity {
 
@@ -85,7 +87,6 @@ public class Subscribers extends AppCompatActivity {
         panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
         panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
 
-        updateSubscriptionText();
         if (!getMySubscriptions()) {
             Log.d(TAG, "onResume: ");
             loadUserSubscriptions();
@@ -99,20 +100,21 @@ public class Subscribers extends AppCompatActivity {
     }
 
     private void loadUserSubscriptions() {
-
+        final String myUserId = getUserId();
         final DatabaseReference userRef = FirebaseDatabase.getInstance()
                 .getReference(USERS)
-                .child(getUserId())
+                .child(myUserId)
                 .child(SUBSCRIPTIONS);
 
         //повесить другой листенер, который срабатывает на полседнего, который только добавился
         userRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
-                    String id = userSnapshot.getKey();
-                    String workerId = String.valueOf(userSnapshot.child(WORKER_ID).getValue());
-                    loadUserById(workerId);
-                    addUserSubscriptionInLocalStorage(id, workerId);
+                String id = userSnapshot.getKey();
+                String workerId = String.valueOf(userSnapshot.child(WORKER_ID).getValue());
+                loadUserById(workerId);
+                addUserSubscriptionInLocalStorage(id, workerId);
+
             }
 
             @Override
@@ -122,12 +124,14 @@ public class Subscribers extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot userSnapshot) {
-                Log.d(TAG, "onChildRemoved: " + userSnapshot);
                 String id = userSnapshot.getKey();
                 database.delete(
                         DBHelper.TABLE_SUBSCRIBERS,
                         DBHelper.KEY_ID + " = ?",
                         new String[]{id});
+                countOfLoadedUser--;
+                Log.d(TAG, "onDataChange: " + countOfLoadedUser);
+                updateLocalCountOfSubs(countOfLoadedUser);
             }
 
             @Override
@@ -142,6 +146,16 @@ public class Subscribers extends AppCompatActivity {
         });
     }
 
+    private void updateLocalCountOfSubs(long subscriptionsCount) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, subscriptionsCount);
+
+        database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{getUserId()});
+    }
+
     private void loadUserById(final String userId) {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
         final DatabaseReference userRef = FirebaseDatabase.getInstance()
@@ -153,8 +167,9 @@ public class Subscribers extends AppCompatActivity {
                 //загрузка данных о пользователе
                 LoadingUserElementData.loadUserInfoForSubElement(userSnapshot, database);
                 countOfLoadedUser++;
-
-                if(countOfLoadedUser == SubscriptionsApi.getCountOfSubscriptions(database,getUserId())){
+                Log.d(TAG, "onDataChange: " + countOfLoadedUser);
+                if (countOfLoadedUser >= SubscriptionsApi.getCountOfSubscriptions(database, getUserId())) {
+                    updateLocalCountOfSubs(countOfLoadedUser);
                     getMySubscriptions();
                 }
             }
@@ -227,6 +242,9 @@ public class Subscribers extends AppCompatActivity {
 
     private boolean getMySubscriptions() {
         Cursor subsCursor = createSubscriptionCursor();
+        //надпись сверху
+        updateSubscriptionText();
+
         if (subsCursor.getCount() != 0) {
             if (subsCursor.moveToFirst()) {
                 int indexWorkerId = subsCursor.getColumnIndex(DBHelper.KEY_WORKER_ID);

@@ -84,7 +84,6 @@ public class SubscriptionsApi {
     }
 
     public void unsubscribe() {
-        Log.d(TAG, "unsubscribe: ");
        deleteSubscription();
        deleteSubscriber();
     }
