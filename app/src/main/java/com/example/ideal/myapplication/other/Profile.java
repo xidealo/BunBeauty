@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.OrderAdapter;
+import com.example.ideal.myapplication.adapters.ServiceProfileAdapter;
 import com.example.ideal.myapplication.createService.AdditionService;
 import com.example.ideal.myapplication.fragments.SwitcherElement;
 import com.example.ideal.myapplication.adapters.foundElements.FoundServiceProfileElement;
@@ -71,8 +72,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     private RatingBar ratingBar;
 
-    private ScrollView servicesScroll;
-    private LinearLayout servicesLayout;
     private LinearLayout ratingForUserLayout;
 
     private WorkWithLocalStorageApi workWithLocalStorageApi;
@@ -81,8 +80,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private FragmentManager manager;
 
     private ArrayList<Order> orderList;
+    private ArrayList<Service> serviceList;
     private RecyclerView recyclerView;
-    private OrderAdapter orderAdapter;
+    private RecyclerView recyclerViewService;
+
+    private Button addServicesBtn;
+
     private SQLiteDatabase database;
 
     @Override
@@ -90,23 +93,27 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
 
-        Button addServicesBtn = findViewById(R.id.addServicesProfileBtn);
         LinearLayout subscriptionsLayout = findViewById(R.id.subscriptionsProfileLayout);
         subscriptionsText = findViewById(R.id.subscriptionsProfileText);
 
         avatarImage = findViewById(R.id.avatarProfileImage);
 
-        servicesScroll = findViewById(R.id.servicesProfileScroll);
-        servicesLayout = findViewById(R.id.servicesProfileLayout);
         withoutRatingText = findViewById(R.id.withoutRatingProfileText);
         ratingBar = findViewById(R.id.ratingBarProfile);
 
         ratingForUserLayout = findViewById(R.id.ratingProfileLayout);
+        addServicesBtn = findViewById(R.id.addServicesProfileBtn);
 
         recyclerView = findViewById(R.id.resultsProfileRecycleView);
+        recyclerViewService = findViewById(R.id.servicesProfileRecyclerView);
+        serviceList = new ArrayList<>();
         orderList = new ArrayList<>();
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        LinearLayoutManager layoutManagerSecond = new LinearLayoutManager(this);
+        recyclerViewService.setLayoutManager(layoutManagerSecond);
 
         nameText = findViewById(R.id.nameProfileText);
         cityText = findViewById(R.id.cityProfileText);
@@ -131,8 +138,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         // Проверяем совпадают id пользователя и владельца
         if (userId.equals(ownerId)) {
             // Совпадают - это мой профиль
-            servicesLayout.setVisibility(View.GONE);
-            servicesScroll.setVisibility(View.GONE);
+            recyclerViewService.setVisibility(View.GONE);
 
             SwitcherElement switcherElement = new SwitcherElement("Записи", "Услуги");
             FragmentTransaction transaction = manager.beginTransaction();
@@ -150,8 +156,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             recyclerView.setVisibility(View.GONE);
 
             // Отображаем все сервисы пользователя
-            servicesLayout.setVisibility(View.VISIBLE);
-            servicesScroll.setVisibility(View.VISIBLE);
+            recyclerViewService.setVisibility(View.VISIBLE);
         }
 
         avatarImage.setOnClickListener(this);
@@ -160,9 +165,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
             case R.id.addServicesProfileBtn:
                 goToAddService();
                 break;
+
             case R.id.subscriptionsProfileLayout:
                 goToSubscribers(SUBSCRIPTIONS);
                 break;
@@ -170,10 +177,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             case R.id.ratingProfileLayout:
                 goToUserComments(REVIEW_FOR_USER);
                 break;
-
-           /* case R.id.subscribersProfileBtn:
-                goToSubscribers(SUBSCRIBERS);
-                break;*/
 
             default:
                 break;
@@ -210,7 +213,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
                 int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
                 workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width, height);
-                //updateServicesList(ownerId);
+                updateServicesList(ownerId);
 
                 return true;
             }
@@ -332,7 +335,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     //подгрузка сервисов на serviceList
     private void updateServicesList(String ownerId) {
         //количество сервисов отображаемых на данный момент(старых)
-        servicesLayout.removeAllViews();
 
         String sqlQueryService =
                 "SELECT "
@@ -361,22 +363,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 service.setName(serviceName);
                 service.setAverageRating(serviceRating);
 
-                addToScreenOnProfile(service);
+                serviceList.add(service);
             } while (cursor.moveToNext());
-
         }
+        Log.d(TAG, "updateServicesList: " + serviceList.size());
+        ServiceProfileAdapter serviceAdapter = new ServiceProfileAdapter(serviceList.size(), serviceList);
+        recyclerViewService.setAdapter(serviceAdapter);
         cursor.close();
-    }
-
-    private void addToScreenOnProfile(Service service) {
-
-        FoundServiceProfileElement fElement
-                = new FoundServiceProfileElement(service);
-        FragmentTransaction transaction = manager.beginTransaction();
-
-        transaction.add(R.id.servicesProfileLayout, fElement);
-
-        transaction.commit();
     }
 
     //добавляет вновь добавленные записи (обновление ordersList)
@@ -439,7 +432,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             }
         }
 
-        orderAdapter = new OrderAdapter(orderList.size(), orderList);
+        OrderAdapter orderAdapter = new OrderAdapter(orderList.size(), orderList);
         recyclerView.setAdapter(orderAdapter);
         cursor.close();
     }
@@ -498,15 +491,15 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     @Override
     public void firstSwitcherAct() {
-        servicesLayout.setVisibility(View.GONE);
-        servicesScroll.setVisibility(View.GONE);
+        recyclerViewService.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
+        addServicesBtn.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void secondSwitcherAct() {
+        addServicesBtn.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
-        servicesLayout.setVisibility(View.VISIBLE);
-        servicesScroll.setVisibility(View.VISIBLE);
+        recyclerViewService.setVisibility(View.VISIBLE);
     }
 }

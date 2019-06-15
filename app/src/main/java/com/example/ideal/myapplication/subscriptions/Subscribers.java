@@ -49,7 +49,8 @@ public class Subscribers extends AppCompatActivity {
     private RecyclerView recyclerView;
     private SQLiteDatabase database;
     private ProgressBar progressBar;
-    
+    private static boolean isFirst = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,10 +80,12 @@ public class Subscribers extends AppCompatActivity {
         panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
         panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
 
-        if (!getMySubscriptions()) {
+        if (isFirst) {
             loadUserSubscriptions();
+            isFirst=false;
+        } else {
+            getMySubscriptions();
         }
-
 
         /*else {
             updateSubscribersText();
@@ -157,8 +160,8 @@ public class Subscribers extends AppCompatActivity {
                 LoadingUserElementData.loadUserInfoForSubElement(userSnapshot, database);
                 countOfLoadedUser++;
                 long currentCountOfSub = SubscriptionsApi.getCountOfSubscriptions(database, getUserId());
-                if (countOfLoadedUser >= currentCountOfSub){
-                    if(countOfLoadedUser!=currentCountOfSub){
+                if (countOfLoadedUser >= currentCountOfSub) {
+                    if (countOfLoadedUser != currentCountOfSub) {
                         updateLocalCountOfSubs(countOfLoadedUser);
                     }
                     getMySubscriptions();
@@ -231,30 +234,24 @@ public class Subscribers extends AppCompatActivity {
         return cursor;
     }
 
-    private boolean getMySubscriptions() {
+    private void getMySubscriptions() {
         Cursor subsCursor = createSubscriptionCursor();
         //надпись сверху
         updateSubscriptionText();
-
-        if (subsCursor.getCount() != 0) {
-            if (subsCursor.moveToFirst()) {
-                int indexWorkerId = subsCursor.getColumnIndex(DBHelper.KEY_WORKER_ID);
-                int indexWorkerName = subsCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
-                do {
-                    User user = new User();
-                    user.setId(subsCursor.getString(indexWorkerId));
-                    user.setName(subsCursor.getString(indexWorkerName));
-                    userList.add(user);
-                } while (subsCursor.moveToNext());
-            }
-            SubscriptionAdapter subscribersAdapter = new SubscriptionAdapter(userList.size(), userList);
-            //опускаемся к полседнему элементу
-            recyclerView.setAdapter(subscribersAdapter);
-            progressBar.setVisibility(View.GONE);
-            return true;
-        } else {
-            return false;
+        if (subsCursor.moveToFirst()) {
+            int indexWorkerId = subsCursor.getColumnIndex(DBHelper.KEY_WORKER_ID);
+            int indexWorkerName = subsCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
+            do {
+                User user = new User();
+                user.setId(subsCursor.getString(indexWorkerId));
+                user.setName(subsCursor.getString(indexWorkerName));
+                userList.add(user);
+            } while (subsCursor.moveToNext());
         }
+        SubscriptionAdapter subscribersAdapter = new SubscriptionAdapter(userList.size(), userList);
+        //опускаемся к полседнему элементу
+        recyclerView.setAdapter(subscribersAdapter);
+        progressBar.setVisibility(View.GONE);
     }
 
     //мои подписчики (в разработке)

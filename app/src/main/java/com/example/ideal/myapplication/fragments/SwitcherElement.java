@@ -41,8 +41,8 @@ public class SwitcherElement extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         switcher = (ISwitcher)this.getContext();
 
-        leftBtn = view.findViewById(R.id.leftSwicherElementBtn);
-        rightBtn = view.findViewById(R.id.rightSwicherElementBtn);
+        leftBtn = view.findViewById(R.id.leftSwitcherElementBtn);
+        rightBtn = view.findViewById(R.id.rightSwitcherElementBtn);
 
         leftBtn.setOnClickListener(this);
         rightBtn.setOnClickListener(this);
@@ -58,7 +58,7 @@ public class SwitcherElement extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.leftSwicherElementBtn:
+            case R.id.leftSwitcherElementBtn:
                 if (!isLeft) {
                     isLeft = true;
                     switcher.firstSwitcherAct();
@@ -67,7 +67,7 @@ public class SwitcherElement extends Fragment implements View.OnClickListener {
                 }
                 break;
 
-            case R.id.rightSwicherElementBtn:
+            case R.id.rightSwitcherElementBtn:
                 if (isLeft) {
                     isLeft = false;
                     switcher.secondSwitcherAct();

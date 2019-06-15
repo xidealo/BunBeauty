@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/servicesProfileScroll"
+        app:layout_constraintBottom_toTopOf="@+id/servicesProfileRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerProfileLayout">
@@ -101,6 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="2dp">
+
                 <LinearLayout
                     android:id="@+id/ratingProfileLayout"
                     android:layout_width="match_parent"
@@ -148,17 +149,26 @@
             </LinearLayout>
         </LinearLayout>
 
-
         <LinearLayout
             android:id="@+id/switcherProfileLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"/>
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal" >
+            <Button
+                android:layout_gravity="start"
+                android:id="@+id/addServicesProfileBtn"
+                style="@style/smallMainButtonOther"
+                android:layout_width="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:visibility="invisible"
+                android:layout_height="@dimen/main_button_height"
+                android:text="@string/addServices" />
+        </LinearLayout>
     </LinearLayout>
 
-    <ScrollView
-        android:id="@+id/servicesProfileScroll"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/servicesProfileRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
@@ -167,27 +177,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mainLayoutProfile">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    </android.support.v7.widget.RecyclerView>
 
-            <LinearLayout
-                android:id="@+id/servicesProfileLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-
-            <Button
-                android:id="@+id/addServicesProfileBtn"
-                style="@style/smallMainButtonOther"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/main_button_height"
-                android:layout_gravity="center"
-                android:layout_marginBottom="5dp"
-                android:text="@string/addServices" />
-        </LinearLayout>
-    </ScrollView>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/resultsProfileRecycleView"
@@ -197,8 +188,7 @@
         app:layout_constraintBottom_toTopOf="@+id/footerProfileLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/servicesProfileScroll">
-    </android.support.v7.widget.RecyclerView>
+        app:layout_constraintTop_toBottomOf="@+id/servicesProfileRecyclerView" />
 
     <LinearLayout
         android:id="@+id/footerProfileLayout"

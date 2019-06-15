@@ -1,11 +1,10 @@
 package com.example.ideal.myapplication.adapters.foundElements;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +17,9 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.searchService.GuestService;
 
-@SuppressLint("ValidFragment")
-public class FoundServiceProfileElement extends Fragment implements View.OnClickListener {
+public class FoundServiceProfileElement implements View.OnClickListener {
 
-    final String SERVICE_ID = "service id";
+    private static final String SERVICE_ID = "service id";
     private static final String TAG = "DBInf";
 
     private TextView nameText;
@@ -30,39 +28,36 @@ public class FoundServiceProfileElement extends Fragment implements View.OnClick
     private String idString;
     private String nameString;
     private float avgRating;
-    private WorkWithStringsApi workWithStringsApi;
+    private Context context;
+    private View view;
 
-    @SuppressLint("ValidFragment")
-    public FoundServiceProfileElement(Service service) {
+    public FoundServiceProfileElement(Service service,View view, Context context) {
         idString = service.getId();
         nameString = service.getName();
         avgRating = service.getAverageRating();
-        workWithStringsApi = new WorkWithStringsApi();
+        this.context = context;
+        this.view= view;
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.found_service_profile_element, null);
+    public void createElement(){
+        onViewCreated(view);
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
+    private void onViewCreated(View view) {
         nameText = view.findViewById(R.id.serviceNameFoundServiceProfileElementText);
         ratingBar = view.findViewById(R.id.ratingBarFondServiceProfileElement);
         nameText.setOnClickListener(this);
         LinearLayout layout = view.findViewById(R.id.foundServiceProfileElementLayout);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-        params.setMargins(10,0,10,10);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(10, 10, 10, 10);
         layout.setLayoutParams(params);
-
         layout.setOnClickListener(this);
         setData();
-
     }
 
     private void setData() {
-        nameText.setText(workWithStringsApi.cutString(nameString,27));
+        nameText.setText(WorkWithStringsApi.cutString(nameString,27));
         ratingBar.setRating(avgRating);
     }
 
@@ -72,8 +67,8 @@ public class FoundServiceProfileElement extends Fragment implements View.OnClick
     }
 
     private void goToGuestService(){
-        Intent intent = new Intent(this.getContext(), GuestService.class);
+        Intent intent = new Intent(context, GuestService.class);
         intent.putExtra(SERVICE_ID, idString);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 }
