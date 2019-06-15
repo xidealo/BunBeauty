@@ -22,7 +22,7 @@ public class LoadingUserElementData {
     private static Thread photoThread;
     private static Thread serviceThread;
 
-    public static void loadUserInfoForSubElement(final DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
+    public static void loadUserNameAndPhoto(final DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
         localDatabase = _localDatabase;
         new WorkWithLocalStorageApi(_localDatabase);
 

@@ -157,7 +157,7 @@ public class Subscribers extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 //загрузка данных о пользователе
-                LoadingUserElementData.loadUserInfoForSubElement(userSnapshot, database);
+                LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 countOfLoadedUser++;
                 long currentCountOfSub = SubscriptionsApi.getCountOfSubscriptions(database, getUserId());
                 if (countOfLoadedUser >= currentCountOfSub) {
