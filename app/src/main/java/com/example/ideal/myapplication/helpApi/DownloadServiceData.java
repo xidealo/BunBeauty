@@ -75,7 +75,6 @@ public class DownloadServiceData {
         user.setName(userName);
         user.setCity(userCity);
 
-        Log.d(TAG, "loadUserInfo: " + userId);
 
         // Добавляем все данные о пользователе в SQLite
         addUserInfoInLocalStorage(user);
@@ -360,8 +359,6 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
             localDatabase.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
-
-        Log.d(TAG, "addPhotoInLocalStorage: " + photo.getPhotoOwnerId());
     }
 }
 

@@ -22,6 +22,8 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.fragments.PremiumElement;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
+import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
+import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -86,6 +88,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private boolean isMyService;
     private boolean isPremiumLayoutSelected;
     private DBHelper dbHelper;
+    private boolean isFirst = true;
+    private SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +97,44 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.guest_service);
 
         init();
+
+        if(isFirst){
+            loadServiceData();
+            isFirst=false;
+        }else {
+            //получаем данные о сервисе
+            getInfoAboutService(serviceId);
+            //получаем рейтинг сервиса
+            getServiceRating(serviceId);
+        }
+    }
+
+    private void loadServiceData() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = firebaseDatabase.getReference(USERS)
+                .child(ownerId);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                //подгрузка фото
+                LoadingUserElementData.loadPhotos(userSnapshot, database);
+
+                //подгрузка сервиса
+                DataSnapshot serviceSnapshot = userSnapshot
+                        .child(SERVICES)
+                        .child(serviceId);
+
+                LoadingGuestServiceData.loadServiceInfo(serviceSnapshot,database,ownerId);
+
+                getInfoAboutService(serviceId);
+                getServiceRating(serviceId);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void init() {
@@ -116,19 +158,13 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         LinearLayout premiumIconLayout = findViewById(R.id.premiumIconGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        database = dbHelper.getReadableDatabase();
         topPanelLayout = findViewById(R.id.headerGuestServiceLayout);
-
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-
-        serviceId = getIntent().getStringExtra(SERVICE_ID);
-        //получаем данные о сервисе
-        getInfoAboutService(serviceId);
-
-        //получаем рейтинг сервиса
-        getServiceRating(serviceId);
         userId = getUserId();
 
+        serviceId = getIntent().getStringExtra(SERVICE_ID);
+        ownerId = getOwnerId();
         // мой сервис или нет?
         isMyService = userId.equals(ownerId);
 
@@ -151,6 +187,20 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             premiumIconLayout.setVisibility(View.GONE);
         }
         editScheduleBtn.setOnClickListener(this);
+    }
+
+    private String getOwnerId() {
+        String sqlQuery =
+                "SELECT *"
+                        + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES
+                        + " WHERE "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = ? ";
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
+        if (cursor.moveToFirst()) {
+            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+            ownerId = cursor.getString(indexUserId);
+        }
+        return ownerId;
     }
 
     @Override
@@ -184,10 +234,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private void getInfoAboutService(String serviceId) {
 
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
         // все осервисе, оценка, количество оценок
         // проверка на удаленный номер
-
         String sqlQuery =
                 "SELECT *"
                         + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES
@@ -200,11 +248,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
             int indexMinCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
             int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
-            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
             int indexAddress = cursor.getColumnIndex(DBHelper.KEY_ADDRESS_SERVICES);
             int indexIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
 
-            ownerId = cursor.getString(indexUserId);
             costText.setText("Цена от: " + cursor.getString(indexMinCost) + "р");
             addressText.setText("Адрес: " + cursor.getString(indexAddress));
             descriptionText.setText(cursor.getString(indexDescription));
@@ -219,8 +265,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void getServiceRating(String serviceId) {
-
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
         // все о сервисе, оценка, количество оценок
         // проверка на удаленный номер
         String sqlQuery =
@@ -337,7 +381,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             } while (cursor.moveToNext());
         }
         cursor.close();
-
     }
 
     @Override
@@ -367,7 +410,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void createRatingBar(float avgRating, long countOfRates) {
-
         if (countOfRates > 0) {
             countOfRatesText.setVisibility(View.VISIBLE);
             avgRatesText.setVisibility(View.VISIBLE);
@@ -437,9 +479,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void updatePremiumLocalStorage(String serviceId) {
-
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, "true");
         //update

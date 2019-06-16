@@ -263,6 +263,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     @Override
     protected void onResume() {
         super.onResume();
+        serviceList.clear();
+        orderList.clear();
         if (userId.equals(ownerId)) {
             updateProfileData(ownerId);
         } else {
