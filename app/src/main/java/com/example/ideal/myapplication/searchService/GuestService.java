@@ -84,7 +84,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private LinearLayout imageFeedLayout;
     private LinearLayout premiumLayout;
     private LinearLayout topPanelLayout;
-    private WorkWithLocalStorageApi workWithLocalStorageApi;
     private boolean isMyService;
     private boolean isPremiumLayoutSelected;
     private DBHelper dbHelper;
@@ -104,9 +103,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         }else {
             //получаем данные о сервисе
             getInfoAboutService(serviceId);
-            //получаем рейтинг сервиса
-            getServiceRating(serviceId);
         }
+
     }
 
     private void loadServiceData() {
@@ -114,7 +112,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         final DatabaseReference myRef = firebaseDatabase.getReference(USERS)
                 .child(ownerId);
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 //подгрузка фото
@@ -128,7 +126,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 LoadingGuestServiceData.loadServiceInfo(serviceSnapshot,database,ownerId);
 
                 getInfoAboutService(serviceId);
-                getServiceRating(serviceId);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -160,7 +157,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         dbHelper = new DBHelper(this);
         database = dbHelper.getReadableDatabase();
         topPanelLayout = findViewById(R.id.headerGuestServiceLayout);
-        workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
         userId = getUserId();
 
         serviceId = getIntent().getStringExtra(SERVICE_ID);
@@ -250,85 +246,34 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
             int indexAddress = cursor.getColumnIndex(DBHelper.KEY_ADDRESS_SERVICES);
             int indexIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
+            int indexServiceRating = cursor.getColumnIndex(DBHelper.KEY_RATING_SERVICES);
 
             costText.setText("Цена от: " + cursor.getString(indexMinCost) + "р");
             addressText.setText("Адрес: " + cursor.getString(indexAddress));
             descriptionText.setText(cursor.getString(indexDescription));
             serviceName = cursor.getString(indexName);
+            float serviceRating = Float.valueOf(cursor.getString(indexServiceRating));
+
             boolean isPremium = Boolean.valueOf(cursor.getString(indexIsPremium));
 
             if (isPremium) {
                 setWithPremium();
             }
+            long countOfRates = 1;
+
+            createRatingBar(serviceRating, countOfRates);
+            buildPanels();
         }
         cursor.close();
     }
+    private void buildPanels(){
+        PanelBuilder panelBuilder = new PanelBuilder();
+        FragmentManager manager = getSupportFragmentManager();
+        topPanelLayout.removeAllViews();
 
-    private void getServiceRating(String serviceId) {
-        // все о сервисе, оценка, количество оценок
-        // проверка на удаленный номер
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_RATING_REVIEWS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_ORDERS + ", "
-                        + DBHelper.TABLE_REVIEWS
-                        + " WHERE "
-                        + DBHelper.KEY_ORDER_ID_REVIEWS
-                        + " = "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                        + " = "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_TYPE_REVIEWS + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_RATING_REVIEWS + " != 0 ";
+        panelBuilder.buildHeader(manager, serviceName, R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
+        panelBuilder.buildFooter(manager, R.id.footerGuestServiceLayout);
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
-
-        float sumOfRates = 0;
-        float avgRating = 0;
-        long countOfRates = 0;
-        // если сюда не заходит, значит ревью нет
-        if (cursor.moveToFirst()) {
-            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
-            do {
-                String workingTimeId = cursor.getString(indexWorkingTimeId);
-                String orderId = cursor.getString(indexOrderId);
-
-                if (workWithLocalStorageApi.isMutualReview(orderId)) {
-                    sumOfRates += Float.valueOf(cursor.getString(indexRating));
-                    countOfRates++;
-                } else {
-                    if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                        sumOfRates += Float.valueOf(cursor.getString(indexRating));
-                        countOfRates++;
-                    }
-                }
-            } while (cursor.moveToNext());
-
-            if (countOfRates != 0) {
-                avgRating = sumOfRates / countOfRates;
-            }
-            createRatingBar(avgRating, countOfRates);
-        } else {
-            setWithoutRating();
-        }
-        cursor.close();
     }
 
     private void checkScheduleAndGoToProfile() {
@@ -386,14 +331,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        FragmentManager manager = getSupportFragmentManager();
-        getInfoAboutService(serviceId);
 
-        topPanelLayout.removeAllViews();
-
-        panelBuilder.buildHeader(manager, serviceName, R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
-        panelBuilder.buildFooter(manager, R.id.footerGuestServiceLayout);
         imageFeedLayout.removeAllViews();
         setPhotoFeed(serviceId);
     }
