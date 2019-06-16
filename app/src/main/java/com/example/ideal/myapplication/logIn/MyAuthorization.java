@@ -14,6 +14,7 @@ import com.example.ideal.myapplication.helpApi.LoadingProfileData;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.other.MyService;
 import com.example.ideal.myapplication.other.Profile;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -57,9 +58,9 @@ public class MyAuthorization {
 
     private int counter;
 
-    private Thread dayThread;
-    private Thread timeThread;
-    private Thread orderThread;
+    private Thread dayThread = new Thread();
+    private Thread timeThread = new Thread();
+    private Thread orderThread = new Thread();
 
     MyAuthorization(Context _context, String _myPhoneNumber) {
         context = _context;
@@ -71,11 +72,11 @@ public class MyAuthorization {
     void authorizeUser() {
         // скарываем Views и запукаем прогресс бар
 
-        Query query = FirebaseDatabase.getInstance().getReference(USERS).
+        Query userQuery = FirebaseDatabase.getInstance().getReference(USERS).
                 orderByChild(PHONE).
                 equalTo(myPhoneNumber);
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
                 if (usersSnapshot.getChildrenCount() == 0) {
@@ -200,18 +201,18 @@ public class MyAuthorization {
     private void loadMyOrders(DataSnapshot _ordersSnapshot) {
 
         if (_ordersSnapshot.getChildrenCount() == 0) {
-            goToProfile();
-        }
+                goToProfile();
+            }
 
-        counter = 0;
-        final long childrenCount = _ordersSnapshot.getChildrenCount();
-        for (final DataSnapshot orderSnapshot : _ordersSnapshot.getChildren()) {
-            //получаем "путь" к мастеру, на сервис которого мы записаны
-            final String orderId = orderSnapshot.getKey();
-            final String workerId = String.valueOf(orderSnapshot.child(WORKER_ID).getValue());
-            final String serviceId = String.valueOf(orderSnapshot.child(SERVICE_ID).getValue());
-            final String workingDayId = String.valueOf(orderSnapshot.child(WORKING_DAY_ID).getValue());
-            final String workingTimeId = String.valueOf(orderSnapshot.child(WORKING_TIME_ID).getValue());
+            counter = 0;
+            final long childrenCount = _ordersSnapshot.getChildrenCount();
+            for (final DataSnapshot orderSnapshot : _ordersSnapshot.getChildren()) {
+                //получаем "путь" к мастеру, на сервис которого мы записаны
+                final String orderId = orderSnapshot.getKey();
+                final String workerId = String.valueOf(orderSnapshot.child(WORKER_ID).getValue());
+                final String serviceId = String.valueOf(orderSnapshot.child(SERVICE_ID).getValue());
+                final String workingDayId = String.valueOf(orderSnapshot.child(WORKING_DAY_ID).getValue());
+                final String workingTimeId = String.valueOf(orderSnapshot.child(WORKING_TIME_ID).getValue());
             DatabaseReference serviceReference = FirebaseDatabase.getInstance()
                     .getReference(USERS)
                     .child(workerId)
@@ -426,7 +427,7 @@ public class MyAuthorization {
         Intent intent = new Intent(context, Profile.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
-        //context.startService(new Intent(context, MyService.class));
+        context.startService(new Intent(context, MyService.class));
     }
 
 }

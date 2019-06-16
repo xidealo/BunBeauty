@@ -366,7 +366,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 serviceList.add(service);
             } while (cursor.moveToNext());
         }
-        Log.d(TAG, "updateServicesList: " + serviceList.size());
         ServiceProfileAdapter serviceAdapter = new ServiceProfileAdapter(serviceList.size(), serviceList);
         recyclerViewService.setAdapter(serviceAdapter);
         cursor.close();

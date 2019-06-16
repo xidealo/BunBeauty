@@ -176,7 +176,6 @@ public class LoadingProfileData {
             contentValues.put(DBHelper.KEY_ID, serviceId);
             localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
-        Log.d(TAG, "addUserServicesInLocalStorage: ");
         serviceThread.interrupt();
     }
 

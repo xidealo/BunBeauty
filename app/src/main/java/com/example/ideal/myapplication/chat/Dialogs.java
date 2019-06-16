@@ -1,6 +1,5 @@
 package com.example.ideal.myapplication.chat;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -14,6 +13,7 @@ import android.util.Log;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.DialogAdapter;
 import com.example.ideal.myapplication.fragments.objects.Dialog;
+import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -26,8 +26,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static com.example.ideal.myapplication.helpApi.LoadingUserElementData.loadUserNameAndPhoto;
-
 public class Dialogs extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
@@ -38,7 +36,10 @@ public class Dialogs extends AppCompatActivity {
     private static final String WORKING_TIME = "working time";
     private static final String ORDERS = "orders";
     private static final String MESSAGE_TIME = "time";
-
+    private static final String WORKER_ID = "worker id";
+    private static final String SERVICE_ID = "service id";
+    private static final String WORKING_DAY_ID = "working day id";
+    private static final String WORKING_TIME_ID = "working time id";
 
     private static final String USER_ID = "user id";
 
@@ -87,6 +88,7 @@ public class Dialogs extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        dialogList.clear();
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerDialogsLayout);
@@ -106,58 +108,83 @@ public class Dialogs extends AppCompatActivity {
 
     private void loadOrders() {
         // берем все мои записи
-        String ownersQuery =
-                "SELECT DISTINCT "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID
-                        + " FROM "
-                        + DBHelper.TABLE_ORDERS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
-                        + " WHERE "
-                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                        + " = "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                        + " = "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? ";
-        Cursor cursor = database.rawQuery(ownersQuery, new String[]{userId});
+        DatabaseReference orderReference = FirebaseDatabase.getInstance()
+                .getReference(USERS)
+                .child(userId)
+                .child(ORDERS);
 
-        if (cursor.moveToFirst()) {
-            int indexOwnerId = cursor.getColumnIndex(OWNER_ID);
-            counter = 0;
-            userCount = cursor.getCount();
+        orderReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot ordersSnapshot) {
+                if (ordersSnapshot.getChildrenCount() == 0) {
+                    loadMyServiceOrders();
+                }
 
-            do {
-                String ownerId = cursor.getString(indexOwnerId);
-                DatabaseReference userReference = FirebaseDatabase.getInstance()
-                        .getReference(USERS)
-                        .child(ownerId);
+                counter = 0;
+                final long childrenCount = ordersSnapshot.getChildrenCount();
+                for (final DataSnapshot myOrderSnapshot : ordersSnapshot.getChildren()) {
+                    //получаем "путь" к мастеру, на сервис которого мы записаны
+                    final String orderId = myOrderSnapshot.getKey();
+                    final String workerId = String.valueOf(myOrderSnapshot.child(WORKER_ID).getValue());
+                    final String serviceId = String.valueOf(myOrderSnapshot.child(SERVICE_ID).getValue());
+                    final String workingDayId = String.valueOf(myOrderSnapshot.child(WORKING_DAY_ID).getValue());
+                    final String workingTimeId = String.valueOf(myOrderSnapshot.child(WORKING_TIME_ID).getValue());
+                    DatabaseReference serviceReference = FirebaseDatabase.getInstance()
+                            .getReference(USERS)
+                            .child(workerId)
+                            .child(SERVICES)
+                            .child(serviceId)
+                            .child(WORKING_DAYS)
+                            .child(workingDayId)
+                            .child(WORKING_TIME)
+                            .child(workingTimeId)
+                            .child(ORDERS)
+                            .child(orderId);
 
-                userReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                        loadUserNameAndPhoto(userSnapshot, database);
-                        counter++;
-                        if (counter == userCount) {
-                            loadMyServiceOrders();
+                    serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot orderSnapshot) {
+                            String messageTime = orderSnapshot.child(MESSAGE_TIME).getValue(String.class);
+                            WorkWithLocalStorageApi.addDialogInfoInLocalStorage(serviceId,
+                                    workingDayId,
+                                    workingTimeId,
+                                    orderId,
+                                    userId,
+                                    messageTime,
+                                    workerId);
+
+
+                            DatabaseReference userReference = FirebaseDatabase.getInstance()
+                                    .getReference(USERS)
+                                    .child(workerId);
+
+                            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                    LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
+                                    counter++;
+                                    if (counter == childrenCount) {
+                                        loadMyServiceOrders();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+            }
 
-                    }
-                });
-            } while (cursor.moveToNext());
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     private void loadMyServiceOrders() {
@@ -172,22 +199,27 @@ public class Dialogs extends AppCompatActivity {
         servicesReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot servicesSnapshot) {
-                for ( DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
+                for (DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
                     String serviceId = serviceSnapshot.getKey();
-                    for ( DataSnapshot workingDaySnapshot : serviceSnapshot.child(WORKING_DAYS).getChildren()) {
+                    for (DataSnapshot workingDaySnapshot : serviceSnapshot.child(WORKING_DAYS).getChildren()) {
                         String workingDayId = workingDaySnapshot.getKey();
-                        for ( DataSnapshot workingTimeSnapshot : workingDaySnapshot.child(WORKING_TIME).getChildren()) {
+                        for (DataSnapshot workingTimeSnapshot : workingDaySnapshot.child(WORKING_TIME).getChildren()) {
                             String workingTimeId = workingTimeSnapshot.getKey();
-                            for ( DataSnapshot orderSnapshot : workingTimeSnapshot.child(ORDERS).getChildren()) {
+                            for (DataSnapshot orderSnapshot : workingTimeSnapshot.child(ORDERS).getChildren()) {
                                 userCount++;
 
                                 String orderId = orderSnapshot.getKey();
                                 String orderUserId = orderSnapshot.child(USER_ID).getValue(String.class);
                                 String messageTime = orderSnapshot.child(MESSAGE_TIME).getValue(String.class);
                                 // добавляем данные в Local Storage
-                                addWorkingDayInLocalStorage(workingDayId, serviceId);
-                                addWorkingTimeInLocalStorage(workingTimeId, workingDayId);
-                                addOrderInLocalStorage(orderId, workingTimeId, orderUserId, messageTime);
+                                WorkWithLocalStorageApi.addDialogInfoInLocalStorage(serviceId,
+                                        workingDayId,
+                                        workingTimeId,
+                                        orderId,
+                                        orderUserId,
+                                        messageTime,
+                                        null);
+
 
                                 DatabaseReference userReference = FirebaseDatabase.getInstance()
                                         .getReference(USERS)
@@ -196,10 +228,9 @@ public class Dialogs extends AppCompatActivity {
                                 userReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                                        loadUserNameAndPhoto(userSnapshot, database);
+                                        LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                                         counter++;
                                         if (counter == userCount) {
-                                            Log.d(TAG, "counter: " + counter);
                                             getMyDialogs();
                                         }
                                     }
@@ -222,7 +253,6 @@ public class Dialogs extends AppCompatActivity {
             }
         });
     }
-
 
 
     private void getMyDialogs() {
@@ -266,57 +296,6 @@ public class Dialogs extends AppCompatActivity {
         }
     }
 
-    private void addWorkingDayInLocalStorage(String workingDayId, String serviceId) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
-
-        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_WORKING_DAYS, workingDayId);
-        if (hasSomeData) {
-            database.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{workingDayId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, workingDayId);
-            database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
-        }
-    }
-
-    private void addWorkingTimeInLocalStorage(String workingTimeId, String workingDayId) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
-
-        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_WORKING_TIME, workingTimeId);
-
-        if (hasSomeData) {
-            database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{workingTimeId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, workingTimeId);
-            database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
-        }
-    }
-
-    private void addOrderInLocalStorage(String orderId, String workingTimeId, String orderUserId, String messageTime) {
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(DBHelper.KEY_ID, orderId);
-        contentValues.put(DBHelper.KEY_USER_ID, orderUserId);
-        contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, workingTimeId);
-        contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, messageTime);
-
-        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_ORDERS, orderId);
-
-        if (hasSomeData) {
-            database.update(DBHelper.TABLE_ORDERS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{orderId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, orderId);
-            database.insert(DBHelper.TABLE_ORDERS, null, contentValues);
-        }
-    }
-
     private Cursor createDialogsCursor() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         //берем все мои ордеры
@@ -347,6 +326,7 @@ public class Dialogs extends AppCompatActivity {
                         + " OR "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?)"
                         + " ORDER BY " + DBHelper.KEY_MESSAGE_TIME_ORDERS + " DESC";
+
         Cursor cursor = database.rawQuery(dialogsQuery, new String[]{userId, userId});
         return cursor;
     }

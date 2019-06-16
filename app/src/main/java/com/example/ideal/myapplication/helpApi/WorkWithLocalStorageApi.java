@@ -1,7 +1,9 @@
 package com.example.ideal.myapplication.helpApi;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.ideal.myapplication.other.DBHelper;
@@ -190,6 +192,80 @@ public class WorkWithLocalStorageApi {
         cursor.close();
 
         return result;
+    }
+
+    public static void addDialogInfoInLocalStorage(String serviceId, String workingDayId, String workingTimeId,
+                                                   String orderId, String orderUserId, String messageTime, String workerId) {
+        if (workerId != null) {
+            addServiceInLocalStorage(serviceId, workerId);
+        }
+        addWorkingDayInLocalStorage(workingDayId, serviceId);
+        addWorkingTimeInLocalStorage(workingTimeId, workingDayId);
+        addOrderInLocalStorage(orderId, workingTimeId, orderUserId, messageTime);
+    }
+
+    private static void addServiceInLocalStorage(String serviceId, String workerId) {
+
+        boolean hasSomeData = hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
+        if (hasSomeData) {
+            return;
+        } else {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DBHelper.KEY_USER_ID, workerId);
+            contentValues.put(DBHelper.KEY_ID, serviceId);
+            localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
+        }
+    }
+
+    private static void addWorkingDayInLocalStorage(String workingDayId, String serviceId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
+
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_WORKING_DAYS, workingDayId);
+        if (hasSomeData) {
+            localDatabase.update(DBHelper.TABLE_WORKING_DAYS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{workingDayId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, workingDayId);
+            localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
+        }
+    }
+
+    private static void addWorkingTimeInLocalStorage(String workingTimeId, String workingDayId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
+
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_WORKING_TIME, workingTimeId);
+
+        if (hasSomeData) {
+            localDatabase.update(DBHelper.TABLE_WORKING_TIME, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{workingTimeId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, workingTimeId);
+            localDatabase.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
+        }
+    }
+
+    private static void addOrderInLocalStorage(String orderId, String workingTimeId, String orderUserId, String messageTime) {
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_ID, orderId);
+        contentValues.put(DBHelper.KEY_USER_ID, orderUserId);
+        contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, workingTimeId);
+        contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, messageTime);
+
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_ORDERS, orderId);
+
+        if (hasSomeData) {
+            localDatabase.update(DBHelper.TABLE_ORDERS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{orderId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, orderId);
+            localDatabase.insert(DBHelper.TABLE_ORDERS, null, contentValues);
+        }
     }
 
     public Cursor getUser(String userId) {

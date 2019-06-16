@@ -14,6 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.example.ideal.myapplication.helpApi.DownloadServiceData;
+import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.notifications.NotificationCancel;
@@ -111,6 +112,7 @@ public class MyService extends Service implements Runnable {
                 .setPriority(IMPORTANCE_MAX)
                 .build();
         startForeground(1, notification);
+        stopForeground(true);
 
         startMyListener();
 
@@ -146,16 +148,16 @@ public class MyService extends Service implements Runnable {
             @Override
             public void run() {
                 // слушает не оценил ли кто-то пользователя
-                startReviewForMeListener();
+                // startReviewForMeListener();
 
                 // слушает изменение моих услуг
                 startServicesListener();
 
                 // слушает не подписался ли кто-то на меня
-                startSubscribersListener();
+                // startSubscribersListener();
 
                 // слушает не отказался ли кто-то от пользователя
-                startMyOrdersListener();
+                // startMyOrdersListener();
             }
 
             private void startServicesListener() {
@@ -166,6 +168,7 @@ public class MyService extends Service implements Runnable {
                 myServicesRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
+                        final String serviceId = serviceSnapshot.getKey();
                         serviceName = serviceSnapshot.child(NAME).getValue(String.class);
 
                         final DatabaseReference myWorkingDaysRef = myServicesRef
@@ -174,12 +177,14 @@ public class MyService extends Service implements Runnable {
                         myWorkingDaysRef.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull final DataSnapshot workingDaySnapshot, @Nullable String s) {
+                                final String workingDayId = workingDaySnapshot.getKey();
                                 final DatabaseReference myWorkingTimeRef = myWorkingDaysRef
                                         .child(workingDaySnapshot.getKey())
                                         .child(WORKING_TIME);
                                 myWorkingTimeRef.addChildEventListener(new ChildEventListener() {
                                     @Override
                                     public void onChildAdded(@NonNull final DataSnapshot workingTimeSnapshot, @Nullable String s) {
+                                        final String workingTimeId = workingTimeSnapshot.getKey();
                                         final DatabaseReference myOrdersRef = myWorkingTimeRef
                                                 .child(workingTimeSnapshot.getKey())
                                                 .child(ORDERS);
@@ -198,18 +203,28 @@ public class MyService extends Service implements Runnable {
                                                 if (!orderSnapshot.child(IS_CANCELED).getValue(Boolean.class)) {
                                                     setTimerForReview(orderId, date, time, serviceName, false);
                                                 }
-                                                // исправить на 5000
+
                                                 if(delay < 10000) {
                                                     String userId = orderSnapshot.child(USER_ID).getValue(String.class);
 
+                                                    WorkWithLocalStorageApi.addDialogInfoInLocalStorage(serviceId,
+                                                            workingDayId,
+                                                            workingTimeId,
+                                                            orderId,
+                                                            userId,
+                                                            orderCreationTime,
+                                                            null);
                                                     final DatabaseReference userRef = FirebaseDatabase.getInstance()
                                                             .getReference(USERS)
                                                             .child(userId);
-                                                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    userRef.addValueEventListener(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                                                            SQLiteDatabase db = (new DBHelper(context)).getWritableDatabase();
-                                                            DownloadServiceData downloader = new DownloadServiceData(db);
+                                                            SQLiteDatabase database = (new DBHelper(context)).getWritableDatabase();
+
+                                                            LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
+
+                                                            /*DownloadServiceData downloader = new DownloadServiceData(db);
                                                             downloader.loadUserInfo(userSnapshot);
 
                                                             String userName = userSnapshot.child(NAME).getValue(String.class);
@@ -219,7 +234,7 @@ public class MyService extends Service implements Runnable {
                                                                     serviceName,
                                                                     date,
                                                                     time);
-                                                            notificationOrder.createNotification();
+                                                            notificationOrder.createNotification();*/
                                                         }
 
                                                         @Override
