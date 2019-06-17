@@ -74,10 +74,7 @@ public class LoadingGuestServiceData {
         }
     }
 
-    public static void addWorkingDaysInLocalStorage(DataSnapshot serviceDaysSnapshot, String serviceId, SQLiteDatabase localDatabase) {
-        DataSnapshot workingDaysSnapshot = serviceDaysSnapshot.child(WORKING_DAYS);
-        for (DataSnapshot workingDaySnapshot : workingDaysSnapshot.getChildren()) {
-
+    public static void addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId, SQLiteDatabase localDatabase) {
             ContentValues contentValues = new ContentValues();
             String dayId = workingDaySnapshot.getKey();
             String date = String.valueOf(workingDaySnapshot.child(DATE).getValue());
@@ -94,12 +91,10 @@ public class LoadingGuestServiceData {
                 contentValues.put(DBHelper.KEY_ID, dayId);
                 localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
             }
-            addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME), dayId, localDatabase);
-        }
+            //addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME), dayId, localDatabase);
     }
 
-    private static void addTimeInLocalStorage(DataSnapshot timesSnapshot, String workingDayId, SQLiteDatabase localDatabase) {
-        for (DataSnapshot timeSnapshot : timesSnapshot.getChildren()) {
+    public static void addTimeInLocalStorage(DataSnapshot timeSnapshot, String workingDayId, SQLiteDatabase localDatabase) {
             ContentValues contentValues = new ContentValues();
             String timeId = timeSnapshot.getKey();
             contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, String.valueOf(timeSnapshot.child(TIME).getValue()));
@@ -116,7 +111,6 @@ public class LoadingGuestServiceData {
                 contentValues.put(DBHelper.KEY_ID, timeId);
                 localDatabase.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
             }
-        }
     }
 
     private static void loadPhotosByServiceId(DataSnapshot photosSnapshot, String serviceId, SQLiteDatabase localDatabase) {
