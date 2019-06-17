@@ -59,6 +59,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String USERS = "users";
     private static final String CODES = "codes";
     private static final String CODE = "code";
+    private static final String WORKING_DAYS = "working days";
+    private static final String WORKING_TIME = "working time";
+
     private static final String COUNT = "count";
 
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
@@ -112,7 +115,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void loadServiceData() {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = firebaseDatabase.getReference(USERS)
                 .child(ownerId);
         //загружаем один раз всю информацию
@@ -131,10 +134,13 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void run() {
                         //отдельная загрузка времени, для гибкости
+                        //!!! добавить метод который проверяет дату не просрочена она
+                        //если просрояено то можно не загружать
                         LoadingGuestServiceData.addWorkingDaysInLocalStorage(serviceSnapshot, serviceId, database);
                     }
                 });
                 addWorkingDaysThread.start();
+
                 LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot,database);
                 getInfoAboutService(serviceId);
             }
@@ -150,14 +156,14 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 .child(serviceId);
         serviceRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+            public void onChildAdded(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
                 //слушатель на каждый день, чтобы отслеживать изменение времени
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+            public void onChildChanged(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
+                //если что-то меняется, мы сохраняем даные
+                LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot,database);
             }
 
             @Override
@@ -175,6 +181,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+
+
     }
 
     private void init() {
