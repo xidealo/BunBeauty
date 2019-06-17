@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class WorkerCreateService implements IWorker {
 
-    private static final String TAG =  "DBInf";
+    private static final String TAG = "DBInf";
 
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
@@ -57,7 +57,7 @@ public class WorkerCreateService implements IWorker {
         dateRef = dateRef.child(dayId);
         dateRef.updateChildren(items);
 
-        //putDataDaysInLocalStorage(serviceId, dayId, date);
+        putDataDaysInLocalStorage(serviceId, dayId, date);
         return dayId;
     }
 
@@ -99,7 +99,7 @@ public class WorkerCreateService implements IWorker {
                 timeRef = timeRef.child(timeId);
                 timeRef.updateChildren(items);
 
-                //putDataTimeInLocalStorage(timeId, time, workingDaysId);
+                putDataTimeInLocalStorage(timeId, time, workingDaysId);
             }
         }
         cursor.close();
@@ -125,13 +125,11 @@ public class WorkerCreateService implements IWorker {
                     for (DataSnapshot time : timesSnapshot.getChildren()) {
                         if (String.valueOf(time.child(TIME).getValue()).equals(hours)) {
                             String timeId = String.valueOf(time.getKey());
-
                             timeRef.child(timeId).removeValue();
-
-                            deleteTimeFromLocalStorage(workingDaysId, removedHours);
                         }
                     }
                 }
+                deleteTimeFromLocalStorage(workingDaysId, removedHours);
                 removedHours.clear();
             }
 
@@ -140,6 +138,8 @@ public class WorkerCreateService implements IWorker {
 
             }
         });
+
+
     }
 
     private void putDataTimeInLocalStorage(final String timeId, final String time,
@@ -165,16 +165,17 @@ public class WorkerCreateService implements IWorker {
     }
 
     private void deleteTimeFromLocalStorage(final String workingDaysId, final ArrayList<String> removedHours) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        Log.d(TAG, "deleteTimeFromLocalStorage: " + removedHours.size());
-        for (String time : removedHours) {
-            if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time,database)) {
-                database.delete(
-                        DBHelper.TABLE_WORKING_TIME,
-                        DBHelper.KEY_TIME_WORKING_TIME + " = ? AND "
-                                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?",
-                        new String[]{time, String.valueOf(workingDaysId)});
+            SQLiteDatabase database = dbHelper.getWritableDatabase();
+            for (String time : removedHours) {
+                if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time, database)) {
+                    Log.d(TAG, "deleteTimeFromLocalStorage: " + workingDaysId);
+                    Log.d(TAG, "deleteTimeFromLocalStorage: " + time);
+                    database.delete(
+                            DBHelper.TABLE_WORKING_TIME,
+                            DBHelper.KEY_TIME_WORKING_TIME + " = ? AND "
+                                    + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?",
+                            new String[]{time, String.valueOf(workingDaysId)});
+                }
             }
-        }
     }
 }

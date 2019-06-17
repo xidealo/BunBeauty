@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.ideal.myapplication.fragments.objects.Photo;
@@ -30,28 +31,17 @@ public class LoadingGuestServiceData {
     private static final String PHOTO_LINK = "photo link";
 
     private static Thread photoThread;
-    private static Thread addWorkingDaysThread;
 
-    public static void loadServiceInfo(final DataSnapshot serviceSnapshot, final SQLiteDatabase localDatabase) {
+    public static void addServiceInfoInLocalStorage(final DataSnapshot serviceSnapshot, final SQLiteDatabase localDatabase) {
         final String serviceId = serviceSnapshot.getKey();
-
         //потоки с другими add
         photoThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                loadPhotosByServiceId(serviceSnapshot.child(PHOTOS),serviceId, localDatabase);
+                loadPhotosByServiceId(serviceSnapshot.child(PHOTOS), serviceId, localDatabase);
             }
         });
         photoThread.start();
-
-        addWorkingDaysThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                addWorkingDaysInLocalStorage(serviceSnapshot.child(WORKING_DAYS),serviceId,localDatabase);
-            }
-        });
-        addWorkingDaysThread.start();
-        //конец потоков
 
         ContentValues contentValues = new ContentValues();
         // Заполняем contentValues информацией о данном сервисе
@@ -83,7 +73,8 @@ public class LoadingGuestServiceData {
         }
     }
 
-    private static void addWorkingDaysInLocalStorage(DataSnapshot workingDaysSnapshot, String serviceId, SQLiteDatabase localDatabase) {
+    public static void addWorkingDaysInLocalStorage(DataSnapshot serviceDaysSnapshot, String serviceId, SQLiteDatabase localDatabase) {
+        DataSnapshot workingDaysSnapshot = serviceDaysSnapshot.child(WORKING_DAYS);
         for (DataSnapshot workingDaySnapshot : workingDaysSnapshot.getChildren()) {
 
             ContentValues contentValues = new ContentValues();
@@ -102,13 +93,11 @@ public class LoadingGuestServiceData {
                 contentValues.put(DBHelper.KEY_ID, dayId);
                 localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
             }
-            addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME), dayId,localDatabase);
+            addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME), dayId, localDatabase);
         }
-        addWorkingDaysThread.interrupt();
     }
 
     private static void addTimeInLocalStorage(DataSnapshot timesSnapshot, String workingDayId, SQLiteDatabase localDatabase) {
-        Log.d(TAG, "addTimeInLocalStorage: ");
         for (DataSnapshot timeSnapshot : timesSnapshot.getChildren()) {
             ContentValues contentValues = new ContentValues();
             String timeId = timeSnapshot.getKey();
@@ -130,7 +119,6 @@ public class LoadingGuestServiceData {
     }
 
     private static void loadPhotosByServiceId(DataSnapshot photosSnapshot, String serviceId, SQLiteDatabase localDatabase) {
-
         for (DataSnapshot fPhoto : photosSnapshot.getChildren()) {
             Photo photo = new Photo();
 

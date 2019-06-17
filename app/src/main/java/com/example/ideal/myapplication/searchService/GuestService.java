@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,7 @@ import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.IPremium;
 import com.example.ideal.myapplication.reviews.Comments;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -90,6 +92,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private boolean isFirst = true;
     private SQLiteDatabase database;
 
+    private static Thread addWorkingDaysThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,23 +115,61 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = firebaseDatabase.getReference(USERS)
                 .child(ownerId);
-
-        myRef.addValueEventListener(new ValueEventListener() {
+        //загружаем один раз всю информацию
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 //подгрузка фото
                 LoadingUserElementData.loadPhotos(userSnapshot, database);
 
                 //подгрузка сервиса
-                DataSnapshot serviceSnapshot = userSnapshot
+                final DataSnapshot serviceSnapshot = userSnapshot
                         .child(SERVICES)
                         .child(serviceId);
 
-                LoadingGuestServiceData.loadServiceInfo(serviceSnapshot,database);
-                Log.d(TAG, "loadServiceInfo: ");
-
+                addWorkingDaysThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //отдельная загрузка времени, для гибкости
+                        LoadingGuestServiceData.addWorkingDaysInLocalStorage(serviceSnapshot, serviceId, database);
+                    }
+                });
+                addWorkingDaysThread.start();
+                LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot,database);
                 getInfoAboutService(serviceId);
             }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        //слушатель на данные сервиса
+        final DatabaseReference serviceRef = firebaseDatabase.getReference(USERS)
+                .child(ownerId)
+                .child(SERVICES)
+                .child(serviceId);
+        serviceRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                //слушатель на каждый день, чтобы отслеживать изменение времени
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
