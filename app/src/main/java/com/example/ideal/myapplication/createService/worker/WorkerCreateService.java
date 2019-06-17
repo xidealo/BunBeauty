@@ -57,7 +57,7 @@ public class WorkerCreateService implements IWorker {
         dateRef = dateRef.child(dayId);
         dateRef.updateChildren(items);
 
-        putDataDaysInLocalStorage(serviceId, dayId, date);
+        //putDataDaysInLocalStorage(serviceId, dayId, date);
         return dayId;
     }
 
@@ -81,7 +81,7 @@ public class WorkerCreateService implements IWorker {
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId});
 
         for (String time : workingHours) {
-            if (!WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time)) {
+            if (!WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time, database)) {
 
                 FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
                 DatabaseReference timeRef = fdatabase.getReference(USERS)
@@ -99,7 +99,7 @@ public class WorkerCreateService implements IWorker {
                 timeRef = timeRef.child(timeId);
                 timeRef.updateChildren(items);
 
-                putDataTimeInLocalStorage(timeId, time, workingDaysId);
+                //putDataTimeInLocalStorage(timeId, time, workingDaysId);
             }
         }
         cursor.close();
@@ -166,9 +166,9 @@ public class WorkerCreateService implements IWorker {
 
     private void deleteTimeFromLocalStorage(final String workingDaysId, final ArrayList<String> removedHours) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-
+        Log.d(TAG, "deleteTimeFromLocalStorage: " + removedHours.size());
         for (String time : removedHours) {
-            if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time)) {
+            if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time,database)) {
                 database.delete(
                         DBHelper.TABLE_WORKING_TIME,
                         DBHelper.KEY_TIME_WORKING_TIME + " = ? AND "

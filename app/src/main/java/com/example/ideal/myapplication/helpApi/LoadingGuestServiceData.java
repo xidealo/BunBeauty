@@ -32,7 +32,7 @@ public class LoadingGuestServiceData {
     private static Thread photoThread;
     private static Thread addWorkingDaysThread;
 
-    public static void loadServiceInfo(final DataSnapshot serviceSnapshot, final SQLiteDatabase localDatabase, String userId) {
+    public static void loadServiceInfo(final DataSnapshot serviceSnapshot, final SQLiteDatabase localDatabase) {
         final String serviceId = serviceSnapshot.getKey();
 
         //потоки с другими add
@@ -108,6 +108,7 @@ public class LoadingGuestServiceData {
     }
 
     private static void addTimeInLocalStorage(DataSnapshot timesSnapshot, String workingDayId, SQLiteDatabase localDatabase) {
+        Log.d(TAG, "addTimeInLocalStorage: ");
         for (DataSnapshot timeSnapshot : timesSnapshot.getChildren()) {
             ContentValues contentValues = new ContentValues();
             String timeId = timeSnapshot.getKey();

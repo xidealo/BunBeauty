@@ -123,7 +123,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                         .child(SERVICES)
                         .child(serviceId);
 
-                LoadingGuestServiceData.loadServiceInfo(serviceSnapshot,database,ownerId);
+                LoadingGuestServiceData.loadServiceInfo(serviceSnapshot,database);
+                Log.d(TAG, "loadServiceInfo: ");
 
                 getInfoAboutService(serviceId);
             }
@@ -262,7 +263,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             long countOfRates = 1;
 
             createRatingBar(serviceRating, countOfRates);
-            buildPanels();
         }
         cursor.close();
     }
@@ -271,7 +271,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         FragmentManager manager = getSupportFragmentManager();
         topPanelLayout.removeAllViews();
 
-        panelBuilder.buildHeader(manager, serviceName, R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
+        panelBuilder.buildHeader(manager, getServiceName(), R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
         panelBuilder.buildFooter(manager, R.id.footerGuestServiceLayout);
 
     }
@@ -331,9 +331,30 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        buildPanels();
 
         imageFeedLayout.removeAllViews();
         setPhotoFeed(serviceId);
+    }
+
+    private String getServiceName() {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        //получаем ссылку на фото по id владельца
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_NAME_SERVICES
+                        + " FROM "
+                        + DBHelper.TABLE_CONTACTS_SERVICES
+                        + " WHERE "
+                        + DBHelper.KEY_ID + " = ?";
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
+
+        if (cursor.moveToFirst()) {
+            int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
+            serviceName = cursor.getString(indexName);
+            return serviceName;
+        }
+        return null;
     }
 
     private void attentionThisScheduleIsEmpty() {

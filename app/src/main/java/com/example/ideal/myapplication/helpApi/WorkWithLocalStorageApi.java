@@ -404,7 +404,7 @@ public class WorkWithLocalStorageApi {
     }
 
     // Проверяет есть ли какие-либо записи на данное время
-    static public boolean checkTimeForWorker(String workingDaysId, String time) {
+    static public boolean checkTimeForWorker(String workingDaysId, String time, SQLiteDatabase localDatabase) {
         String sqlQuery =
                 "SELECT "
                         + DBHelper.KEY_TIME_WORKING_TIME
