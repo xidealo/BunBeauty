@@ -30,7 +30,6 @@ public class ServiceProfileAdapter extends RecyclerView.Adapter<ServiceProfileAd
     @NonNull
     @Override
     public ServiceProfileViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        Log.d(TAG, "onCreateViewHolder: ");
         context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.found_service_profile_element;
         //Класс, который позволяет создавать представления из xml файла
@@ -60,7 +59,6 @@ public class ServiceProfileAdapter extends RecyclerView.Adapter<ServiceProfileAd
         }
 
         void bind(Service service) {
-            Log.d(TAG, "bind: "  );
             FoundServiceProfileElement foundServiceProfileElement = new FoundServiceProfileElement(service,view,context);
             foundServiceProfileElement.createElement();
         }

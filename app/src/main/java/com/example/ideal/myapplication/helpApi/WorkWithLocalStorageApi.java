@@ -375,7 +375,7 @@ public class WorkWithLocalStorageApi {
         String date = getDate(workingTimeId);
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
         long dateMilliseconds = workWithTimeApi.getMillisecondsStringDate(date);
-        boolean isAfterWeek = (workWithTimeApi.getSysdateLong() - dateMilliseconds) > 259200000;
+        boolean isAfterWeek = (WorkWithTimeApi.getSysdateLong() - dateMilliseconds) > 259200000;
 
         return isAfterWeek;
     }
@@ -404,7 +404,7 @@ public class WorkWithLocalStorageApi {
     }
 
     // Проверяет есть ли какие-либо записи на данное время
-    static public boolean checkTimeForWorker(String workingDaysId, String time) {
+    static public boolean checkTimeForWorker(String workingDaysId, String time, SQLiteDatabase localDatabase) {
         String sqlQuery =
                 "SELECT "
                         + DBHelper.KEY_TIME_WORKING_TIME

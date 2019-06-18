@@ -75,7 +75,6 @@ public class DownloadServiceData {
         user.setName(userName);
         user.setCity(userCity);
 
-        Log.d(TAG, "loadUserInfo: " + userId);
 
         // Добавляем все данные о пользователе в SQLite
         addUserInfoInLocalStorage(user);
@@ -136,7 +135,6 @@ public class DownloadServiceData {
                 localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
             }
 
-            Log.d(TAG, "addWorkingDaysInLocalStorage: " + dayId);
             addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME), dayId);
         }
     }
@@ -159,7 +157,6 @@ public class DownloadServiceData {
                 contentValues.put(DBHelper.KEY_ID, timeId);
                 localDatabase.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
             }
-            Log.d(TAG, "addTimeInLocalStorage: " + timeId);
 
             addOrdersInLocalStorage(timeSnapshot.child(ORDERS), timeId);
         }
@@ -238,11 +235,11 @@ public class DownloadServiceData {
             //3600000 * 24 = 24 часа
             String commonDate = date + " " + time;
             Long messageDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000 * 24;
-            Long sysdate = workWithTimeApi.getSysdateLong();
+            Long sysdate = WorkWithTimeApi.getSysdateLong();
 
             if (sysdate > messageDateLong) {
                 // вычитаем 3 часа, т.к. метод работает с датой по Гринвичу
-                updatedTime = workWithTimeApi.getDateInFormatYMDHMS(new Date(messageDateLong - 3600000 * 3));
+                updatedTime = WorkWithTimeApi.getDateInFormatYMDHMS(new Date(messageDateLong - 3600000 * 3));
             }
         }
         cursor.close();
@@ -360,8 +357,6 @@ public class DownloadServiceData {
             contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
             localDatabase.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
-
-        Log.d(TAG, "addPhotoInLocalStorage: " + photo.getPhotoOwnerId());
     }
 }
 
