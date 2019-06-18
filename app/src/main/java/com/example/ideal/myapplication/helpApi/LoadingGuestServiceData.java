@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -14,6 +15,8 @@ public class LoadingGuestServiceData {
     private static final String DESCRIPTION = "description";
     private static final String COST = "cost";
     private static final String IS_PREMIUM = "is premium";
+    private static final String USER_ID = "user id";
+
 
     private static final String TIME = "time";
     private static final String DATE = "date";
@@ -21,6 +24,7 @@ public class LoadingGuestServiceData {
     private static final String AVG_RATING = "avg rating";
     private static final String ADDRESS = "address";
     private static final String NAME = "name";
+    private static final String IS_CANCELED = "is canceled";
 
     //PHOTOS
     private static final String PHOTOS = "photos";
@@ -150,6 +154,29 @@ public class LoadingGuestServiceData {
                 DBHelper.TABLE_WORKING_TIME,
                 DBHelper.KEY_ID + " = ? ",
                 new String[]{timeId});
+    }
+    static public void addOrderInLocalStorage(final DataSnapshot orderSnapshot, String timeId, SQLiteDatabase localDatabase){
+            ContentValues contentValues = new ContentValues();
+            String orderId = orderSnapshot.getKey();
+
+            contentValues.put(DBHelper.KEY_ID, orderId);
+            contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, String.valueOf(orderSnapshot.child(IS_CANCELED).getValue()));
+            contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, timeId);
+            contentValues.put(DBHelper.KEY_USER_ID,  String.valueOf(orderSnapshot.child(USER_ID).getValue()));
+
+        Log.d(TAG, "addOrderInLocalStorage: " + orderSnapshot.getKey());
+            boolean hasSomeData = WorkWithLocalStorageApi
+                    .hasSomeData(DBHelper.TABLE_ORDERS, orderId);
+
+            if (hasSomeData) {
+                localDatabase.update(DBHelper.TABLE_ORDERS, contentValues,
+                        DBHelper.KEY_ID + " = ?",
+                        new String[]{orderId});
+            } else {
+                contentValues.put(DBHelper.KEY_ID, orderId);
+                localDatabase.insert(DBHelper.TABLE_ORDERS, null, contentValues);
+            }
+
     }
 }
 

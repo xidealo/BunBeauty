@@ -63,6 +63,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
     private static final String DATE = "date";
+    private static final String ORDERS = "orders";
 
     private static final String COUNT = "count";
 
@@ -134,7 +135,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
                 getInfoAboutService(serviceId);
 
-                DatabaseReference workingDaysRef = myRef
+                final DatabaseReference workingDaysRef = myRef
                         .child(SERVICES)
                         .child(serviceId)
                         .child(WORKING_DAYS);
@@ -148,10 +149,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                         if (dateLong > sysdateLong) {
                             LoadingGuestServiceData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
 
-                            DatabaseReference workingTimesRef = myRef
-                                    .child(SERVICES)
-                                    .child(serviceId)
-                                    .child(WORKING_DAYS)
+                            final DatabaseReference workingTimesRef = workingDaysRef
                                     .child(workingDayId)
                                     .child(WORKING_TIME);
 
@@ -160,6 +158,41 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                 public void onChildAdded(@NonNull DataSnapshot timeSnapshot, @Nullable String s) {
                                     //при добавлении нового времени
                                     LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
+                                    final String timeId = timeSnapshot.getKey();
+                                    DatabaseReference ordersRef = workingTimesRef
+                                            .child(timeId)
+                                            .child(ORDERS);
+                                    ordersRef.addChildEventListener(new ChildEventListener() {
+                                        @Override
+                                        public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
+                                            Log.d(TAG, "onChildAddedOrder: "+ orderSnapshot);
+                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot,timeId, database);
+                                            // если кто-то записался
+                                        }
+
+                                        @Override
+                                        public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
+                                            //если от кого-то отказались
+                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot,timeId, database);
+                                        }
+
+                                        @Override
+                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                            //void
+
+                                        }
+
+                                        @Override
+                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                            //void
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            //void
+                                        }
+                                    });
+
                                 }
 
                                 @Override

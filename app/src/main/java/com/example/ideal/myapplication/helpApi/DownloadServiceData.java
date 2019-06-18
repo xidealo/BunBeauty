@@ -135,7 +135,6 @@ public class DownloadServiceData {
                 localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
             }
 
-            Log.d(TAG, "addWorkingDaysInLocalStorage: " + dayId);
             addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME), dayId);
         }
     }
@@ -158,7 +157,6 @@ public class DownloadServiceData {
                 contentValues.put(DBHelper.KEY_ID, timeId);
                 localDatabase.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
             }
-            Log.d(TAG, "addTimeInLocalStorage: " + timeId);
 
             addOrdersInLocalStorage(timeSnapshot.child(ORDERS), timeId);
         }
