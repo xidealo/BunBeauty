@@ -10,7 +10,7 @@ public class WorkWithTimeApi {
 
     private static final String TAG = "DBInf";
 
-    public long getSysdateLong(){
+    static public long getSysdateLong(){
         //3600000*3 для москвы это +3 часа
         Date sysdate = new Date();
         return sysdate.getTime()+3600000*3;
@@ -18,6 +18,19 @@ public class WorkWithTimeApi {
 
     public long getMillisecondsStringDate(String date){
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
+        try {
+            Date orderDate = formatForDateNow.parse(date);
+            return orderDate.getTime() + 3600000*3;
+        }
+        catch (Exception e){
+            Log.d(TAG, "getMillisecondsStringDate error: " + e );
+        }
+        return 0L;
+    }
+
+    static public long getMillisecondsStringDateYMD(String date){
+        SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd");
         formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
         try {
             Date orderDate = formatForDateNow.parse(date);

@@ -2,8 +2,6 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract;
-import android.util.Log;
 
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -18,8 +16,6 @@ public class LoadingGuestServiceData {
     private static final String IS_PREMIUM = "is premium";
 
     private static final String TIME = "time";
-    private static final String WORKING_DAYS = "working days";
-    private static final String WORKING_TIME = "working time";
     private static final String DATE = "date";
     private static final String CATEGORY = "category";
     private static final String AVG_RATING = "avg rating";
@@ -49,6 +45,7 @@ public class LoadingGuestServiceData {
         contentValues.put(DBHelper.KEY_NAME_SERVICES, String.valueOf(serviceSnapshot.child(NAME).getValue()));
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, String.valueOf(serviceSnapshot.child(DESCRIPTION).getValue()));
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, String.valueOf(serviceSnapshot.child(COST).getValue()));
+        contentValues.put(DBHelper.KEY_RATING_SERVICES, String.valueOf(serviceSnapshot.child(AVG_RATING).getValue()));
         contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, String.valueOf(serviceSnapshot.child(IS_PREMIUM).getValue()));
         contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, String.valueOf(serviceSnapshot.child(CATEGORY).getValue()));
         contentValues.put(DBHelper.KEY_ADDRESS_SERVICES, String.valueOf(serviceSnapshot.child(ADDRESS).getValue()));
@@ -146,6 +143,13 @@ public class LoadingGuestServiceData {
             contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
             localDatabase.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
+    }
+
+    static public void deleteTimeFromLocalStorage(final String timeId,SQLiteDatabase localDatabase) {
+        localDatabase.delete(
+                DBHelper.TABLE_WORKING_TIME,
+                DBHelper.KEY_ID + " = ? ",
+                new String[]{timeId});
     }
 }
 

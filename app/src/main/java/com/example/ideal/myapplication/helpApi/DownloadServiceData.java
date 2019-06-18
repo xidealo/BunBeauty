@@ -237,11 +237,11 @@ public class DownloadServiceData {
             //3600000 * 24 = 24 часа
             String commonDate = date + " " + time;
             Long messageDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000 * 24;
-            Long sysdate = workWithTimeApi.getSysdateLong();
+            Long sysdate = WorkWithTimeApi.getSysdateLong();
 
             if (sysdate > messageDateLong) {
                 // вычитаем 3 часа, т.к. метод работает с датой по Гринвичу
-                updatedTime = workWithTimeApi.getDateInFormatYMDHMS(new Date(messageDateLong - 3600000 * 3));
+                updatedTime = WorkWithTimeApi.getDateInFormatYMDHMS(new Date(messageDateLong - 3600000 * 3));
             }
         }
         cursor.close();

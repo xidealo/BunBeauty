@@ -299,7 +299,7 @@ public class MyAuthorization {
         //3600000 * 24 = 24 часа
         String commonDate = date + " " + time;
         long orderDate = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000;
-        long sysdate = workWithTimeApi.getSysdateLong();
+        long sysdate = WorkWithTimeApi.getSysdateLong();
 
         if ((orderDate < sysdate) || isCanceled) {
             return false;

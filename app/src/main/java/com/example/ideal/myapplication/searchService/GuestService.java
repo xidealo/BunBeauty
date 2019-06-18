@@ -27,6 +27,7 @@ import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.IPremium;
 import com.example.ideal.myapplication.reviews.Comments;
@@ -61,6 +62,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String CODE = "code";
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
+    private static final String DATE = "date";
 
     private static final String COUNT = "count";
 
@@ -95,8 +97,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private boolean isFirst = true;
     private SQLiteDatabase database;
 
-    private static Thread addWorkingDaysThread;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,10 +104,10 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         init();
 
-        if(isFirst){
+        if (isFirst) {
             loadServiceData();
-            isFirst=false;
-        }else {
+            isFirst = false;
+        } else {
             //получаем данные о сервисе
             getInfoAboutService(serviceId);
         }
@@ -130,18 +130,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                         .child(SERVICES)
                         .child(serviceId);
 
-               /* addWorkingDaysThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //отдельная загрузка времени, для гибкости
-                        //!!! добавить метод который проверяет дату не просрочена она
-                        //если просрояено то можно не загружать
-                        LoadingGuestServiceData.addWorkingDaysInLocalStorage(serviceSnapshot.child(WORKING_DAYS), serviceId, database);
-                    }
-                });
-                addWorkingDaysThread.start();*/
-
-                LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot,database);
+                LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot, database);
 
                 getInfoAboutService(serviceId);
 
@@ -153,50 +142,49 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 workingDaysRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) {
-                        Log.d(TAG, "onChildAddedDAY: ");
                         final String workingDayId = workingDaySnapshot.getKey();
-                        //добавился
-                        LoadingGuestServiceData.addWorkingDaysInLocalgStorage(workingDaySnapshot,serviceId,database);
-                        //проверка не просрочен ли день
-                        //if
+                        long sysdateLong = WorkWithTimeApi.getSysdateLong();
+                        long dateLong = WorkWithTimeApi.getMillisecondsStringDateYMD(workingDaySnapshot.child(DATE).getValue(String.class));
+                        if (dateLong > sysdateLong) {
+                            LoadingGuestServiceData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
 
-                        DatabaseReference workingTimesRef = myRef
-                                .child(SERVICES)
-                                .child(serviceId)
-                                .child(WORKING_DAYS)
-                                .child(workingDayId)
-                                .child(WORKING_TIME);
+                            DatabaseReference workingTimesRef = myRef
+                                    .child(SERVICES)
+                                    .child(serviceId)
+                                    .child(WORKING_DAYS)
+                                    .child(workingDayId)
+                                    .child(WORKING_TIME);
 
-                        workingTimesRef.addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(@NonNull DataSnapshot timeSnapshot, @Nullable String s) {
-                                //при добавлении нового времени
-                                Log.d(TAG, "onChildAdded: " + timeSnapshot);
-                                LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot,workingDayId,database);
-                            }
+                            workingTimesRef.addChildEventListener(new ChildEventListener() {
+                                @Override
+                                public void onChildAdded(@NonNull DataSnapshot timeSnapshot, @Nullable String s) {
+                                    //при добавлении нового времени
+                                    LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
+                                }
 
-                            @Override
-                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                //пусто
-                            }
+                                @Override
+                                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                    //пусто
+                                }
 
-                            @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                                //при удалении времени
-                            }
+                                @Override
+                                public void onChildRemoved(@NonNull DataSnapshot timeSnapshot) {
+                                    //при удалении времени
+                                    LoadingGuestServiceData.deleteTimeFromLocalStorage(timeSnapshot.getKey(), database);
+                                }
 
-                            @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                //пусто
-                            }
+                                @Override
+                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                    //пусто
+                                }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
-                        });
+                                }
+                            });
+                        }
                     }
-
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         //пустое
@@ -218,6 +206,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                     }
                 });
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -237,7 +226,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onChildChanged(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
                 //если что-то меняется, мы сохраняем даные
-                LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot,database);
+                LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot, database);
             }
 
             @Override
@@ -255,7 +244,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-
     }
 
     private void init() {
@@ -389,7 +377,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         }
         cursor.close();
     }
-    private void buildPanels(){
+
+    private void buildPanels() {
         PanelBuilder panelBuilder = new PanelBuilder();
         FragmentManager manager = getSupportFragmentManager();
         topPanelLayout.removeAllViews();
@@ -578,13 +567,12 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot codesSnapshot) {
-                if(codesSnapshot.getChildrenCount() == 0){
+                if (codesSnapshot.getChildrenCount() == 0) {
                     attentionWrongCode();
-                }
-                else {
+                } else {
                     DataSnapshot userSnapshot = codesSnapshot.getChildren().iterator().next();
-                    int  count = userSnapshot.child(COUNT).getValue(int.class);
-                    if(count>0){
+                    int count = userSnapshot.child(COUNT).getValue(int.class);
+                    if (count > 0) {
                         setPremium();
 
                         String codeId = userSnapshot.getKey();
@@ -593,14 +581,14 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                 .getReference(CODES)
                                 .child(codeId);
                         Map<String, Object> items = new HashMap<>();
-                        items.put(COUNT, count-1);
+                        items.put(COUNT, count - 1);
                         myRef.updateChildren(items);
-                    }
-                    else {
-                     attentionOldCode();   
+                    } else {
+                        attentionOldCode();
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -611,9 +599,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private void attentionWrongCode() {
         Toast.makeText(this, "Неверно введен код", Toast.LENGTH_SHORT).show();
     }
+
     private void attentionOldCode() {
         Toast.makeText(this, "Код больше не действителен", Toast.LENGTH_SHORT).show();
     }
+
     private void attentionPremiumActivated() {
         Toast.makeText(this, "Премиум активирован", Toast.LENGTH_LONG).show();
     }
