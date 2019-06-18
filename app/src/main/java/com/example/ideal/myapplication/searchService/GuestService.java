@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.fragments.PremiumElement;
-import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -52,7 +51,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String WORKER = "worker";
     private static final String USER = "user";
     private static final String SERVICE_ID = "service id";
-    private static final String ORDER_ID = "order_id";
     private static final String ID = "id";
     private static final String TYPE = "type";
     private static final String SERVICES = "services";
@@ -526,8 +524,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             avgRatesText.setText(avgRatingWithFormat);
 
             ratingBar.setRating(avgRating);
+            ratingLL.setOnClickListener(this);
         }
-        ratingLL.setOnClickListener(this);
+        else {
+            setWithoutRating();
+        }
     }
 
     private void showPremium() {

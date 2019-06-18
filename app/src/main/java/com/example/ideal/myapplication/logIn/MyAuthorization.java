@@ -3,28 +3,21 @@ package com.example.ideal.myapplication.logIn;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.LoadingProfileData;
-import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.MyService;
 import com.example.ideal.myapplication.other.Profile;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.Date;
 
 public class MyAuthorization {
 
@@ -33,9 +26,6 @@ public class MyAuthorization {
     private static final String USERS = "users";
     private static final String SERVICES = "services";
     private static final String ORDERS = "orders";
-    private static final String REVIEWS = "reviews";
-    private static final String SUBSCRIPTIONS = "subscriptions";
-    private static final String SUBSCRIBERS = "subscribers";
     private static final String USER_ID = "user id";
     private static final String IS_CANCELED = "is canceled";
 

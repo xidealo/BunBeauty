@@ -190,6 +190,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 //закрашиваем, чтобы нельзя было записаться еще раз
                 checkCurrentTimes();
                 workingHours.clear();
+                attentionSuccessfulOrder();
             }
         });
         dialog.setNegativeButton(Html.fromHtml("<b><font color='#FF7F27'>Нет</font></b>"), new DialogInterface.OnClickListener() {
@@ -198,6 +199,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         });
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.show();
+    }
+
+    private void attentionSuccessfulOrder(){
+        Toast.makeText(this, "Вы успешно записались", Toast.LENGTH_SHORT).show();
     }
 
     // Подгружаем информацию о сервисе
