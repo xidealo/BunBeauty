@@ -283,7 +283,7 @@ public class MessageOrderElement implements View.OnClickListener {
         String commonDate = messageWorkingDay + " " + messageWorkingTime;
 
         long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate);
-        long sysdateLong = workWithTimeApi.getSysdateLong();
+        long sysdateLong = WorkWithTimeApi.getSysdateLong();
 
         return orderDateLong > sysdateLong;
     }
@@ -308,7 +308,7 @@ public class MessageOrderElement implements View.OnClickListener {
         Map<String, Object> items = new HashMap<>();
 
         items.put(IS_CANCELED, true);
-        String newMessageTime = workWithTimeApi.getDateInFormatYMDHMS(new Date());
+        String newMessageTime = WorkWithTimeApi.getDateInFormatYMDHMS(new Date());
         items.put(TIME, newMessageTime);
         myRef.updateChildren(items);
         updateOrderInLocalStorage(newMessageTime);
@@ -316,7 +316,7 @@ public class MessageOrderElement implements View.OnClickListener {
 
     private boolean beforeOneHour() {
         String commonDate = messageWorkingDay + " " + messageWorkingTime;
-        long sysdateLong = workWithTimeApi.getSysdateLong();
+        long sysdateLong = WorkWithTimeApi.getSysdateLong();
         long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate);
 
         return orderDateLong - sysdateLong < 3600000;

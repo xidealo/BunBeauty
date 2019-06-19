@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class WorkerCreateService implements IWorker {
 
-    private static final String TAG =  "DBInf";
+    private static final String TAG = "DBInf";
 
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
@@ -57,7 +57,7 @@ public class WorkerCreateService implements IWorker {
         dateRef = dateRef.child(dayId);
         dateRef.updateChildren(items);
 
-        putDataDaysInLocalStorage(serviceId, dayId, date);
+        //putDataDaysInLocalStorage(serviceId, dayId, date);
         return dayId;
     }
 
@@ -81,7 +81,7 @@ public class WorkerCreateService implements IWorker {
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId});
 
         for (String time : workingHours) {
-            if (!WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time)) {
+            if (!WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time, database)) {
 
                 FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
                 DatabaseReference timeRef = fdatabase.getReference(USERS)
@@ -99,7 +99,7 @@ public class WorkerCreateService implements IWorker {
                 timeRef = timeRef.child(timeId);
                 timeRef.updateChildren(items);
 
-                putDataTimeInLocalStorage(timeId, time, workingDaysId);
+                //putDataTimeInLocalStorage(timeId, time, workingDaysId);
             }
         }
         cursor.close();
@@ -125,10 +125,7 @@ public class WorkerCreateService implements IWorker {
                     for (DataSnapshot time : timesSnapshot.getChildren()) {
                         if (String.valueOf(time.child(TIME).getValue()).equals(hours)) {
                             String timeId = String.valueOf(time.getKey());
-
                             timeRef.child(timeId).removeValue();
-
-                            deleteTimeFromLocalStorage(workingDaysId, removedHours);
                         }
                     }
                 }
@@ -140,41 +137,9 @@ public class WorkerCreateService implements IWorker {
 
             }
         });
+
+
     }
 
-    private void putDataTimeInLocalStorage(final String timeId, final String time,
-                                           final String workingDaysId) {
-
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_ID, timeId);
-        contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, time);
-        contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDaysId);
-
-        database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
-    }
-
-    private void putDataDaysInLocalStorage(final String serviceId, final String dayId, final String date) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_ID, dayId);
-        contentValues.put(DBHelper.KEY_DATE_WORKING_DAYS, date);
-        contentValues.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
-
-        database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
-    }
-
-    private void deleteTimeFromLocalStorage(final String workingDaysId, final ArrayList<String> removedHours) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        for (String time : removedHours) {
-            if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time)) {
-                database.delete(
-                        DBHelper.TABLE_WORKING_TIME,
-                        DBHelper.KEY_TIME_WORKING_TIME + " = ? AND "
-                                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?",
-                        new String[]{time, String.valueOf(workingDaysId)});
-            }
-        }
-    }
 }
+

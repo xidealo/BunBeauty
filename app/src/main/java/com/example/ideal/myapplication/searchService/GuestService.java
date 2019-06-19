@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -21,13 +22,16 @@ import android.widget.Toast;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.fragments.PremiumElement;
-import com.example.ideal.myapplication.fragments.objects.RatingReview;
+import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
+import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.IPremium;
 import com.example.ideal.myapplication.reviews.Comments;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,7 +41,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GuestService extends AppCompatActivity implements View.OnClickListener, IPremium {
@@ -47,14 +53,19 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String WORKER = "worker";
     private static final String USER = "user";
     private static final String SERVICE_ID = "service id";
-    private static final String ORDER_ID = "order_id";
-    private static final String ID = "id";
     private static final String TYPE = "type";
     private static final String SERVICES = "services";
     private static final String IS_PREMIUM = "is premium";
+    private static final String SERVICE_OWNER_ID = "service owner id";
     private static final String USERS = "users";
     private static final String CODES = "codes";
     private static final String CODE = "code";
+    private static final String WORKING_DAYS = "working days";
+    private static final String WORKING_TIME = "working time";
+    private static final String DATE = "date";
+    private static final String ORDERS = "orders";
+    private static final String COUNT_OF_RATES = "count of rates";
+
     private static final String COUNT = "count";
 
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
@@ -67,6 +78,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private String serviceId;
     private String ownerId;
     private String serviceName;
+    private String countOfRatesForComments;
 
     private TextView costText;
     private TextView addressText;
@@ -82,10 +94,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private LinearLayout imageFeedLayout;
     private LinearLayout premiumLayout;
     private LinearLayout topPanelLayout;
-    private WorkWithLocalStorageApi workWithLocalStorageApi;
     private boolean isMyService;
     private boolean isPremiumLayoutSelected;
     private DBHelper dbHelper;
+    private static ArrayList<String> serviceIdsFirstSetGS = new ArrayList<>();
+    private SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +106,177 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.guest_service);
 
         init();
+
+        if (!serviceIdsFirstSetGS.contains(serviceId)) {
+            loadServiceData();
+            serviceIdsFirstSetGS.add(serviceId);
+        } else {
+            //получаем данные о сервисе
+            getInfoAboutService(serviceId);
+        }
+    }
+
+    private void loadServiceData() {
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = firebaseDatabase.getReference(USERS)
+                .child(ownerId);
+        //загружаем один раз всю информацию
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                //подгрузка фото
+                LoadingUserElementData.loadPhotos(userSnapshot, database);
+
+                //подгрузка сервиса
+                final DataSnapshot serviceSnapshot = userSnapshot
+                        .child(SERVICES)
+                        .child(serviceId);
+
+                LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot, database);
+
+                getInfoAboutService(serviceId);
+
+                final DatabaseReference workingDaysRef = myRef
+                        .child(SERVICES)
+                        .child(serviceId)
+                        .child(WORKING_DAYS);
+
+                workingDaysRef.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) {
+                        final String workingDayId = workingDaySnapshot.getKey();
+                        long sysdateLong = WorkWithTimeApi.getSysdateLong();
+                        long dateLong = WorkWithTimeApi.getMillisecondsStringDateYMD(workingDaySnapshot.child(DATE).getValue(String.class));
+                        if (dateLong > sysdateLong) {
+                            LoadingGuestServiceData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
+
+                            final DatabaseReference workingTimesRef = workingDaysRef
+                                    .child(workingDayId)
+                                    .child(WORKING_TIME);
+
+                            workingTimesRef.addChildEventListener(new ChildEventListener() {
+                                @Override
+                                public void onChildAdded(@NonNull DataSnapshot timeSnapshot, @Nullable String s) {
+                                    //при добавлении нового времени
+                                    LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
+                                    final String timeId = timeSnapshot.getKey();
+                                    DatabaseReference ordersRef = workingTimesRef
+                                            .child(timeId)
+                                            .child(ORDERS);
+                                    ordersRef.addChildEventListener(new ChildEventListener() {
+                                        @Override
+                                        public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
+                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot,timeId, database);
+                                            // если кто-то записался
+                                        }
+
+                                        @Override
+                                        public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
+                                            //если от кого-то отказались
+                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot,timeId, database);
+                                        }
+
+                                        @Override
+                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                            //void
+
+                                        }
+
+                                        @Override
+                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                            //void
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            //void
+                                        }
+                                    });
+
+                                }
+
+                                @Override
+                                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                    //пусто
+                                }
+
+                                @Override
+                                public void onChildRemoved(@NonNull DataSnapshot timeSnapshot) {
+                                    //при удалении времени
+                                    LoadingGuestServiceData.deleteTimeFromLocalStorage(timeSnapshot.getKey(), database);
+                                }
+
+                                @Override
+                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                    //пусто
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        //пустое
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        //пустое
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        //пустое
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        //пустое
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        //слушатель на данные сервиса
+        final DatabaseReference serviceRef = firebaseDatabase.getReference(USERS)
+                .child(ownerId)
+                .child(SERVICES)
+                .child(serviceId);
+        serviceRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
+                //слушатель на каждый день, чтобы отслеживать изменение времени
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
+                //если что-то меняется, мы сохраняем даные
+                LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot, database);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void init() {
@@ -116,19 +300,12 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         LinearLayout premiumIconLayout = findViewById(R.id.premiumIconGuestServiceLayout);
 
         dbHelper = new DBHelper(this);
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        database = dbHelper.getReadableDatabase();
         topPanelLayout = findViewById(R.id.headerGuestServiceLayout);
-
-        workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-
-        serviceId = getIntent().getStringExtra(SERVICE_ID);
-        //получаем данные о сервисе
-        getInfoAboutService(serviceId);
-
-        //получаем рейтинг сервиса
-        getServiceRating(serviceId);
         userId = getUserId();
 
+        serviceId = getIntent().getStringExtra(SERVICE_ID);
+        ownerId = getOwnerId();
         // мой сервис или нет?
         isMyService = userId.equals(ownerId);
 
@@ -151,6 +328,20 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             premiumIconLayout.setVisibility(View.GONE);
         }
         editScheduleBtn.setOnClickListener(this);
+    }
+
+    private String getOwnerId() {
+        String sqlQuery =
+                "SELECT *"
+                        + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES
+                        + " WHERE "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = ? ";
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
+        if (cursor.moveToFirst()) {
+            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
+            ownerId = cursor.getString(indexUserId);
+        }
+        return ownerId;
     }
 
     @Override
@@ -184,10 +375,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private void getInfoAboutService(String serviceId) {
 
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
         // все осервисе, оценка, количество оценок
         // проверка на удаленный номер
-
         String sqlQuery =
                 "SELECT *"
                         + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES
@@ -200,91 +389,38 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
             int indexMinCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
             int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
-            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
             int indexAddress = cursor.getColumnIndex(DBHelper.KEY_ADDRESS_SERVICES);
             int indexIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
+            int indexServiceRating = cursor.getColumnIndex(DBHelper.KEY_RATING_SERVICES);
+            int indexCountOfRates = cursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_SERVICES);
 
-            ownerId = cursor.getString(indexUserId);
             costText.setText("Цена от: " + cursor.getString(indexMinCost) + "р");
             addressText.setText("Адрес: " + cursor.getString(indexAddress));
             descriptionText.setText(cursor.getString(indexDescription));
             serviceName = cursor.getString(indexName);
+            float serviceRating = Float.valueOf(cursor.getString(indexServiceRating));
+
             boolean isPremium = Boolean.valueOf(cursor.getString(indexIsPremium));
 
             if (isPremium) {
                 setWithPremium();
             }
+
+            long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
+            countOfRatesForComments = cursor.getString(indexCountOfRates);
+            createRatingBar(serviceRating, countOfRates);
         }
         cursor.close();
     }
 
-    private void getServiceRating(String serviceId) {
+    private void buildPanels() {
+        PanelBuilder panelBuilder = new PanelBuilder();
+        FragmentManager manager = getSupportFragmentManager();
+        topPanelLayout.removeAllViews();
 
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        // все о сервисе, оценка, количество оценок
-        // проверка на удаленный номер
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_RATING_REVIEWS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_ORDERS + ", "
-                        + DBHelper.TABLE_REVIEWS
-                        + " WHERE "
-                        + DBHelper.KEY_ORDER_ID_REVIEWS
-                        + " = "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                        + " = "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_TYPE_REVIEWS + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_RATING_REVIEWS + " != 0 ";
+        panelBuilder.buildHeader(manager, getServiceName(), R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
+        panelBuilder.buildFooter(manager, R.id.footerGuestServiceLayout);
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
-
-        float sumOfRates = 0;
-        float avgRating = 0;
-        long countOfRates = 0;
-        // если сюда не заходит, значит ревью нет
-        if (cursor.moveToFirst()) {
-            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
-            do {
-                String workingTimeId = cursor.getString(indexWorkingTimeId);
-                String orderId = cursor.getString(indexOrderId);
-
-                if (workWithLocalStorageApi.isMutualReview(orderId)) {
-                    sumOfRates += Float.valueOf(cursor.getString(indexRating));
-                    countOfRates++;
-                } else {
-                    if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                        sumOfRates += Float.valueOf(cursor.getString(indexRating));
-                        countOfRates++;
-                    }
-                }
-            } while (cursor.moveToNext());
-
-            if (countOfRates != 0) {
-                avgRating = sumOfRates / countOfRates;
-            }
-            createRatingBar(avgRating, countOfRates);
-        } else {
-            setWithoutRating();
-        }
-        cursor.close();
     }
 
     private void checkScheduleAndGoToProfile() {
@@ -337,22 +473,35 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             } while (cursor.moveToNext());
         }
         cursor.close();
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        FragmentManager manager = getSupportFragmentManager();
-        getInfoAboutService(serviceId);
+        buildPanels();
 
-        topPanelLayout.removeAllViews();
-
-        panelBuilder.buildHeader(manager, serviceName, R.id.headerGuestServiceLayout, isMyService, serviceId, ownerId);
-        panelBuilder.buildFooter(manager, R.id.footerGuestServiceLayout);
         imageFeedLayout.removeAllViews();
         setPhotoFeed(serviceId);
+    }
+
+    private String getServiceName() {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        //получаем ссылку на фото по id владельца
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_NAME_SERVICES
+                        + " FROM "
+                        + DBHelper.TABLE_CONTACTS_SERVICES
+                        + " WHERE "
+                        + DBHelper.KEY_ID + " = ?";
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
+
+        if (cursor.moveToFirst()) {
+            int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
+            serviceName = cursor.getString(indexName);
+            return serviceName;
+        }
+        return null;
     }
 
     private void attentionThisScheduleIsEmpty() {
@@ -367,7 +516,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void createRatingBar(float avgRating, long countOfRates) {
-
         if (countOfRates > 0) {
             countOfRatesText.setVisibility(View.VISIBLE);
             avgRatesText.setVisibility(View.VISIBLE);
@@ -380,8 +528,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             avgRatesText.setText(avgRatingWithFormat);
 
             ratingBar.setRating(avgRating);
+            ratingLL.setOnClickListener(this);
         }
-        ratingLL.setOnClickListener(this);
+        else {
+            setWithoutRating();
+        }
     }
 
     private void showPremium() {
@@ -403,21 +554,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         premiumText.setVisibility(View.VISIBLE);
     }
 
-    private void goToMyCalendar(String status) {
-        Intent intent = new Intent(this, MyCalendar.class);
-        intent.putExtra(SERVICE_ID, serviceId);
-        intent.putExtra(STATUS_USER_BY_SERVICE, status);
-
-        startActivity(intent);
-    }
-
-    private void goToComments() {
-        Intent intent = new Intent(this, Comments.class);
-        intent.putExtra(ID, serviceId);
-        intent.putExtra(TYPE, REVIEW_FOR_SERVICE);
-        startActivity(intent);
-    }
-
     @Override
     public void setPremium() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -437,9 +573,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void updatePremiumLocalStorage(String serviceId) {
-
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, "true");
         //update
@@ -457,13 +590,12 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot codesSnapshot) {
-                if(codesSnapshot.getChildrenCount() == 0){
+                if (codesSnapshot.getChildrenCount() == 0) {
                     attentionWrongCode();
-                }
-                else {
+                } else {
                     DataSnapshot userSnapshot = codesSnapshot.getChildren().iterator().next();
-                    int  count = userSnapshot.child(COUNT).getValue(int.class);
-                    if(count>0){
+                    int count = userSnapshot.child(COUNT).getValue(int.class);
+                    if (count > 0) {
                         setPremium();
 
                         String codeId = userSnapshot.getKey();
@@ -472,14 +604,14 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                 .getReference(CODES)
                                 .child(codeId);
                         Map<String, Object> items = new HashMap<>();
-                        items.put(COUNT, count-1);
+                        items.put(COUNT, count - 1);
                         myRef.updateChildren(items);
-                    }
-                    else {
-                     attentionOldCode();   
+                    } else {
+                        attentionOldCode();
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -490,11 +622,30 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private void attentionWrongCode() {
         Toast.makeText(this, "Неверно введен код", Toast.LENGTH_SHORT).show();
     }
+
     private void attentionOldCode() {
         Toast.makeText(this, "Код больше не действителен", Toast.LENGTH_SHORT).show();
     }
+
     private void attentionPremiumActivated() {
         Toast.makeText(this, "Премиум активирован", Toast.LENGTH_LONG).show();
+    }
+
+    private void goToMyCalendar(String status) {
+        Intent intent = new Intent(this, MyCalendar.class);
+        intent.putExtra(SERVICE_ID, serviceId);
+        intent.putExtra(STATUS_USER_BY_SERVICE, status);
+
+        startActivity(intent);
+    }
+
+    private void goToComments() {
+        Intent intent = new Intent(this, Comments.class);
+        intent.putExtra(SERVICE_ID, serviceId);
+        intent.putExtra(TYPE, REVIEW_FOR_SERVICE);
+        intent.putExtra(SERVICE_OWNER_ID, ownerId);
+        intent.putExtra(COUNT_OF_RATES, countOfRatesForComments);
+        startActivity(intent);
     }
 
 }

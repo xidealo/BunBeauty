@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.strictmode.SqliteObjectLeakedViolation;
 
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.User;
@@ -20,7 +21,6 @@ public class LoadingUserElementData {
 
     private static SQLiteDatabase localDatabase;
     private static Thread photoThread;
-    private static Thread serviceThread;
 
     public static void loadUserNameAndPhoto(final DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
         localDatabase = _localDatabase;
@@ -31,7 +31,7 @@ public class LoadingUserElementData {
         photoThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                loadPhotos(userSnapshot);
+                loadPhotos(userSnapshot,localDatabase);
             }
         });
         photoThread.start();
@@ -44,7 +44,9 @@ public class LoadingUserElementData {
         addUserInfoInLocalStorage(user);
     }
 
-    private static void loadPhotos(DataSnapshot userSnapshot) {
+    public static void loadPhotos(DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
+        localDatabase = _localDatabase;
+        new WorkWithLocalStorageApi(_localDatabase);
         Photo photo = new Photo();
         photo.setPhotoId(userSnapshot.getKey());
         photo.setPhotoLink(String.valueOf(userSnapshot.child(PHOTO_LINK).getValue()));
@@ -88,7 +90,9 @@ public class LoadingUserElementData {
             contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
             localDatabase.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
-        photoThread.interrupt();
+        if(photoThread!=null) {
+            photoThread.interrupt();
+        }
     }
 
 }

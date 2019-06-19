@@ -55,6 +55,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
     private RelativeLayout mainLayout;
     private WorkerCreateService workerCreateService;
     private UserCreateService userCreateService;
+    private SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,8 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         userId = getUserId();
         String serviceId = getIntent().getStringExtra(SERVICE_ID);
         dbHelper = new DBHelper(this);
+        database = dbHelper.getWritableDatabase();
+
         workingDaysId = getIntent().getStringExtra(WORKING_DAYS_ID);
 
         if (statusUser.equals(WORKER)) {
@@ -187,6 +190,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 //закрашиваем, чтобы нельзя было записаться еще раз
                 checkCurrentTimes();
                 workingHours.clear();
+                attentionSuccessfulOrder();
             }
         });
         dialog.setNegativeButton(Html.fromHtml("<b><font color='#FF7F27'>Нет</font></b>"), new DialogInterface.OnClickListener() {
@@ -195,6 +199,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         });
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.show();
+    }
+
+    private void attentionSuccessfulOrder(){
+        Toast.makeText(this, "Вы успешно записались", Toast.LENGTH_SHORT).show();
     }
 
     // Подгружаем информацию о сервисе
@@ -266,7 +274,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 }
 
                 //Проверка является ли данное время рабочим
-                if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time)) {
+                if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time,database)) {
                     timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
                     timeBtns[i][j].setTag(R.string.selectedId, true);
 
@@ -339,8 +347,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
     // Проверяет есть ли запись на данный день
     private String checkMyOrder() {
 
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
         String myTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS
                 + " FROM "
@@ -385,8 +391,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
     }
 
     private boolean isFreeTime(String time) {
-
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         String busyTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS

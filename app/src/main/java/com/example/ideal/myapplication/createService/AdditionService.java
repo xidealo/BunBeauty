@@ -71,6 +71,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     private static final String CODES = "codes";
     private static final String CODE = "code";
     private static final String COUNT = "count";
+    private static final String COUNT_OF_RATES = "count of rates";
     private static final String AVG_RATING = "avg rating";
 
     private EditText nameServiceInput;
@@ -176,6 +177,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
                     service.setUserId(getUserId());
                     service.setCategory(category);
                     service.setAddress(address);
+                    service.setCountOfRates(0);
                     uploadService(service);
                 } else {
                     Toast.makeText(this, getString(R.string.empty_field), Toast.LENGTH_SHORT).show();
@@ -209,6 +211,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         items.put(IS_PREMIUM, service.getIsPremium());
         items.put(CATEGORY, service.getCategory());
         items.put(ADDRESS, service.getAddress());
+        items.put(COUNT_OF_RATES, service.getCountOfRates());
 
         items.put(CREATION_DATE, workWithTimeApi.getDateInFormatYMDHMS(new Date()));
         String serviceId = serviceRef.push().getKey();
