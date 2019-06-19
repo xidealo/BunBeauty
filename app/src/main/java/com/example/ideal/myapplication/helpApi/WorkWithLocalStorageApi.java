@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.ideal.myapplication.other.DBHelper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 public class WorkWithLocalStorageApi {
@@ -445,5 +446,9 @@ public class WorkWithLocalStorageApi {
 
         cursor.close();
         return timeId;
+    }
+
+    public static String getUserId(){
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 }

@@ -1,21 +1,32 @@
 package com.example.ideal.myapplication.chat;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.MessageAdapter;
 import com.example.ideal.myapplication.fragments.objects.Message;
+import com.example.ideal.myapplication.helpApi.LoadingMessages;
+import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -33,15 +44,47 @@ public class Messages extends AppCompatActivity {
     private static final String WORKING_TIME_ID = "working_time_id";
     private static final String REVIEW_ID = "review_id";
     private static final String ORDER_STATUS = "order status";
+    private static final String OWNER_ID = "owner_id";
+
+
+    private static final String DESCRIPTION = "description";
+    private static final String COST = "cost";
+    private static final String USERS = "users";
+    private static final String IS_PREMIUM = "is premium";
+    private static final String CREATION_DATE = "creation date";
+
+    private static final String TIME = "time";
+    private static final String WORKING_DAYS = "working days";
+    private static final String WORKING_TIME = "working time";
+    private static final String DATE = "date";
+    private static final String CATEGORY = "category";
+    private static final String ADDRESS = "address";
+
+    private static final String ORDERS = "orders";
+
+    private static final String REVIEWS = "reviews";
+    private static final String REVIEW = "review";
+    private static final String TYPE = "type";
+    private static final String RATING = "rating";
+
+    private static final String CITY = "city";
+    private static final String NAME = "name";
+    private static final String PHONE = "phone";
+    private static final String SERVICES = "services";
+    private static final String IS_CANCELED = "is canceled";
 
     private String senderId;
+    private String userId;
     private String senderName;
     private DBHelper dbHelper;
     private FragmentManager manager;
+    SQLiteDatabase database;
 
     private ArrayList<Message> messageList;
     private RecyclerView recyclerView;
     private MessageAdapter messageAdapter;
+    private int counter;
+    private static ArrayList<String> senderIds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +92,7 @@ public class Messages extends AppCompatActivity {
         setContentView(R.layout.messages);
 
         dbHelper = new DBHelper(this);
+        database = dbHelper.getWritableDatabase();
 
         recyclerView = findViewById(R.id.resultsMessagesRecycleView);
         messageList = new ArrayList<>();
@@ -60,8 +104,26 @@ public class Messages extends AppCompatActivity {
         // получаем телефон нашего собеседеника
         manager = getSupportFragmentManager();
 
+        userId = getUserId();
         senderId = getIntent().getStringExtra(USER_ID);
         senderName = getSenderName(senderId);
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+        PanelBuilder panelBuilder = new PanelBuilder();
+        panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
+        panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderId);
+
+        // заменить на список id
+        if (senderIds.contains(senderId)) {
+            getMessages();
+        } else {
+            loadMessages();
+            senderIds.add(senderId);
+        }
     }
 
     private String getSenderName(String senderId) {
@@ -78,7 +140,7 @@ public class Messages extends AppCompatActivity {
                         + " WHERE "
                         + DBHelper.KEY_ID + " = ?";
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{senderId});
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
             return cursor.getString(indexName);
         }
@@ -86,8 +148,133 @@ public class Messages extends AppCompatActivity {
         return "";
     }
 
+    private void loadMessages() {
+
+        final Cursor orderCursor = createOrderCursor();
+
+        if (orderCursor.moveToFirst()) {
+            int indexOwnerId = orderCursor.getColumnIndex(OWNER_ID);
+            int indexServiceId = orderCursor.getColumnIndex(DBHelper.KEY_SERVICE_ID_WORKING_DAYS);
+            int indexWorkingDayId = orderCursor.getColumnIndex(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME);
+            int indexWorkingTimeId = orderCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_ORDERS);
+            int indexOrderId = orderCursor.getColumnIndex(ORDER_ID);
+            //int indexUserId = orderCursor.getColumnIndex(DBHelper.KEY_USER_ID);
+
+            final int orderCount = orderCursor.getCount();
+            counter = 0;
+            do {
+                final String ownerId = orderCursor.getString(indexOwnerId);
+                final String serviceId = orderCursor.getString(indexServiceId);
+                final String workingDayId = orderCursor.getString(indexWorkingDayId);
+                final String workingTimeId = orderCursor.getString(indexWorkingTimeId);
+                final String orderId = orderCursor.getString(indexOrderId);
+
+                if (ownerId.equals(senderId)) {
+                    DatabaseReference serviceReference = FirebaseDatabase.getInstance()
+                            .getReference(USERS)
+                            .child(senderId)
+                            .child(SERVICES)
+                            .child(serviceId);
+
+                    serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot serviceSnapshot) {
+                            LoadingMessages.addServiceInLocalStorage(serviceSnapshot, ownerId, database);
+
+                            DataSnapshot workingDaySnapshot = serviceSnapshot.child(WORKING_DAYS).child(workingDayId);
+                            LoadingMessages.load(workingDaySnapshot,
+                                    serviceId,
+                                    workingDayId,
+                                    workingTimeId,
+                                    orderId,
+                                    database);
+
+                            counter++;
+                            if (counter == orderCount) {
+                                getMessages();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                } else {
+                    DatabaseReference workingDayReference = FirebaseDatabase.getInstance()
+                            .getReference(USERS)
+                            .child(senderId)
+                            .child(SERVICES)
+                            .child(serviceId)
+                            .child(WORKING_DAYS)
+                            .child(workingDayId);
+
+                    workingDayReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot workingDaySnapshot) {
+                            LoadingMessages.load(workingDaySnapshot,
+                                    serviceId,
+                                    workingDayId,
+                                    workingTimeId,
+                                    orderId,
+                                    database);
+                            counter++;
+                            if (counter == orderCount) {
+                                getMessages();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+            } while (orderCursor.moveToNext());
+
+            orderCursor.close();
+        }
+    }
+
+    private Cursor createOrderCursor() {
+        String ordersQuery =
+                "SELECT DISTINCT "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " AS " + OWNER_ID + ", "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + ", "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + ", "
+                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS + ", "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID
+                        + " FROM "
+                        + DBHelper.TABLE_ORDERS + ", "
+                        + DBHelper.TABLE_WORKING_TIME + ", "
+                        + DBHelper.TABLE_WORKING_DAYS + ", "
+                        + DBHelper.TABLE_CONTACTS_SERVICES
+                        + " WHERE "
+                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                        + " = "
+                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                        + " = "
+                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                        + " AND "
+                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
+                        + " = "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
+                        + " AND ("
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
+                        + " AND "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?"
+                        + " OR "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ?"
+                        + " AND "
+                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? )";
+
+        Cursor cursor = database.rawQuery(ordersQuery, new String[]{senderId, userId, senderId, userId});
+        return cursor;
+    }
+
     // получить все ордеры, у которых userId = userId собеседника.
-    private void addMessages(String senderId) {
+    private void getMessages() {
+        messageList.clear();
 
         //добавить еще проверку есть ли поля у ревью этого ордера, если да, то добавляем ревью, если нет то ордер
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -142,9 +329,7 @@ public class Messages extends AppCompatActivity {
                         " ORDER BY "
                         + DBHelper.KEY_MESSAGE_TIME_ORDERS;
 
-        String myId = getUserId();
-        Cursor cursor = database.rawQuery(orderQuery, new String[]{senderId, myId, senderId, myId});
-
+        Cursor cursor = database.rawQuery(orderQuery, new String[]{senderId, userId, senderId, userId});
         if (cursor.moveToFirst()) {
 
             int indexMessageIsCanceled = cursor.getColumnIndex(DBHelper.KEY_IS_CANCELED_ORDERS);
@@ -212,9 +397,9 @@ public class Messages extends AppCompatActivity {
                 }
             } while (cursor.moveToNext());
         }
-        messageAdapter = new MessageAdapter(messageList.size(),messageList);
+        messageAdapter = new MessageAdapter(messageList.size(), messageList);
         //опускаемся к полседнему элементу
-        recyclerView.scrollToPosition(messageAdapter.getItemCount()-1);
+        recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
         recyclerView.setAdapter(messageAdapter);
         cursor.close();
     }
@@ -223,10 +408,10 @@ public class Messages extends AppCompatActivity {
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
         //3600000 * 24 = 24 часа
         String commonDate = date + " " + time;
-        Long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) +3600000*24;
+        Long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000 * 24;
         Long sysdate = workWithTimeApi.getSysdateLong();
 
-        return sysdate>orderDateLong;
+        return sysdate > orderDateLong;
     }
 
     // Пo id working time узнаёт ренадлежит ли мне скевис
@@ -249,18 +434,7 @@ public class Messages extends AppCompatActivity {
         return cursor.moveToFirst();
     }
 
-    private  String getUserId(){
+    private String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
-
-    @Override
-    protected void onResume() {
-
-        super.onResume();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
-        panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderId);
-        messageList.clear();
-        addMessages(senderId);
     }
 }
