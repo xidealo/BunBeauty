@@ -25,6 +25,7 @@ public class LoadingGuestServiceData {
     private static final String ADDRESS = "address";
     private static final String NAME = "name";
     private static final String IS_CANCELED = "is canceled";
+    private static final String COUNT_OF_RATES = "count of rates";
 
     //PHOTOS
     private static final String PHOTOS = "photos";
@@ -53,6 +54,8 @@ public class LoadingGuestServiceData {
         contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, String.valueOf(serviceSnapshot.child(IS_PREMIUM).getValue()));
         contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, String.valueOf(serviceSnapshot.child(CATEGORY).getValue()));
         contentValues.put(DBHelper.KEY_ADDRESS_SERVICES, String.valueOf(serviceSnapshot.child(ADDRESS).getValue()));
+
+        contentValues.put(DBHelper.KEY_COUNT_OF_RATES_SERVICES, String.valueOf(serviceSnapshot.child(COUNT_OF_RATES).getValue()));
 
         boolean hasSomeData = WorkWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceSnapshot.getKey());
@@ -164,7 +167,6 @@ public class LoadingGuestServiceData {
             contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, timeId);
             contentValues.put(DBHelper.KEY_USER_ID,  String.valueOf(orderSnapshot.child(USER_ID).getValue()));
 
-        Log.d(TAG, "addOrderInLocalStorage: " + orderSnapshot.getKey());
             boolean hasSomeData = WorkWithLocalStorageApi
                     .hasSomeData(DBHelper.TABLE_ORDERS, orderId);
 

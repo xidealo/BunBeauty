@@ -163,7 +163,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                     ordersRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                                            Log.d(TAG, "onChildAddedOrder: "+ orderSnapshot);
                                             LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot,timeId, database);
                                             // если кто-то записался
                                         }
@@ -390,6 +389,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexAddress = cursor.getColumnIndex(DBHelper.KEY_ADDRESS_SERVICES);
             int indexIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
             int indexServiceRating = cursor.getColumnIndex(DBHelper.KEY_RATING_SERVICES);
+            int indexCountOfRates = cursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_SERVICES);
 
             costText.setText("Цена от: " + cursor.getString(indexMinCost) + "р");
             addressText.setText("Адрес: " + cursor.getString(indexAddress));
@@ -402,7 +402,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             if (isPremium) {
                 setWithPremium();
             }
-            long countOfRates = 1;
+
+            long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
 
             createRatingBar(serviceRating, countOfRates);
         }

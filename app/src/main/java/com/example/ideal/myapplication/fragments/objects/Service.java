@@ -12,11 +12,20 @@ public class Service {
     private boolean isPremium;
     private String creationDate;
     private String address;
+    private long countOfRates;
 
     // id
     public String getId(){return id;}
     public void setId(String _id){
         id = _id;
+    }
+
+    public long getCountOfRates() {
+        return countOfRates;
+    }
+
+    public void setCountOfRates(long countOfRates) {
+        this.countOfRates = countOfRates;
     }
 
     // Имя
