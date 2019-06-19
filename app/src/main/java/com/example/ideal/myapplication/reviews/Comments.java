@@ -52,6 +52,7 @@ public class Comments extends AppCompatActivity {
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
     private static final String DATE = "date";
+    private static final String COUNT_OF_RATES = "count of rates";
     private static final String ORDERS = "orders";
 
     private static final String REVIEWS = "reviews";
@@ -66,6 +67,9 @@ public class Comments extends AppCompatActivity {
     private CommentAdapter commentAdapter;
     private String serviceId;
     private String ownerId;
+    private long countOfRates;
+    private long currentCountOfReview;
+
     private SQLiteDatabase database;
     private static ArrayList<String> serviceIdsFirstSetComments = new ArrayList<>();
 
@@ -90,6 +94,9 @@ public class Comments extends AppCompatActivity {
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         ownerId = getIntent().getStringExtra(SERVICE_OWNER_ID);
 
+        countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
+        currentCountOfReview = 0;
+
         recyclerView = findViewById(R.id.resultsCommentsRecycleView);
         commentList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -100,7 +107,6 @@ public class Comments extends AppCompatActivity {
     }
 
     private void loadComments() {
-
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference workingDaysRef = firebaseDatabase.getReference(USERS)
                 .child(ownerId)
@@ -143,9 +149,11 @@ public class Comments extends AppCompatActivity {
                                     reviewRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                            Log.d(TAG, "onChildAdded: ");
                                             addReviewInLocalStorage(reviewSnapshot,orderId);
-                                            getComments();
+                                            currentCountOfReview++;
+                                            if(countOfRates== currentCountOfReview){
+                                                getComments();
+                                            }
                                         }
 
                                         @Override

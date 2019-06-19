@@ -64,6 +64,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String WORKING_TIME = "working time";
     private static final String DATE = "date";
     private static final String ORDERS = "orders";
+    private static final String COUNT_OF_RATES = "count of rates";
 
     private static final String COUNT = "count";
 
@@ -77,6 +78,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private String serviceId;
     private String ownerId;
     private String serviceName;
+    private String countOfRatesForComments;
 
     private TextView costText;
     private TextView addressText;
@@ -405,7 +407,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             }
 
             long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
-
+            countOfRatesForComments = cursor.getString(indexCountOfRates);
             createRatingBar(serviceRating, countOfRates);
         }
         cursor.close();
@@ -642,6 +644,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         intent.putExtra(SERVICE_ID, serviceId);
         intent.putExtra(TYPE, REVIEW_FOR_SERVICE);
         intent.putExtra(SERVICE_OWNER_ID, ownerId);
+        intent.putExtra(COUNT_OF_RATES, countOfRatesForComments);
         startActivity(intent);
     }
 
