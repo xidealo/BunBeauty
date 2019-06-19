@@ -47,12 +47,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     private static final String TAG = "DBInf";
     private static final String OWNER_ID = "owner id";
-    private static final String REVIEW_FOR_SERVICE = "review for service";
     private static final String USERS = "users";
-
     private static final String REVIEW_FOR_USER = "review for user";
-    private static final String ORDER_ID = "order_id";
-
     private static final String STATUS = "status";
 
     private static final String SUBSCRIPTIONS = "подписки";
@@ -83,6 +79,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private ArrayList<Service> serviceList;
     private RecyclerView recyclerView;
     private RecyclerView recyclerViewService;
+
+    private static ArrayList<String> userIdsFirstSetProfile = new ArrayList<>();
 
     private Button addServicesBtn;
 
@@ -185,9 +183,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     // получаем данные о пользователе и отображаем в прфоиле
     private boolean updateProfileData(String ownerId) {
+
         //получаем имя, фамилию и город пользователя по его id
         Cursor userCursor = createUserCursor(ownerId);
         if (userCursor.moveToFirst()) {
+            serviceList.clear();
             if (userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_PHONE_USERS)) != null) {
                 int indexName = userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
                 int indexCity = userCursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
@@ -263,14 +263,19 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     @Override
     protected void onResume() {
         super.onResume();
-        serviceList.clear();
         orderList.clear();
         if (userId.equals(ownerId)) {
             updateProfileData(ownerId);
         } else {
-            if (!updateProfileData(ownerId)) {
+            if (!userIdsFirstSetProfile.contains(ownerId)) {
                 //загрузка из фб
+                Log.d(TAG, "FIRST");
                 loadProfileData(ownerId);
+                userIdsFirstSetProfile.add(ownerId);
+            }
+            else {
+                Log.d(TAG, "NO FIRST");
+                updateProfileData(ownerId);
             }
         }
 
@@ -337,7 +342,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     //подгрузка сервисов на serviceList
     private void updateServicesList(String ownerId) {
         //количество сервисов отображаемых на данный момент(старых)
-
         String sqlQueryService =
                 "SELECT "
                         + DBHelper.KEY_ID + ", "
