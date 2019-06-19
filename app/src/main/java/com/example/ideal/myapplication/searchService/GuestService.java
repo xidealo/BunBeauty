@@ -41,7 +41,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GuestService extends AppCompatActivity implements View.OnClickListener, IPremium {
@@ -51,10 +53,10 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String WORKER = "worker";
     private static final String USER = "user";
     private static final String SERVICE_ID = "service id";
-    private static final String ID = "id";
     private static final String TYPE = "type";
     private static final String SERVICES = "services";
     private static final String IS_PREMIUM = "is premium";
+    private static final String SERVICE_OWNER_ID = "service owner id";
     private static final String USERS = "users";
     private static final String CODES = "codes";
     private static final String CODE = "code";
@@ -93,7 +95,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private boolean isMyService;
     private boolean isPremiumLayoutSelected;
     private DBHelper dbHelper;
-    private boolean isFirst = true;
+    private static ArrayList<String> serviceIdsFirstSetGS = new ArrayList<>();
     private SQLiteDatabase database;
 
     @Override
@@ -103,14 +105,13 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         init();
 
-        if (isFirst) {
+        if (!serviceIdsFirstSetGS.contains(serviceId)) {
             loadServiceData();
-            isFirst = false;
+            serviceIdsFirstSetGS.add(serviceId);
         } else {
             //получаем данные о сервисе
             getInfoAboutService(serviceId);
         }
-
     }
 
     private void loadServiceData() {
@@ -551,21 +552,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         premiumText.setVisibility(View.VISIBLE);
     }
 
-    private void goToMyCalendar(String status) {
-        Intent intent = new Intent(this, MyCalendar.class);
-        intent.putExtra(SERVICE_ID, serviceId);
-        intent.putExtra(STATUS_USER_BY_SERVICE, status);
-
-        startActivity(intent);
-    }
-
-    private void goToComments() {
-        Intent intent = new Intent(this, Comments.class);
-        intent.putExtra(ID, serviceId);
-        intent.putExtra(TYPE, REVIEW_FOR_SERVICE);
-        startActivity(intent);
-    }
-
     @Override
     public void setPremium() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -641,6 +627,22 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private void attentionPremiumActivated() {
         Toast.makeText(this, "Премиум активирован", Toast.LENGTH_LONG).show();
+    }
+
+    private void goToMyCalendar(String status) {
+        Intent intent = new Intent(this, MyCalendar.class);
+        intent.putExtra(SERVICE_ID, serviceId);
+        intent.putExtra(STATUS_USER_BY_SERVICE, status);
+
+        startActivity(intent);
+    }
+
+    private void goToComments() {
+        Intent intent = new Intent(this, Comments.class);
+        intent.putExtra(SERVICE_ID, serviceId);
+        intent.putExtra(TYPE, REVIEW_FOR_SERVICE);
+        intent.putExtra(SERVICE_OWNER_ID, ownerId);
+        startActivity(intent);
     }
 
 }
