@@ -45,33 +45,13 @@ public class Messages extends AppCompatActivity {
     private static final String REVIEW_ID = "review_id";
     private static final String ORDER_STATUS = "order status";
     private static final String OWNER_ID = "owner_id";
-
-
-    private static final String DESCRIPTION = "description";
-    private static final String COST = "cost";
     private static final String USERS = "users";
-    private static final String IS_PREMIUM = "is premium";
-    private static final String CREATION_DATE = "creation date";
-
-    private static final String TIME = "time";
     private static final String WORKING_DAYS = "working days";
-    private static final String WORKING_TIME = "working time";
-    private static final String DATE = "date";
-    private static final String CATEGORY = "category";
-    private static final String ADDRESS = "address";
 
     private static final String ORDERS = "orders";
 
     private static final String REVIEWS = "reviews";
-    private static final String REVIEW = "review";
-    private static final String TYPE = "type";
-    private static final String RATING = "rating";
-
-    private static final String CITY = "city";
-    private static final String NAME = "name";
-    private static final String PHONE = "phone";
     private static final String SERVICES = "services";
-    private static final String IS_CANCELED = "is canceled";
 
     private String senderId;
     private String userId;
@@ -84,6 +64,7 @@ public class Messages extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MessageAdapter messageAdapter;
     private int counter;
+    private int orderCount;
     private static ArrayList<String> senderIds = new ArrayList<>();
 
     @Override
@@ -158,9 +139,8 @@ public class Messages extends AppCompatActivity {
             int indexWorkingDayId = orderCursor.getColumnIndex(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME);
             int indexWorkingTimeId = orderCursor.getColumnIndex(DBHelper.KEY_WORKING_TIME_ID_ORDERS);
             int indexOrderId = orderCursor.getColumnIndex(ORDER_ID);
-            //int indexUserId = orderCursor.getColumnIndex(DBHelper.KEY_USER_ID);
 
-            final int orderCount = orderCursor.getCount();
+            orderCount = orderCursor.getCount();
             counter = 0;
             do {
                 final String ownerId = orderCursor.getString(indexOwnerId);
@@ -189,10 +169,7 @@ public class Messages extends AppCompatActivity {
                                     orderId,
                                     database);
 
-                            counter++;
-                            if (counter == orderCount) {
-                                getMessages();
-                            }
+                            loadReviewForUser(userId, orderId, database);
                         }
 
                         @Override
@@ -202,7 +179,7 @@ public class Messages extends AppCompatActivity {
                 } else {
                     DatabaseReference workingDayReference = FirebaseDatabase.getInstance()
                             .getReference(USERS)
-                            .child(senderId)
+                            .child(userId)
                             .child(SERVICES)
                             .child(serviceId)
                             .child(WORKING_DAYS)
@@ -217,10 +194,8 @@ public class Messages extends AppCompatActivity {
                                     workingTimeId,
                                     orderId,
                                     database);
-                            counter++;
-                            if (counter == orderCount) {
-                                getMessages();
-                            }
+
+                            loadReviewForUser(senderId, orderId, database);
                         }
 
                         @Override
@@ -338,7 +313,6 @@ public class Messages extends AppCompatActivity {
             int indexMessageServiceDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
             int indexMessageWorkingTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
             int indexMessageTime = cursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_ORDERS);
-            //int indexMessageUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
 
             int indexMessageServiceId = cursor.getColumnIndex(SERVICE_ID);
             int indexMessageWorkingDayId = cursor.getColumnIndex(WORKING_DAY_ID);
@@ -402,6 +376,29 @@ public class Messages extends AppCompatActivity {
         recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
         recyclerView.setAdapter(messageAdapter);
         cursor.close();
+    }
+
+    private void loadReviewForUser(String userId, final String orderId, final SQLiteDatabase database) {
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
+                .child(userId)
+                .child(ORDERS)
+                .child(orderId)
+                .child(REVIEWS);
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot reviewsSnapshot) {
+                LoadingMessages.addReviewInLocalStorage(reviewsSnapshot, orderId, database);
+                counter++;
+                if (counter == orderCount) {
+                    getMessages();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     private boolean isAfterOrderTime(String date, String time) {

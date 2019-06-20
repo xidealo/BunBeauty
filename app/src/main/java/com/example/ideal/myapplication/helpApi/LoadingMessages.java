@@ -32,7 +32,6 @@ public class LoadingMessages {
     private static final String RATING = "rating";
     private static final String NAME = "name";
     private static final String IS_CANCELED = "is canceled";
-    private static final String USERS = "users";
 
     public static void load(DataSnapshot workingDaySnapshot, String serviceId, String workingDayId,
                             String workingTimeId, String orderId, SQLiteDatabase database) {
@@ -100,9 +99,6 @@ public class LoadingMessages {
         String orderId = orderSnapshot.getKey();
         String userId = String.valueOf(orderSnapshot.child(USER_ID).getValue());
 
-        // ???
-        loadReviewForUser(userId, orderId, database);
-
         contentValues.put(DBHelper.KEY_ID, orderId);
         contentValues.put(DBHelper.KEY_USER_ID, userId);
         contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, String.valueOf(orderSnapshot.child(IS_CANCELED).getValue()));
@@ -149,25 +145,6 @@ public class LoadingMessages {
         }
     }
 
-    private static void loadReviewForUser(String userId, final String orderId, final SQLiteDatabase database) {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
-                .child(userId)
-                .child(ORDERS)
-                .child(orderId)
-                .child(REVIEWS);
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot reviewsSnapshot) {
-                addReviewInLocalStorage(reviewsSnapshot, orderId, database);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
-
     public static void addServiceInLocalStorage(DataSnapshot serviceSnapshot, String ownerId, SQLiteDatabase database) {
         String serviceId = serviceSnapshot.getKey();
 
@@ -192,6 +169,7 @@ public class LoadingMessages {
     private static String updateMessageTime(String timeId) {
         String updatedTime = "";
 
+        Log.d(TAG, "updateMessageTime: " + timeId);
         Cursor cursor = WorkWithLocalStorageApi.getServiceCursorByTimeId(timeId);
 
         if (cursor.moveToFirst()) {
