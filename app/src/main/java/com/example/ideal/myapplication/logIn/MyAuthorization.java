@@ -43,7 +43,7 @@ public class MyAuthorization {
     private static final String WORKER_ID = "worker id";
 
     private DBHelper dbHelper;
-    private int countOfDownloads;
+    private int startIndexOfDownload;
     private static Thread serviceThread;
 
     private Context context;
@@ -58,7 +58,7 @@ public class MyAuthorization {
     MyAuthorization(Context _context, String _myPhoneNumber) {
         context = _context;
         myPhoneNumber = _myPhoneNumber;
-        countOfDownloads = 5;
+        startIndexOfDownload = 0;
         dbHelper = new DBHelper(context);
     }
 
@@ -95,7 +95,7 @@ public class MyAuthorization {
                                                 .child(SERVICES),
                                         userId,
                                         localDatabase,
-                                        countOfDownloads);
+                                        startIndexOfDownload);
                                 serviceThread.interrupt();
                             }
                         });

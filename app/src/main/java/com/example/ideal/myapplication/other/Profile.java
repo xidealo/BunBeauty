@@ -56,7 +56,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     private String userId;
     private String ownerId;
-    private int countOfDownloads;
+    private int startIndexOfDownload;
 
     private TextView nameText;
     private TextView cityText;
@@ -80,8 +80,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private RecyclerView recyclerViewService;
 
     private static ArrayList<String> userIdsFirstSetProfile = new ArrayList<>();
-
+    private LinearLayoutManager layoutManagerSecond;
     private Button addServicesBtn;
+    private boolean loading = true;
+    private int pastVisibleItems, visibleItemCount, totalItemCount;
+    private DataSnapshot servicesSnapshot;
 
     private SQLiteDatabase database;
 
@@ -93,7 +96,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         init();
     }
 
-    private void init(){
+    private void init() {
         LinearLayout subscriptionsLayout = findViewById(R.id.subscriptionsProfileLayout);
         subscriptionsText = findViewById(R.id.subscriptionsProfileText);
 
@@ -113,7 +116,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        LinearLayoutManager layoutManagerSecond = new LinearLayoutManager(this);
+        layoutManagerSecond = new LinearLayoutManager(this);
         recyclerViewService.setLayoutManager(layoutManagerSecond);
 
         nameText = findViewById(R.id.nameProfileText);
@@ -124,7 +127,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         DBHelper dbHelper = new DBHelper(this);
         database = dbHelper.getReadableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-        countOfDownloads = 5;
+        startIndexOfDownload = 0;
         manager = getSupportFragmentManager();
         userId = getUserId();
 
@@ -161,6 +164,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
         avatarImage.setOnClickListener(this);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -188,7 +192,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         //получаем имя, фамилию и город пользователя по его id
         Cursor userCursor = createUserCursor(ownerId);
         if (userCursor.moveToFirst()) {
-            serviceList.clear();
             if (userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_PHONE_USERS)) != null) {
                 int indexName = userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
                 int indexCity = userCursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
@@ -269,9 +272,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 //загрузка из фб
                 loadProfileData(ownerId);
                 userIdsFirstSetProfile.add(ownerId);
-            }
-            else {
-                Log.d(TAG, "AHHAAH");
+            } else {
                 updateProfileData(ownerId);
             }
         }
@@ -302,6 +303,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         }
     }
 
+
     private void loadProfileData(final String ownerId) {
         DatabaseReference userReference = FirebaseDatabase.getInstance()
                 .getReference(USERS)
@@ -315,7 +317,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                                 .child(SERVICES),
                         ownerId,
                         database,
-                        countOfDownloads);
+                        startIndexOfDownload);
+
+                servicesSnapshot = userSnapshot
+                        .child(SERVICES);
 
                 updateProfileData(ownerId);
             }
@@ -326,6 +331,19 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             }
         });
     }
+
+    private void servicesRecycleRollDown() {
+
+        startIndexOfDownload += 5;
+
+        LoadingProfileData.loadUserServices(servicesSnapshot,
+                ownerId,
+                database,
+                startIndexOfDownload);
+
+        updateServicesList(ownerId);
+    }
+
 
     private long getCountOfSubscribers() {
 
@@ -345,6 +363,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     //подгрузка сервисов на serviceList
     private void updateServicesList(String ownerId) {
+        serviceList.clear();
+
         //количество сервисов отображаемых на данный момент(старых)
         String sqlQueryService =
                 "SELECT "
@@ -380,6 +400,25 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         }
         ServiceProfileAdapter serviceAdapter = new ServiceProfileAdapter(serviceList.size(), serviceList);
         recyclerViewService.setAdapter(serviceAdapter);
+
+        recyclerViewService.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
+                {
+                    visibleItemCount = layoutManagerSecond.getChildCount();
+                    totalItemCount = layoutManagerSecond.getItemCount();
+                    pastVisibleItems = layoutManagerSecond.findFirstVisibleItemPosition();
+                    if (loading) {
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            loading = false;
+                            servicesRecycleRollDown();
+                        }
+                    }
+                }
+            }
+        });
+
         cursor.close();
     }
 

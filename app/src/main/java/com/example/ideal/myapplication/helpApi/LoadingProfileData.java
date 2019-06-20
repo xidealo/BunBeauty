@@ -10,6 +10,8 @@ import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 
+import java.util.ArrayList;
+
 public class LoadingProfileData {
 
     private static final String TAG = "DBInf";
@@ -94,25 +96,33 @@ public class LoadingProfileData {
         }
     }
 
-    public static void loadUserServices(DataSnapshot servicesSnapshot,String userId,
-                                        SQLiteDatabase database, int countOfDownloads) {
+    public static void loadUserServices(DataSnapshot servicesSnapshot, String userId,
+                                        SQLiteDatabase database, int startIndexOfDownload) {
+        //5 10 - интервал
+        int countOfDownloads = 5;
         int counter = 0;
-        for (DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
-            if(counter<countOfDownloads) {
-                String serviceId = serviceSnapshot.getKey();
-                String serviceName = serviceSnapshot.child(NAME).getValue(String.class);
-                float serviceRating = serviceSnapshot.child(AVG_RATING).getValue(Float.class);
 
-                Service service = new Service();
-                service.setId(serviceId);
-                service.setName(serviceName);
-                service.setUserId(userId);
-                service.setAverageRating(serviceRating);
+        for (DataSnapshot serviceList : servicesSnapshot.getChildren()) {
 
-                addUserServicesInLocalStorage(service, database);
+            if (counter < startIndexOfDownload) {
                 counter++;
+                continue;
             }
-            else {
+
+            String serviceId = serviceList.getKey();
+            String serviceName = serviceList.child(NAME).getValue(String.class);
+            float serviceRating = serviceList.child(AVG_RATING).getValue(Float.class);
+
+            Service service = new Service();
+            service.setId(serviceId);
+            service.setName(serviceName);
+            service.setUserId(userId);
+            service.setAverageRating(serviceRating);
+
+            addUserServicesInLocalStorage(service, database);
+            counter++;
+
+            if (counter >= startIndexOfDownload + countOfDownloads) {
                 break;
             }
         }
@@ -158,7 +168,7 @@ public class LoadingProfileData {
         contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getPhotoOwnerId());
 
         boolean isUpdate = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_PHOTOS,
-                        photo.getPhotoId());
+                photo.getPhotoId());
 
         if (isUpdate) {
             localDatabase.update(DBHelper.TABLE_PHOTOS, contentValues,
