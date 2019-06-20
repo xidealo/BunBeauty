@@ -13,13 +13,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.example.ideal.myapplication.helpApi.DownloadServiceData;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.notifications.NotificationCancel;
 import com.example.ideal.myapplication.notifications.NotificationConstructor;
-import com.example.ideal.myapplication.notifications.NotificationOrder;
 import com.example.ideal.myapplication.notifications.NotificationReviewForService;
 import com.example.ideal.myapplication.notifications.NotificationReviewForUser;
 import com.example.ideal.myapplication.notifications.NotificationSubscribers;
@@ -34,7 +32,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.IOException;
@@ -224,7 +221,7 @@ public class MyService extends Service implements Runnable {
 
                                                             LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
 
-                                                            /*DownloadServiceData downloader = new DownloadServiceData(db);
+                                                            /*LoadingMainScreenElement downloader = new LoadingMainScreenElement(db);
                                                             downloader.loadUserInfo(userSnapshot);
 
                                                             String userName = userSnapshot.child(NAME).getValue(String.class);

@@ -50,7 +50,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static final String USERS = "users";
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String STATUS = "status";
-
     private static final String SUBSCRIPTIONS = "подписки";
 
     private static final String ID = "id";

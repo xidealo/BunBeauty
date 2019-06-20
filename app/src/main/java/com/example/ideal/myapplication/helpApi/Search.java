@@ -3,7 +3,6 @@ package com.example.ideal.myapplication.helpApi;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
@@ -55,9 +54,9 @@ public class Search {
         for (DataSnapshot userSnapshot : usersSnapshot.getChildren()) {
             String userCity = String.valueOf(userSnapshot.child(CITY).getValue());
             if((city == null) || city.equals(userCity) || city.equals(NOT_CHOSEN)) {
-                DownloadServiceData downloadServiceData = new DownloadServiceData(database);
-                downloadServiceData.loadUserInfo(userSnapshot);
-                downloadServiceData.loadSchedule(userSnapshot.child(SERVICES), userSnapshot.getKey());
+                //загрузка данных для элементов MS
+                LoadingUserElementData.loadUserNameAndPhotoWithCity(userSnapshot,database);
+                LoadingMainScreenElement.loadService(userSnapshot.child(SERVICES), userSnapshot.getKey(),database);
             }
         }
         updateServicesList(serviceName, userName, city, category);
@@ -190,6 +189,7 @@ public class Search {
             maxCost = cursor.getInt(cursor.getColumnIndex(MAX_COST));
         }
 
+        cursor.close();
         return maxCost;
     }
 
@@ -220,7 +220,7 @@ public class Search {
         float creationDatePoints;
 
         long dateBonus = (workWithTimeApi.getMillisecondsStringDate(creationDate) -
-                workWithTimeApi.getSysdateLong()) / (3600000*24) + 7;
+                WorkWithTimeApi.getSysdateLong()) / (3600000*24) + 7;
         if (dateBonus < 0) {
             creationDatePoints = 0;
         } else {
@@ -324,7 +324,6 @@ public class Search {
             }
             cursor.close();
         }
-
         return avgRating;
     }
 }
