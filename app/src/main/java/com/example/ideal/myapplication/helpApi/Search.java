@@ -119,6 +119,7 @@ public class Search {
             int indexServiceCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
             int indexServiceCreationDate = cursor.getColumnIndex(DBHelper.KEY_CREATION_DATE_SERVICES);
             int indexServiceIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
+            int indexServiceAvgRating = cursor.getColumnIndex(DBHelper.KEY_RATING_SERVICES);
 
             do {
                 // Информация о мастере
@@ -137,6 +138,7 @@ public class Search {
                 String serviceId = cursor.getString(indexServiceId);
                 String serviceName = cursor.getString(indexServiceName);
                 String serviceCost = cursor.getString(indexServiceCost);
+                float serviceRating = Float.valueOf(cursor.getString(indexServiceAvgRating));
 
                 boolean isPremium = Boolean.valueOf(cursor.getString(indexServiceIsPremium));
                 String creationDate = cursor.getString(indexServiceCreationDate);
@@ -147,7 +149,7 @@ public class Search {
                 service.setCost(serviceCost);
                 service.setIsPremium(isPremium);
                 service.setCreationDate(creationDate);
-                service.setAverageRating(figureAverageRating(serviceId));
+                service.setAverageRating(serviceRating);
 
                 addToServiceList(service, user);
                 //пока в курсоре есть строки и есть новые сервисы
@@ -260,70 +262,4 @@ public class Search {
         serviceList.add(serviceList.size(), serviceData);
     }
 
-    private float figureAverageRating (String serviceId) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID + ", "
-                        + DBHelper.KEY_RATING_REVIEWS
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_ORDERS + ", "
-                        + DBHelper.TABLE_REVIEWS
-                        + " WHERE "
-                        + DBHelper.KEY_ORDER_ID_REVIEWS
-                        + " = "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                        + " = "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_TYPE_REVIEWS + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_RATING_REVIEWS + " != 0 "
-                        + " AND "
-                        + DBHelper.KEY_REVIEW_REVIEWS + " != '-'";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
-        int countOfRates = 0;
-        float avgRating  = 0;
-        float sumOfRates = 0;
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-
-        if (cursor.moveToFirst()){
-            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId= cursor.getColumnIndex(ORDER_ID);
-            do {
-                String workingTimeId = cursor.getString(indexWorkingTimeId);
-                String orderId = cursor.getString(indexOrderId);
-
-                if(workWithLocalStorageApi.isMutualReview(orderId)) {
-                    sumOfRates += Float.valueOf(cursor.getString(indexRating));
-                    countOfRates++;
-                }
-                else {
-                    if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
-                        sumOfRates += Float.valueOf(cursor.getString(indexRating));
-                        countOfRates++;
-                    }
-                }
-            }while (cursor.moveToNext());
-
-            if(countOfRates!=0){
-                avgRating = sumOfRates / countOfRates;
-            }
-            cursor.close();
-        }
-        return avgRating;
-    }
 }

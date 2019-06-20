@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.helpApi.LoadingProfileData;
@@ -45,7 +46,6 @@ public class MyAuthorization {
     private int countOfDownloads;
     private static Thread serviceThread;
 
-
     private Context context;
     private String myPhoneNumber;
 
@@ -58,7 +58,7 @@ public class MyAuthorization {
     MyAuthorization(Context _context, String _myPhoneNumber) {
         context = _context;
         myPhoneNumber = _myPhoneNumber;
-        countOfDownloads =5;
+        countOfDownloads = 5;
         dbHelper = new DBHelper(context);
     }
 
@@ -91,13 +91,15 @@ public class MyAuthorization {
                         serviceThread = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                LoadingProfileData.loadUserServices(userSnapshot.child(userId)
-                                        .child(SERVICES),
+                                LoadingProfileData.loadUserServices(userSnapshot
+                                                .child(SERVICES),
                                         userId,
-                                        localDatabase);
+                                        localDatabase,
+                                        countOfDownloads);
                                 serviceThread.interrupt();
                             }
                         });
+
                         serviceThread.start();
 
                         LoadingProfileData.addSubscriptionsCountInLocalStorage(userSnapshot, localDatabase);
@@ -116,18 +118,18 @@ public class MyAuthorization {
     private void loadMyOrders(DataSnapshot _ordersSnapshot) {
 
         if (_ordersSnapshot.getChildrenCount() == 0) {
-                goToProfile();
-            }
+            goToProfile();
+        }
 
-            counter = 0;
-            final long childrenCount = _ordersSnapshot.getChildrenCount();
-            for (final DataSnapshot orderSnapshot : _ordersSnapshot.getChildren()) {
-                //получаем "путь" к мастеру, на сервис которого мы записаны
-                final String orderId = orderSnapshot.getKey();
-                final String workerId = String.valueOf(orderSnapshot.child(WORKER_ID).getValue());
-                final String serviceId = String.valueOf(orderSnapshot.child(SERVICE_ID).getValue());
-                final String workingDayId = String.valueOf(orderSnapshot.child(WORKING_DAY_ID).getValue());
-                final String workingTimeId = String.valueOf(orderSnapshot.child(WORKING_TIME_ID).getValue());
+        counter = 0;
+        final long childrenCount = _ordersSnapshot.getChildrenCount();
+        for (final DataSnapshot orderSnapshot : _ordersSnapshot.getChildren()) {
+            //получаем "путь" к мастеру, на сервис которого мы записаны
+            final String orderId = orderSnapshot.getKey();
+            final String workerId = String.valueOf(orderSnapshot.child(WORKER_ID).getValue());
+            final String serviceId = String.valueOf(orderSnapshot.child(SERVICE_ID).getValue());
+            final String workingDayId = String.valueOf(orderSnapshot.child(WORKING_DAY_ID).getValue());
+            final String workingTimeId = String.valueOf(orderSnapshot.child(WORKING_TIME_ID).getValue());
             DatabaseReference serviceReference = FirebaseDatabase.getInstance()
                     .getReference(USERS)
                     .child(workerId)

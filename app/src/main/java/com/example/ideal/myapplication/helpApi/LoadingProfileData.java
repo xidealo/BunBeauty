@@ -14,25 +14,6 @@ public class LoadingProfileData {
 
     private static final String TAG = "DBInf";
 
-    private static final String DESCRIPTION = "description";
-    private static final String COST = "cost";
-    private static final String USER_ID = "user id";
-    private static final String USERS = "users";
-    private static final String IS_PREMIUM = "is premium";
-    private static final String CREATION_DATE = "creation date";
-
-    private static final String TIME = "time";
-    private static final String WORKING_DAYS = "working days";
-    private static final String WORKING_TIME = "working time";
-    private static final String DATE = "date";
-    private static final String CATEGORY = "category";
-    private static final String ADDRESS = "address";
-
-    private static final String ORDERS = "orders";
-
-    private static final String REVIEWS = "reviews";
-    private static final String REVIEW = "review";
-    private static final String TYPE = "type";
     private static final String AVG_RATING = "avg rating";
 
     private static final String CITY = "city";
@@ -40,11 +21,7 @@ public class LoadingProfileData {
     private static final String PHONE = "phone";
 
     //PHOTOS
-    private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
-
-    private static final String IS_CANCELED = "is canceled";
-    private static final String SERVICES = "services";
 
     private static final String SUBSCRIBERS = "subscribers";
     private static final String SUBSCRIPTIONS = "subscriptions";
@@ -117,20 +94,27 @@ public class LoadingProfileData {
         }
     }
 
-    public static void loadUserServices(DataSnapshot servicesSnapshot,String userId,SQLiteDatabase database) {
-
+    public static void loadUserServices(DataSnapshot servicesSnapshot,String userId,
+                                        SQLiteDatabase database, int countOfDownloads) {
+        int counter = 0;
         for (DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
-            String serviceId = serviceSnapshot.getKey();
-            String serviceName = serviceSnapshot.child(NAME).getValue(String.class);
-            float serviceRating = serviceSnapshot.child(AVG_RATING).getValue(Float.class);
+            if(counter<countOfDownloads) {
+                String serviceId = serviceSnapshot.getKey();
+                String serviceName = serviceSnapshot.child(NAME).getValue(String.class);
+                float serviceRating = serviceSnapshot.child(AVG_RATING).getValue(Float.class);
 
-            Service service = new Service();
-            service.setId(serviceId);
-            service.setName(serviceName);
-            service.setUserId(userId);
-            service.setAverageRating(serviceRating);
+                Service service = new Service();
+                service.setId(serviceId);
+                service.setName(serviceName);
+                service.setUserId(userId);
+                service.setAverageRating(serviceRating);
 
-            addUserServicesInLocalStorage(service,database);
+                addUserServicesInLocalStorage(service, database);
+                counter++;
+            }
+            else {
+                break;
+            }
         }
     }
 

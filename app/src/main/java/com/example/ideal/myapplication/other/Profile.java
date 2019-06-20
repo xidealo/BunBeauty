@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
@@ -24,7 +23,6 @@ import com.example.ideal.myapplication.adapters.OrderAdapter;
 import com.example.ideal.myapplication.adapters.ServiceProfileAdapter;
 import com.example.ideal.myapplication.createService.AdditionService;
 import com.example.ideal.myapplication.fragments.SwitcherElement;
-import com.example.ideal.myapplication.adapters.foundElements.FoundServiceProfileElement;
 import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.LoadingProfileData;
@@ -53,12 +51,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static final String SUBSCRIPTIONS = "подписки";
     private static final String SERVICES = "services";
 
-
     private static final String ID = "id";
     private static final String TYPE = "type";
 
     private String userId;
     private String ownerId;
+    private int countOfDownloads;
 
     private TextView nameText;
     private TextView cityText;
@@ -126,7 +124,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         DBHelper dbHelper = new DBHelper(this);
         database = dbHelper.getReadableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-
+        countOfDownloads = 5;
         manager = getSupportFragmentManager();
         userId = getUserId();
 
@@ -185,7 +183,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     }
 
     // получаем данные о пользователе и отображаем в прфоиле
-    private boolean updateProfileData(String ownerId) {
+    private void updateProfileData(String ownerId) {
 
         //получаем имя, фамилию и город пользователя по его id
         Cursor userCursor = createUserCursor(ownerId);
@@ -217,11 +215,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
                 workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width, height);
                 updateServicesList(ownerId);
-
-                return true;
             }
         }
-        return false;
     }
 
     private Cursor createUserCursor(String ownerId) {
@@ -272,12 +267,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         } else {
             if (!userIdsFirstSetProfile.contains(ownerId)) {
                 //загрузка из фб
-                Log.d(TAG, "FIRST");
                 loadProfileData(ownerId);
                 userIdsFirstSetProfile.add(ownerId);
             }
             else {
-                Log.d(TAG, "NO FIRST");
+                Log.d(TAG, "AHHAAH");
                 updateProfileData(ownerId);
             }
         }
@@ -316,10 +310,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 LoadingProfileData.loadUserInfo(userSnapshot, database);
-                LoadingProfileData.loadUserServices(userSnapshot.child(userId)
+
+                LoadingProfileData.loadUserServices(userSnapshot
                                 .child(SERVICES),
-                        userId,
-                        database);
+                        ownerId,
+                        database,
+                        countOfDownloads);
+
                 updateProfileData(ownerId);
             }
 
@@ -357,7 +354,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_SERVICES
                         + " WHERE "
-                        + DBHelper.KEY_USER_ID + " = ? ";
+                        + DBHelper.KEY_USER_ID + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_RATING_SERVICES + " IS NOT NULL";
 
         Cursor cursor = database.rawQuery(sqlQueryService, new String[]{ownerId});
 

@@ -25,6 +25,7 @@ public class LoadingMainScreenElement {
     private static final String IS_PREMIUM = "is premium";
     private static final String CREATION_DATE = "creation date";
     private static final String CATEGORY = "category";
+    private static final String AVG_RATING = "avg rating";
 
     private static final String NAME = "name";
 
@@ -42,6 +43,7 @@ public class LoadingMainScreenElement {
             contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, String.valueOf(serviceSnapshot.child(COST).getValue()));
             contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, String.valueOf(serviceSnapshot.child(IS_PREMIUM).getValue()));
             contentValues.put(DBHelper.KEY_CREATION_DATE_SERVICES, String.valueOf(serviceSnapshot.child(CREATION_DATE).getValue()));
+            contentValues.put(DBHelper.KEY_RATING_SERVICES, String.valueOf(serviceSnapshot.child(AVG_RATING).getValue()));
             contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, String.valueOf(serviceSnapshot.child(CATEGORY).getValue()));
 
             boolean hasSomeData = WorkWithLocalStorageApi

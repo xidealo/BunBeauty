@@ -3,6 +3,7 @@ package com.example.ideal.myapplication.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.example.ideal.myapplication.fragments.objects.User;
 import java.util.ArrayList;
 
 public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder> {
+
+    private static final String TAG = "DBInf";
 
     private int numberItems;
     private ArrayList<Service> serviceList;
