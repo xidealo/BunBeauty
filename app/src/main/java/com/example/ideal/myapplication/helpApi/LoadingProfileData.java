@@ -51,7 +51,6 @@ public class LoadingProfileData {
 
     private static SQLiteDatabase localDatabase;
     private static Thread photoThread;
-    private static Thread serviceThread;
 
     public static void loadUserInfo(final DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
         localDatabase = _localDatabase;
@@ -67,13 +66,6 @@ public class LoadingProfileData {
         });
         photoThread.start();
 
-        serviceThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                loadUserServices(userSnapshot.getKey(), userSnapshot.child(SERVICES));
-            }
-        });
-        serviceThread.start();
 
         String userPhone = userSnapshot.child(PHONE).getValue(String.class);
         String userName = userSnapshot.child(NAME).getValue(String.class);
@@ -88,22 +80,10 @@ public class LoadingProfileData {
         user.setRating(userRating);
 
         addUserInfoInLocalStorage(user);
-        
-        if(serviceThread.isAlive()) {
-            try {
-                serviceThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+
     }
 
-    public static void loadMyInfo(DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
-        loadUserInfo(userSnapshot, _localDatabase);
-        addSubscriptionsCountInLocalStorage(userSnapshot);
-    }
-
-    private static void addSubscriptionsCountInLocalStorage(DataSnapshot userSnapshot) {
+    public static void addSubscriptionsCountInLocalStorage(DataSnapshot userSnapshot, SQLiteDatabase localDatabase) {
         ContentValues contentValues = new ContentValues();
         long subscriptionsCount = userSnapshot.child(SUBSCRIPTIONS).getChildrenCount();
         long subscribersCount = userSnapshot.child(SUBSCRIBERS).getChildrenCount();
@@ -137,7 +117,7 @@ public class LoadingProfileData {
         }
     }
 
-    private static void loadUserServices(String userId, DataSnapshot servicesSnapshot) {
+    public static void loadUserServices(DataSnapshot servicesSnapshot,String userId,SQLiteDatabase database) {
 
         for (DataSnapshot serviceSnapshot : servicesSnapshot.getChildren()) {
             String serviceId = serviceSnapshot.getKey();
@@ -150,11 +130,11 @@ public class LoadingProfileData {
             service.setUserId(userId);
             service.setAverageRating(serviceRating);
 
-            addUserServicesInLocalStorage(service);
+            addUserServicesInLocalStorage(service,database);
         }
     }
 
-    private static void addUserServicesInLocalStorage(Service service) {
+    private static void addUserServicesInLocalStorage(Service service, SQLiteDatabase database) {
         String serviceId = service.getId();
 
         ContentValues contentValues = new ContentValues();
@@ -167,16 +147,15 @@ public class LoadingProfileData {
 
         // Проверка есть ли такой сервис в SQLite
         if (hasSomeData) {
-            localDatabase.update(
+            database.update(
                     DBHelper.TABLE_CONTACTS_SERVICES,
                     contentValues,
                     DBHelper.KEY_ID + " = ?",
                     new String[]{serviceId});
         } else {
             contentValues.put(DBHelper.KEY_ID, serviceId);
-            localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
+            database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
-        serviceThread.interrupt();
     }
 
     private static void loadPhotos(DataSnapshot userSnapshot) {

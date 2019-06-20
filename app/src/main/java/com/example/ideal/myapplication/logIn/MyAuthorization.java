@@ -42,6 +42,9 @@ public class MyAuthorization {
     private static final String WORKER_ID = "worker id";
 
     private DBHelper dbHelper;
+    private int countOfDownloads;
+    private static Thread serviceThread;
+
 
     private Context context;
     private String myPhoneNumber;
@@ -55,12 +58,11 @@ public class MyAuthorization {
     MyAuthorization(Context _context, String _myPhoneNumber) {
         context = _context;
         myPhoneNumber = _myPhoneNumber;
-
+        countOfDownloads =5;
         dbHelper = new DBHelper(context);
     }
 
     void authorizeUser() {
-        // скарываем Views и запукаем прогресс бар
 
         Query userQuery = FirebaseDatabase.getInstance().getReference(USERS).
                 orderByChild(PHONE).
@@ -73,7 +75,7 @@ public class MyAuthorization {
                     goToRegistration();
                 } else {
                     // Получаем остальные данные о пользователе
-                    DataSnapshot userSnapshot = usersSnapshot.getChildren().iterator().next();
+                    final DataSnapshot userSnapshot = usersSnapshot.getChildren().iterator().next();
                     Object name = userSnapshot.child(NAME).getValue();
                     if (name == null) {
                         // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
@@ -81,8 +83,24 @@ public class MyAuthorization {
                     } else {
                         clearSQLite();
 
-                        SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
-                        LoadingProfileData.loadMyInfo(userSnapshot, localDatabase);
+                        final SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
+                        LoadingProfileData.loadUserInfo(userSnapshot, localDatabase);
+
+                        final String userId = userSnapshot.getKey();
+                        //counter
+                        serviceThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                LoadingProfileData.loadUserServices(userSnapshot.child(userId)
+                                        .child(SERVICES),
+                                        userId,
+                                        localDatabase);
+                                serviceThread.interrupt();
+                            }
+                        });
+                        serviceThread.start();
+
+                        LoadingProfileData.addSubscriptionsCountInLocalStorage(userSnapshot, localDatabase);
                         loadMyOrders(userSnapshot.child(ORDERS));
                     }
                 }
@@ -94,99 +112,6 @@ public class MyAuthorization {
             }
         });
     }
-
-   /* private void loadMyServiceOrders() {
-
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        String ordersQuery =
-                "SELECT DISTINCT "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID +
-                        " FROM "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_ORDERS
-                        + " WHERE "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_USER_ID + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS + " = "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID;
-
-        Cursor cursor = database.rawQuery(ordersQuery, new String[]{getUserId()});
-
-        if (cursor.moveToFirst()) {
-            int indexUserId = cursor.getColumnIndex(DBHelper.KEY_USER_ID);
-
-            do {
-                loadUserById(cursor.getString(indexUserId));
-            } while (cursor.moveToNext());
-        }
-        Log.d(TAG, "loadMyServiceOrders: ");
-        cursor.close();
-    }*/
-
-
-    /*private void loadUserSubscribers(DataSnapshot userSnapshot) {
-
-        DataSnapshot subscriptionSnapshot = userSnapshot.child(SUBSCRIBERS);
-        for (DataSnapshot subSnapshot : subscriptionSnapshot.getChildren()) {
-            String id = subSnapshot.getKey();
-            Log.d(TAG, "loadUserSubscribers: " + id);
-            String userId = String.valueOf(subSnapshot.child(USER_ID).getValue());
-
-            //если мы владелец старнички то только тогда загружаем инфу о наших подписчиках
-            loadUserById(userId);
-
-            addUserSubscriberInLocalStorage(id, userId);
-        }
-    }*/
-
-    /*private void loadUserById(final String userId) {
-
-        final DatabaseReference userRef = FirebaseDatabase.getInstance()
-                .getReference(USERS)
-                .child(userId);
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                // Получаем остальные данные о пользователе
-                Object name = userSnapshot.child(NAME).getValue();
-                if (name == null) {
-                    if (userId.equals(getUserId())) {
-                        // Имя пользователя в БД отсутствует, значит пользователь не до конца зарегистрировался
-                        goToRegistration();
-                    }
-                } else {
-                    //загрузка данных о пользователе
-                    downloadServiceData.loadUserInfo(userSnapshot);
-                    //загрузка данных о сервисах пользователя, и оценок о нем
-                    downloadServiceData.loadSchedule(userSnapshot.child(SERVICES), userSnapshot.getKey());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                attentionBadConnection();
-            }
-        });
-    }*/
-
-
-
-    /*private void addUserSubscriberInLocalStorage(String id, String userId) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_ID, id);
-        contentValues.put(DBHelper.KEY_USER_ID, userId);
-        contentValues.put(DBHelper.KEY_WORKER_ID, getUserId());
-        database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
-    }*/
 
     private void loadMyOrders(DataSnapshot _ordersSnapshot) {
 

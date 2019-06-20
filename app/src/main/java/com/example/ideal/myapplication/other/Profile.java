@@ -51,6 +51,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String STATUS = "status";
     private static final String SUBSCRIPTIONS = "подписки";
+    private static final String SERVICES = "services";
+
 
     private static final String ID = "id";
     private static final String TYPE = "type";
@@ -90,6 +92,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
 
+        init();
+    }
+
+    private void init(){
         LinearLayout subscriptionsLayout = findViewById(R.id.subscriptionsProfileLayout);
         subscriptionsText = findViewById(R.id.subscriptionsProfileText);
 
@@ -131,7 +137,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             // Если null значит пользователь только что вошёл и это его сервис
             ownerId = userId;
         }
-
         // Проверяем совпадают id пользователя и владельца
         if (userId.equals(ownerId)) {
             // Совпадают - это мой профиль
@@ -158,7 +163,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
         avatarImage.setOnClickListener(this);
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -312,6 +316,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 LoadingProfileData.loadUserInfo(userSnapshot, database);
+                LoadingProfileData.loadUserServices(userSnapshot.child(userId)
+                                .child(SERVICES),
+                        userId,
+                        database);
                 updateProfileData(ownerId);
             }
 
