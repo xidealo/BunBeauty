@@ -21,6 +21,7 @@ import com.example.ideal.myapplication.adapters.CommentElement;
 import com.example.ideal.myapplication.adapters.DialogAdapter;
 import com.example.ideal.myapplication.fragments.objects.Comment;
 import com.example.ideal.myapplication.fragments.objects.Dialog;
+import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -75,7 +76,7 @@ public class Comments extends AppCompatActivity {
     private String ownerId;
     private long countOfRates;
     private long currentCountOfReview;
-
+    private Thread additingToLocalStorage;
     private SQLiteDatabase database;
     private static ArrayList<String> serviceIdsFirstSetComments = new ArrayList<>();
     private static ArrayList<String> userIdsFirstSetComments = new ArrayList<>();
@@ -88,16 +89,16 @@ public class Comments extends AppCompatActivity {
 
         String type = getIntent().getStringExtra(TYPE);
         if (type.equals(REVIEW_FOR_SERVICE)) {
+            countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
             if (!serviceIdsFirstSetComments.contains(serviceId)) {
-
-                countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
-
                 loadCommentsForService();
                 serviceIdsFirstSetComments.add(serviceId);
             } else {
                 getCommentsForService(serviceId);
             }
         } else {
+            //ПЕРЕПИСАТЬ И БРАТЬ НОРМАЛЬНОЕ КОЛИЧЕСТВО
+            countOfRates = 2;
             //комментарии для юзера
             if (!userIdsFirstSetComments.contains(ownerId)) {
                 loadCommentsForUser();
@@ -114,9 +115,7 @@ public class Comments extends AppCompatActivity {
         manager = getSupportFragmentManager();
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         ownerId = getIntent().getStringExtra(SERVICE_OWNER_ID);
-
         currentCountOfReview = 0;
-
         recyclerView = findViewById(R.id.resultsCommentsRecycleView);
         progressBar = findViewById(R.id.progressBarComments);
         commentList = new ArrayList<>();
@@ -365,7 +364,6 @@ public class Comments extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                     }
-
                 }
 
                 @Override
@@ -379,8 +377,6 @@ public class Comments extends AppCompatActivity {
 
     private void loadCommentsForUser() {
 
-        countOfRates = 2;
-
         final DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference(USERS)
                 .child(ownerId)
                 .child(ORDERS);
@@ -388,38 +384,139 @@ public class Comments extends AppCompatActivity {
         orderRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                final String orderId = orderSnapshot.getKey();
-                addRoadToUserCommentInLocalStorage(orderSnapshot);
 
-                DatabaseReference reviewRef = orderRef
+                final String orderId = orderSnapshot.getKey();
+
+                final String serviceId = (String) orderSnapshot.child(SERVICE_ID).getValue();
+                final String workingDayId = (String) orderSnapshot.child(WORKING_DAY_ID).getValue();
+                final String workingTimeId = (String) orderSnapshot.child(WORKING_TIME_ID).getValue();
+                final String workerId = (String) orderSnapshot.child(WORKER_ID).getValue();
+
+                //Вызываем отдельный поток, который кладет данные в лок БД
+                additingToLocalStorage = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //в таблицу USERS
+                        ContentValues contentValuesUser = new ContentValues();
+                        contentValuesUser.put(DBHelper.KEY_ID, workerId);
+                        boolean hasSomeData = WorkWithLocalStorageApi
+                                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS, workerId);
+                        if (!hasSomeData) {
+                            contentValuesUser.put(DBHelper.KEY_ID, workerId);
+                            database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValuesUser);
+                        }
+
+                        //в таблицу SERVICES
+                        ContentValues contentValuesService = new ContentValues();
+                        contentValuesService.put(DBHelper.KEY_ID, serviceId);
+                        contentValuesService.put(DBHelper.KEY_USER_ID, workerId);
+                        if (WorkWithLocalStorageApi
+                                .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId)) {
+                            database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValuesService,
+                                    DBHelper.KEY_ID + " = ?",
+                                    new String[]{serviceId});
+                        } else {
+                            database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValuesService);
+                        }
+
+                        //в таблицу WorkingDay
+                        ContentValues contentValuesWorkingDay = new ContentValues();
+                        contentValuesWorkingDay.put(DBHelper.KEY_ID, workingDayId);
+                        contentValuesWorkingDay.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
+
+                        if (WorkWithLocalStorageApi
+                                .hasSomeData(DBHelper.TABLE_WORKING_DAYS, workingDayId)) {
+                            database.update(DBHelper.TABLE_WORKING_DAYS, contentValuesWorkingDay,
+                                    DBHelper.KEY_ID + " = ?",
+                                    new String[]{workingDayId});
+                        } else {
+                            database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValuesWorkingDay);
+                        }
+
+                        //в таблицу WorkingTime
+                        ContentValues contentValuesWorkingTime = new ContentValues();
+                        contentValuesWorkingTime.put(DBHelper.KEY_ID, workingTimeId);
+                        contentValuesWorkingTime.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
+
+                        if (WorkWithLocalStorageApi
+                                .hasSomeData(DBHelper.TABLE_WORKING_TIME, workingTimeId)) {
+                            database.update(DBHelper.TABLE_WORKING_TIME, contentValuesWorkingTime,
+                                    DBHelper.KEY_ID + " = ?",
+                                    new String[]{workingTimeId});
+                        } else {
+                            database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValuesWorkingTime);
+                        }
+
+                        //в таблицу Orders
+                        ContentValues contentValuesOrder = new ContentValues();
+                        contentValuesOrder.put(DBHelper.KEY_ID, orderId);
+                        contentValuesOrder.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, workingTimeId);
+                        contentValuesOrder.put(DBHelper.KEY_USER_ID, ownerId);
+
+                        if (WorkWithLocalStorageApi
+                                .hasSomeData(DBHelper.TABLE_ORDERS, orderId)) {
+                            database.update(DBHelper.TABLE_ORDERS, contentValuesOrder,
+                                    DBHelper.KEY_ID + " = ?",
+                                    new String[]{orderId});
+                        } else {
+                            database.insert(DBHelper.TABLE_ORDERS, null, contentValuesOrder);
+                        }
+                        additingToLocalStorage.interrupt();
+                    }
+                });
+                additingToLocalStorage.start();
+
+                final DatabaseReference timeRef = FirebaseDatabase.getInstance()
+                        .getReference(USERS)
+                        .child(workerId)
+                        .child(SERVICES)
+                        .child(serviceId)
+                        .child(WORKING_DAYS)
+                        .child(workingDayId);
+
+                final DatabaseReference reviewRef = orderRef
                         .child(orderId)
                         .child(REVIEWS);
 
-                reviewRef.addChildEventListener(new ChildEventListener() {
+                timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                        currentCountOfReview++;
-                        addReviewInLocalStorage(reviewSnapshot, orderId);
-
-                        if (countOfRates == currentCountOfReview) {
-                            getCommentsForUser(ownerId);
+                    public void onDataChange(@NonNull DataSnapshot workingDaySnapshot) {
+                        LoadingGuestServiceData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
+                        for (DataSnapshot timeSnapshot : workingDaySnapshot.child(WORKING_TIME).getChildren()) {
+                            LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot,workingDayId,database);
                         }
 
-                    }
+                        reviewRef.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
+                                Log.d(TAG, "onChildAdded: ");
+                                currentCountOfReview++;
+                                addReviewInLocalStorage(reviewSnapshot, orderId);
+                                if (countOfRates == currentCountOfReview) {
+                                    getCommentsForUser(ownerId);
+                                }
+                            }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                        addReviewInLocalStorage(reviewSnapshot, orderId);
-                    }
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
+                                addReviewInLocalStorage(reviewSnapshot, orderId);
+                            }
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                        //void
-                    }
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                //void
+                            }
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        //void
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                //void
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
 
                     @Override
@@ -453,7 +550,6 @@ public class Comments extends AppCompatActivity {
     }
 
     private void getCommentsForUser(String _userId) {
-
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_RATING_REVIEWS + ", "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
@@ -504,7 +600,6 @@ public class Comments extends AppCompatActivity {
 
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 String orderId = cursor.getString(indexOrderId);
-
                 if (workWithLocalStorageApi.isMutualReview(orderId)) {
                     createUserComment(cursor);
                 } else {
@@ -579,82 +674,6 @@ public class Comments extends AppCompatActivity {
         } else {
             contentValues.put(DBHelper.KEY_ID, reviewId);
             database.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
-        }
-
-    }
-
-    private void addRoadToUserCommentInLocalStorage(DataSnapshot orderSnapshot) {
-        //кладем в локалку, чтобы получить путь до ревью
-        String orderId = orderSnapshot.getKey();
-        String serviceId = (String) orderSnapshot.child(SERVICE_ID).getValue();
-        String workingDayId = (String) orderSnapshot.child(WORKING_DAY_ID).getValue();
-        String workingTimeId = (String) orderSnapshot.child(WORKING_TIME_ID).getValue();
-        String workerId = (String) orderSnapshot.child(WORKER_ID).getValue();
-
-        //в таблицу USERS
-        ContentValues contentValuesUser = new ContentValues();
-        contentValuesUser.put(DBHelper.KEY_ID, workerId);
-        boolean hasSomeData = WorkWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS, workerId);
-        if (!hasSomeData) {
-            contentValuesUser.put(DBHelper.KEY_ID, workerId);
-            database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValuesUser);
-        }
-
-        //в таблицу SERVICES
-        ContentValues contentValuesService = new ContentValues();
-        contentValuesService.put(DBHelper.KEY_ID, serviceId);
-        contentValuesService.put(DBHelper.KEY_USER_ID, workerId);
-        if (WorkWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId)) {
-            database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValuesService,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{serviceId});
-        } else {
-            database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValuesService);
-        }
-
-        //в таблицу WorkingDay
-        ContentValues contentValuesWorkingDay = new ContentValues();
-        contentValuesWorkingDay.put(DBHelper.KEY_ID, workingDayId);
-        contentValuesWorkingDay.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
-
-        if (WorkWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_WORKING_DAYS, workingDayId)) {
-            database.update(DBHelper.TABLE_WORKING_DAYS, contentValuesWorkingDay,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{workingDayId});
-        } else {
-            database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValuesWorkingDay);
-        }
-
-        //в таблицу WorkingTime
-        ContentValues contentValuesWorkingTime = new ContentValues();
-        contentValuesWorkingTime.put(DBHelper.KEY_ID, workingTimeId);
-        contentValuesWorkingTime.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
-
-        if (WorkWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_WORKING_TIME, workingTimeId)) {
-            database.update(DBHelper.TABLE_WORKING_TIME, contentValuesWorkingTime,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{workingTimeId});
-        } else {
-            database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValuesWorkingTime);
-        }
-
-        //в таблицу Orders
-        ContentValues contentValuesOrder = new ContentValues();
-        contentValuesOrder.put(DBHelper.KEY_ID, orderId);
-        contentValuesOrder.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, workingTimeId);
-        contentValuesOrder.put(DBHelper.KEY_USER_ID, ownerId);
-
-        if (WorkWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_ORDERS, orderId)) {
-            database.update(DBHelper.TABLE_ORDERS, contentValuesOrder,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{orderId});
-        } else {
-            database.insert(DBHelper.TABLE_ORDERS, null, contentValuesOrder);
         }
 
     }
