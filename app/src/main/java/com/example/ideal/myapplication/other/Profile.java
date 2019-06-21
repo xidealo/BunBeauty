@@ -49,9 +49,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String STATUS = "status";
     private static final String SUBSCRIPTIONS = "подписки";
+    private static final String SERVICE_OWNER_ID = "service owner id";
     private static final String SERVICES = "services";
 
-    private static final String ID = "id";
     private static final String TYPE = "type";
 
     private String userId;
@@ -534,7 +534,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     private void goToUserComments(String status) {
         Intent intent = new Intent(this, Comments.class);
-        intent.putExtra(ID, ownerId);
+        intent.putExtra(SERVICE_OWNER_ID, ownerId);
         intent.putExtra(TYPE, status);
         startActivity(intent);
     }
