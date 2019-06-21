@@ -269,6 +269,7 @@ public class Comments extends AppCompatActivity {
     }
 
     private void getCommentsForService(String _serviceId) {
+        currentCountOfReview = 0;
 
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
@@ -327,6 +328,7 @@ public class Comments extends AppCompatActivity {
                         createServiceComment(cursor);
                     }
                 }
+                currentCountOfReview++;
 
             } while (cursor.moveToNext());
         }
@@ -334,45 +336,39 @@ public class Comments extends AppCompatActivity {
     }
 
     private void createServiceComment(final Cursor mainCursor) {
-
-        currentCountOfReview = 0;
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
         final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
         final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
         final int nameServiceIndex = mainCursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
+        String ownerId = mainCursor.getString(ownerIdIndex);
 
-        do {
-            String ownerId = mainCursor.getString(ownerIdIndex);
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
+                .child(ownerId);
+        final Comment comment = new Comment();
+        comment.setUserId(mainCursor.getString(ownerIdIndex));
+        comment.setReview(mainCursor.getString(reviewIndex));
+        comment.setRating(mainCursor.getFloat(ratingIndex));
+        comment.setServiceName(mainCursor.getString(nameServiceIndex));
 
-            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
-                    .child(ownerId);
-            final Comment comment = new Comment();
-            comment.setUserId(mainCursor.getString(ownerIdIndex));
-            comment.setReview(mainCursor.getString(reviewIndex));
-            comment.setRating(mainCursor.getFloat(ratingIndex));
-            comment.setServiceName(mainCursor.getString(nameServiceIndex));
-
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                    comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
-                    commentList.add(comment);
-                    currentCountOfReview++;
-                    if (countOfRates == currentCountOfReview) {
-                        commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                        recyclerView.setAdapter(commentAdapter);
-                        progressBar.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                    }
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
+                commentList.add(comment);
+                if (countOfRates == currentCountOfReview) {
+                    commentAdapter = new CommentAdapter(commentList.size(), commentList);
+                    recyclerView.setAdapter(commentAdapter);
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
-            });
+            }
+        });
 
-        } while (mainCursor.moveToNext());
     }
 
     private void loadCommentsForUser() {
@@ -483,13 +479,12 @@ public class Comments extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot workingDaySnapshot) {
                         LoadingGuestServiceData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
                         for (DataSnapshot timeSnapshot : workingDaySnapshot.child(WORKING_TIME).getChildren()) {
-                            LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot,workingDayId,database);
+                            LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
                         }
 
                         reviewRef.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                Log.d(TAG, "onChildAdded: ");
                                 currentCountOfReview++;
                                 addReviewInLocalStorage(reviewSnapshot, orderId);
                                 if (countOfRates == currentCountOfReview) {
@@ -550,6 +545,8 @@ public class Comments extends AppCompatActivity {
     }
 
     private void getCommentsForUser(String _userId) {
+        currentCountOfReview = 0;
+
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_RATING_REVIEWS + ", "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
@@ -597,9 +594,9 @@ public class Comments extends AppCompatActivity {
             int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
-
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 String orderId = cursor.getString(indexOrderId);
+
                 if (workWithLocalStorageApi.isMutualReview(orderId)) {
                     createUserComment(cursor);
                 } else {
@@ -607,6 +604,7 @@ public class Comments extends AppCompatActivity {
                         createUserComment(cursor);
                     }
                 }
+                currentCountOfReview++;
 
             } while (cursor.moveToNext());
         }
@@ -614,45 +612,39 @@ public class Comments extends AppCompatActivity {
     }
 
     private void createUserComment(final Cursor mainCursor) {
-        currentCountOfReview = 0;
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
         final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
         final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
-        do {
-            String ownerId = mainCursor.getString(ownerIdIndex);
 
-            DatabaseReference myRef = FirebaseDatabase
-                    .getInstance()
-                    .getReference(USERS)
-                    .child(ownerId);
-            final Comment comment = new Comment();
-            comment.setUserId(mainCursor.getString(ownerIdIndex));
-            comment.setReview(mainCursor.getString(reviewIndex));
-            comment.setRating(mainCursor.getFloat(ratingIndex));
-            comment.setServiceName(REVIEW_FOR_USER);
+        String ownerId = mainCursor.getString(ownerIdIndex);
+        DatabaseReference myRef = FirebaseDatabase
+                .getInstance()
+                .getReference(USERS)
+                .child(ownerId);
+        final Comment comment = new Comment();
+        comment.setUserId(mainCursor.getString(ownerIdIndex));
+        comment.setReview(mainCursor.getString(reviewIndex));
+        comment.setRating(mainCursor.getFloat(ratingIndex));
+        comment.setServiceName(REVIEW_FOR_USER);
 
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                    comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
-
-                    commentList.add(comment);
-                    currentCountOfReview++;
-                    if (countOfRates == currentCountOfReview) {
-                        commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                        recyclerView.setAdapter(commentAdapter);
-                        progressBar.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                    }
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
+                commentList.add(comment);
+                if (countOfRates == currentCountOfReview) {
+                    commentAdapter = new CommentAdapter(commentList.size(), commentList);
+                    recyclerView.setAdapter(commentAdapter);
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
-            });
-
-        } while (mainCursor.moveToNext());
+            }
+        });
     }
 
     public void addReviewInLocalStorage(DataSnapshot reviewSnapshot, String orderId) {
