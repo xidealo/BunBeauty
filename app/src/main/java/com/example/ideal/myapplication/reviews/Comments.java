@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.CommentAdapter;
@@ -65,7 +67,7 @@ public class Comments extends AppCompatActivity {
 
     private FragmentManager manager;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
-
+    private ProgressBar progressBar;
     private ArrayList<Comment> commentList;
     private RecyclerView recyclerView;
     private CommentAdapter commentAdapter;
@@ -85,9 +87,7 @@ public class Comments extends AppCompatActivity {
         init();
 
         String type = getIntent().getStringExtra(TYPE);
-        Log.d(TAG, "BEF: ");
         if (type.equals(REVIEW_FOR_SERVICE)) {
-            Log.d(TAG, "SER");
             if (!serviceIdsFirstSetComments.contains(serviceId)) {
 
                 countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
@@ -98,14 +98,11 @@ public class Comments extends AppCompatActivity {
                 getCommentsForService(serviceId);
             }
         } else {
-            Log.d(TAG, "US");
             //комментарии для юзера
             if (!userIdsFirstSetComments.contains(ownerId)) {
-                Log.d(TAG, "onCreate: " );
                 loadCommentsForUser();
                 userIdsFirstSetComments.add(ownerId);
             } else {
-                Log.d(TAG, "ELSE");
                 getCommentsForUser(ownerId);
             }
         }
@@ -121,6 +118,7 @@ public class Comments extends AppCompatActivity {
         currentCountOfReview = 0;
 
         recyclerView = findViewById(R.id.resultsCommentsRecycleView);
+        progressBar = findViewById(R.id.progressBarComments);
         commentList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -338,6 +336,7 @@ public class Comments extends AppCompatActivity {
 
     private void createServiceComment(final Cursor mainCursor) {
 
+        currentCountOfReview = 0;
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
         final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
         final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
@@ -359,8 +358,14 @@ public class Comments extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                     comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
                     commentList.add(comment);
-                    commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                    recyclerView.setAdapter(commentAdapter);
+                    currentCountOfReview++;
+                    if (countOfRates == currentCountOfReview) {
+                        commentAdapter = new CommentAdapter(commentList.size(), commentList);
+                        recyclerView.setAdapter(commentAdapter);
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
+
                 }
 
                 @Override
@@ -385,7 +390,7 @@ public class Comments extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
                 final String orderId = orderSnapshot.getKey();
                 addRoadToUserCommentInLocalStorage(orderSnapshot);
-                
+
                 DatabaseReference reviewRef = orderRef
                         .child(orderId)
                         .child(REVIEWS);
@@ -394,9 +399,9 @@ public class Comments extends AppCompatActivity {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
                         currentCountOfReview++;
-                        addReviewInLocalStorage(reviewSnapshot,orderId);
+                        addReviewInLocalStorage(reviewSnapshot, orderId);
 
-                        if(countOfRates == currentCountOfReview){
+                        if (countOfRates == currentCountOfReview) {
                             getCommentsForUser(ownerId);
                         }
 
@@ -404,7 +409,7 @@ public class Comments extends AppCompatActivity {
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                        addReviewInLocalStorage(reviewSnapshot,orderId);
+                        addReviewInLocalStorage(reviewSnapshot, orderId);
                     }
 
                     @Override
@@ -514,6 +519,7 @@ public class Comments extends AppCompatActivity {
     }
 
     private void createUserComment(final Cursor mainCursor) {
+        currentCountOfReview = 0;
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
         final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
         final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
@@ -536,8 +542,13 @@ public class Comments extends AppCompatActivity {
                     comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
 
                     commentList.add(comment);
-                    commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                    recyclerView.setAdapter(commentAdapter);
+                    currentCountOfReview++;
+                    if (countOfRates == currentCountOfReview) {
+                        commentAdapter = new CommentAdapter(commentList.size(), commentList);
+                        recyclerView.setAdapter(commentAdapter);
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 @Override

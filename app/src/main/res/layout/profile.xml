@@ -14,8 +14,20 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ProgressBar
+        android:id="@+id/progressBarProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/panelColor"
+        app:layout_constraintBottom_toTopOf="@+id/footerProfileLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerProfileLayout" />
+
     <LinearLayout
         android:id="@+id/mainLayoutProfile"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -154,16 +166,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
+
             <Button
-                android:layout_gravity="start"
                 android:id="@+id/addServicesProfileBtn"
                 style="@style/smallMainButtonOther"
                 android:layout_width="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:visibility="invisible"
                 android:layout_height="@dimen/main_button_height"
-                android:text="@string/addServices" />
+                android:layout_gravity="start"
+                android:layout_marginEnd="10dp"
+                android:text="@string/addServices"
+                android:visibility="invisible" />
         </LinearLayout>
     </LinearLayout>
 
