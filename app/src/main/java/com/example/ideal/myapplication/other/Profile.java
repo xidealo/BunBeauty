@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -49,9 +50,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String STATUS = "status";
     private static final String SUBSCRIPTIONS = "подписки";
+    private static final String SERVICE_OWNER_ID = "service owner id";
     private static final String SERVICES = "services";
 
-    private static final String ID = "id";
     private static final String TYPE = "type";
 
     private String userId;
@@ -68,6 +69,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private RatingBar ratingBar;
 
     private LinearLayout ratingForUserLayout;
+    private LinearLayout mainLayout;
 
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private ImageView avatarImage;
@@ -85,6 +87,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private boolean loading = true;
     private int pastVisibleItems, visibleItemCount, totalItemCount;
     private DataSnapshot servicesSnapshot;
+    private ProgressBar progressBar;
 
     private SQLiteDatabase database;
 
@@ -104,9 +107,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
         withoutRatingText = findViewById(R.id.withoutRatingProfileText);
         ratingBar = findViewById(R.id.ratingBarProfile);
-
+        progressBar = findViewById(R.id.progressBarProfile);
         ratingForUserLayout = findViewById(R.id.ratingProfileLayout);
         addServicesBtn = findViewById(R.id.addServicesProfileBtn);
+        mainLayout = findViewById(R.id.mainLayoutProfile);
 
         recyclerView = findViewById(R.id.resultsProfileRecycleView);
         recyclerViewService = findViewById(R.id.servicesProfileRecyclerView);
@@ -418,7 +422,8 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 }
             }
         });
-
+        progressBar.setVisibility(View.GONE);
+        mainLayout.setVisibility(View.VISIBLE);
         cursor.close();
     }
 
@@ -534,7 +539,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     private void goToUserComments(String status) {
         Intent intent = new Intent(this, Comments.class);
-        intent.putExtra(ID, ownerId);
+        intent.putExtra(SERVICE_OWNER_ID, ownerId);
         intent.putExtra(TYPE, status);
         startActivity(intent);
     }

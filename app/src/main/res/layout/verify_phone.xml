@@ -43,7 +43,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             style="@style/extraText"
-            android:text="На укказанный вами номер,\nбыл отправлен код подтверждения"/>
+            android:text="На укказанный вами номер,\n был отправлен код подтверждения"/>
     </LinearLayout>
 
     <Button

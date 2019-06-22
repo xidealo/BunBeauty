@@ -15,7 +15,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -99,6 +101,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private DBHelper dbHelper;
     private static ArrayList<String> serviceIdsFirstSetGS = new ArrayList<>();
     private SQLiteDatabase database;
+    private ProgressBar progressBar;
+    private ScrollView mainScroll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -289,6 +293,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         ratingBar = findViewById(R.id.ratingBarGuestServiceRatingBar);
         countOfRatesText = findViewById(R.id.countOfRatesGuestServiceElementText);
         avgRatesText = findViewById(R.id.avgRatingGuestServiceElementText);
+        progressBar = findViewById(R.id.progressBarGuestService);
+        mainScroll = findViewById(R.id.guestServiceMainScroll);
 
         premiumText = findViewById(R.id.yesPremiumGuestServiceText);
         noPremiumText = findViewById(R.id.noPremiumGuestServiceText);
@@ -533,6 +539,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         else {
             setWithoutRating();
         }
+
+        mainScroll.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
     private void showPremium() {

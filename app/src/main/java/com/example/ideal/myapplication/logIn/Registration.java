@@ -31,6 +31,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     private static final String CITY = "city";
     private static final String PHOTO_LINK = "photo link";
     private static final String AVG_RATING = "avg rating";
+    private static final String COUNT_OF_RATES = "count of rates";
 
     private EditText nameInput;
     private EditText surnameInput;
@@ -110,6 +111,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         Map<String, Object> items = new HashMap<>();
         items.put(NAME, user.getName());
         items.put(AVG_RATING, 0);
+        items.put(COUNT_OF_RATES, 0);
         items.put(CITY, user.getCity());
         items.put(PHONE, user.getPhone());
         items.put(PHOTO_LINK, defaultPhotoLink);

@@ -2,10 +2,10 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/allPages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".reviews.Comments"
-    style="@style/allPages">
+    tools:context=".reviews.Comments">
 
     <LinearLayout
         android:id="@+id/headerCommentsLayout"
@@ -14,15 +14,38 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ProgressBar
+        android:id="@+id/progressBarComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/panelColor"
+        app:layout_constraintBottom_toTopOf="@+id/footerCommentsLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerCommentsLayout" />
+
+    <TextView
+        android:id="@+id/withoutReviewsCommentsText"
+        style="@style/mainText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="Оценок еще нет или не прошло 3 дня"
+        app:layout_constraintBottom_toTopOf="@+id/footerCommentsLayout"
+        app:layout_constraintTop_toBottomOf="@+id/headerCommentsLayout" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/resultsCommentsRecycleView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="10dp"
         android:scrollbars="none"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/footerCommentsLayout"
-        app:layout_constraintTop_toBottomOf="@+id/headerCommentsLayout">
-    </android.support.v7.widget.RecyclerView>
+        app:layout_constraintTop_toBottomOf="@+id/headerCommentsLayout" />
 
 
     <LinearLayout
