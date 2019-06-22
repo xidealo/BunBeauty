@@ -19,6 +19,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.CommentAdapter;
 import com.example.ideal.myapplication.fragments.objects.Comment;
 import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
+import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
@@ -316,23 +317,22 @@ public class Comments extends AppCompatActivity {
             int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
-                String orderId = cursor.getString(indexOrderId);
+                //String orderId = cursor.getString(indexOrderId);
 
-                if (workWithLocalStorageApi.isMutualReview(orderId)) {
+                //if (workWithLocalStorageApi.isMutualReview(orderId)) {
+                //   createServiceComment(cursor);
+                // } else {
+                if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
                     createServiceComment(cursor);
-                } else {
-                    if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                        createServiceComment(cursor);
-                    }
                 }
+                // }
                 currentCountOfReview++;
 
             } while (cursor.moveToNext());
-        }
-        else {
+        } else {
             setWithoutReview();
         }
-        if(!addedReview){
+        if (!addedReview) {
             setWithoutReview();
         }
         cursor.close();
@@ -598,23 +598,22 @@ public class Comments extends AppCompatActivity {
             int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
-                String orderId = cursor.getString(indexOrderId);
+                //String orderId = cursor.getString(indexOrderId);
 
-                if (workWithLocalStorageApi.isMutualReview(orderId)) {
+                //if (workWithLocalStorageApi.isMutualReview(orderId)) {
+                //    createUserComment(cursor);
+                //} else {
+                if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
                     createUserComment(cursor);
-                } else {
-                    if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                        createUserComment(cursor);
-                    }
                 }
+                //}
                 currentCountOfReview++;
 
             } while (cursor.moveToNext());
-        }
-        else {
+        } else {
             setWithoutReview();
         }
-        if(!addedReview){
+        if (!addedReview) {
             setWithoutReview();
         }
         cursor.close();
@@ -640,6 +639,7 @@ public class Comments extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
+                LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 commentList.add(comment);
                 if (countOfRates == currentCountOfReview) {
                     commentAdapter = new CommentAdapter(commentList.size(), commentList);
@@ -679,10 +679,11 @@ public class Comments extends AppCompatActivity {
 
     }
 
-    private void setWithoutReview(){
+    private void setWithoutReview() {
         progressBar.setVisibility(View.GONE);
         withoutRatingText.setVisibility(View.VISIBLE);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
