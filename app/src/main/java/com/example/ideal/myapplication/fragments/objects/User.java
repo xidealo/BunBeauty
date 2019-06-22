@@ -7,6 +7,16 @@ public class User {
     private String city;
     private String id;
     private float rating;
+    private long countOfRates;
+
+    public long getCountOfRates() {
+        return countOfRates;
+    }
+
+    public void setCountOfRates(long countOfRates) {
+        this.countOfRates = countOfRates;
+    }
+
 
     public void setPhone(String _phone){
         phone = _phone;

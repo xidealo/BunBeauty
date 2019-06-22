@@ -52,11 +52,13 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static final String SUBSCRIPTIONS = "подписки";
     private static final String SERVICE_OWNER_ID = "service owner id";
     private static final String SERVICES = "services";
+    private static final String COUNT_OF_RATES = "count of rates";
 
     private static final String TYPE = "type";
 
     private String userId;
     private String ownerId;
+    private String countOfRates;
     private int startIndexOfDownload;
 
     private TextView nameText;
@@ -200,6 +202,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 int indexName = userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
                 int indexCity = userCursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
                 int indexPhone = userCursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
+                int indexCountOfRates = userCursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_USERS);
 
                 String[] names = userCursor.getString(indexName).split(" ");
                 for (int i = 0; i < names.length; i++) {
@@ -213,6 +216,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 nameText.setText(name);
                 cityText.setText(city);
                 phoneText.setText(phone);
+                countOfRates = userCursor.getString(indexCountOfRates);
                 userCursor.close();
 
                 //загрузка рейтинга пользователя
@@ -231,6 +235,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 "SELECT "
                         + DBHelper.KEY_NAME_USERS + ", "
                         + DBHelper.KEY_PHONE_USERS + ", "
+                        + DBHelper.KEY_COUNT_OF_RATES_USERS + ", "
                         + DBHelper.KEY_CITY_USERS
                         + " FROM "
                         + DBHelper.TABLE_CONTACTS_USERS
@@ -540,6 +545,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private void goToUserComments(String status) {
         Intent intent = new Intent(this, Comments.class);
         intent.putExtra(SERVICE_OWNER_ID, ownerId);
+        intent.putExtra(COUNT_OF_RATES, countOfRates);
         intent.putExtra(TYPE, status);
         startActivity(intent);
     }

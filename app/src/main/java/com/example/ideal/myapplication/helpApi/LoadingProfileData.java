@@ -20,6 +20,7 @@ public class LoadingProfileData {
 
     private static final String CITY = "city";
     private static final String NAME = "name";
+    private static final String COUNT_OF_RATES = "count of rates";
     private static final String PHONE = "phone";
 
     //PHOTOS
@@ -49,6 +50,7 @@ public class LoadingProfileData {
         String userPhone = userSnapshot.child(PHONE).getValue(String.class);
         String userName = userSnapshot.child(NAME).getValue(String.class);
         String userCity = userSnapshot.child(CITY).getValue(String.class);
+        long userCountOfRates = userSnapshot.child(COUNT_OF_RATES).getValue(long.class);
         float userRating = userSnapshot.child(AVG_RATING).getValue(float.class);
 
         User user = new User();
@@ -57,6 +59,7 @@ public class LoadingProfileData {
         user.setName(userName);
         user.setCity(userCity);
         user.setRating(userRating);
+        user.setCountOfRates(userCountOfRates);
 
         addUserInfoInLocalStorage(user);
 
@@ -82,6 +85,7 @@ public class LoadingProfileData {
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
         contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
         contentValues.put(DBHelper.KEY_RATING_USERS, user.getRating());
+        contentValues.put(DBHelper.KEY_COUNT_OF_RATES_USERS, user.getCountOfRates());
 
         String userId = user.getId();
         boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_CONTACTS_USERS, userId);

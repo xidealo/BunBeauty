@@ -1,6 +1,5 @@
 package com.example.ideal.myapplication.chat;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -17,9 +15,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.MessageAdapter;
 import com.example.ideal.myapplication.fragments.objects.Message;
 import com.example.ideal.myapplication.helpApi.LoadingMessages;
-import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
-import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;

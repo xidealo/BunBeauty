@@ -94,7 +94,7 @@ public class Comments extends AppCompatActivity {
             }
         } else {
             //ПЕРЕПИСАТЬ И БРАТЬ НОРМАЛЬНОЕ КОЛИЧЕСТВО
-            countOfRates = 2;
+            countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
             //комментарии для юзера
             if (!userIdsFirstSetComments.contains(ownerId)) {
                 loadCommentsForUser();
