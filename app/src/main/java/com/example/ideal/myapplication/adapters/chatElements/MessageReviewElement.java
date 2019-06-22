@@ -3,6 +3,7 @@ package com.example.ideal.myapplication.adapters.chatElements;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -19,9 +20,13 @@ public class MessageReviewElement implements View.OnClickListener {
     private static final String TYPE = "type";
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String REVIEW_ID = "review id";
+    private static final String USER_ID = "user id";
+    private static final String SERVICE_ID = "service id";
 
     private String messageType;
     private String messageRatingReview;
+    private String messageUserId;
+    private String messageServiceId;
 
     private String text;
 
@@ -39,6 +44,9 @@ public class MessageReviewElement implements View.OnClickListener {
         messageRatingReview = message.getRatingReview();
 
         // содержание сообщения
+        // нету в сообщении
+        this.messageUserId = message.getUserId();
+        this.messageServiceId = message.getServiceId();
         String messageUserName = message.getUserName();
         String messageServiceName = message.getServiceName();
         String messageWorkingDay = message.getWorkingDay();
@@ -122,6 +130,8 @@ public class MessageReviewElement implements View.OnClickListener {
     private void goToReview() {
         Intent intent = new Intent(context, Review.class);
         intent.putExtra(TYPE, messageType);
+        intent.putExtra(USER_ID, messageUserId);
+        intent.putExtra(SERVICE_ID, messageServiceId);
         intent.putExtra(REVIEW_ID, reviewId);
         context.startActivity(intent);
     }

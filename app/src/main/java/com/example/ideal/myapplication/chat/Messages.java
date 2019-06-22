@@ -337,6 +337,8 @@ public class Messages extends AppCompatActivity {
                 message.setIsCanceled(isCanceled);
                 message.setIsMyService(isMyService);
 
+                message.setUserId(senderId);
+                message.setServiceId(serviceId);
                 message.setUserName(senderName);
                 message.setServiceName(cursor.getString(indexMessageServiceName));
                 message.setWorkingDay(date);
@@ -359,8 +361,6 @@ public class Messages extends AppCompatActivity {
                     }
                 } else {
                     if (isMyService && type.equals(REVIEW_FOR_USER) || !isMyService && type.equals(REVIEW_FOR_SERVICE)) {
-                        message.setUserId(senderId);
-                        message.setServiceId(serviceId);
                         message.setWorkingTimeId(cursor.getString(indexMessageWorkingTimeId));
                         message.setWorkingDayId(cursor.getString(indexMessageWorkingDayId));
                         message.setOrderId(cursor.getString(indexMessageOrderId));
