@@ -7,23 +7,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.CommentAdapter;
-import com.example.ideal.myapplication.adapters.CommentElement;
-import com.example.ideal.myapplication.adapters.DialogAdapter;
 import com.example.ideal.myapplication.fragments.objects.Comment;
-import com.example.ideal.myapplication.fragments.objects.Dialog;
-import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
-import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
@@ -34,7 +29,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.internal.bind.SqlDateTypeAdapter;
 
 import java.util.ArrayList;
 
@@ -71,12 +65,14 @@ public class Comments extends AppCompatActivity {
     private ProgressBar progressBar;
     private ArrayList<Comment> commentList;
     private RecyclerView recyclerView;
+    private TextView withoutRatingText;
     private CommentAdapter commentAdapter;
     private String serviceId;
     private String ownerId;
     private long countOfRates;
     private long currentCountOfReview;
-    private Thread additingToLocalStorage;
+    private boolean addedReview;
+    private Thread additionToLocalStorage;
     private SQLiteDatabase database;
     private static ArrayList<String> serviceIdsFirstSetComments = new ArrayList<>();
     private static ArrayList<String> userIdsFirstSetComments = new ArrayList<>();
@@ -118,6 +114,7 @@ public class Comments extends AppCompatActivity {
         currentCountOfReview = 0;
         recyclerView = findViewById(R.id.resultsCommentsRecycleView);
         progressBar = findViewById(R.id.progressBarComments);
+        withoutRatingText = findViewById(R.id.withoutReviewsCommentsText);
         commentList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -332,6 +329,12 @@ public class Comments extends AppCompatActivity {
 
             } while (cursor.moveToNext());
         }
+        else {
+            setWithoutReview();
+        }
+        if(!addedReview){
+            setWithoutReview();
+        }
         cursor.close();
     }
 
@@ -341,7 +344,7 @@ public class Comments extends AppCompatActivity {
         final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
         final int nameServiceIndex = mainCursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
         String ownerId = mainCursor.getString(ownerIdIndex);
-
+        addedReview = true;
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
                 .child(ownerId);
         final Comment comment = new Comment();
@@ -389,7 +392,7 @@ public class Comments extends AppCompatActivity {
                 final String workerId = (String) orderSnapshot.child(WORKER_ID).getValue();
 
                 //Вызываем отдельный поток, который кладет данные в лок БД
-                additingToLocalStorage = new Thread(new Runnable() {
+                additionToLocalStorage = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         //в таблицу USERS
@@ -457,10 +460,10 @@ public class Comments extends AppCompatActivity {
                         } else {
                             database.insert(DBHelper.TABLE_ORDERS, null, contentValuesOrder);
                         }
-                        additingToLocalStorage.interrupt();
+                        additionToLocalStorage.interrupt();
                     }
                 });
-                additingToLocalStorage.start();
+                additionToLocalStorage.start();
 
                 final DatabaseReference timeRef = FirebaseDatabase.getInstance()
                         .getReference(USERS)
@@ -608,6 +611,12 @@ public class Comments extends AppCompatActivity {
 
             } while (cursor.moveToNext());
         }
+        else {
+            setWithoutReview();
+        }
+        if(!addedReview){
+            setWithoutReview();
+        }
         cursor.close();
     }
 
@@ -615,7 +624,7 @@ public class Comments extends AppCompatActivity {
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
         final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
         final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
-
+        addedReview = true;
         String ownerId = mainCursor.getString(ownerIdIndex);
         DatabaseReference myRef = FirebaseDatabase
                 .getInstance()
@@ -670,6 +679,10 @@ public class Comments extends AppCompatActivity {
 
     }
 
+    private void setWithoutReview(){
+        progressBar.setVisibility(View.GONE);
+        withoutRatingText.setVisibility(View.VISIBLE);
+    }
     @Override
     protected void onResume() {
         super.onResume();
