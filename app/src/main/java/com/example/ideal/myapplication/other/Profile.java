@@ -322,6 +322,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 LoadingProfileData.loadUserInfo(userSnapshot, database);
 
+                Log.d(TAG, "325: " + userSnapshot);
                 LoadingProfileData.loadUserServices(userSnapshot
                                 .child(SERVICES),
                         ownerId,
@@ -344,6 +345,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private void servicesRecycleRollDown() {
 
         startIndexOfDownload += 5;
+
 
         LoadingProfileData.loadUserServices(servicesSnapshot,
                 ownerId,
@@ -410,7 +412,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         ServiceProfileAdapter serviceAdapter = new ServiceProfileAdapter(serviceList.size(), serviceList);
         recyclerViewService.setAdapter(serviceAdapter);
 
-        recyclerViewService.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        /*recyclerViewService.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) //check for scroll down
@@ -426,7 +428,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                     }
                 }
             }
-        });
+        });*/
         progressBar.setVisibility(View.GONE);
         mainLayout.setVisibility(View.VISIBLE);
         cursor.close();

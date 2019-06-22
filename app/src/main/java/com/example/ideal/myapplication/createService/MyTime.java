@@ -178,7 +178,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
     }
 
     // Спрашиваем, действительно ли записать на срвис
-    public void confirm(String serviceName, String dataDay, String time, final String workingTimeId) {
+    public void confirm(String serviceName, String dataDay, final String time, final String workingTimeId) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Запись на услугу");
         dialog.setMessage("Записаться на услугу " + serviceName + " " + dataDay + " числа в " + time);
@@ -186,11 +186,17 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
 
         dialog.setPositiveButton(Html.fromHtml("<b><font color='#FF7F27'>Да</font></b>"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
-                userCreateService.makeOrder(workingTimeId);
-                //закрашиваем, чтобы нельзя было записаться еще раз
-                checkCurrentTimes();
-                workingHours.clear();
-                attentionSuccessfulOrder();
+                if (isFreeTime(time)) {
+                    userCreateService.makeOrder(workingTimeId);
+                    //закрашиваем, чтобы нельзя было записаться еще раз
+                    checkCurrentTimes();
+                    workingHours.clear();
+                    attentionSuccessfulOrder();
+                } else {
+                    selectBtsForUser();
+                    attentionTimeIsBusy();
+                }
+
             }
         });
         dialog.setNegativeButton(Html.fromHtml("<b><font color='#FF7F27'>Нет</font></b>"), new DialogInterface.OnClickListener() {
@@ -203,6 +209,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
 
     private void attentionSuccessfulOrder(){
         Toast.makeText(this, "Вы успешно записались", Toast.LENGTH_SHORT).show();
+    }
+
+    private void attentionTimeIsBusy(){
+        Toast.makeText(this, "Данное время уже занято", Toast.LENGTH_SHORT).show();
     }
 
     // Подгружаем информацию о сервисе
