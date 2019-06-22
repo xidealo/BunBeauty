@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.MessageAdapter;
@@ -58,11 +60,12 @@ public class Messages extends AppCompatActivity {
     private String senderName;
     private DBHelper dbHelper;
     private FragmentManager manager;
-    SQLiteDatabase database;
+    private SQLiteDatabase database;
 
     private ArrayList<Message> messageList;
     private RecyclerView recyclerView;
     private MessageAdapter messageAdapter;
+    private ProgressBar progressBar;
     private int counter;
     private int orderCount;
     private static ArrayList<String> senderIds = new ArrayList<>();
@@ -76,6 +79,7 @@ public class Messages extends AppCompatActivity {
         database = dbHelper.getWritableDatabase();
 
         recyclerView = findViewById(R.id.resultsMessagesRecycleView);
+        progressBar = findViewById(R.id.progressBarMessages);
         messageList = new ArrayList<>();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -375,6 +379,8 @@ public class Messages extends AppCompatActivity {
         //опускаемся к полседнему элементу
         recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
         recyclerView.setAdapter(messageAdapter);
+        progressBar.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
         cursor.close();
     }
 

@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.DialogAdapter;
@@ -54,6 +56,7 @@ public class Dialogs extends AppCompatActivity {
     private WorkWithLocalStorageApi LSApi;
     private DBHelper dbHelper;
     private SQLiteDatabase database;
+    private ProgressBar progressBar;
 
     private FragmentManager manager;
 
@@ -74,6 +77,7 @@ public class Dialogs extends AppCompatActivity {
         userId = getUserId();
 
         recyclerView = findViewById(R.id.resultsDialogsRecycleView);
+        progressBar = findViewById(R.id.progressBarDialogs);
         dialogList = new ArrayList<>();
         userList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -290,6 +294,8 @@ public class Dialogs extends AppCompatActivity {
 
             dialogAdapter = new DialogAdapter(dialogList.size(), dialogList);
             recyclerView.setAdapter(dialogAdapter);
+            progressBar.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
             dialogsCursor.close();
         } else {
             dialogsCursor.close();
