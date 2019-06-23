@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,13 +115,28 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         // Добавляем время из буфера workingHours в БД
                         workerCreateService.addTime(workingDaysId, workingHours);
                         workingHours.clear();
+                        Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
                     }
                     if (removedHours.size() > 0) {
                         // Удаляем время сохранённое в буфере removeHours в БД
-                        workerCreateService.deleteTime(workingDaysId, removedHours);
-                        // removedHours.clear(); перенесен в воркера из-за потоков
+                        boolean isFreeTime = true;
+
+                        for(String removedTime: removedHours ){
+                            Log.d(TAG, "onClick: " + removedTime);
+                            if(!isFreeTime(removedTime)){
+                                isFreeTime = false;
+                            }
+                        }
+
+                        if(!isFreeTime){
+                            alertTryingToDeleteBusyTime();
+                            removedHours.clear();
+                        }else {
+                            workerCreateService.deleteTime(workingDaysId, removedHours);
+                            Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                    Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
+
                 } else {
                     if (workingHours.size() == 1) {
                         loadInformationAboutService(WorkWithLocalStorageApi.getWorkingTimeId(workingHours.get(0), workingDaysId));
@@ -207,6 +223,19 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         dialog.show();
     }
 
+    public void alertTryingToDeleteBusyTime() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Предупреждение");
+        dialog.setMessage("Вы пытались удалить время, на которое кто-то записался, пожалуйста, проверьте еще раз.");
+
+        dialog.setPositiveButton(Html.fromHtml("<b><font color='#FF7F27'>Продолжить</font></b>"), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                selectBtsForWorker();
+            }
+        });
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        dialog.show();
+    }
     private void attentionSuccessfulOrder(){
         Toast.makeText(this, "Вы успешно записались", Toast.LENGTH_SHORT).show();
     }

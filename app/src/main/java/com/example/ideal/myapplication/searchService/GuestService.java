@@ -415,6 +415,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
             countOfRatesForComments = cursor.getString(indexCountOfRates);
             createRatingBar(serviceRating, countOfRates);
+            createPhotoFeed(serviceId);
         }
         cursor.close();
     }
@@ -437,7 +438,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void setPhotoFeed(String serviceId) {
+    private void createPhotoFeed(String serviceId) {
 
         int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
         int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
@@ -485,9 +486,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         buildPanels();
-
         imageFeedLayout.removeAllViews();
-        setPhotoFeed(serviceId);
     }
 
     private String getServiceName() {

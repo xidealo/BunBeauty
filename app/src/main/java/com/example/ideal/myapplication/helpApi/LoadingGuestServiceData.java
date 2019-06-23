@@ -76,6 +76,13 @@ public class LoadingGuestServiceData {
             // Добавляем данный сервис в SQLite
             localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
         }
+        if(photoThread.isAlive()){
+            try {
+                photoThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId, SQLiteDatabase localDatabase) {
@@ -95,7 +102,6 @@ public class LoadingGuestServiceData {
                 contentValues.put(DBHelper.KEY_ID, dayId);
                 localDatabase.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
             }
-            //addTimeInLocalStorage(workingDaySnapshot.child(WORKING_TIME), dayId, localDatabase);
     }
 
     public static void addTimeInLocalStorage(DataSnapshot timeSnapshot, String workingDayId, SQLiteDatabase localDatabase) {
