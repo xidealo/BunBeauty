@@ -643,8 +643,6 @@ public class Comments extends AppCompatActivity {
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 commentList.add(comment);
                 currentForCreateUserComment++;
-                Log.d(TAG, "currentCountOfReview: "+currentCountOfReview);
-                Log.d(TAG, "countOfRates: "+currentCountOfReview);
                 if (countOfRates == currentForCreateUserComment) {
                         commentAdapter = new CommentAdapter(commentList.size(), commentList);
                         recyclerView.setAdapter(commentAdapter);
@@ -653,7 +651,6 @@ public class Comments extends AppCompatActivity {
                 }
 
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
