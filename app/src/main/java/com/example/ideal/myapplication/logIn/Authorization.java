@@ -112,4 +112,5 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         intent.putExtra(PHONE_NUMBER, myPhoneNumber);
         startActivity(intent);
     }
+
 }
