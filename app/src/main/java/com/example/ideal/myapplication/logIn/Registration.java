@@ -87,10 +87,13 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                             break;
                         } else {
                             String fullName = name + " " + surname;
-                            String phone = phoneInput.getText().toString();
                             user.setName(fullName);
-                            user.setCity(cityInput.getText().toString().toLowerCase());
+
+                            String phone = phoneInput.getText().toString();
                             user.setPhone(phone);
+
+                            String city  = cityInput.getText().toString().toLowerCase();
+                            user.setCity(city);
                             registration(user);
                             //идем в профиль
                             goToProfile();

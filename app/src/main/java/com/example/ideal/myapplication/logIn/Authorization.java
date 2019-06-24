@@ -3,6 +3,7 @@ package com.example.ideal.myapplication.logIn;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,6 +28,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     private Spinner codeSpinner;
     private String myPhoneNumber;
     private ProgressBar progressBar;
+    private static final String TAG = "DBInf";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +63,11 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
 
         switch (v.getId()){
             case  R.id.verifyAuthBtn:
-                myPhoneNumber = phoneInput.getText().toString();
-                if(isPhoneCorrect()) {
+                String countryCode = CountryCodes.codes[codeSpinner.getSelectedItemPosition()];
+                myPhoneNumber = countryCode + phoneInput.getText().toString();
+                Log.d(TAG, "onClick: " + myPhoneNumber);
+                if(isPhoneCorrect(myPhoneNumber.trim())) {
                     verifyBtn.setClickable(false);
-                    String countryCode = CountryCodes.codes[codeSpinner.getSelectedItemPosition()];
-                    myPhoneNumber = countryCode + phoneInput.getText().toString();
-
                    goToVerifyPhone();
                 }
                 break;
@@ -76,8 +77,9 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    protected Boolean isPhoneCorrect(){
-        if(myPhoneNumber.length() < 9 || myPhoneNumber.length() > 10) {
+    protected Boolean isPhoneCorrect(String myPhoneNumber){
+
+        if(myPhoneNumber.length() < 11 || myPhoneNumber.length() > 12) {
             phoneInput.setError("Некорректный номер");
             phoneInput.requestFocus();
             return false;
