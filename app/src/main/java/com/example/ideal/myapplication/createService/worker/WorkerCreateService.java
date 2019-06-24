@@ -141,6 +141,8 @@ public class WorkerCreateService implements IWorker {
                 .child(WORKING_DAYS)
                 .child(workingDaysId)
                 .child(WORKING_TIME);
+        //сам метод сделать boolean, при возварте он будет говорить, все ли хорошо, если нет то обновляем раписание
+        //вызвать метод, который проверяет есть ли записи на время из массива
 
         timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -150,10 +152,10 @@ public class WorkerCreateService implements IWorker {
                         if (String.valueOf(time.child(TIME).getValue()).equals(hours)) {
                             String timeId = String.valueOf(time.getKey());
                             timeRef.child(timeId).removeValue();
-                            deleteTimeFromLocalStorage(workingDaysId, removedHours);
                         }
                     }
                 }
+                deleteTimeFromLocalStorage(workingDaysId, removedHours);
                 removedHours.clear();
             }
 

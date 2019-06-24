@@ -27,11 +27,8 @@ public class MessageReviewElement implements View.OnClickListener {
     private String messageRatingReview;
     private String messageUserId;
     private String messageServiceId;
-
     private String text;
-
     private String reviewId;
-
     private TextView messageText;
     private Context context;
     private View view;
@@ -65,7 +62,7 @@ public class MessageReviewElement implements View.OnClickListener {
                             + " пользователю " + messageUserName
                             + ".\nПожалуйста, оставьте отзыв об этом пользователе."
                             + " Вы также сможете увидеть отзыв, о себе,"
-                            + " как только пользователь оставит его или пройдет 72 часа.";
+                            + " как только пройдет 72 часа.";
         } else {
             if (isCanceled) {
                 text =
@@ -83,7 +80,7 @@ public class MessageReviewElement implements View.OnClickListener {
                                 + " у пользователя " + messageUserName
                                 + ".\nПожалуйста, оставьте отзыв о данной услуге, чтобы улучшить качество сервиса."
                                 + " Вы также сможете увидеть отзыв, о себе,"
-                                + " как только пользователь оставит его или пройдет 72 часа.";
+                                + " как только пройдет 72 часа.";
             }
         }
     }
