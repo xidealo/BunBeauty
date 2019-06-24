@@ -619,6 +619,7 @@ public class Comments extends AppCompatActivity {
         cursor.close();
     }
 
+    private int currentForCreateUserComment=0;
     private void createUserComment(final Cursor mainCursor) {
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
         final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
@@ -641,12 +642,16 @@ public class Comments extends AppCompatActivity {
                 comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 commentList.add(comment);
-                if (countOfRates == currentCountOfReview) {
-                    commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                    recyclerView.setAdapter(commentAdapter);
-                    progressBar.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
+                currentForCreateUserComment++;
+                Log.d(TAG, "currentCountOfReview: "+currentCountOfReview);
+                Log.d(TAG, "countOfRates: "+currentCountOfReview);
+                if (countOfRates == currentForCreateUserComment) {
+                        commentAdapter = new CommentAdapter(commentList.size(), commentList);
+                        recyclerView.setAdapter(commentAdapter);
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
                 }
+
             }
 
             @Override
