@@ -56,6 +56,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     private ArrayList<User> userList;
     private RecyclerView recyclerView;
     private ServiceAdapter serviceAdapter;
+    private boolean isUpdated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
 
         dbHelper = new DBHelper(this);
         manager = getSupportFragmentManager();
-
+        isUpdated = true;
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
 
         serviceList = new ArrayList<>();
@@ -82,6 +83,26 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         categories = new String[]{"ногти", "волосы", "глаза", "визаж", "массаж"};
 
         createCategoryFeed();
+
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+
+        createMainScreen("");
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                Log.d(TAG, "onScrolled: " + recyclerView.getClipToPadding());
+                /*if ((recyclerView.computeVerticalScrollOffset() == 0) && !isUpdated) //check for scroll down
+                {
+                    serviceList.clear();
+                    userList.clear();
+                    progressBar.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                    createMainScreen("");
+                }*/
+            }
+        });
     }
 
     @Override
@@ -140,12 +161,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        progressBar.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
-        serviceList.clear();
-        userList.clear();
-
-        createMainScreen("");
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerMainScreenLayout);
