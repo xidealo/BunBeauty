@@ -343,7 +343,7 @@ public class Messages extends AppCompatActivity {
                 message.setServiceName(cursor.getString(indexMessageServiceName));
                 message.setWorkingDay(date);
                 message.setWorkingTime(time);
-                message.setMessageTime(WorkWithStringsApi.dateToUserFormat(cursor.getString(indexMessageTime)));
+                message.setMessageTime(WorkWithStringsApi.dateTimeToUserFormat(cursor.getString(indexMessageTime)));
 
                 message.setReviewId(cursor.getString(indexMessageReviewId));
 

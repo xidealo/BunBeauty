@@ -3,7 +3,6 @@ package com.example.ideal.myapplication.adapters.chatElements;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Message;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.reviews.Review;
 
 
@@ -28,8 +28,10 @@ public class MessageReviewElement implements View.OnClickListener {
     private String messageUserId;
     private String messageServiceId;
     private String text;
+    private String messageTime;
     private String reviewId;
     private TextView messageText;
+    private TextView timeText;
     private Context context;
     private View view;
 
@@ -46,9 +48,9 @@ public class MessageReviewElement implements View.OnClickListener {
         this.messageServiceId = message.getServiceId();
         String messageUserName = message.getUserName();
         String messageServiceName = message.getServiceName();
-        String messageWorkingDay = message.getWorkingDay();
+        String workingDayUserFormat = WorkWithStringsApi.dateToUserFormat(message.getWorkingDay());
         String messageWorkingTime = message.getWorkingTime();
-        String messageTime = message.getMessageTime();
+        messageTime = message.getMessageTime();
         this.context = context;
         this.view = view;
 
@@ -56,8 +58,7 @@ public class MessageReviewElement implements View.OnClickListener {
 
         if (messageType.equals(REVIEW_FOR_USER)) {
             text =
-                    "(" + messageTime + ") \n"
-                            + messageWorkingDay + " в " + messageWorkingTime
+                    workingDayUserFormat + " в " + messageWorkingTime
                             + " Вы предоставляли услугу " + messageServiceName
                             + " пользователю " + messageUserName
                             + ".\nПожалуйста, оставьте отзыв об этом пользователе."
@@ -66,16 +67,14 @@ public class MessageReviewElement implements View.OnClickListener {
         } else {
             if (isCanceled) {
                 text =
-                        "(" + messageTime + ") \n"
-                                + "Пользователь " + messageUserName
+                        "Пользователь " + messageUserName
                                 + " отказал Вам в придоставлении услуги " + messageServiceName
-                                + " в последний момент. Сеанс на " + messageWorkingDay
+                                + " в последний момент. Сеанс на " + workingDayUserFormat
                                 + " в " + messageWorkingTime
                                 + " отменён. Вы можете оценить качество данного сервиса.";
             } else {
                 text =
-                        "(" + messageTime + ") \n"
-                                + messageWorkingDay + " в " + messageWorkingTime
+                        workingDayUserFormat + " в " + messageWorkingTime
                                 + " Вы получали услугу " + messageServiceName
                                 + " у пользователя " + messageUserName
                                 + ".\nПожалуйста, оставьте отзыв о данной услуге, чтобы улучшить качество сервиса."
@@ -90,8 +89,9 @@ public class MessageReviewElement implements View.OnClickListener {
     }
 
     private void onViewCreated(@NonNull View view) {
-        messageText = view.findViewById(R.id.messageMessageOrderElementText);
-        Button reviewBtn = view.findViewById(R.id.canceledMessageOrderElementBtn);
+        messageText = view.findViewById(R.id.messageMessageElementText);
+        timeText = view.findViewById(R.id.timeMessageElementText);
+        Button reviewBtn = view.findViewById(R.id.canceledMessageElementBtn);
         reviewBtn.setText("ОЦЕНИТЬ");
         // Проверяем стоит ли оценка
         if (isRate()) {
@@ -101,7 +101,7 @@ public class MessageReviewElement implements View.OnClickListener {
             reviewBtn.setOnClickListener(this);
         }
 
-        LinearLayout layout = view.findViewById(R.id.messageOrderElementLayout);
+        LinearLayout layout = view.findViewById(R.id.messageElementLayout);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(10, 10, 10, 10);
@@ -116,6 +116,7 @@ public class MessageReviewElement implements View.OnClickListener {
     }
 
     private void setData() {
+        timeText.setText(messageTime);
         messageText.setText(text);
     }
 

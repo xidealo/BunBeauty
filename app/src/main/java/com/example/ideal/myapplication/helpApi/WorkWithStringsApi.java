@@ -28,9 +28,30 @@ public class WorkWithStringsApi {
         return year + "-" + month + "-" + day;
     }
 
+    static public String dateTimeToUserFormat(String dateTime) {
+
+        SimpleDateFormat databaseFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+
+        Date parsingDate = null;
+        try {
+            parsingDate = databaseFormat.parse(dateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String month = dateTime.split("-")[1];
+        SimpleDateFormat userFormat = new SimpleDateFormat ("dd '" + monthToString(month) + "' HH:mm:ss");
+        String userDateTime = userFormat.format(parsingDate);
+
+        if(userDateTime.charAt(0)=='0') {
+            userDateTime = userDateTime.substring(1);
+        }
+
+        return userDateTime;
+    }
+
     static public String dateToUserFormat(String date) {
 
-        SimpleDateFormat databaseFormat = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat databaseFormat = new SimpleDateFormat ("yyyy-MM-dd");
 
         Date parsingDate = null;
         try {
@@ -39,7 +60,7 @@ public class WorkWithStringsApi {
             e.printStackTrace();
         }
         String month = date.split("-")[1];
-        SimpleDateFormat userFormat = new SimpleDateFormat ("dd '" + monthToString(month) + "' hh:mm:ss");
+        SimpleDateFormat userFormat = new SimpleDateFormat ("dd '" + monthToString(month) + "'");
         String userDate = userFormat.format(parsingDate);
 
         if(userDate.charAt(0)=='0') {

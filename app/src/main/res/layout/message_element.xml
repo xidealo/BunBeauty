@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/block"
-    android:id="@+id/messageOrderElementLayout"
+    android:id="@+id/messageElementLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/block_text"
@@ -11,7 +11,15 @@
     android:padding="10dp">
 
     <TextView
-        android:id="@+id/messageMessageOrderElementText"
+        android:id="@+id/timeMessageElementText"
+        style="@style/timeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="" />
+
+
+    <TextView
+        android:id="@+id/messageMessageElementText"
         style="@style/defaultText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +27,7 @@
         android:text="" />
 
     <Button
-        android:id="@+id/canceledMessageOrderElementBtn"
+        android:id="@+id/canceledMessageElementBtn"
         style="@style/smallMainButtonOther"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

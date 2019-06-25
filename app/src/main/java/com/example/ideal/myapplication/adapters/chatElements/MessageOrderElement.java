@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Message;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,6 +49,7 @@ public class MessageOrderElement implements View.OnClickListener {
 
     private String text;
     private String messageWorkingDay;
+    private String workingDayUserFormat;
     private String messageWorkingTime;
 
     private String userId;
@@ -56,10 +58,12 @@ public class MessageOrderElement implements View.OnClickListener {
     private String workingDayId;
     private String orderId;
     private String reviewId;
+    private String messageTime;
 
     private WorkWithTimeApi workWithTimeApi;
 
     private TextView messageText;
+    private TextView timeText;
     private Button canceledBtn;
 
     private DBHelper dbHelper;
@@ -75,8 +79,9 @@ public class MessageOrderElement implements View.OnClickListener {
         String messageUserName = message.getUserName();
         String messageServiceName = message.getServiceName();
         messageWorkingDay = message.getWorkingDay();
+        workingDayUserFormat = WorkWithStringsApi.dateToUserFormat(messageWorkingDay);
         messageWorkingTime = message.getWorkingTime();
-        String messageTime = message.getMessageTime();
+        messageTime = message.getMessageTime();
 
         // для Reference
         userId = message.getUserId();
@@ -91,31 +96,27 @@ public class MessageOrderElement implements View.OnClickListener {
 
         if (messageIsCanceled) {
             if (messageIsMyService) {
-                text = "(" + messageTime + ") \n"
-                        + "Вы отказали пользователю " + messageUserName
+                text = "Вы отказали пользователю " + messageUserName
                         + " в предоставлении услуги " + messageServiceName
-                        + ". Сеанс на " + messageWorkingDay
+                        + ". Сеанс на " + workingDayUserFormat
                         + " в " + messageWorkingTime + " отменён.";
             } else {
-                text = "(" + messageTime + ") \n"
-                        + "Пользователь " + messageUserName
+                text = "Пользователь " + messageUserName
                         + " отказал Вам в придоставлении услуги " + messageServiceName
-                        + ". Сеанс на " + messageWorkingDay
+                        + ". Сеанс на " + workingDayUserFormat
                         + " в " + messageWorkingTime + " отменён.";
             }
         } else {
             if (messageIsMyService) {
-                text = "(" + messageTime + ") \n"
-                        + "Пользователь " + messageUserName
+                text = "Пользователь " + messageUserName
                         + " записался к вам на услугу " + messageServiceName
-                        + ". Сеанс состоится " + messageWorkingDay
+                        + ". Сеанс состоится " + workingDayUserFormat
                         + " в " + messageWorkingTime
                         + ". Вы можете отказаться, указав причину, однако, если вы сделаете это слишком поздно, у пользователя будет возможность оценить Ваш сервис.";
             } else {
-                text = "(" + messageTime + ") \n"
-                        + "Вы записались к " + messageUserName
+                text = "Вы записались к " + messageUserName
                         + " на услугу " + messageServiceName
-                        + ". Сеанс состоится " + messageWorkingDay
+                        + ". Сеанс состоится " + workingDayUserFormat
                         + " в " + messageWorkingTime;
             }
         }
@@ -125,8 +126,9 @@ public class MessageOrderElement implements View.OnClickListener {
     }
 
     private void onViewCreated(View view) {
-        messageText = view.findViewById(R.id.messageMessageOrderElementText);
-        canceledBtn = view.findViewById(R.id.canceledMessageOrderElementBtn);
+        messageText = view.findViewById(R.id.messageMessageElementText);
+        timeText = view.findViewById(R.id.timeMessageElementText);
+        canceledBtn = view.findViewById(R.id.canceledMessageElementBtn);
         canceledBtn.setOnClickListener(this);
 
         workWithTimeApi = new WorkWithTimeApi();
@@ -142,7 +144,7 @@ public class MessageOrderElement implements View.OnClickListener {
             }
         }
 
-        LinearLayout layout = view.findViewById(R.id.messageOrderElementLayout);
+        LinearLayout layout = view.findViewById(R.id.messageElementLayout);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -153,6 +155,7 @@ public class MessageOrderElement implements View.OnClickListener {
     }
 
     private void setData() {
+        timeText.setText(messageTime);
         messageText.setText(text);
     }
 
