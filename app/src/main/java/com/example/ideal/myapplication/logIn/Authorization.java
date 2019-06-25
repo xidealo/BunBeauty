@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class Authorization extends AppCompatActivity implements View.OnClickListener {
 
     private static final String PHONE_NUMBER = "Phone number";
-
     private Button verifyBtn;
     private TextView enterPhoneText;
     private EditText phoneInput;
@@ -65,7 +64,6 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
             case  R.id.verifyAuthBtn:
                 String countryCode = CountryCodes.codes[codeSpinner.getSelectedItemPosition()];
                 myPhoneNumber = countryCode + phoneInput.getText().toString();
-                Log.d(TAG, "onClick: " + myPhoneNumber);
                 if(isPhoneCorrect(myPhoneNumber.trim())) {
                     verifyBtn.setClickable(false);
                    goToVerifyPhone();

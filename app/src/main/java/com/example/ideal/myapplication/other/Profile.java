@@ -322,7 +322,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 LoadingProfileData.loadUserInfo(userSnapshot, database);
 
-                Log.d(TAG, "325: " + userSnapshot);
                 LoadingProfileData.loadUserServices(userSnapshot
                                 .child(SERVICES),
                         ownerId,
