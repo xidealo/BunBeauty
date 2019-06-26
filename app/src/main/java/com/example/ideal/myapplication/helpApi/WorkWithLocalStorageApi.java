@@ -252,7 +252,6 @@ public class WorkWithLocalStorageApi {
     private static void addOrderInLocalStorage(String orderId, String workingTimeId, String orderUserId, String messageTime) {
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(DBHelper.KEY_ID, orderId);
         contentValues.put(DBHelper.KEY_USER_ID, orderUserId);
         contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, workingTimeId);
         contentValues.put(DBHelper.KEY_MESSAGE_TIME_ORDERS, messageTime);
@@ -266,6 +265,41 @@ public class WorkWithLocalStorageApi {
         } else {
             contentValues.put(DBHelper.KEY_ID, orderId);
             localDatabase.insert(DBHelper.TABLE_ORDERS, null, contentValues);
+        }
+    }
+
+    public static void addIsCanceledInLocalStorage(String orderId, String isCanceled) {
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, isCanceled);
+
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_ORDERS, orderId);
+
+        if (hasSomeData) {
+            localDatabase.update(DBHelper.TABLE_ORDERS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{orderId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, orderId);
+            localDatabase.insert(DBHelper.TABLE_ORDERS, null, contentValues);
+        }
+    }
+
+    public static void addReviewInLocalStorage(String reviewId, String review, String rating) {
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, review);
+        contentValues.put(DBHelper.KEY_RATING_REVIEWS, rating);
+
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_REVIEWS, reviewId);
+
+        if (hasSomeData) {
+            localDatabase.update(DBHelper.TABLE_REVIEWS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{reviewId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, reviewId);
+            localDatabase.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
         }
     }
 
