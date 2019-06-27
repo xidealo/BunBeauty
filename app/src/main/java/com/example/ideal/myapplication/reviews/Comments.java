@@ -181,7 +181,7 @@ public class Comments extends AppCompatActivity {
 
                                         @Override
                                         public void onChildChanged(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId,startIndexOfDownload);
+                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId,database, startIndexOfDownload);
                                         }
 
                                         @Override
@@ -380,7 +380,7 @@ public class Comments extends AppCompatActivity {
                                 if (loading) {
                                     if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                                         loading = false;
-                                        commentsRecycleRollDown();
+                                        //commentsRecycleRollDown();
                                     }
                                 }
                             }
@@ -730,7 +730,7 @@ public class Comments extends AppCompatActivity {
                 database,
                 startIndexOfDownload);
 
-        updateServicesList(ownerId);
+       // updateServicesList(ownerId);
     }
 
 
