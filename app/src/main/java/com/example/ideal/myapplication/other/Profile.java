@@ -59,7 +59,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private String userId;
     private String ownerId;
     private String countOfRates;
-    private int startIndexOfDownload;
 
     private TextView nameText;
     private TextView cityText;
@@ -87,7 +86,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private LinearLayoutManager layoutManagerSecond;
     private Button addServicesBtn;
     private boolean loading = true;
-    private int pastVisibleItems, visibleItemCount, totalItemCount;
+    private int pastVisibleItems, visibleItemCount, totalItemCount,startIndexOfDownload;
     private DataSnapshot servicesSnapshot;
     private ProgressBar progressBar;
 

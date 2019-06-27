@@ -18,7 +18,9 @@ import android.widget.TextView;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.CommentAdapter;
 import com.example.ideal.myapplication.fragments.objects.Comment;
+import com.example.ideal.myapplication.helpApi.LoadingCommentsData;
 import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
+import com.example.ideal.myapplication.helpApi.LoadingProfileData;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
@@ -72,9 +74,12 @@ public class Comments extends AppCompatActivity {
     private String ownerId;
     private long countOfRates;
     private long currentCountOfReview;
+    private int pastVisibleItems, visibleItemCount, totalItemCount,startIndexOfDownload;
+    private boolean loading = true;
     private boolean addedReview;
     private Thread additionToLocalStorage;
     private SQLiteDatabase database;
+    private LinearLayoutManager layoutManager;
     private static ArrayList<String> serviceIdsFirstSetComments = new ArrayList<>();
     private static ArrayList<String> userIdsFirstSetComments = new ArrayList<>();
 
@@ -94,7 +99,6 @@ public class Comments extends AppCompatActivity {
                 getCommentsForService(serviceId);
             }
         } else {
-            //ПЕРЕПИСАТЬ И БРАТЬ НОРМАЛЬНОЕ КОЛИЧЕСТВО
             countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
             //комментарии для юзера
             if (!userIdsFirstSetComments.contains(ownerId)) {
@@ -113,11 +117,12 @@ public class Comments extends AppCompatActivity {
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         ownerId = getIntent().getStringExtra(SERVICE_OWNER_ID);
         currentCountOfReview = 0;
+        startIndexOfDownload=0;
         recyclerView = findViewById(R.id.resultsCommentsRecycleView);
         progressBar = findViewById(R.id.progressBarComments);
         withoutRatingText = findViewById(R.id.withoutReviewsCommentsText);
         commentList = new ArrayList<>();
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
@@ -140,7 +145,7 @@ public class Comments extends AppCompatActivity {
                 long dateLong = WorkWithTimeApi.getMillisecondsStringDateYMD(workingDaySnapshot.child(DATE).getValue(String.class));
                 //Важное отличие от GS, загрузка только просроченных дней
                 if (dateLong < sysdateLong) {
-                    LoadingGuestServiceData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
+                    LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database, startIndexOfDownload);
 
                     final DatabaseReference workingTimesRef = workingDaysRef
                             .child(workingDayId)
@@ -150,7 +155,7 @@ public class Comments extends AppCompatActivity {
                         @Override
                         public void onChildAdded(@NonNull final DataSnapshot timeSnapshot, @Nullable String s) {
                             //при добавлении нового времени
-                            LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
+                            LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database,startIndexOfDownload);
                             final String timeId = timeSnapshot.getKey();
                             final DatabaseReference ordersRef = workingTimesRef
                                     .child(timeId)
@@ -158,7 +163,7 @@ public class Comments extends AppCompatActivity {
                             ordersRef.addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                                    LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot, timeId, database);
+                                    LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database,startIndexOfDownload);
                                     // ревью
                                     final String orderId = orderSnapshot.getKey();
                                     DatabaseReference reviewRef = ordersRef
@@ -176,7 +181,7 @@ public class Comments extends AppCompatActivity {
 
                                         @Override
                                         public void onChildChanged(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                            addReviewInLocalStorage(reviewSnapshot, orderId);
+                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId,startIndexOfDownload);
                                         }
 
                                         @Override
@@ -199,7 +204,7 @@ public class Comments extends AppCompatActivity {
                                 @Override
                                 public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
                                     //если от кого-то отказались
-                                    LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot, timeId, database);
+                                    LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database,startIndexOfDownload);
                                 }
 
                                 @Override
@@ -363,6 +368,24 @@ public class Comments extends AppCompatActivity {
                     recyclerView.setAdapter(commentAdapter);
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
+
+                    recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                        @Override
+                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                            if (dy > 0)
+                            {
+                                visibleItemCount = layoutManager.getChildCount();
+                                totalItemCount = layoutManager.getItemCount();
+                                pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+                                if (loading) {
+                                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                                        loading = false;
+                                        commentsRecycleRollDown();
+                                    }
+                                }
+                            }
+                        }
+                    });
                 }
             }
 
@@ -678,8 +701,38 @@ public class Comments extends AppCompatActivity {
             contentValues.put(DBHelper.KEY_ID, reviewId);
             database.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
         }
-
     }
+    //должны быть коллекции?
+    private ArrayList<DataSnapshot> workingDaySnapshot;
+    private DataSnapshot timeSnapshot;
+    private DataSnapshot orderSnapshot;
+    private DataSnapshot reviewSnapshot;
+
+    private void commentsRecycleRollDown(DataSnapshot workingDaySnapshot, DataSnapshot timeSnapshot,
+                                         DataSnapshot orderSnapshot, DataSnapshot reviewSnapshot) {
+
+        startIndexOfDownload += 10;
+        //добавим 10 дней по 10 времени у них вовзьмем 10 всего остального
+        LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot,
+                serviceId,
+                database,
+                startIndexOfDownload);
+        LoadingCommentsData.addTimeInLocalStorage(timeSnapshot,
+                serviceId,
+                database,
+                startIndexOfDownload);
+        LoadingCommentsData.addOrderInLocalStorage(orderSnapshot,
+                serviceId,
+                database,
+                startIndexOfDownload);
+        LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot,
+                serviceId,
+                database,
+                startIndexOfDownload);
+
+        updateServicesList(ownerId);
+    }
+
 
     private void setWithoutReview() {
         progressBar.setVisibility(View.GONE);

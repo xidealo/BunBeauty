@@ -105,7 +105,6 @@ public class LoadingProfileData {
         //5 10 - интервал
         int countOfDownloads = 5;
         int counter = 0;
-
         for (DataSnapshot serviceList : servicesSnapshot.getChildren()) {
 
             if (counter < startIndexOfDownload) {
