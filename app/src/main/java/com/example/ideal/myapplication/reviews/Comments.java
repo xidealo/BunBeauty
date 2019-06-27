@@ -692,6 +692,7 @@ public class Comments extends AppCompatActivity {
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerCommentsLayout);
         panelBuilder.buildHeader(manager, "Отзывы", R.id.headerCommentsLayout);
+
     }
 
 }
