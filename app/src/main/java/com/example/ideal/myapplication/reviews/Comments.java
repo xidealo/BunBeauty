@@ -74,7 +74,7 @@ public class Comments extends AppCompatActivity {
     private String ownerId;
     private long countOfRates;
     private long currentCountOfReview;
-    private int pastVisibleItems, visibleItemCount, totalItemCount,startIndexOfDownload;
+    private int pastVisibleItems, visibleItemCount, totalItemCount;
     private boolean loading = true;
     private boolean addedReview;
     private Thread additionToLocalStorage;
@@ -82,12 +82,15 @@ public class Comments extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
     private static ArrayList<String> serviceIdsFirstSetComments = new ArrayList<>();
     private static ArrayList<String> userIdsFirstSetComments = new ArrayList<>();
+    private int startIndex, downloadStep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comments);
         init();
+        startIndex = 0;
+        downloadStep = 7;
 
         String type = getIntent().getStringExtra(TYPE);
         if (type.equals(REVIEW_FOR_SERVICE)) {
@@ -117,7 +120,6 @@ public class Comments extends AppCompatActivity {
         serviceId = getIntent().getStringExtra(SERVICE_ID);
         ownerId = getIntent().getStringExtra(SERVICE_OWNER_ID);
         currentCountOfReview = 0;
-        startIndexOfDownload=0;
         recyclerView = findViewById(R.id.resultsCommentsRecycleView);
         progressBar = findViewById(R.id.progressBarComments);
         withoutRatingText = findViewById(R.id.withoutReviewsCommentsText);
@@ -129,6 +131,8 @@ public class Comments extends AppCompatActivity {
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
     }
 
+    private int count = 0;
+
     private void loadCommentsForService() {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference workingDaysRef = firebaseDatabase.getReference(USERS)
@@ -136,7 +140,7 @@ public class Comments extends AppCompatActivity {
                 .child(SERVICES)
                 .child(serviceId)
                 .child(WORKING_DAYS);
-
+        count = 0;
         workingDaysRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) {
@@ -145,107 +149,116 @@ public class Comments extends AppCompatActivity {
                 long dateLong = WorkWithTimeApi.getMillisecondsStringDateYMD(workingDaySnapshot.child(DATE).getValue(String.class));
                 //Важное отличие от GS, загрузка только просроченных дней
                 if (dateLong < sysdateLong) {
-                    LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database, startIndexOfDownload);
+                    LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
+                    if (startIndex > count) {
+                        Log.d(TAG, "count" + count);
+                        count++;
+                    } else {
+                        if (startIndex < downloadStep) {
+                            startIndex++;
+                            Log.d(TAG, "downloadStep: " + downloadStep);
+                            Log.d(TAG, "startIndex: " + startIndex);
+                            final DatabaseReference workingTimesRef = workingDaysRef
+                                    .child(workingDayId)
+                                    .child(WORKING_TIME);
 
-                    final DatabaseReference workingTimesRef = workingDaysRef
-                            .child(workingDayId)
-                            .child(WORKING_TIME);
-
-                    workingTimesRef.addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(@NonNull final DataSnapshot timeSnapshot, @Nullable String s) {
-                            //при добавлении нового времени
-                            LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database,startIndexOfDownload);
-                            final String timeId = timeSnapshot.getKey();
-                            final DatabaseReference ordersRef = workingTimesRef
-                                    .child(timeId)
-                                    .child(ORDERS);
-                            ordersRef.addChildEventListener(new ChildEventListener() {
+                            workingTimesRef.addChildEventListener(new ChildEventListener() {
                                 @Override
-                                public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                                    LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database,startIndexOfDownload);
-                                    // ревью
-                                    final String orderId = orderSnapshot.getKey();
-                                    DatabaseReference reviewRef = ordersRef
-                                            .child(orderId)
-                                            .child(REVIEWS);
-                                    reviewRef.addChildEventListener(new ChildEventListener() {
+                                public void onChildAdded(@NonNull final DataSnapshot timeSnapshot, @Nullable String s) {
+                                    //при добавлении нового времени
+                                    LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
+                                    final String timeId = timeSnapshot.getKey();
+                                    final DatabaseReference ordersRef = workingTimesRef
+                                            .child(timeId)
+                                            .child(ORDERS);
+                                    ordersRef.addChildEventListener(new ChildEventListener() {
                                         @Override
-                                        public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                            addReviewInLocalStorage(reviewSnapshot, orderId);
-                                            currentCountOfReview++;
-                                            if (countOfRates == currentCountOfReview) {
-                                                getCommentsForService(serviceId);
-                                            }
+                                        public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
+                                            LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database);
+                                            // ревью
+                                            final String orderId = orderSnapshot.getKey();
+                                            DatabaseReference reviewRef = ordersRef
+                                                    .child(orderId)
+                                                    .child(REVIEWS);
+                                            reviewRef.addChildEventListener(new ChildEventListener() {
+                                                @Override
+                                                public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
+                                                    addReviewInLocalStorage(reviewSnapshot, orderId);
+                                                    currentCountOfReview++;
+                                                    if (downloadStep == currentCountOfReview) {
+                                                        getCommentsForService(serviceId);
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onChildChanged(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
+                                                    LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
+                                                }
+
+                                                @Override
+                                                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                                }
+
+                                                @Override
+                                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                }
+                                            });
                                         }
 
                                         @Override
-                                        public void onChildChanged(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId,database, startIndexOfDownload);
+                                        public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
+                                            //если от кого-то отказались
+                                            LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database);
                                         }
 
                                         @Override
                                         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                            //void
 
                                         }
 
                                         @Override
                                         public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                                            //void
                                         }
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                            //void
                                         }
                                     });
                                 }
 
                                 @Override
-                                public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                                    //если от кого-то отказались
-                                    LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database,startIndexOfDownload);
+                                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                    //пусто
                                 }
 
                                 @Override
-                                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                                    //void
-
+                                public void onChildRemoved(@NonNull DataSnapshot timeSnapshot) {
+                                    //при удалении времени
+                                    LoadingGuestServiceData.deleteTimeFromLocalStorage(timeSnapshot.getKey(), database);
                                 }
 
                                 @Override
                                 public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                    //void
+                                    //пусто
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    //void
+
                                 }
                             });
                         }
-
-                        @Override
-                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            //пусто
-                        }
-
-                        @Override
-                        public void onChildRemoved(@NonNull DataSnapshot timeSnapshot) {
-                            //при удалении времени
-                            LoadingGuestServiceData.deleteTimeFromLocalStorage(timeSnapshot.getKey(), database);
-                        }
-
-                        @Override
-                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            //пусто
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
+                    }
                 }
             }
 
@@ -269,6 +282,7 @@ public class Comments extends AppCompatActivity {
                 //пустое
             }
         });
+
     }
 
     private void getCommentsForService(String _serviceId) {
@@ -357,30 +371,28 @@ public class Comments extends AppCompatActivity {
         comment.setReview(mainCursor.getString(reviewIndex));
         comment.setRating(mainCursor.getFloat(ratingIndex));
         comment.setServiceName(mainCursor.getString(nameServiceIndex));
-
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
                 commentList.add(comment);
-                if (countOfRates == currentCountOfReview) {
+                Log.d(TAG, "onDataChange: " + comment.getReview());
+                if (downloadStep == currentCountOfReview) {
                     commentAdapter = new CommentAdapter(commentList.size(), commentList);
                     recyclerView.setAdapter(commentAdapter);
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
-
                     recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                         @Override
                         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                            if (dy > 0)
-                            {
+                            if (dy > 0) {
                                 visibleItemCount = layoutManager.getChildCount();
                                 totalItemCount = layoutManager.getItemCount();
                                 pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
                                 if (loading) {
                                     if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                                         loading = false;
-                                        //commentsRecycleRollDown();
+                                        commentsRecycleRollDown();
                                     }
                                 }
                             }
@@ -395,6 +407,12 @@ public class Comments extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void commentsRecycleRollDown() {
+        startIndex = downloadStep;
+        downloadStep += 6;
+        loadCommentsForService();
     }
 
     private void loadCommentsForUser() {
@@ -642,7 +660,8 @@ public class Comments extends AppCompatActivity {
         cursor.close();
     }
 
-    private int currentForCreateUserComment=0;
+    private int currentForCreateUserComment = 0;
+
     private void createUserComment(final Cursor mainCursor) {
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
         final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
@@ -667,13 +686,14 @@ public class Comments extends AppCompatActivity {
                 commentList.add(comment);
                 currentForCreateUserComment++;
                 if (countOfRates == currentForCreateUserComment) {
-                        commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                        recyclerView.setAdapter(commentAdapter);
-                        progressBar.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
+                    commentAdapter = new CommentAdapter(commentList.size(), commentList);
+                    recyclerView.setAdapter(commentAdapter);
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                 }
 
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -702,37 +722,6 @@ public class Comments extends AppCompatActivity {
             database.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
         }
     }
-    //должны быть коллекции?
-    private ArrayList<DataSnapshot> workingDaySnapshot;
-    private DataSnapshot timeSnapshot;
-    private DataSnapshot orderSnapshot;
-    private DataSnapshot reviewSnapshot;
-
-    private void commentsRecycleRollDown(DataSnapshot workingDaySnapshot, DataSnapshot timeSnapshot,
-                                         DataSnapshot orderSnapshot, DataSnapshot reviewSnapshot) {
-
-        startIndexOfDownload += 10;
-        //добавим 10 дней по 10 времени у них вовзьмем 10 всего остального
-        LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot,
-                serviceId,
-                database,
-                startIndexOfDownload);
-        LoadingCommentsData.addTimeInLocalStorage(timeSnapshot,
-                serviceId,
-                database,
-                startIndexOfDownload);
-        LoadingCommentsData.addOrderInLocalStorage(orderSnapshot,
-                serviceId,
-                database,
-                startIndexOfDownload);
-        LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot,
-                serviceId,
-                database,
-                startIndexOfDownload);
-
-       // updateServicesList(ownerId);
-    }
-
 
     private void setWithoutReview() {
         progressBar.setVisibility(View.GONE);

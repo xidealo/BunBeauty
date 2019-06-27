@@ -16,7 +16,7 @@ public class LoadingCommentsData {
     private static final String RATING = "rating";
 
     public static void addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId,
-                                                    SQLiteDatabase localDatabase, int startIndexOfDownload) {
+                                                    SQLiteDatabase localDatabase) {
         ContentValues contentValues = new ContentValues();
         String dayId = workingDaySnapshot.getKey();
         String date = String.valueOf(workingDaySnapshot.child(DATE).getValue());
@@ -36,7 +36,7 @@ public class LoadingCommentsData {
     }
 
     public static void addTimeInLocalStorage(DataSnapshot timeSnapshot, String workingDayId,
-                                             SQLiteDatabase localDatabase, int startIndexOfDownload) {
+                                             SQLiteDatabase localDatabase) {
         ContentValues contentValues = new ContentValues();
         String timeId = timeSnapshot.getKey();
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, String.valueOf(timeSnapshot.child(TIME).getValue()));
@@ -56,7 +56,7 @@ public class LoadingCommentsData {
     }
 
     static public void addOrderInLocalStorage(final DataSnapshot orderSnapshot, String timeId,
-                                              SQLiteDatabase localDatabase, int startIndexOfDownload) {
+                                              SQLiteDatabase localDatabase) {
         ContentValues contentValues = new ContentValues();
         String orderId = orderSnapshot.getKey();
 
@@ -80,7 +80,7 @@ public class LoadingCommentsData {
     }
 
     static public void addReviewInLocalStorage(DataSnapshot reviewSnapshot, String orderId,
-                                               SQLiteDatabase localDatabase, int startIndexOfDownload)  {
+                                               SQLiteDatabase localDatabase)  {
 
         ContentValues contentValues = new ContentValues();
         String reviewId = reviewSnapshot.getKey();
