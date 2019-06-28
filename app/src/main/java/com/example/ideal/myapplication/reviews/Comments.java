@@ -89,8 +89,9 @@ public class Comments extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comments);
         init();
+
         startIndex = 0;
-        downloadStep = 7;
+        downloadStep = 8;
 
         String type = getIntent().getStringExtra(TYPE);
         if (type.equals(REVIEW_FOR_SERVICE)) {
@@ -131,36 +132,25 @@ public class Comments extends AppCompatActivity {
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
     }
 
-    private int counter = 0;
-
     private void loadCommentsForService() {
+        commentList.clear();
+        currentCountOfReview = 0;
+
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference workingDaysRef = firebaseDatabase.getReference(USERS)
                 .child(ownerId)
                 .child(SERVICES)
                 .child(serviceId)
                 .child(WORKING_DAYS);
-        counter = 0;
-        Log.d(TAG, "loadCommentsForService: " + startIndex);
-        Log.d(TAG, "loadCommentsForService: " + downloadStep);
-        Log.d(TAG, "loadCommentsForService: " + counter);
+
         workingDaysRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) {
+            public void onChildAdded(@NonNull final DataSnapshot workingDaySnapshot, @Nullable String s) {
                 final String workingDayId = workingDaySnapshot.getKey();
                 long sysdateLong = WorkWithTimeApi.getSysdateLong();
                 long dateLong = WorkWithTimeApi.getMillisecondsStringDateYMD(workingDaySnapshot.child(DATE).getValue(String.class));
                 //Важное отличие от GS, загрузка только просроченных дней
                 if (dateLong < sysdateLong) {
-                    LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
-                    if (counter < startIndex) {
-                        counter++;
-                        return;
-                    }
-
-                    if (counter >= startIndex + downloadStep) {
-                        return;
-                    }
 
                     final DatabaseReference workingTimesRef = workingDaysRef
                             .child(workingDayId)
@@ -170,15 +160,13 @@ public class Comments extends AppCompatActivity {
                         @Override
                         public void onChildAdded(@NonNull final DataSnapshot timeSnapshot, @Nullable String s) {
                             //при добавлении нового времени
-                            LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
                             final String timeId = timeSnapshot.getKey();
                             final DatabaseReference ordersRef = workingTimesRef
                                     .child(timeId)
                                     .child(ORDERS);
                             ordersRef.addChildEventListener(new ChildEventListener() {
                                 @Override
-                                public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                                    LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database);
+                                public void onChildAdded(@NonNull final DataSnapshot orderSnapshot, @Nullable String s) {
                                     // ревью
                                     final String orderId = orderSnapshot.getKey();
                                     DatabaseReference reviewRef = ordersRef
@@ -187,17 +175,27 @@ public class Comments extends AppCompatActivity {
                                     reviewRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                            addReviewInLocalStorage(reviewSnapshot, orderId);
-                                            counter++;
 
-                                            Log.d(TAG, "COUNTER : " + counter);
-                                            Log.d(TAG, "InReview: " + startIndex + downloadStep);
-
-                                            Log.d(TAG, "start index : "+ startIndex);
-                                            Log.d(TAG, "start index : "+ startIndex);
-                                            if (downloadStep + startIndex == counter) {
-                                                getCommentsForService(serviceId);
+                                            if (currentCountOfReview < startIndex) {
+                                                currentCountOfReview++;
+                                                return;
                                             }
+
+                                            if (currentCountOfReview >= startIndex + downloadStep) {
+                                                return;
+                                            }
+
+                                            LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
+                                            LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
+                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
+                                            LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database);
+                                            currentCountOfReview++;
+
+                                            if ((downloadStep + startIndex == currentCountOfReview) || (countOfRates == currentCountOfReview)) {
+                                                getCommentsForService(serviceId);
+
+                                            }
+
                                         }
 
                                         @Override
@@ -293,7 +291,6 @@ public class Comments extends AppCompatActivity {
     }
 
 
-
     private void getCommentsForService(String _serviceId) {
         currentCountOfReview = 0;
 
@@ -354,7 +351,6 @@ public class Comments extends AppCompatActivity {
                     createServiceComment(cursor);
                 }
                 // }
-                currentCountOfReview++;
 
             } while (cursor.moveToNext());
         } else {
@@ -386,7 +382,9 @@ public class Comments extends AppCompatActivity {
                 comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
                 commentList.add(comment);
                 Log.d(TAG, "onDataChange: " + comment.getReview());
-                if (downloadStep == currentCountOfReview) {
+                currentCountOfReview++;
+                if ((downloadStep + startIndex == currentCountOfReview) || (countOfRates == currentCountOfReview)) {
+                    Log.d(TAG, "IA HERE ");
                     commentAdapter = new CommentAdapter(commentList.size(), commentList);
                     recyclerView.setAdapter(commentAdapter);
                     progressBar.setVisibility(View.GONE);
@@ -395,13 +393,11 @@ public class Comments extends AppCompatActivity {
                         @Override
                         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                             if (dy > 0) {
-                                Log.d(TAG, "onScrolled: ");
                                 visibleItemCount = layoutManager.getChildCount();
                                 totalItemCount = layoutManager.getItemCount();
                                 pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
                                 if (loading) {
                                     if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                                        Log.d(TAG, "IAM HER");
                                         loading = false;
                                         commentsRecycleRollDown();
                                     }
@@ -421,8 +417,7 @@ public class Comments extends AppCompatActivity {
     }
 
     private void commentsRecycleRollDown() {
-        startIndex = downloadStep;
-        downloadStep += 6;
+        startIndex += downloadStep;
         loadCommentsForService();
     }
 

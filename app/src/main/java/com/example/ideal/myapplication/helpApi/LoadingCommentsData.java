@@ -61,7 +61,6 @@ public class LoadingCommentsData {
         String orderId = orderSnapshot.getKey();
 
         contentValues.put(DBHelper.KEY_ID, orderId);
-        contentValues.put(DBHelper.KEY_IS_CANCELED_ORDERS, String.valueOf(orderSnapshot.child(IS_CANCELED).getValue()));
         contentValues.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, timeId);
         contentValues.put(DBHelper.KEY_USER_ID,  String.valueOf(orderSnapshot.child(USER_ID).getValue()));
 
