@@ -189,6 +189,12 @@ public class Comments extends AppCompatActivity {
                                         public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
                                             addReviewInLocalStorage(reviewSnapshot, orderId);
                                             counter++;
+
+                                            Log.d(TAG, "COUNTER : " + counter);
+                                            Log.d(TAG, "InReview: " + startIndex + downloadStep);
+
+                                            Log.d(TAG, "start index : "+ startIndex);
+                                            Log.d(TAG, "start index : "+ startIndex);
                                             if (downloadStep + startIndex == counter) {
                                                 getCommentsForService(serviceId);
                                             }
