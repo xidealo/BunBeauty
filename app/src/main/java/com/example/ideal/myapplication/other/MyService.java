@@ -4,7 +4,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -16,13 +15,11 @@ import android.util.Log;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
-import com.example.ideal.myapplication.notifications.NotificationCancel;
 import com.example.ideal.myapplication.notifications.NotificationConstructor;
 import com.example.ideal.myapplication.notifications.NotificationReviewForService;
 import com.example.ideal.myapplication.notifications.NotificationReviewForUser;
 import com.example.ideal.myapplication.notifications.NotificationSubscribers;
 import com.example.ideal.myapplication.notifications.NotificationYouAreRated;
-import com.example.ideal.myapplication.notifications.NotificationYourServiceIsRated;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -31,14 +28,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.HashMap;
-import java.util.Map;
 
 import static android.app.NotificationManager.IMPORTANCE_MAX;
 
@@ -57,7 +50,6 @@ public class MyService extends Service implements Runnable {
     private static final String USER_ID = "user id";
 
     private static final String WORKING_DAYS = "working days";
-    private static final String DATE = "date";
     private static final String SERVICE_ID = "service id";
 
     private static final String WORKING_TIME = "working time";
@@ -80,7 +72,6 @@ public class MyService extends Service implements Runnable {
     private ArrayList<Object[]> listenerList;
 
     private String userId;
-    private String serviceName;
     private Context context;
 
     Thread thread;
@@ -128,7 +119,13 @@ public class MyService extends Service implements Runnable {
         super.onDestroy();
         thread.interrupt();
         for(Object[] listener : listenerList) {
-            ((DatabaseReference)listener[1]).removeEventListener((ChildEventListener)listener[0]);
+            if (listener[0] instanceof ChildEventListener) {
+                ((DatabaseReference)listener[1]).removeEventListener((ChildEventListener)listener[0]);
+            }
+            if (listener[0] instanceof ValueEventListener) {
+                ((DatabaseReference)listener[1]).removeEventListener((ValueEventListener)listener[0]);
+            }
+
         }
         Log.d(TAG, "MyService onDestroy");
     }
@@ -173,7 +170,7 @@ public class MyService extends Service implements Runnable {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
                         final String serviceId = serviceSnapshot.getKey();
-                        serviceName = serviceSnapshot.child(NAME).getValue(String.class);
+                        //serviceName = serviceSnapshot.child(NAME).getValue(String.class);
 
                         final DatabaseReference myWorkingDaysRef = myServicesRef
                                 .child(serviceSnapshot.getKey())
@@ -192,7 +189,7 @@ public class MyService extends Service implements Runnable {
                                         final DatabaseReference myOrdersRef = myWorkingTimeRef
                                                 .child(workingTimeId)
                                                 .child(ORDERS);
-                                        addOrderListener(myOrdersRef, serviceId, workingDayId, workingTimeId);
+                                        addOrdersListener(myOrdersRef, serviceId, workingDayId, workingTimeId);
                                     }
 
                                     @Override
@@ -390,7 +387,7 @@ public class MyService extends Service implements Runnable {
                         String workingDayId = orderSnapshot.child(WORKING_DAY_ID).getValue(String.class);
                         String workingTimeId = orderSnapshot.child(WORKING_TIME_ID).getValue(String.class);
 
-                        final DatabaseReference ordersRef = FirebaseDatabase.getInstance()
+                        final DatabaseReference orderRef = FirebaseDatabase.getInstance()
                                 .getReference(USERS)
                                 .child(workerId)
                                 .child(SERVICES)
@@ -402,7 +399,7 @@ public class MyService extends Service implements Runnable {
                                 .child(ORDERS)
                                 .child(orderId);
 
-                        addOrderListener(ordersRef, serviceId, workingDayId, workingTimeId);
+                        addOrderListener(orderRef, serviceId, workingDayId, workingTimeId);
                         /*SQLiteDatabase database = dbHelper.getReadableDatabase();
                         String orderQuery = "SELECT "
                                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS + ", "
@@ -541,24 +538,25 @@ public class MyService extends Service implements Runnable {
         thread.run();
     }
 
-    private void addOrderListener(DatabaseReference myOrdersRef, final String serviceId, final String workingDayId, final String workingTimeId) {
+    private void addOrdersListener(DatabaseReference myOrdersRef, final String serviceId, final String workingDayId, final String workingTimeId) {
         ChildEventListener orderListener = myOrdersRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                Log.d(TAG, "new order: " + orderSnapshot.getKey());
-                // срабатывает на добавление ордера
+
+                operateWithNewOrder(orderSnapshot, serviceId, workingDayId, workingTimeId);
+                /*// срабатывает на добавление ордера
                 WorkWithTimeApi timeApi = new WorkWithTimeApi();
                 String orderCreationTime = orderSnapshot.child(TIME).getValue(String.class);
                 long delay = Math.abs(timeApi.getMillisecondsStringDateWithSeconds(orderCreationTime)-timeApi.getSysdateLong());
                 String orderId = orderSnapshot.getKey();
                 //DataSnapshot workingTimeSnapshot = workingDaySnapshot.child(WORKING_TIME).child(workingTimeId);
-                /*final String date = workingDaySnapshot.child(DATE).getValue(String.class);
-                final String time = workingTimeSnapshot.child(TIME).getValue(String.class);*/
+                *//*final String date = workingDaySnapshot.child(DATE).getValue(String.class);
+                final String time = workingTimeSnapshot.child(TIME).getValue(String.class);*//*
 
                 // устанавливаем таймер, чтобы через день после обслуживания дать оценить
-                /*if (!orderSnapshot.child(IS_CANCELED).getValue(Boolean.class)) {
+                *//*if (!orderSnapshot.child(IS_CANCELED).getValue(Boolean.class)) {
                     setTimerForReview(orderId, date, time, serviceName, false);
-                }*/
+                }*//*
 
                 if(delay < 10000) {
                     String userId = orderSnapshot.child(USER_ID).getValue(String.class);
@@ -572,19 +570,20 @@ public class MyService extends Service implements Runnable {
                             null);
 
                     loadUserData(userId);
-                }
+                }*/
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot orderSnapshot, String s) {
-                checkCanceled(orderSnapshot);
+                operateWithExistingOrder(orderSnapshot);
+                /*checkCanceled(orderSnapshot);
 
                 DataSnapshot reviewSnapshot = orderSnapshot
                         .child(REVIEWS)
                         .getChildren()
                         .iterator()
                         .next();
-                checkReview(reviewSnapshot);
+                checkReview(reviewSnapshot);*/
             }
 
             @Override
@@ -599,6 +598,63 @@ public class MyService extends Service implements Runnable {
 
         listenerList.add(new Object[]{orderListener, myOrdersRef});
     }
+
+    private void addOrderListener(DatabaseReference myOrderRef, final String serviceId,
+                                   final String workingDayId, final String workingTimeId) {
+        ValueEventListener orderListener = myOrderRef.addValueEventListener(new ValueEventListener() {
+            boolean isFirst = true;
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot orderSnapshot) {
+                if (isFirst) {
+                    isFirst = false;
+                    operateWithNewOrder(orderSnapshot, serviceId, workingDayId, workingTimeId);
+
+                } else {
+                    operateWithExistingOrder(orderSnapshot);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+        listenerList.add(new Object[]{orderListener, myOrderRef});
+    }
+
+    private void operateWithExistingOrder(DataSnapshot orderSnapshot) {
+        checkCanceled(orderSnapshot);
+
+        DataSnapshot reviewSnapshot = orderSnapshot
+                .child(REVIEWS)
+                .getChildren()
+                .iterator()
+                .next();
+        checkReview(reviewSnapshot);
+    }
+
+    private void operateWithNewOrder(DataSnapshot orderSnapshot, final String serviceId,
+                                     final String workingDayId, final String workingTimeId) {
+        WorkWithTimeApi timeApi = new WorkWithTimeApi();
+        String orderCreationTime = orderSnapshot.child(TIME).getValue(String.class);
+        long delay = Math.abs(timeApi.getMillisecondsStringDateWithSeconds(orderCreationTime)-timeApi.getSysdateLong());
+        String orderId = orderSnapshot.getKey();
+
+        if(delay < 10000) {
+            String userId = orderSnapshot.child(USER_ID).getValue(String.class);
+
+            WorkWithLocalStorageApi.addDialogInfoInLocalStorage(serviceId,
+                    workingDayId,
+                    workingTimeId,
+                    orderId,
+                    userId,
+                    orderCreationTime,
+                    null);
+
+            loadUserData(userId);
+        }
+    }
+
 
     private void checkReview(DataSnapshot reviewSnapshot) {
         String reviewId = reviewSnapshot.getKey();
@@ -619,6 +675,7 @@ public class MyService extends Service implements Runnable {
 
 
     private void checkCanceled(DataSnapshot orderSnapshot) {
+        Log.d(TAG, orderSnapshot.toString());
         boolean isCanceled = orderSnapshot.child(IS_CANCELED).getValue(Boolean.class);
         if (isCanceled) {
                                                     /*String orderId = orderSnapshot.getKey();
