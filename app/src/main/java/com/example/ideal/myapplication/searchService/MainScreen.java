@@ -92,7 +92,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                Log.d(TAG, "onScrolled: " + recyclerView.getClipToPadding());
                 /*if ((recyclerView.computeVerticalScrollOffset() == 0) && !isUpdated) //check for scroll down
                 {
                     serviceList.clear();

@@ -3,6 +3,7 @@ package com.example.ideal.myapplication.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +12,19 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Comment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
 
     private int numberItems;
     private ArrayList<Comment> commentList;
     private Context context;
+    private static final String TAG = "DBInf";
+    public void refreshData(int numberItems, ArrayList<Comment> commentList){
+        this.numberItems = numberItems;
+        this.commentList = commentList;
+        notifyDataSetChanged();
+    }
 
     public CommentAdapter(int numberItems, ArrayList<Comment> commentList) {
         this.numberItems = numberItems;
@@ -38,6 +46,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder commentViewHolder, int i) {
+        //Log.d(TAG, "onBindViewHolder: " + i);
+        //Log.d(TAG, "SIZE "+ commentList.size());
         commentViewHolder.bind(commentList.get(i));
     }
 

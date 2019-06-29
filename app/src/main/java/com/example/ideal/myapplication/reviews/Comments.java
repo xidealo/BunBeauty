@@ -74,6 +74,7 @@ public class Comments extends AppCompatActivity {
     private String ownerId;
     private long countOfRates;
     private long currentCountOfReview;
+    private long currentCountOfReviewForLocalStorage;
     private int pastVisibleItems, visibleItemCount, totalItemCount;
     private boolean loading = true;
     private boolean addedReview;
@@ -91,7 +92,7 @@ public class Comments extends AppCompatActivity {
         init();
 
         startIndex = 0;
-        downloadStep = 8;
+        downloadStep = 7;
 
         String type = getIntent().getStringExtra(TYPE);
         if (type.equals(REVIEW_FOR_SERVICE)) {
@@ -135,7 +136,6 @@ public class Comments extends AppCompatActivity {
     private void loadCommentsForService() {
         commentList.clear();
         currentCountOfReview = 0;
-
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference workingDaysRef = firebaseDatabase.getReference(USERS)
                 .child(ownerId)
@@ -193,7 +193,6 @@ public class Comments extends AppCompatActivity {
 
                                             if ((downloadStep + startIndex == currentCountOfReview) || (countOfRates == currentCountOfReview)) {
                                                 getCommentsForService(serviceId);
-
                                             }
 
                                         }
@@ -292,7 +291,7 @@ public class Comments extends AppCompatActivity {
 
 
     private void getCommentsForService(String _serviceId) {
-        currentCountOfReview = 0;
+        currentCountOfReviewForLocalStorage = 0;
 
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
@@ -361,6 +360,7 @@ public class Comments extends AppCompatActivity {
         }
         cursor.close();
     }
+    private boolean isFirstDownload = true;
 
     private void createServiceComment(final Cursor mainCursor) {
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
@@ -380,31 +380,39 @@ public class Comments extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
+                //подгрузить фотку
+
                 commentList.add(comment);
-                Log.d(TAG, "onDataChange: " + comment.getReview());
-                currentCountOfReview++;
-                if ((downloadStep + startIndex == currentCountOfReview) || (countOfRates == currentCountOfReview)) {
-                    Log.d(TAG, "IA HERE ");
-                    commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                    recyclerView.setAdapter(commentAdapter);
-                    progressBar.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
-                    recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                        @Override
-                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                            if (dy > 0) {
-                                visibleItemCount = layoutManager.getChildCount();
-                                totalItemCount = layoutManager.getItemCount();
-                                pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-                                if (loading) {
-                                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                                        loading = false;
-                                        commentsRecycleRollDown();
+              
+                currentCountOfReviewForLocalStorage++;
+
+                if ((downloadStep + startIndex == currentCountOfReviewForLocalStorage) || (countOfRates == currentCountOfReviewForLocalStorage)) {
+                    if(isFirstDownload) {
+                        isFirstDownload = false;
+                        commentAdapter = new CommentAdapter(commentList.size(), commentList);
+                        recyclerView.setAdapter(commentAdapter);
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                            @Override
+                            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                                if (dy > 0) {
+                                    visibleItemCount = layoutManager.getChildCount();
+                                    totalItemCount = layoutManager.getItemCount();
+                                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+                                    if (loading) {
+                                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                                            loading = false;
+                                            commentsRecycleRollDown();
+                                        }
                                     }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }else {
+                        commentAdapter.refreshData(commentList.size(),commentList);
+                        loading = true;
+                    }
                 }
             }
 
@@ -419,6 +427,7 @@ public class Comments extends AppCompatActivity {
     private void commentsRecycleRollDown() {
         startIndex += downloadStep;
         loadCommentsForService();
+
     }
 
     private void loadCommentsForUser() {
