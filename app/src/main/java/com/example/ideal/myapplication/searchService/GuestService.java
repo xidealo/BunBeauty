@@ -380,7 +380,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void getInfoAboutService(String serviceId) {
-
         // все осервисе, оценка, количество оценок
         // проверка на удаленный номер
         String sqlQuery =
@@ -415,6 +414,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
             countOfRatesForComments = cursor.getString(indexCountOfRates);
             createRatingBar(serviceRating, countOfRates);
+            Log.d(TAG, "getInfoAboutService: " + serviceId);
             createPhotoFeed(serviceId);
         }
         cursor.close();
@@ -456,10 +456,10 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         if (cursor.moveToFirst()) {
             do {
+                Log.d(TAG, "IN CREATE FEED");
                 int indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS);
 
                 String photoLink = cursor.getString(indexPhotoLink);
-
 
                 ImageView serviceImage = new ImageView(getApplicationContext());
 
@@ -487,6 +487,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         buildPanels();
         imageFeedLayout.removeAllViews();
+        createPhotoFeed(serviceId);
     }
 
     private String getServiceName() {

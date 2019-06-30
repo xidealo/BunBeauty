@@ -78,6 +78,7 @@ public class Subscribers extends AppCompatActivity {
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
         panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
+
         if(currentCountOfSub==0){
             subsText.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
@@ -88,6 +89,7 @@ public class Subscribers extends AppCompatActivity {
             } else {
                 getMySubscriptions();
             }
+
         }
 
         /*else {
