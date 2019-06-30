@@ -78,6 +78,7 @@ public class Comments extends AppCompatActivity {
     private long countOfRates;
     private long currentCountOfReview;
     private long currentCountOfReviewForLocalStorage;
+    private long countBeforeThreeDays;
     private int pastVisibleItems, visibleItemCount, totalItemCount;
     private boolean loading = true;
     private boolean addedReview;
@@ -96,7 +97,7 @@ public class Comments extends AppCompatActivity {
         init();
 
         startIndex = 0;
-        downloadStep = 7;
+        downloadStep = 6;
 
         String type = getIntent().getStringExtra(TYPE);
         if (type.equals(REVIEW_FOR_SERVICE)) {
@@ -177,7 +178,7 @@ public class Comments extends AppCompatActivity {
                                             .child(REVIEWS);
                                     reviewRef.addChildEventListener(new ChildEventListener() {
                                         @Override
-                                        public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
+                                        public void onChildAdded(@NonNull final DataSnapshot reviewSnapshot, @Nullable String s) {
 
                                             if (currentCountOfReview < startIndex) {
                                                 currentCountOfReview++;
@@ -187,24 +188,34 @@ public class Comments extends AppCompatActivity {
                                             if (currentCountOfReview >= startIndex + downloadStep) {
                                                 return;
                                             }
-                                            // set data in local storage
-                                            LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
-                                            LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
-                                            LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database);
-                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
 
                                             currentCountOfReview++;
+
+                                            additionToLocalStorage = new Thread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    // set data in local storage
+                                                    LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database);
+                                                    LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
+                                                    additionToLocalStorage.interrupt();
+                                                }
+                                            });
+                                            additionToLocalStorage.start();
+                                            LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
+                                            LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
+
                                             //create comment
                                             Comment comment = new Comment();
                                             String ownerCommentId = orderSnapshot.child(USER_ID).getValue(String.class);
                                             comment.setUserId(ownerCommentId);
                                             comment.setReview(reviewSnapshot.child(REVIEW).getValue(String.class));
                                             comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
-                                            comment.setServiceName("Noting");
                                             String workingTimeId = timeSnapshot.getKey();
-
+                                            //set comment
                                             if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                                                createServiceComment(comment,ownerCommentId);
+                                                createComment(comment, ownerCommentId);
+                                            } else {
+                                                countBeforeThreeDays++;
                                             }
 
                                         }
@@ -303,7 +314,6 @@ public class Comments extends AppCompatActivity {
 
 
     private void getCommentsForService(String _serviceId) {
-        currentCountOfReviewForLocalStorage = 0;
 
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_REVIEW_REVIEWS + ", "
@@ -350,19 +360,16 @@ public class Comments extends AppCompatActivity {
 
         if (cursor.moveToFirst()) {
             int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
+            int reviewIndex = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
+            int ratingIndex = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+            int ownerIdIndex = cursor.getColumnIndex(OWNER_ID);
             do {
-                final int reviewIndex = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
-                final int ratingIndex = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-                final int ownerIdIndex = cursor.getColumnIndex(OWNER_ID);
-                final int nameServiceIndex = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
                 String ownerId = cursor.getString(ownerIdIndex);
 
                 Comment comment = new Comment();
                 comment.setUserId(ownerId);
                 comment.setReview(cursor.getString(reviewIndex));
                 comment.setRating(cursor.getFloat(ratingIndex));
-                comment.setServiceName(cursor.getString(nameServiceIndex));
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 //String orderId = cursor.getString(indexOrderId);
 
@@ -370,7 +377,10 @@ public class Comments extends AppCompatActivity {
                 //   createServiceComment(cursor);
                 // } else {
                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                    createServiceComment(comment,ownerId);
+                    createComment(comment, ownerId);
+                }
+                else {
+                    countBeforeThreeDays++;
                 }
                 // }
 
@@ -384,24 +394,26 @@ public class Comments extends AppCompatActivity {
         cursor.close();
     }
 
-    private void createServiceComment(final Comment comment, String ownerCommentId) {
-
+    private void createComment(final Comment comment, String ownerCommentId) {
         addedReview = true;
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
+        DatabaseReference myRef = FirebaseDatabase
+                .getInstance()
+                .getReference(USERS)
                 .child(ownerCommentId);
-
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
                 //подгрузить фотку
-                LoadingUserElementData.loadUserNameAndPhoto(userSnapshot,database);
+                LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 commentList.add(comment);
-              
-                currentCountOfReviewForLocalStorage++;
 
-                if ((downloadStep + startIndex == currentCountOfReviewForLocalStorage) || (countOfRates == currentCountOfReviewForLocalStorage)) {
-                    if(isFirstDownload) {
+                currentCountOfReviewForLocalStorage++;
+                boolean isStep = downloadStep + startIndex - countBeforeThreeDays == currentCountOfReviewForLocalStorage;
+                boolean isAllReview = countOfRates - countBeforeThreeDays == currentCountOfReviewForLocalStorage;
+
+                if (isStep || isAllReview) {
+                    if (isFirstDownload) {
                         isFirstDownload = false;
                         commentAdapter = new CommentAdapter(commentList.size(), commentList);
                         recyclerView.setAdapter(commentAdapter);
@@ -423,8 +435,8 @@ public class Comments extends AppCompatActivity {
                                 }
                             }
                         });
-                    }else {
-                        commentAdapter.refreshData(commentList.size(),commentList);
+                    } else {
+                        commentAdapter.refreshData(commentList.size(), commentList);
                         loading = true;
                     }
                 }
@@ -441,99 +453,21 @@ public class Comments extends AppCompatActivity {
     private void commentsRecycleRollDown() {
         startIndex += downloadStep;
         loadCommentsForService();
-        Log.d(TAG, "commentsRecycleRollDown: ");
     }
 
     private void loadCommentsForUser() {
-
+        currentCountOfReview = 0;
         final DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference(USERS)
                 .child(ownerId)
                 .child(ORDERS);
 
         orderRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-
+            public void onChildAdded(@NonNull final DataSnapshot orderSnapshot, @Nullable String s) {
                 final String orderId = orderSnapshot.getKey();
-
                 final String serviceId = (String) orderSnapshot.child(SERVICE_ID).getValue();
                 final String workingDayId = (String) orderSnapshot.child(WORKING_DAY_ID).getValue();
-                final String workingTimeId = (String) orderSnapshot.child(WORKING_TIME_ID).getValue();
                 final String workerId = (String) orderSnapshot.child(WORKER_ID).getValue();
-
-                //Вызываем отдельный поток, который кладет данные в лок БД
-                additionToLocalStorage = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //в таблицу USERS
-                        ContentValues contentValuesUser = new ContentValues();
-                        contentValuesUser.put(DBHelper.KEY_ID, workerId);
-                        boolean hasSomeData = WorkWithLocalStorageApi
-                                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS, workerId);
-                        if (!hasSomeData) {
-                            contentValuesUser.put(DBHelper.KEY_ID, workerId);
-                            database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValuesUser);
-                        }
-
-                        //в таблицу SERVICES
-                        ContentValues contentValuesService = new ContentValues();
-                        contentValuesService.put(DBHelper.KEY_ID, serviceId);
-                        contentValuesService.put(DBHelper.KEY_USER_ID, workerId);
-                        if (WorkWithLocalStorageApi
-                                .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId)) {
-                            database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValuesService,
-                                    DBHelper.KEY_ID + " = ?",
-                                    new String[]{serviceId});
-                        } else {
-                            database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValuesService);
-                        }
-
-                        //в таблицу WorkingDay
-                        ContentValues contentValuesWorkingDay = new ContentValues();
-                        contentValuesWorkingDay.put(DBHelper.KEY_ID, workingDayId);
-                        contentValuesWorkingDay.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
-
-                        if (WorkWithLocalStorageApi
-                                .hasSomeData(DBHelper.TABLE_WORKING_DAYS, workingDayId)) {
-                            database.update(DBHelper.TABLE_WORKING_DAYS, contentValuesWorkingDay,
-                                    DBHelper.KEY_ID + " = ?",
-                                    new String[]{workingDayId});
-                        } else {
-                            database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValuesWorkingDay);
-                        }
-
-                        //в таблицу WorkingTime
-                        ContentValues contentValuesWorkingTime = new ContentValues();
-                        contentValuesWorkingTime.put(DBHelper.KEY_ID, workingTimeId);
-                        contentValuesWorkingTime.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
-
-                        if (WorkWithLocalStorageApi
-                                .hasSomeData(DBHelper.TABLE_WORKING_TIME, workingTimeId)) {
-                            database.update(DBHelper.TABLE_WORKING_TIME, contentValuesWorkingTime,
-                                    DBHelper.KEY_ID + " = ?",
-                                    new String[]{workingTimeId});
-                        } else {
-                            database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValuesWorkingTime);
-                        }
-
-                        //в таблицу Orders
-                        ContentValues contentValuesOrder = new ContentValues();
-                        contentValuesOrder.put(DBHelper.KEY_ID, orderId);
-                        contentValuesOrder.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, workingTimeId);
-                        contentValuesOrder.put(DBHelper.KEY_USER_ID, ownerId);
-
-                        if (WorkWithLocalStorageApi
-                                .hasSomeData(DBHelper.TABLE_ORDERS, orderId)) {
-                            database.update(DBHelper.TABLE_ORDERS, contentValuesOrder,
-                                    DBHelper.KEY_ID + " = ?",
-                                    new String[]{orderId});
-                        } else {
-                            database.insert(DBHelper.TABLE_ORDERS, null, contentValuesOrder);
-                        }
-                        additionToLocalStorage.interrupt();
-                    }
-                });
-                additionToLocalStorage.start();
 
                 final DatabaseReference timeRef = FirebaseDatabase.getInstance()
                         .getReference(USERS)
@@ -550,24 +484,120 @@ public class Comments extends AppCompatActivity {
                 timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot workingDaySnapshot) {
-                        LoadingGuestServiceData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
+                        //add time order to local storage
+                        LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
                         for (DataSnapshot timeSnapshot : workingDaySnapshot.child(WORKING_TIME).getChildren()) {
-                            LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
+                            LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
                         }
 
                         reviewRef.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                currentCountOfReview++;
-                                addReviewInLocalStorage(reviewSnapshot, orderId);
-                                if (countOfRates == currentCountOfReview) {
-                                    getCommentsForUser(ownerId);
+                                if (currentCountOfReview < startIndex) {
+                                    currentCountOfReview++;
+                                    return;
                                 }
+
+                                if (currentCountOfReview >= startIndex + downloadStep) {
+                                    return;
+                                }
+
+                                currentCountOfReview++;
+
+                                final String workingTimeId = (String) orderSnapshot.child(WORKING_TIME_ID).getValue();
+                                //Вызываем отдельный поток, который кладет данные в лок БД
+                                additionToLocalStorage = new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //в таблицу USERS
+                                        ContentValues contentValuesUser = new ContentValues();
+                                        contentValuesUser.put(DBHelper.KEY_ID, workerId);
+                                        boolean hasSomeData = WorkWithLocalStorageApi
+                                                .hasSomeData(DBHelper.TABLE_CONTACTS_USERS, workerId);
+                                        if (!hasSomeData) {
+                                            contentValuesUser.put(DBHelper.KEY_ID, workerId);
+                                            database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValuesUser);
+                                        }
+
+                                        //в таблицу SERVICES
+                                        ContentValues contentValuesService = new ContentValues();
+                                        contentValuesService.put(DBHelper.KEY_ID, serviceId);
+                                        contentValuesService.put(DBHelper.KEY_USER_ID, workerId);
+                                        if (WorkWithLocalStorageApi
+                                                .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId)) {
+                                            database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValuesService,
+                                                    DBHelper.KEY_ID + " = ?",
+                                                    new String[]{serviceId});
+                                        } else {
+                                            database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValuesService);
+                                        }
+
+                                        //в таблицу WorkingDay
+                                        ContentValues contentValuesWorkingDay = new ContentValues();
+                                        contentValuesWorkingDay.put(DBHelper.KEY_ID, workingDayId);
+                                        contentValuesWorkingDay.put(DBHelper.KEY_SERVICE_ID_WORKING_DAYS, serviceId);
+
+                                        if (WorkWithLocalStorageApi
+                                                .hasSomeData(DBHelper.TABLE_WORKING_DAYS, workingDayId)) {
+                                            database.update(DBHelper.TABLE_WORKING_DAYS, contentValuesWorkingDay,
+                                                    DBHelper.KEY_ID + " = ?",
+                                                    new String[]{workingDayId});
+                                        } else {
+                                            database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValuesWorkingDay);
+                                        }
+
+                                        //в таблицу WorkingTime
+                                        ContentValues contentValuesWorkingTime = new ContentValues();
+                                        contentValuesWorkingTime.put(DBHelper.KEY_ID, workingTimeId);
+                                        contentValuesWorkingTime.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
+
+                                        if (WorkWithLocalStorageApi
+                                                .hasSomeData(DBHelper.TABLE_WORKING_TIME, workingTimeId)) {
+                                            database.update(DBHelper.TABLE_WORKING_TIME, contentValuesWorkingTime,
+                                                    DBHelper.KEY_ID + " = ?",
+                                                    new String[]{workingTimeId});
+                                        } else {
+                                            database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValuesWorkingTime);
+                                        }
+
+                                        //в таблицу Orders
+                                        ContentValues contentValuesOrder = new ContentValues();
+                                        contentValuesOrder.put(DBHelper.KEY_ID, orderId);
+                                        contentValuesOrder.put(DBHelper.KEY_WORKING_TIME_ID_ORDERS, workingTimeId);
+                                        contentValuesOrder.put(DBHelper.KEY_USER_ID, ownerId);
+
+                                        if (WorkWithLocalStorageApi
+                                                .hasSomeData(DBHelper.TABLE_ORDERS, orderId)) {
+                                            database.update(DBHelper.TABLE_ORDERS, contentValuesOrder,
+                                                    DBHelper.KEY_ID + " = ?",
+                                                    new String[]{orderId});
+                                        } else {
+                                            database.insert(DBHelper.TABLE_ORDERS, null, contentValuesOrder);
+                                        }
+                                        additionToLocalStorage.interrupt();
+                                    }
+                                });
+                                additionToLocalStorage.start();
+                                LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
+
+                                //create comment
+                                Comment comment = new Comment();
+                                String ownerCommentId = orderSnapshot.child(WORKER_ID).getValue(String.class);
+                                comment.setUserId(ownerCommentId);
+                                comment.setReview(reviewSnapshot.child(REVIEW).getValue(String.class));
+                                comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
+                                //set comment
+                                if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
+                                    createComment(comment, ownerCommentId);
+                                } else {
+                                    countBeforeThreeDays++;
+                                }
+
                             }
 
                             @Override
                             public void onChildChanged(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                addReviewInLocalStorage(reviewSnapshot, orderId);
+                                LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
                             }
 
                             @Override
@@ -618,7 +648,6 @@ public class Comments extends AppCompatActivity {
     }
 
     private void getCommentsForUser(String _userId) {
-        currentCountOfReview = 0;
 
         String mainSqlQuery = "SELECT "
                 + DBHelper.KEY_RATING_REVIEWS + ", "
@@ -665,20 +694,27 @@ public class Comments extends AppCompatActivity {
         final Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_userId, REVIEW_FOR_USER});
         if (cursor.moveToFirst()) {
             int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
+            int reviewIndex = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
+            int ratingIndex = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+            int ownerIdIndex = cursor.getColumnIndex(OWNER_ID);
             do {
+                final Comment comment = new Comment();
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
-                //String orderId = cursor.getString(indexOrderId);
+                String ownerCommentId = cursor.getString(ownerIdIndex);
+                comment.setUserId(ownerCommentId);
+                comment.setReview(cursor.getString(reviewIndex));
+                comment.setRating(cursor.getFloat(ratingIndex));
 
                 //if (workWithLocalStorageApi.isMutualReview(orderId)) {
                 //    createUserComment(cursor);
                 //} else {
                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                    createUserComment(cursor);
+                    createComment(comment, ownerCommentId);
+                }
+                else {
+                    countBeforeThreeDays++;
                 }
                 //}
-                currentCountOfReview++;
-
             } while (cursor.moveToNext());
         } else {
             setWithoutReview();
@@ -687,69 +723,6 @@ public class Comments extends AppCompatActivity {
             setWithoutReview();
         }
         cursor.close();
-    }
-
-    private int currentForCreateUserComment = 0;
-
-    private void createUserComment(final Cursor mainCursor) {
-        final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
-        final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-        final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
-        addedReview = true;
-        String ownerId = mainCursor.getString(ownerIdIndex);
-        DatabaseReference myRef = FirebaseDatabase
-                .getInstance()
-                .getReference(USERS)
-                .child(ownerId);
-        final Comment comment = new Comment();
-        comment.setUserId(mainCursor.getString(ownerIdIndex));
-        comment.setReview(mainCursor.getString(reviewIndex));
-        comment.setRating(mainCursor.getFloat(ratingIndex));
-        comment.setServiceName(REVIEW_FOR_USER);
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
-                LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
-                commentList.add(comment);
-                currentForCreateUserComment++;
-                if (countOfRates == currentForCreateUserComment) {
-                    commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                    recyclerView.setAdapter(commentAdapter);
-                    progressBar.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void addReviewInLocalStorage(DataSnapshot reviewSnapshot, String orderId) {
-
-        ContentValues contentValues = new ContentValues();
-        String reviewId = reviewSnapshot.getKey();
-        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, String.valueOf(reviewSnapshot.child(REVIEW).getValue()));
-        contentValues.put(DBHelper.KEY_RATING_REVIEWS, String.valueOf(reviewSnapshot.child(RATING).getValue()));
-        contentValues.put(DBHelper.KEY_TYPE_REVIEWS, String.valueOf(reviewSnapshot.child(TYPE).getValue()));
-        contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
-
-        boolean hasSomeData = WorkWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_REVIEWS, reviewId);
-
-        if (hasSomeData) {
-            database.update(DBHelper.TABLE_REVIEWS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{reviewId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, reviewId);
-            database.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
-        }
     }
 
     private void setWithoutReview() {

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -35,7 +36,6 @@ import java.util.ArrayList;
 public class Subscribers extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
-    private static final String STATUS = "status";
     private static final String SUBSCRIPTIONS = "subscriptions";
     private static final String USERS = "users";
     private static final String WORKER_ID = "worker id";
@@ -43,7 +43,8 @@ public class Subscribers extends AppCompatActivity {
     private TextView subsText;
     private DBHelper dbHelper;
     private FragmentManager manager;
-    private long countOfLoadedUser = 0;
+    private long countOfLoadedUser;
+    private long currentCountOfSub;
 
     private ArrayList<User> userList;
     private RecyclerView recyclerView;
@@ -65,11 +66,9 @@ public class Subscribers extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
         dbHelper = new DBHelper(this);
         database = dbHelper.getReadableDatabase();
-
-        String status = getIntent().getStringExtra(STATUS);
+        currentCountOfSub = SubscriptionsApi.getCountOfSubscriptions(database, getUserId());
     }
 
     @Override
@@ -79,12 +78,16 @@ public class Subscribers extends AppCompatActivity {
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
         panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
-
-        if (isFirst) {
-            loadUserSubscriptions();
-            isFirst=false;
-        } else {
-            getMySubscriptions();
+        if(currentCountOfSub==0){
+            subsText.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        }else {
+            if (isFirst) {
+                loadUserSubscriptions();
+                isFirst = false;
+            } else {
+                getMySubscriptions();
+            }
         }
 
         /*else {
@@ -133,7 +136,6 @@ public class Subscribers extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
@@ -159,7 +161,6 @@ public class Subscribers extends AppCompatActivity {
                 //загрузка данных о пользователе
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 countOfLoadedUser++;
-                long currentCountOfSub = SubscriptionsApi.getCountOfSubscriptions(database, getUserId());
                 if (countOfLoadedUser >= currentCountOfSub) {
                     if (countOfLoadedUser != currentCountOfSub) {
                         updateLocalCountOfSubs(countOfLoadedUser);
@@ -286,6 +287,7 @@ public class Subscribers extends AppCompatActivity {
             subs = "Подписки: " + subsCount;
         }
         subsText.setText(subs);
+        subsText.setVisibility(View.VISIBLE);
     }
 
     private String getUserId() {

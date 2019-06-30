@@ -25,18 +25,15 @@ public class CommentElement implements View.OnClickListener {
     private static final String USER_NAME = "user name";
     private static final String REVIEW = "review";
     private static final String RATING = "rating";
-    private static final String REVIEW_FOR_USER = "review for user";
 
     private TextView reviewText;
     private TextView userNameText;
-    private TextView serviceNameText;
     private ImageView avatarImage;
     private RatingBar ratingBar;
 
     private String userId;
     private String userName;
     private String review;
-    private String serviceName;
     private Context context;
     private View view;
     private float rating;
@@ -46,7 +43,6 @@ public class CommentElement implements View.OnClickListener {
         userName = comment.getUserName();
         review = comment.getReview();
         rating = comment.getRating();
-        serviceName = comment.getServiceName();
         this.context = context;
         this.view= view;
     }
@@ -61,7 +57,6 @@ public class CommentElement implements View.OnClickListener {
         reviewText = view.findViewById(R.id.reviewCommentElementText);
         ratingBar = view.findViewById(R.id.ratingCommentElementBar);
         avatarImage = view.findViewById(R.id.avatarCommentElementImage);
-        serviceNameText = view.findViewById(R.id.serviceNameCommentElementText);
 
         LinearLayout layout = view.findViewById(R.id.commentElementLayout);
 
@@ -81,12 +76,6 @@ public class CommentElement implements View.OnClickListener {
         userNameText.setText(WorkWithStringsApi.cutString(WorkWithStringsApi.doubleCapitalSymbols(userName),18));
         reviewText.setText(abbreviatedReview);
         ratingBar.setRating(rating);
-
-        //если там не лежит константа, а лежит имя сервиса
-        if(!serviceName.equals(REVIEW_FOR_USER)){
-            serviceNameText.setText(WorkWithStringsApi.cutString(serviceName,8));
-            serviceNameText.setVisibility(View.VISIBLE);
-        }
 
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
