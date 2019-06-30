@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -45,7 +44,6 @@ import com.squareup.picasso.Picasso;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class GuestService extends AppCompatActivity implements View.OnClickListener, IPremium {
@@ -414,7 +412,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
             countOfRatesForComments = cursor.getString(indexCountOfRates);
             createRatingBar(serviceRating, countOfRates);
-            Log.d(TAG, "getInfoAboutService: " + serviceId);
             createPhotoFeed(serviceId);
         }
         cursor.close();
@@ -456,7 +453,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
         if (cursor.moveToFirst()) {
             do {
-                Log.d(TAG, "IN CREATE FEED");
                 int indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS);
 
                 String photoLink = cursor.getString(indexPhotoLink);

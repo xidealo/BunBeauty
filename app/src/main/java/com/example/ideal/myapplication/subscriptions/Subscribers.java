@@ -69,6 +69,11 @@ public class Subscribers extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         database = dbHelper.getReadableDatabase();
         currentCountOfSub = SubscriptionsApi.getCountOfSubscriptions(database, getUserId());
+
+        if (currentCountOfSub == 0) {
+            subsText.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -78,18 +83,11 @@ public class Subscribers extends AppCompatActivity {
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
         panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
-
-        if(currentCountOfSub==0){
-            subsText.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-        }else {
-            if (isFirst) {
-                loadUserSubscriptions();
-                isFirst = false;
-            } else {
-                getMySubscriptions();
-            }
-
+        if (isFirst) {
+            loadUserSubscriptions();
+            isFirst = false;
+        } else {
+            getMySubscriptions();
         }
 
         /*else {
@@ -109,10 +107,12 @@ public class Subscribers extends AppCompatActivity {
         userRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
+                userList.clear();
                 String id = userSnapshot.getKey();
                 String workerId = String.valueOf(userSnapshot.child(WORKER_ID).getValue());
-                loadUserById(workerId);
                 addUserSubscriptionInLocalStorage(id, workerId);
+                loadUserById(workerId);
+                Log.d(TAG, "SUB: ");
             }
 
             @Override
@@ -129,6 +129,7 @@ public class Subscribers extends AppCompatActivity {
                         new String[]{id});
                 countOfLoadedUser--;
                 updateLocalCountOfSubs(countOfLoadedUser);
+                updateSubscriptionText();
             }
 
             @Override
@@ -163,10 +164,10 @@ public class Subscribers extends AppCompatActivity {
                 //загрузка данных о пользователе
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 countOfLoadedUser++;
+                Log.d(TAG, "countOfLoadedUser: " + countOfLoadedUser);
+                Log.d(TAG, "countOfLoadedUser: " + currentCountOfSub);
                 if (countOfLoadedUser >= currentCountOfSub) {
-                    if (countOfLoadedUser != currentCountOfSub) {
-                        updateLocalCountOfSubs(countOfLoadedUser);
-                    }
+                    updateLocalCountOfSubs(countOfLoadedUser);
                     getMySubscriptions();
                 }
             }
@@ -252,7 +253,6 @@ public class Subscribers extends AppCompatActivity {
             } while (subsCursor.moveToNext());
         }
         SubscriptionAdapter subscribersAdapter = new SubscriptionAdapter(userList.size(), userList);
-        //опускаемся к полседнему элементу
         recyclerView.setAdapter(subscribersAdapter);
         progressBar.setVisibility(View.GONE);
     }
@@ -288,6 +288,7 @@ public class Subscribers extends AppCompatActivity {
         if (subsCount != 0) {
             subs = "Подписки: " + subsCount;
         }
+        Log.d(TAG, "SUBS" + subs);
         subsText.setText(subs);
         subsText.setVisibility(View.VISIBLE);
     }
