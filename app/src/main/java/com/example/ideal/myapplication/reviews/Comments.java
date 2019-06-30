@@ -55,6 +55,9 @@ public class Comments extends AppCompatActivity {
     private static final String COUNT_OF_RATES = "count of rates";
     private static final String ORDERS = "orders";
 
+    private static final String USER_ID = "user id";
+
+
     private static final String WORKING_DAY_ID = "working day id";
     private static final String WORKING_TIME_ID = "working time id";
     private static final String WORKER_ID = "worker id";
@@ -78,6 +81,7 @@ public class Comments extends AppCompatActivity {
     private int pastVisibleItems, visibleItemCount, totalItemCount;
     private boolean loading = true;
     private boolean addedReview;
+    private boolean isFirstDownload = true;
     private Thread additionToLocalStorage;
     private SQLiteDatabase database;
     private LinearLayoutManager layoutManager;
@@ -134,7 +138,6 @@ public class Comments extends AppCompatActivity {
     }
 
     private void loadCommentsForService() {
-        commentList.clear();
         currentCountOfReview = 0;
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference workingDaysRef = firebaseDatabase.getReference(USERS)
@@ -184,15 +187,24 @@ public class Comments extends AppCompatActivity {
                                             if (currentCountOfReview >= startIndex + downloadStep) {
                                                 return;
                                             }
-
+                                            // set data in local storage
                                             LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
                                             LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
-                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
                                             LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database);
-                                            currentCountOfReview++;
+                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
 
-                                            if ((downloadStep + startIndex == currentCountOfReview) || (countOfRates == currentCountOfReview)) {
-                                                getCommentsForService(serviceId);
+                                            currentCountOfReview++;
+                                            //create comment
+                                            Comment comment = new Comment();
+                                            String ownerCommentId = orderSnapshot.child(USER_ID).getValue(String.class);
+                                            comment.setUserId(ownerCommentId);
+                                            comment.setReview(reviewSnapshot.child(REVIEW).getValue(String.class));
+                                            comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
+                                            comment.setServiceName("Noting");
+                                            String workingTimeId = timeSnapshot.getKey();
+
+                                            if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
+                                                createServiceComment(comment,ownerCommentId);
                                             }
 
                                         }
@@ -340,6 +352,17 @@ public class Comments extends AppCompatActivity {
             int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
             int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
+                final int reviewIndex = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
+                final int ratingIndex = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+                final int ownerIdIndex = cursor.getColumnIndex(OWNER_ID);
+                final int nameServiceIndex = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
+                String ownerId = cursor.getString(ownerIdIndex);
+
+                Comment comment = new Comment();
+                comment.setUserId(ownerId);
+                comment.setReview(cursor.getString(reviewIndex));
+                comment.setRating(cursor.getFloat(ratingIndex));
+                comment.setServiceName(cursor.getString(nameServiceIndex));
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 //String orderId = cursor.getString(indexOrderId);
 
@@ -347,7 +370,7 @@ public class Comments extends AppCompatActivity {
                 //   createServiceComment(cursor);
                 // } else {
                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                    createServiceComment(cursor);
+                    createServiceComment(comment,ownerId);
                 }
                 // }
 
@@ -360,28 +383,19 @@ public class Comments extends AppCompatActivity {
         }
         cursor.close();
     }
-    private boolean isFirstDownload = true;
 
-    private void createServiceComment(final Cursor mainCursor) {
-        final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
-        final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-        final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
-        final int nameServiceIndex = mainCursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
-        String ownerId = mainCursor.getString(ownerIdIndex);
+    private void createServiceComment(final Comment comment, String ownerCommentId) {
+
         addedReview = true;
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
-                .child(ownerId);
-        final Comment comment = new Comment();
-        comment.setUserId(mainCursor.getString(ownerIdIndex));
-        comment.setReview(mainCursor.getString(reviewIndex));
-        comment.setRating(mainCursor.getFloat(ratingIndex));
-        comment.setServiceName(mainCursor.getString(nameServiceIndex));
+                .child(ownerCommentId);
+
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
                 //подгрузить фотку
-
+                LoadingUserElementData.loadUserNameAndPhoto(userSnapshot,database);
                 commentList.add(comment);
               
                 currentCountOfReviewForLocalStorage++;
@@ -427,7 +441,7 @@ public class Comments extends AppCompatActivity {
     private void commentsRecycleRollDown() {
         startIndex += downloadStep;
         loadCommentsForService();
-
+        Log.d(TAG, "commentsRecycleRollDown: ");
     }
 
     private void loadCommentsForUser() {
