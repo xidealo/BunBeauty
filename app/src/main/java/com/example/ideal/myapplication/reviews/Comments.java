@@ -106,7 +106,6 @@ public class Comments extends AppCompatActivity {
             countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
             if (!serviceIdsFirstSetComments.contains(serviceId)) {
                 loadCommentsForService();
-                serviceIdsFirstSetComments.add(serviceId);
             } else {
                 getCommentsForService(serviceId);
             }
@@ -693,9 +692,15 @@ public class Comments extends AppCompatActivity {
                 currentCountOfReviewForLocalStorage++;
                 boolean isStep = downloadStep + startIndex - countBeforeThreeDays == currentCountOfReviewForLocalStorage;
                 boolean isAllReview = countOfRates - countBeforeThreeDays == currentCountOfReviewForLocalStorage;
-
                 if (isStep || isAllReview) {
                     if (isFirstDownload) {
+                        //sort for first time
+                        if (!serviceIdsFirstSetComments.contains(serviceId)) {
+                            Collections.sort(commentList);
+                            Collections.reverse(commentList);
+                            serviceIdsFirstSetComments.add(serviceId);
+                        }
+
                         isFirstDownload = false;
                         commentAdapter = new CommentAdapter(commentList.size(), commentList);
                         recyclerView.setAdapter(commentAdapter);

@@ -1,6 +1,6 @@
 package com.example.ideal.myapplication.fragments.objects;
 
-public class Comment {
+public class Comment  implements Comparable<Comment>  {
     private String userId;
     private String userName;
     private float rating;
@@ -54,5 +54,10 @@ public class Comment {
 
     public String getReview() {
         return review;
+    }
+
+    @Override
+    public int compareTo(Comment otherComment) {
+        return time.compareTo(otherComment.time);
     }
 }
