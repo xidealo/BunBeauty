@@ -1,6 +1,6 @@
 package com.example.ideal.myapplication.fragments.objects;
 
-public class Comment  implements Comparable<Comment>  {
+public class Comment implements Comparable<Comment> {
     private String userId;
     private String userName;
     private float rating;

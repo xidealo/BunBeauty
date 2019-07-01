@@ -105,8 +105,10 @@ public class Comments extends AppCompatActivity {
         if (type.equals(REVIEW_FOR_SERVICE)) {
             countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
             if (!serviceIdsFirstSetComments.contains(serviceId)) {
+                Log.d(TAG, "onCreate: ");
                 loadCommentsForService();
             } else {
+                Log.d(TAG, "GET");
                 getCommentsForService(serviceId);
             }
         } else {
@@ -156,7 +158,6 @@ public class Comments extends AppCompatActivity {
                 long dateLong = WorkWithTimeApi.getMillisecondsStringDateYMD(workingDaySnapshot.child(DATE).getValue(String.class));
                 //Важное отличие от GS, загрузка только просроченных дней
                 if (dateLong < sysdateLong) {
-
                     final DatabaseReference workingTimesRef = workingDaysRef
                             .child(workingDayId)
                             .child(WORKING_TIME);
@@ -174,13 +175,12 @@ public class Comments extends AppCompatActivity {
                                 public void onChildAdded(@NonNull final DataSnapshot orderSnapshot, @Nullable String s) {
                                     // ревью
                                     final String orderId = orderSnapshot.getKey();
-                                    DatabaseReference reviewRef = ordersRef
+                                    final DatabaseReference reviewRef = ordersRef
                                             .child(orderId)
                                             .child(REVIEWS);
                                     reviewRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull final DataSnapshot reviewSnapshot, @Nullable String s) {
-
                                             if (currentCountOfReview < startIndex) {
                                                 currentCountOfReview++;
                                                 return;
@@ -212,6 +212,8 @@ public class Comments extends AppCompatActivity {
                                             comment.setReview(reviewSnapshot.child(REVIEW).getValue(String.class));
                                             comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
                                             comment.setTime(reviewSnapshot.child(TIME).getValue(String.class));
+                                            //if dont have rated time
+                                            if(comment.getTime()==null) return;
                                             String workingTimeId = timeSnapshot.getKey();
                                             //set comment
                                             if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
@@ -537,6 +539,7 @@ public class Comments extends AppCompatActivity {
                                 comment.setReview(reviewSnapshot.child(REVIEW).getValue(String.class));
                                 comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
                                 comment.setTime(reviewSnapshot.child(TIME).getValue(String.class));
+                                if(comment.getTime()==null) return;
                                 //set comment
                                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
                                     createComment(comment, ownerCommentId);
