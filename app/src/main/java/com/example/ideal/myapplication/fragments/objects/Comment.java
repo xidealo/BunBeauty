@@ -6,10 +6,20 @@ public class Comment {
     private float rating;
     private String review;
     private String serviceName;
+    private String time;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public void setUserId(String _id) {
         userId = _id;
     }
+
     public void setServiceName(String _serviceName) {
         serviceName = _serviceName;
     }

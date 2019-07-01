@@ -33,7 +33,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Comments extends AppCompatActivity {
 
@@ -54,7 +56,7 @@ public class Comments extends AppCompatActivity {
     private static final String DATE = "date";
     private static final String COUNT_OF_RATES = "count of rates";
     private static final String ORDERS = "orders";
-
+    private static final String TIME = "time";
     private static final String USER_ID = "user id";
 
 
@@ -210,6 +212,7 @@ public class Comments extends AppCompatActivity {
                                             comment.setUserId(ownerCommentId);
                                             comment.setReview(reviewSnapshot.child(REVIEW).getValue(String.class));
                                             comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
+                                            comment.setTime(reviewSnapshot.child(TIME).getValue(String.class));
                                             String workingTimeId = timeSnapshot.getKey();
                                             //set comment
                                             if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
@@ -217,6 +220,7 @@ public class Comments extends AppCompatActivity {
                                             } else {
                                                 countBeforeThreeDays++;
                                             }
+
 
                                         }
 
@@ -354,7 +358,9 @@ public class Comments extends AppCompatActivity {
                 + " AND "
                 + DBHelper.KEY_TYPE_REVIEWS + " = ? "
                 + " AND "
-                + DBHelper.KEY_RATING_REVIEWS + " != 0 ";
+                + DBHelper.KEY_RATING_REVIEWS + " != 0 "
+                + " ORDER BY " + DBHelper.KEY_TIME_REVIEWS + " DESC";
+
 
         Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_serviceId, REVIEW_FOR_SERVICE});
 
@@ -377,6 +383,7 @@ public class Comments extends AppCompatActivity {
                 //   createServiceComment(cursor);
                 // } else {
                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
+                    Log.d(TAG, "getCommentsForService: ");
                     createComment(comment, ownerId);
                 }
                 else {
@@ -392,62 +399,6 @@ public class Comments extends AppCompatActivity {
             setWithoutReview();
         }
         cursor.close();
-    }
-
-    private void createComment(final Comment comment, String ownerCommentId) {
-        addedReview = true;
-        DatabaseReference myRef = FirebaseDatabase
-                .getInstance()
-                .getReference(USERS)
-                .child(ownerCommentId);
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
-                //подгрузить фотку
-                LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
-                commentList.add(comment);
-
-                currentCountOfReviewForLocalStorage++;
-                boolean isStep = downloadStep + startIndex - countBeforeThreeDays == currentCountOfReviewForLocalStorage;
-                boolean isAllReview = countOfRates - countBeforeThreeDays == currentCountOfReviewForLocalStorage;
-
-                if (isStep || isAllReview) {
-                    if (isFirstDownload) {
-                        isFirstDownload = false;
-                        commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                        recyclerView.setAdapter(commentAdapter);
-                        progressBar.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                            @Override
-                            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                                if (dy > 0) {
-                                    visibleItemCount = layoutManager.getChildCount();
-                                    totalItemCount = layoutManager.getItemCount();
-                                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-                                    if (loading) {
-                                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                                            loading = false;
-                                            commentsRecycleRollDown();
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    } else {
-                        commentAdapter.refreshData(commentList.size(), commentList);
-                        loading = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
     }
 
     private void commentsRecycleRollDown() {
@@ -586,6 +537,7 @@ public class Comments extends AppCompatActivity {
                                 comment.setUserId(ownerCommentId);
                                 comment.setReview(reviewSnapshot.child(REVIEW).getValue(String.class));
                                 comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
+                                comment.setTime(reviewSnapshot.child(TIME).getValue(String.class));
                                 //set comment
                                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
                                     createComment(comment, ownerCommentId);
@@ -723,6 +675,60 @@ public class Comments extends AppCompatActivity {
             setWithoutReview();
         }
         cursor.close();
+    }
+
+    private void createComment(final Comment comment, String ownerCommentId) {
+        addedReview = true;
+        DatabaseReference myRef = FirebaseDatabase
+                .getInstance()
+                .getReference(USERS)
+                .child(ownerCommentId);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
+                //подгрузить фотку
+                LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
+                commentList.add(comment);
+                currentCountOfReviewForLocalStorage++;
+                boolean isStep = downloadStep + startIndex - countBeforeThreeDays == currentCountOfReviewForLocalStorage;
+                boolean isAllReview = countOfRates - countBeforeThreeDays == currentCountOfReviewForLocalStorage;
+
+                if (isStep || isAllReview) {
+                    if (isFirstDownload) {
+                        isFirstDownload = false;
+                        commentAdapter = new CommentAdapter(commentList.size(), commentList);
+                        recyclerView.setAdapter(commentAdapter);
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                            @Override
+                            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                                if (dy > 0) {
+                                    visibleItemCount = layoutManager.getChildCount();
+                                    totalItemCount = layoutManager.getItemCount();
+                                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+                                    if (loading) {
+                                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                                            loading = false;
+                                            commentsRecycleRollDown();
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        commentAdapter.refreshData(commentList.size(), commentList);
+                        loading = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void setWithoutReview() {

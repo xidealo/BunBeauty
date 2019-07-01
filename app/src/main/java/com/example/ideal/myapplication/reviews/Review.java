@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.RatingReview;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +39,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
     private static final String REVIEW = "review";
     private static final String RATING = "rating";
     private static final String REVIEW_FOR_USER = "review for user";
+    private static final String TIME = "time";
 
     private static final String USERS = "users";
     private static final String SERVICES = "services";
@@ -260,9 +263,9 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
             }
 
             String textOfReview = reviewInput.getText().toString();
-
             items.put(RATING, myRating);
             items.put(REVIEW, textOfReview);
+            items.put(TIME, WorkWithTimeApi.getDateInFormatYMDHMS(new Date()));
             myRef.updateChildren(items);
             items.clear();
 

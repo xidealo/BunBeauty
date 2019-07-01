@@ -87,6 +87,7 @@ public class LoadingCommentsData {
         contentValues.put(DBHelper.KEY_RATING_REVIEWS, String.valueOf(reviewSnapshot.child(RATING).getValue()));
         contentValues.put(DBHelper.KEY_TYPE_REVIEWS, String.valueOf(reviewSnapshot.child(TYPE).getValue()));
         contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
+        contentValues.put(DBHelper.KEY_TIME_REVIEWS,  String.valueOf(reviewSnapshot.child(TIME).getValue()));
 
         boolean hasSomeData = WorkWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_REVIEWS, reviewId);

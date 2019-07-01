@@ -344,7 +344,7 @@ public class MyAuthorization {
         Intent intent = new Intent(context, Profile.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
-        context.startService(new Intent(context, MyService.class));
+        //context.startService(new Intent(context, MyService.class));
     }
 
 }
