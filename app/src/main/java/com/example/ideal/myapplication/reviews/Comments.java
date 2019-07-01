@@ -20,7 +20,6 @@ import com.example.ideal.myapplication.adapters.CommentAdapter;
 import com.example.ideal.myapplication.fragments.objects.Comment;
 import com.example.ideal.myapplication.helpApi.LoadingCommentsData;
 import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
-import com.example.ideal.myapplication.helpApi.LoadingProfileData;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
@@ -33,7 +32,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -57,8 +55,8 @@ public class Comments extends AppCompatActivity {
     private static final String COUNT_OF_RATES = "count of rates";
     private static final String ORDERS = "orders";
     private static final String TIME = "time";
+    private static final String SORT_TIME = "sort time";
     private static final String USER_ID = "user id";
-
 
     private static final String WORKING_DAY_ID = "working day id";
     private static final String WORKING_TIME_ID = "working time id";
@@ -77,7 +75,9 @@ public class Comments extends AppCompatActivity {
     private CommentAdapter commentAdapter;
     private String serviceId;
     private String ownerId;
+    private String type;
     private long countOfRates;
+    private long stepCounter;
     private long currentCountOfReview;
     private long currentCountOfReviewForLocalStorage;
     private long countBeforeThreeDays;
@@ -90,7 +90,7 @@ public class Comments extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
     private static ArrayList<String> serviceIdsFirstSetComments = new ArrayList<>();
     private static ArrayList<String> userIdsFirstSetComments = new ArrayList<>();
-    private int startIndex, downloadStep;
+    private long rightBorder, downloadStep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,21 +98,20 @@ public class Comments extends AppCompatActivity {
         setContentView(R.layout.comments);
         init();
 
-        startIndex = 0;
         downloadStep = 6;
 
-        String type = getIntent().getStringExtra(TYPE);
+        type = getIntent().getStringExtra(TYPE);
         if (type.equals(REVIEW_FOR_SERVICE)) {
             countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
+            rightBorder = countOfRates;
             if (!serviceIdsFirstSetComments.contains(serviceId)) {
-                Log.d(TAG, "onCreate: ");
                 loadCommentsForService();
             } else {
-                Log.d(TAG, "GET");
                 getCommentsForService(serviceId);
             }
         } else {
             countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
+            rightBorder = countOfRates;
             //комментарии для юзера
             if (!userIdsFirstSetComments.contains(ownerId)) {
                 loadCommentsForUser();
@@ -136,7 +135,6 @@ public class Comments extends AppCompatActivity {
         commentList = new ArrayList<>();
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
     }
@@ -167,31 +165,34 @@ public class Comments extends AppCompatActivity {
                         public void onChildAdded(@NonNull final DataSnapshot timeSnapshot, @Nullable String s) {
                             //при добавлении нового времени
                             final String timeId = timeSnapshot.getKey();
+
                             final DatabaseReference ordersRef = workingTimesRef
                                     .child(timeId)
                                     .child(ORDERS);
+
                             ordersRef.addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull final DataSnapshot orderSnapshot, @Nullable String s) {
-                                    // ревью
                                     final String orderId = orderSnapshot.getKey();
                                     final DatabaseReference reviewRef = ordersRef
                                             .child(orderId)
                                             .child(REVIEWS);
+
                                     reviewRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull final DataSnapshot reviewSnapshot, @Nullable String s) {
-                                            if (currentCountOfReview < startIndex) {
+                                            //rightBorder - downloadStep - left
+                                            //rightBorder - right
+                                            if (currentCountOfReview < rightBorder - downloadStep) {
                                                 currentCountOfReview++;
                                                 return;
                                             }
 
-                                            if (currentCountOfReview >= startIndex + downloadStep) {
+                                            if (currentCountOfReview >= rightBorder) {
                                                 return;
                                             }
 
                                             currentCountOfReview++;
-
                                             additionToLocalStorage = new Thread(new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -204,16 +205,15 @@ public class Comments extends AppCompatActivity {
                                             additionToLocalStorage.start();
                                             LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
                                             LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
-
                                             //create comment
                                             Comment comment = new Comment();
                                             String ownerCommentId = orderSnapshot.child(USER_ID).getValue(String.class);
                                             comment.setUserId(ownerCommentId);
                                             comment.setReview(reviewSnapshot.child(REVIEW).getValue(String.class));
                                             comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
-                                            comment.setTime(reviewSnapshot.child(TIME).getValue(String.class));
-                                            //if dont have rated time
-                                            if(comment.getTime()==null) return;
+                                            comment.setTime(String.valueOf(reviewSnapshot.child(SORT_TIME).getValue(Long.class)));
+                                            //if don't have rated time
+                                            if (comment.getTime() == null) return;
                                             String workingTimeId = timeSnapshot.getKey();
                                             //set comment
                                             if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
@@ -221,8 +221,6 @@ public class Comments extends AppCompatActivity {
                                             } else {
                                                 countBeforeThreeDays++;
                                             }
-
-
                                         }
 
                                         @Override
@@ -384,10 +382,8 @@ public class Comments extends AppCompatActivity {
                 //   createServiceComment(cursor);
                 // } else {
                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                    Log.d(TAG, "getCommentsForService: ");
                     createComment(comment, ownerId);
-                }
-                else {
+                } else {
                     countBeforeThreeDays++;
                 }
                 // }
@@ -403,8 +399,15 @@ public class Comments extends AppCompatActivity {
     }
 
     private void commentsRecycleRollDown() {
-        startIndex += downloadStep;
-        loadCommentsForService();
+        stepCounter += downloadStep;
+        rightBorder -= downloadStep;
+        if (type.equals(REVIEW_FOR_SERVICE)) {
+            loadCommentsForService();
+        }
+        else {
+            loadCommentsForUser();
+        }
+
     }
 
     private void loadCommentsForUser() {
@@ -420,7 +423,6 @@ public class Comments extends AppCompatActivity {
                 final String serviceId = (String) orderSnapshot.child(SERVICE_ID).getValue();
                 final String workingDayId = (String) orderSnapshot.child(WORKING_DAY_ID).getValue();
                 final String workerId = (String) orderSnapshot.child(WORKER_ID).getValue();
-
                 final DatabaseReference timeRef = FirebaseDatabase.getInstance()
                         .getReference(USERS)
                         .child(workerId)
@@ -445,12 +447,14 @@ public class Comments extends AppCompatActivity {
                         reviewRef.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                if (currentCountOfReview < startIndex) {
+                                //rightBorder - downloadStep - left
+                                //rightBorder - right
+                                if (currentCountOfReview < rightBorder - downloadStep) {
                                     currentCountOfReview++;
                                     return;
                                 }
 
-                                if (currentCountOfReview >= startIndex + downloadStep) {
+                                if (currentCountOfReview >= rightBorder) {
                                     return;
                                 }
 
@@ -538,8 +542,9 @@ public class Comments extends AppCompatActivity {
                                 comment.setUserId(ownerCommentId);
                                 comment.setReview(reviewSnapshot.child(REVIEW).getValue(String.class));
                                 comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
-                                comment.setTime(reviewSnapshot.child(TIME).getValue(String.class));
-                                if(comment.getTime()==null) return;
+                                comment.setTime(String.valueOf(reviewSnapshot.child(SORT_TIME).getValue(Long.class)));
+                                Log.d(TAG, "onChildAdded: ");
+                                if (comment.getTime() == null) return;
                                 //set comment
                                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
                                     createComment(comment, ownerCommentId);
@@ -664,8 +669,7 @@ public class Comments extends AppCompatActivity {
                 //} else {
                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
                     createComment(comment, ownerCommentId);
-                }
-                else {
+                } else {
                     countBeforeThreeDays++;
                 }
                 //}
@@ -693,9 +697,12 @@ public class Comments extends AppCompatActivity {
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 commentList.add(comment);
                 currentCountOfReviewForLocalStorage++;
-                boolean isStep = downloadStep + startIndex - countBeforeThreeDays == currentCountOfReviewForLocalStorage;
+                //rightBorder - downloadStep - left
+                //rightBorder - right
+                boolean isStep = stepCounter + downloadStep - countBeforeThreeDays == currentCountOfReviewForLocalStorage;
                 boolean isAllReview = countOfRates - countBeforeThreeDays == currentCountOfReviewForLocalStorage;
                 if (isStep || isAllReview) {
+                    Log.d(TAG, "KEK");
                     if (isFirstDownload) {
                         //sort for first time
                         if (!serviceIdsFirstSetComments.contains(serviceId)) {
@@ -720,6 +727,7 @@ public class Comments extends AppCompatActivity {
                                         if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                                             loading = false;
                                             commentsRecycleRollDown();
+                                            Log.d(TAG, "L)OL");
                                         }
                                     }
                                 }

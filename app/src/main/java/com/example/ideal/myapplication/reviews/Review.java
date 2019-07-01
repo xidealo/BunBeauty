@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,7 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +37,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
     private static final String REVIEW = "review";
     private static final String RATING = "rating";
     private static final String REVIEW_FOR_USER = "review for user";
-    private static final String TIME = "time";
+    private static final String SORT_TIME = "sort time";
 
     private static final String USERS = "users";
     private static final String SERVICES = "services";
@@ -266,7 +264,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
             String textOfReview = reviewInput.getText().toString();
             items.put(RATING, myRating);
             items.put(REVIEW, textOfReview);
-            items.put(TIME, WorkWithTimeApi.getDateInFormatYMDHMS(new Date()));
+            items.put(SORT_TIME, WorkWithTimeApi.getSysdateLong());
             myRef.updateChildren(items);
             items.clear();
 

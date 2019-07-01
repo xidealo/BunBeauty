@@ -9,8 +9,8 @@ import com.google.firebase.database.DataSnapshot;
 public class LoadingCommentsData {
     private static final String USER_ID = "user id";
     private static final String TIME = "time";
+    private static final String SORT_TIME = "sort time";
     private static final String DATE = "date";
-    private static final String IS_CANCELED = "is canceled";
     private static final String REVIEW = "review";
     private static final String TYPE = "type";
     private static final String RATING = "rating";
@@ -87,7 +87,7 @@ public class LoadingCommentsData {
         contentValues.put(DBHelper.KEY_RATING_REVIEWS, String.valueOf(reviewSnapshot.child(RATING).getValue()));
         contentValues.put(DBHelper.KEY_TYPE_REVIEWS, String.valueOf(reviewSnapshot.child(TYPE).getValue()));
         contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
-        contentValues.put(DBHelper.KEY_TIME_REVIEWS,  String.valueOf(reviewSnapshot.child(TIME).getValue()));
+        contentValues.put(DBHelper.KEY_TIME_REVIEWS,  String.valueOf(reviewSnapshot.child(SORT_TIME).getValue()));
 
         boolean hasSomeData = WorkWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_REVIEWS, reviewId);
