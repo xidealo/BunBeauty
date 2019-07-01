@@ -136,6 +136,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
             // Оценка поставлена
             figureRating();
             setReview();
+            attentionThanksForReview();
         }
         else {
             // Оценка не поставлена
@@ -343,7 +344,9 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
     private void attentionRatingIsNull() {
         Toast.makeText(this,"Пожалуйста, укажите оценку",Toast.LENGTH_SHORT).show();
     }
-
+    private void attentionThanksForReview() {
+        Toast.makeText(this,"Спасибо за улучшение качества сервиса!",Toast.LENGTH_SHORT).show();
+    }
     private void goToMessages() {
         super.onBackPressed();
     }
