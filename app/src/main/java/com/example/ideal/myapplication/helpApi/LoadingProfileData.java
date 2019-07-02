@@ -107,10 +107,10 @@ public class LoadingProfileData {
         int counter = 0;
         for (DataSnapshot serviceList : servicesSnapshot.getChildren()) {
 
-            if (counter < startIndexOfDownload) {
+            /*if (counter < startIndexOfDownload) {
                 counter++;
                 continue;
-            }
+            }*/
 
             String serviceId = serviceList.getKey();
             String serviceName = serviceList.child(NAME).getValue(String.class);
@@ -125,9 +125,9 @@ public class LoadingProfileData {
             addUserServicesInLocalStorage(service, database);
             counter++;
 
-            if (counter >= startIndexOfDownload + countOfDownloads) {
+           /* if (counter >= startIndexOfDownload + countOfDownloads) {
                 break;
-            }
+            }*/
         }
     }
 

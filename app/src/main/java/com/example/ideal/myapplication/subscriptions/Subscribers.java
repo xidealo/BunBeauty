@@ -112,7 +112,6 @@ public class Subscribers extends AppCompatActivity {
                 String workerId = String.valueOf(userSnapshot.child(WORKER_ID).getValue());
                 addUserSubscriptionInLocalStorage(id, workerId);
                 loadUserById(workerId);
-                Log.d(TAG, "SUB: ");
             }
 
             @Override
@@ -164,8 +163,6 @@ public class Subscribers extends AppCompatActivity {
                 //загрузка данных о пользователе
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 countOfLoadedUser++;
-                Log.d(TAG, "countOfLoadedUser: " + countOfLoadedUser);
-                Log.d(TAG, "countOfLoadedUser: " + currentCountOfSub);
                 if (countOfLoadedUser >= currentCountOfSub) {
                     updateLocalCountOfSubs(countOfLoadedUser);
                     getMySubscriptions();

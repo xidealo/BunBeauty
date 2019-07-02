@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -208,6 +209,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 service.setIsPremium(serviceSnapshot.child(IS_PREMIUM).getValue(Boolean.class));
 
                 setGuestService(service);
+
                 final DatabaseReference workingDaysRef = myRef
                         .child(SERVICES)
                         .child(serviceId)
@@ -396,7 +398,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private void getInfoAboutService(String serviceId) {
         // все осервисе, оценка, количество оценок
-        // проверка на удаленный номер
         String sqlQuery =
                 "SELECT *"
                         + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES
@@ -408,11 +409,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         if (cursor.moveToFirst()) {
             int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
             int indexMinCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
-            int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
             int indexAddress = cursor.getColumnIndex(DBHelper.KEY_ADDRESS_SERVICES);
             int indexIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
             int indexServiceRating = cursor.getColumnIndex(DBHelper.KEY_RATING_SERVICES);
             int indexCountOfRates = cursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_SERVICES);
+            int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
             float serviceRating = Float.valueOf(cursor.getString(indexServiceRating));
             boolean isPremium = Boolean.valueOf(cursor.getString(indexIsPremium));
             long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
@@ -420,7 +421,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             Service service = new Service();
             service.setCost(cursor.getString(indexMinCost));
             service.setAddress(cursor.getString(indexAddress));
-            service.setDescription(getString(indexDescription));
+            service.setDescription(cursor.getString(indexDescription));
             service.setName(cursor.getString(indexName));
             service.setAverageRating(serviceRating);
             service.setCountOfRates(countOfRates);
