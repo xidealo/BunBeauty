@@ -16,8 +16,6 @@ public class LoadingGuestServiceData {
     private static final String COST = "cost";
     private static final String IS_PREMIUM = "is premium";
     private static final String USER_ID = "user id";
-
-
     private static final String TIME = "time";
     private static final String DATE = "date";
     private static final String CATEGORY = "category";
