@@ -543,7 +543,7 @@ public class Comments extends AppCompatActivity {
                                 comment.setReview(reviewSnapshot.child(REVIEW).getValue(String.class));
                                 comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
                                 comment.setTime(String.valueOf(reviewSnapshot.child(SORT_TIME).getValue(Long.class)));
-                                Log.d(TAG, "onChildAdded: ");
+
                                 if (comment.getTime() == null) return;
                                 //set comment
                                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
