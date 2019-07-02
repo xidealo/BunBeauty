@@ -26,10 +26,12 @@ import com.example.ideal.myapplication.createService.AdditionService;
 import com.example.ideal.myapplication.fragments.SwitcherElement;
 import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.Service;
+import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.LoadingProfileData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.reviews.Comments;
 import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,6 +55,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static final String SERVICE_OWNER_ID = "service owner id";
     private static final String SERVICES = "services";
     private static final String COUNT_OF_RATES = "count of rates";
+    private static final String AVG_RATING = "avg rating";
+
+    private static final String CITY = "city";
+    private static final String NAME = "name";
+    private static final String PHONE = "phone";
 
     private static final String TYPE = "type";
 
@@ -86,7 +93,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private LinearLayoutManager layoutManagerSecond;
     private Button addServicesBtn;
     private boolean loading = true;
-    private int pastVisibleItems, visibleItemCount, totalItemCount,startIndexOfDownload;
+    private int pastVisibleItems, visibleItemCount, totalItemCount, startIndexOfDownload;
     private DataSnapshot servicesSnapshot;
     private ProgressBar progressBar;
 
@@ -191,82 +198,107 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         }
     }
 
+    private void loadProfileData(final String ownerId) {
+        DatabaseReference userReference = FirebaseDatabase.getInstance()
+                .getReference(USERS)
+                .child(ownerId);
+        userReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                LoadingProfileData.loadUserInfo(userSnapshot, database);
+
+                LoadingProfileData.loadUserServices(userSnapshot
+                                .child(SERVICES),
+                        ownerId,
+                        database,
+                        startIndexOfDownload);
+
+                servicesSnapshot = userSnapshot
+                        .child(SERVICES);
+
+                String name = WorkWithStringsApi.doubleCapitalSymbols(userSnapshot.child(NAME).getValue(String.class));
+                String city = WorkWithStringsApi.firstCapitalSymbol(userSnapshot.child(CITY).getValue(String.class));
+
+                User user = new User();
+                user.setName(name);
+                user.setCity(city);
+                user.setPhone(userSnapshot.child(PHONE).getValue(String.class));
+                user.setCountOfRates(userSnapshot.child(COUNT_OF_RATES).getValue(Long.class));
+                user.setRating(userSnapshot.child(AVG_RATING).getValue(Float.class));
+                //for intent
+                countOfRates = userSnapshot.child(COUNT_OF_RATES).getValue(Long.class).toString();
+                setProfile(user);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    
     // получаем данные о пользователе и отображаем в прфоиле
     private void updateProfileData(String ownerId) {
 
         //получаем имя, фамилию и город пользователя по его id
-        Cursor userCursor = createUserCursor(ownerId);
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_NAME_USERS + ", "
+                        + DBHelper.KEY_PHONE_USERS + ", "
+                        + DBHelper.KEY_COUNT_OF_RATES_USERS + ", "
+                        + DBHelper.KEY_RATING_USERS + ", "
+                        + DBHelper.KEY_CITY_USERS
+                        + " FROM "
+                        + DBHelper.TABLE_CONTACTS_USERS
+                        + " WHERE "
+                        + DBHelper.KEY_ID + " = ?";
+        Cursor userCursor = database.rawQuery(sqlQuery, new String[]{ownerId});
+
         if (userCursor.moveToFirst()) {
             if (userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_PHONE_USERS)) != null) {
                 int indexName = userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS);
                 int indexCity = userCursor.getColumnIndex(DBHelper.KEY_CITY_USERS);
                 int indexPhone = userCursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
                 int indexCountOfRates = userCursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_USERS);
+                int indexRating = userCursor.getColumnIndex(DBHelper.KEY_RATING_USERS);
 
-                String[] names = userCursor.getString(indexName).split(" ");
-                for (int i = 0; i < names.length; i++) {
-                    names[i] = names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
-                }
-                String name = names[0] + " " + names[1];
+                String name = WorkWithStringsApi.doubleCapitalSymbols(userCursor.getString(indexName));
+                String city = WorkWithStringsApi.firstCapitalSymbol(userCursor.getString(indexCity));
 
-                String city = userCursor.getString(indexCity).substring(0, 1).toUpperCase()
-                        + userCursor.getString(indexCity).substring(1);
-                String phone = userCursor.getString(indexPhone);
-                nameText.setText(name);
-                cityText.setText(city);
-                phoneText.setText(phone);
+                User user = new User();
+                user.setName(name);
+                user.setCity(city);
+                user.setPhone(userCursor.getString(indexPhone));
+                user.setCountOfRates(userCursor.getLong(indexCountOfRates));
+                user.setRating(userCursor.getFloat(indexRating));
+                //for intent
                 countOfRates = userCursor.getString(indexCountOfRates);
-                userCursor.close();
 
-                //загрузка рейтинга пользователя
-                loadRatingForUser();
-                //загрузка аватарки
-                int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
-                int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
-                workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width, height);
-                updateServicesList(ownerId);
+                setProfile(user);
             }
         }
+        userCursor.close();
     }
 
-    private Cursor createUserCursor(String ownerId) {
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_NAME_USERS + ", "
-                        + DBHelper.KEY_PHONE_USERS + ", "
-                        + DBHelper.KEY_COUNT_OF_RATES_USERS + ", "
-                        + DBHelper.KEY_CITY_USERS
-                        + " FROM "
-                        + DBHelper.TABLE_CONTACTS_USERS
-                        + " WHERE "
-                        + DBHelper.KEY_ID + " = ?";
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{ownerId});
+    private void setProfile(User user) {
 
-        return cursor;
-    }
-
-    private void loadRatingForUser() {
-
-        //таким способом я получаю свои ревью, а не о себе
-        String ratingQuery = "SELECT "
-                + DBHelper.KEY_RATING_USERS
-                + " FROM "
-                + DBHelper.TABLE_CONTACTS_USERS
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?";
-        Cursor cursor = database.rawQuery(ratingQuery, new String[]{ownerId});
-
-        if (cursor.moveToFirst()) {
-            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_USERS);
-            float rating = Float.valueOf(cursor.getString(indexRating));
-
-            if (rating == 0) {
-                setWithoutRating();
-            } else {
-                addRatingToScreen(rating);
-            }
+        nameText.setText(user.getName());
+        cityText.setText(user.getCity());
+        phoneText.setText(user.getPhone());
+        //ratingBar
+        float rating = user.getRating();
+        if ( rating == 0) {
+            setWithoutRating();
+        } else {
+            addRatingToScreen(rating);
         }
-        cursor.close();
+
+        //загрузка аватарки
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
+        workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width, height);
+
+        updateServicesList(ownerId);
     }
 
     @Override
@@ -310,49 +342,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             subscribersText.setText(subscribersBtnText);
         }
     }
-
-
-    private void loadProfileData(final String ownerId) {
-        DatabaseReference userReference = FirebaseDatabase.getInstance()
-                .getReference(USERS)
-                .child(ownerId);
-        userReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                LoadingProfileData.loadUserInfo(userSnapshot, database);
-
-                LoadingProfileData.loadUserServices(userSnapshot
-                                .child(SERVICES),
-                        ownerId,
-                        database,
-                        startIndexOfDownload);
-
-                servicesSnapshot = userSnapshot
-                        .child(SERVICES);
-
-                updateProfileData(ownerId);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void servicesRecycleRollDown() {
-
-        startIndexOfDownload += 5;
-
-
-        LoadingProfileData.loadUserServices(servicesSnapshot,
-                ownerId,
-                database,
-                startIndexOfDownload);
-
-        updateServicesList(ownerId);
-    }
-
 
     private long getCountOfSubscribers() {
 
@@ -409,24 +398,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         }
         ServiceProfileAdapter serviceAdapter = new ServiceProfileAdapter(serviceList.size(), serviceList);
         recyclerViewService.setAdapter(serviceAdapter);
-
-        /*recyclerViewService.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) //check for scroll down
-                {
-                    visibleItemCount = layoutManagerSecond.getChildCount();
-                    totalItemCount = layoutManagerSecond.getItemCount();
-                    pastVisibleItems = layoutManagerSecond.findFirstVisibleItemPosition();
-                    if (loading) {
-                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                            loading = false;
-                            servicesRecycleRollDown();
-                        }
-                    }
-                }
-            }
-        });*/
         progressBar.setVisibility(View.GONE);
         mainLayout.setVisibility(View.VISIBLE);
         cursor.close();
