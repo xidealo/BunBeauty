@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
 import com.example.ideal.myapplication.fragments.PremiumElement;
+import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -45,7 +46,6 @@ import com.squareup.picasso.Picasso;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class GuestService extends AppCompatActivity implements View.OnClickListener, IPremium {
@@ -67,8 +67,16 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String DATE = "date";
     private static final String ORDERS = "orders";
     private static final String COUNT_OF_RATES = "count of rates";
-
     private static final String COUNT = "count";
+    private static final String DESCRIPTION = "description";
+    private static final String COST = "cost";
+    private static final String USER_ID = "user id";
+    private static final String TIME = "time";
+    private static final String CATEGORY = "category";
+    private static final String AVG_RATING = "avg rating";
+    private static final String ADDRESS = "address";
+    private static final String NAME = "name";
+    private static final String IS_CANCELED = "is canceled";
 
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
 
@@ -120,6 +128,59 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void init() {
+        FragmentManager manager = getSupportFragmentManager();
+
+        costText = findViewById(R.id.costGuestServiceText);
+        addressText = findViewById(R.id.addressGuestServiceText);
+        descriptionText = findViewById(R.id.descriptionGuestServiceText);
+        withoutRatingText = findViewById(R.id.withoutRatingText);
+        ratingBar = findViewById(R.id.ratingBarGuestServiceRatingBar);
+        countOfRatesText = findViewById(R.id.countOfRatesGuestServiceElementText);
+        avgRatesText = findViewById(R.id.avgRatingGuestServiceElementText);
+        progressBar = findViewById(R.id.progressBarGuestService);
+        mainScroll = findViewById(R.id.guestServiceMainScroll);
+
+        premiumText = findViewById(R.id.yesPremiumGuestServiceText);
+        noPremiumText = findViewById(R.id.noPremiumGuestServiceText);
+
+        Button editScheduleBtn = findViewById(R.id.editScheduleGuestServiceBtn);
+        ratingLL = findViewById(R.id.ratingGuestServiceLayout);
+        premiumLayout = findViewById(R.id.premiumGuestServiceLayout);
+        imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
+        LinearLayout premiumIconLayout = findViewById(R.id.premiumIconGuestServiceLayout);
+
+        dbHelper = new DBHelper(this);
+        database = dbHelper.getReadableDatabase();
+        topPanelLayout = findViewById(R.id.headerGuestServiceLayout);
+        userId = getUserId();
+
+        serviceId = getIntent().getStringExtra(SERVICE_ID);
+        ownerId = getOwnerId();
+        // мой сервис или нет?
+        isMyService = userId.equals(ownerId);
+
+        //убрана панель премиума
+        isPremiumLayoutSelected = false;
+        if (isMyService) {
+            status = WORKER;
+            editScheduleBtn.setText("Редактировать расписание");
+            premiumText.setOnClickListener(this);
+            noPremiumText.setOnClickListener(this);
+            premiumText.setOnClickListener(this);
+
+            PremiumElement premiumElement = new PremiumElement();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.add(R.id.premiumGuestServiceLayout, premiumElement);
+            transaction.commit();
+        } else {
+            status = USER;
+            editScheduleBtn.setText("Расписание");
+            premiumIconLayout.setVisibility(View.GONE);
+        }
+        editScheduleBtn.setOnClickListener(this);
+    }
+
     private void loadServiceData() {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = firebaseDatabase.getReference(USERS)
@@ -138,7 +199,16 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
                 LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot, database);
 
-                getInfoAboutService(serviceId);
+                Service service = new Service();
+                service.setCost(serviceSnapshot.child(COST).getValue(String.class));
+                service.setAddress(serviceSnapshot.child(ADDRESS).getValue(String.class));
+                service.setDescription(serviceSnapshot.child(DESCRIPTION).getValue(String.class));
+                service.setName(serviceSnapshot.child(NAME).getValue(String.class));
+                service.setAverageRating(serviceSnapshot.child(AVG_RATING).getValue(Float.class));
+                service.setCountOfRates(serviceSnapshot.child(COUNT_OF_RATES).getValue(Long.class));
+                service.setIsPremium(serviceSnapshot.child(IS_PREMIUM).getValue(Boolean.class));
+
+                setGuestService(service);
 
                 final DatabaseReference workingDaysRef = myRef
                         .child(SERVICES)
@@ -283,59 +353,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void init() {
-        FragmentManager manager = getSupportFragmentManager();
-
-        costText = findViewById(R.id.costGuestServiceText);
-        addressText = findViewById(R.id.addressGuestServiceText);
-        descriptionText = findViewById(R.id.descriptionGuestServiceText);
-        withoutRatingText = findViewById(R.id.withoutRatingText);
-        ratingBar = findViewById(R.id.ratingBarGuestServiceRatingBar);
-        countOfRatesText = findViewById(R.id.countOfRatesGuestServiceElementText);
-        avgRatesText = findViewById(R.id.avgRatingGuestServiceElementText);
-        progressBar = findViewById(R.id.progressBarGuestService);
-        mainScroll = findViewById(R.id.guestServiceMainScroll);
-
-        premiumText = findViewById(R.id.yesPremiumGuestServiceText);
-        noPremiumText = findViewById(R.id.noPremiumGuestServiceText);
-
-        Button editScheduleBtn = findViewById(R.id.editScheduleGuestServiceBtn);
-        ratingLL = findViewById(R.id.ratingGuestServiceLayout);
-        premiumLayout = findViewById(R.id.premiumGuestServiceLayout);
-        imageFeedLayout = findViewById(R.id.feedGuestServiceLayout);
-        LinearLayout premiumIconLayout = findViewById(R.id.premiumIconGuestServiceLayout);
-
-        dbHelper = new DBHelper(this);
-        database = dbHelper.getReadableDatabase();
-        topPanelLayout = findViewById(R.id.headerGuestServiceLayout);
-        userId = getUserId();
-
-        serviceId = getIntent().getStringExtra(SERVICE_ID);
-        ownerId = getOwnerId();
-        // мой сервис или нет?
-        isMyService = userId.equals(ownerId);
-
-        //убрана панель премиума
-        isPremiumLayoutSelected = false;
-        if (isMyService) {
-            status = WORKER;
-            editScheduleBtn.setText("Редактировать расписание");
-            premiumText.setOnClickListener(this);
-            noPremiumText.setOnClickListener(this);
-            premiumText.setOnClickListener(this);
-
-            PremiumElement premiumElement = new PremiumElement();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.premiumGuestServiceLayout, premiumElement);
-            transaction.commit();
-        } else {
-            status = USER;
-            editScheduleBtn.setText("Расписание");
-            premiumIconLayout.setVisibility(View.GONE);
-        }
-        editScheduleBtn.setOnClickListener(this);
-    }
-
     private String getOwnerId() {
         String sqlQuery =
                 "SELECT *"
@@ -380,9 +397,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void getInfoAboutService(String serviceId) {
-
         // все осервисе, оценка, количество оценок
-        // проверка на удаленный номер
         String sqlQuery =
                 "SELECT *"
                         + " FROM " + DBHelper.TABLE_CONTACTS_SERVICES
@@ -394,32 +409,44 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         if (cursor.moveToFirst()) {
             int indexName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES);
             int indexMinCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
-            int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
             int indexAddress = cursor.getColumnIndex(DBHelper.KEY_ADDRESS_SERVICES);
             int indexIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
             int indexServiceRating = cursor.getColumnIndex(DBHelper.KEY_RATING_SERVICES);
             int indexCountOfRates = cursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_SERVICES);
-
-            costText.setText("Цена от: " + cursor.getString(indexMinCost) + "р");
-            addressText.setText("Адрес: " + cursor.getString(indexAddress));
-            descriptionText.setText(cursor.getString(indexDescription));
-            serviceName = cursor.getString(indexName);
+            int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
             float serviceRating = Float.valueOf(cursor.getString(indexServiceRating));
-
             boolean isPremium = Boolean.valueOf(cursor.getString(indexIsPremium));
-
-            if (isPremium) {
-                setWithPremium();
-            }
-
             long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
-            countOfRatesForComments = cursor.getString(indexCountOfRates);
-            createRatingBar(serviceRating, countOfRates);
-            createPhotoFeed(serviceId);
+
+            Service service = new Service();
+            service.setCost(cursor.getString(indexMinCost));
+            service.setAddress(cursor.getString(indexAddress));
+            service.setDescription(cursor.getString(indexDescription));
+            service.setName(cursor.getString(indexName));
+            service.setAverageRating(serviceRating);
+            service.setCountOfRates(countOfRates);
+            service.setIsPremium(isPremium);
+
+            setGuestService(service);
         }
         cursor.close();
     }
 
+    private void setGuestService(Service service){
+
+        serviceName = service.getName();
+        costText.setText("Цена от: " + service.getCost() + "р");
+        addressText.setText("Адрес: " + service.getAddress());
+        descriptionText.setText(service.getDescription());
+
+        if (service.getIsPremium()) {
+            setWithPremium();
+        }
+
+        countOfRatesForComments = String.valueOf(service.getCountOfRates());
+        createRatingBar(service.getAverageRating(), service.getCountOfRates());
+        createPhotoFeed(serviceId);
+    }
     private void buildPanels() {
         PanelBuilder panelBuilder = new PanelBuilder();
         FragmentManager manager = getSupportFragmentManager();
@@ -460,7 +487,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
                 String photoLink = cursor.getString(indexPhotoLink);
 
-
                 ImageView serviceImage = new ImageView(getApplicationContext());
 
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -487,6 +513,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         buildPanels();
         imageFeedLayout.removeAllViews();
+        createPhotoFeed(serviceId);
     }
 
     private String getServiceName() {

@@ -16,8 +16,6 @@ public class LoadingGuestServiceData {
     private static final String COST = "cost";
     private static final String IS_PREMIUM = "is premium";
     private static final String USER_ID = "user id";
-
-
     private static final String TIME = "time";
     private static final String DATE = "date";
     private static final String CATEGORY = "category";
@@ -54,7 +52,6 @@ public class LoadingGuestServiceData {
         contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, String.valueOf(serviceSnapshot.child(IS_PREMIUM).getValue()));
         contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, String.valueOf(serviceSnapshot.child(CATEGORY).getValue()));
         contentValues.put(DBHelper.KEY_ADDRESS_SERVICES, String.valueOf(serviceSnapshot.child(ADDRESS).getValue()));
-
         contentValues.put(DBHelper.KEY_COUNT_OF_RATES_SERVICES, String.valueOf(serviceSnapshot.child(COUNT_OF_RATES).getValue()));
 
         boolean hasSomeData = WorkWithLocalStorageApi

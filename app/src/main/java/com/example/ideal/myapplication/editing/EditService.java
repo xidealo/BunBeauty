@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -76,6 +77,8 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private EditText costServiceInput;
     private EditText descriptionServiceInput;
     private EditText addressServiceInput;
+    private ProgressBar progressBar;
+    private Button editServicesBtn;
     private DBHelper dbHelper;
     private Spinner categorySpinner;
     private FragmentManager manager;
@@ -85,13 +88,14 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_service);
 
-        Button editServicesBtn = findViewById(R.id.editServiceEditServiceBtn);
+        editServicesBtn = findViewById(R.id.editServiceEditServiceBtn);
 
         nameServiceInput = findViewById(R.id.nameEditServiceInput);
         costServiceInput = findViewById(R.id.costEditServiceInput);
         descriptionServiceInput = findViewById(R.id.descriptionEditServiceInput);
         addressServiceInput = findViewById(R.id.addressEditServiceInput);
         categorySpinner = findViewById(R.id.categoryEditServiceSpinner);
+        progressBar = findViewById(R.id.progressBarEditService);
 
         manager = getSupportFragmentManager();
 
@@ -185,6 +189,10 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 }
                 service.setAddress(address);
                 editServiceInFireBase(service);
+
+                editServicesBtn.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+
                 break;
 
             case R.id.servicePhotoEditServiceImage:
@@ -384,6 +392,8 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                editServicesBtn.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

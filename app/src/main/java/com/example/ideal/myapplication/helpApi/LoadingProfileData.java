@@ -17,6 +17,7 @@ public class LoadingProfileData {
     private static final String TAG = "DBInf";
 
     private static final String AVG_RATING = "avg rating";
+    private static final String WORKER_ID = "worker id";
 
     private static final String CITY = "city";
     private static final String NAME = "name";
@@ -31,12 +32,13 @@ public class LoadingProfileData {
 
     private static SQLiteDatabase localDatabase;
     private static Thread photoThread;
+    private static Thread subscribtionThread;
 
     public static void loadUserInfo(final DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
         localDatabase = _localDatabase;
         new WorkWithLocalStorageApi(_localDatabase);
 
-        String userId = userSnapshot.getKey();
+        final String userId = userSnapshot.getKey();
 
         photoThread = new Thread(new Runnable() {
             @Override
@@ -45,7 +47,13 @@ public class LoadingProfileData {
             }
         });
         photoThread.start();
-
+        subscribtionThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                addUserSubscriptionInLocalStorage(userSnapshot.child(SUBSCRIPTIONS),userId);
+            }
+        });
+        subscribtionThread.start();
 
         String userPhone = userSnapshot.child(PHONE).getValue(String.class);
         String userName = userSnapshot.child(NAME).getValue(String.class);
@@ -62,7 +70,6 @@ public class LoadingProfileData {
         user.setCountOfRates(userCountOfRates);
 
         addUserInfoInLocalStorage(user);
-
     }
 
     public static void addSubscriptionsCountInLocalStorage(DataSnapshot userSnapshot, SQLiteDatabase localDatabase) {
@@ -105,13 +112,12 @@ public class LoadingProfileData {
         //5 10 - интервал
         int countOfDownloads = 5;
         int counter = 0;
-
         for (DataSnapshot serviceList : servicesSnapshot.getChildren()) {
 
-            if (counter < startIndexOfDownload) {
+            /*if (counter < startIndexOfDownload) {
                 counter++;
                 continue;
-            }
+            }*/
 
             String serviceId = serviceList.getKey();
             String serviceName = serviceList.child(NAME).getValue(String.class);
@@ -126,9 +132,9 @@ public class LoadingProfileData {
             addUserServicesInLocalStorage(service, database);
             counter++;
 
-            if (counter >= startIndexOfDownload + countOfDownloads) {
+           /* if (counter >= startIndexOfDownload + countOfDownloads) {
                 break;
-            }
+            }*/
         }
     }
 
@@ -183,5 +189,27 @@ public class LoadingProfileData {
             localDatabase.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
         photoThread.interrupt();
+    }
+
+    private static void addUserSubscriptionInLocalStorage(DataSnapshot subsSnapshot, String userId) {
+
+        for(DataSnapshot subSnapshot: subsSnapshot.getChildren()){
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DBHelper.KEY_ID, subSnapshot.getKey());
+            contentValues.put(DBHelper.KEY_USER_ID, userId);
+            contentValues.put(DBHelper.KEY_WORKER_ID, subSnapshot.child(WORKER_ID).getValue(String.class));
+
+            boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_SUBSCRIBERS, subSnapshot.getKey());
+            if (hasSomeData) {
+                localDatabase.update(DBHelper.TABLE_SUBSCRIBERS, contentValues,
+                        DBHelper.KEY_ID + " = ?",
+                        new String[]{subSnapshot.getKey()});
+            } else {
+                contentValues.put(DBHelper.KEY_ID, subSnapshot.getKey());
+                localDatabase.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
+            }
+        }
+
+        subscribtionThread.interrupt();
     }
 }
