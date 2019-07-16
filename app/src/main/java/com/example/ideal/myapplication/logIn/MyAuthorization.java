@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.example.ideal.myapplication.helpApi.LoadingProfileData;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
-import com.example.ideal.myapplication.other.MyService;
 import com.example.ideal.myapplication.other.Profile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

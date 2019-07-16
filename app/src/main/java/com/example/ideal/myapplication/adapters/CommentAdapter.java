@@ -12,7 +12,6 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Comment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
 

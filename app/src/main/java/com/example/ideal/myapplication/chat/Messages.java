@@ -13,7 +13,9 @@ import android.widget.ProgressBar;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.MessageAdapter;
+import com.example.ideal.myapplication.entity.FBListener;
 import com.example.ideal.myapplication.fragments.objects.Message;
+import com.example.ideal.myapplication.helpApi.ListeningManager;
 import com.example.ideal.myapplication.helpApi.LoadingMessages;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
@@ -381,13 +383,13 @@ public class Messages extends AppCompatActivity {
     }
 
     private void loadReviewForUser(String userId, final String orderId, final SQLiteDatabase database) {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
+        DatabaseReference reviewReference = FirebaseDatabase.getInstance().getReference(USERS)
                 .child(userId)
                 .child(ORDERS)
                 .child(orderId)
                 .child(REVIEWS);
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener reviewListener = reviewReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot reviewsSnapshot) {
                 LoadingMessages.addReviewInLocalStorage(reviewsSnapshot, orderId, database);
@@ -401,6 +403,8 @@ public class Messages extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+
+        ListeningManager.addToListenerList(new FBListener(reviewReference, reviewListener));
     }
 
     private boolean isAfterOrderTime(String date, String time) {

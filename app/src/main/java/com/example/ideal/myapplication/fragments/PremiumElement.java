@@ -1,7 +1,6 @@
 package com.example.ideal.myapplication.fragments;
 
 import android.annotation.SuppressLint;
-import android.net.IpPrefix;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

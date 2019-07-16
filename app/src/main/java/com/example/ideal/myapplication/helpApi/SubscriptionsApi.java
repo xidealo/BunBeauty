@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.ideal.myapplication.entity.FBListener;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -174,11 +175,11 @@ public class SubscriptionsApi {
     }
 
     public void loadCountOfSubscribers(final TextView countOfSubsText) {
-        FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
-        DatabaseReference subscribersRef = fdatabase.getReference(USERS)
+        DatabaseReference subscribersReference = FirebaseDatabase.getInstance()
+                .getReference(USERS)
                 .child(workerId)
                 .child(SUBSCRIBERS);
-        subscribersRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener subscribersListener = subscribersReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot subscribersSnapshot) {
                 String countOfSubs = String.valueOf(subscribersSnapshot.getChildrenCount());
@@ -187,9 +188,10 @@ public class SubscriptionsApi {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+
+        ListeningManager.addToListenerList(new FBListener(subscribersReference, subscribersListener));
     }
 
     static public long getCountOfSubscriptions(SQLiteDatabase database, String userId) {

@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.ListeningManager;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.logIn.Authorization;
@@ -588,11 +589,23 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private void goToLogIn() {
         FirebaseAuth.getInstance().signOut();
 
+        ListeningManager.removeAllListeners();
         stopService(new Intent(this, MyService.class));
+        //stopAllThreads();
 
         Intent intent = new Intent(this, Authorization.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    private void stopAllThreads() {
+        Thread[] threads = new Thread[Thread.activeCount()];
+        Thread.enumerate(threads);
+        for (Thread trd : threads) {
+            if (trd.isAlive()) {
+                trd.interrupt();
+            }
+        }
     }
 
     private void attentionThisCodeWasWrong(){

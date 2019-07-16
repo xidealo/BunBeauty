@@ -10,8 +10,6 @@ import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 
-import java.util.ArrayList;
-
 public class LoadingProfileData {
 
     private static final String TAG = "DBInf";

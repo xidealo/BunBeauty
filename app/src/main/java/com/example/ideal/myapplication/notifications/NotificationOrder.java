@@ -38,7 +38,6 @@ public class NotificationOrder extends NotificationConstructor {
     public void createNotification() {
         //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
         int notificationId = 1;
-        Log.d(TAG, "createOrderNotification: ");
 
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)

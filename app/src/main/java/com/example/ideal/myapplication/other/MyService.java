@@ -1,4 +1,5 @@
 package com.example.ideal.myapplication.other;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -127,6 +128,12 @@ public class MyService extends Service implements Runnable {
             }
 
         }
+
+        /*
+        HashMap<String, String> m = new HashMap<>();
+        for(String ix : m.keySet()) {
+        }*/
+
         Log.d(TAG, "MyService onDestroy");
     }
 

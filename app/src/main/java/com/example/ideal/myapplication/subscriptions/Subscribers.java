@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -36,6 +35,7 @@ import java.util.ArrayList;
 public class Subscribers extends AppCompatActivity {
 
     private static final String TAG = "DBInf";
+    private static final String STATUS = "status";
     private static final String SUBSCRIPTIONS = "subscriptions";
     private static final String USERS = "users";
     private static final String WORKER_ID = "worker id";
@@ -43,8 +43,7 @@ public class Subscribers extends AppCompatActivity {
     private TextView subsText;
     private DBHelper dbHelper;
     private FragmentManager manager;
-    private long countOfLoadedUser;
-    private long currentCountOfSub;
+    private long countOfLoadedUser = 0;
 
     private ArrayList<User> userList;
     private RecyclerView recyclerView;
@@ -66,14 +65,11 @@ public class Subscribers extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
         dbHelper = new DBHelper(this);
         database = dbHelper.getReadableDatabase();
-        currentCountOfSub = SubscriptionsApi.getCountOfSubscriptions(database, getUserId());
 
-        if (currentCountOfSub == 0) {
-            subsText.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-        }
+        String status = getIntent().getStringExtra(STATUS);
     }
 
     @Override
@@ -83,9 +79,10 @@ public class Subscribers extends AppCompatActivity {
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerSubscribersLayout);
         panelBuilder.buildHeader(manager, "Подписки", R.id.headerSubscribersLayout);
+
         if (isFirst) {
             loadUserSubscriptions();
-            isFirst = false;
+            isFirst=false;
         } else {
             getMySubscriptions();
         }
@@ -107,11 +104,10 @@ public class Subscribers extends AppCompatActivity {
         userRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
-                userList.clear();
                 String id = userSnapshot.getKey();
                 String workerId = String.valueOf(userSnapshot.child(WORKER_ID).getValue());
-                addUserSubscriptionInLocalStorage(id, workerId);
                 loadUserById(workerId);
+                addUserSubscriptionInLocalStorage(id, workerId);
             }
 
             @Override
@@ -128,7 +124,6 @@ public class Subscribers extends AppCompatActivity {
                         new String[]{id});
                 countOfLoadedUser--;
                 updateLocalCountOfSubs(countOfLoadedUser);
-                updateSubscriptionText();
             }
 
             @Override
@@ -138,6 +133,7 @@ public class Subscribers extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
@@ -163,8 +159,11 @@ public class Subscribers extends AppCompatActivity {
                 //загрузка данных о пользователе
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 countOfLoadedUser++;
+                long currentCountOfSub = SubscriptionsApi.getCountOfSubscriptions(database, getUserId());
                 if (countOfLoadedUser >= currentCountOfSub) {
-                    updateLocalCountOfSubs(countOfLoadedUser);
+                    if (countOfLoadedUser != currentCountOfSub) {
+                        updateLocalCountOfSubs(countOfLoadedUser);
+                    }
                     getMySubscriptions();
                 }
             }
@@ -250,6 +249,7 @@ public class Subscribers extends AppCompatActivity {
             } while (subsCursor.moveToNext());
         }
         SubscriptionAdapter subscribersAdapter = new SubscriptionAdapter(userList.size(), userList);
+        //опускаемся к полседнему элементу
         recyclerView.setAdapter(subscribersAdapter);
         progressBar.setVisibility(View.GONE);
     }
@@ -285,9 +285,7 @@ public class Subscribers extends AppCompatActivity {
         if (subsCount != 0) {
             subs = "Подписки: " + subsCount;
         }
-        Log.d(TAG, "SUBS" + subs);
         subsText.setText(subs);
-        subsText.setVisibility(View.VISIBLE);
     }
 
     private String getUserId() {

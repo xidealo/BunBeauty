@@ -40,7 +40,6 @@ public class NotificationYouAreRated extends NotificationConstructor {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         int notificationId = 1;
-        Log.d(TAG, "createReviewNotification: ");
 
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)

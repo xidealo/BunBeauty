@@ -122,7 +122,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         boolean isFreeTime = true;
 
                         for(String removedTime: removedHours ){
-                            Log.d(TAG, "onClick: " + removedTime);
                             if(!isFreeTime(removedTime)){
                                 isFreeTime = false;
                             }

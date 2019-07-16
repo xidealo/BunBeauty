@@ -3,7 +3,6 @@ package com.example.ideal.myapplication.helpApi;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.fragments.panelElements.BottomPanel;
 import com.example.ideal.myapplication.fragments.panelElements.TopPanel;
