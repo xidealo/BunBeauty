@@ -2,6 +2,7 @@ package com.example.ideal.myapplication.searchService;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SearchRecentSuggestionsProvider;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -43,8 +44,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -206,7 +211,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 service.setName(serviceSnapshot.child(NAME).getValue(String.class));
                 service.setAverageRating(serviceSnapshot.child(AVG_RATING).getValue(Float.class));
                 service.setCountOfRates(serviceSnapshot.child(COUNT_OF_RATES).getValue(Long.class));
-                service.setIsPremium(serviceSnapshot.child(IS_PREMIUM).getValue(Boolean.class));
+                service.setIsPremium(checkPremium(serviceSnapshot.child(IS_PREMIUM).getValue(String.class)));
 
                 setGuestService(service);
 
@@ -353,6 +358,20 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    public static Boolean checkPremium(String premiumDate) {
+        long premDate = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(premiumDate);
+        long sysDate = WorkWithTimeApi.getSysdateLong();
+
+        Log.d(TAG, "checkPremium: " + premDate);
+        if (sysDate > premDate + 60*60*24*7*1000) {
+            // время вышло
+            return false;
+        } else {
+            // премиумный период
+            return true;
+        }
+    }
+
     private String getOwnerId() {
         String sqlQuery =
                 "SELECT *"
@@ -415,7 +434,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexCountOfRates = cursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_SERVICES);
             int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
             float serviceRating = Float.valueOf(cursor.getString(indexServiceRating));
-            boolean isPremium = Boolean.valueOf(cursor.getString(indexIsPremium));
+            boolean isPremium = checkPremium(cursor.getString(indexIsPremium));
             long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
 
             Service service = new Service();
@@ -595,21 +614,20 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         DatabaseReference myRef = database.getReference(USERS)
                 .child(getUserId())
                 .child(SERVICES)
-                .child(serviceId);
+                .child(serviceId)
+                .child(IS_PREMIUM);
+        String premiumDate = WorkWithTimeApi.getDateInFormatYMDHMS(new Date());
+        myRef.setValue(premiumDate);
 
-        Map<String, Object> items = new HashMap<>();
-        items.put(IS_PREMIUM, true);
-
-        myRef.updateChildren(items);
         setWithPremium();
         premiumLayout.setVisibility(View.GONE);
         attentionPremiumActivated();
-        updatePremiumLocalStorage(serviceId);
+        updatePremiumLocalStorage(serviceId, premiumDate);
     }
 
-    private void updatePremiumLocalStorage(String serviceId) {
+    private void updatePremiumLocalStorage(String serviceId, String premiumDate) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, "true");
+        contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, premiumDate);
         //update
         database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
                 DBHelper.KEY_ID + " = ?",

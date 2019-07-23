@@ -208,7 +208,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         items.put(AVG_RATING, 0);
         items.put(COST, service.getCost());
         items.put(DESCRIPTION, service.getDescription());
-        items.put(IS_PREMIUM, service.getIsPremium());
+        items.put(IS_PREMIUM, "1970-01-01 00:00");
         items.put(CATEGORY, service.getCategory());
         items.put(ADDRESS, service.getAddress());
         items.put(COUNT_OF_RATES, service.getCountOfRates());

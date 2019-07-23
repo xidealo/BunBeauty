@@ -287,8 +287,8 @@ public class MyService extends Service implements Runnable {
                                 public void onDataChange(@NonNull DataSnapshot nameSnapshot) {
                                     String name = nameSnapshot.getValue(String.class);
 
-                                    NotificationYouAreRated notification = new NotificationYouAreRated(context, name, workerId);
-                                    notification.createNotification();
+                                   /* NotificationYouAreRated notification = new NotificationYouAreRated(context, name, workerId);
+                                    notification.createNotification();*/
                                 }
 
                                 @Override
@@ -339,9 +339,9 @@ public class MyService extends Service implements Runnable {
                                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            NotificationSubscribers notificationSubscribers = new NotificationSubscribers(context,
+                                           /* NotificationSubscribers notificationSubscribers = new NotificationSubscribers(context,
                                                     dataSnapshot.getValue().toString());
-                                            notificationSubscribers.createNotification();
+                                            notificationSubscribers.createNotification();*/
                                         }
 
                                         @Override

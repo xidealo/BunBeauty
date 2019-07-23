@@ -24,10 +24,10 @@ public class NotificationYouAreRated extends NotificationConstructor {
     private String name;
     private String workerId;
 
-    public NotificationYouAreRated(Context _context, String _name, String _workerId) {
+    public NotificationYouAreRated(Context _context, String _name) {
         context = _context;
         name = _name;
-        workerId = _workerId;
+        /*workerId = _workerId;*/
     }
 
     @Override
@@ -35,8 +35,8 @@ public class NotificationYouAreRated extends NotificationConstructor {
         //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
 
         Intent intent = new Intent(context, Profile.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(OWNER_ID, workerId);
+      /*  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(OWNER_ID, workerId);*/
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         int notificationId = 1;
@@ -44,7 +44,7 @@ public class NotificationYouAreRated extends NotificationConstructor {
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
-                .setContentTitle("BunBeauty")
+                .setContentTitle("Новая оценка!")
                 .setContentText("Мастер " + name + " оценил вас!")
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

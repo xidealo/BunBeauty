@@ -42,7 +42,7 @@ public class WorkWithTimeApi {
         return 0L;
     }
 
-    public long getMillisecondsStringDateWithSeconds(String date) {
+    static public long getMillisecondsStringDateWithSeconds(String date) {
 
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));

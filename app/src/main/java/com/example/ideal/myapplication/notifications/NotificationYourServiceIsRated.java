@@ -27,19 +27,19 @@ public class NotificationYourServiceIsRated extends NotificationConstructor {
     private String serviceName;
     private String userId;
 
-    public NotificationYourServiceIsRated(Context _context, String _name, String _serviceName, String _userId) {
+    public NotificationYourServiceIsRated(Context _context, String _name, String _serviceName) {
         context = _context;
         name = _name;
         serviceName = _serviceName;
-        userId = _userId;
+        //userId = _userId;
     }
 
     @Override
     public void createNotification() {
         //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
         Intent intent = new Intent(context, Profile.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(OWNER_ID, userId);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        intent.putExtra(OWNER_ID, userId);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         int notificationId = 1;
@@ -47,7 +47,7 @@ public class NotificationYourServiceIsRated extends NotificationConstructor {
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
-                .setContentTitle("BunBeauty")
+                .setContentTitle("Новая оценка!")
                 .setContentText("Клиент " + name + " оценил ваш сервис \"" + serviceName + "\"")
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

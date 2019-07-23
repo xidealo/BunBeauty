@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.other.DBHelper;
+import com.example.ideal.myapplication.searchService.GuestService;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
@@ -140,7 +141,7 @@ public class Search {
                 String serviceCost = cursor.getString(indexServiceCost);
                 float serviceRating = Float.valueOf(cursor.getString(indexServiceAvgRating));
 
-                boolean isPremium = Boolean.valueOf(cursor.getString(indexServiceIsPremium));
+                boolean isPremium = GuestService.checkPremium(cursor.getString(indexServiceIsPremium));
                 String creationDate = cursor.getString(indexServiceCreationDate);
 
                 Service service = new Service();

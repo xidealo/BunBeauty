@@ -32,6 +32,7 @@ import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
+import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.reviews.Comments;
 import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,8 +41,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class Profile extends AppCompatActivity implements View.OnClickListener, ISwitcher {
@@ -62,6 +66,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static final String PHONE = "phone";
 
     private static final String TYPE = "type";
+    private static final String TOKEN = "token";
 
     private String userId;
     private String ownerId;
@@ -104,6 +109,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
 
+        //Log.d(TAG, "onCreate: " + );
         init();
     }
 
@@ -149,6 +155,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         if (ownerId == null) {
             // Если null значит пользователь только что вошёл и это его сервис
             ownerId = userId;
+            initFCM();
         }
         // Проверяем совпадают id пользователя и владельца
         if (userId.equals(ownerId)) {
@@ -175,6 +182,16 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         }
 
         avatarImage.setOnClickListener(this);
+    }
+
+    private void initFCM() {
+        String token = FirebaseInstanceId.getInstance().getToken();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child(USERS)
+                .child(ownerId)
+                .child(TOKEN)
+                .setValue(token);
+
     }
 
     @Override

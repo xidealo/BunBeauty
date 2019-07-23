@@ -50,6 +50,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.sql.SQLTransactionRollbackException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +67,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private static final String AVATAR = "avatar";
     private static final String PHOTO_LINK = "photo link";
+
+    private static final String TOKEN = "token";
 
     private final int PICK_IMAGE_REQUEST = 71;
 
@@ -591,6 +594,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         ListeningManager.removeAllListeners();
         stopService(new Intent(this, MyService.class));
+        clearNotificationToken();
         //stopAllThreads();
 
         Intent intent = new Intent(this, Authorization.class);
@@ -598,7 +602,17 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         startActivity(intent);
     }
 
-    private void stopAllThreads() {
+    // Стираем токен, чтобы на устройство не приходили оповещения для данного пользователя
+    private void clearNotificationToken() {
+        DatabaseReference tokenRef = FirebaseDatabase
+                .getInstance()
+                .getReference(USERS)
+                .child(userId)
+                .child(TOKEN);
+        tokenRef.setValue("-");
+    }
+
+    /*private void stopAllThreads() {
         Thread[] threads = new Thread[Thread.activeCount()];
         Thread.enumerate(threads);
         for (Thread trd : threads) {
@@ -606,7 +620,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 trd.interrupt();
             }
         }
-    }
+    }*/
 
     private void attentionThisCodeWasWrong(){
         Toast.makeText(
