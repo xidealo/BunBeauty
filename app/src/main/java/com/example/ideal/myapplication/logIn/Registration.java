@@ -73,7 +73,6 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
                 //проверка на незаполенные поля
                 if (areInputsCorrect()) {
-                    User user = new User();
                     //если имя не устанавлявается, значит выводим тоаст и выходим из кейса
                     String name = nameInput.getText().toString().toLowerCase();
                     String surname = surnameInput.getText().toString().toLowerCase();
@@ -86,6 +85,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                             assertSurnameSoLong();
                             break;
                         } else {
+                            User user = new User();
                             String fullName = name + " " + surname;
                             user.setName(fullName);
 
@@ -113,10 +113,10 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
         Map<String, Object> items = new HashMap<>();
         items.put(NAME, user.getName());
-        items.put(AVG_RATING, 0);
-        items.put(COUNT_OF_RATES, 0);
         items.put(CITY, user.getCity());
         items.put(PHONE, user.getPhone());
+        items.put(AVG_RATING, 0);
+        items.put(COUNT_OF_RATES, 0);
         items.put(PHOTO_LINK, defaultPhotoLink);
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -125,10 +125,10 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         myRef.updateChildren(items);
 
         //заносим данные о пользователе в локальную базу данных
-        putDataInLocalStorage(user);
+        addUserInLocalStorage(user);
     }
 
-    private void putDataInLocalStorage(User user) {
+    private void addUserInLocalStorage(User user) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 

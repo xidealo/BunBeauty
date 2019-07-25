@@ -72,6 +72,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private ArrayList<Uri> fPathToAdd;
 
     private String serviceId;
+    private int counterOfUploadImage;
 
     private EditText nameServiceInput;
     private EditText costServiceInput;
@@ -244,7 +245,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void uploadImage(Uri filePath, final String serviceId) {
+    private void uploadImage(Uri filePath, final String serviceId, final int countOfUploadImage) {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(PHOTOS);
@@ -258,7 +259,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            uploadPhotos(uri.toString(), serviceId, photoId);
+                            uploadPhotos(uri.toString(), serviceId, photoId, countOfUploadImage);
                         }
                     });
                 }
@@ -270,7 +271,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void uploadPhotos(String storageReference, String serviceId, String photoId) {
+    private void uploadPhotos(String storageReference, String serviceId, String photoId, int countOfUploadImage) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database
@@ -291,10 +292,10 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         photo.setPhotoLink(storageReference);
         photo.setPhotoOwnerId(serviceId);
 
-        addPhotoInLocalStorage(photo);
+        addPhotoInLocalStorage(photo, countOfUploadImage);
     }
 
-    private void addPhotoInLocalStorage(Photo photo) {
+    private void addPhotoInLocalStorage(Photo photo, int countOfUploadImage) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -306,6 +307,9 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
 
+        counterOfUploadImage++;
+
+        if(counterOfUploadImage == countOfUploadImage)
         goToService();
     }
 
@@ -382,7 +386,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 }
 
                 for (Uri path : fPathToAdd) {
-                    uploadImage(path, serviceId);
+                    uploadImage(path, serviceId, fPathToAdd.size());
                 }
 
                 if (fPathToAdd.isEmpty()) {
@@ -540,7 +544,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         if (phLinToDelete.isEmpty()) {
             //добавление новых картинок при редактировании
             for (Uri path : fPathToAdd) {
-                uploadImage(path, serviceId);
+                uploadImage(path, serviceId, fPathToAdd.size());
             }
             if (fPathToAdd.isEmpty()) {
                 goToService();
