@@ -191,7 +191,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 .child(ownerId)
                 .child(TOKEN)
                 .setValue(token);
-
     }
 
     @Override

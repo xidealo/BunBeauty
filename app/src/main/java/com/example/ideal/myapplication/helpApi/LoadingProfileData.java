@@ -30,7 +30,7 @@ public class LoadingProfileData {
 
     private static SQLiteDatabase localDatabase;
     private static Thread photoThread;
-    private static Thread subscribtionThread;
+    private static Thread subscriptionThread;
 
     public static void loadUserInfo(final DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
         localDatabase = _localDatabase;
@@ -45,13 +45,13 @@ public class LoadingProfileData {
             }
         });
         photoThread.start();
-        subscribtionThread = new Thread(new Runnable() {
+        subscriptionThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 addUserSubscriptionInLocalStorage(userSnapshot.child(SUBSCRIPTIONS),userId);
             }
         });
-        subscribtionThread.start();
+        subscriptionThread.start();
 
         String userPhone = userSnapshot.child(PHONE).getValue(String.class);
         String userName = userSnapshot.child(NAME).getValue(String.class);
@@ -208,6 +208,6 @@ public class LoadingProfileData {
             }
         }
 
-        subscribtionThread.interrupt();
+        subscriptionThread.interrupt();
     }
 }
