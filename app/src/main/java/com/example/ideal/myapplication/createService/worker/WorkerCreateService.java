@@ -67,19 +67,6 @@ public class WorkerCreateService implements IWorker {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        // Получает время
-        // Таблицы: рабочие время
-        // Условия: уточняем id рабочего дня
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.KEY_TIME_WORKING_TIME
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_TIME
-                        + " WHERE "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{workingDaysId});
-
         for (String time : workingHours) {
             if (!WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time, database)) {
 
@@ -102,7 +89,6 @@ public class WorkerCreateService implements IWorker {
                 putDataTimeInLocalStorage(timeId, time, workingDaysId);
             }
         }
-        cursor.close();
     }
 
 
@@ -147,9 +133,9 @@ public class WorkerCreateService implements IWorker {
         timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot timesSnapshot) {
-                for (String hours : removedHours) {
+                for (String hour : removedHours) {
                     for (DataSnapshot time : timesSnapshot.getChildren()) {
-                        if (String.valueOf(time.child(TIME).getValue()).equals(hours)) {
+                        if (String.valueOf(time.child(TIME).getValue()).equals(hour)) {
                             String timeId = String.valueOf(time.getKey());
                             timeRef.child(timeId).removeValue();
                         }
@@ -170,13 +156,13 @@ public class WorkerCreateService implements IWorker {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        for (String time : removedHours) {
-            if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time,database)) {
+        for (String hour : removedHours) {
+            if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, hour, database)) {
                 database.delete(
                         DBHelper.TABLE_WORKING_TIME,
                         DBHelper.KEY_TIME_WORKING_TIME + " = ? AND "
                                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?",
-                        new String[]{time, String.valueOf(workingDaysId)});
+                        new String[]{hour, String.valueOf(workingDaysId)});
             }
         }
     }

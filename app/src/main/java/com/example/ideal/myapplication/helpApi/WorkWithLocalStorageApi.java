@@ -416,7 +416,7 @@ public class WorkWithLocalStorageApi {
     }
 
     //Возвращает id дня по id данного сервиса и дате
-    static public String checkCurrentDay(String day, String serviceId) {
+    static public String checkCurrentDay(String date, String serviceId) {
         // Получает id рабочего дня
         // Таблицы: рабочии дни
         // Условия: уточняем id сервиса и дату
@@ -429,7 +429,7 @@ public class WorkWithLocalStorageApi {
                         + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? AND "
                         + DBHelper.KEY_DATE_WORKING_DAYS + " = ? ";
 
-        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{serviceId, day});
+        Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{serviceId, date});
         if (cursor.moveToFirst()) {
             int indexId = cursor.getColumnIndex(DBHelper.KEY_ID);
             return String.valueOf(cursor.getString(indexId));

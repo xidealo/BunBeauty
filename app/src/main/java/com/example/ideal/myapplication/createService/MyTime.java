@@ -316,7 +316,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                     timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
                     timeBtns[i][j].setTag(R.string.selectedId, true);
 
-
                     // Проверка записан ли кто-то на это время
                     if (!isFreeTime(time)) {
                         timeBtns[i][j].setEnabled(false);
