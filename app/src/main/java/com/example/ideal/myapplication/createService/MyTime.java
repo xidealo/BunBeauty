@@ -175,7 +175,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         btn.setTag(R.string.selectedId, false);
                     } else {
                         // Кнопка не была нажата до клика
-
                         String selectedTime;
                         //Если уже существует выбранное время
                         if (workingHours.size() == 1) {

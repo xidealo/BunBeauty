@@ -44,7 +44,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     private Button[][] dayBtns;
     private RelativeLayout mainLayout;
     private DBHelper dbHelper;
-    private WorkerCreateService     workerCreateService;
+    private WorkerCreateService workerCreateService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

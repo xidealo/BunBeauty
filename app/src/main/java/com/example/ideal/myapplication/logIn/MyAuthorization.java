@@ -235,7 +235,7 @@ public class MyAuthorization {
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
     }
 
-    private void addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId) {
+    private void    addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         ContentValues contentValues = new ContentValues();

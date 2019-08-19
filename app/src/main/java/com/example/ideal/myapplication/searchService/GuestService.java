@@ -189,7 +189,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private void loadServiceData() {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = firebaseDatabase.getReference(USERS)
-                .child(ownerId);
+                    .child(ownerId);
         //загружаем один раз всю информацию
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

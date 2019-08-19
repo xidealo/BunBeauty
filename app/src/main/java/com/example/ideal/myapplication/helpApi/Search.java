@@ -251,7 +251,6 @@ public class Search {
         return penaltyPoints;
     }
 
-
     private void sortAddition(Object[] serviceData) {
         for (int i = 0; i < serviceList.size(); i++) {
             if ((float)(serviceList.get(i)[0]) < (float)(serviceData[0])) {
