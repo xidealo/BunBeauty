@@ -387,7 +387,6 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         } else {
             premiumLayout.setVisibility(View.VISIBLE);
             isPremiumLayoutSelected = true;
-
         }
     }
 
@@ -441,7 +440,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public String addSevenDayPremium(String date) {
-        Long sysdateLong = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(date);
+        long sysdateLong = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(date);
         //86400000 - day * 7 day
         sysdateLong += 86400000*7;
         return WorkWithTimeApi.getDateInFormatYMDHMS(new Date(sysdateLong));

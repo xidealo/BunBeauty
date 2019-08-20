@@ -90,6 +90,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private String ownerId;
     private String serviceName;
     private String countOfRatesForComments;
+    private String premiumDate;
 
     private TextView costText;
     private TextView addressText;
@@ -346,20 +347,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    public static Boolean checkPremium(String premiumDate) {
-        long premDate = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(premiumDate);
-        long sysDate = WorkWithTimeApi.getSysdateLong();
-
-        Log.d(TAG, "checkPremium: " + premDate);
-        if (sysDate > premDate + 60*60*24*7*1000) {
-            // время вышло
-            return false;
-        } else {
-            // премиумный период
-            return true;
-        }
-    }
-
     private String getOwnerId() {
         String sqlQuery =
                 "SELECT *"
@@ -422,7 +409,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexCountOfRates = cursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_SERVICES);
             int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
             float serviceRating = Float.valueOf(cursor.getString(indexServiceRating));
-            boolean isPremium = checkPremium(cursor.getString(indexIsPremium));
+            premiumDate = cursor.getString(indexIsPremium);
+            boolean isPremium = WorkWithTimeApi.checkPremium(premiumDate);
             long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
 
             Service service = new Service();
@@ -613,13 +601,13 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 .child(SERVICES)
                 .child(serviceId)
                 .child(IS_PREMIUM);
-        String premiumDate = WorkWithTimeApi.getDateInFormatYMDHMS(new Date());
-        myRef.setValue(premiumDate);
+        String newPremiumDate = addSevenDayPremium(premiumDate);
+        myRef.setValue(newPremiumDate);
 
         setWithPremium();
         premiumLayout.setVisibility(View.GONE);
         attentionPremiumActivated();
-        updatePremiumLocalStorage(serviceId, premiumDate);
+        updatePremiumLocalStorage(serviceId, newPremiumDate);
     }
 
     private void updatePremiumLocalStorage(String serviceId, String premiumDate) {
@@ -671,7 +659,13 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public String addSevenDayPremium(String date) {
-        return null;
+        long sysdateLong = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(date);
+        if(sysdateLong < WorkWithTimeApi.getSysdateLong()){
+            sysdateLong = WorkWithTimeApi.getSysdateLong();
+        }
+        //86400000 - day * 7 day
+        sysdateLong += 86400000*7;
+        return WorkWithTimeApi.getDateInFormatYMDHMS(new Date(sysdateLong));
     }
 
     private void attentionWrongCode() {

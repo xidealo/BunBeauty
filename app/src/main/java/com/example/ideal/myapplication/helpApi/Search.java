@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.ideal.myapplication.fragments.PremiumElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -141,7 +142,7 @@ public class Search {
                 String serviceCost = cursor.getString(indexServiceCost);
                 float serviceRating = Float.valueOf(cursor.getString(indexServiceAvgRating));
 
-                boolean isPremium = GuestService.checkPremium(cursor.getString(indexServiceIsPremium));
+                boolean isPremium = WorkWithTimeApi.checkPremium(cursor.getString(indexServiceIsPremium));
                 String creationDate = cursor.getString(indexServiceCreationDate);
 
                 Service service = new Service();
