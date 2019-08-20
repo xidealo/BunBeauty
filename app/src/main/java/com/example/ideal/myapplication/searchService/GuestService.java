@@ -123,14 +123,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.guest_service);
 
         init();
-
-        if (!serviceIdsFirstSetGS.contains(serviceId)) {
-            loadServiceData();
-            serviceIdsFirstSetGS.add(serviceId);
-        } else {
-            //получаем данные о сервисе
-            getInfoAboutService(serviceId);
-        }
     }
 
     private void init() {
@@ -530,6 +522,15 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (!serviceIdsFirstSetGS.contains(serviceId)) {
+            loadServiceData();
+            serviceIdsFirstSetGS.add(serviceId);
+        } else {
+            //получаем данные о сервисе
+            getInfoAboutService(serviceId);
+        }
+
         buildPanels();
         imageFeedLayout.removeAllViews();
         createPhotoFeed(serviceId);

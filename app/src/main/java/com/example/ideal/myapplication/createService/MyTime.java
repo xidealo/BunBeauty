@@ -165,8 +165,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         btn.setTag(R.string.selectedId, true);
                     }
                 } else {
-                    // Это не мой сервис (я - UserCreateService)
-
                     // Проверка была ли кнопка выбрана до нажатия
                     if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
                         // Кнопка была уже нажата
@@ -371,6 +369,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         for (int i = 0; i < ROWS_COUNT; i++) {
             for (int j = 0; j < COLUMNS_COUNT; j++) {
                 String time = (String) timeBtns[i][j].getText();
+
+                if (time.length() == 4) {
+                    time = "0" + time;
+                }
 
                 if (time.equals(selectedTime)) {
                     timeBtns[i][j].setBackgroundResource(R.drawable.time_button);
