@@ -2,7 +2,6 @@ package com.example.ideal.myapplication.searchService;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SearchRecentSuggestionsProvider;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -44,10 +43,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -671,6 +667,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+    }
+
+    @Override
+    public String addSevenDayPremium(String date) {
+        return null;
     }
 
     private void attentionWrongCode() {

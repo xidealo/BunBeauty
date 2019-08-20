@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,6 +90,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     private Spinner categorySpinner;
     private Service service;
     private boolean isPremiumLayoutSelected;
+    private String premiumDate;
 
     private DBHelper dbHelper;
 
@@ -127,7 +129,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
 
         service = new Service();
         service.setIsPremium(false);
-
+        premiumDate = "1970-01-01 00:00";
         addServicesBtn.setOnClickListener(this);
         serviceImage.setOnClickListener(this);
         premiumText.setOnClickListener(this);
@@ -208,7 +210,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         items.put(AVG_RATING, 0);
         items.put(COST, service.getCost());
         items.put(DESCRIPTION, service.getDescription());
-        items.put(IS_PREMIUM, "1970-01-01 00:00");
+        items.put(IS_PREMIUM, premiumDate);
         items.put(CATEGORY, service.getCategory());
         items.put(ADDRESS, service.getAddress());
         items.put(COUNT_OF_RATES, service.getCountOfRates());
@@ -385,6 +387,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         } else {
             premiumLayout.setVisibility(View.VISIBLE);
             isPremiumLayoutSelected = true;
+
         }
     }
 
@@ -393,6 +396,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         service.setIsPremium(true);
         setWithPremium();
         premiumLayout.setVisibility(View.GONE);
+        premiumDate = addSevenDayPremium(WorkWithTimeApi.getDateInFormatYMDHMS(new Date()));
         attentionPremiumActivated();
     }
 
@@ -434,6 +438,15 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
             }
         });
     }
+
+    @Override
+    public String addSevenDayPremium(String date) {
+        Long sysdateLong = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(date);
+        //86400000 - day * 7 day
+        sysdateLong += 86400000*7;
+        return WorkWithTimeApi.getDateInFormatYMDHMS(new Date(sysdateLong));
+    }
+
 
     private void setWithPremium() {
         noPremiumText.setVisibility(View.GONE);
