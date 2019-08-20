@@ -200,7 +200,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 service.setName(serviceSnapshot.child(NAME).getValue(String.class));
                 service.setAverageRating(serviceSnapshot.child(AVG_RATING).getValue(Float.class));
                 service.setCountOfRates(serviceSnapshot.child(COUNT_OF_RATES).getValue(Long.class));
-                service.setIsPremium(checkPremium(serviceSnapshot.child(IS_PREMIUM).getValue(String.class)));
+                service.setIsPremium(WorkWithTimeApi.checkPremium(serviceSnapshot.child(IS_PREMIUM).getValue(String.class)));
 
                 setGuestService(service);
 
