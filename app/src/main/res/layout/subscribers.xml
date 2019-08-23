@@ -34,6 +34,7 @@
             android:visibility="gone"
             style="@style/mainText"
             android:text="У вас пока нет подписок" />
+
         <ProgressBar
             android:id="@+id/progressBarSubscribers"
             android:layout_width="wrap_content"
