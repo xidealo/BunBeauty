@@ -43,6 +43,8 @@ public class NotificationSubscribers extends NotificationConstructor {
                 .setContentIntent(pIntent)
                 .setContentTitle("Новый подписчик!")
                 .setContentText("На вас подписался " + WorkWithStringsApi.doubleCapitalSymbols(name))
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("На вас подписался " + WorkWithStringsApi.doubleCapitalSymbols(name)))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

@@ -8,6 +8,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.searchService.GuestService;
 
 public class NotificationCancel extends NotificationConstructor {
@@ -46,11 +47,14 @@ public class NotificationCancel extends NotificationConstructor {
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
-                //.setContentIntent(pIntent) // Возможна ошибка информация о владельце отсутствует в БД
                 .setContentTitle("Отказ в предоставлении услуги")
                 .setContentText("Мастер " + workerName
                         + " отказал Вам в предоставлении услуги " + serviceName
                         + ". Сеанс на " + orderDate + " в " + orderTime + " отменён.")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Мастер " + workerName
+                                + " отказал Вам в предоставлении услуги " + serviceName
+                                + ". Сеанс на " + orderDate + " в " + orderTime + " отменён."))
                 .setPriority(NotificationCompat.PRIORITY_MAX);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

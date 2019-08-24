@@ -5,7 +5,6 @@ public class NotificationReviewForService {
 package com.example.ideal.myapplication.notifications;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -33,6 +32,8 @@ public class NotificationReviewForUser extends NotificationConstructor {
                 .setSmallIcon(R.drawable.bun_beauty)
                 .setContentTitle("Возможность оценить")
                 .setContentText("У вас есть возможность оценить пользователя " + userName)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("У вас есть возможность оценить пользователя " + userName))
                 .setPriority(NotificationCompat.PRIORITY_MAX);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

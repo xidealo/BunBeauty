@@ -1,18 +1,12 @@
 package com.example.ideal.myapplication.notifications;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
 import com.example.ideal.myapplication.R;
-import com.example.ideal.myapplication.chat.Dialogs;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.searchService.GuestService;
 
@@ -58,6 +52,11 @@ public class NotificationOrder extends NotificationConstructor {
                         + " записался к вам на услугу " + WorkWithStringsApi.firstCapitalSymbol(serviceName)
                         + ". Сеанс состоится " + workingDate
                         + " в " + workingTime + ".")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                    .bigText("Пользователь " + WorkWithStringsApi.doubleCapitalSymbols(name)
+                        + " записался к вам на услугу " + WorkWithStringsApi.firstCapitalSymbol(serviceName)
+                        + ". Сеанс состоится " + workingDate
+                        + " в " + workingTime + "."))
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
