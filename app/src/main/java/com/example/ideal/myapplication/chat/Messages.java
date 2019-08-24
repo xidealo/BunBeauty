@@ -412,7 +412,7 @@ public class Messages extends AppCompatActivity {
         //3600000 * 24 = 24 часа
         String commonDate = date + " " + time;
         Long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000 * 24;
-        Long sysdate = workWithTimeApi.getSysdateLong();
+        Long sysdate = WorkWithTimeApi.getSysdateLong();
 
         return sysdate > orderDateLong;
     }

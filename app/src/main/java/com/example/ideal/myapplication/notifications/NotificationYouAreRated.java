@@ -35,7 +35,9 @@ public class NotificationYouAreRated extends NotificationConstructor {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
                 .setContentTitle("Новая оценка!")
-                .setContentText("Мастер " + name + " оценил вас!")
+                .setContentText("Мастер " + name + " оценил вас! Оценка будет доступна через 72 часа")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Мастер " + name + " оценил вас! Оценка будет доступна через 72 часа"))
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);

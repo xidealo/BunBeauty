@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.CommentAdapter;
 import com.example.ideal.myapplication.fragments.objects.Comment;
+import com.example.ideal.myapplication.helpApi.LoadingCommentsData;
 import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -58,8 +59,6 @@ public class Comments extends AppCompatActivity {
     private static final String WORKER_ID = "worker id";
 
     private static final String REVIEWS = "reviews";
-    private static final String REVIEW = "review";
-    private static final String RATING = "rating";
 
     private FragmentManager manager;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
@@ -94,7 +93,6 @@ public class Comments extends AppCompatActivity {
                 getCommentsForService(serviceId);
             }
         } else {
-            //ПЕРЕПИСАТЬ И БРАТЬ НОРМАЛЬНОЕ КОЛИЧЕСТВО
             countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
             //комментарии для юзера
             if (!userIdsFirstSetComments.contains(ownerId)) {
@@ -140,7 +138,7 @@ public class Comments extends AppCompatActivity {
                 long dateLong = WorkWithTimeApi.getMillisecondsStringDateYMD(workingDaySnapshot.child(DATE).getValue(String.class));
                 //Важное отличие от GS, загрузка только просроченных дней
                 if (dateLong < sysdateLong) {
-                    LoadingGuestServiceData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
+                    LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
 
                     final DatabaseReference workingTimesRef = workingDaysRef
                             .child(workingDayId)
@@ -150,7 +148,7 @@ public class Comments extends AppCompatActivity {
                         @Override
                         public void onChildAdded(@NonNull final DataSnapshot timeSnapshot, @Nullable String s) {
                             //при добавлении нового времени
-                            LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
+                            LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
                             final String timeId = timeSnapshot.getKey();
                             final DatabaseReference ordersRef = workingTimesRef
                                     .child(timeId)
@@ -158,7 +156,7 @@ public class Comments extends AppCompatActivity {
                             ordersRef.addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                                    LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot, timeId, database);
+                                    LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database);
                                     // ревью
                                     final String orderId = orderSnapshot.getKey();
                                     DatabaseReference reviewRef = ordersRef
@@ -167,7 +165,7 @@ public class Comments extends AppCompatActivity {
                                     reviewRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                            addReviewInLocalStorage(reviewSnapshot, orderId);
+                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot,orderId,database);
                                             currentCountOfReview++;
                                             if (countOfRates == currentCountOfReview) {
                                                 getCommentsForService(serviceId);
@@ -176,7 +174,7 @@ public class Comments extends AppCompatActivity {
 
                                         @Override
                                         public void onChildChanged(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                            addReviewInLocalStorage(reviewSnapshot, orderId);
+                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
                                         }
 
                                         @Override
@@ -199,7 +197,7 @@ public class Comments extends AppCompatActivity {
                                 @Override
                                 public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
                                     //если от кого-то отказались
-                                    LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot, timeId, database);
+                                    LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database);
                                 }
 
                                 @Override
@@ -308,13 +306,13 @@ public class Comments extends AppCompatActivity {
                 + " AND "
                 + DBHelper.KEY_TYPE_REVIEWS + " = ? "
                 + " AND "
-                + DBHelper.KEY_RATING_REVIEWS + " != 0 ";
+                + DBHelper.KEY_RATING_REVIEWS + " != 0 "
+                + " ORDER BY " + DBHelper.KEY_TIME_REVIEWS + " DESC";
 
         Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_serviceId, REVIEW_FOR_SERVICE});
 
         if (cursor.moveToFirst()) {
             int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 //String orderId = cursor.getString(indexOrderId);
@@ -391,7 +389,7 @@ public class Comments extends AppCompatActivity {
                 final String workingTimeId = (String) orderSnapshot.child(WORKING_TIME_ID).getValue();
                 final String workerId = (String) orderSnapshot.child(WORKER_ID).getValue();
 
-                //Вызываем отдельный поток, который кладет данные в лок БД
+                //Вызываем отдельный поток, который кладет путь в лок БД
                 additionToLocalStorage = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -480,16 +478,16 @@ public class Comments extends AppCompatActivity {
                 timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot workingDaySnapshot) {
-                        LoadingGuestServiceData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
+                        LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
                         for (DataSnapshot timeSnapshot : workingDaySnapshot.child(WORKING_TIME).getChildren()) {
-                            LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
+                            LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
                         }
 
                         reviewRef.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
                                 currentCountOfReview++;
-                                addReviewInLocalStorage(reviewSnapshot, orderId);
+                                LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId,database);
                                 if (countOfRates == currentCountOfReview) {
                                     getCommentsForUser(ownerId);
                                 }
@@ -497,7 +495,7 @@ public class Comments extends AppCompatActivity {
 
                             @Override
                             public void onChildChanged(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                addReviewInLocalStorage(reviewSnapshot, orderId);
+                                LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
                             }
 
                             @Override
@@ -590,12 +588,13 @@ public class Comments extends AppCompatActivity {
                 + " AND "
                 + DBHelper.KEY_TYPE_REVIEWS + " = ? "
                 + " AND "
-                + DBHelper.KEY_RATING_REVIEWS + " != 0";
+                + DBHelper.KEY_RATING_REVIEWS + " != 0"
+                + " ORDER BY " + DBHelper.KEY_TIME_REVIEWS + " DESC";
+
         // убрать не оценненые
         final Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_userId, REVIEW_FOR_USER});
         if (cursor.moveToFirst()) {
             int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId = cursor.getColumnIndex(ORDER_ID);
             do {
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
                 //String orderId = cursor.getString(indexOrderId);
@@ -619,7 +618,6 @@ public class Comments extends AppCompatActivity {
         cursor.close();
     }
 
-    private int currentForCreateUserComment=0;
     private void createUserComment(final Cursor mainCursor) {
         final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
         final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
@@ -642,8 +640,7 @@ public class Comments extends AppCompatActivity {
                 comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 commentList.add(comment);
-                currentForCreateUserComment++;
-                if (countOfRates == currentForCreateUserComment) {
+                if (countOfRates == currentCountOfReview) {
                         commentAdapter = new CommentAdapter(commentList.size(), commentList);
                         recyclerView.setAdapter(commentAdapter);
                         progressBar.setVisibility(View.GONE);
@@ -656,29 +653,6 @@ public class Comments extends AppCompatActivity {
 
             }
         });
-    }
-
-    public void addReviewInLocalStorage(DataSnapshot reviewSnapshot, String orderId) {
-
-        ContentValues contentValues = new ContentValues();
-        String reviewId = reviewSnapshot.getKey();
-        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, String.valueOf(reviewSnapshot.child(REVIEW).getValue()));
-        contentValues.put(DBHelper.KEY_RATING_REVIEWS, String.valueOf(reviewSnapshot.child(RATING).getValue()));
-        contentValues.put(DBHelper.KEY_TYPE_REVIEWS, String.valueOf(reviewSnapshot.child(TYPE).getValue()));
-        contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
-
-        boolean hasSomeData = WorkWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_REVIEWS, reviewId);
-
-        if (hasSomeData) {
-            database.update(DBHelper.TABLE_REVIEWS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{reviewId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, reviewId);
-            database.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
-        }
-
     }
 
     private void setWithoutReview() {
