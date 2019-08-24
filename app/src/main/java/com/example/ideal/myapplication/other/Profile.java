@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,7 +31,6 @@ import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
-import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.reviews.Comments;
 import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,11 +40,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
-import java.util.Date;
-
 
 public class Profile extends AppCompatActivity implements View.OnClickListener, ISwitcher {
 
@@ -97,9 +92,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static ArrayList<String> userIdsFirstSetProfile = new ArrayList<>();
     private LinearLayoutManager layoutManagerSecond;
     private Button addServicesBtn;
-    private boolean loading = true;
     private int pastVisibleItems, visibleItemCount, totalItemCount, startIndexOfDownload;
-    private DataSnapshot servicesSnapshot;
     private ProgressBar progressBar;
 
     private SQLiteDatabase database;
@@ -109,7 +102,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
 
-        //Log.d(TAG, "onCreate: " + );
         init();
     }
 
@@ -228,9 +220,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                         ownerId,
                         database,
                         startIndexOfDownload);
-
-                servicesSnapshot = userSnapshot
-                        .child(SERVICES);
 
                 String name = WorkWithStringsApi.doubleCapitalSymbols(userSnapshot.child(NAME).getValue(String.class));
                 String city = WorkWithStringsApi.firstCapitalSymbol(userSnapshot.child(CITY).getValue(String.class));

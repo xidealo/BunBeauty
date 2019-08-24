@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.DialogAdapter;
@@ -64,7 +65,7 @@ public class Dialogs extends AppCompatActivity {
     private ArrayList<String> userList;
     private RecyclerView recyclerView;
     private DialogAdapter dialogAdapter;
-
+    private TextView noDialogsText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +79,8 @@ public class Dialogs extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.resultsDialogsRecycleView);
         progressBar = findViewById(R.id.progressBarDialogs);
+        noDialogsText = findViewById(R.id.noDialogsDialogsText);
+
         dialogList = new ArrayList<>();
         userList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -298,6 +301,7 @@ public class Dialogs extends AppCompatActivity {
             recyclerView.setVisibility(View.VISIBLE);
             dialogsCursor.close();
         } else {
+            setNoDialogs();
             dialogsCursor.close();
         }
     }
@@ -348,6 +352,11 @@ public class Dialogs extends AppCompatActivity {
             dialog.setUserName(userName);
             dialogList.add(dialog);
         }
+    }
+
+    private void setNoDialogs(){
+        progressBar.setVisibility(View.GONE);
+        noDialogsText.setVisibility(View.VISIBLE);
     }
 
     private String getUserId() {
