@@ -129,7 +129,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
 
         service = new Service();
         service.setIsPremium(false);
-        premiumDate = "1970-01-01 00:00";
+        premiumDate = "1970-01-01 00:00:00";
         addServicesBtn.setOnClickListener(this);
         serviceImage.setOnClickListener(this);
         premiumText.setOnClickListener(this);

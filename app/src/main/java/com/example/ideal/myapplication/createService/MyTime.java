@@ -65,7 +65,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         init();
     }
 
-    private void init(){
+    private void init() {
         statusUser = getIntent().getStringExtra(STATUS_USER_BY_SERVICE);
         userId = getUserId();
         String serviceId = getIntent().getStringExtra(SERVICE_ID);
@@ -106,6 +106,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
 
         saveBtn.setOnClickListener(this);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -121,16 +122,22 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         // Удаляем время сохранённое в буфере removeHours в БД
                         boolean isFreeTime = true;
 
-                        for(String removedTime: removedHours ){
-                            if(!isFreeTime(removedTime)){
-                                isFreeTime = false;
+                        for (String removedTime : removedHours) {
+                            if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, removedTime, database)) {
+                                if (!isFreeTime(removedTime)) {
+                                    isFreeTime = false;
+                                }
+                            } else {
+                                //если в бд нет времени, которое мы пытаемся удалить
+                                Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
+                                break;
                             }
                         }
 
-                        if(!isFreeTime){
+                        if (!isFreeTime) {
                             alertTryingToDeleteBusyTime();
                             removedHours.clear();
-                        }else {
+                        } else {
                             workerCreateService.deleteTime(workingDaysId, removedHours);
                             Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
                         }
@@ -138,7 +145,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
 
                 } else {
                     if (workingHours.size() == 1) {
-                        loadInformationAboutService(WorkWithLocalStorageApi.getWorkingTimeId(workingHours.get(0), workingDaysId));
+                        loadInformationAboutService(WorkWithLocalStorageApi.getWorkingTimeId(workingHours.get(0), workingDaysId,database));
                     }
                 }
                 break;
@@ -152,7 +159,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 // Проверка мой ли это сервис (я - worker)
                 if (statusUser.equals(WORKER)) {
                     // Это мой сервис (я - worker)
-
                     if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
                         btn.setBackgroundResource(R.drawable.time_button);
                         workingHours.remove(btnText);
@@ -232,11 +238,12 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.show();
     }
-    private void attentionSuccessfulOrder(){
+
+    private void attentionSuccessfulOrder() {
         Toast.makeText(this, "Вы успешно записались", Toast.LENGTH_SHORT).show();
     }
 
-    private void attentionTimeIsBusy(){
+    private void attentionTimeIsBusy() {
         Toast.makeText(this, "Данное время уже занято", Toast.LENGTH_SHORT).show();
     }
 
@@ -257,7 +264,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
             confirm(serviceName, dataDay, time, workingTimeId);
         }
     }
-
     // Снимает выделение с кнопок хронящихся в буфере удалённых дней
     private void checkRemovedHours() {
         for (int i = 0; i < ROWS_COUNT; i++) {
@@ -270,7 +276,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
             }
         }
     }
-
     // Выделяет кнопки хранящиеся в буфере рабочих дней
     private void checkWorkingHours() {
         for (int i = 0; i < ROWS_COUNT; i++) {
@@ -286,7 +291,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
             }
         }
     }
-
     //Выделяет необходимые кнопки
     private void checkCurrentTimes() {
         // Проверка на то, что это мой сервис
@@ -309,19 +313,22 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 }
 
                 //Проверка является ли данное время рабочим
-                if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time,database)) {
-                    timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
-                    timeBtns[i][j].setTag(R.string.selectedId, true);
+                String currentTimeId = WorkWithLocalStorageApi.getWorkingTimeId(time, workingDaysId, database);
+                if (!currentTimeId.equals("0")) {
+                    Log.d(TAG, "CUR TIME ID " + currentTimeId) ;
+                    if (!isBlockedTime(currentTimeId)){
+                        timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
+                        timeBtns[i][j].setTag(R.string.selectedId, true);
 
-                    // Проверка записан ли кто-то на это время
-                    if (!isFreeTime(time)) {
-                        timeBtns[i][j].setEnabled(false);
+                        // Проверка записан ли кто-то на это время
+                        if (!isFreeTime(time)) {
+                            timeBtns[i][j].setEnabled(false);
+                        }
                     }
                 }
             }
         }
     }
-
     // Выделяет кнопки (UserCreateService)
     private void selectBtsForUser() {
         // Время на которое я записан
@@ -482,6 +489,18 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         return false;
     }
 
+    private boolean isBlockedTime(String timeId){
+        String isBlockedQuery = "SELECT "
+                + DBHelper.KEY_ID
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME
+                + " WHERE "
+                + DBHelper.KEY_IS_BLOCKED_TIME + " = 'true'"
+                + " AND "
+                + DBHelper.KEY_ID + " = ?";
+        Cursor cursor = database.rawQuery(isBlockedQuery, new String[]{timeId});
+        return cursor.moveToFirst();
+    }
     @Override
     protected void onResume() {
         super.onResume();

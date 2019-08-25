@@ -53,6 +53,7 @@ public class Comments extends AppCompatActivity {
     private static final String DATE = "date";
     private static final String COUNT_OF_RATES = "count of rates";
     private static final String ORDERS = "orders";
+    private static final String RATING = "rating";
 
     private static final String WORKING_DAY_ID = "working day id";
     private static final String WORKING_TIME_ID = "working time id";
@@ -157,7 +158,7 @@ public class Comments extends AppCompatActivity {
                                 @Override
                                 public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
                                     LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database);
-                                    // ревью
+
                                     final String orderId = orderSnapshot.getKey();
                                     DatabaseReference reviewRef = ordersRef
                                             .child(orderId)
@@ -165,8 +166,13 @@ public class Comments extends AppCompatActivity {
                                     reviewRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot,orderId,database);
-                                            currentCountOfReview++;
+                                            LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
+
+                                            //если на одном времени больше чем 1 ревью
+                                            if(!String.valueOf(reviewSnapshot.child(RATING).getValue()).equals("0")){
+                                                currentCountOfReview++;
+                                            }
+
                                             if (countOfRates == currentCountOfReview) {
                                                 getCommentsForService(serviceId);
                                             }
@@ -315,7 +321,6 @@ public class Comments extends AppCompatActivity {
             int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
             do {
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
-                //String orderId = cursor.getString(indexOrderId);
 
                 //if (workWithLocalStorageApi.isMutualReview(orderId)) {
                 //   createServiceComment(cursor);
@@ -487,7 +492,7 @@ public class Comments extends AppCompatActivity {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
                                 currentCountOfReview++;
-                                LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId,database);
+                                LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
                                 if (countOfRates == currentCountOfReview) {
                                     getCommentsForUser(ownerId);
                                 }
@@ -641,13 +646,14 @@ public class Comments extends AppCompatActivity {
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 commentList.add(comment);
                 if (countOfRates == currentCountOfReview) {
-                        commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                        recyclerView.setAdapter(commentAdapter);
-                        progressBar.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
+                    commentAdapter = new CommentAdapter(commentList.size(), commentList);
+                    recyclerView.setAdapter(commentAdapter);
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                 }
 
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 

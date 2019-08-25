@@ -365,7 +365,9 @@ public class WorkWithLocalStorageApi {
                         + " FROM "
                         + DBHelper.TABLE_WORKING_TIME
                         + " WHERE "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ? ";
+                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ? "
+                        + " AND "
+                        + DBHelper.KEY_IS_BLOCKED_TIME + " = 'false'";
 
         Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{dayId});
 
@@ -438,7 +440,7 @@ public class WorkWithLocalStorageApi {
         return "0";
     }
 
-    // Проверяет есть ли какие-либо записи на данное время
+    // Проверяет есть ли такое время у воркера
     static public boolean checkTimeForWorker(String workingDaysId, String time, SQLiteDatabase localDatabase) {
         String sqlQuery =
                 "SELECT "
@@ -461,7 +463,7 @@ public class WorkWithLocalStorageApi {
         return false;
     }
 
-    static public String getWorkingTimeId(String time, String workingDaysId) {
+    static public String getWorkingTimeId(String time, String workingDaysId, SQLiteDatabase localDatabase) {
         String sqlQuery =
                 "SELECT "
                         + DBHelper.KEY_ID
@@ -472,7 +474,7 @@ public class WorkWithLocalStorageApi {
                         + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?";
 
         Cursor cursor = localDatabase.rawQuery(sqlQuery, new String[]{time, workingDaysId});
-        String timeId = "";
+        String timeId = "0";
         if (cursor.moveToFirst()) {
             int indexTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
             timeId = cursor.getString(indexTimeId);
