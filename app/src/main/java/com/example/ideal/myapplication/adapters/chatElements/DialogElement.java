@@ -14,6 +14,7 @@ import com.example.ideal.myapplication.chat.Messages;
 import com.example.ideal.myapplication.fragments.objects.Dialog;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
+import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 
 public class DialogElement implements View.OnClickListener {
@@ -22,9 +23,11 @@ public class DialogElement implements View.OnClickListener {
 
     private TextView nameText;
     private ImageView avatarImage;
+    private TextView messageTimeText;
 
     private String userName;
     private String userId;
+    private String messageTime;
     private static final String TAG = "DBInf";
     private Context context;
     private View view;
@@ -32,6 +35,7 @@ public class DialogElement implements View.OnClickListener {
     public DialogElement(Dialog dialog, View view, Context context) {
         userName = dialog.getUserName();
         userId= dialog.getUserId();
+        messageTime = dialog.getMessageTime();
         this.context = context;
         this.view = view;
     }
@@ -43,19 +47,34 @@ public class DialogElement implements View.OnClickListener {
     private void onViewCreated(@NonNull View view) {
         nameText = view.findViewById(R.id.nameDialogElementText);
         avatarImage = view.findViewById(R.id.avatarDialogElementImage);
-        LinearLayout layout = view.findViewById(R.id.dialogElementLayout);
+        messageTimeText = view.findViewById(R.id.messageTimeDialogElementText);
+        LinearLayout linearLayoutDialog = view.findViewById(R.id.dialogElementLayout);
+        LinearLayout linearLayoutDialogSecond = view.findViewById(R.id.dialogElementLayoutSecond);
+        LinearLayout linearLayoutDialogLast = view.findViewById(R.id.dialogElementLayoutLast);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(10, 10, 10, 10);
-        layout.setLayoutParams(params);
-        layout.setOnClickListener(this);
+        linearLayoutDialog.setOnClickListener(this);
 
+        if(WorkWithTimeApi.getSysdateLong() - WorkWithTimeApi.getMillisecondsStringDateWithSeconds(messageTime) < 3600000){
+            int actionBarBackground = context.getResources().getColor(R.color.yellow);
+            int textColor = context.getResources().getColor(R.color.black);
+            linearLayoutDialog.setBackgroundColor(actionBarBackground);
+            linearLayoutDialogSecond.setBackgroundColor(actionBarBackground);
+            linearLayoutDialogLast.setBackgroundColor(actionBarBackground);
+            nameText.setBackgroundColor(actionBarBackground);
+            avatarImage.setBackgroundColor(actionBarBackground);
+            messageTimeText.setBackgroundColor(actionBarBackground);
+            messageTimeText.setTextColor(textColor);
+        }
+        linearLayoutDialog.setLayoutParams(params);
         setData();
     }
 
     private void setData() {
         nameText.setText(WorkWithStringsApi.doubleCapitalSymbols(userName));
+        messageTimeText.setText(messageTime);
         DBHelper dbHelper = new DBHelper(context);
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();

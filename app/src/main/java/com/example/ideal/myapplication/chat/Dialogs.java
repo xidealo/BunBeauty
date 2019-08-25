@@ -271,9 +271,11 @@ public class Dialogs extends AppCompatActivity {
 
             int indexOrderId = dialogsCursor.getColumnIndex(ORDER_ID);
             int indexOwnerId = dialogsCursor.getColumnIndex(OWNER_ID);
+            int indexMessageTime = dialogsCursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_ORDERS);
             do {
                 String orderId = dialogsCursor.getString(indexOrderId);
                 String ownerId = dialogsCursor.getString(indexOwnerId);
+                String messageTime = dialogsCursor.getString(dialogsCursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_ORDERS));
 
                 // Проверка где лежит мой id
                 if (userId.equals(orderId)) {
@@ -281,7 +283,7 @@ public class Dialogs extends AppCompatActivity {
                     // Проверяем не создан ли уже диалог с владельцем сервиса
                     if (!createdDialogs.contains(ownerId)) {
                         // Если нет создаём и заносим в соданные
-                        createDialogWithUser(ownerId);
+                        createDialogWithUser(ownerId,messageTime);
                         createdDialogs.add(ownerId);
                     }
                 } else {
@@ -289,7 +291,7 @@ public class Dialogs extends AppCompatActivity {
                     // Проверяем не создан ли уже диалог с клиентом
                     if (!createdDialogs.contains(orderId)) {
                         // Если нет создаём и заносим в соданные
-                        createDialogWithUser(orderId);
+                        createDialogWithUser(orderId,messageTime);
                         createdDialogs.add(orderId);
                     }
                 }
@@ -341,7 +343,7 @@ public class Dialogs extends AppCompatActivity {
         return cursor;
     }
 
-    private void createDialogWithUser(String userId) {
+    private void createDialogWithUser(String userId, String messageTime) {
 
         Cursor cursor = LSApi.getUser(userId);
 
@@ -350,6 +352,7 @@ public class Dialogs extends AppCompatActivity {
             Dialog dialog = new Dialog();
             dialog.setUserId(userId);
             dialog.setUserName(userName);
+            dialog.setMessageTime(messageTime);
             dialogList.add(dialog);
         }
     }
