@@ -29,4 +29,7 @@
     <!-- transparent -->
     <color name="transparent">#8C007693</color>
 
+    <!-- Main screen -->
+    <color name="colorCategoryButton">#005F89</color>
+
 </resources>

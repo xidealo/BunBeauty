@@ -4,14 +4,19 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,6 +32,7 @@ import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
+import com.example.ideal.myapplication.other.CategoryElement;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.IPremium;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -60,6 +66,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     private static final String DESCRIPTION = "description";
     private static final String IS_PREMIUM = "is premium";
     private static final String CREATION_DATE = "creation date";
+    private static final String TAGS = "tags";
 
     private static final int PICK_IMAGE_REQUEST = 71;
     private static final String SERVICE_PHOTO = "service photo";
@@ -86,45 +93,43 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     private ArrayList<Uri> fpath;
 
     private FragmentManager manager;
-    private Spinner categorySpinner;
     private Service service;
     private boolean isPremiumLayoutSelected;
-
     private DBHelper dbHelper;
+    private CategoryElement categoryElement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.addition_service);
+
         init();
     }
 
     private void init() {
         Button addServicesBtn = findViewById(R.id.addServiceAddServiceBtn);
-
+        ImageView serviceImage = findViewById(R.id.servicePhotoAddServiceImage);
         nameServiceInput = findViewById(R.id.nameAddServiceInput);
         costAddServiceInput = findViewById(R.id.costAddServiceInput);
         descriptionServiceInput = findViewById(R.id.descriptionAddServiceInput);
-        ImageView serviceImage = findViewById(R.id.servicePhotoAddServiceImage);
-        categorySpinner = findViewById(R.id.categoryAddServiceSpinner);
         addressServiceInput = findViewById(R.id.addressAddServiceInput);
         premiumText = findViewById(R.id.yesPremiumAddServiceText);
         noPremiumText = findViewById(R.id.noPremiumAddServiceText);
-
         premiumLayout = findViewById(R.id.premiumAddServiceLayout);
 
         manager = getSupportFragmentManager();
-
         PremiumElement premiumElement = new PremiumElement();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.premiumAddServiceLayout, premiumElement);
+
+        categoryElement = new CategoryElement(this);
+        transaction.add(R.id.categoryAddServiceLayout, categoryElement);
+
         transaction.commit();
 
         isPremiumLayoutSelected = false;
-
         dbHelper = new DBHelper(this);
         fpath = new ArrayList<>();
-
         service = new Service();
         service.setIsPremium(false);
 
@@ -157,9 +162,9 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
                         break;
                     }
 
-                    String category = categorySpinner.getSelectedItem().toString().toLowerCase().trim();
+                    String category = categoryElement.getCategory();
 
-                    if (category.equals("Выбрать категорию")) {
+                    if (category.equals("выбрать категорию")) {
                         Toast.makeText(
                                 this,
                                 "Не выбрана категория",
@@ -178,6 +183,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
                     service.setCategory(category);
                     service.setAddress(address);
                     service.setCountOfRates(0);
+                    service.setTags(categoryElement.getTagsArray());
                     uploadService(service);
                 } else {
                     Toast.makeText(this, getString(R.string.empty_field), Toast.LENGTH_SHORT).show();
@@ -204,16 +210,21 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         DatabaseReference serviceRef = database.getReference(USERS).child(service.getUserId()).child(SERVICES);
 
         Map<String, Object> items = new HashMap<>();
+        Map<String, String> tagsMap = new HashMap<>();
         items.put(NAME, service.getName().toLowerCase());
         items.put(AVG_RATING, 0);
         items.put(COST, service.getCost());
         items.put(DESCRIPTION, service.getDescription());
-        items.put(IS_PREMIUM, "1970-01-01 00:00");
+        items.put(IS_PREMIUM, "1970-01-01 00:00:00");
         items.put(CATEGORY, service.getCategory());
         items.put(ADDRESS, service.getAddress());
         items.put(COUNT_OF_RATES, service.getCountOfRates());
-
         items.put(CREATION_DATE, workWithTimeApi.getDateInFormatYMDHMS(new Date()));
+        for (String tag : service.getTags()) {
+            tagsMap.put(String.valueOf(tag.hashCode()), tag);
+        }
+        items.put(TAGS, tagsMap);
+
         String serviceId = serviceRef.push().getKey();
         serviceRef = serviceRef.child(serviceId);
         serviceRef.updateChildren(items);
@@ -255,8 +266,16 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         contentValues.put(DBHelper.KEY_ADDRESS_SERVICES, service.getAddress());
 
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
-        goToMyCalendar(getString(R.string.status_worker), service.getId());
 
+        contentValues.clear();
+        contentValues.put(DBHelper.KEY_SERVISE_ID_TAGS, service.getId());
+        for (String tag : service.getTags()) {
+            Log.d(TAG, "addServiceInLocalStorage: " + tag);
+            contentValues.put(DBHelper.KEY_TAG_TAGS, tag);
+            database.insert(DBHelper.TABLE_TAGS, null, contentValues);
+        }
+
+        goToMyCalendar(getString(R.string.status_worker), service.getId());
     }
 
     protected Boolean isFullInputs() {
@@ -268,7 +287,6 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     }
 
     private void chooseImage() {
-
         //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         //Тип получаемых объектов - image:
@@ -405,13 +423,12 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot codesSnapshot) {
-                if(codesSnapshot.getChildrenCount() == 0){
+                if (codesSnapshot.getChildrenCount() == 0) {
                     attentionWrongCode();
-                }
-                else {
+                } else {
                     DataSnapshot userSnapshot = codesSnapshot.getChildren().iterator().next();
-                    int  count = userSnapshot.child(COUNT).getValue(int.class);
-                    if(count>0){
+                    int count = userSnapshot.child(COUNT).getValue(int.class);
+                    if (count > 0) {
                         setPremium();
 
                         String codeId = userSnapshot.getKey();
@@ -420,14 +437,14 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
                                 .getReference(CODES)
                                 .child(codeId);
                         Map<String, Object> items = new HashMap<>();
-                        items.put(COUNT, count-1);
+                        items.put(COUNT, count - 1);
                         myRef.updateChildren(items);
-                    }
-                    else {
+                    } else {
                         attentionOldCode();
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -458,9 +475,11 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     private void attentionWrongCode() {
         Toast.makeText(this, "Неверно введен код", Toast.LENGTH_SHORT).show();
     }
+
     private void attentionOldCode() {
         Toast.makeText(this, "Код больше не действителен", Toast.LENGTH_SHORT).show();
     }
+
     private void attentionPremiumActivated() {
         Toast.makeText(this, "Премиум активирован", Toast.LENGTH_SHORT).show();
     }

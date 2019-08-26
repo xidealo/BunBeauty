@@ -182,7 +182,12 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
-                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot, null, null, null, null);
+                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null);
                 for (Object[] serviceData : commonList) {
                     serviceList.add((Service) serviceData[1]);
                     userList.add((User) serviceData[2]);
@@ -229,7 +234,12 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
                     return;
                 }
 
-                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot, enteredText, null,null, null);
+                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot,
+                        enteredText,
+                        null,
+                        null,
+                        null,
+                        null);
                 for (Object[] serviceData : commonList) {
                     serviceList.add((Service) serviceData[1]);
                     userList.add((User) serviceData[2]);
@@ -268,7 +278,12 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
                     return;
                 }
 
-                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot,null, enteredText, city, null);
+                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot,
+                        null,
+                        enteredText,
+                        city,
+                        null,
+                        null);
                 for (Object[] serviceData : commonList) {
                     serviceList.add((Service) serviceData[1]);
                     userList.add((User) serviceData[2]);

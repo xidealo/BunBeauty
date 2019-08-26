@@ -65,7 +65,7 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
                 myPhoneNumber = countryCode + phoneInput.getText().toString();
                 if(isPhoneCorrect(myPhoneNumber.trim())) {
                     verifyBtn.setClickable(false);
-                   goToVerifyPhone();
+                    goToVerifyPhone();
                 }
                 break;
 

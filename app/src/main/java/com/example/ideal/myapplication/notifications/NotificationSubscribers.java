@@ -14,7 +14,6 @@ public class NotificationSubscribers extends NotificationConstructor {
 
     private static final String TAG = "DBInf";
     private static final String CHANNEL_ID = "1";
-    private static final String OWNER_ID = "owner id";
 
     private String userId;
     private String name;
@@ -28,12 +27,9 @@ public class NotificationSubscribers extends NotificationConstructor {
 
     @Override
     public void createNotification() {
-
-        //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
-        int notificationId = 1;
+        int notificationId = 3;
 
         Intent intent = new Intent(context, Profile.class);
-        intent.putExtra(OWNER_ID, userId);
         PendingIntent pIntent = PendingIntent.getActivity(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT );
 
@@ -46,8 +42,6 @@ public class NotificationSubscribers extends NotificationConstructor {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-
-        // notificationId is a unique int for each notification that you must define
         notificationManager.notify(notificationId, builder.build());
     }
 }

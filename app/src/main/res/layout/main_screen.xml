@@ -14,7 +14,9 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+    </LinearLayout>
 
     <!-- Категории -->
     <HorizontalScrollView
@@ -35,16 +37,62 @@
         </LinearLayout>
     </HorizontalScrollView>
 
+    <ScrollView
+        android:id="@+id/tagsMainScreenScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadingEdge="vertical"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll">
+
+        <LinearLayout
+            android:id="@+id/tagsMainScreenLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/minimizeTagsMainScreenBtn"
+                    style="@style/lightBlueButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:text="/\\"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/clearTagsMainScreenBtn"
+                    style="@style/lightBlueButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:text="X"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
     <ProgressBar
         android:id="@+id/progressBarMainScreen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminateTint= "@color/panelColor"
         android:layout_gravity="center"
+        android:indeterminateTint="@color/panelColor"
         app:layout_constraintBottom_toTopOf="@+id/resultsMainScreenRecycleView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll"/>
+        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll"
+        app:layout_constraintVertical_bias="1.0" />
 
 
     <!-- Главный экран -->
@@ -53,13 +101,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="10dp"
-        android:layout_marginTop="0dp"
         android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@+id/footerMainScreenLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBarMainScreen">
-    </android.support.v7.widget.RecyclerView>
+        app:layout_constraintTop_toBottomOf="@id/tagsMainScreenScroll"></android.support.v7.widget.RecyclerView>
 
     <LinearLayout
         android:id="@+id/footerMainScreenLayout"

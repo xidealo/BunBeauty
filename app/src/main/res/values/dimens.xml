@@ -2,7 +2,7 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="categories_width">80dp</dimen>
-    <dimen name="categories_height">35dp</dimen>
+    <dimen name="categories_height">36dp</dimen>
 
     <dimen name="photo_width">125dp</dimen>
     <dimen name="photo_height">125dp</dimen>

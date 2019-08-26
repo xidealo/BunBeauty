@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 101;
+    public static final int DATABASE_VERSION = 102;
     public static final String DATABASE_NAME = "MyFirstDB";
 
     //tables name
@@ -18,7 +18,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_REVIEWS = "reviews";
     public static final String TABLE_PHOTOS = "photos";
     public static final String TABLE_SUBSCRIBERS = "subscribers";
-    public static final String KEY_COUNT_OF_RATES_USERS = "count_of_rates";
+    public static final String TABLE_TAGS = "tags";
 
     //for all
     public static final String KEY_ID = "_id";
@@ -30,6 +30,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String KEY_RATING_USERS = "user_rating";
     public static final String KEY_SUBSCRIPTIONS_COUNT_USERS = "subscriptions_count";
     public static final String KEY_SUBSCRIBERS_COUNT_USERS = "subscribers_count";
+    public static final String KEY_COUNT_OF_RATES_USERS = "count_of_rates";
 
     //services
     public static final String KEY_NAME_SERVICES = "service_name";
@@ -69,6 +70,10 @@ public class DBHelper extends SQLiteOpenHelper {
     //subscribers
     public static final String KEY_USER_ID = "user_id";
     public static final String KEY_WORKER_ID = "worker_id";
+
+    //subscribers
+    public static final String KEY_SERVISE_ID_TAGS = "service_id";
+    public static final String KEY_TAG_TAGS = "tag";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -149,6 +154,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_WORKER_ID + " text"
                 + ")";
 
+        String tags = "create table " + TABLE_TAGS
+                + "("
+                + KEY_ID + " text primary key,"
+                + KEY_SERVISE_ID_TAGS + " text,"
+                + KEY_TAG_TAGS + " text"
+                + ")";
+
         // create users table
         db.execSQL(users);
 
@@ -173,6 +185,9 @@ public class DBHelper extends SQLiteOpenHelper {
         //create subscribers
         db.execSQL(subscribers);
 
+        //create tags
+        db.execSQL(tags);
+
     }
 
     @Override
@@ -185,6 +200,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists " + TABLE_ORDERS);
         db.execSQL("drop table if exists " + TABLE_PHOTOS);
         db.execSQL("drop table if exists " + TABLE_SUBSCRIBERS);
+        db.execSQL("drop table if exists " + TABLE_TAGS);
 
         onCreate(db);
     }
