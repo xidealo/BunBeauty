@@ -108,7 +108,6 @@ public class LoadingGuestServiceData {
             contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, String.valueOf(timeSnapshot.child(TIME).getValue()));
             contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
             contentValues.put(DBHelper.KEY_IS_BLOCKED_TIME, String.valueOf(timeSnapshot.child(IS_BLOCKED).getValue()));
-
             boolean hasSomeData = WorkWithLocalStorageApi
                     .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
 

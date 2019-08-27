@@ -145,7 +145,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
 
                 } else {
                     if (workingHours.size() == 1) {
-                        loadInformationAboutService(WorkWithLocalStorageApi.getWorkingTimeId(workingHours.get(0), workingDaysId,database));
+                        loadInformationAboutService(WorkWithLocalStorageApi.getWorkingTimeId(workingHours.get(0), workingDaysId, database));
                     }
                 }
                 break;
@@ -264,6 +264,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
             confirm(serviceName, dataDay, time, workingTimeId);
         }
     }
+
     // Снимает выделение с кнопок хронящихся в буфере удалённых дней
     private void checkRemovedHours() {
         for (int i = 0; i < ROWS_COUNT; i++) {
@@ -276,6 +277,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
             }
         }
     }
+
     // Выделяет кнопки хранящиеся в буфере рабочих дней
     private void checkWorkingHours() {
         for (int i = 0; i < ROWS_COUNT; i++) {
@@ -291,6 +293,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
             }
         }
     }
+
     //Выделяет необходимые кнопки
     private void checkCurrentTimes() {
         // Проверка на то, что это мой сервис
@@ -315,8 +318,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 //Проверка является ли данное время рабочим
                 String currentTimeId = WorkWithLocalStorageApi.getWorkingTimeId(time, workingDaysId, database);
                 if (!currentTimeId.equals("0")) {
-                    Log.d(TAG, "CUR TIME ID " + currentTimeId) ;
-                    if (!isBlockedTime(currentTimeId)){
+                    if (!isBlockedTime(currentTimeId)) {
                         timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
                         timeBtns[i][j].setTag(R.string.selectedId, true);
 
@@ -329,6 +331,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
             }
         }
     }
+
     // Выделяет кнопки (UserCreateService)
     private void selectBtsForUser() {
         // Время на которое я записан
@@ -361,10 +364,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                     if (isFreeTime(time)) {
                         timeBtns[i][j].setBackgroundResource(R.drawable.time_button);
                         timeBtns[i][j].setTag(R.string.selectedId, false);
-                    } else {
-                        timeBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
-                        timeBtns[i][j].setEnabled(false);
+                        continue;
                     }
+                    timeBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
+                    timeBtns[i][j].setEnabled(false);
                 }
 
             }
@@ -473,6 +476,8 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 + " AND "
                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
                 + " AND "
+                + DBHelper.KEY_IS_BLOCKED_TIME + " = 'false'"
+                + " AND "
                 + DBHelper.KEY_TIME_WORKING_TIME + " = ?"
                 + " AND "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
@@ -489,7 +494,8 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         return false;
     }
 
-    private boolean isBlockedTime(String timeId){
+    private boolean isBlockedTime(String timeId) {
+        Log.d(TAG, "TIME ID " + timeId);
         String isBlockedQuery = "SELECT "
                 + DBHelper.KEY_ID
                 + " FROM "
@@ -501,6 +507,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         Cursor cursor = database.rawQuery(isBlockedQuery, new String[]{timeId});
         return cursor.moveToFirst();
     }
+
     @Override
     protected void onResume() {
         super.onResume();

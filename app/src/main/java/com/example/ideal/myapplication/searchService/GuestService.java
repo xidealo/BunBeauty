@@ -234,8 +234,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                     ordersRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot,timeId, database);
                                             // если кто-то записался
+                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot,timeId, database);
                                         }
 
                                         @Override
@@ -247,7 +247,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                         @Override
                                         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                                             //void
-
                                         }
 
                                         @Override
@@ -264,8 +263,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                 }
 
                                 @Override
-                                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                    //пусто
+                                public void onChildChanged(@NonNull DataSnapshot timeSnapshot, @Nullable String s) {
+                                    //если меняется статус времнеи
+                                    LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
                                 }
 
                                 @Override
@@ -372,7 +372,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 } else {
                     // если не мой сервис, я - юзер
                     // проверяем какие дни мне доступны
-                    checkScheduleAndGoToProfile();
+                    checkScheduleAndGoToCalendar();
                 }
                 break;
             case R.id.noPremiumGuestServiceText:
@@ -452,7 +452,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void checkScheduleAndGoToProfile() {
+    private void checkScheduleAndGoToCalendar() {
         if (WorkWithLocalStorageApi.hasAvailableTime(serviceId, userId, dbHelper.getReadableDatabase())) {
             goToMyCalendar(USER);
         } else {

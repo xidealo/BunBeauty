@@ -322,9 +322,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 + " AND "
                 + DBHelper.KEY_USER_ID + " = ?"
                 + " AND "
-                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'"
-                + " AND "
-                + DBHelper.KEY_IS_BLOCKED_TIME + " = 'false'";
+                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'";
 
         String sqlQuery = "SELECT "
                 + DBHelper.KEY_TIME_WORKING_TIME
@@ -334,6 +332,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 + " WHERE "
                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_IS_BLOCKED_TIME + " = 'false'"
                 + " AND "
                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
                 + " AND ((("
