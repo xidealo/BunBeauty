@@ -129,6 +129,7 @@ public class MessageOrderElement implements View.OnClickListener {
         messageText = view.findViewById(R.id.messageMessageElementText);
         timeText = view.findViewById(R.id.timeMessageElementText);
         canceledBtn = view.findViewById(R.id.canceledMessageElementBtn);
+        canceledBtn.setText("ОКАЗАТЬСЯ");
         canceledBtn.setOnClickListener(this);
 
         workWithTimeApi = new WorkWithTimeApi();
