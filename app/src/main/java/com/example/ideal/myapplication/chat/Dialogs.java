@@ -49,8 +49,6 @@ public class Dialogs extends AppCompatActivity {
     private static final String OWNER_ID = "owner_id";
     private static final String ORDER_ID = "order_id";
 
-    private static boolean isFirst = true;
-
     private String userId;
     private int userCount;
     private int counter;
@@ -62,7 +60,6 @@ public class Dialogs extends AppCompatActivity {
     private FragmentManager manager;
 
     private ArrayList<Dialog> dialogList;
-    private ArrayList<String> userList;
     private RecyclerView recyclerView;
     private DialogAdapter dialogAdapter;
     private TextView noDialogsText;
@@ -82,7 +79,6 @@ public class Dialogs extends AppCompatActivity {
         noDialogsText = findViewById(R.id.noDialogsDialogsText);
 
         dialogList = new ArrayList<>();
-        userList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -101,16 +97,9 @@ public class Dialogs extends AppCompatActivity {
         panelBuilder.buildFooter(manager, R.id.footerDialogsLayout);
         panelBuilder.buildHeader(manager, "Диалоги", R.id.headerDialogsLayout);
 
-        if (isFirst) {
-            // зашли первый раз, значит нужно подгрузить данные из FB
-            // загружаем данные о пользователях, которые записаны на услуги данного пользователя
-            // (т.к. наши записи уже подгружены)
-            loadOrders();
-            isFirst = false;
-        } else {
-            // повторный вход в диалоги, начит берём данные из локалки
-            getMyDialogs();
-        }
+        //Каждый раз загружаем
+        loadOrders();
+
     }
 
     private void loadOrders() {
@@ -190,6 +179,7 @@ public class Dialogs extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                getMyDialogs();
             }
         });
     }

@@ -66,7 +66,6 @@ public class Messages extends AppCompatActivity {
     private ProgressBar progressBar;
     private int counter;
     private int orderCount;
-    private static ArrayList<String> senderIds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,13 +99,9 @@ public class Messages extends AppCompatActivity {
         panelBuilder.buildFooter(manager, R.id.footerEditServiceLayout);
         panelBuilder.buildHeader(manager, senderName, R.id.headerEditServiceLayout, senderId);
 
-        // заменить на список id
-        if (senderIds.contains(senderId)) {
-            getMessages();
-        } else {
-            loadMessages();
-            senderIds.add(senderId);
-        }
+        //Каждый раз обновляем при заходе
+        loadMessages();
+
     }
 
     private String getSenderName(String senderId) {
