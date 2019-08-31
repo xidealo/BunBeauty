@@ -63,5 +63,16 @@ public class WorkWithTimeApi {
         return formatForDateNow.format(date);
     }
 
+    public static Boolean checkPremium(String premiumDate) {
+        long premDate = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(premiumDate);
+        long sysDate = WorkWithTimeApi.getSysdateLong();
 
+        if (sysDate > premDate) {
+            // время вышло
+            return false;
+        } else {
+            // премиумный период
+            return true;
+        }
+    }
 }

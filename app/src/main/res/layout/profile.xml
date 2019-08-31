@@ -35,7 +35,8 @@
         app:layout_constraintBottom_toTopOf="@+id/servicesProfileRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerProfileLayout">
+        app:layout_constraintTop_toBottomOf="@+id/headerProfileLayout"
+        android:animateLayoutChanges="true">
 
         <!-- Верхняя часть-->
         <LinearLayout

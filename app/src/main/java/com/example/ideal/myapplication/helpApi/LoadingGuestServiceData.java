@@ -24,6 +24,7 @@ public class LoadingGuestServiceData {
     private static final String NAME = "name";
     private static final String IS_CANCELED = "is canceled";
     private static final String COUNT_OF_RATES = "count of rates";
+    private static final String IS_BLOCKED = "is blocked";
 
     //PHOTOS
     private static final String PHOTOS = "photos";
@@ -106,7 +107,7 @@ public class LoadingGuestServiceData {
             String timeId = timeSnapshot.getKey();
             contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, String.valueOf(timeSnapshot.child(TIME).getValue()));
             contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDayId);
-
+            contentValues.put(DBHelper.KEY_IS_BLOCKED_TIME, String.valueOf(timeSnapshot.child(IS_BLOCKED).getValue()));
             boolean hasSomeData = WorkWithLocalStorageApi
                     .hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId);
 

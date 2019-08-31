@@ -3,6 +3,7 @@ package com.example.ideal.myapplication.createService.worker;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.service.autofill.Dataset;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -25,10 +26,12 @@ public class WorkerCreateService implements IWorker {
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
     private static final String TIME = "time";
+    private static final String ORDERS = "orders";
 
     private static final String DATE = "date";
     private static final String USERS = "users";
     private static final String SERVICES = "services";
+    private static final String IS_BLOCKED = "is blocked";
 
     // Добавляем рабочий день в БД
     private String userId;
@@ -69,7 +72,6 @@ public class WorkerCreateService implements IWorker {
 
         for (String time : workingHours) {
             if (!WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time, database)) {
-
                 FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
                 DatabaseReference timeRef = fdatabase.getReference(USERS)
                         .child(userId)
@@ -81,6 +83,7 @@ public class WorkerCreateService implements IWorker {
 
                 Map<String, Object> items = new HashMap<>();
                 items.put(TIME, time);
+                items.put(IS_BLOCKED, false);
 
                 String timeId = timeRef.push().getKey();
                 timeRef = timeRef.child(timeId);
@@ -88,13 +91,29 @@ public class WorkerCreateService implements IWorker {
 
                 putDataTimeInLocalStorage(timeId, time, workingDaysId);
             }
+            else{
+                String currentTimeId = WorkWithLocalStorageApi.getWorkingTimeId(time,workingDaysId,database);
+                FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
+                DatabaseReference timeRef = fdatabase.getReference(USERS)
+                        .child(userId)
+                        .child(SERVICES)
+                        .child(serviceId)
+                        .child(WORKING_DAYS)
+                        .child(workingDaysId)
+                        .child(WORKING_TIME)
+                        .child(currentTimeId);
+
+                Map<String, Object> items = new HashMap<>();
+                items.put(IS_BLOCKED, false);
+                timeRef.updateChildren(items);
+
+                setBlockTime(currentTimeId, "false");
+            }
         }
     }
 
-
     private void putDataTimeInLocalStorage(final String timeId, final String time,
                                            final String workingDaysId) {
-
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, timeId);
@@ -114,7 +133,6 @@ public class WorkerCreateService implements IWorker {
         database.insert(DBHelper.TABLE_WORKING_DAYS, null, contentValues);
     }
 
-
     @Override
     public void deleteTime(final String workingDaysId, final ArrayList<String> removedHours) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -133,38 +151,55 @@ public class WorkerCreateService implements IWorker {
         timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot timesSnapshot) {
+                SQLiteDatabase database = dbHelper.getWritableDatabase();
+
                 for (String hour : removedHours) {
                     for (DataSnapshot time : timesSnapshot.getChildren()) {
                         if (String.valueOf(time.child(TIME).getValue()).equals(hour)) {
-                            String timeId = String.valueOf(time.getKey());
-                            timeRef.child(timeId).removeValue();
+                            String timeId = time.getKey();
+                            if (hasSomeOrder(time)) {
+                                //set blocked time
+                                Map<String, Object> items = new HashMap<>();
+                                items.put(IS_BLOCKED, true);
+                                timeRef.child(timeId).updateChildren(items);
+                                Log.d(TAG, "Блочим время");
+                                setBlockTime(timeId,"true");
+                            } else {
+                                timeRef.child(timeId).removeValue();
+                                deleteTimeFromLocalStorage(timeId, database);
+                            }
                         }
                     }
                 }
-                deleteTimeFromLocalStorage(workingDaysId, removedHours);
                 removedHours.clear();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
 
-    private void deleteTimeFromLocalStorage(final String workingDaysId, final ArrayList<String> removedHours) {
+    private boolean hasSomeOrder(DataSnapshot timeSnapshot) {
+        return timeSnapshot.child(ORDERS).getChildrenCount() != 0;
+    }
 
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        for (String hour : removedHours) {
-            if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, hour, database)) {
-                database.delete(
-                        DBHelper.TABLE_WORKING_TIME,
-                        DBHelper.KEY_TIME_WORKING_TIME + " = ? AND "
-                                + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?",
-                        new String[]{hour, String.valueOf(workingDaysId)});
-            }
+    private void deleteTimeFromLocalStorage(final String timeId, SQLiteDatabase database) {
+        if (WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_WORKING_TIME, timeId)) {
+            database.delete(
+                    DBHelper.TABLE_WORKING_TIME,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{timeId});
         }
+    }
+
+    private void setBlockTime(String timeId, String isBlock){
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_IS_BLOCKED_TIME, isBlock);
+        database.update(DBHelper.TABLE_WORKING_TIME, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{timeId});
     }
 }
 

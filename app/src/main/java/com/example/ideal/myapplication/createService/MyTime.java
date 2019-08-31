@@ -65,7 +65,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         init();
     }
 
-    private void init(){
+    private void init() {
         statusUser = getIntent().getStringExtra(STATUS_USER_BY_SERVICE);
         userId = getUserId();
         String serviceId = getIntent().getStringExtra(SERVICE_ID);
@@ -106,6 +106,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
 
         saveBtn.setOnClickListener(this);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -121,16 +122,22 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         // Удаляем время сохранённое в буфере removeHours в БД
                         boolean isFreeTime = true;
 
-                        for(String removedTime: removedHours ){
-                            if(!isFreeTime(removedTime)){
-                                isFreeTime = false;
+                        for (String removedTime : removedHours) {
+                            if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, removedTime, database)) {
+                                if (!isFreeTime(removedTime)) {
+                                    isFreeTime = false;
+                                }
+                            } else {
+                                //если в бд нет времени, которое мы пытаемся удалить
+                                Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
+                                break;
                             }
                         }
 
-                        if(!isFreeTime){
+                        if (!isFreeTime) {
                             alertTryingToDeleteBusyTime();
                             removedHours.clear();
-                        }else {
+                        } else {
                             workerCreateService.deleteTime(workingDaysId, removedHours);
                             Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
                         }
@@ -138,7 +145,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
 
                 } else {
                     if (workingHours.size() == 1) {
-                        loadInformationAboutService(WorkWithLocalStorageApi.getWorkingTimeId(workingHours.get(0), workingDaysId));
+                        loadInformationAboutService(WorkWithLocalStorageApi.getWorkingTimeId(workingHours.get(0), workingDaysId, database));
                     }
                 }
                 break;
@@ -152,7 +159,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 // Проверка мой ли это сервис (я - worker)
                 if (statusUser.equals(WORKER)) {
                     // Это мой сервис (я - worker)
-
                     if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
                         btn.setBackgroundResource(R.drawable.time_button);
                         workingHours.remove(btnText);
@@ -165,8 +171,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         btn.setTag(R.string.selectedId, true);
                     }
                 } else {
-                    // Это не мой сервис (я - UserCreateService)
-
                     // Проверка была ли кнопка выбрана до нажатия
                     if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
                         // Кнопка была уже нажата
@@ -175,7 +179,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         btn.setTag(R.string.selectedId, false);
                     } else {
                         // Кнопка не была нажата до клика
-
                         String selectedTime;
                         //Если уже существует выбранное время
                         if (workingHours.size() == 1) {
@@ -235,11 +238,12 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.show();
     }
-    private void attentionSuccessfulOrder(){
+
+    private void attentionSuccessfulOrder() {
         Toast.makeText(this, "Вы успешно записались", Toast.LENGTH_SHORT).show();
     }
 
-    private void attentionTimeIsBusy(){
+    private void attentionTimeIsBusy() {
         Toast.makeText(this, "Данное время уже занято", Toast.LENGTH_SHORT).show();
     }
 
@@ -312,13 +316,16 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 }
 
                 //Проверка является ли данное время рабочим
-                if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time,database)) {
-                    timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
-                    timeBtns[i][j].setTag(R.string.selectedId, true);
+                String currentTimeId = WorkWithLocalStorageApi.getWorkingTimeId(time, workingDaysId, database);
+                if (!currentTimeId.equals("0")) {
+                    if (!isBlockedTime(currentTimeId)) {
+                        timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
+                        timeBtns[i][j].setTag(R.string.selectedId, true);
 
-                    // Проверка записан ли кто-то на это время
-                    if (!isFreeTime(time)) {
-                        timeBtns[i][j].setEnabled(false);
+                        // Проверка записан ли кто-то на это время
+                        if (!isFreeTime(time)) {
+                            timeBtns[i][j].setEnabled(false);
+                        }
                     }
                 }
             }
@@ -357,10 +364,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                     if (isFreeTime(time)) {
                         timeBtns[i][j].setBackgroundResource(R.drawable.time_button);
                         timeBtns[i][j].setTag(R.string.selectedId, false);
-                    } else {
-                        timeBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
-                        timeBtns[i][j].setEnabled(false);
+                        continue;
                     }
+                    timeBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
+                    timeBtns[i][j].setEnabled(false);
                 }
 
             }
@@ -372,6 +379,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         for (int i = 0; i < ROWS_COUNT; i++) {
             for (int j = 0; j < COLUMNS_COUNT; j++) {
                 String time = (String) timeBtns[i][j].getText();
+
+                if (time.length() == 4) {
+                    time = "0" + time;
+                }
 
                 if (time.equals(selectedTime)) {
                     timeBtns[i][j].setBackgroundResource(R.drawable.time_button);
@@ -465,6 +476,8 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 + " AND "
                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
                 + " AND "
+                + DBHelper.KEY_IS_BLOCKED_TIME + " = 'false'"
+                + " AND "
                 + DBHelper.KEY_TIME_WORKING_TIME + " = ?"
                 + " AND "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
@@ -479,6 +492,20 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         }
         cursor.close();
         return false;
+    }
+
+    private boolean isBlockedTime(String timeId) {
+        Log.d(TAG, "TIME ID " + timeId);
+        String isBlockedQuery = "SELECT "
+                + DBHelper.KEY_ID
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME
+                + " WHERE "
+                + DBHelper.KEY_IS_BLOCKED_TIME + " = 'true'"
+                + " AND "
+                + DBHelper.KEY_ID + " = ?";
+        Cursor cursor = database.rawQuery(isBlockedQuery, new String[]{timeId});
+        return cursor.moveToFirst();
     }
 
     @Override

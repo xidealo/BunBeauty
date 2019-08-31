@@ -90,6 +90,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private String ownerId;
     private String serviceName;
     private String countOfRatesForComments;
+    private String premiumDate;
 
     private TextView costText;
     private TextView addressText;
@@ -119,14 +120,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.guest_service);
 
         init();
-
-        if (!serviceIdsFirstSetGS.contains(serviceId)) {
-            loadServiceData();
-            serviceIdsFirstSetGS.add(serviceId);
-        } else {
-            //получаем данные о сервисе
-            getInfoAboutService(serviceId);
-        }
     }
 
     private void init() {
@@ -185,7 +178,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private void loadServiceData() {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = firebaseDatabase.getReference(USERS)
-                .child(ownerId);
+                    .child(ownerId);
         //загружаем один раз всю информацию
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -207,7 +200,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 service.setName(serviceSnapshot.child(NAME).getValue(String.class));
                 service.setAverageRating(serviceSnapshot.child(AVG_RATING).getValue(Float.class));
                 service.setCountOfRates(serviceSnapshot.child(COUNT_OF_RATES).getValue(Long.class));
-                service.setIsPremium(checkPremium(serviceSnapshot.child(IS_PREMIUM).getValue(String.class)));
+                service.setIsPremium(WorkWithTimeApi.checkPremium(serviceSnapshot.child(IS_PREMIUM).getValue(String.class)));
 
                 setGuestService(service);
 
@@ -241,8 +234,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                     ordersRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot,timeId, database);
                                             // если кто-то записался
+                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot,timeId, database);
                                         }
 
                                         @Override
@@ -254,7 +247,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                         @Override
                                         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                                             //void
-
                                         }
 
                                         @Override
@@ -271,8 +263,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                 }
 
                                 @Override
-                                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                    //пусто
+                                public void onChildChanged(@NonNull DataSnapshot timeSnapshot, @Nullable String s) {
+                                    //если меняется статус времнеи
+                                    LoadingGuestServiceData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
                                 }
 
                                 @Override
@@ -353,20 +346,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
-
-    public static Boolean checkPremium(String premiumDate) {
-        long premDate = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(premiumDate);
-        long sysDate = WorkWithTimeApi.getSysdateLong();
-
-        if (sysDate > premDate + 60*60*24*7*1000) {
-            // время вышло
-            return false;
-        } else {
-            // премиумный период
-            return true;
-        }
-    }
-
+  
     private String getOwnerId() {
         String sqlQuery =
                 "SELECT *"
@@ -392,7 +372,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 } else {
                     // если не мой сервис, я - юзер
                     // проверяем какие дни мне доступны
-                    checkScheduleAndGoToProfile();
+                    checkScheduleAndGoToCalendar();
                 }
                 break;
             case R.id.noPremiumGuestServiceText:
@@ -429,7 +409,8 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             int indexCountOfRates = cursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_SERVICES);
             int indexDescription = cursor.getColumnIndex(DBHelper.KEY_DESCRIPTION_SERVICES);
             float serviceRating = Float.valueOf(cursor.getString(indexServiceRating));
-            boolean isPremium = checkPremium(cursor.getString(indexIsPremium));
+            premiumDate = cursor.getString(indexIsPremium);
+            boolean isPremium = WorkWithTimeApi.checkPremium(premiumDate);
             long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
 
             Service service = new Service();
@@ -471,7 +452,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void checkScheduleAndGoToProfile() {
+    private void checkScheduleAndGoToCalendar() {
         if (WorkWithLocalStorageApi.hasAvailableTime(serviceId, userId, dbHelper.getReadableDatabase())) {
             goToMyCalendar(USER);
         } else {
@@ -525,6 +506,15 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (!serviceIdsFirstSetGS.contains(serviceId)) {
+            loadServiceData();
+            serviceIdsFirstSetGS.add(serviceId);
+        } else {
+            //получаем данные о сервисе
+            getInfoAboutService(serviceId);
+        }
+
         buildPanels();
         imageFeedLayout.removeAllViews();
         createPhotoFeed(serviceId);
@@ -611,13 +601,13 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 .child(SERVICES)
                 .child(serviceId)
                 .child(IS_PREMIUM);
-        String premiumDate = WorkWithTimeApi.getDateInFormatYMDHMS(new Date());
-        myRef.setValue(premiumDate);
+        String newPremiumDate = addSevenDayPremium(premiumDate);
+        myRef.setValue(newPremiumDate);
 
         setWithPremium();
         premiumLayout.setVisibility(View.GONE);
         attentionPremiumActivated();
-        updatePremiumLocalStorage(serviceId, premiumDate);
+        updatePremiumLocalStorage(serviceId, newPremiumDate);
     }
 
     private void updatePremiumLocalStorage(String serviceId, String premiumDate) {
@@ -665,6 +655,17 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+    }
+
+    @Override
+    public String addSevenDayPremium(String date) {
+        long sysdateLong = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(date);
+        if(sysdateLong < WorkWithTimeApi.getSysdateLong()){
+            sysdateLong = WorkWithTimeApi.getSysdateLong();
+        }
+        //86400000 - day * 7 day
+        sysdateLong += 86400000*7;
+        return WorkWithTimeApi.getDateInFormatYMDHMS(new Date(sysdateLong));
     }
 
     private void attentionWrongCode() {

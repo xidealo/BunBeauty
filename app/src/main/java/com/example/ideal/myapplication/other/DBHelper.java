@@ -50,6 +50,8 @@ public class DBHelper extends SQLiteOpenHelper {
     // working time
     public static final String KEY_TIME_WORKING_TIME = "time";
     public static final String KEY_WORKING_DAYS_ID_WORKING_TIME = "id_working_days";
+    //в случае того, что мастер хочет удалить время на котором есть отклоненный заказ
+    public static final String KEY_IS_BLOCKED_TIME = "is_blocked";
 
     //orders
     public static final String KEY_IS_CANCELED_ORDERS = "is_canceled";
@@ -119,6 +121,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "("
                 + KEY_ID + " text primary key,"
                 + KEY_TIME_WORKING_TIME + " text,"
+                + KEY_IS_BLOCKED_TIME + " text,"
                 + KEY_WORKING_DAYS_ID_WORKING_TIME + " integer"
                 + ")";
 

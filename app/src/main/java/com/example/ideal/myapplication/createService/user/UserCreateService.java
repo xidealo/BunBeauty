@@ -53,7 +53,7 @@ public class UserCreateService implements IUser {
     public void makeOrder(String workingTimeId) {
         String serviceOwnerId = getServiceOwnerId(workingTimeId);
         String orderId = makeOrderForService(workingTimeId, serviceOwnerId);
-        makeOrderForUser(orderId, serviceOwnerId,workingTimeId);
+        makeOrderForUser(orderId, serviceOwnerId, workingTimeId);
     }
 
     // Создаёт запись в разделе Сервис
@@ -82,7 +82,7 @@ public class UserCreateService implements IUser {
 
         myRef = myRef.child(orderId);
         myRef.updateChildren(items);
-
+        //поток?
         addOrderInLocalStorage(orderId, workingTimeId, messageTime);
 
         // создаём отзыв дял сервиса
@@ -128,20 +128,6 @@ public class UserCreateService implements IUser {
 
         addReviewInLocalStorage(orderId, reviewId, type);
     }
-
-    private void addReviewInLocalStorage(final String orderId, final String reviewId, final String type) {
-        SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_ID, reviewId);
-        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, "");
-        contentValues.put(DBHelper.KEY_RATING_REVIEWS, "0");
-        contentValues.put(DBHelper.KEY_TYPE_REVIEWS, type);
-        contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
-
-        localDatabase.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
-    }
-
     private String getServiceOwnerId(String workingTimeId) {
 
         Cursor cursor = WorkWithLocalStorageApi.getServiceCursorByTimeId(workingTimeId);
@@ -156,6 +142,18 @@ public class UserCreateService implements IUser {
         return ownerId;
     }
 
+    private void addReviewInLocalStorage(final String orderId, final String reviewId, final String type) {
+        SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, reviewId);
+        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, "");
+        contentValues.put(DBHelper.KEY_RATING_REVIEWS, "0");
+        contentValues.put(DBHelper.KEY_TYPE_REVIEWS, type);
+        contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
+
+        localDatabase.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
+    }
     private void addOrderInLocalStorage(final String orderId,final String timeId,final String messageTime) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 

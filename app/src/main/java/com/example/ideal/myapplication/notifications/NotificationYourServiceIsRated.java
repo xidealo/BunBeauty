@@ -39,6 +39,9 @@ public class NotificationYourServiceIsRated extends NotificationConstructor {
                 .setContentIntent(pIntent)
                 .setContentTitle("Новая оценка!")
                 .setContentText("Клиент " + name + " оценил ваш сервис \"" + serviceName + "\"")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                      .bigText("Клиент " + name + " оценил ваш сервис \"" + serviceName + "\" Оценка будет доступна через 72 часа"))
+                .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);
 

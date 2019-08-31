@@ -49,6 +49,11 @@ public class NotificationOrder extends NotificationConstructor {
                         + " записался к вам на услугу " + WorkWithStringsApi.firstCapitalSymbol(serviceName)
                         + ". Сеанс состоится " + workingDate
                         + " в " + workingTime + ".")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                    .bigText("Пользователь " + WorkWithStringsApi.doubleCapitalSymbols(name)
+                        + " записался к вам на услугу " + WorkWithStringsApi.firstCapitalSymbol(serviceName)
+                        + ". Сеанс состоится " + workingDate
+                        + " в " + workingTime + "."))
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

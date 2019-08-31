@@ -235,7 +235,7 @@ public class MyAuthorization {
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
     }
 
-    private void addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId) {
+    private void    addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -281,33 +281,6 @@ public class MyAuthorization {
         orderThread.interrupt();
     }
 
-    /*private String updateMessageTime(String timeId) {
-        String updatedTime = "";
-
-        Cursor cursor = WorkWithLocalStorageApi.getServiceCursorByTimeId(timeId);
-
-        if (cursor.moveToFirst()) {
-            int indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME);
-            int indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS);
-
-            String time = cursor.getString(indexTime);
-            String date = cursor.getString(indexDate);
-
-            WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
-            //3600000 * 24 = 24 часа
-            String commonDate = date + " " + time;
-            long messageDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000 * 24;
-            long sysdate = workWithTimeApi.getSysdateLong();
-
-            if (sysdate > messageDateLong) {
-                // вычитаем 3 часа, т.к. метод работает с датой по Гринвичу
-                updatedTime = WorkWithTimeApi.getDateInFormatYMDHMS(new Date(messageDateLong - 3600000 * 3));
-            }
-        }
-        cursor.close();
-        return updatedTime;
-    }*/
-
     // Удаляет все данные о пользователях, сервисах, рабочих днях и рабочем времени из SQLite
     private void clearSQLite() {
 
@@ -336,6 +309,11 @@ public class MyAuthorization {
         intent.putExtra(PHONE, myPhoneNumber);
         context.startActivity(intent);
     }
+
+    private void setListenerToOrdersForDialogs(){
+
+    }
+
 
     private void goToProfile() {
         // тоже самое необходимо прописать для перехода с регистрации

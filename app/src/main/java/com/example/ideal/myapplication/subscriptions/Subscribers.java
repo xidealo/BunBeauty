@@ -99,6 +99,9 @@ public class Subscribers extends AppCompatActivity {
                 .getReference(USERS)
                 .child(myUserId)
                 .child(SUBSCRIPTIONS);
+        if(SubscriptionsApi.getCountOfSubscriptions(database,getUserId()) == 0){
+            setWithoutSubscriptions();
+        }
 
         //повесить другой листенер, который срабатывает на полседнего, который только добавился
         userRef.addChildEventListener(new ChildEventListener() {
@@ -137,7 +140,11 @@ public class Subscribers extends AppCompatActivity {
             }
         });
     }
+    private void setWithoutSubscriptions(){
+        subsText.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
 
+    }
     private void updateLocalCountOfSubs(long subscriptionsCount) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -235,6 +242,12 @@ public class Subscribers extends AppCompatActivity {
     }
 
     private void getMySubscriptions() {
+
+        if(SubscriptionsApi.getCountOfSubscriptions(database,getUserId()) == 0){
+            setWithoutSubscriptions();
+            return;
+        }
+
         Cursor subsCursor = createSubscriptionCursor();
         //надпись сверху
         updateSubscriptionText();

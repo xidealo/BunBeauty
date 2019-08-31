@@ -9,6 +9,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.other.Profile;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.searchService.GuestService;
 
 public class NotificationCancel extends NotificationConstructor {
@@ -49,6 +50,10 @@ public class NotificationCancel extends NotificationConstructor {
                 .setContentText("Мастер " + workerName
                         + " отказал Вам в предоставлении услуги " + serviceName
                         + ". Сеанс на " + orderDate + " в " + orderTime + " отменён.")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Мастер " + workerName
+                                + " отказал Вам в предоставлении услуги " + serviceName
+                                + ". Сеанс на " + orderDate + " в " + orderTime + " отменён."))
                 .setPriority(NotificationCompat.PRIORITY_MAX);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

@@ -35,7 +35,10 @@ public class NotificationYouAreRated extends NotificationConstructor {
                 .setSmallIcon(R.drawable.bun_beauty)
                 .setContentIntent(pIntent)
                 .setContentTitle("Новая оценка!")
-                .setContentText("Мастер " + name + " оценил вас!")
+                .setContentText("Мастер " + name + " оценил вас! Оценка будет доступна через 72 часа")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Мастер " + name + " оценил вас! Оценка будет доступна через 72 часа"))
+                .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);
 

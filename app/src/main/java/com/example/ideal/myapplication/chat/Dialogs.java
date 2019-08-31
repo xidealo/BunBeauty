@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.DialogAdapter;
@@ -48,8 +49,6 @@ public class Dialogs extends AppCompatActivity {
     private static final String OWNER_ID = "owner_id";
     private static final String ORDER_ID = "order_id";
 
-    private static boolean isFirst = true;
-
     private String userId;
     private int userCount;
     private int counter;
@@ -61,10 +60,9 @@ public class Dialogs extends AppCompatActivity {
     private FragmentManager manager;
 
     private ArrayList<Dialog> dialogList;
-    private ArrayList<String> userList;
     private RecyclerView recyclerView;
     private DialogAdapter dialogAdapter;
-
+    private TextView noDialogsText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,8 +76,9 @@ public class Dialogs extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.resultsDialogsRecycleView);
         progressBar = findViewById(R.id.progressBarDialogs);
+        noDialogsText = findViewById(R.id.noDialogsDialogsText);
+
         dialogList = new ArrayList<>();
-        userList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -98,16 +97,9 @@ public class Dialogs extends AppCompatActivity {
         panelBuilder.buildFooter(manager, R.id.footerDialogsLayout);
         panelBuilder.buildHeader(manager, "Диалоги", R.id.headerDialogsLayout);
 
-        if (isFirst) {
-            // зашли первый раз, значит нужно подгрузить данные из FB
-            // загружаем данные о пользователях, которые записаны на услуги данного пользователя
-            // (т.к. наши записи уже подгружены)
-            loadOrders();
-            isFirst = false;
-        } else {
-            // повторный вход в диалоги, начит берём данные из локалки
-            getMyDialogs();
-        }
+        //Каждый раз загружаем
+        loadOrders();
+
     }
 
     private void loadOrders() {
@@ -187,6 +179,7 @@ public class Dialogs extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                getMyDialogs();
             }
         });
     }
@@ -268,9 +261,11 @@ public class Dialogs extends AppCompatActivity {
 
             int indexOrderId = dialogsCursor.getColumnIndex(ORDER_ID);
             int indexOwnerId = dialogsCursor.getColumnIndex(OWNER_ID);
+            int indexMessageTime = dialogsCursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_ORDERS);
             do {
                 String orderId = dialogsCursor.getString(indexOrderId);
                 String ownerId = dialogsCursor.getString(indexOwnerId);
+                String messageTime = dialogsCursor.getString(dialogsCursor.getColumnIndex(DBHelper.KEY_MESSAGE_TIME_ORDERS));
 
                 // Проверка где лежит мой id
                 if (userId.equals(orderId)) {
@@ -278,7 +273,7 @@ public class Dialogs extends AppCompatActivity {
                     // Проверяем не создан ли уже диалог с владельцем сервиса
                     if (!createdDialogs.contains(ownerId)) {
                         // Если нет создаём и заносим в соданные
-                        createDialogWithUser(ownerId);
+                        createDialogWithUser(ownerId,messageTime);
                         createdDialogs.add(ownerId);
                     }
                 } else {
@@ -286,7 +281,7 @@ public class Dialogs extends AppCompatActivity {
                     // Проверяем не создан ли уже диалог с клиентом
                     if (!createdDialogs.contains(orderId)) {
                         // Если нет создаём и заносим в соданные
-                        createDialogWithUser(orderId);
+                        createDialogWithUser(orderId,messageTime);
                         createdDialogs.add(orderId);
                     }
                 }
@@ -298,6 +293,7 @@ public class Dialogs extends AppCompatActivity {
             recyclerView.setVisibility(View.VISIBLE);
             dialogsCursor.close();
         } else {
+            setNoDialogs();
             dialogsCursor.close();
         }
     }
@@ -337,7 +333,7 @@ public class Dialogs extends AppCompatActivity {
         return cursor;
     }
 
-    private void createDialogWithUser(String userId) {
+    private void createDialogWithUser(String userId, String messageTime) {
 
         Cursor cursor = LSApi.getUser(userId);
 
@@ -346,8 +342,14 @@ public class Dialogs extends AppCompatActivity {
             Dialog dialog = new Dialog();
             dialog.setUserId(userId);
             dialog.setUserName(userName);
+            dialog.setMessageTime(messageTime);
             dialogList.add(dialog);
         }
+    }
+
+    private void setNoDialogs(){
+        progressBar.setVisibility(View.GONE);
+        noDialogsText.setVisibility(View.VISIBLE);
     }
 
     private String getUserId() {

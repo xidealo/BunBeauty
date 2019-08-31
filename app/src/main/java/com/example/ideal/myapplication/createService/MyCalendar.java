@@ -44,7 +44,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     private Button[][] dayBtns;
     private RelativeLayout mainLayout;
     private DBHelper dbHelper;
-    private WorkerCreateService     workerCreateService;
+    private WorkerCreateService workerCreateService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -332,6 +332,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 + " WHERE "
                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_IS_BLOCKED_TIME + " = 'false'"
                 + " AND "
                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
                 + " AND ((("

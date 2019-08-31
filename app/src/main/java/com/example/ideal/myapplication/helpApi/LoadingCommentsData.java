@@ -7,6 +7,7 @@ import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 
 public class LoadingCommentsData {
+
     private static final String USER_ID = "user id";
     private static final String TIME = "time";
     private static final String SORT_TIME = "sort time";

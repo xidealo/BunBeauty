@@ -53,7 +53,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
     private float myRating;
     private float avgRating = 0;
     private int count = 0;
-    String type;
+    private String type;
 
     private EditText reviewInput;
 
