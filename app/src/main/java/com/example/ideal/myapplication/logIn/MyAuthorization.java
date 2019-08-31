@@ -296,6 +296,7 @@ public class MyAuthorization {
 
         database.delete(DBHelper.TABLE_REVIEWS, null, null);
         database.delete(DBHelper.TABLE_ORDERS, null, null);
+        database.delete(DBHelper.TABLE_TAGS, null, null);
     }
 
     private void attentionBadConnection() {

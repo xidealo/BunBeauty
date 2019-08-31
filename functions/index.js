@@ -125,7 +125,7 @@ exports.sendOrderNotification = functions
 exports.sendCancelNotification = functions
     .database
     .ref('/users/{userId}/services/{serviceId}/working days/{wdId}/working time/{wtId}/orders/{orderId}/is canceled')
-    .onUpdate((change) => {
+    .onUpdate((change, context) => {
 
 	//get the userId of the person receiving the notification because we need to get their token
 	const workerId = context.params.userId;

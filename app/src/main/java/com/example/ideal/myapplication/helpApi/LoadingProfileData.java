@@ -10,6 +10,8 @@ import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 
+import java.util.ArrayList;
+
 public class LoadingProfileData {
 
     private static final String TAG = "DBInf";
@@ -21,12 +23,14 @@ public class LoadingProfileData {
     private static final String NAME = "name";
     private static final String COUNT_OF_RATES = "count of rates";
     private static final String PHONE = "phone";
+    private static final String TAGS = "tags";
 
     //PHOTOS
     private static final String PHOTO_LINK = "photo link";
 
     private static final String SUBSCRIBERS = "subscribers";
     private static final String SUBSCRIPTIONS = "subscriptions";
+
 
     private static SQLiteDatabase localDatabase;
     private static Thread photoThread;
@@ -110,22 +114,27 @@ public class LoadingProfileData {
         //5 10 - интервал
         int countOfDownloads = 5;
         int counter = 0;
-        for (DataSnapshot serviceList : servicesSnapshot.getChildren()) {
+        for (DataSnapshot serviceSnap : servicesSnapshot.getChildren()) {
 
             /*if (counter < startIndexOfDownload) {
                 counter++;
                 continue;
             }*/
 
-            String serviceId = serviceList.getKey();
-            String serviceName = serviceList.child(NAME).getValue(String.class);
-            float serviceRating = serviceList.child(AVG_RATING).getValue(Float.class);
+            String serviceId = serviceSnap.getKey();
+            String serviceName = serviceSnap.child(NAME).getValue(String.class);
+            float serviceRating = serviceSnap.child(AVG_RATING).getValue(Float.class);
 
             Service service = new Service();
             service.setId(serviceId);
             service.setName(serviceName);
             service.setUserId(userId);
             service.setAverageRating(serviceRating);
+            ArrayList<String> tagsArray = new ArrayList<>();
+            for(DataSnapshot tag : serviceSnap.child(TAGS).getChildren()) {
+                tagsArray.add(tag.getValue(String.class));
+            }
+            service.setTags(tagsArray);
 
             addUserServicesInLocalStorage(service, database);
             counter++;
@@ -157,6 +166,13 @@ public class LoadingProfileData {
         } else {
             contentValues.put(DBHelper.KEY_ID, serviceId);
             database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
+        }
+
+        contentValues.clear();
+        contentValues.put(DBHelper.KEY_SERVISE_ID_TAGS, serviceId);
+        for (String tag : service.getTags()) {
+            contentValues.put(DBHelper.KEY_TAG_TAGS, tag);
+            database.insert(DBHelper.TABLE_TAGS, null, contentValues);
         }
     }
 

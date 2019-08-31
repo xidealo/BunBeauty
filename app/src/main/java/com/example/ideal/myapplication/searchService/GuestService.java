@@ -346,7 +346,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
-
+  
     private String getOwnerId() {
         String sqlQuery =
                 "SELECT *"

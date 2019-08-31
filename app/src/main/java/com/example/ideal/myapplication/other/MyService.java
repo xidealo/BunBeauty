@@ -682,7 +682,6 @@ public class MyService extends Service implements Runnable {
 
 
     private void checkCanceled(DataSnapshot orderSnapshot) {
-        Log.d(TAG, orderSnapshot.toString());
         boolean isCanceled = orderSnapshot.child(IS_CANCELED).getValue(Boolean.class);
         if (isCanceled) {
                                                     /*String orderId = orderSnapshot.getKey();

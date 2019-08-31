@@ -68,23 +68,6 @@
         <item><b>имя и фамилия</b></item>
     </string-array>
 
-    <string-array name="category">
-        <item><font android:color="@color/white">Выбрать категорию</font></item>
-        <item><b><font android:color="@color/white">Ногти</font></b></item>
-        <item><b><font android:color="@color/white">Волосы</font></b></item>
-        <item><b><font android:color="@color/white">Глаза</font></b></item>
-        <item><b><font android:color="@color/white">Визаж</font></b></item>
-        <item><b><font android:color="@color/white">Массаж</font></b></item>
-    </string-array>
-
-    <string-array name="categoryForEditService">
-        <item><b><font android:color="@color/white">Ногти</font></b></item>
-        <item><b><font android:color="@color/white">Волосы</font></b></item>
-        <item><b><font android:color="@color/white">Глаза</font></b></item>
-        <item><b><font android:color="@color/white">Визаж</font></b></item>
-        <item><b><font android:color="@color/white">Массаж</font></b></item>
-    </string-array>
-
     <string-array name="countryCode">
         <item><b><font android:color="@color/white">+7</font></b></item>
         <item><b><font android:color="@color/white">+1</font></b></item>
