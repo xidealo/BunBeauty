@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.other.Profile;
@@ -38,7 +39,7 @@ public class NotificationYouAreRated extends NotificationConstructor {
                 .setContentText("Мастер " + name + " оценил вас! Оценка будет доступна через 72 часа")
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText("Мастер " + name + " оценил вас! Оценка будет доступна через 72 часа"))
-                .setContentIntent(pendingIntent)
+                .setContentIntent(pIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);
 
