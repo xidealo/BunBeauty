@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.Search;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -56,6 +59,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     private ArrayList<String> selectedTagsArray;
     private LinearLayout categoryLayout;
     private LinearLayout tagsLayout;
+    private LinearLayout innerLayout;
     private ProgressBar progressBar;
 
     private ArrayList<Service> serviceList;
@@ -89,6 +93,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         recyclerView = findViewById(R.id.resultsMainScreenRecycleView);
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
         tagsLayout = findViewById(R.id.tagsMainScreenLayout);
+        innerLayout = findViewById(R.id.tagsInnerMainScreenLayout);
         progressBar = findViewById(R.id.progressBarMainScreen);
         Button minimizeTagsBtn = findViewById(R.id.minimizeTagsMainScreenBtn);
         Button clearTagsBtn = findViewById(R.id.clearTagsMainScreenBtn);
@@ -156,9 +161,11 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         String text = tagText.getText().toString();
         if (selectedTagsArray.contains(text)) {
             tagText.setBackgroundResource(0);
+            tagText.setTextColor(Color.GRAY);
             selectedTagsArray.remove(text);
         } else {
             tagText.setBackgroundResource(R.drawable.category_button_pressed);
+            tagText.setTextColor(Color.BLACK);
             selectedTagsArray.add(text);
         }
 
@@ -196,7 +203,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     }
 
     private void hideTags() {
-        tagsLayout.removeViews(0, tagsLayout.getChildCount() - 1);
+        innerLayout.removeAllViews();
         tagsLayout.setVisibility(View.GONE);
     }
 
@@ -325,14 +332,14 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     }
 
     private void showTags() {
-        Log.d(TAG, "showTags: " + selectedTagsArray);
         CharSequence[] tagsArray = getResources()
                 .obtainTypedArray(R.array.tags_references)
                 .getTextArray(categories.indexOf(category));
 
         for (CharSequence tag : tagsArray) {
             TextView tagText = new TextView(this);
-            tagText.setText(tag);
+            tagText.setText(tag.toString());
+            tagText.setTextColor(Color.GRAY);
             tagText.setGravity(Gravity.CENTER);
             tagText.setTypeface(ResourcesCompat.getFont(this, R.font.roboto_bold));
             tagText.setLayoutParams(new LinearLayout.LayoutParams(
@@ -345,7 +352,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
                 tagText.setTextColor(Color.BLACK);
             }
 
-            tagsLayout.addView(tagText, tagsLayout.getChildCount() - 1);
+            innerLayout.addView(tagText);
         }
 
         tagsLayout.setVisibility(View.VISIBLE);

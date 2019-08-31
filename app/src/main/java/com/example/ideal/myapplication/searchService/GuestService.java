@@ -358,7 +358,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         long premDate = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(premiumDate);
         long sysDate = WorkWithTimeApi.getSysdateLong();
 
-        Log.d(TAG, "checkPremium: " + premDate);
         if (sysDate > premDate + 60*60*24*7*1000) {
             // время вышло
             return false;

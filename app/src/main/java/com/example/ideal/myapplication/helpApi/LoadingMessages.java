@@ -164,7 +164,6 @@ public class LoadingMessages {
     private static String updateMessageTime(String timeId) {
         String updatedTime = "";
 
-        Log.d(TAG, "updateMessageTime: " + timeId);
         Cursor cursor = WorkWithLocalStorageApi.getServiceCursorByTimeId(timeId);
 
         if (cursor.moveToFirst()) {

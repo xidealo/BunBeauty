@@ -596,13 +596,14 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 DBHelper.KEY_ID + " = ?",
                 new String[]{serviceId});
 
-        database.delete(DBHelper.TABLE_TAGS,
+        int c = database.delete(DBHelper.TABLE_TAGS,
                 DBHelper.KEY_SERVISE_ID_TAGS + " = ?",
                 new String[]{serviceId});
 
         contentValues.clear();
         contentValues.put(DBHelper.KEY_SERVISE_ID_TAGS, serviceId);
         for (String tag : service.getTags()) {
+
             contentValues.put(DBHelper.KEY_TAG_TAGS, tag);
             database.insert(DBHelper.TABLE_TAGS, null, contentValues);
         }

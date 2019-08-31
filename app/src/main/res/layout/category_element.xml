@@ -27,10 +27,11 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:entries="@array/choice_categories"
             android:background="@color/panelColor"
             android:backgroundTint="@color/panelColor"
-            android:entries="@array/choice_categories"
-            android:popupBackground="@color/panelColor" />
+            android:popupBackground="@color/panelColor"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -62,8 +63,7 @@
         android:background="@drawable/block_text"
         android:gravity="center"
         android:minHeight="50dp"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <TextView
             style="@style/mainText"
@@ -75,10 +75,11 @@
         <Button
             android:id="@+id/minimizeTagsBtn"
             style="@style/lightBlueButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:paddingTop="8dp"
+            android:layout_width="150dp"
+            android:layout_height="36dp"
             android:gravity="center_horizontal"
-            android:text="/\\" />
+            android:text="" />
     </LinearLayout>
 
 </LinearLayout>

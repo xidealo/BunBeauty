@@ -13,4 +13,6 @@
     <dimen name="bottom_panel_height">60dp</dimen>
 
     <dimen name="main_button_height">36dp</dimen>
+
+    <dimen name="tags_width">700dp</dimen>
 </resources>

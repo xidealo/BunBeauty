@@ -120,7 +120,6 @@ public class Search {
                         + userNameCondition
                         + tagsCondition;
 
-        Log.d(TAG, "sqlQuery: " + sqlQuery);
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{});
         if(cursor.moveToFirst()) {

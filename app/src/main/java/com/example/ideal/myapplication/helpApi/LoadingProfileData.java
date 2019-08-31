@@ -131,9 +131,9 @@ public class LoadingProfileData {
             service.setUserId(userId);
             service.setAverageRating(serviceRating);
             ArrayList<String> tagsArray = new ArrayList<>();
-            /*for(DataSnapshot tag : serviceSnap.child(TAGS).getChildren()) {
-                tagsArray.add(tag.getValue().toString());
-            }*/
+            for(DataSnapshot tag : serviceSnap.child(TAGS).getChildren()) {
+                tagsArray.add(tag.getValue(String.class));
+            }
             service.setTags(tagsArray);
 
             addUserServicesInLocalStorage(service, database);

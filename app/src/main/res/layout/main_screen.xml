@@ -14,7 +14,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
     </LinearLayout>
 
@@ -37,50 +37,58 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <ScrollView
-        android:id="@+id/tagsMainScreenScroll"
+    <LinearLayout
+        android:id="@+id/tagsMainScreenLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fadingEdge="vertical"
-        android:scrollbars="none"
+        android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll">
 
-        <LinearLayout
-            android:id="@+id/tagsMainScreenLayout"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_height="100dp"
+            android:fadingEdge="vertical"
+            android:scrollbars="none">
 
             <LinearLayout
+                android:id="@+id/tagsInnerMainScreenLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical"/>
 
-                <Button
-                    android:id="@+id/minimizeTagsMainScreenBtn"
-                    style="@style/lightBlueButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:text="/\\"
-                    android:layout_weight="1"/>
+        </ScrollView>
 
-                <Button
-                    android:id="@+id/clearTagsMainScreenBtn"
-                    style="@style/lightBlueButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:text="X"
-                    android:layout_weight="1"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            </LinearLayout>
+            <Button
+                android:id="@+id/minimizeTagsMainScreenBtn"
+                style="@style/lightBlueButton"
+                android:paddingTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:fontFamily="@font/font_awesome_solid"
+                android:text="" />
 
+            <Button
+                android:id="@+id/clearTagsMainScreenBtn"
+                style="@style/lightBlueButton"
+                android:paddingTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:fontFamily="@font/font_awesome_solid"
+                android:text="" />
         </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBarMainScreen"
@@ -105,7 +113,7 @@
         app:layout_constraintBottom_toTopOf="@+id/footerMainScreenLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tagsMainScreenScroll"></android.support.v7.widget.RecyclerView>
+        app:layout_constraintTop_toBottomOf="@id/tagsMainScreenLayout" />
 
     <LinearLayout
         android:id="@+id/footerMainScreenLayout"

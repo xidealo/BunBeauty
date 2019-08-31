@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string-array name="categories">
-        <item><b><font android:color="@color/black">ногти</font></b></item>
-        <item><b><font android:color="@color/black">брови</font></b></item>
-        <item><b><font android:color="@color/black">ресницы</font></b></item>
-        <item><b><font android:color="@color/black">волосы</font></b></item>
-        <item><b><font android:color="@color/black">эпиляция</font></b></item>
-        <item><b><font android:color="@color/black">визаж</font></b></item>
-        <item><b><font android:color="@color/black">массаж</font></b></item>
-        <item><b><font android:color="@color/black">косметология</font></b></item>
+        <item><b><font android:color="@color/white">ногти</font></b></item>
+        <item><b><font android:color="@color/white">брови</font></b></item>
+        <item><b><font android:color="@color/white">ресницы</font></b></item>
+        <item><b><font android:color="@color/white">волосы</font></b></item>
+        <item><b><font android:color="@color/white">эпиляция</font></b></item>
+        <item><b><font android:color="@color/white">визаж</font></b></item>
+        <item><b><font android:color="@color/white">массаж</font></b></item>
+        <item><b><font android:color="@color/white">косметология</font></b></item>
     </string-array>
 
     <string-array name="choice_categories">
-        <item><font android:color="@color/black">Выбрать категорию</font></item>
-        <item><b><font android:color="@color/black">ногти</font></b></item>
-        <item><b><font android:color="@color/black">брови</font></b></item>
-        <item><b><font android:color="@color/black">ресницы</font></b></item>
-        <item><b><font android:color="@color/black">волосы</font></b></item>
-        <item><b><font android:color="@color/black">эпиляция</font></b></item>
-        <item><b><font android:color="@color/black">визаж</font></b></item>
-        <item><b><font android:color="@color/black">массаж</font></b></item>
-        <item><b><font android:color="@color/black">косметология</font></b></item>
+        <item><b><font android:color="@color/white">Выбрать категорию</font></b></item>
+        <item><b><font android:color="@color/white">ногти</font></b></item>
+        <item><b><font android:color="@color/white">брови</font></b></item>
+        <item><b><font android:color="@color/white">ресницы</font></b></item>
+        <item><b><font android:color="@color/white">волосы</font></b></item>
+        <item><b><font android:color="@color/white">эпиляция</font></b></item>
+        <item><b><font android:color="@color/white">визаж</font></b></item>
+        <item><b><font android:color="@color/white">массаж</font></b></item>
+        <item><b><font android:color="@color/white">косметология</font></b></item>
     </string-array>
 
     <array name="tags_references">
@@ -35,70 +35,70 @@
     </array>
 
     <array name="nails">
-        <item><b><font android:color="@color/black">маникюр</font></b></item>
-        <item><b><font android:color="@color/black">педикюр</font></b></item>
-        <item><b><font android:color="@color/black">покрытие</font></b></item>
+        <item><b><font android:color="@color/black">Маникюр</font></b></item>
+        <item><b><font android:color="@color/black">Педикюр</font></b></item>
+        <item><b><font android:color="@color/black">Покрытие</font></b></item>
     </array>
 
     <array name="eyebrows">
-        <item><b><font android:color="@color/black">окрашивание</font></b></item>
-        <item><b><font android:color="@color/black">долговременная укладка</font></b></item>
-        <item><b><font android:color="@color/black">коррекция</font></b></item>
+        <item><b><font android:color="@color/black">Окрашивание</font></b></item>
+        <item><b><font android:color="@color/black">Долговременная укладка</font></b></item>
+        <item><b><font android:color="@color/black">Коррекция</font></b></item>
     </array>
 
     <array name="eyelashes">
-        <item><b><font android:color="@color/black">окрашивание</font></b></item>
-        <item><b><font android:color="@color/black">наращивание</font></b></item>
-        <item><b><font android:color="@color/black">ламинирование</font></b></item>
-        <item><b><font android:color="@color/black">ботекс</font></b></item>
+        <item><b><font android:color="@color/black">Окрашивание</font></b></item>
+        <item><b><font android:color="@color/black">Наращивание</font></b></item>
+        <item><b><font android:color="@color/black">Ламинирование</font></b></item>
+        <item><b><font android:color="@color/black">Ботекс</font></b></item>
     </array>
 
     <array name="hair">
-        <item><b><font android:color="@color/black">кератиновое выпрямление</font></b></item>
-        <item><b><font android:color="@color/black">ламинирование</font></b></item>
-        <item><b><font android:color="@color/black">милирование и калорирование</font></b></item>
-        <item><b><font android:color="@color/black">стрижка</font></b></item>
-        <item><b><font android:color="@color/black">ботекс</font></b></item>
-        <item><b><font android:color="@color/black">укладка</font></b></item>
-        <item><b><font android:color="@color/black">причёски</font></b></item>
-        <item><b><font android:color="@color/black">плетение</font></b></item>
-        <item><b><font android:color="@color/black">наращивание</font></b></item>
-        <item><b><font android:color="@color/black">лечение</font></b></item>
+        <item><b><font android:color="@color/black">Кератиновое выпрямление</font></b></item>
+        <item><b><font android:color="@color/black">Ламинирование</font></b></item>
+        <item><b><font android:color="@color/black">Милирование и калорирование</font></b></item>
+        <item><b><font android:color="@color/black">Стрижка</font></b></item>
+        <item><b><font android:color="@color/black">Ботекс</font></b></item>
+        <item><b><font android:color="@color/black">Укладка</font></b></item>
+        <item><b><font android:color="@color/black">Причёски</font></b></item>
+        <item><b><font android:color="@color/black">Плетение</font></b></item>
+        <item><b><font android:color="@color/black">Наращивание</font></b></item>
+        <item><b><font android:color="@color/black">Лечение</font></b></item>
     </array>
 
     <array name="epilation">
-        <item><b><font android:color="@color/black">лазерная</font></b></item>
-        <item><b><font android:color="@color/black">шугаринг</font></b></item>
-        <item><b><font android:color="@color/black">восковая</font></b></item>
-        <item><b><font android:color="@color/black">электроэпиляция</font></b></item>
-        <item><b><font android:color="@color/black">фотоэпиляция</font></b></item>
-        <item><b><font android:color="@color/black">элос</font></b></item>
+        <item><b><font android:color="@color/black">Лазерная</font></b></item>
+        <item><b><font android:color="@color/black">Шугаринг</font></b></item>
+        <item><b><font android:color="@color/black">Восковая</font></b></item>
+        <item><b><font android:color="@color/black">Электроэпиляция</font></b></item>
+        <item><b><font android:color="@color/black">Фотоэпиляция</font></b></item>
+        <item><b><font android:color="@color/black">Элос</font></b></item>
     </array>
 
     <array name="makeup">
-        <item><b><font android:color="@color/black">вечерний</font></b></item>
-        <item><b><font android:color="@color/black">свадебный</font></b></item>
-        <item><b><font android:color="@color/black">гримм</font></b></item>
-        <item><b><font android:color="@color/black">дневной</font></b></item>
+        <item><b><font android:color="@color/black">Вечерний</font></b></item>
+        <item><b><font android:color="@color/black">Свадебный</font></b></item>
+        <item><b><font android:color="@color/black">Гримм</font></b></item>
+        <item><b><font android:color="@color/black">Дневной</font></b></item>
     </array>
 
     <array name="massage">
-        <item><b><font android:color="@color/black">лица</font></b></item>
-        <item><b><font android:color="@color/black">медицинский</font></b></item>
-        <item><b><font android:color="@color/black">тайский</font></b></item>
-        <item><b><font android:color="@color/black">камнями</font></b></item>
-        <item><b><font android:color="@color/black">антицелюлитный</font></b></item>
-        <item><b><font android:color="@color/black">обёртывание</font></b></item>
+        <item><b><font android:color="@color/black">Лица</font></b></item>
+        <item><b><font android:color="@color/black">Медицинский</font></b></item>
+        <item><b><font android:color="@color/black">Тайский</font></b></item>
+        <item><b><font android:color="@color/black">Камнями</font></b></item>
+        <item><b><font android:color="@color/black">Антицелюлитный</font></b></item>
+        <item><b><font android:color="@color/black">Обёртывание</font></b></item>
     </array>
 
     <array name="cosmetology">
-        <item><b><font android:color="@color/black">чистка лица</font></b></item>
-        <item><b><font android:color="@color/black">контурная пластика</font></b></item>
-        <item><b><font android:color="@color/black">мезотерапия</font></b></item>
-        <item><b><font android:color="@color/black">лазерная шлифовка</font></b></item>
-        <item><b><font android:color="@color/black">биоревитализация</font></b></item>
-        <item><b><font android:color="@color/black">ботокс</font></b></item>
-        <item><b><font android:color="@color/black">плазмоливтинг</font></b></item>
+        <item><b><font android:color="@color/black">Чистка лица</font></b></item>
+        <item><b><font android:color="@color/black">Контурная пластика</font></b></item>
+        <item><b><font android:color="@color/black">Мезотерапия</font></b></item>
+        <item><b><font android:color="@color/black">Лазерная шлифовка</font></b></item>
+        <item><b><font android:color="@color/black">Биоревитализация</font></b></item>
+        <item><b><font android:color="@color/black">Ботокс</font></b></item>
+        <item><b><font android:color="@color/black">Плазмоливтинг</font></b></item>
     </array>
 
 </resources>

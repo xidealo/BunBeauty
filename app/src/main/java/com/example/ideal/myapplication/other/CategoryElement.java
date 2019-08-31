@@ -21,9 +21,7 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 @SuppressLint("ValidFragment")
 public class CategoryElement extends Fragment implements View.OnClickListener {
@@ -33,6 +31,7 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
     private LinearLayout tagsMinLayout;
     private LinearLayout tagsMaxLayout;
     private Spinner categorySpinner;
+    private Button tagsBtn;
 
     private ArrayList<String> selectedTagsArray;
     private ArrayList<String> inputTagsArray;
@@ -57,11 +56,15 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
         categorySpinner = view.findViewById(R.id.categorySpinner);
         tagsMinLayout = view.findViewById(R.id.tagsMinLayout);
         tagsMaxLayout = view.findViewById(R.id.tagsMaxLayout);
-        Button tagsBtn = view.findViewById(R.id.tagsBtn);
+        tagsBtn = view.findViewById(R.id.tagsBtn);
         Button minimizeBtn = view.findViewById(R.id.minimizeTagsBtn);
 
         categorySpinner.setSelection(categoryIndex);
         setCategorySpinnerListener();
+        if (!inputTagsArray.isEmpty()) {
+            tagsBtn.setBackgroundResource(R.drawable.category_button_pressed);
+            tagsBtn.setHintTextColor(Color.BLACK);
+        }
         tagsBtn.setOnClickListener(this);
         minimizeBtn.setOnClickListener(this);
     }
@@ -90,6 +93,10 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 categoryPosition = position;
                 selectedTagsArray.clear();
+                if(inputTagsArray.isEmpty()) {
+                    tagsBtn.setBackgroundResource(R.drawable.tags_button);
+                    tagsBtn.setHintTextColor(Color.WHITE);
+                }
                 hideTags();
                 if (position == 0) {
                     tagsMinLayout.setVisibility(View.GONE);
@@ -122,13 +129,13 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
             tagText.setGravity(Gravity.CENTER);
             tagText.setTypeface(ResourcesCompat.getFont(context, R.font.roboto_bold));
             tagText.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    700,
                     LinearLayout.LayoutParams.WRAP_CONTENT));
             tagText.setOnClickListener(this);
             tagText.setPadding(0, 16, 0, 16);
             if (selectedTagsArray.contains(tag.toString())) {
                 tagText.setBackgroundResource(R.drawable.category_button_pressed);
-                tagText.setTextColor(Color.BLACK);
+                tagText.setHintTextColor(Color.BLACK);
             }
 
             tagsMaxLayout.addView(tagText, tagsMaxLayout.getChildCount() - 1);
@@ -143,14 +150,21 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
         if (selectedTagsArray.contains(text)) {
             tagText.setBackgroundResource(0);
             selectedTagsArray.remove(text);
+            if (selectedTagsArray.isEmpty()) {
+                tagsBtn.setBackgroundResource(R.drawable.tags_button);
+                tagsBtn.setHintTextColor(Color.WHITE);
+            }
         } else {
             tagText.setBackgroundResource(R.drawable.category_button_pressed);
             selectedTagsArray.add(text);
+
+            tagsBtn.setBackgroundResource(R.drawable.category_button_pressed);
+            tagsBtn.setHintTextColor(Color.BLACK);
         }
     }
 
     public String getCategory() {
-        return categorySpinner.getSelectedItem().toString().toLowerCase().trim();
+        return categorySpinner.getSelectedItem().toString();
     }
 
     public void setCategory(int index) {
@@ -162,7 +176,6 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
     }
 
     public void addTag(String tag) {
-        Log.d(TAG, "addTag: " + tag);
         inputTagsArray.add(tag);
     }
 }
