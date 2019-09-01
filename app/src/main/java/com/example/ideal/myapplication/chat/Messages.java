@@ -403,10 +403,9 @@ public class Messages extends AppCompatActivity {
     }
 
     private boolean isAfterOrderTime(String date, String time) {
-        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
         //3600000 * 24 = 24 часа
         String commonDate = date + " " + time;
-        Long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000 * 24;
+        Long orderDateLong = WorkWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000 * 24;
         Long sysdate = WorkWithTimeApi.getSysdateLong();
 
         return sysdate > orderDateLong;

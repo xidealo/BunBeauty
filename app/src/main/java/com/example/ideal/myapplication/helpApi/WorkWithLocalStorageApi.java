@@ -416,8 +416,7 @@ public class WorkWithLocalStorageApi {
 
     public boolean isAfterThreeDays(String workingTimeId) {
         String date = getDate(workingTimeId);
-        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
-        long dateMilliseconds = workWithTimeApi.getMillisecondsStringDate(date);
+        long dateMilliseconds = WorkWithTimeApi.getMillisecondsStringDate(date);
         boolean isAfterWeek = (WorkWithTimeApi.getSysdateLong() - dateMilliseconds) > 259200000;
 
         return isAfterWeek;

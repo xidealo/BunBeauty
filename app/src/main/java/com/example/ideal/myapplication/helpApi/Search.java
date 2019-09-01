@@ -30,15 +30,12 @@ public class Search {
     private long maxCost;
     private ArrayList<Object[]> serviceList;
     private ArrayList<Object[]> premiumList;
-
-    private WorkWithTimeApi workWithTimeApi;
     private DBHelper dbHelper;
 
     public Search (Context _context) {
         dbHelper = new DBHelper(_context);
         serviceList = new ArrayList<>();
         premiumList = new ArrayList<>();
-        workWithTimeApi = new WorkWithTimeApi();
     }
 
     // загружаем услуги мастеров мастеров в LocalStorage
@@ -118,6 +115,7 @@ public class Search {
                         + categoryCondition
                         + userNameCondition
                         + tagsCondition;
+
         //Log.d(TAG, "sqlQuery: " + Windows.Storage.ApplicationData.Current.LocalFolder);
 
 
@@ -235,7 +233,7 @@ public class Search {
     private float figureCreationDatePoints(String creationDate, float coefficient) {
         float creationDatePoints;
 
-        long dateBonus = (workWithTimeApi.getMillisecondsStringDate(creationDate) -
+        long dateBonus = (WorkWithTimeApi.getMillisecondsStringDate(creationDate) -
                 WorkWithTimeApi.getSysdateLong()) / (3600000*24) + 7;
         if (dateBonus < 0) {
             creationDatePoints = 0;

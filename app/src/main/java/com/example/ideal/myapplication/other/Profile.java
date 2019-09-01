@@ -217,11 +217,9 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 LoadingProfileData.loadUserInfo(userSnapshot, database);
 
-                LoadingProfileData.loadUserServices(userSnapshot
-                                .child(SERVICES),
+                LoadingProfileData.loadUserServices(userSnapshot.child(SERVICES),
                         ownerId,
-                        database,
-                        startIndexOfDownload);
+                        database);
 
                 String name = WorkWithStringsApi.doubleCapitalSymbols(userSnapshot.child(NAME).getValue(String.class));
                 String city = WorkWithStringsApi.firstCapitalSymbol(userSnapshot.child(CITY).getValue(String.class));

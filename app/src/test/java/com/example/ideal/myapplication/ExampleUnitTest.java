@@ -26,21 +26,18 @@ public class ExampleUnitTest {
 
     @Test
     public  void getMillisecondsStringDate_Test(){
-        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
-        assertEquals(workWithTimeApi.getMillisecondsStringDate("2019-05-23 16:09"),1558627740000L);
+        assertEquals(WorkWithTimeApi.getMillisecondsStringDate("2019-05-23 16:09"),1558627740000L);
     }
 
     @Test
     public void getMillisecondsWithSeconds_Test(){
-        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
-        assertEquals(workWithTimeApi.getMillisecondsStringDateWithSeconds("2019-05-23 16:09:04"),1558627744000L);
+        assertEquals(WorkWithTimeApi.getMillisecondsStringDateWithSeconds("2019-05-23 16:09:04"),1558627744000L);
     }
 
     //правильное наиминование тестов
     @Test
     public void whenCutStringAAAAAReturnOneAWithThreeDots(){
-        WorkWithStringsApi workWithStringsApi = new WorkWithStringsApi();
-        assertEquals(workWithStringsApi.cutString("AAAAA",1),"A...");
+        assertEquals(WorkWithStringsApi.cutString("AAAAA",1),"A...");
     }
 
 }
