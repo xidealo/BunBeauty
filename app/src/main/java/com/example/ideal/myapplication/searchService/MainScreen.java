@@ -123,6 +123,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     protected void onStart() {
         super.onStart();
 
+        startLoading();
         createCategoryFeed();
         createMainScreen();
     }
@@ -136,12 +137,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
 
             case R.id.clearTagsMainScreenBtn:
                 startLoading();
-                for(Button btn : categoriesBtns) {
-                    if (category.equals(btn.getText().toString())) {
-                        clearCategory(btn);
-                        break;
-                    }
-                }
+                clearCategory();
                 createMainScreen();
                 break;
 
@@ -154,6 +150,10 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
                 break;
         }
     }
+
+
+
+
 
     private void tagClick(TextView tagText) {
         startLoading();
@@ -190,16 +190,22 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         } else {
             startLoading();
             enableCategory(btn);
+            //category = btn.getText().toString();
             createMainScreen();
         }
     }
 
-    private void clearCategory(Button btn) {
-        Log.d(TAG, "clearCategory: ");
-        disableCategoryBtn(btn);
-        category = "";
-        hideTags();
-        selectedTagsArray.clear();
+    private void clearCategory() {
+        for(Button btn : categoriesBtns) {
+            //Log.d(TAG, "clearCategory: " + category + " - " + btn.getText().toString());
+            if (category.equals(btn.getText().toString())) {
+                category = "";
+                disableCategoryBtn(btn);
+                hideTags();
+                selectedTagsArray.clear();
+                break;
+            }
+        }
     }
 
     private void hideTags() {
@@ -208,9 +214,9 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     }
 
     private void enableCategory(Button button) {
-        hideTags();
         button.setBackgroundResource(R.drawable.category_button_pressed);
         button.setTextColor(getResources().getColor(R.color.black));
+        hideTags();
 
         for (Button categoriesBtn : categoriesBtns) {
             if (category.equals(categoriesBtn.getText().toString())) {
@@ -343,7 +349,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
             tagText.setGravity(Gravity.CENTER);
             tagText.setTypeface(ResourcesCompat.getFont(this, R.font.roboto_bold));
             tagText.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
+                   700,
                     LinearLayout.LayoutParams.WRAP_CONTENT));
             tagText.setOnClickListener(this);
             tagText.setPadding(0, 16, 0, 16);

@@ -495,7 +495,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
     }
 
     private boolean isBlockedTime(String timeId) {
-        Log.d(TAG, "TIME ID " + timeId);
         String isBlockedQuery = "SELECT "
                 + DBHelper.KEY_ID
                 + " FROM "

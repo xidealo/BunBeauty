@@ -5,11 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.ideal.myapplication.fragments.PremiumElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.other.DBHelper;
-import com.example.ideal.myapplication.searchService.GuestService;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
@@ -69,6 +67,7 @@ public class Search {
                                     String category, ArrayList<String> selectedTagsArray) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         maxCost = getMaxCost();
+        String tables = DBHelper.TABLE_CONTACTS_USERS + ", " + DBHelper.TABLE_CONTACTS_SERVICES;
 
         String serviceNameCondition = "";
         if (sName != null) {
@@ -92,7 +91,10 @@ public class Search {
 
         String tagsCondition = "";
         if (selectedTagsArray != null && !selectedTagsArray.isEmpty()) {
-            tagsCondition = " AND (";
+            tables += ", " + DBHelper.TABLE_TAGS;
+            tagsCondition = " AND " + DBHelper.KEY_SERVICE_ID_TAGS + " = "
+                    + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
+                    + " AND (";
             for (String tag : selectedTagsArray) {
                 tagsCondition += DBHelper.KEY_TAG_TAGS + " = '" + tag + "' OR ";
             }
@@ -107,19 +109,16 @@ public class Search {
                         + DBHelper.TABLE_CONTACTS_SERVICES + ".*, "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " AS " + SERVICE_ID
                         + " FROM "
-                        + DBHelper.TABLE_CONTACTS_USERS + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                        + DBHelper.TABLE_TAGS
+                        + tables
                         + " WHERE "
                         + DBHelper.KEY_USER_ID + " = "
                         + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
-                        + " AND " + DBHelper.KEY_SERVISE_ID_TAGS + " = "
-                        + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
                         + serviceNameCondition
                         + cityCondition
                         + categoryCondition
                         + userNameCondition
                         + tagsCondition;
+        //Log.d(TAG, "sqlQuery: " + Windows.Storage.ApplicationData.Current.LocalFolder);
 
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{});

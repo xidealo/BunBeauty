@@ -2,7 +2,6 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
@@ -169,7 +168,7 @@ public class LoadingProfileData {
         }
 
         contentValues.clear();
-        contentValues.put(DBHelper.KEY_SERVISE_ID_TAGS, serviceId);
+        contentValues.put(DBHelper.KEY_SERVICE_ID_TAGS, serviceId);
         for (String tag : service.getTags()) {
             contentValues.put(DBHelper.KEY_TAG_TAGS, tag);
             database.insert(DBHelper.TABLE_TAGS, null, contentValues);

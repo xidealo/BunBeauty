@@ -16,7 +16,9 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.SubscriptionAdapter;
+import com.example.ideal.myapplication.entity.FBListener;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.ListeningManager;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
@@ -49,7 +51,7 @@ public class Subscribers extends AppCompatActivity {
     private RecyclerView recyclerView;
     private SQLiteDatabase database;
     private ProgressBar progressBar;
-    private static boolean isFirst = true;
+    public static boolean isFirst = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +106,7 @@ public class Subscribers extends AppCompatActivity {
         }
 
         //повесить другой листенер, который срабатывает на полседнего, который только добавился
-        userRef.addChildEventListener(new ChildEventListener() {
+        ChildEventListener userListener = userRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
                 String id = userSnapshot.getKey();
@@ -139,6 +141,8 @@ public class Subscribers extends AppCompatActivity {
 
             }
         });
+
+        ListeningManager.addToListenerList(new FBListener(userRef, userListener));
     }
     private void setWithoutSubscriptions(){
         subsText.setVisibility(View.VISIBLE);

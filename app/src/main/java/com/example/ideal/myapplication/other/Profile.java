@@ -22,10 +22,12 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.OrderAdapter;
 import com.example.ideal.myapplication.adapters.ServiceProfileAdapter;
 import com.example.ideal.myapplication.createService.AdditionService;
+import com.example.ideal.myapplication.entity.FBListener;
 import com.example.ideal.myapplication.fragments.SwitcherElement;
 import com.example.ideal.myapplication.fragments.objects.Order;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.ListeningManager;
 import com.example.ideal.myapplication.helpApi.LoadingProfileData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.SubscriptionsApi;
@@ -210,7 +212,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         DatabaseReference userReference = FirebaseDatabase.getInstance()
                 .getReference(USERS)
                 .child(ownerId);
-        userReference.addValueEventListener(new ValueEventListener() {
+        ValueEventListener userListener = userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 LoadingProfileData.loadUserInfo(userSnapshot, database);
@@ -236,10 +238,10 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+
+        ListeningManager.addToListenerList(new FBListener(userReference, userListener));
     }
 
     // получаем данные о пользователе и отображаем в прфоиле

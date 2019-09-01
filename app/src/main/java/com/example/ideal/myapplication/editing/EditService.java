@@ -15,12 +15,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -159,7 +157,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         String sqlQuery = "SELECT " + DBHelper.KEY_TAG_TAGS
                 + " FROM " + DBHelper.TABLE_TAGS
-                + " WHERE " + DBHelper.KEY_SERVISE_ID_TAGS + " = ?";
+                + " WHERE " + DBHelper.KEY_SERVICE_ID_TAGS + " = ?";
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
 
         if (cursor.moveToFirst()) {
@@ -597,11 +595,11 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 new String[]{serviceId});
 
         int c = database.delete(DBHelper.TABLE_TAGS,
-                DBHelper.KEY_SERVISE_ID_TAGS + " = ?",
+                DBHelper.KEY_SERVICE_ID_TAGS + " = ?",
                 new String[]{serviceId});
 
         contentValues.clear();
-        contentValues.put(DBHelper.KEY_SERVISE_ID_TAGS, serviceId);
+        contentValues.put(DBHelper.KEY_SERVICE_ID_TAGS, serviceId);
         for (String tag : service.getTags()) {
 
             contentValues.put(DBHelper.KEY_TAG_TAGS, tag);

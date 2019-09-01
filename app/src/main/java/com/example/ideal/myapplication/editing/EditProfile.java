@@ -29,6 +29,9 @@ import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.logIn.CountryCodes;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.MyService;
+import com.example.ideal.myapplication.reviews.Comments;
+import com.example.ideal.myapplication.searchService.GuestService;
+import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -595,11 +598,19 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         ListeningManager.removeAllListeners();
         stopService(new Intent(this, MyService.class));
         clearNotificationToken();
-        //stopAllThreads();
+        clearStaticData();
+        //ListeningManager.removeAllListeners();
 
         Intent intent = new Intent(this, Authorization.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    private void clearStaticData() {
+        GuestService.serviceIdsFirstSetGS.clear();
+        Comments.serviceIdsFirstSetComments.clear();
+        Comments.userIdsFirstSetComments.clear();
+        Subscribers.isFirst = true;
     }
 
     // Стираем токен, чтобы на устройство не приходили оповещения для данного пользователя

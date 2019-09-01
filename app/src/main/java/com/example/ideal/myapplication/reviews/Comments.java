@@ -17,7 +17,9 @@ import android.widget.TextView;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.CommentAdapter;
+import com.example.ideal.myapplication.entity.FBListener;
 import com.example.ideal.myapplication.fragments.objects.Comment;
+import com.example.ideal.myapplication.helpApi.ListeningManager;
 import com.example.ideal.myapplication.helpApi.LoadingCommentsData;
 import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
@@ -75,8 +77,8 @@ public class Comments extends AppCompatActivity {
     private boolean addedReview;
     private Thread additionToLocalStorage;
     private SQLiteDatabase database;
-    private static ArrayList<String> serviceIdsFirstSetComments = new ArrayList<>();
-    private static ArrayList<String> userIdsFirstSetComments = new ArrayList<>();
+    public static ArrayList<String> serviceIdsFirstSetComments = new ArrayList<>();
+    public static ArrayList<String> userIdsFirstSetComments = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +133,7 @@ public class Comments extends AppCompatActivity {
                 .child(serviceId)
                 .child(WORKING_DAYS);
 
-        workingDaysRef.addChildEventListener(new ChildEventListener() {
+        ChildEventListener workingDaysListener = workingDaysRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) {
                 final String workingDayId = workingDaySnapshot.getKey();
@@ -145,7 +147,7 @@ public class Comments extends AppCompatActivity {
                             .child(workingDayId)
                             .child(WORKING_TIME);
 
-                    workingTimesRef.addChildEventListener(new ChildEventListener() {
+                    ChildEventListener workingTimesListener = workingTimesRef.addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(@NonNull final DataSnapshot timeSnapshot, @Nullable String s) {
                             //при добавлении нового времени
@@ -154,7 +156,7 @@ public class Comments extends AppCompatActivity {
                             final DatabaseReference ordersRef = workingTimesRef
                                     .child(timeId)
                                     .child(ORDERS);
-                            ordersRef.addChildEventListener(new ChildEventListener() {
+                            ChildEventListener ordersListener = ordersRef.addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
                                     LoadingCommentsData.addOrderInLocalStorage(orderSnapshot, timeId, database);
@@ -163,7 +165,7 @@ public class Comments extends AppCompatActivity {
                                     DatabaseReference reviewRef = ordersRef
                                             .child(orderId)
                                             .child(REVIEWS);
-                                    reviewRef.addChildEventListener(new ChildEventListener() {
+                                    ChildEventListener reviewListener = reviewRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
                                             LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
@@ -198,6 +200,8 @@ public class Comments extends AppCompatActivity {
 
                                         }
                                     });
+
+                                    ListeningManager.addToListenerList(new FBListener(reviewRef, reviewListener));
                                 }
 
                                 @Override
@@ -207,27 +211,20 @@ public class Comments extends AppCompatActivity {
                                 }
 
                                 @Override
-                                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                                    //void
-
-                                }
+                                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
 
                                 @Override
-                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                    //void
-                                }
+                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    //void
-                                }
+                                public void onCancelled(@NonNull DatabaseError databaseError) {}
                             });
+
+                            ListeningManager.addToListenerList(new FBListener(ordersRef, ordersListener));
                         }
 
                         @Override
-                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            //пусто
-                        }
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
                         @Override
                         public void onChildRemoved(@NonNull DataSnapshot timeSnapshot) {
@@ -236,38 +233,30 @@ public class Comments extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            //пусто
-                        }
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
+                        public void onCancelled(@NonNull DatabaseError databaseError) {}
                     });
+
+                    ListeningManager.addToListenerList(new FBListener(workingTimesRef, workingTimesListener));
                 }
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                //пустое
-            }
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                //пустое
-            }
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                //пустое
-            }
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                //пустое
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+
+        ListeningManager.addToListenerList(new FBListener(workingDaysRef, workingDaysListener));
     }
 
     private void getCommentsForService(String _serviceId) {
@@ -370,11 +359,8 @@ public class Comments extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
-
     }
 
     private void loadCommentsForUser() {
@@ -383,7 +369,7 @@ public class Comments extends AppCompatActivity {
                 .child(ownerId)
                 .child(ORDERS);
 
-        orderRef.addChildEventListener(new ChildEventListener() {
+        ChildEventListener orderListener = orderRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
 
@@ -488,7 +474,7 @@ public class Comments extends AppCompatActivity {
                             LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
                         }
 
-                        reviewRef.addChildEventListener(new ChildEventListener() {
+                        ChildEventListener reviewListener = reviewRef.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
                                 currentCountOfReview++;
@@ -504,20 +490,16 @@ public class Comments extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                                //void
-                            }
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
 
                             @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                //void
-                            }
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
                             @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
+                            public void onCancelled(@NonNull DatabaseError databaseError) {}
                         });
+
+                        ListeningManager.addToListenerList(new FBListener(reviewRef, reviewListener));
                     }
 
                     @Override
@@ -528,26 +510,19 @@ public class Comments extends AppCompatActivity {
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-
-            }
+            public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {}
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                //void
-            }
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                //void
-            }
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                //void
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
+        ListeningManager.addToListenerList(new FBListener(orderRef, orderListener));
     }
 
     private void getCommentsForUser(String _userId) {
