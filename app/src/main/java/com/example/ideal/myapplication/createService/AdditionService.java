@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -264,7 +263,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
 
         contentValues.clear();
-        contentValues.put(DBHelper.KEY_SERVISE_ID_TAGS, service.getId());
+        contentValues.put(DBHelper.KEY_SERVICE_ID_TAGS, service.getId());
         for (String tag : service.getTags()) {
             contentValues.put(DBHelper.KEY_TAG_TAGS, tag);
             database.insert(DBHelper.TABLE_TAGS, null, contentValues);

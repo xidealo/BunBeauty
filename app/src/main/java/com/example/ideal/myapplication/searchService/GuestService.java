@@ -23,8 +23,10 @@ import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.createService.MyCalendar;
+import com.example.ideal.myapplication.entity.FBListener;
 import com.example.ideal.myapplication.fragments.PremiumElement;
 import com.example.ideal.myapplication.fragments.objects.Service;
+import com.example.ideal.myapplication.helpApi.ListeningManager;
 import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
@@ -71,13 +73,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String COUNT = "count";
     private static final String DESCRIPTION = "description";
     private static final String COST = "cost";
-    private static final String USER_ID = "user id";
-    private static final String TIME = "time";
-    private static final String CATEGORY = "category";
     private static final String AVG_RATING = "avg rating";
     private static final String ADDRESS = "address";
     private static final String NAME = "name";
-    private static final String IS_CANCELED = "is canceled";
 
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
 
@@ -109,7 +107,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private boolean isMyService;
     private boolean isPremiumLayoutSelected;
     private DBHelper dbHelper;
-    private static ArrayList<String> serviceIdsFirstSetGS = new ArrayList<>();
+    public static ArrayList<String> serviceIdsFirstSetGS = new ArrayList<>();
     private SQLiteDatabase database;
     private ProgressBar progressBar;
     private ScrollView mainScroll;
@@ -209,9 +207,11 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                         .child(serviceId)
                         .child(WORKING_DAYS);
 
-                workingDaysRef.addChildEventListener(new ChildEventListener() {
+                ChildEventListener workingDaysListener = workingDaysRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) {
+
+                        Log.d(TAG, "onChildChanged: wd");
                         final String workingDayId = workingDaySnapshot.getKey();
                         long sysdateLong = WorkWithTimeApi.getSysdateLong();
                         long dateLong = WorkWithTimeApi.getMillisecondsStringDateYMD(workingDaySnapshot.child(DATE).getValue(String.class));
@@ -222,7 +222,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                     .child(workingDayId)
                                     .child(WORKING_TIME);
 
-                            workingTimesRef.addChildEventListener(new ChildEventListener() {
+                            ChildEventListener workingTimesListener = workingTimesRef.addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull DataSnapshot timeSnapshot, @Nullable String s) {
                                     //при добавлении нового времени
@@ -231,7 +231,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                     DatabaseReference ordersRef = workingTimesRef
                                             .child(timeId)
                                             .child(ORDERS);
-                                    ordersRef.addChildEventListener(new ChildEventListener() {
+                                    ChildEventListener ordersListener = ordersRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
                                             // если кто-то записался
@@ -245,21 +245,16 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                         }
 
                                         @Override
-                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                                            //void
-                                        }
+                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
 
                                         @Override
-                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                            //void
-                                        }
+                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
                                         @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                                            //void
-                                        }
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {}
                                     });
 
+                                    ListeningManager.addToListenerList(new FBListener(ordersRef, ordersListener));
                                 }
 
                                 @Override
@@ -275,37 +270,29 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                 }
 
                                 @Override
-                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                    //пусто
-                                }
+                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
+                                public void onCancelled(@NonNull DatabaseError databaseError) {}
                             });
+
+                            ListeningManager.addToListenerList(new FBListener(workingTimesRef, workingTimesListener));
                         }
                     }
                     @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        //пустое
-                    }
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
                     @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                        //пустое
-                    }
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
 
                     @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        //пустое
-                    }
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        //пустое
-                    }
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
                 });
+
+                ListeningManager.addToListenerList(new FBListener(workingDaysRef, workingDaysListener));
             }
 
             @Override
@@ -318,7 +305,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 .child(ownerId)
                 .child(SERVICES)
                 .child(serviceId);
-        serviceRef.addChildEventListener(new ChildEventListener() {
+        ChildEventListener serviceListener = serviceRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
                 //слушатель на каждый день, чтобы отслеживать изменение времени
@@ -331,20 +318,16 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+
+        ListeningManager.addToListenerList(new FBListener(serviceRef, serviceListener));
     }
   
     private String getOwnerId() {
@@ -651,9 +634,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
     }
 
