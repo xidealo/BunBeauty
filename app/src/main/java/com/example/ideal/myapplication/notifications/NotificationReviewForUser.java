@@ -25,7 +25,7 @@ public class NotificationReviewForUser extends NotificationConstructor {
     @Override
     public void createNotification() {
         //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
-        int notificationId = 1;
+        int notificationId = 0;
 
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)

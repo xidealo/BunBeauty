@@ -31,7 +31,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="10dp"
         android:scrollbars="none"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/footerGuestServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,6 +61,10 @@
                         style="@style/mainText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginEnd="0dp"
+                        android:padding="10dp"
+                        android:paddingEnd="0dp"
                         android:text="Рейтинг: " />
 
                     <TextView
@@ -68,8 +72,9 @@
                         style="@style/mainText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Оценок еще нет"
-                        android:visibility="gone" />
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp"
+                        android:text="Оценок еще нет" />
 
                     <RatingBar
                         android:id="@+id/ratingBarGuestServiceRatingBar"
@@ -89,15 +94,13 @@
                         style="@style/defaultText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:visibility="gone" />
+                        android:layout_marginLeft="10dp" />
 
                     <TextView
                         android:id="@+id/countOfRatesGuestServiceElementText"
                         style="@style/defaultText"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone" />
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 
@@ -208,7 +211,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:visibility="gone"></LinearLayout>
+                    android:visibility="gone" />
 
             </LinearLayout>
 

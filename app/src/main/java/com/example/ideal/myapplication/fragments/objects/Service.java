@@ -1,5 +1,7 @@
 package com.example.ideal.myapplication.fragments.objects;
 
+import java.util.ArrayList;
+
 public class Service {
 
     private String id;
@@ -9,6 +11,7 @@ public class Service {
     private String cost;
     private String userId;
     private String category;
+    private ArrayList<String> tags;
     private boolean isPremium;
     private String creationDate;
     private String address;
@@ -20,10 +23,10 @@ public class Service {
         id = _id;
     }
 
+    // Кол-во оценок
     public long getCountOfRates() {
         return countOfRates;
     }
-
     public void setCountOfRates(long countOfRates) {
         this.countOfRates = countOfRates;
     }
@@ -94,15 +97,22 @@ public class Service {
     public void setCategory(String category) {
         this.category = category;
     }
-
     public String getCategory() {
         return category;
     }
+
+    //Теги
+    public void setTags(ArrayList<String> tags) {
+        this.tags = tags;
+    }
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
     //адерс
     public void setAddress(String address) {
         this.address = address;
     }
-
     public String getAddress() {
         return address;
     }

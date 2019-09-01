@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -16,12 +15,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -29,6 +29,7 @@ import com.example.ideal.myapplication.fragments.ServicePhotoElement;
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
+import com.example.ideal.myapplication.other.CategoryElement;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,8 +52,8 @@ import java.util.Map;
 
 public class EditService extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String SERVICE_ID = "service id";
     private final String TAG = "DBInf";
+    private static final String SERVICE_ID = "service id";
     private static final String USERS = "users";
 
     private static final String SERVICES = "services";
@@ -60,11 +61,12 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private static final String COST = "cost";
     private static final String DESCRIPTION = "description";
     private static final String PHOTOS = "photos";
+    private static final String CATEGORY = "category";
+    private static final String ADDRESS = "address";
+    private static final String TAGS = "tags";
 
     private static final String PHOTO_LINK = "photo link";
     private static final String SERVICE_PHOTO = "service photo";
-    private static final String CATEGORY = "category";
-    private static final String ADDRESS = "address";
 
     private static final int PICK_IMAGE_REQUEST = 71;
 
@@ -81,44 +83,51 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private ProgressBar progressBar;
     private Button editServicesBtn;
     private DBHelper dbHelper;
-    private Spinner categorySpinner;
     private FragmentManager manager;
+    private CategoryElement categoryElement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_service);
 
-        editServicesBtn = findViewById(R.id.editServiceEditServiceBtn);
+        init();
+    }
 
+    private void init() {
+        editServicesBtn = findViewById(R.id.editServiceEditServiceBtn);
         nameServiceInput = findViewById(R.id.nameEditServiceInput);
         costServiceInput = findViewById(R.id.costEditServiceInput);
         descriptionServiceInput = findViewById(R.id.descriptionEditServiceInput);
         addressServiceInput = findViewById(R.id.addressEditServiceInput);
-        categorySpinner = findViewById(R.id.categoryEditServiceSpinner);
         progressBar = findViewById(R.id.progressBarEditService);
 
         manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        categoryElement = new CategoryElement(this);
+        transaction.add(R.id.categoryEditServiceLayout, categoryElement);
+        transaction.commit();
 
+        manager = getSupportFragmentManager();
         ImageView serviceImage = findViewById(R.id.servicePhotoEditServiceImage);
-
-        // Получаем id сервиса
-        serviceId = getIntent().getStringExtra(SERVICE_ID);
-
         dbHelper = new DBHelper(this);
         phLinToDelete = new ArrayList<>();
         fPathToAdd = new ArrayList<>();
 
+        // Получаем id сервиса
+        serviceId = getIntent().getStringExtra(SERVICE_ID);
+
         //подгружаем фото
         setPhotoFeed(serviceId);
 
-        createEditServiceScreen();
+        //Заполняем поля
+        fillFields();
 
         editServicesBtn.setOnClickListener(this);
         serviceImage.setOnClickListener(this);
     }
 
-    private void createEditServiceScreen() {
+    private void fillFields() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         String sqlQuery = "SELECT *"
@@ -137,13 +146,27 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
             costServiceInput.setText(cursor.getString(indexCost));
             descriptionServiceInput.setText(cursor.getString(indexDescription));
             addressServiceInput.setText(cursor.getString(indexAddress));
-            String category = cursor.getString(indexCategory);
-
-            Resources res = getResources();
-            String[] categories = res.getStringArray(R.array.categoryForEditService);
-            categorySpinner.setSelection(Arrays.asList(categories).indexOf(category));
+            ArrayList<String> categoriesArray = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.choice_categories)));
+            categoryElement.setCategory(categoriesArray.indexOf(cursor.getString(indexCategory)));
+            setTags(serviceId);
 
             cursor.close();
+        }
+    }
+
+    private void setTags(String serviceId) {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String sqlQuery = "SELECT " + DBHelper.KEY_TAG_TAGS
+                + " FROM " + DBHelper.TABLE_TAGS
+                + " WHERE " + DBHelper.KEY_SERVISE_ID_TAGS + " = ?";
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId});
+
+        if (cursor.moveToFirst()) {
+            int indexTag = cursor.getColumnIndex(DBHelper.KEY_TAG_TAGS);
+            do {
+                categoryElement.addTag(cursor.getString(indexTag));
+            } while (cursor.moveToNext());
         }
     }
 
@@ -178,7 +201,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     service.setDescription(description);
                 }
                 //если содержить выбрать категорию, значит не меняем категорию
-                service.setCategory(categorySpinner.getSelectedItem().toString().toLowerCase());
+                service.setCategory(categoryElement.getCategory());
 
                 String address = addressServiceInput.getText().toString();
                 if (address.isEmpty()) {
@@ -189,6 +212,8 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     break;
                 }
                 service.setAddress(address);
+                service.setTags(categoryElement.getTagsArray());
+
                 editServiceInFireBase(service);
 
                 editServicesBtn.setVisibility(View.GONE);
@@ -309,8 +334,8 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         counterOfUploadImage++;
 
-        if(counterOfUploadImage == countOfUploadImage)
-        goToService();
+        if (counterOfUploadImage == countOfUploadImage)
+            goToService();
     }
 
 
@@ -529,12 +554,18 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 .child(service.getId());
 
         Map<String, Object> items = new HashMap<>();
+        Map<String, String> tagsMap = new HashMap<>();
         items.put(NAME, service.getName());
         items.put(COST, service.getCost());
         items.put(DESCRIPTION, service.getDescription());
         items.put(ADDRESS, service.getAddress());
         items.put(CATEGORY, service.getCategory());
+        for (String tag : service.getTags()) {
+            tagsMap.put(String.valueOf(tag.hashCode()), tag);
+        }
+        items.put(TAGS, tagsMap);
         reference.updateChildren(items);
+
         editServiceInLocalStorage(service);
 
         for (String photoLink : phLinToDelete) {
@@ -563,8 +594,19 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, service.getCategory());
         database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
                 DBHelper.KEY_ID + " = ?",
-                new String[]{service.getId()});
+                new String[]{serviceId});
 
+        int c = database.delete(DBHelper.TABLE_TAGS,
+                DBHelper.KEY_SERVISE_ID_TAGS + " = ?",
+                new String[]{serviceId});
+
+        contentValues.clear();
+        contentValues.put(DBHelper.KEY_SERVISE_ID_TAGS, serviceId);
+        for (String tag : service.getTags()) {
+
+            contentValues.put(DBHelper.KEY_TAG_TAGS, tag);
+            database.insert(DBHelper.TABLE_TAGS, null, contentValues);
+        }
     }
 
     private void attentionItHasOrders() {

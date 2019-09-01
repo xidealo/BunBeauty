@@ -2,16 +2,25 @@ package com.example.ideal.myapplication.searchService;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -20,6 +29,7 @@ import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.Search;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +39,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainScreen extends AppCompatActivity implements View.OnClickListener {
 
@@ -41,10 +52,14 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
 
     private DBHelper dbHelper;
     private FragmentManager manager;
+    private Search search;
   
     private Button [] categoriesBtns;
-    private String [] categories;
+    private ArrayList<String> categories;
+    private ArrayList<String> selectedTagsArray;
     private LinearLayout categoryLayout;
+    private LinearLayout tagsLayout;
+    private LinearLayout innerLayout;
     private ProgressBar progressBar;
 
     private ArrayList<Service> serviceList;
@@ -52,6 +67,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
     private RecyclerView recyclerView;
     private ServiceAdapter serviceAdapter;
     private boolean isUpdated;
+    private String category = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,93 +75,178 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
 
+        init();
+    }
+
+    private void init() {
         dbHelper = new DBHelper(this);
         manager = getSupportFragmentManager();
-        isUpdated = true;
-        categoryLayout = findViewById(R.id.categoryMainScreenLayout);
-
+        search = new Search(this);
         serviceList = new ArrayList<>();
         userList = new ArrayList<>();
-
-        recyclerView = findViewById(R.id.resultsMainScreenRecycleView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        isUpdated = true;
+        categories = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.categories)));
+        selectedTagsArray = new ArrayList<>();
+        categoriesBtns = new Button[categories.size()];
 
         categoryLayout = findViewById(R.id.categoryMainScreenLayout);
+        recyclerView = findViewById(R.id.resultsMainScreenRecycleView);
+        categoryLayout = findViewById(R.id.categoryMainScreenLayout);
+        tagsLayout = findViewById(R.id.tagsMainScreenLayout);
+        innerLayout = findViewById(R.id.tagsInnerMainScreenLayout);
         progressBar = findViewById(R.id.progressBarMainScreen);
+        Button minimizeTagsBtn = findViewById(R.id.minimizeTagsMainScreenBtn);
+        Button clearTagsBtn = findViewById(R.id.clearTagsMainScreenBtn);
 
-        categoriesBtns = new Button[5];
-        categories = new String[]{"ногти", "волосы", "глаза", "визаж", "массаж"};
-
-        createCategoryFeed();
-
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
         progressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
-
-        createMainScreen("");
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                /*if ((recyclerView.computeVerticalScrollOffset() == 0) && !isUpdated) //check for scroll down
+                if ((recyclerView.computeVerticalScrollOffset() == 0) && !isUpdated) //check for scroll down
                 {
                     serviceList.clear();
                     userList.clear();
                     progressBar.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                    createMainScreen("");
-                }*/
+                }
             }
         });
+        minimizeTagsBtn.setOnClickListener(this);
+        clearTagsBtn.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        createCategoryFeed();
+        createMainScreen();
     }
 
     @Override
     public void onClick(View v) {
-        String category;
-        Button btn = (Button) v;
+        switch (v.getId()) {
+            case R.id.minimizeTagsMainScreenBtn:
+                hideTags();
+                break;
+
+            case R.id.clearTagsMainScreenBtn:
+                startLoading();
+                for(Button btn : categoriesBtns) {
+                    if (category.equals(btn.getText().toString())) {
+                        clearCategory(btn);
+                        break;
+                    }
+                }
+                createMainScreen();
+                break;
+
+            default:
+                if (((View) v.getParent()).getId() == R.id.categoryMainScreenLayout) {
+                    categoriesClick((Button) v);
+                } else {
+                    tagClick((TextView) v);
+                }
+                break;
+        }
+    }
+
+    private void tagClick(TextView tagText) {
+        startLoading();
+
+        String text = tagText.getText().toString();
+        if (selectedTagsArray.contains(text)) {
+            tagText.setBackgroundResource(0);
+            tagText.setTextColor(Color.GRAY);
+            selectedTagsArray.remove(text);
+        } else {
+            tagText.setBackgroundResource(R.drawable.category_button_pressed);
+            tagText.setTextColor(Color.BLACK);
+            selectedTagsArray.add(text);
+        }
+
+        createMainScreen();
+    }
+
+    private void startLoading() {
         progressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
         serviceList.clear();
         userList.clear();
-
-        if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
-            btn.setBackgroundResource(R.drawable.categories_button);
-            btn.setTextColor(getResources().getColor(R.color.white));
-            btn.setTag(R.string.selectedId, false);
-            category = "";
-        } else {
-            //for чтобы все сделать неактивынми
-            for (Button categoriesBtn : categoriesBtns) {
-                categoriesBtn.setTag(R.string.selectedId, false);
-                categoriesBtn.setBackgroundResource(R.drawable.categories_button);
-                categoriesBtn.setTextColor(getResources().getColor(R.color.white));
-            }
-
-            btn.setBackgroundResource(R.drawable.pressed_button);
-            btn.setTextColor(getResources().getColor(R.color.black));
-
-            btn.setTag(R.string.selectedId, true);
-            category = btn.getText().toString();
-        }
-        createMainScreen(category);
     }
 
-    private  void createCategoryFeed(){
+    private void categoriesClick(Button btn ) {
+        // Если категория уже выбрана
+        if (category.equals(btn.getText().toString())) {
+            if (tagsLayout.getVisibility() == View.VISIBLE) {
+                hideTags();
+            } else {
+                showTags();
+            }
+        } else {
+            startLoading();
+            enableCategory(btn);
+            createMainScreen();
+        }
+    }
+
+    private void clearCategory(Button btn) {
+        Log.d(TAG, "clearCategory: ");
+        disableCategoryBtn(btn);
+        category = "";
+        hideTags();
+        selectedTagsArray.clear();
+    }
+
+    private void hideTags() {
+        innerLayout.removeAllViews();
+        tagsLayout.setVisibility(View.GONE);
+    }
+
+    private void enableCategory(Button button) {
+        hideTags();
+        button.setBackgroundResource(R.drawable.category_button_pressed);
+        button.setTextColor(getResources().getColor(R.color.black));
+
+        for (Button categoriesBtn : categoriesBtns) {
+            if (category.equals(categoriesBtn.getText().toString())) {
+                disableCategoryBtn(categoriesBtn);
+                break;
+            }
+        }
+        selectedTagsArray.clear();
+        category = button.getText().toString();
+        showTags();
+    }
+
+    private void disableCategoryBtn(Button button) {
+        button.setBackgroundResource(R.drawable.category_button);
+        button.setTextColor(getResources().getColor(R.color.white));
+    }
+
+    // настроить вид кнопок
+    private  void createCategoryFeed() {
         int width = getResources().getDimensionPixelSize(R.dimen.categories_width);
         int height = getResources().getDimensionPixelSize(R.dimen.categories_height);
-        for(int i =0 ;i<categoriesBtns.length; i++){
+        for(int i =0 ; i<categoriesBtns.length; i++){
             categoriesBtns[i] = new Button(this);
-            categoriesBtns[i].setTag(R.string.selectedId,false);
             categoriesBtns[i].setOnClickListener(this);
-            categoriesBtns[i].setText(categories[i]);
+            categoriesBtns[i].setText(categories.get(i));
             categoriesBtns[i].setTextSize(14);
-            categoriesBtns[i].setBackgroundColor(R.drawable.categories_button);
-            categoriesBtns[i].setTextColor(getResources().getColor(R.color.white));
+            disableCategoryBtn(categoriesBtns[i]);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                categoriesBtns[i].setAutoSizeTextTypeUniformWithConfiguration(
+                        8, 14, 1, TypedValue.COMPLEX_UNIT_DIP);
+            }
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    width,
+                    (int)(width*categories.get(i).length()/6.6),
                     height);
-            params.setMargins(10,10,10,15);
+            params.setMargins(10,10,10,16);
             categoriesBtns[i].setLayoutParams(params);
 
             categoryLayout.addView(categoriesBtns[i]);
@@ -161,7 +262,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         panelBuilder.buildHeader(manager, "Главная", R.id.headerMainScreenLayout);
     }
 
-    private void createMainScreen(String category) {
+    private void createMainScreen() {
         //получаем id пользователя
         String userId = getUserId();
 
@@ -169,10 +270,10 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         String userCity = getUserCity(userId);
 
         //получаем все сервисы, которые находятся в городе юзера
-        getServicesInThisCity(userCity, category);
+        getServicesInThisCity(userCity, category, selectedTagsArray);
     }
 
-    private String getUserCity(String userId){
+    private String getUserCity(String userId) {
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // Получить город юзера
@@ -195,10 +296,8 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         cursor.close();
         return city;
     }
-  
-    private void getServicesInThisCity(final String userCity, final String category) {
 
-        final Search search = new Search(this);
+    private void getServicesInThisCity(final String userCity, final String category, final ArrayList<String> selectedTagsArray) {
 
         //возвращение всех пользователей из контретного города
         Query userQuery = FirebaseDatabase.getInstance().getReference(USERS)
@@ -209,7 +308,12 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onDataChange(@NonNull DataSnapshot usersSnapshot) {
 
-                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot, null, null, null, category);
+                ArrayList<Object[]> commonList = search.getServicesOfUsers(usersSnapshot,
+                        null,
+                        null,
+                        null,
+                        category,
+                        selectedTagsArray);
                 for (Object[] serviceData : commonList) {
                     serviceList.add((Service) serviceData[1]);
                     userList.add((User) serviceData[2]);
@@ -225,6 +329,33 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
                 attentionBadConnection();
             }
         });
+    }
+
+    private void showTags() {
+        CharSequence[] tagsArray = getResources()
+                .obtainTypedArray(R.array.tags_references)
+                .getTextArray(categories.indexOf(category));
+
+        for (CharSequence tag : tagsArray) {
+            TextView tagText = new TextView(this);
+            tagText.setText(tag.toString());
+            tagText.setTextColor(Color.GRAY);
+            tagText.setGravity(Gravity.CENTER);
+            tagText.setTypeface(ResourcesCompat.getFont(this, R.font.roboto_bold));
+            tagText.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            tagText.setOnClickListener(this);
+            tagText.setPadding(0, 16, 0, 16);
+            if (selectedTagsArray.contains(tag.toString())) {
+                tagText.setBackgroundResource(R.drawable.category_button_pressed);
+                tagText.setTextColor(Color.BLACK);
+            }
+
+            innerLayout.addView(tagText);
+        }
+
+        tagsLayout.setVisibility(View.VISIBLE);
     }
 
     private String getUserId() {

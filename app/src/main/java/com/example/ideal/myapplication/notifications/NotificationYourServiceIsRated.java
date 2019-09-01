@@ -27,26 +27,25 @@ public class NotificationYourServiceIsRated extends NotificationConstructor {
 
     @Override
     public void createNotification() {
-        //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
-        Intent intent = new Intent(context, Profile.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        int notificationId = 5;
 
-        int notificationId = 1;
+        Intent intent = new Intent(context, Profile.class);
+        PendingIntent pIntent = PendingIntent.getActivity(context, 0,
+                intent, PendingIntent.FLAG_CANCEL_CURRENT );
 
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
+                .setContentIntent(pIntent)
                 .setContentTitle("Новая оценка!")
                 .setContentText("Клиент " + name + " оценил ваш сервис \"" + serviceName + "\"")
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Клиент " + name + " оценил ваш сервис \"" + serviceName + "\" Оценка будет доступна через 72 часа"))
-                .setContentIntent(pendingIntent)
+                      .bigText("Клиент " + name + " оценил ваш сервис \"" + serviceName + "\" Оценка будет доступна через 72 часа"))
+                .setContentIntent(pIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-
-        // notificationId is a unique int for each notification that you must define
         notificationManager.notify(notificationId, builder.build());
     }
 }

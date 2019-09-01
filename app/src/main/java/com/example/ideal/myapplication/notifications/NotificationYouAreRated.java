@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.other.Profile;
@@ -24,27 +25,25 @@ public class NotificationYouAreRated extends NotificationConstructor {
 
     @Override
     public void createNotification() {
-        //нужен, чтобы потом обратиться к нему и если что изменить, в нашем случае вроде как не нужен
+        int notificationId = 4;
 
         Intent intent = new Intent(context, Profile.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-        int notificationId = 1;
+        PendingIntent pIntent = PendingIntent.getActivity(context, 0,
+                intent, PendingIntent.FLAG_CANCEL_CURRENT );
 
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
+                .setContentIntent(pIntent)
                 .setContentTitle("Новая оценка!")
                 .setContentText("Мастер " + name + " оценил вас! Оценка будет доступна через 72 часа")
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText("Мастер " + name + " оценил вас! Оценка будет доступна через 72 часа"))
-                .setContentIntent(pendingIntent)
+                .setContentIntent(pIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-
-        // notificationId is a unique int for each notification that you must define
         notificationManager.notify(notificationId, builder.build());
     }
 

@@ -23,7 +23,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
         String dataType = remoteMessage.getData().get("data_type");
-        Log.d(TAG, "onMessageReceived: " + dataType);
 
         switch (dataType) {
             case FOLLOWING:

@@ -6,7 +6,10 @@ import android.app.NotificationManager;
 import android.os.Build;
 
 public class App extends Application {
-    public static final String CHANNEL_ID = "1";
+    public static final String CANCEL_CHANNEL_ID = "1";
+    public static final String ORDER_CHANNEL_ID = "2";
+    public static final String SUBSCRIBER_CHANNEL_ID = "3";
+    public static final String RATE_CHANNEL_ID = "4";
 
     @Override
     public void onCreate() {
@@ -17,14 +20,35 @@ public class App extends Application {
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Example Service Channel",
+            NotificationChannel cancelChannel = new NotificationChannel(
+                    CANCEL_CHANNEL_ID,
+                    "Cancel Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+
+            NotificationChannel orderChannel = new NotificationChannel(
+                    ORDER_CHANNEL_ID,
+                    "Order Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+
+            NotificationChannel subscriberChannel = new NotificationChannel(
+                    SUBSCRIBER_CHANNEL_ID,
+                    "Subscriber Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+
+            NotificationChannel rateChannel = new NotificationChannel(
+                    RATE_CHANNEL_ID,
+                    "Rate Channel",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
 
             NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(serviceChannel);
+            manager.createNotificationChannel(cancelChannel);
+            manager.createNotificationChannel(orderChannel);
+            manager.createNotificationChannel(subscriberChannel);
+            manager.createNotificationChannel(rateChannel);
         }
     }
 }
