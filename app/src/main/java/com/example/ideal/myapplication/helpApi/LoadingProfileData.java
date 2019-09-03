@@ -42,7 +42,6 @@ public class LoadingProfileData {
     private static SQLiteDatabase localDatabase;
     private static Thread photoThread;
     private static Thread subscriptionThread;
-    private static Thread thread;
 
     public static void loadUserInfo(final DataSnapshot userSnapshot, SQLiteDatabase _localDatabase) {
         localDatabase = _localDatabase;
@@ -120,16 +119,13 @@ public class LoadingProfileData {
     public static void loadUserServices(DataSnapshot servicesSnapshot, String userId,
                                         SQLiteDatabase database) {
         for (final DataSnapshot serviceSnap : servicesSnapshot.getChildren()) {
-            thread = new Thread() {
+            new Thread() {
                 @Override
                 public void run() {
                     super.run();
                     removeOverdueTime(serviceSnap);
-                    Log.d(TAG, "run: " + thread.toString() + " " + thread.isInterrupted());
-                    thread.interrupt();
                 }
-            };
-            thread.start();
+            }.start();
 
             Log.d(TAG, "loadUserServices: ");
 
@@ -160,7 +156,6 @@ public class LoadingProfileData {
                 if ((workingTimeSnapshot.child(ORDERS).getValue() == null) &&
                         isTimeOverdue(time , date)) {
                     workingTimeSnapshot.getRef().removeValue();
-                    Log.d(TAG, "removeOverdueTime: " + date + " " + time);
                 }
             }
             if (workingDaySnapshot.child(WORKING_TIME).getValue() == null) {
