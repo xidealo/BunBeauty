@@ -22,23 +22,23 @@ public class Search {
     private static final String CITY = "city";
     private static final String SERVICES = "services";
     private static final String MAX_COST = "max_cost";
+    private static final String MAX_COUNT_OF_RATES = "max_count_of_rates";
     private static final String SERVICE_ID = "servise_id";
     private static final String CREATION_DATE = "creation date";
     private static final String COST = "cost";
     private static final String RATING = "rating";
+    private static final String COUNT_OF_RATES = "count of rates";
 
     private long maxCost;
+    private long maxCountOfRates;
     private ArrayList<Object[]> serviceList;
     private ArrayList<Object[]> premiumList;
-
-    private WorkWithTimeApi workWithTimeApi;
     private DBHelper dbHelper;
 
     public Search (Context _context) {
         dbHelper = new DBHelper(_context);
         serviceList = new ArrayList<>();
         premiumList = new ArrayList<>();
-        workWithTimeApi = new WorkWithTimeApi();
     }
 
     // загружаем услуги мастеров мастеров в LocalStorage
@@ -67,6 +67,7 @@ public class Search {
                                     String category, ArrayList<String> selectedTagsArray) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         maxCost = getMaxCost();
+        maxCountOfRates = getMaxCountOfRates();
         String tables = DBHelper.TABLE_CONTACTS_USERS + ", " + DBHelper.TABLE_CONTACTS_SERVICES;
 
         String serviceNameCondition = "";
@@ -118,6 +119,7 @@ public class Search {
                         + categoryCondition
                         + userNameCondition
                         + tagsCondition;
+
         //Log.d(TAG, "sqlQuery: " + Windows.Storage.ApplicationData.Current.LocalFolder);
 
 
@@ -134,6 +136,7 @@ public class Search {
             int indexServiceCreationDate = cursor.getColumnIndex(DBHelper.KEY_CREATION_DATE_SERVICES);
             int indexServiceIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
             int indexServiceAvgRating = cursor.getColumnIndex(DBHelper.KEY_RATING_SERVICES);
+            int indexServiceCountOFRates = cursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_SERVICES);
 
             do {
                 // Информация о мастере
@@ -155,6 +158,7 @@ public class Search {
                 float serviceRating = Float.valueOf(cursor.getString(indexServiceAvgRating));
 
                 boolean isPremium = WorkWithTimeApi.checkPremium(cursor.getString(indexServiceIsPremium));
+                long serviceCountOfRates = cursor.getLong(indexServiceCountOFRates);
                 String creationDate = cursor.getString(indexServiceCreationDate);
 
                 Service service = new Service();
@@ -164,6 +168,7 @@ public class Search {
                 service.setIsPremium(isPremium);
                 service.setCreationDate(creationDate);
                 service.setAverageRating(serviceRating);
+                service.setCountOfRates(serviceCountOfRates);
 
                 addToServiceList(service, user);
                 //пока в курсоре есть строки и есть новые сервисы
@@ -200,13 +205,32 @@ public class Search {
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{});
 
-        long maxCost = 0;
+        long currentMaxCost = 0;
         if (cursor.moveToFirst()) {
-            maxCost = cursor.getInt(cursor.getColumnIndex(MAX_COST));
+            currentMaxCost = cursor.getLong(cursor.getColumnIndex(MAX_COST));
         }
 
         cursor.close();
-        return maxCost;
+        return currentMaxCost;
+    }
+
+    private Long getMaxCountOfRates(){
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        String sqlQuery =
+                "SELECT "
+                        + " MAX(CAST(" + DBHelper.KEY_COUNT_OF_RATES_SERVICES + " AS INTEGER)) AS " + MAX_COUNT_OF_RATES
+                        + " FROM "
+                        + DBHelper.TABLE_CONTACTS_SERVICES;
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{});
+
+        long currentMaxCountOfRates = 0;
+        if (cursor.moveToFirst()) {
+            currentMaxCountOfRates = cursor.getLong(cursor.getColumnIndex(MAX_COUNT_OF_RATES));
+        }
+
+        cursor.close();
+        return currentMaxCountOfRates;
     }
 
     // Добавляем конкретную услугу в список в сообветствии с её коэфициентом
@@ -214,8 +238,9 @@ public class Search {
         HashMap<String, Float> coefficients = new HashMap<>();
         coefficients.put(CREATION_DATE, 0.25f);
         coefficients.put(COST, 0.07f);
-        coefficients.put(RATING, 0.68f);
-        float points, creationDatePoints, costPoints, ratingPoints, penaltyPoints;
+        coefficients.put(RATING, 0.53f);
+        coefficients.put(COUNT_OF_RATES,0.15f);
+        float points, creationDatePoints, costPoints, ratingPoints, countOfRatesPoints, penaltyPoints;
 
         boolean isPremium = service.getIsPremium();
 
@@ -226,8 +251,10 @@ public class Search {
             creationDatePoints = figureCreationDatePoints(service.getCreationDate(), coefficients.get(CREATION_DATE));
             costPoints = figureCostPoints(Long.valueOf(service.getCost()), coefficients.get(COST));
             ratingPoints = figureRatingPoints(service.getAverageRating(), coefficients.get(RATING));
+            countOfRatesPoints = figureCountOfRatesPoints(service.getCountOfRates(), coefficients.get(COUNT_OF_RATES));
             //penaltyPoints = figurePenaltyPoints(service.getId(), user.getId());
-            points = creationDatePoints + costPoints + ratingPoints/* - penaltyPoints*/;
+            Log.d(TAG, "countOfRatesPoints: " + countOfRatesPoints);
+            points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints/* - penaltyPoints*/;
             sortAddition(new Object[]{points, service, user});
         }
     }
@@ -235,7 +262,7 @@ public class Search {
     private float figureCreationDatePoints(String creationDate, float coefficient) {
         float creationDatePoints;
 
-        long dateBonus = (workWithTimeApi.getMillisecondsStringDate(creationDate) -
+        long dateBonus = (WorkWithTimeApi.getMillisecondsStringDate(creationDate) -
                 WorkWithTimeApi.getSysdateLong()) / (3600000*24) + 7;
         if (dateBonus < 0) {
             creationDatePoints = 0;
@@ -250,9 +277,20 @@ public class Search {
         return (1 - cost * 1f / maxCost) * coefficient;
     }
 
+    private float figureCountOfRatesPoints(long countOfRates, float coefficient) {
+        if(maxCountOfRates!=0) {
+            return (countOfRates / maxCountOfRates) * coefficient;
+        }
+        else {
+            return  0;
+        }
+    }
+
     private float figureRatingPoints(float rating, float coefficient) {
         return rating * coefficient / 5;
     }
+
+
 
     private float figurePenaltyPoints(String serviceId, String userId) {
         float penaltyPoints = 0;

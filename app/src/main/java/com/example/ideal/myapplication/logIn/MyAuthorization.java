@@ -90,11 +90,9 @@ public class MyAuthorization {
                         serviceThread = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                LoadingProfileData.loadUserServices(userSnapshot
-                                                .child(SERVICES),
+                                LoadingProfileData.loadUserServices(userSnapshot.child(SERVICES),
                                         userId,
-                                        localDatabase,
-                                        startIndexOfDownload);
+                                        localDatabase);
                                 serviceThread.interrupt();
                             }
                         });
@@ -211,10 +209,9 @@ public class MyAuthorization {
                 .child(IS_CANCELED)
                 .getValue(Boolean.class);
 
-        WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
         //3600000 * 24 = 24 часа
         String commonDate = date + " " + time;
-        long orderDate = workWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000;
+        long orderDate = WorkWithTimeApi.getMillisecondsStringDate(commonDate) + 3600000;
         long sysdate = WorkWithTimeApi.getSysdateLong();
 
         if ((orderDate < sysdate) || isCanceled) {
@@ -235,7 +232,7 @@ public class MyAuthorization {
         database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
     }
 
-    private void    addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId) {
+    private void addWorkingDaysInLocalStorage(DataSnapshot workingDaySnapshot, String serviceId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -309,11 +306,6 @@ public class MyAuthorization {
         intent.putExtra(PHONE, myPhoneNumber);
         context.startActivity(intent);
     }
-
-    private void setListenerToOrdersForDialogs(){
-
-    }
-
 
     private void goToProfile() {
         // тоже самое необходимо прописать для перехода с регистрации

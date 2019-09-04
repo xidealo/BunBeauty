@@ -16,7 +16,7 @@ public class WorkWithTimeApi {
         return sysdate.getTime()+3600000*3;
     }
 
-    public long getMillisecondsStringDate(String date){
+    static public long getMillisecondsStringDate(String date){
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
         try {

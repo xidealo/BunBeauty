@@ -2,12 +2,14 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -30,6 +32,12 @@ public class LoadingProfileData {
     private static final String SUBSCRIBERS = "subscribers";
     private static final String SUBSCRIPTIONS = "subscriptions";
 
+    private static final String WORKING_DAYS = "working days";
+    private static final String WORKING_TIME = "working time";
+    private static final String ORDERS = "orders";
+    private static final String TIME = "time";
+    private static final String DATE = "date";
+
 
     private static SQLiteDatabase localDatabase;
     private static Thread photoThread;
@@ -51,7 +59,7 @@ public class LoadingProfileData {
         subscriptionThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                addUserSubscriptionInLocalStorage(userSnapshot.child(SUBSCRIPTIONS),userId);
+                addUserSubscriptionInLocalStorage(userSnapshot.child(SUBSCRIPTIONS), userId);
             }
         });
         subscriptionThread.start();
@@ -109,16 +117,17 @@ public class LoadingProfileData {
     }
 
     public static void loadUserServices(DataSnapshot servicesSnapshot, String userId,
-                                        SQLiteDatabase database, int startIndexOfDownload) {
-        //5 10 - интервал
-        int countOfDownloads = 5;
-        int counter = 0;
-        for (DataSnapshot serviceSnap : servicesSnapshot.getChildren()) {
+                                        SQLiteDatabase database) {
+        for (final DataSnapshot serviceSnap : servicesSnapshot.getChildren()) {
+            new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    removeOverdueTime(serviceSnap);
+                }
+            }.start();
 
-            /*if (counter < startIndexOfDownload) {
-                counter++;
-                continue;
-            }*/
+            Log.d(TAG, "loadUserServices: ");
 
             String serviceId = serviceSnap.getKey();
             String serviceName = serviceSnap.child(NAME).getValue(String.class);
@@ -130,18 +139,40 @@ public class LoadingProfileData {
             service.setUserId(userId);
             service.setAverageRating(serviceRating);
             ArrayList<String> tagsArray = new ArrayList<>();
-            for(DataSnapshot tag : serviceSnap.child(TAGS).getChildren()) {
+            for (DataSnapshot tag : serviceSnap.child(TAGS).getChildren()) {
                 tagsArray.add(tag.getValue(String.class));
             }
             service.setTags(tagsArray);
 
             addUserServicesInLocalStorage(service, database);
-            counter++;
-
-           /* if (counter >= startIndexOfDownload + countOfDownloads) {
-                break;
-            }*/
         }
+    }
+
+    private static void removeOverdueTime(DataSnapshot serviceSnapshot) {
+        for (DataSnapshot workingDaySnapshot : serviceSnapshot.child(WORKING_DAYS).getChildren()) {
+            String date = workingDaySnapshot.child(DATE).getValue(String.class);
+            for (DataSnapshot workingTimeSnapshot : workingDaySnapshot.child(WORKING_TIME).getChildren()) {
+                String time = workingTimeSnapshot.child(TIME).getValue(String.class);
+                if ((workingTimeSnapshot.child(ORDERS).getValue() == null) &&
+                        isTimeOverdue(time , date)) {
+                    workingTimeSnapshot.getRef().removeValue();
+                }
+            }
+            if (workingDaySnapshot.child(WORKING_TIME).getValue() == null) {
+                workingDaySnapshot.getRef().removeValue();
+            }
+        }
+    }
+
+    private static boolean isTimeOverdue(String time, String date) {
+        long orderDate = WorkWithTimeApi.getMillisecondsStringDate(date + " " + time);
+        long sysdate = WorkWithTimeApi.getSysdateLong();
+
+        if (orderDate < sysdate) {
+            return true;
+        }
+
+        return false;
     }
 
     private static void addUserServicesInLocalStorage(Service service, SQLiteDatabase database) {
@@ -206,7 +237,7 @@ public class LoadingProfileData {
 
     private static void addUserSubscriptionInLocalStorage(DataSnapshot subsSnapshot, String userId) {
 
-        for(DataSnapshot subSnapshot: subsSnapshot.getChildren()){
+        for (DataSnapshot subSnapshot : subsSnapshot.getChildren()) {
             ContentValues contentValues = new ContentValues();
             contentValues.put(DBHelper.KEY_ID, subSnapshot.getKey());
             contentValues.put(DBHelper.KEY_USER_ID, userId);

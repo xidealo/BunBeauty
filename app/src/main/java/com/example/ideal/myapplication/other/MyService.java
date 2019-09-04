@@ -510,37 +510,6 @@ public class MyService extends Service implements Runnable {
                 listenerList.add(new Object[]{orderListener, myOrdersRef});
             }
 
-            private void setTimerForReview(final String orderId, String date, String time, final String commentedName, final boolean isForService) {
-                long timeLeftInMillis = timeApi.getMillisecondsStringDate(date + " " + time)
-                        - timeApi.getSysdateLong()
-                        + 24*60*60*1000; // Время до сеанса + сутки
-
-                if (timeLeftInMillis > 0) {
-                    // Настраиваем таймер
-                    CountDownTimer CDTimer = new CountDownTimer(timeLeftInMillis, 60*1000) {
-                        @Override
-                        public void onTick(long millisUntilFinished) { }
-
-                        @Override
-                        public void onFinish() {
-                            // создаётся необходимое оповещение дял Услуги ил для Клиента
-                            NotificationConstructor notification;
-                            if (isForService) {
-                                notification = new NotificationReviewForService(context, commentedName);
-                            } else {
-                                notification = new NotificationReviewForUser(context, commentedName);
-                            }
-
-                            notification.createNotification();
-                            // удаляется из Мапы, тк оповещение отправлено
-                            CDTimers.remove(orderId);
-                        }
-                    }.start();
-                    // кладём таймер в Мапу, чтобы если что удалить
-                    CDTimers.put(orderId, CDTimer);
-                }
-            }
-
         }));
         thread.run();
     }
@@ -642,9 +611,9 @@ public class MyService extends Service implements Runnable {
 
     private void operateWithNewOrder(DataSnapshot orderSnapshot, final String serviceId,
                                      final String workingDayId, final String workingTimeId) {
-        WorkWithTimeApi timeApi = new WorkWithTimeApi();
         String orderCreationTime = orderSnapshot.child(TIME).getValue(String.class);
-        long delay = Math.abs(timeApi.getMillisecondsStringDateWithSeconds(orderCreationTime)-timeApi.getSysdateLong());
+        long delay = Math.abs(WorkWithTimeApi.getMillisecondsStringDateWithSeconds(orderCreationTime)
+                - WorkWithTimeApi.getSysdateLong());
         String orderId = orderSnapshot.getKey();
 
         if(delay < 10000) {

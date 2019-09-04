@@ -60,8 +60,6 @@ public class MessageOrderElement implements View.OnClickListener {
     private String reviewId;
     private String messageTime;
 
-    private WorkWithTimeApi workWithTimeApi;
-
     private TextView messageText;
     private TextView timeText;
     private Button canceledBtn;
@@ -131,8 +129,6 @@ public class MessageOrderElement implements View.OnClickListener {
         canceledBtn = view.findViewById(R.id.canceledMessageElementBtn);
         canceledBtn.setText("ОКАЗАТЬСЯ");
         canceledBtn.setOnClickListener(this);
-
-        workWithTimeApi = new WorkWithTimeApi();
 
         if (!messageIsMyService) {
             canceledBtn.setVisibility(View.GONE);
@@ -286,7 +282,7 @@ public class MessageOrderElement implements View.OnClickListener {
     private boolean isRelevance() {
         String commonDate = messageWorkingDay + " " + messageWorkingTime;
 
-        long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate);
+        long orderDateLong = WorkWithTimeApi.getMillisecondsStringDate(commonDate);
         long sysdateLong = WorkWithTimeApi.getSysdateLong();
 
         return orderDateLong > sysdateLong;
@@ -321,7 +317,7 @@ public class MessageOrderElement implements View.OnClickListener {
     private boolean beforeOneHour() {
         String commonDate = messageWorkingDay + " " + messageWorkingTime;
         long sysdateLong = WorkWithTimeApi.getSysdateLong();
-        long orderDateLong = workWithTimeApi.getMillisecondsStringDate(commonDate);
+        long orderDateLong = WorkWithTimeApi.getMillisecondsStringDate(commonDate);
 
         return orderDateLong - sysdateLong < 3600000;
     }
