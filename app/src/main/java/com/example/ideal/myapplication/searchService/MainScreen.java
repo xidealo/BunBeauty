@@ -151,10 +151,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-
-
-
-
     private void tagClick(TextView tagText) {
         startLoading();
 

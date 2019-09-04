@@ -35,7 +35,8 @@ public class PanelBuilder {
 
     public void buildFooter(FragmentManager manager, int layoutId) {
         BottomPanel bottomPanel = new BottomPanel(isMyProfile, myId);
-
+        Object object = new Object();
+        object.equals(2);
         transaction = manager.beginTransaction();
         transaction.add(layoutId, bottomPanel);
         transaction.commit();

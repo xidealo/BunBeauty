@@ -99,7 +99,6 @@ public class Dialogs extends AppCompatActivity {
 
         //Каждый раз загружаем
         loadOrders();
-
     }
 
     private void loadOrders() {

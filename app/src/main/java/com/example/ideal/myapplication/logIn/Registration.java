@@ -140,6 +140,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         contentValues.put(DBHelper.KEY_RATING_USERS, "0");
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
         contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
+        contentValues.put(DBHelper.KEY_SUBSCRIBERS_COUNT_USERS, "0");
+        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, "0");
 
         database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
 
@@ -157,6 +159,19 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
         database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
     }
+
+    private void putSubscriptionsLocalStorage(User user) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, user.getId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, defaultPhotoLink);
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, user.getId());
+
+        database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
+    }
+
 
     private Boolean areInputsCorrect() {
         String name = nameInput.getText().toString();
