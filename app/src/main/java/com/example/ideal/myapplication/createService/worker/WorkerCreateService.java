@@ -119,6 +119,7 @@ public class WorkerCreateService implements IWorker {
         contentValues.put(DBHelper.KEY_ID, timeId);
         contentValues.put(DBHelper.KEY_TIME_WORKING_TIME, time);
         contentValues.put(DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME, workingDaysId);
+        contentValues.put(DBHelper.KEY_IS_BLOCKED_TIME, "false");
 
         database.insert(DBHelper.TABLE_WORKING_TIME, null, contentValues);
     }

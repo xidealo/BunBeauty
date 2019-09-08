@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.helpApi.LoadingProfileData;
@@ -19,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class MyAuthorization {
+class MyAuthorization {
 
     private static final String TAG = "DBInf";
 
@@ -42,7 +41,6 @@ public class MyAuthorization {
     private static final String WORKER_ID = "worker id";
 
     private DBHelper dbHelper;
-    private int startIndexOfDownload;
     private static Thread serviceThread;
 
     private Context context;
@@ -57,7 +55,6 @@ public class MyAuthorization {
     MyAuthorization(Context _context, String _myPhoneNumber) {
         context = _context;
         myPhoneNumber = _myPhoneNumber;
-        startIndexOfDownload = 0;
         dbHelper = new DBHelper(context);
     }
 
