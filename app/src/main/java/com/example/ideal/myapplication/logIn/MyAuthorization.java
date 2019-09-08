@@ -79,13 +79,7 @@ class MyAuthorization {
                         goToRegistration();
                     } else {
 
-                        new Thread(){
-                            @Override
-                            public void run() {
-                                super.run();
-                                clearSQLite();
-                            }
-                        }.start();
+                        clearSQLite();
 
                         final SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
                         LoadingProfileData.loadUserInfo(userSnapshot, localDatabase);
