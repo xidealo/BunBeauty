@@ -2,12 +2,9 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
-
-import java.util.ArrayList;
 
 public class LoadingMainScreenElement {
 

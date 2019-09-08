@@ -64,7 +64,6 @@ public class SubscriptionsApi {
             myRef = myRef.child(subscriberId);
             myRef.updateChildren(items);
         }
-
     }
     private void createSubscription() {
         //подписки воркера
@@ -79,8 +78,8 @@ public class SubscriptionsApi {
         if (subscriberId != null) {
             myRef = myRef.child(subscriberId);
             myRef.updateChildren(items);
+            addSubscriberInLocalStorage(subscriberId);
         }
-        addSubscriberInLocalStorage(subscriberId);
     }
 
     public void unsubscribe() {
@@ -165,12 +164,21 @@ public class SubscriptionsApi {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, subscriberId);
-
         contentValues.put(DBHelper.KEY_USER_ID, userId);
-
         contentValues.put(DBHelper.KEY_WORKER_ID, workerId);
 
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
+        long subscriptionsCount = getCountOfSubscriptions(database, userId) + 1;
+        updateLocalCountOfSubs(subscriptionsCount, userId, database);
+    }
+
+    public static void updateLocalCountOfSubs(long subscriptionsCount, String userId, SQLiteDatabase database) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, subscriptionsCount);
+
+        database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{userId});
     }
 
     public void loadCountOfSubscribers(final TextView countOfSubsText) {

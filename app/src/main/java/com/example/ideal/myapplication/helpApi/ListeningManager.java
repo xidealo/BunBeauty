@@ -1,7 +1,5 @@
 package com.example.ideal.myapplication.helpApi;
 
-import android.util.Log;
-
 import com.example.ideal.myapplication.entity.FBListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;

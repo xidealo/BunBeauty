@@ -30,7 +30,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 public class MyTime extends AppCompatActivity implements View.OnClickListener, ISwitcher {
-
     private static final String TAG = "DBInf";
     private static final String WORKING_DAYS_ID = "working day id";
     private static final String SERVICE_ID = "service id";

@@ -9,8 +9,6 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.other.Profile;
-import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
-import com.example.ideal.myapplication.searchService.GuestService;
 
 public class NotificationCancel extends NotificationConstructor {
 

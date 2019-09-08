@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.helpApi.LoadingProfileData;
@@ -77,7 +78,14 @@ class MyAuthorization {
                         // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
                         goToRegistration();
                     } else {
-                        clearSQLite();
+
+                        new Thread(){
+                            @Override
+                            public void run() {
+                                super.run();
+                                clearSQLite();
+                            }
+                        }.start();
 
                         final SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
                         LoadingProfileData.loadUserInfo(userSnapshot, localDatabase);
@@ -114,7 +122,6 @@ class MyAuthorization {
         if (_ordersSnapshot.getChildrenCount() == 0) {
             goToProfile();
         }
-
         counter = 0;
         final long childrenCount = _ordersSnapshot.getChildrenCount();
         for (final DataSnapshot orderSnapshot : _ordersSnapshot.getChildren()) {

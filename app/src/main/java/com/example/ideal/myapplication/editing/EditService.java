@@ -219,7 +219,6 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     editServiceInFireBase(service);
                     editServicesBtn.setVisibility(View.GONE);
                     progressBar.setVisibility(View.VISIBLE);
-
                 } else{
                     attentionMoreTenImages();
                 }

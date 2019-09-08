@@ -128,7 +128,7 @@ public class Subscribers extends AppCompatActivity {
                         DBHelper.KEY_ID + " = ?",
                         new String[]{id});
                 countOfLoadedUser--;
-                updateLocalCountOfSubs(countOfLoadedUser);
+                SubscriptionsApi.updateLocalCountOfSubs(countOfLoadedUser, getUserId(), database);
             }
 
             @Override
@@ -149,15 +149,6 @@ public class Subscribers extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
 
     }
-    private void updateLocalCountOfSubs(long subscriptionsCount) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, subscriptionsCount);
-
-        database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
-                DBHelper.KEY_ID + " = ?",
-                new String[]{getUserId()});
-    }
 
     private void loadUserById(final String userId) {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
@@ -173,7 +164,7 @@ public class Subscribers extends AppCompatActivity {
                 long currentCountOfSub = SubscriptionsApi.getCountOfSubscriptions(database, getUserId());
                 if (countOfLoadedUser >= currentCountOfSub) {
                     if (countOfLoadedUser != currentCountOfSub) {
-                        updateLocalCountOfSubs(countOfLoadedUser);
+                        SubscriptionsApi.updateLocalCountOfSubs(countOfLoadedUser,getUserId(),database);
                     }
                     getMySubscriptions();
                 }
