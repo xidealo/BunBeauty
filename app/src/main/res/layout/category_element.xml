@@ -63,7 +63,8 @@
         android:background="@drawable/block_text"
         android:gravity="center"
         android:minHeight="50dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             style="@style/mainText"
