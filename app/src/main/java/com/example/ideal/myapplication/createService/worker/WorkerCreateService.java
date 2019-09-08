@@ -1,9 +1,7 @@
 package com.example.ideal.myapplication.createService.worker;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.service.autofill.Dataset;
 import android.support.annotation.NonNull;
 import android.util.Log;
 

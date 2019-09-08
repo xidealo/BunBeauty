@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,6 +66,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
     private static final String PHOTO_LINK = "photo link";
     private static final String SERVICE_PHOTO = "service photo";
+    private static final int MAX_COUNT_OF_IMAGES = 3;
 
     private static final int PICK_IMAGE_REQUEST = 71;
 
@@ -210,13 +212,17 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                     break;
                 }
                 service.setAddress(address);
+
                 service.setTags(categoryElement.getTagsArray());
+                Log.d(TAG, "onClick: " + fPathToAdd);
+                if(fPathToAdd.size() <= MAX_COUNT_OF_IMAGES){
+                    editServiceInFireBase(service);
+                    editServicesBtn.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
 
-                editServiceInFireBase(service);
-
-                editServicesBtn.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-
+                } else{
+                    attentionMoreTenImages();
+                }
                 break;
 
             case R.id.servicePhotoEditServiceImage:
@@ -615,6 +621,10 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private void goToService() {
         super.onBackPressed();
         finish();
+    }
+
+    private void attentionMoreTenImages() {
+        Toast.makeText(this, "Должно быть меньше 10 фотографий", Toast.LENGTH_SHORT).show();
     }
 
     private String getUserId() {

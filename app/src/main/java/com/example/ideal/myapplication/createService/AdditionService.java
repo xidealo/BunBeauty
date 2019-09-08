@@ -75,6 +75,8 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     private static final String COUNT_OF_RATES = "count of rates";
     private static final String AVG_RATING = "avg rating";
 
+    private static final int MAX_COUNT_OF_IMAGES = 10;
+
     private EditText nameServiceInput;
     private EditText costAddServiceInput;
     private EditText descriptionServiceInput;
@@ -179,7 +181,14 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
                     service.setAddress(address);
                     service.setCountOfRates(0);
                     service.setTags(categoryElement.getTagsArray());
-                    uploadService(service);
+                    //less than 10 images
+                    if (fpath.size() <= MAX_COUNT_OF_IMAGES) {
+                        uploadService(service);
+                    }
+                    else {
+                        attentionMoreTenImages();
+                        break;
+                    }
                 } else {
                     Toast.makeText(this, getString(R.string.empty_field), Toast.LENGTH_SHORT).show();
                 }
@@ -451,7 +460,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     public String addSevenDayPremium(String date) {
         long sysdateLong = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(date);
         //86400000 - day * 7 day
-        sysdateLong += 86400000*7;
+        sysdateLong += 86400000 * 7;
         return WorkWithTimeApi.getDateInFormatYMDHMS(new Date(sysdateLong));
     }
 
@@ -487,5 +496,10 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     private void attentionPremiumActivated() {
         Toast.makeText(this, "Премиум активирован", Toast.LENGTH_SHORT).show();
     }
+
+    private void attentionMoreTenImages() {
+        Toast.makeText(this, "Должно быть меньше 10 фотографий", Toast.LENGTH_SHORT).show();
+    }
+
 
 }
