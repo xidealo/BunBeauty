@@ -318,6 +318,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 //Проверка является ли данное время рабочим
                 String currentTimeId = WorkWithLocalStorageApi.getWorkingTimeId(time, workingDaysId, database);
                 if (!currentTimeId.equals("0")) {
+                    Log.d(TAG, "isBlockedTime(currentTimeId): " + isBlockedTime(currentTimeId));
                     if (!isBlockedTime(currentTimeId)) {
                         timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
                         timeBtns[i][j].setTag(R.string.selectedId, true);

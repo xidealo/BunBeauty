@@ -253,7 +253,6 @@ public class Search {
             ratingPoints = figureRatingPoints(service.getAverageRating(), coefficients.get(RATING));
             countOfRatesPoints = figureCountOfRatesPoints(service.getCountOfRates(), coefficients.get(COUNT_OF_RATES));
             //penaltyPoints = figurePenaltyPoints(service.getId(), user.getId());
-            Log.d(TAG, "countOfRatesPoints: " + countOfRatesPoints);
             points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints/* - penaltyPoints*/;
             sortAddition(new Object[]{points, service, user});
         }

@@ -211,7 +211,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot workingDaySnapshot, @Nullable String s) {
 
-                        Log.d(TAG, "onChildChanged: wd");
                         final String workingDayId = workingDaySnapshot.getKey();
                         long sysdateLong = WorkWithTimeApi.getSysdateLong();
                         long dateLong = WorkWithTimeApi.getMillisecondsStringDateYMD(workingDaySnapshot.child(DATE).getValue(String.class));

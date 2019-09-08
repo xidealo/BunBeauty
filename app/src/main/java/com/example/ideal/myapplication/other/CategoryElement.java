@@ -96,6 +96,9 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
                 if(inputTagsArray.isEmpty()) {
                     tagsBtn.setBackgroundResource(R.drawable.tags_button);
                     tagsBtn.setHintTextColor(Color.WHITE);
+                } else {
+                    selectedTagsArray.addAll(inputTagsArray);
+                    inputTagsArray.clear();
                 }
                 hideTags();
                 if (position == 0) {
@@ -172,6 +175,9 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
     }
 
     public ArrayList<String> getTagsArray() {
+        if(selectedTagsArray.isEmpty() && !inputTagsArray.isEmpty()) {
+            return inputTagsArray;
+        }
         return selectedTagsArray;
     }
 
