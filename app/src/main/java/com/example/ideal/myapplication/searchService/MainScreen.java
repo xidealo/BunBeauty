@@ -24,6 +24,7 @@ import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.adapters.ServiceAdapter;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.Search;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -72,6 +73,9 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         setContentView(R.layout.main_screen);
 
         init();
+        startLoading();
+        createCategoryFeed();
+        createMainScreen();
     }
 
     private void init() {
@@ -113,15 +117,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
         });
         minimizeTagsBtn.setOnClickListener(this);
         clearTagsBtn.setOnClickListener(this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        startLoading();
-        createCategoryFeed();
-        createMainScreen();
     }
 
     @Override
@@ -189,7 +184,6 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
 
     private void clearCategory() {
         for(Button btn : categoriesBtns) {
-            //Log.d(TAG, "clearCategory: " + category + " - " + btn.getText().toString());
             if (category.equals(btn.getText().toString())) {
                 category = "";
                 disableCategoryBtn(btn);
@@ -223,7 +217,7 @@ public class MainScreen extends AppCompatActivity implements View.OnClickListene
 
     private void disableCategoryBtn(Button button) {
         button.setBackgroundResource(R.drawable.category_button);
-        button.setTextColor(getResources().getColor(R.color.white));
+        button.setTextColor(Color.WHITE);
     }
 
     // настроить вид кнопок

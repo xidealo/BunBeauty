@@ -34,7 +34,6 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
     private Button tagsBtn;
 
     private ArrayList<String> selectedTagsArray;
-    private ArrayList<String> inputTagsArray;
     private int categoryPosition;
     private int categoryIndex = 0;
     private Context context;
@@ -43,7 +42,6 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
     public CategoryElement(Context context) {
         this.context = context;
         selectedTagsArray = new ArrayList<>();
-        inputTagsArray = new ArrayList<>();
     }
 
     @Override
@@ -61,7 +59,7 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
 
         categorySpinner.setSelection(categoryIndex);
         setCategorySpinnerListener();
-        if (!inputTagsArray.isEmpty()) {
+        if (!selectedTagsArray.isEmpty()) {
             tagsBtn.setBackgroundResource(R.drawable.category_button_pressed);
             tagsBtn.setHintTextColor(Color.BLACK);
         }
@@ -73,8 +71,6 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tagsBtn:
-                selectedTagsArray.addAll(inputTagsArray);
-                inputTagsArray.clear();
                 showTags();
                 break;
             case R.id.minimizeTagsBtn:
@@ -88,19 +84,21 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
 
     private void setCategorySpinnerListener() {
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            boolean isFirst = true;
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 categoryPosition = position;
-                selectedTagsArray.clear();
-                if(inputTagsArray.isEmpty()) {
+
+                if(isFirst) {
+                    isFirst = false;
+                } else {
                     tagsBtn.setBackgroundResource(R.drawable.tags_button);
                     tagsBtn.setHintTextColor(Color.WHITE);
-                } else {
-                    selectedTagsArray.addAll(inputTagsArray);
-                    inputTagsArray.clear();
+                    selectedTagsArray.clear();
+                    hideTags();
                 }
-                hideTags();
+
                 if (position == 0) {
                     tagsMinLayout.setVisibility(View.GONE);
                 } else {
@@ -175,13 +173,10 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
     }
 
     public ArrayList<String> getTagsArray() {
-        if(selectedTagsArray.isEmpty() && !inputTagsArray.isEmpty()) {
-            return inputTagsArray;
-        }
         return selectedTagsArray;
     }
 
     public void addTag(String tag) {
-        inputTagsArray.add(tag);
+        selectedTagsArray.add(tag);
     }
 }
