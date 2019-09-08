@@ -534,7 +534,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     }
 
     private void createRatingBar(float avgRating, long countOfRates) {
+        Log.d(TAG, "createRatingBar: " + countOfRates);
         if (countOfRates > 0) {
+            Log.d(TAG, "createRatingBar: IN");
             countOfRatesText.setVisibility(View.VISIBLE);
             avgRatesText.setVisibility(View.VISIBLE);
             ratingBar.setVisibility(View.VISIBLE);
@@ -549,6 +551,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             ratingLL.setOnClickListener(this);
         }
         else {
+            Log.d(TAG, "createRatingBar:  SET WITHOUT");
             setWithoutRating();
         }
 

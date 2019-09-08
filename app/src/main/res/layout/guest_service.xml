@@ -74,6 +74,7 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="0dp"
                         android:paddingEnd="0dp"
+                        android:visibility="gone"
                         android:text="Оценок еще нет" />
 
                     <RatingBar
