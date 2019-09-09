@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -109,7 +110,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         transaction.commit();
 
         manager = getSupportFragmentManager();
-        ImageView serviceImage = findViewById(R.id.servicePhotoEditServiceImage);
+        TextView serviceImage = findViewById(R.id.servicePhotoEditServiceImage);
         dbHelper = new DBHelper(this);
         phLinToDelete = new ArrayList<>();
         fPathToAdd = new ArrayList<>();

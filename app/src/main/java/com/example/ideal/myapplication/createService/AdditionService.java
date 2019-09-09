@@ -105,7 +105,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
 
     private void init() {
         Button addServicesBtn = findViewById(R.id.addServiceAddServiceBtn);
-        ImageView serviceImage = findViewById(R.id.servicePhotoAddServiceImage);
+        TextView serviceImage = findViewById(R.id.servicePhotoAddServiceImage);
         nameServiceInput = findViewById(R.id.nameAddServiceInput);
         costAddServiceInput = findViewById(R.id.costAddServiceInput);
         descriptionServiceInput = findViewById(R.id.descriptionAddServiceInput);

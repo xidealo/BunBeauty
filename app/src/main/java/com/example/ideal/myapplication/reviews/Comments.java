@@ -32,9 +32,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Comments extends AppCompatActivity {
 
@@ -56,6 +58,7 @@ public class Comments extends AppCompatActivity {
     private static final String COUNT_OF_RATES = "count of rates";
     private static final String ORDERS = "orders";
     private static final String RATING = "rating";
+    private static final String REVIEW = "review";
 
     private static final String WORKING_DAY_ID = "working day id";
     private static final String WORKING_TIME_ID = "working time id";
@@ -120,7 +123,6 @@ public class Comments extends AppCompatActivity {
         commentList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
     }
@@ -171,7 +173,7 @@ public class Comments extends AppCompatActivity {
                                             LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
 
                                             //если на одном времени больше чем 1 ревью
-                                            if(!String.valueOf(reviewSnapshot.child(RATING).getValue()).equals("0")){
+                                            if (!String.valueOf(reviewSnapshot.child(RATING).getValue()).equals("0")) {
                                                 currentCountOfReview++;
                                             }
 
@@ -211,20 +213,24 @@ public class Comments extends AppCompatActivity {
                                 }
 
                                 @Override
-                                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+                                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                }
 
                                 @Override
-                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                }
 
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {}
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
                             });
 
                             ListeningManager.addToListenerList(new FBListener(ordersRef, ordersListener));
                         }
 
                         @Override
-                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        }
 
                         @Override
                         public void onChildRemoved(@NonNull DataSnapshot timeSnapshot) {
@@ -233,10 +239,12 @@ public class Comments extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {}
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
                     });
 
                     ListeningManager.addToListenerList(new FBListener(workingTimesRef, workingTimesListener));
@@ -244,16 +252,20 @@ public class Comments extends AppCompatActivity {
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
 
         ListeningManager.addToListenerList(new FBListener(workingDaysRef, workingDaysListener));
@@ -359,13 +371,15 @@ public class Comments extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
     }
 
     private void loadCommentsForUser() {
 
-        final DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference(USERS)
+        final DatabaseReference orderRef = FirebaseDatabase.getInstance()
+                .getReference(USERS)
                 .child(ownerId)
                 .child(ORDERS);
 
@@ -462,25 +476,38 @@ public class Comments extends AppCompatActivity {
                         .child(WORKING_DAYS)
                         .child(workingDayId);
 
-                final DatabaseReference reviewRef = orderRef
-                        .child(orderId)
-                        .child(REVIEWS);
-
                 timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot workingDaySnapshot) {
+                        //set day with his time
                         LoadingCommentsData.addWorkingDaysInLocalStorage(workingDaySnapshot, serviceId, database);
                         for (DataSnapshot timeSnapshot : workingDaySnapshot.child(WORKING_TIME).getChildren()) {
                             LoadingCommentsData.addTimeInLocalStorage(timeSnapshot, workingDayId, database);
                         }
 
+                        //can be optimized
+                        final DatabaseReference reviewRef = orderRef
+                                .child(orderId)
+                                .child(REVIEWS);
+
                         ChildEventListener reviewListener = reviewRef.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
-                                currentCountOfReview++;
                                 LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
-                                if (countOfRates == currentCountOfReview) {
-                                    getCommentsForUser(ownerId);
+                                final Comment comment = new Comment();
+                                // no review no currentCountOfReview!
+                                String review = reviewSnapshot.child(REVIEW).getValue(String.class);
+                                float rating = reviewSnapshot.child(RATING).getValue(Float.class);
+                                if (rating != 0) {
+                                    comment.setReview(review);
+                                    comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
+                                    comment.setUserId(workerId);
+                                    currentCountOfReview++;
+                                    Log.d(TAG, "onChildAdded: " + reviewSnapshot.child(REVIEW).getValue());
+                                    Log.d(TAG, "onChildAdded: " + currentCountOfReview);
+                                    if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
+                                        createUserComment(comment);
+                                    }
                                 }
                             }
 
@@ -490,13 +517,16 @@ public class Comments extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                            }
 
                             @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            }
 
                             @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {}
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
                         });
 
                         ListeningManager.addToListenerList(new FBListener(reviewRef, reviewListener));
@@ -510,16 +540,20 @@ public class Comments extends AppCompatActivity {
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {}
+            public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
+            }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
 
         ListeningManager.addToListenerList(new FBListener(orderRef, orderListener));
@@ -575,15 +609,21 @@ public class Comments extends AppCompatActivity {
         final Cursor cursor = database.rawQuery(mainSqlQuery, new String[]{_userId, REVIEW_FOR_USER});
         if (cursor.moveToFirst()) {
             int indexWorkingTimeId = cursor.getColumnIndex(DBHelper.KEY_ID);
+            final int reviewIndex = cursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
+            final int ratingIndex = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
+            final int ownerIdIndex = cursor.getColumnIndex(OWNER_ID);
             do {
+                final Comment comment = new Comment();
+                comment.setUserId(cursor.getString(ownerIdIndex));
+                comment.setReview(cursor.getString(reviewIndex));
+                comment.setRating(cursor.getFloat(ratingIndex));
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
-                //String orderId = cursor.getString(indexOrderId);
 
                 //if (workWithLocalStorageApi.isMutualReview(orderId)) {
                 //    createUserComment(cursor);
                 //} else {
                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                    createUserComment(cursor);
+                    createUserComment(comment);
                 }
                 //}
                 currentCountOfReview++;
@@ -598,22 +638,14 @@ public class Comments extends AppCompatActivity {
         cursor.close();
     }
 
-    private void createUserComment(final Cursor mainCursor) {
-        final int reviewIndex = mainCursor.getColumnIndex(DBHelper.KEY_REVIEW_REVIEWS);
-        final int ratingIndex = mainCursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-        final int ownerIdIndex = mainCursor.getColumnIndex(OWNER_ID);
+    private void createUserComment(final Comment comment) {
+
+        comment.setServiceName(REVIEW_FOR_USER);
         addedReview = true;
-        String ownerId = mainCursor.getString(ownerIdIndex);
         DatabaseReference myRef = FirebaseDatabase
                 .getInstance()
                 .getReference(USERS)
-                .child(ownerId);
-        final Comment comment = new Comment();
-        comment.setUserId(mainCursor.getString(ownerIdIndex));
-        comment.setReview(mainCursor.getString(reviewIndex));
-        comment.setRating(mainCursor.getFloat(ratingIndex));
-        comment.setServiceName(REVIEW_FOR_USER);
-
+                .child(comment.getUserId());
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
@@ -625,6 +657,7 @@ public class Comments extends AppCompatActivity {
                     recyclerView.setAdapter(commentAdapter);
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
+
                 }
 
             }
