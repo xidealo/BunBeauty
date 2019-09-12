@@ -92,6 +92,7 @@ public class Comments extends AppCompatActivity {
         String type = getIntent().getStringExtra(TYPE);
         if (type.equals(REVIEW_FOR_SERVICE)) {
             countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
+            Log.d(TAG, "REVIEW_FOR_SERVICE: " + countOfRates);
             if (!serviceIdsFirstSetComments.contains(serviceId)) {
                 loadCommentsForService();
                 serviceIdsFirstSetComments.add(serviceId);
@@ -100,6 +101,7 @@ public class Comments extends AppCompatActivity {
             }
         } else {
             countOfRates = Long.valueOf(getIntent().getStringExtra(COUNT_OF_RATES));
+            Log.d(TAG, "REVIEW_FOR_USER: " + countOfRates);
             //комментарии для юзера
             if (!userIdsFirstSetComments.contains(ownerId)) {
                 loadCommentsForUser();
@@ -178,8 +180,10 @@ public class Comments extends AppCompatActivity {
                                             }
 
                                             if (countOfRates == currentCountOfReview) {
+                                                Log.d(TAG, "onChildAdded: ");
                                                 getCommentsForService(serviceId);
                                             }
+                                            Log.d(TAG, "onChildAdded: ");
                                         }
 
                                         @Override

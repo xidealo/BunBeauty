@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -209,12 +210,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     }
 
     private void loadProfileData(final String ownerId) {
-        DatabaseReference userReference = FirebaseDatabase.getInstance()
+        final DatabaseReference userReference = FirebaseDatabase.getInstance()
                 .getReference(USERS)
                 .child(ownerId);
         ValueEventListener userListener = userReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+            public void onDataChange(@NonNull final DataSnapshot userSnapshot) {
                 LoadingProfileData.loadUserInfo(userSnapshot, database);
 
                 LoadingProfileData.loadUserServices(userSnapshot.child(SERVICES),
@@ -231,12 +232,12 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 user.setCountOfRates(userSnapshot.child(COUNT_OF_RATES).getValue(Long.class));
                 user.setRating(userSnapshot.child(AVG_RATING).getValue(Float.class));
                 //for intent
-                countOfRates = userSnapshot.child(COUNT_OF_RATES).getValue(Long.class).toString();
                 setProfile(user);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
 
         ListeningManager.addToListenerList(new FBListener(userReference, userListener));
@@ -276,13 +277,31 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                 user.setPhone(userCursor.getString(indexPhone));
                 user.setCountOfRates(userCursor.getLong(indexCountOfRates));
                 user.setRating(userCursor.getFloat(indexRating));
-                //for intent
-                countOfRates = userCursor.getString(indexCountOfRates);
-
                 setProfile(user);
             }
         }
         userCursor.close();
+    }
+
+    private String getCountOfRates() {
+        //получаем имя, фамилию и город пользователя по его id
+        String sqlQuery =
+                "SELECT "
+                        + DBHelper.KEY_COUNT_OF_RATES_USERS
+                        + " FROM "
+                        + DBHelper.TABLE_CONTACTS_USERS
+                        + " WHERE "
+                        + DBHelper.KEY_ID + " = ?";
+        Cursor userCursor = database.rawQuery(sqlQuery, new String[]{ownerId});
+
+        if (userCursor.moveToFirst()) {
+            int indexCountOfRates = userCursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_USERS);
+
+            return countOfRates = userCursor.getString(indexCountOfRates);
+
+        }
+        userCursor.close();
+        return "";
     }
 
     private void setProfile(User user) {
@@ -292,7 +311,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         phoneText.setText(user.getPhone());
         //ratingBar
         float rating = user.getRating();
-        if ( rating == 0) {
+        if (rating == 0) {
             setWithoutRating();
         } else {
             addRatingToScreen(rating);
@@ -521,7 +540,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private void goToUserComments(String status) {
         Intent intent = new Intent(this, Comments.class);
         intent.putExtra(SERVICE_OWNER_ID, ownerId);
-        intent.putExtra(COUNT_OF_RATES, countOfRates);
+        intent.putExtra(COUNT_OF_RATES, getCountOfRates());
         intent.putExtra(TYPE, status);
         startActivity(intent);
     }

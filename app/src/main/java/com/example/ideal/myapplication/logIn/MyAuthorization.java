@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.helpApi.LoadingProfileData;
+import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.Profile;
@@ -28,6 +29,7 @@ class MyAuthorization {
     private static final String ORDERS = "orders";
     private static final String USER_ID = "user id";
     private static final String IS_CANCELED = "is canceled";
+    private static final String COUNT_OF_RATES = "count of rates";
 
     private static final String WORKING_DAY_ID = "working day id";
     private static final String WORKING_TIME_ID = "working time id";
@@ -95,11 +97,27 @@ class MyAuthorization {
                                 serviceThread.interrupt();
                             }
                         });
-
                         serviceThread.start();
 
                         LoadingProfileData.addSubscriptionsCountInLocalStorage(userSnapshot, localDatabase);
                         loadMyOrders(userSnapshot.child(ORDERS));
+
+                        //set listener to countOfRates
+                        DatabaseReference countOfRatesRef = FirebaseDatabase.getInstance()
+                                .getReference(USERS)
+                                .child(userId)
+                                .child(COUNT_OF_RATES);
+                        countOfRatesRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot userSnapshotCountOfRates) {
+                                String countOfRates = userSnapshotCountOfRates.getValue(Long.class).toString();
+                                updateCountOfRatesInLocalStorage(countOfRates,userId);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                 }
             }
@@ -111,6 +129,23 @@ class MyAuthorization {
         });
     }
 
+    private void updateCountOfRatesInLocalStorage(String countOfRates, String userId){
+        Log.d(TAG, "updateCountOfRatesInLocalStorage: ");
+        ContentValues contentValues = new ContentValues();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        contentValues.put(DBHelper.KEY_COUNT_OF_RATES_USERS, countOfRates);
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_CONTACTS_USERS, userId);
+
+        if (hasSomeData) {
+            database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{userId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, userId);
+            database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
+        }
+    }
     private void loadMyOrders(DataSnapshot _ordersSnapshot) {
 
         if (_ordersSnapshot.getChildrenCount() == 0) {
@@ -308,7 +343,6 @@ class MyAuthorization {
     private void goToProfile() {
         // тоже самое необходимо прописать для перехода с регистрации
         //ContextCompat.startForegroundService(context, new Intent(context, MyService.class));
-
         Intent intent = new Intent(context, Profile.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
