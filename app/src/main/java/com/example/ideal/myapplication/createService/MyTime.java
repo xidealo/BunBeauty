@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 public class MyTime extends AppCompatActivity implements View.OnClickListener, ISwitcher {
-
     private static final String TAG = "DBInf";
     private static final String WORKING_DAYS_ID = "working day id";
     private static final String SERVICE_ID = "service id";
@@ -55,6 +55,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
     private RelativeLayout mainLayout;
     private WorkerCreateService workerCreateService;
     private UserCreateService userCreateService;
+    private SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +64,13 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         init();
     }
 
-    private void init(){
+    private void init() {
         statusUser = getIntent().getStringExtra(STATUS_USER_BY_SERVICE);
         userId = getUserId();
         String serviceId = getIntent().getStringExtra(SERVICE_ID);
         dbHelper = new DBHelper(this);
+        database = dbHelper.getWritableDatabase();
+
         workingDaysId = getIntent().getStringExtra(WORKING_DAYS_ID);
 
         if (statusUser.equals(WORKER)) {
@@ -102,6 +105,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
 
         saveBtn.setOnClickListener(this);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -111,16 +115,36 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         // Добавляем время из буфера workingHours в БД
                         workerCreateService.addTime(workingDaysId, workingHours);
                         workingHours.clear();
+                        Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
                     }
                     if (removedHours.size() > 0) {
                         // Удаляем время сохранённое в буфере removeHours в БД
-                        workerCreateService.deleteTime(workingDaysId, removedHours);
-                        // removedHours.clear(); перенесен в воркера из-за потоков
+                        boolean isFreeTime = true;
+
+                        for (String removedTime : removedHours) {
+                            if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, removedTime, database)) {
+                                if (!isFreeTime(removedTime)) {
+                                    isFreeTime = false;
+                                }
+                            } else {
+                                //если в бд нет времени, которое мы пытаемся удалить
+                                Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                        }
+
+                        if (!isFreeTime) {
+                            alertTryingToDeleteBusyTime();
+                            removedHours.clear();
+                        } else {
+                            workerCreateService.deleteTime(workingDaysId, removedHours);
+                            Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                    Toast.makeText(this, "Расписанеие обновлено", Toast.LENGTH_SHORT).show();
+
                 } else {
                     if (workingHours.size() == 1) {
-                        loadInformationAboutService(WorkWithLocalStorageApi.getWorkingTimeId(workingHours.get(0), workingDaysId));
+                        loadInformationAboutService(WorkWithLocalStorageApi.getWorkingTimeId(workingHours.get(0), workingDaysId, database));
                     }
                 }
                 break;
@@ -134,7 +158,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 // Проверка мой ли это сервис (я - worker)
                 if (statusUser.equals(WORKER)) {
                     // Это мой сервис (я - worker)
-
                     if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
                         btn.setBackgroundResource(R.drawable.time_button);
                         workingHours.remove(btnText);
@@ -147,8 +170,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         btn.setTag(R.string.selectedId, true);
                     }
                 } else {
-                    // Это не мой сервис (я - UserCreateService)
-
                     // Проверка была ли кнопка выбрана до нажатия
                     if (Boolean.valueOf((btn.getTag(R.string.selectedId)).toString())) {
                         // Кнопка была уже нажата
@@ -157,7 +178,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         btn.setTag(R.string.selectedId, false);
                     } else {
                         // Кнопка не была нажата до клика
-
                         String selectedTime;
                         //Если уже существует выбранное время
                         if (workingHours.size() == 1) {
@@ -175,7 +195,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
     }
 
     // Спрашиваем, действительно ли записать на срвис
-    public void confirm(String serviceName, String dataDay, String time, final String workingTimeId) {
+    public void confirm(String serviceName, String dataDay, final String time, final String workingTimeId) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Запись на услугу");
         dialog.setMessage("Записаться на услугу " + serviceName + " " + dataDay + " числа в " + time);
@@ -183,10 +203,17 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
 
         dialog.setPositiveButton(Html.fromHtml("<b><font color='#FF7F27'>Да</font></b>"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
-                userCreateService.makeOrder(workingTimeId);
-                //закрашиваем, чтобы нельзя было записаться еще раз
-                checkCurrentTimes();
-                workingHours.clear();
+                if (isFreeTime(time)) {
+                    userCreateService.makeOrder(workingTimeId);
+                    //закрашиваем, чтобы нельзя было записаться еще раз
+                    checkCurrentTimes();
+                    workingHours.clear();
+                    attentionSuccessfulOrder();
+                } else {
+                    selectBtsForUser();
+                    attentionTimeIsBusy();
+                }
+
             }
         });
         dialog.setNegativeButton(Html.fromHtml("<b><font color='#FF7F27'>Нет</font></b>"), new DialogInterface.OnClickListener() {
@@ -195,6 +222,28 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         });
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.show();
+    }
+
+    public void alertTryingToDeleteBusyTime() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Предупреждение");
+        dialog.setMessage("Вы пытались удалить время, на которое кто-то записался, пожалуйста, проверьте еще раз.");
+
+        dialog.setPositiveButton(Html.fromHtml("<b><font color='#FF7F27'>Продолжить</font></b>"), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                selectBtsForWorker();
+            }
+        });
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        dialog.show();
+    }
+
+    private void attentionSuccessfulOrder() {
+        Toast.makeText(this, "Вы успешно записались", Toast.LENGTH_SHORT).show();
+    }
+
+    private void attentionTimeIsBusy() {
+        Toast.makeText(this, "Данное время уже занято", Toast.LENGTH_SHORT).show();
     }
 
     // Подгружаем информацию о сервисе
@@ -266,14 +315,17 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 }
 
                 //Проверка является ли данное время рабочим
-                if (WorkWithLocalStorageApi.checkTimeForWorker(workingDaysId, time)) {
-                    timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
-                    timeBtns[i][j].setTag(R.string.selectedId, true);
+                String currentTimeId = WorkWithLocalStorageApi.getWorkingTimeId(time, workingDaysId, database);
+                if (!currentTimeId.equals("0")) {
+                    Log.d(TAG, "isBlockedTime(currentTimeId): " + isBlockedTime(currentTimeId));
+                    if (!isBlockedTime(currentTimeId)) {
+                        timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
+                        timeBtns[i][j].setTag(R.string.selectedId, true);
 
-
-                    // Проверка записан ли кто-то на это время
-                    if (!isFreeTime(time)) {
-                        timeBtns[i][j].setEnabled(false);
+                        // Проверка записан ли кто-то на это время
+                        if (!isFreeTime(time)) {
+                            timeBtns[i][j].setEnabled(false);
+                        }
                     }
                 }
             }
@@ -312,10 +364,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                     if (isFreeTime(time)) {
                         timeBtns[i][j].setBackgroundResource(R.drawable.time_button);
                         timeBtns[i][j].setTag(R.string.selectedId, false);
-                    } else {
-                        timeBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
-                        timeBtns[i][j].setEnabled(false);
+                        continue;
                     }
+                    timeBtns[i][j].setBackgroundResource(R.drawable.disabled_button);
+                    timeBtns[i][j].setEnabled(false);
                 }
 
             }
@@ -328,6 +380,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
             for (int j = 0; j < COLUMNS_COUNT; j++) {
                 String time = (String) timeBtns[i][j].getText();
 
+                if (time.length() == 4) {
+                    time = "0" + time;
+                }
+
                 if (time.equals(selectedTime)) {
                     timeBtns[i][j].setBackgroundResource(R.drawable.time_button);
                     timeBtns[i][j].setTag(R.string.selectedId, false);
@@ -338,8 +394,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
 
     // Проверяет есть ли запись на данный день
     private String checkMyOrder() {
-
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         String myTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS
@@ -386,8 +440,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
 
     private boolean isFreeTime(String time) {
 
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
         String busyTimeQuery = "SELECT "
                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS
                 + " FROM "
@@ -424,6 +476,8 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 + " AND "
                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
                 + " AND "
+                + DBHelper.KEY_IS_BLOCKED_TIME + " = 'false'"
+                + " AND "
                 + DBHelper.KEY_TIME_WORKING_TIME + " = ?"
                 + " AND "
                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
@@ -438,6 +492,19 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         }
         cursor.close();
         return false;
+    }
+
+    private boolean isBlockedTime(String timeId) {
+        String isBlockedQuery = "SELECT "
+                + DBHelper.KEY_ID
+                + " FROM "
+                + DBHelper.TABLE_WORKING_TIME
+                + " WHERE "
+                + DBHelper.KEY_IS_BLOCKED_TIME + " = 'true'"
+                + " AND "
+                + DBHelper.KEY_ID + " = ?";
+        Cursor cursor = database.rawQuery(isBlockedQuery, new String[]{timeId});
+        return cursor.moveToFirst();
     }
 
     @Override

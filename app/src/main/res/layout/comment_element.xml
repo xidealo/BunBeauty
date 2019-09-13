@@ -51,15 +51,6 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/serviceNameCommentElementText"
-                style="@style/defaultTextMainScreen"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text=""
-                android:visibility="gone" />
-
             <RatingBar
                 android:id="@+id/ratingCommentElementBar"
                 style="@android:style/Widget.Holo.RatingBar.Small"

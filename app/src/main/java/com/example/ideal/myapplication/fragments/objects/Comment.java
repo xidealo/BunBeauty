@@ -1,15 +1,25 @@
 package com.example.ideal.myapplication.fragments.objects;
 
-public class Comment {
+public class Comment implements Comparable<Comment> {
     private String userId;
     private String userName;
     private float rating;
     private String review;
     private String serviceName;
+    private String time;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public void setUserId(String _id) {
         userId = _id;
     }
+
     public void setServiceName(String _serviceName) {
         serviceName = _serviceName;
     }
@@ -44,5 +54,10 @@ public class Comment {
 
     public String getReview() {
         return review;
+    }
+
+    @Override
+    public int compareTo(Comment otherComment) {
+        return time.compareTo(otherComment.time);
     }
 }

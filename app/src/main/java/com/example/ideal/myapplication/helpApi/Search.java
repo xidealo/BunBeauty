@@ -19,35 +19,31 @@ public class Search {
     private static final String TAG = "DBInf";
 
     private static final String NOT_CHOSEN = "не выбран";
-
     private static final String CITY = "city";
-    private static final String REVIEW_FOR_SERVICE = "review for service";
-    private static final String ORDER_ID = "order_id";
-
     private static final String SERVICES = "services";
     private static final String MAX_COST = "max_cost";
+    private static final String MAX_COUNT_OF_RATES = "max_count_of_rates";
     private static final String SERVICE_ID = "servise_id";
-
     private static final String CREATION_DATE = "creation date";
     private static final String COST = "cost";
     private static final String RATING = "rating";
+    private static final String COUNT_OF_RATES = "count of rates";
 
     private long maxCost;
+    private long maxCountOfRates;
     private ArrayList<Object[]> serviceList;
     private ArrayList<Object[]> premiumList;
-
-    private WorkWithTimeApi workWithTimeApi;
     private DBHelper dbHelper;
 
     public Search (Context _context) {
         dbHelper = new DBHelper(_context);
         serviceList = new ArrayList<>();
         premiumList = new ArrayList<>();
-        workWithTimeApi = new WorkWithTimeApi();
     }
 
     // загружаем услуги мастеров мастеров в LocalStorage
-    public ArrayList<Object[]> getServicesOfUsers(DataSnapshot usersSnapshot, String serviceName, String userName, String city, String category) {
+    public ArrayList<Object[]> getServicesOfUsers(DataSnapshot usersSnapshot, String serviceName, String userName,
+                                                  String city, String category, ArrayList<String> selectedTagsArray) {
         serviceList.clear();
         premiumList.clear();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -55,58 +51,77 @@ public class Search {
         for (DataSnapshot userSnapshot : usersSnapshot.getChildren()) {
             String userCity = String.valueOf(userSnapshot.child(CITY).getValue());
             if((city == null) || city.equals(userCity) || city.equals(NOT_CHOSEN)) {
-                DownloadServiceData downloadServiceData = new DownloadServiceData(database);
-                downloadServiceData.loadUserInfo(userSnapshot);
-                downloadServiceData.loadSchedule(userSnapshot.child(SERVICES), userSnapshot.getKey());
+                //загрузка данных для элементов MS
+                LoadingUserElementData.loadUserNameAndPhotoWithCity(userSnapshot, database);
+                LoadingMainScreenElement.loadService(userSnapshot.child(SERVICES), userSnapshot.getKey(), database);
             }
         }
-        updateServicesList(serviceName, userName, city, category);
-        choosePremiumServices();
 
+        updateServicesList(serviceName, userName, city, category, selectedTagsArray);
+        choosePremiumServices();
         return serviceList;
     }
 
     // Кладём услуги мастеров в список
-    private void updateServicesList(String _serviceName, String _userName, String _city, String _category) {
+    private void updateServicesList(String sName, String name, String city,
+                                    String category, ArrayList<String> selectedTagsArray) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         maxCost = getMaxCost();
+        maxCountOfRates = getMaxCountOfRates();
+        String tables = DBHelper.TABLE_CONTACTS_USERS + ", " + DBHelper.TABLE_CONTACTS_SERVICES;
 
         String serviceNameCondition = "";
-        if (_serviceName != null) {
-            serviceNameCondition = " AND " + DBHelper.KEY_NAME_SERVICES + " = '" + _serviceName + "' ";
+        if (sName != null) {
+            serviceNameCondition = " AND " + DBHelper.KEY_NAME_SERVICES + " = '" + sName + "' ";
         }
 
         String cityCondition = "";
-        if (_city != null && !_city.equals(NOT_CHOSEN)) {
-            cityCondition = " AND " + DBHelper.KEY_CITY_USERS + " = '" + _city + "' ";
+        if (city != null && !city.equals(NOT_CHOSEN)) {
+            cityCondition = " AND " + DBHelper.KEY_CITY_USERS + " = '" + city + "' ";
         }
 
         String categoryCondition = "";
-        if (_category != null && !_category.equals("")) {
-            categoryCondition = " AND " + DBHelper.KEY_CATEGORY_SERVICES + " = '" + _category + "' ";
+        if (category != null && !category.equals("")) {
+            categoryCondition = " AND " + DBHelper.KEY_CATEGORY_SERVICES + " = '" + category + "' ";
         }
 
         String userNameCondition = "";
-        if (_userName != null) {
-            userNameCondition = " AND " + DBHelper.KEY_NAME_USERS + " = '" + _userName + "' ";
+        if (name != null) {
+            userNameCondition = " AND " + DBHelper.KEY_NAME_USERS + " = '" + name + "' ";
+        }
+
+        String tagsCondition = "";
+        if (selectedTagsArray != null && !selectedTagsArray.isEmpty()) {
+            tables += ", " + DBHelper.TABLE_TAGS;
+            tagsCondition = " AND " + DBHelper.KEY_SERVICE_ID_TAGS + " = "
+                    + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID
+                    + " AND (";
+            for (String tag : selectedTagsArray) {
+                tagsCondition += DBHelper.KEY_TAG_TAGS + " = '" + tag + "' OR ";
+            }
+            tagsCondition = tagsCondition.substring(0, tagsCondition.length() - 4) + ") ";
         }
 
         // Возвращает id, название, рэйтинг и количество оценивших
         // используем таблицу сервисы
         // уточняем юзера по его id
         String sqlQuery =
-                "SELECT *,"
+                "SELECT DISTINCT " + DBHelper.TABLE_CONTACTS_USERS + ".*, "
+                        + DBHelper.TABLE_CONTACTS_SERVICES + ".*, "
                         + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " AS " + SERVICE_ID
                         + " FROM "
-                        + DBHelper.TABLE_CONTACTS_USERS + ", "
-                        + DBHelper.TABLE_CONTACTS_SERVICES
+                        + tables
                         + " WHERE "
                         + DBHelper.KEY_USER_ID + " = "
                         + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID
                         + serviceNameCondition
                         + cityCondition
                         + categoryCondition
-                        + userNameCondition;
+                        + userNameCondition
+                        + tagsCondition;
+
+        //Log.d(TAG, "sqlQuery: " + Windows.Storage.ApplicationData.Current.LocalFolder);
+
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{});
         if(cursor.moveToFirst()) {
@@ -120,6 +135,8 @@ public class Search {
             int indexServiceCost = cursor.getColumnIndex(DBHelper.KEY_MIN_COST_SERVICES);
             int indexServiceCreationDate = cursor.getColumnIndex(DBHelper.KEY_CREATION_DATE_SERVICES);
             int indexServiceIsPremium = cursor.getColumnIndex(DBHelper.KEY_IS_PREMIUM_SERVICES);
+            int indexServiceAvgRating = cursor.getColumnIndex(DBHelper.KEY_RATING_SERVICES);
+            int indexServiceCountOFRates = cursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_SERVICES);
 
             do {
                 // Информация о мастере
@@ -138,8 +155,10 @@ public class Search {
                 String serviceId = cursor.getString(indexServiceId);
                 String serviceName = cursor.getString(indexServiceName);
                 String serviceCost = cursor.getString(indexServiceCost);
+                float serviceRating = Float.valueOf(cursor.getString(indexServiceAvgRating));
 
-                boolean isPremium = Boolean.valueOf(cursor.getString(indexServiceIsPremium));
+                boolean isPremium = WorkWithTimeApi.checkPremium(cursor.getString(indexServiceIsPremium));
+                long serviceCountOfRates = cursor.getLong(indexServiceCountOFRates);
                 String creationDate = cursor.getString(indexServiceCreationDate);
 
                 Service service = new Service();
@@ -148,7 +167,8 @@ public class Search {
                 service.setCost(serviceCost);
                 service.setIsPremium(isPremium);
                 service.setCreationDate(creationDate);
-                service.setAverageRating(figureAverageRating(serviceId));
+                service.setAverageRating(serviceRating);
+                service.setCountOfRates(serviceCountOfRates);
 
                 addToServiceList(service, user);
                 //пока в курсоре есть строки и есть новые сервисы
@@ -185,12 +205,32 @@ public class Search {
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{});
 
-        long maxCost = 0;
+        long currentMaxCost = 0;
         if (cursor.moveToFirst()) {
-            maxCost = cursor.getInt(cursor.getColumnIndex(MAX_COST));
+            currentMaxCost = cursor.getLong(cursor.getColumnIndex(MAX_COST));
         }
 
-        return maxCost;
+        cursor.close();
+        return currentMaxCost;
+    }
+
+    private Long getMaxCountOfRates(){
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        String sqlQuery =
+                "SELECT "
+                        + " MAX(CAST(" + DBHelper.KEY_COUNT_OF_RATES_SERVICES + " AS INTEGER)) AS " + MAX_COUNT_OF_RATES
+                        + " FROM "
+                        + DBHelper.TABLE_CONTACTS_SERVICES;
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{});
+
+        long currentMaxCountOfRates = 0;
+        if (cursor.moveToFirst()) {
+            currentMaxCountOfRates = cursor.getLong(cursor.getColumnIndex(MAX_COUNT_OF_RATES));
+        }
+
+        cursor.close();
+        return currentMaxCountOfRates;
     }
 
     // Добавляем конкретную услугу в список в сообветствии с её коэфициентом
@@ -198,8 +238,9 @@ public class Search {
         HashMap<String, Float> coefficients = new HashMap<>();
         coefficients.put(CREATION_DATE, 0.25f);
         coefficients.put(COST, 0.07f);
-        coefficients.put(RATING, 0.68f);
-        float points, creationDatePoints, costPoints, ratingPoints, penaltyPoints;
+        coefficients.put(RATING, 0.53f);
+        coefficients.put(COUNT_OF_RATES,0.15f);
+        float points, creationDatePoints, costPoints, ratingPoints, countOfRatesPoints, penaltyPoints;
 
         boolean isPremium = service.getIsPremium();
 
@@ -210,8 +251,9 @@ public class Search {
             creationDatePoints = figureCreationDatePoints(service.getCreationDate(), coefficients.get(CREATION_DATE));
             costPoints = figureCostPoints(Long.valueOf(service.getCost()), coefficients.get(COST));
             ratingPoints = figureRatingPoints(service.getAverageRating(), coefficients.get(RATING));
-            penaltyPoints = figurePenaltyPoints(service.getId(), user.getId());
-            points = creationDatePoints + costPoints + ratingPoints - penaltyPoints;
+            countOfRatesPoints = figureCountOfRatesPoints(service.getCountOfRates(), coefficients.get(COUNT_OF_RATES));
+            //penaltyPoints = figurePenaltyPoints(service.getId(), user.getId());
+            points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints/* - penaltyPoints*/;
             sortAddition(new Object[]{points, service, user});
         }
     }
@@ -219,8 +261,8 @@ public class Search {
     private float figureCreationDatePoints(String creationDate, float coefficient) {
         float creationDatePoints;
 
-        long dateBonus = (workWithTimeApi.getMillisecondsStringDate(creationDate) -
-                workWithTimeApi.getSysdateLong()) / (3600000*24) + 7;
+        long dateBonus = (WorkWithTimeApi.getMillisecondsStringDate(creationDate) -
+                WorkWithTimeApi.getSysdateLong()) / (3600000*24) + 7;
         if (dateBonus < 0) {
             creationDatePoints = 0;
         } else {
@@ -234,9 +276,20 @@ public class Search {
         return (1 - cost * 1f / maxCost) * coefficient;
     }
 
+    private float figureCountOfRatesPoints(long countOfRates, float coefficient) {
+        if(maxCountOfRates!=0) {
+            return (countOfRates / maxCountOfRates) * coefficient;
+        }
+        else {
+            return  0;
+        }
+    }
+
     private float figureRatingPoints(float rating, float coefficient) {
         return rating * coefficient / 5;
     }
+
+
 
     private float figurePenaltyPoints(String serviceId, String userId) {
         float penaltyPoints = 0;
@@ -247,7 +300,6 @@ public class Search {
 
         return penaltyPoints;
     }
-
 
     private void sortAddition(Object[] serviceData) {
         for (int i = 0; i < serviceList.size(); i++) {
@@ -260,71 +312,4 @@ public class Search {
         serviceList.add(serviceList.size(), serviceData);
     }
 
-    private float figureAverageRating (String serviceId) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        String sqlQuery =
-                "SELECT "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID + ", "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID + " AS " + ORDER_ID + ", "
-                        + DBHelper.KEY_RATING_REVIEWS
-                        + " FROM "
-                        + DBHelper.TABLE_WORKING_DAYS + ", "
-                        + DBHelper.TABLE_WORKING_TIME + ", "
-                        + DBHelper.TABLE_ORDERS + ", "
-                        + DBHelper.TABLE_REVIEWS
-                        + " WHERE "
-                        + DBHelper.KEY_ORDER_ID_REVIEWS
-                        + " = "
-                        + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                        + " = "
-                        + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                        + " = "
-                        + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
-                        + " AND "
-                        + DBHelper.KEY_SERVICE_ID_WORKING_DAYS + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_TYPE_REVIEWS + " = ? "
-                        + " AND "
-                        + DBHelper.KEY_RATING_REVIEWS + " != 0 "
-                        + " AND "
-                        + DBHelper.KEY_REVIEW_REVIEWS + " != '-'";
-
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{serviceId, REVIEW_FOR_SERVICE});
-        int countOfRates = 0;
-        float avgRating  = 0;
-        float sumOfRates = 0;
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-
-        if (cursor.moveToFirst()){
-            int indexRating = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
-            int indexWorkingTimeId= cursor.getColumnIndex(DBHelper.KEY_ID);
-            int indexOrderId= cursor.getColumnIndex(ORDER_ID);
-            do {
-                String workingTimeId = cursor.getString(indexWorkingTimeId);
-                String orderId = cursor.getString(indexOrderId);
-
-                if(workWithLocalStorageApi.isMutualReview(orderId)) {
-                    sumOfRates += Float.valueOf(cursor.getString(indexRating));
-                    countOfRates++;
-                }
-                else {
-                    if(workWithLocalStorageApi.isAfterThreeDays(workingTimeId)){
-                        sumOfRates += Float.valueOf(cursor.getString(indexRating));
-                        countOfRates++;
-                    }
-                }
-            }while (cursor.moveToNext());
-
-            if(countOfRates!=0){
-                avgRating = sumOfRates / countOfRates;
-            }
-            cursor.close();
-        }
-
-        return avgRating;
-    }
 }

@@ -111,7 +111,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         }
                     }
                     date = WorkWithStringsApi.convertDateToYMD(btn.getText().toString(), btn.getTag(R.string.yearId).toString());
-                    Log.d(TAG, "addWorkingDay: " + date);
                     btn.setTag(R.string.selectedId, true);
                 } else {
                     // Была выбрана - снимаем выделение
@@ -333,6 +332,8 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 + " WHERE "
                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = "
                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID
+                + " AND "
+                + DBHelper.KEY_IS_BLOCKED_TIME + " = 'false'"
                 + " AND "
                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + " = ?"
                 + " AND ((("

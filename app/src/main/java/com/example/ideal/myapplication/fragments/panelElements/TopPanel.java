@@ -280,6 +280,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                 setUnsubscribe();
                 subsApi.unsubscribe();
                 Toast.makeText(getContext(), "Подписка отменена", Toast.LENGTH_SHORT).show();
+
             } else {
                 setSubscribe();
                 subsApi.subscribe();

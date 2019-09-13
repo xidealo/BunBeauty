@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/allPages"
+    style="@style/allPages"
     tools:context=".chat.Messages">
 
     <LinearLayout
@@ -14,9 +14,21 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ProgressBar
+        android:id="@+id/progressBarMessages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint= "@color/panelColor"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditServiceLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerEditServiceLayout"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/resultsMessagesRecycleView"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/footerEditServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"

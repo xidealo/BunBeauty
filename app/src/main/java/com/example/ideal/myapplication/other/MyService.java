@@ -1,10 +1,10 @@
 package com.example.ideal.myapplication.other;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -13,17 +13,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.example.ideal.myapplication.helpApi.DownloadServiceData;
+import com.example.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.helpApi.WorkWithTimeApi;
-import com.example.ideal.myapplication.notifications.NotificationCancel;
-import com.example.ideal.myapplication.notifications.NotificationConstructor;
-import com.example.ideal.myapplication.notifications.NotificationOrder;
-import com.example.ideal.myapplication.notifications.NotificationReviewForService;
-import com.example.ideal.myapplication.notifications.NotificationReviewForUser;
-import com.example.ideal.myapplication.notifications.NotificationSubscribers;
-import com.example.ideal.myapplication.notifications.NotificationYouAreRated;
-import com.example.ideal.myapplication.notifications.NotificationYourServiceIsRated;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -31,7 +23,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.app.NotificationManager.IMPORTANCE_MAX;
@@ -51,7 +46,6 @@ public class MyService extends Service implements Runnable {
     private static final String USER_ID = "user id";
 
     private static final String WORKING_DAYS = "working days";
-    private static final String DATE = "date";
     private static final String SERVICE_ID = "service id";
 
     private static final String WORKING_TIME = "working time";
@@ -64,13 +58,17 @@ public class MyService extends Service implements Runnable {
     private static final String REVIEWS = "reviews";
     private static final String REVIEW = "review";
     private static final String RATING = "rating";
+    private static final String WORKING_DAY_ID = "working day id";
+    private static final String WORKING_TIME_ID = "working time id";
 
     private DBHelper dbHelper;
     private WorkWithLocalStorageApi LSApi;
     private WorkWithTimeApi timeApi;
 
+    private ArrayList<Object[]> listenerList;
+
     private String userId;
-    private String serviceName;
+    private Context context;
 
     Thread thread;
 
@@ -93,6 +91,7 @@ public class MyService extends Service implements Runnable {
         timeApi = new WorkWithTimeApi();
         userId = getUserId();
         CDTimers = new HashMap<>();
+        listenerList = new ArrayList<>();
 
         Intent notificationIntent = new Intent(this, Profile.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -105,6 +104,7 @@ public class MyService extends Service implements Runnable {
                 .setPriority(IMPORTANCE_MAX)
                 .build();
         startForeground(1, notification);
+        stopForeground(true);
 
         startMyListener();
 
@@ -114,6 +114,21 @@ public class MyService extends Service implements Runnable {
     public void onDestroy() {
         super.onDestroy();
         thread.interrupt();
+        for(Object[] listener : listenerList) {
+            if (listener[0] instanceof ChildEventListener) {
+                ((DatabaseReference)listener[1]).removeEventListener((ChildEventListener)listener[0]);
+            }
+            if (listener[0] instanceof ValueEventListener) {
+                ((DatabaseReference)listener[1]).removeEventListener((ValueEventListener)listener[0]);
+            }
+
+        }
+
+        /*
+        HashMap<String, String> m = new HashMap<>();
+        for(String ix : m.keySet()) {
+        }*/
+
         Log.d(TAG, "MyService onDestroy");
     }
 
@@ -123,20 +138,26 @@ public class MyService extends Service implements Runnable {
     }
 
     void startMyListener() {
+        context = MyService.this;
+
+        try {
+            FirebaseInstanceId.getInstance().getToken("", "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         thread = new Thread(new Thread(new Runnable() {
-            private final Context context = MyService.this;
 
             @Override
             public void run() {
                 // слушает не оценил ли кто-то пользователя
-                startReviewForMeListener();
+                // startReviewForMeListener();
 
                 // слушает изменение моих услуг
                 startServicesListener();
 
                 // слушает не подписался ли кто-то на меня
-                startSubscribersListener();
+                // startSubscribersListener();
 
                 // слушает не отказался ли кто-то от пользователя
                 startMyOrdersListener();
@@ -147,135 +168,30 @@ public class MyService extends Service implements Runnable {
                         .child(userId)
                         .child(SERVICES);
 
-                myServicesRef.addChildEventListener(new ChildEventListener() {
+                ChildEventListener serviceListener = myServicesRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
-                        serviceName = serviceSnapshot.child(NAME).getValue(String.class);
+                        final String serviceId = serviceSnapshot.getKey();
+                        //serviceName = serviceSnapshot.child(NAME).getValue(String.class);
 
                         final DatabaseReference myWorkingDaysRef = myServicesRef
                                 .child(serviceSnapshot.getKey())
                                 .child(WORKING_DAYS);
-                        myWorkingDaysRef.addChildEventListener(new ChildEventListener() {
+                        ChildEventListener workingDaysListener = myWorkingDaysRef.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull final DataSnapshot workingDaySnapshot, @Nullable String s) {
+                                final String workingDayId = workingDaySnapshot.getKey();
                                 final DatabaseReference myWorkingTimeRef = myWorkingDaysRef
-                                        .child(workingDaySnapshot.getKey())
+                                        .child(workingDayId)
                                         .child(WORKING_TIME);
-                                myWorkingTimeRef.addChildEventListener(new ChildEventListener() {
+                                ChildEventListener workingTimeListener = myWorkingTimeRef.addChildEventListener(new ChildEventListener() {
                                     @Override
                                     public void onChildAdded(@NonNull final DataSnapshot workingTimeSnapshot, @Nullable String s) {
+                                        final String workingTimeId = workingTimeSnapshot.getKey();
                                         final DatabaseReference myOrdersRef = myWorkingTimeRef
-                                                .child(workingTimeSnapshot.getKey())
+                                                .child(workingTimeId)
                                                 .child(ORDERS);
-                                        myOrdersRef.addChildEventListener(new ChildEventListener() {
-                                            @Override
-                                            public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                                                // срабатывает на добавление ордера
-                                                WorkWithTimeApi timeApi = new WorkWithTimeApi();
-                                                String orderCreationTime = orderSnapshot.child(TIME).getValue(String.class);
-                                                long delay = Math.abs(timeApi.getMillisecondsStringDateWithSeconds(orderCreationTime)-timeApi.getSysdateLong());
-                                                String orderId = orderSnapshot.getKey();
-                                                final String date = workingDaySnapshot.child(DATE).getValue(String.class);
-                                                final String time = workingTimeSnapshot.child(TIME).getValue(String.class);
-
-                                                // устанавливаем таймер, чтобы через день после обслуживания дать оценить
-                                                if (!orderSnapshot.child(IS_CANCELED).getValue(Boolean.class)) {
-                                                    setTimerForReview(orderId, date, time, serviceName, false);
-                                                }
-                                                // исправить на 5000
-                                                if(delay < 10000) {
-                                                    String userId = orderSnapshot.child(USER_ID).getValue(String.class);
-
-                                                    final DatabaseReference userRef = FirebaseDatabase.getInstance()
-                                                            .getReference(USERS)
-                                                            .child(userId);
-                                                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                                                            SQLiteDatabase db = (new DBHelper(context)).getWritableDatabase();
-                                                            DownloadServiceData downloader = new DownloadServiceData(db);
-                                                            downloader.loadUserInfo(userSnapshot);
-
-                                                            String userName = userSnapshot.child(NAME).getValue(String.class);
-
-                                                            NotificationOrder notificationOrder = new NotificationOrder(context,
-                                                                    userName,
-                                                                    serviceName,
-                                                                    date,
-                                                                    time);
-                                                            notificationOrder.createNotification();
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError databaseError) { }
-                                                    });
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                                                boolean isCanceled = orderSnapshot.child(IS_CANCELED).getValue(Boolean.class);
-                                                if (isCanceled) {
-                                                    String orderId = orderSnapshot.getKey();
-                                                    if (CDTimers.get(orderId) != null) {
-                                                        CDTimers.get(orderId).cancel();
-                                                        CDTimers.remove(orderId);
-                                                    }
-                                                }
-
-                                                String review = orderSnapshot
-                                                        .child(REVIEWS)
-                                                        .getChildren()
-                                                        .iterator()
-                                                        .next()
-                                                        .child(REVIEW)
-                                                        .getValue(String.class);
-
-                                                String rating = orderSnapshot
-                                                        .child(REVIEWS)
-                                                        .getChildren()
-                                                        .iterator()
-                                                        .next()
-                                                        .child(RATING)
-                                                        .getValue()
-                                                        .toString();
-
-                                                if(!review.equals("-") && !rating.equals("0")) {
-                                                    final String userId = orderSnapshot
-                                                            .child(USER_ID)
-                                                            .getValue(String.class);
-
-                                                    DatabaseReference ownerRef = FirebaseDatabase
-                                                            .getInstance()
-                                                            .getReference(USERS)
-                                                            .child(userId)
-                                                            .child(NAME);
-                                                    ownerRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot nameSnapshot) {
-
-                                                            String name = nameSnapshot.getValue(String.class);
-                                                            NotificationYourServiceIsRated notification =
-                                                                    new NotificationYourServiceIsRated(context, name, serviceName,userId);
-                                                            notification.createNotification();
-                                                            // createReviewForServiceNotification();
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError databaseError) { }
-                                                    });
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { }
-
-                                            @Override
-                                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) { }
-                                        });
+                                        addOrdersListener(myOrdersRef, serviceId, workingDayId, workingTimeId);
                                     }
 
                                     @Override
@@ -290,6 +206,8 @@ public class MyService extends Service implements Runnable {
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                                 });
+
+                                listenerList.add(new Object[]{workingTimeListener, myWorkingTimeRef});
                             }
 
                             @Override
@@ -306,6 +224,8 @@ public class MyService extends Service implements Runnable {
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) { }
                         });
+
+                        listenerList.add(new Object[]{workingDaysListener, myWorkingDaysRef});
                     }
 
                     @Override
@@ -320,6 +240,7 @@ public class MyService extends Service implements Runnable {
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
+                listenerList.add(new Object[]{serviceListener, myServicesRef});
             }
 
             private void startReviewForMeListener() {
@@ -361,8 +282,8 @@ public class MyService extends Service implements Runnable {
                                 public void onDataChange(@NonNull DataSnapshot nameSnapshot) {
                                     String name = nameSnapshot.getValue(String.class);
 
-                                    NotificationYouAreRated notification = new NotificationYouAreRated(context, name, workerId);
-                                    notification.createNotification();
+                                   /* NotificationYouAreRated notification = new NotificationYouAreRated(context, name, workerId);
+                                    notification.createNotification();*/
                                 }
 
                                 @Override
@@ -413,9 +334,9 @@ public class MyService extends Service implements Runnable {
                                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            NotificationSubscribers notificationSubscribers = new NotificationSubscribers(context,
+                                           /* NotificationSubscribers notificationSubscribers = new NotificationSubscribers(context,
                                                     dataSnapshot.getValue().toString());
-                                            notificationSubscribers.createNotification();
+                                            notificationSubscribers.createNotification();*/
                                         }
 
                                         @Override
@@ -454,19 +375,34 @@ public class MyService extends Service implements Runnable {
             }
 
             private void startMyOrdersListener() {
-                DatabaseReference ordersRef = FirebaseDatabase.getInstance()
+                DatabaseReference myOrdersRef = FirebaseDatabase.getInstance()
                         .getReference(USERS)
                         .child(userId)
                         .child(ORDERS);
 
-                ordersRef.addChildEventListener(new ChildEventListener() {
+                ChildEventListener orderListener = myOrdersRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
-                        final String orderId = orderSnapshot.getKey();
-                        final String workerId = orderSnapshot.child(WORKER_ID).getValue(String.class);
+                        String orderId = orderSnapshot.getKey();
+                        String workerId = orderSnapshot.child(WORKER_ID).getValue(String.class);
                         String serviceId = orderSnapshot.child(SERVICE_ID).getValue(String.class);
+                        String workingDayId = orderSnapshot.child(WORKING_DAY_ID).getValue(String.class);
+                        String workingTimeId = orderSnapshot.child(WORKING_TIME_ID).getValue(String.class);
 
-                        SQLiteDatabase database = dbHelper.getReadableDatabase();
+                        final DatabaseReference orderRef = FirebaseDatabase.getInstance()
+                                .getReference(USERS)
+                                .child(workerId)
+                                .child(SERVICES)
+                                .child(serviceId)
+                                .child(WORKING_DAYS)
+                                .child(workingDayId)
+                                .child(WORKING_TIME)
+                                .child(workingTimeId)
+                                .child(ORDERS)
+                                .child(orderId);
+
+                        addOrderListener(orderRef, serviceId, workingDayId, workingTimeId);
+                        /*SQLiteDatabase database = dbHelper.getReadableDatabase();
                         String orderQuery = "SELECT "
                                 + DBHelper.KEY_WORKING_TIME_ID_ORDERS + ", "
                                 + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME + ", "
@@ -507,10 +443,10 @@ public class MyService extends Service implements Runnable {
                         String serviceName = "";
                         if (serviceCursor.moveToFirst()) {
                             serviceName = serviceCursor.getString(serviceCursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES));
-                        }
+                        }*/
 
                         // можно добавить условие на актуальность записи
-                        DatabaseReference isCanceledRef = FirebaseDatabase.getInstance()
+                        /*DatabaseReference isCanceledRef = FirebaseDatabase.getInstance()
                                 .getReference(USERS)
                                 .child(workerId)
                                 .child(SERVICES)
@@ -523,13 +459,8 @@ public class MyService extends Service implements Runnable {
                                 .child(orderId)
                                 .child(IS_CANCELED);
 
-                        final String finalOrderDate = orderDate;
-                        final String finalOrderTime = orderTime;
-                        final String finalWorkerName = workerName;
-                        final String finalServiceName = serviceName;
-
                         isCanceledRef.addValueEventListener(new ValueEventListener() {
-                            boolean firstFlag = true;
+                            //boolean firstFlag = true;
 
                             @Override
                             public void onDataChange(@NonNull DataSnapshot isCanceledSnapshot) {
@@ -556,9 +487,7 @@ public class MyService extends Service implements Runnable {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) { }
-                        });
-
-
+                        });*/
                     }
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
@@ -572,41 +501,178 @@ public class MyService extends Service implements Runnable {
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
-            }
 
-            private void setTimerForReview(final String orderId, String date, String time, final String commentedName, final boolean isForService) {
-                long timeLeftInMillis = timeApi.getMillisecondsStringDate(date + " " + time)
-                        - timeApi.getSysdateLong()
-                        + 24*60*60*1000; // Время до сеанса + сутки
-
-                if (timeLeftInMillis > 0) {
-                    // Настраиваем таймер
-                    CountDownTimer CDTimer = new CountDownTimer(timeLeftInMillis, 60*1000) {
-                        @Override
-                        public void onTick(long millisUntilFinished) { }
-
-                        @Override
-                        public void onFinish() {
-                            // создаётся необходимое оповещение дял Услуги ил для Клиента
-                            NotificationConstructor notification;
-                            if (isForService) {
-                                notification = new NotificationReviewForService(context, commentedName);
-                            } else {
-                                notification = new NotificationReviewForUser(context, commentedName);
-                            }
-
-                            notification.createNotification();
-                            // удаляется из Мапы, тк оповещение отправлено
-                            CDTimers.remove(orderId);
-                        }
-                    }.start();
-                    // кладём таймер в Мапу, чтобы если что удалить
-                    CDTimers.put(orderId, CDTimer);
-                }
+                listenerList.add(new Object[]{orderListener, myOrdersRef});
             }
 
         }));
         thread.run();
+    }
+
+    private void addOrdersListener(DatabaseReference myOrdersRef, final String serviceId, final String workingDayId, final String workingTimeId) {
+        ChildEventListener orderListener = myOrdersRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
+
+                operateWithNewOrder(orderSnapshot, serviceId, workingDayId, workingTimeId);
+                /*// срабатывает на добавление ордера
+                WorkWithTimeApi timeApi = new WorkWithTimeApi();
+                String orderCreationTime = orderSnapshot.child(TIME).getValue(String.class);
+                long delay = Math.abs(timeApi.getMillisecondsStringDateWithSeconds(orderCreationTime)-timeApi.getSysdateLong());
+                String orderId = orderSnapshot.getKey();
+                //DataSnapshot workingTimeSnapshot = workingDaySnapshot.child(WORKING_TIME).child(workingTimeId);
+                *//*final String date = workingDaySnapshot.child(DATE).getValue(String.class);
+                final String time = workingTimeSnapshot.child(TIME).getValue(String.class);*//*
+
+                // устанавливаем таймер, чтобы через день после обслуживания дать оценить
+                *//*if (!orderSnapshot.child(IS_CANCELED).getValue(Boolean.class)) {
+                    setTimerForReview(orderId, date, time, serviceName, false);
+                }*//*
+
+                if(delay < 10000) {
+                    String userId = orderSnapshot.child(USER_ID).getValue(String.class);
+
+                    WorkWithLocalStorageApi.addDialogInfoInLocalStorage(serviceId,
+                            workingDayId,
+                            workingTimeId,
+                            orderId,
+                            userId,
+                            orderCreationTime,
+                            null);
+
+                    loadUserData(userId);
+                }*/
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot orderSnapshot, String s) {
+                operateWithExistingOrder(orderSnapshot);
+                /*checkCanceled(orderSnapshot);
+
+                DataSnapshot reviewSnapshot = orderSnapshot
+                        .child(REVIEWS)
+                        .getChildren()
+                        .iterator()
+                        .next();
+                checkReview(reviewSnapshot);*/
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+        listenerList.add(new Object[]{orderListener, myOrdersRef});
+    }
+
+    private void addOrderListener(DatabaseReference myOrderRef, final String serviceId,
+                                   final String workingDayId, final String workingTimeId) {
+        ValueEventListener orderListener = myOrderRef.addValueEventListener(new ValueEventListener() {
+            boolean isFirst = true;
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot orderSnapshot) {
+                if (isFirst) {
+                    isFirst = false;
+                    operateWithNewOrder(orderSnapshot, serviceId, workingDayId, workingTimeId);
+
+                } else {
+                    operateWithExistingOrder(orderSnapshot);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+        listenerList.add(new Object[]{orderListener, myOrderRef});
+    }
+
+    private void operateWithExistingOrder(DataSnapshot orderSnapshot) {
+        checkCanceled(orderSnapshot);
+
+        DataSnapshot reviewSnapshot = orderSnapshot
+                .child(REVIEWS)
+                .getChildren()
+                .iterator()
+                .next();
+        checkReview(reviewSnapshot);
+    }
+
+    private void operateWithNewOrder(DataSnapshot orderSnapshot, final String serviceId,
+                                     final String workingDayId, final String workingTimeId) {
+        String orderCreationTime = orderSnapshot.child(TIME).getValue(String.class);
+        long delay = Math.abs(WorkWithTimeApi.getMillisecondsStringDateWithSeconds(orderCreationTime)
+                - WorkWithTimeApi.getSysdateLong());
+        String orderId = orderSnapshot.getKey();
+
+        if(delay < 10000) {
+            String userId = orderSnapshot.child(USER_ID).getValue(String.class);
+
+            WorkWithLocalStorageApi.addDialogInfoInLocalStorage(serviceId,
+                    workingDayId,
+                    workingTimeId,
+                    orderId,
+                    userId,
+                    orderCreationTime,
+                    null);
+
+            loadUserData(userId);
+        }
+    }
+
+
+    private void checkReview(DataSnapshot reviewSnapshot) {
+        String reviewId = reviewSnapshot.getKey();
+
+        String review = reviewSnapshot
+                .child(REVIEW)
+                .getValue(String.class);
+
+        String rating = reviewSnapshot
+                .child(RATING)
+                .getValue(Float.class)
+                .toString();
+
+        if(!review.equals("-") && !rating.equals("0")) {
+            WorkWithLocalStorageApi.addReviewInLocalStorage(reviewId, review, rating);
+        }
+    }
+
+
+    private void checkCanceled(DataSnapshot orderSnapshot) {
+        boolean isCanceled = orderSnapshot.child(IS_CANCELED).getValue(Boolean.class);
+        if (isCanceled) {
+                                                    /*String orderId = orderSnapshot.getKey();
+                                                    if (CDTimers.get(orderId) != null) {
+                                                        CDTimers.get(orderId).cancel();
+                                                        CDTimers.remove(orderId);
+                                                    }*/
+            String orderId = orderSnapshot.getKey();
+            WorkWithLocalStorageApi.addIsCanceledInLocalStorage(orderId, "true");
+        }
+    }
+
+    private void loadUserData(String userId) {
+        final DatabaseReference userRef = FirebaseDatabase.getInstance()
+                .getReference(USERS)
+                .child(userId);
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                SQLiteDatabase database = (new DBHelper(context)).getWritableDatabase();
+
+                LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
     }
 
     private String getUserId() {

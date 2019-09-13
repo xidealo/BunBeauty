@@ -34,8 +34,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         // откуда, куда, необходимо ли помещать в родителя
         View view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false);
 
-        OrderViewHolder viewHolder = new OrderViewHolder(view);
-        return viewHolder;
+        return new OrderViewHolder(view);
     }
 
     @Override

@@ -71,33 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/costAddServiceTB"
-                    android:inputType="textPersonName" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/block_text"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/mainText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="Категория" />
-
-                <Spinner
-                    android:id="@+id/categoryEditServiceSpinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/panelColor"
-                    android:backgroundTint="@color/panelColor"
-                    android:popupBackground="@color/panelColor"
-                    android:entries="@array/categoryForEditService" />
+                    android:inputType="number" />
             </LinearLayout>
 
             <LinearLayout
@@ -115,13 +89,18 @@
                     android:inputType="textMultiLine|textCapSentences" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/categoryEditServiceLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
 
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView"
                 android:layout_width="match_parent"
-                android:scrollbars="none"
                 android:layout_height="@dimen/photo_height"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:scrollbars="none">
 
                 <LinearLayout
                     android:id="@+id/feedEditServiceLayout"
@@ -129,12 +108,16 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
-                    <ImageView
+                    <TextView
                         android:id="@+id/servicePhotoEditServiceImage"
-                        android:layout_width="wrap_content"
+                        android:layout_width="80dp"
+                        android:gravity="center"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@mipmap/ic_launcher_round"
-                        tools:srcCompat="@tools:sample/avatars" />
+                        android:textSize="60sp"
+                        android:background="@drawable/plus_photo_bg"
+                        android:textColor="@color/white"
+                        android:layout_marginEnd="15dp"
+                        android:text="+"/>
                 </LinearLayout>
             </HorizontalScrollView>
 
@@ -145,6 +128,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/saveData" />
+
+            <ProgressBar
+                android:id="@+id/progressBarEditService"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/panelColor"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 

@@ -10,13 +10,13 @@ public class WorkWithTimeApi {
 
     private static final String TAG = "DBInf";
 
-    public long getSysdateLong(){
+    static public long getSysdateLong(){
         //3600000*3 для москвы это +3 часа
         Date sysdate = new Date();
         return sysdate.getTime()+3600000*3;
     }
 
-    public long getMillisecondsStringDate(String date){
+    static public long getMillisecondsStringDate(String date){
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
         try {
@@ -29,7 +29,20 @@ public class WorkWithTimeApi {
         return 0L;
     }
 
-    public long getMillisecondsStringDateWithSeconds(String date) {
+    static public long getMillisecondsStringDateYMD(String date){
+        SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd");
+        formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
+        try {
+            Date orderDate = formatForDateNow.parse(date);
+            return orderDate.getTime() + 3600000*3;
+        }
+        catch (Exception e){
+            Log.d(TAG, "getMillisecondsStringDate error: " + e );
+        }
+        return 0L;
+    }
+
+    static public long getMillisecondsStringDateWithSeconds(String date) {
 
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
@@ -50,5 +63,16 @@ public class WorkWithTimeApi {
         return formatForDateNow.format(date);
     }
 
+    public static Boolean checkPremium(String premiumDate) {
+        long premDate = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(premiumDate);
+        long sysDate = WorkWithTimeApi.getSysdateLong();
 
+        if (sysDate > premDate) {
+            // время вышло
+            return false;
+        } else {
+            // премиумный период
+            return true;
+        }
+    }
 }

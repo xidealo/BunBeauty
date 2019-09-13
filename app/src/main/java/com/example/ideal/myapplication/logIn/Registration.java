@@ -30,6 +30,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     private static final String NAME = "name";
     private static final String CITY = "city";
     private static final String PHOTO_LINK = "photo link";
+    private static final String AVG_RATING = "avg rating";
+    private static final String COUNT_OF_RATES = "count of rates";
 
     private EditText nameInput;
     private EditText surnameInput;
@@ -71,7 +73,6 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
                 //проверка на незаполенные поля
                 if (areInputsCorrect()) {
-                    User user = new User();
                     //если имя не устанавлявается, значит выводим тоаст и выходим из кейса
                     String name = nameInput.getText().toString().toLowerCase();
                     String surname = surnameInput.getText().toString().toLowerCase();
@@ -84,11 +85,15 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                             assertSurnameSoLong();
                             break;
                         } else {
+                            User user = new User();
                             String fullName = name + " " + surname;
-                            String phone = phoneInput.getText().toString();
                             user.setName(fullName);
-                            user.setCity(cityInput.getText().toString().toLowerCase());
+
+                            String phone = phoneInput.getText().toString();
                             user.setPhone(phone);
+
+                            String city  = cityInput.getText().toString().toLowerCase();
+                            user.setCity(city);
                             registration(user);
                             //идем в профиль
                             goToProfile();
@@ -110,6 +115,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         items.put(NAME, user.getName());
         items.put(CITY, user.getCity());
         items.put(PHONE, user.getPhone());
+        items.put(AVG_RATING, 0);
+        items.put(COUNT_OF_RATES, 0);
         items.put(PHOTO_LINK, defaultPhotoLink);
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -118,10 +125,10 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         myRef.updateChildren(items);
 
         //заносим данные о пользователе в локальную базу данных
-        putDataInLocalStorage(user);
+        addUserInLocalStorage(user);
     }
 
-    private void putDataInLocalStorage(User user) {
+    private void addUserInLocalStorage(User user) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -130,8 +137,11 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, user.getId());
         contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
+        contentValues.put(DBHelper.KEY_RATING_USERS, "0");
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
         contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
+        contentValues.put(DBHelper.KEY_SUBSCRIBERS_COUNT_USERS, "0");
+        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, "0");
 
         database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
 
@@ -149,6 +159,19 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
         database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
     }
+
+    private void putSubscriptionsLocalStorage(User user) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, user.getId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, defaultPhotoLink);
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, user.getId());
+
+        database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
+    }
+
 
     private Boolean areInputsCorrect() {
         String name = nameInput.getText().toString();

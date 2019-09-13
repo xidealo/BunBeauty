@@ -2,12 +2,13 @@ package com.example.ideal.myapplication.helpApi;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.ideal.myapplication.entity.FBListener;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -63,7 +64,6 @@ public class SubscriptionsApi {
             myRef = myRef.child(subscriberId);
             myRef.updateChildren(items);
         }
-
     }
     private void createSubscription() {
         //подписки воркера
@@ -78,12 +78,11 @@ public class SubscriptionsApi {
         if (subscriberId != null) {
             myRef = myRef.child(subscriberId);
             myRef.updateChildren(items);
+            addSubscriberInLocalStorage(subscriberId);
         }
-        addSubscriberInLocalStorage(subscriberId);
     }
 
     public void unsubscribe() {
-        Log.d(TAG, "unsubscribe: ");
        deleteSubscription();
        deleteSubscriber();
     }
@@ -165,20 +164,29 @@ public class SubscriptionsApi {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_ID, subscriberId);
-
         contentValues.put(DBHelper.KEY_USER_ID, userId);
-
         contentValues.put(DBHelper.KEY_WORKER_ID, workerId);
 
         database.insert(DBHelper.TABLE_SUBSCRIBERS, null, contentValues);
+        long subscriptionsCount = getCountOfSubscriptions(database, userId) + 1;
+        updateLocalCountOfSubs(subscriptionsCount, userId, database);
+    }
+
+    public static void updateLocalCountOfSubs(long subscriptionsCount, String userId, SQLiteDatabase database) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, subscriptionsCount);
+
+        database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{userId});
     }
 
     public void loadCountOfSubscribers(final TextView countOfSubsText) {
-        FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
-        DatabaseReference subscribersRef = fdatabase.getReference(USERS)
+        DatabaseReference subscribersReference = FirebaseDatabase.getInstance()
+                .getReference(USERS)
                 .child(workerId)
                 .child(SUBSCRIBERS);
-        subscribersRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener subscribersListener = subscribersReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot subscribersSnapshot) {
                 String countOfSubs = String.valueOf(subscribersSnapshot.getChildrenCount());
@@ -187,9 +195,25 @@ public class SubscriptionsApi {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+
+        ListeningManager.addToListenerList(new FBListener(subscribersReference, subscribersListener));
+    }
+
+    static public long getCountOfSubscriptions(SQLiteDatabase database, String userId) {
+        String sqlQuery =
+                "SELECT " + DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS
+                        + " FROM " + DBHelper.TABLE_CONTACTS_USERS
+                        + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
+        if (cursor.moveToFirst()) {
+            int indexSubscriptionsCount = cursor.getColumnIndex(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS);
+            return Long.valueOf(cursor.getString(indexSubscriptionsCount));
+        }
+        cursor.close();
+        return 0;
     }
 
 }

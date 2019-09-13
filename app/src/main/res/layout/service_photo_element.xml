@@ -17,7 +17,7 @@
         android:id="@+id/cancelServicePhotoElement"
         android:layout_width="30dp"
         android:layout_marginStart="-30dp"
-        android:background="@color/panelColor"
+        android:background="@drawable/plus_photo_bg"
         android:textColor="@color/white"
         android:layout_height="30dp"
         android:text="x" />

@@ -12,6 +12,7 @@
 
     <color name="yellow">#f6db40</color>
     <color name="grey05">#64d1d1d1</color>
+    <color name="grey50">#888888</color>
     <color name="activeButton">#FFFFFF</color>
     <color name="disabledButton">#7fffffff</color>
     <color name="selectedButton">#ffd646</color>
@@ -27,5 +28,8 @@
 
     <!-- transparent -->
     <color name="transparent">#8C007693</color>
+
+    <!-- Main screen -->
+    <color name="colorCategoryButton">#005F89</color>
 
 </resources>

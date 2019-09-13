@@ -27,6 +27,8 @@ public class UserCreateService implements IUser {
     private static final String WORKER_ID = "worker id";
     private static final String TIME = "time";
     private static final String SERVICE_ID = "service id";
+    private static final String WORKING_DAY_ID = "working day id";
+    private static final String WORKING_TIME_ID = "working time id";
 
     private static final String RATING = "rating";
     private static final String REVIEW = "review";
@@ -51,7 +53,7 @@ public class UserCreateService implements IUser {
     public void makeOrder(String workingTimeId) {
         String serviceOwnerId = getServiceOwnerId(workingTimeId);
         String orderId = makeOrderForService(workingTimeId, serviceOwnerId);
-        makeOrderForUser(orderId, serviceOwnerId);
+        makeOrderForUser(orderId, serviceOwnerId, workingTimeId);
     }
 
     // Создаёт запись в разделе Сервис
@@ -80,7 +82,7 @@ public class UserCreateService implements IUser {
 
         myRef = myRef.child(orderId);
         myRef.updateChildren(items);
-
+        //поток?
         addOrderInLocalStorage(orderId, workingTimeId, messageTime);
 
         // создаём отзыв дял сервиса
@@ -90,7 +92,7 @@ public class UserCreateService implements IUser {
     }
 
     // Создаёт запись в разделе UserCreateService
-    private void makeOrderForUser(String orderId, String workerId) {
+    private void makeOrderForUser(String orderId, String workerId,String workingTimeId) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database
                 .getReference(USERS)
@@ -101,6 +103,8 @@ public class UserCreateService implements IUser {
         Map<String, Object> items = new HashMap<>();
         items.put(WORKER_ID, workerId);
         items.put(SERVICE_ID, serviceId);
+        items.put(WORKING_DAY_ID, workingDaysId);
+        items.put(WORKING_TIME_ID, workingTimeId);
 
         myRef.updateChildren(items);
 
@@ -124,20 +128,6 @@ public class UserCreateService implements IUser {
 
         addReviewInLocalStorage(orderId, reviewId, type);
     }
-
-    private void addReviewInLocalStorage(final String orderId, final String reviewId, final String type) {
-        SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_ID, reviewId);
-        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, "");
-        contentValues.put(DBHelper.KEY_RATING_REVIEWS, "0");
-        contentValues.put(DBHelper.KEY_TYPE_REVIEWS, type);
-        contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
-
-        localDatabase.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
-    }
-
     private String getServiceOwnerId(String workingTimeId) {
 
         Cursor cursor = WorkWithLocalStorageApi.getServiceCursorByTimeId(workingTimeId);
@@ -152,6 +142,18 @@ public class UserCreateService implements IUser {
         return ownerId;
     }
 
+    private void addReviewInLocalStorage(final String orderId, final String reviewId, final String type) {
+        SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, reviewId);
+        contentValues.put(DBHelper.KEY_REVIEW_REVIEWS, "");
+        contentValues.put(DBHelper.KEY_RATING_REVIEWS, "0");
+        contentValues.put(DBHelper.KEY_TYPE_REVIEWS, type);
+        contentValues.put(DBHelper.KEY_ORDER_ID_REVIEWS, orderId);
+
+        localDatabase.insert(DBHelper.TABLE_REVIEWS, null, contentValues);
+    }
     private void addOrderInLocalStorage(final String orderId,final String timeId,final String messageTime) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 

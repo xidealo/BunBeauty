@@ -26,6 +26,4 @@ public class Photo {
     public void setPhotoOwnerId(String _photoOwnerId){
         photoOwnerId = _photoOwnerId;
     }
-
-
 }

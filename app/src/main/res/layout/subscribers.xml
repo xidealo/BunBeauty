@@ -31,21 +31,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:visibility="gone"
             style="@style/mainText"
             android:text="У вас пока нет подписок" />
 
-        <ScrollView
-            android:id="@+id/nestedScrollView"
-            android:layout_width="match_parent"
+        <ProgressBar
+            android:id="@+id/progressBarSubscribers"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint= "@color/panelColor"
+            />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/resultsSubscribersRecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/mainSubscribersLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
+        </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 

@@ -3,7 +3,6 @@ package com.example.ideal.myapplication.helpApi;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.widget.LinearLayout;
 
 import com.example.ideal.myapplication.fragments.panelElements.BottomPanel;
 import com.example.ideal.myapplication.fragments.panelElements.TopPanel;
@@ -36,7 +35,8 @@ public class PanelBuilder {
 
     public void buildFooter(FragmentManager manager, int layoutId) {
         BottomPanel bottomPanel = new BottomPanel(isMyProfile, myId);
-
+        Object object = new Object();
+        object.equals(2);
         transaction = manager.beginTransaction();
         transaction.add(layoutId, bottomPanel);
         transaction.commit();

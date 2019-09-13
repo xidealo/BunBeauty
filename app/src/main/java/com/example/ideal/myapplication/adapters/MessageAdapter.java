@@ -17,11 +17,11 @@ import java.util.ArrayList;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
     private int numberItems;
-    private  ArrayList<Message> messageList;
+    private ArrayList<Message> messageList;
     private Context context;
     private static final String ORDER_STATUS = "order status";
 
-    public MessageAdapter(int numberItems, ArrayList<Message> messages){
+    public MessageAdapter(int numberItems, ArrayList<Message> messages) {
         this.numberItems = numberItems;
         messageList = messages;
     }
@@ -34,10 +34,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         //Класс, который позволяет создавать представления из xml файла
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         // откуда, куда, необходимо ли помещать в родителя
-        View view = layoutInflater.inflate(layoutIdForListItem,viewGroup,false);
+        View view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false);
 
-        MessageViewHolder viewHolder = new MessageViewHolder(view);
-        return viewHolder;
+        return new MessageViewHolder(view);
     }
 
     @Override
@@ -53,18 +52,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     class MessageViewHolder extends RecyclerView.ViewHolder {
 
-        View view;
-        public MessageViewHolder(@NonNull View itemView) {
+        private View view;
+
+        MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
         }
 
-        void bind(Message message){
-            if(message.getStatus().equals(ORDER_STATUS)){
+        void bind(Message message) {
+            if (message.getStatus().equals(ORDER_STATUS)) {
                 MessageOrderElement messageOrderElement = new MessageOrderElement(message, view, context);
                 messageOrderElement.createElement();
-            }else {
-                MessageReviewElement messageReviewElement = new MessageReviewElement(message,view,context);
+            } else {
+                MessageReviewElement messageReviewElement = new MessageReviewElement(message, view, context);
                 messageReviewElement.createElement();
             }
         }

@@ -22,12 +22,16 @@ import android.widget.Toast;
 import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.User;
+import com.example.ideal.myapplication.helpApi.ListeningManager;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.logIn.CountryCodes;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.example.ideal.myapplication.other.MyService;
+import com.example.ideal.myapplication.reviews.Comments;
+import com.example.ideal.myapplication.searchService.GuestService;
+import com.example.ideal.myapplication.subscriptions.Subscribers;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -49,6 +53,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.sql.SQLTransactionRollbackException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +70,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private static final String AVATAR = "avatar";
     private static final String PHOTO_LINK = "photo link";
+
+    private static final String TOKEN = "token";
 
     private final int PICK_IMAGE_REQUEST = 71;
 
@@ -588,12 +595,43 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private void goToLogIn() {
         FirebaseAuth.getInstance().signOut();
 
+        ListeningManager.removeAllListeners();
         stopService(new Intent(this, MyService.class));
+        clearNotificationToken();
+        clearStaticData();
+        //ListeningManager.removeAllListeners();
 
         Intent intent = new Intent(this, Authorization.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
+
+    private void clearStaticData() {
+        GuestService.serviceIdsFirstSetGS.clear();
+        Comments.serviceIdsFirstSetComments.clear();
+        Comments.userIdsFirstSetComments.clear();
+        Subscribers.isFirst = true;
+    }
+
+    // Стираем токен, чтобы на устройство не приходили оповещения для данного пользователя
+    private void clearNotificationToken() {
+        DatabaseReference tokenRef = FirebaseDatabase
+                .getInstance()
+                .getReference(USERS)
+                .child(userId)
+                .child(TOKEN);
+        tokenRef.setValue("-");
+    }
+
+    /*private void stopAllThreads() {
+        Thread[] threads = new Thread[Thread.activeCount()];
+        Thread.enumerate(threads);
+        for (Thread trd : threads) {
+            if (trd.isAlive()) {
+                trd.interrupt();
+            }
+        }
+    }*/
 
     private void attentionThisCodeWasWrong(){
         Toast.makeText(
