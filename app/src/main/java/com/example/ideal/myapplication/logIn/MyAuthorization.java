@@ -30,6 +30,7 @@ class MyAuthorization {
     private static final String USER_ID = "user id";
     private static final String IS_CANCELED = "is canceled";
     private static final String COUNT_OF_RATES = "count of rates";
+    private static final String SUBSCRIBERS = "subscribers";
 
     private static final String WORKING_DAY_ID = "working day id";
     private static final String WORKING_TIME_ID = "working time id";
@@ -100,9 +101,10 @@ class MyAuthorization {
                         serviceThread.start();
 
                         LoadingProfileData.addSubscriptionsCountInLocalStorage(userSnapshot, localDatabase);
+                        LoadingProfileData.addSubscribersCountInLocalStorage(userSnapshot, localDatabase);
                         loadMyOrders(userSnapshot.child(ORDERS));
 
-                        //set listener to countOfRates
+                        //set listener for countOfRates
                         DatabaseReference countOfRatesRef = FirebaseDatabase.getInstance()
                                 .getReference(USERS)
                                 .child(userId)
@@ -112,6 +114,20 @@ class MyAuthorization {
                             public void onDataChange(@NonNull DataSnapshot userSnapshotCountOfRates) {
                                 String countOfRates = userSnapshotCountOfRates.getValue(Long.class).toString();
                                 updateCountOfRatesInLocalStorage(countOfRates,userId);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        // set listener for count of Subscribers
+                        DatabaseReference countOfSubscribersRef = FirebaseDatabase.getInstance()
+                                .getReference(USERS)
+                                .child(userId);
+                        countOfSubscribersRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                LoadingProfileData.addSubscribersCountInLocalStorage(userSnapshot, localDatabase);
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -146,6 +162,25 @@ class MyAuthorization {
             database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
         }
     }
+
+    private void updateCountOfSubscribersInLocalStorage(String countOfRates, String userId){
+        Log.d(TAG, "updateCountOfRatesInLocalStorage: ");
+        ContentValues contentValues = new ContentValues();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        contentValues.put(DBHelper.KEY_COUNT_OF_RATES_USERS, countOfRates);
+        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_CONTACTS_USERS, userId);
+
+        if (hasSomeData) {
+            database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
+                    DBHelper.KEY_ID + " = ?",
+                    new String[]{userId});
+        } else {
+            contentValues.put(DBHelper.KEY_ID, userId);
+            database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
+        }
+    }
+
     private void loadMyOrders(DataSnapshot _ordersSnapshot) {
 
         if (_ordersSnapshot.getChildrenCount() == 0) {

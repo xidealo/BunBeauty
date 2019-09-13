@@ -83,10 +83,19 @@ public class LoadingProfileData {
     public static void addSubscriptionsCountInLocalStorage(DataSnapshot userSnapshot, SQLiteDatabase localDatabase) {
         ContentValues contentValues = new ContentValues();
         long subscriptionsCount = userSnapshot.child(SUBSCRIPTIONS).getChildrenCount();
+
+        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, subscriptionsCount);
+
+        localDatabase.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
+                DBHelper.KEY_ID + " = ?",
+                new String[]{userSnapshot.getKey()});
+    }
+
+    public static void addSubscribersCountInLocalStorage(DataSnapshot userSnapshot, SQLiteDatabase localDatabase) {
+        ContentValues contentValues = new ContentValues();
         long subscribersCount = userSnapshot.child(SUBSCRIBERS).getChildrenCount();
 
         contentValues.put(DBHelper.KEY_SUBSCRIBERS_COUNT_USERS, subscribersCount);
-        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, subscriptionsCount);
 
         localDatabase.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
                 DBHelper.KEY_ID + " = ?",
