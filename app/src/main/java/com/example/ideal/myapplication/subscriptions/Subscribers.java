@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -84,7 +85,7 @@ public class Subscribers extends AppCompatActivity {
 
         if (isFirst) {
             loadUserSubscriptions();
-            isFirst=false;
+            isFirst = false;
         } else {
             getMySubscriptions();
         }
@@ -101,7 +102,7 @@ public class Subscribers extends AppCompatActivity {
                 .getReference(USERS)
                 .child(myUserId)
                 .child(SUBSCRIPTIONS);
-        if(SubscriptionsApi.getCountOfSubscriptions(database,getUserId()) == 0){
+        if (SubscriptionsApi.getCountOfSubscriptions(database, getUserId()) == 0) {
             setWithoutSubscriptions();
         }
 
@@ -144,10 +145,10 @@ public class Subscribers extends AppCompatActivity {
 
         ListeningManager.addToListenerList(new FBListener(userRef, userListener));
     }
-    private void setWithoutSubscriptions(){
+
+    private void setWithoutSubscriptions() {
         subsText.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
-
     }
 
     private void loadUserById(final String userId) {
@@ -164,7 +165,7 @@ public class Subscribers extends AppCompatActivity {
                 long currentCountOfSub = SubscriptionsApi.getCountOfSubscriptions(database, getUserId());
                 if (countOfLoadedUser >= currentCountOfSub) {
                     if (countOfLoadedUser != currentCountOfSub) {
-                        SubscriptionsApi.updateLocalCountOfSubs(countOfLoadedUser,getUserId(),database);
+                        SubscriptionsApi.updateLocalCountOfSubs(countOfLoadedUser, getUserId(), database);
                     }
                     getMySubscriptions();
                 }
@@ -237,8 +238,8 @@ public class Subscribers extends AppCompatActivity {
     }
 
     private void getMySubscriptions() {
-
-        if(SubscriptionsApi.getCountOfSubscriptions(database,getUserId()) == 0){
+        userList.clear();
+        if (SubscriptionsApi.getCountOfSubscriptions(database, getUserId()) == 0) {
             setWithoutSubscriptions();
             return;
         }
