@@ -133,7 +133,6 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         avgRatesText = findViewById(R.id.avgRatingGuestServiceElementText);
         progressBar = findViewById(R.id.progressBarGuestService);
         mainScroll = findViewById(R.id.guestServiceMainScroll);
-
         premiumText = findViewById(R.id.yesPremiumGuestServiceText);
         noPremiumText = findViewById(R.id.noPremiumGuestServiceText);
 
