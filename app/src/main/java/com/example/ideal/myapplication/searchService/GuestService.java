@@ -76,6 +76,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String AVG_RATING = "avg rating";
     private static final String ADDRESS = "address";
     private static final String NAME = "name";
+    private static final String PHOTOS = "photos";
 
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
 
@@ -176,7 +177,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private void loadServiceData() {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = firebaseDatabase.getReference(USERS)
-                    .child(ownerId);
+                .child(ownerId);
         //загружаем один раз всю информацию
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -189,8 +190,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                         .child(SERVICES)
                         .child(serviceId);
 
-                LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot, database);
+                LoadingGuestServiceData.loadPhotosByServiceId(serviceSnapshot.child(PHOTOS), serviceId, database);
 
+                //LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot, database);
                 Service service = new Service();
                 service.setCost(serviceSnapshot.child(COST).getValue(String.class));
                 service.setAddress(serviceSnapshot.child(ADDRESS).getValue(String.class));
@@ -234,23 +236,26 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
                                             // если кто-то записался
-                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot,timeId, database);
+                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot, timeId, database);
                                         }
 
                                         @Override
                                         public void onChildChanged(@NonNull DataSnapshot orderSnapshot, @Nullable String s) {
                                             //если от кого-то отказались
-                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot,timeId, database);
+                                            LoadingGuestServiceData.addOrderInLocalStorage(orderSnapshot, timeId, database);
                                         }
 
                                         @Override
-                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                        }
 
                                         @Override
-                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                        }
 
                                         @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {}
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        }
                                     });
 
                                     ListeningManager.addToListenerList(new FBListener(ordersRef, ordersListener));
@@ -269,26 +274,33 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                                 }
 
                                 @Override
-                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                }
 
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {}
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
                             });
 
                             ListeningManager.addToListenerList(new FBListener(workingTimesRef, workingTimesListener));
                         }
                     }
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
 
                     @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    }
 
                     @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
                 });
 
                 ListeningManager.addToListenerList(new FBListener(workingDaysRef, workingDaysListener));
@@ -304,31 +316,19 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
                 .child(ownerId)
                 .child(SERVICES)
                 .child(serviceId);
-        ChildEventListener serviceListener = serviceRef.addChildEventListener(new ChildEventListener() {
+        serviceRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
-                //слушатель на каждый день, чтобы отслеживать изменение времени
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot serviceSnapshot, @Nullable String s) {
-                //если что-то меняется, мы сохраняем даные
+            public void onDataChange(@NonNull DataSnapshot serviceSnapshot) {
                 LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot, database);
             }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            }
         });
-
-        ListeningManager.addToListenerList(new FBListener(serviceRef, serviceListener));
     }
-  
+
     private String getOwnerId() {
         String sqlQuery =
                 "SELECT *"
@@ -409,7 +409,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         cursor.close();
     }
 
-    private void setGuestService(Service service){
+    private void setGuestService(Service service) {
 
         serviceName = service.getName();
         costText.setText("Цена от: " + service.getCost() + "р");
@@ -424,6 +424,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         createRatingBar(service.getAverageRating(), service.getCountOfRates());
         createPhotoFeed(serviceId);
     }
+
     private void buildPanels() {
         PanelBuilder panelBuilder = new PanelBuilder();
         FragmentManager manager = getSupportFragmentManager();
@@ -549,8 +550,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
             ratingBar.setRating(avgRating);
             ratingLL.setOnClickListener(this);
-        }
-        else {
+        } else {
             Log.d(TAG, "createRatingBar:  SET WITHOUT");
             setWithoutRating();
         }
@@ -636,18 +636,19 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
     }
 
     @Override
     public String addSevenDayPremium(String date) {
         long sysdateLong = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(date);
-        if(sysdateLong < WorkWithTimeApi.getSysdateLong()){
+        if (sysdateLong < WorkWithTimeApi.getSysdateLong()) {
             sysdateLong = WorkWithTimeApi.getSysdateLong();
         }
         //86400000 - day * 7 day
-        sysdateLong += 86400000*7;
+        sysdateLong += 86400000 * 7;
         return WorkWithTimeApi.getDateInFormatYMDHMS(new Date(sysdateLong));
     }
 

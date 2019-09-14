@@ -27,21 +27,10 @@ public class LoadingGuestServiceData {
     private static final String IS_BLOCKED = "is blocked";
 
     //PHOTOS
-    private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
-
-    private static Thread photoThread;
 
     public static void addServiceInfoInLocalStorage(final DataSnapshot serviceSnapshot, final SQLiteDatabase localDatabase) {
         final String serviceId = serviceSnapshot.getKey();
-        //потоки с другими add
-        photoThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                loadPhotosByServiceId(serviceSnapshot.child(PHOTOS), serviceId, localDatabase);
-            }
-        });
-        photoThread.start();
 
         ContentValues contentValues = new ContentValues();
         // Заполняем contentValues информацией о данном сервисе
@@ -54,9 +43,9 @@ public class LoadingGuestServiceData {
         contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, String.valueOf(serviceSnapshot.child(CATEGORY).getValue()));
         contentValues.put(DBHelper.KEY_ADDRESS_SERVICES, String.valueOf(serviceSnapshot.child(ADDRESS).getValue()));
         contentValues.put(DBHelper.KEY_COUNT_OF_RATES_SERVICES, String.valueOf(serviceSnapshot.child(COUNT_OF_RATES).getValue()));
-
+        Log.d(TAG, "COUNT_OF_RATES: " + serviceSnapshot.child(COUNT_OF_RATES).getValue());
         boolean hasSomeData = WorkWithLocalStorageApi
-                .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceSnapshot.getKey());
+                .hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
 
         // Проверка есть ли такой сервис в SQLite
         if (hasSomeData) {
@@ -67,19 +56,13 @@ public class LoadingGuestServiceData {
                     contentValues,
                     DBHelper.KEY_ID + " = ?",
                     new String[]{serviceId});
+            Log.d(TAG, "Update");
         } else {
             // Данного сервиса нет
             // Добавляем serviceId в contentValues
             contentValues.put(DBHelper.KEY_ID, serviceId);
             // Добавляем данный сервис в SQLite
             localDatabase.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues);
-        }
-        if(photoThread.isAlive()){
-            try {
-                photoThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -121,7 +104,7 @@ public class LoadingGuestServiceData {
             }
     }
 
-    private static void loadPhotosByServiceId(DataSnapshot photosSnapshot, String serviceId, SQLiteDatabase localDatabase) {
+    public static void loadPhotosByServiceId(DataSnapshot photosSnapshot, String serviceId, SQLiteDatabase localDatabase) {
         for (DataSnapshot fPhoto : photosSnapshot.getChildren()) {
             Photo photo = new Photo();
 
@@ -131,7 +114,6 @@ public class LoadingGuestServiceData {
 
             addPhotoInLocalStorage(photo, localDatabase);
         }
-        photoThread.interrupt();
     }
 
     private static void addPhotoInLocalStorage(Photo photo, SQLiteDatabase localDatabase) {

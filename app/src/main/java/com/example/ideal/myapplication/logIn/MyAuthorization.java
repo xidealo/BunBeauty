@@ -163,24 +163,6 @@ class MyAuthorization {
         }
     }
 
-    private void updateCountOfSubscribersInLocalStorage(String countOfRates, String userId){
-        Log.d(TAG, "updateCountOfRatesInLocalStorage: ");
-        ContentValues contentValues = new ContentValues();
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-        contentValues.put(DBHelper.KEY_COUNT_OF_RATES_USERS, countOfRates);
-        boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_CONTACTS_USERS, userId);
-
-        if (hasSomeData) {
-            database.update(DBHelper.TABLE_CONTACTS_USERS, contentValues,
-                    DBHelper.KEY_ID + " = ?",
-                    new String[]{userId});
-        } else {
-            contentValues.put(DBHelper.KEY_ID, userId);
-            database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
-        }
-    }
-
     private void loadMyOrders(DataSnapshot _ordersSnapshot) {
 
         if (_ordersSnapshot.getChildrenCount() == 0) {
