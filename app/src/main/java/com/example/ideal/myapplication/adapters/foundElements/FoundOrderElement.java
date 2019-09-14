@@ -59,7 +59,7 @@ public class FoundOrderElement implements View.OnClickListener {
     }
 
     private void setData() {
-        nameText.setText(WorkWithStringsApi.cutString(orderName,27).toUpperCase());
+        nameText.setText(WorkWithStringsApi.firstCapitalSymbol(WorkWithStringsApi.cutString(orderName,26)));
         timeText.setText(orderDate + " " + orderTime);
     }
 
