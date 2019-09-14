@@ -41,13 +41,21 @@
         android:layout_gravity="center"
         android:hint="@string/surname" />
 
-    <EditText
-        android:id="@+id/cityRegistrationInput"
-        style="@style/lightTextForText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="212dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:hint="@string/cityRegistration" />
+        android:layout_marginTop="20dp">
+        <Spinner
+            android:id="@+id/citySpinnerRegistrationSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/choice_cites"
+            android:background="@color/white"
+            android:backgroundTint="@color/panelColor"
+            android:popupBackground="@color/panelColor"/>
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/saveDataRegistrationBtn"

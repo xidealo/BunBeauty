@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ideal.myapplication.R;
@@ -35,8 +36,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
     private EditText nameInput;
     private EditText surnameInput;
-    private EditText cityInput;
     private EditText phoneInput;
+    private Spinner citySpinner;
     private String defaultPhotoLink = "https://firebasestorage." +
             "googleapis.com/v0/b/bun-beauty.appspot.com/o/avatar%2FdefaultAva." +
             "jpg?alt=media&token=f15dbe15-0541-46cc-8272-2578627ed311";
@@ -51,8 +52,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
         nameInput = findViewById(R.id.nameRegistrationInput);
         surnameInput = findViewById(R.id.surnameRegistrationInput);
-        cityInput = findViewById(R.id.cityRegistrationInput);
         phoneInput = findViewById(R.id.phoneRegistrationInput);
+        citySpinner = findViewById(R.id.citySpinnerRegistrationSpinner);
         //Заполняем поле телефона
         String phoneNumber = getIntent().getStringExtra(PHONE);
         phoneInput.setText(phoneNumber);
@@ -92,7 +93,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                             String phone = phoneInput.getText().toString();
                             user.setPhone(phone);
 
-                            String city  = cityInput.getText().toString().toLowerCase();
+                            String city  = citySpinner.getSelectedItem().toString().toLowerCase();
                             user.setCity(city);
                             registration(user);
                             //идем в профиль
@@ -200,16 +201,9 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
             return false;
         }
 
-        String city = cityInput.getText().toString();
-        if (city.isEmpty()) {
-            cityInput.setError("Введите город, в которым вы живёте");
-            cityInput.requestFocus();
-            return false;
-        }
-
-        if (!city.matches("[a-zA-ZА-Яа-я\\-]+")) {
-            cityInput.setError("Допустимы только буквы и тире");
-            cityInput.requestFocus();
+        String city = citySpinner.getSelectedItem().toString();
+        if (city.equals("Выбрать город")) {
+            assertNoSelectedCity();
             return false;
         }
 
@@ -227,5 +221,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     }
     private void assertSurnameSoLong() {
         Toast.makeText(this, "Слишком длинная фамилия", Toast.LENGTH_SHORT).show();
+    }
+    private void assertNoSelectedCity() {
+        Toast.makeText(this, "Выберите город", Toast.LENGTH_SHORT).show();
     }
 }

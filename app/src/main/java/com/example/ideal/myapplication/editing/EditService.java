@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +28,7 @@ import com.example.ideal.myapplication.fragments.ServicePhotoElement;
 import com.example.ideal.myapplication.fragments.objects.Photo;
 import com.example.ideal.myapplication.fragments.objects.Service;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
-import com.example.ideal.myapplication.other.CategoryElement;
+import com.example.ideal.myapplication.fragments.CategoryElement;
 import com.example.ideal.myapplication.other.DBHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -182,7 +181,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 Service service = new Service();
                 service.setId(serviceId);
                 service.setUserId(getUserId());
-                if (!service.setName(nameServiceInput.getText().toString())) {
+                if (!service.setName(nameServiceInput.getText().toString().toLowerCase())) {
                     Toast.makeText(
                             this,
                             "Имя сервиса должно содержать только буквы",

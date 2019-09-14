@@ -23,6 +23,13 @@
         <item><b><font android:color="@color/white">косметология</font></b></item>
     </string-array>
 
+    <string-array name="choice_cites">
+        <item><b><font android:color="@color/white">Выбрать город</font></b></item>
+        <item><b><font android:color="@color/white">Дубна</font></b></item>
+        <item><b><font android:color="@color/white">Кимры</font></b></item>
+        <item><b><font android:color="@color/white">Талдом</font></b></item>
+    </string-array>
+
     <array name="tags_references">
         <item>@array/nails</item>
         <item>@array/eyebrows</item>

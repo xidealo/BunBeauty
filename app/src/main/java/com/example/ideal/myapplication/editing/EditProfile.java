@@ -25,6 +25,7 @@ import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.ListeningManager;
 import com.example.ideal.myapplication.helpApi.PanelBuilder;
 import com.example.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.example.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.example.ideal.myapplication.logIn.Authorization;
 import com.example.ideal.myapplication.logIn.CountryCodes;
 import com.example.ideal.myapplication.other.DBHelper;
@@ -54,6 +55,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.sql.SQLTransactionRollbackException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,7 +87,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private EditText nameInput;
     private EditText surnameInput;
-    private EditText cityInput;
+    private Spinner citySpinner;
     private EditText phoneInput;
     private EditText codeInput;
     //private ProgressBar progressBar;
@@ -109,7 +111,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         nameInput = findViewById(R.id.nameEditProfileInput);
         surnameInput = findViewById(R.id.surnameEditProfileInput);
-        cityInput = findViewById(R.id.cityEditProfileInput);
+        citySpinner = findViewById(R.id.citySpinnerEditProfileSpinner);
         phoneInput = findViewById(R.id.phoneEditProfileInput);
         codeInput = findViewById(R.id.codeEditProfileInput);
         Button logOutBtn = findViewById(R.id.logOutEditProfileBtn);
@@ -160,9 +162,11 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             int indexPhone = cursor.getColumnIndex(DBHelper.KEY_PHONE_USERS);
 
             String[] nickName = cursor.getString(indexName).split(" ");
-            nameInput.setText(nickName[0]);
-            surnameInput.setText(nickName[1]);
-            cityInput.setText(cursor.getString(indexCity));
+            nameInput.setText(WorkWithStringsApi.firstCapitalSymbol(nickName[0]));
+            surnameInput.setText(WorkWithStringsApi.firstCapitalSymbol(nickName[1]));
+            //set city in spinner
+            ArrayList<String> citiesArray = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.choice_cites)));
+            citySpinner.setSelection(citiesArray.indexOf(WorkWithStringsApi.firstCapitalSymbol(cursor.getString(indexCity))));
 
             String phone = cursor.getString(indexPhone);
             // не универсальная обрезка кода (возможно стоит хранить отдельно код)
@@ -211,8 +215,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         if (areInputsCorrect()) {
             String newPhone = CountryCodes.codes[codeSpinner.getSelectedItemPosition()]
                     + phoneInput.getText().toString().trim();
-            user.setName(nameInput.getText().toString() + " " + surnameInput.getText().toString());
-            user.setCity(cityInput.getText().toString());
+            user.setName((nameInput.getText().toString() + " " + surnameInput.getText().toString()).toLowerCase());
+            user.setCity(citySpinner.getSelectedItem().toString().toLowerCase());
             if (oldPhone.equals(newPhone)) {
                 saveChanges();
             } else {
@@ -286,16 +290,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             return false;
         }
 
-        String city = cityInput.getText().toString().trim();
-        if(city.isEmpty()) {
-            cityInput.setError("Введите город, в которым вы живёте");
-            cityInput.requestFocus();
-            return false;
-        }
-
-        if(!city.matches("[a-zA-ZА-Яа-я\\-\\s]+")) {
-            cityInput.setError("Допустимы только буквы, тире и пробелы");
-            cityInput.requestFocus();
+        String city = citySpinner.getSelectedItem().toString();
+        if (city.equals("Выбрать город")) {
+            assertNoSelectedCity();
             return false;
         }
 
@@ -632,6 +629,10 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             }
         }
     }*/
+
+    private void assertNoSelectedCity() {
+        Toast.makeText(this, "Выберите город", Toast.LENGTH_SHORT).show();
+    }
 
     private void attentionThisCodeWasWrong(){
         Toast.makeText(

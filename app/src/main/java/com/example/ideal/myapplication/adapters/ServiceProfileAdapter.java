@@ -41,7 +41,7 @@ public class ServiceProfileAdapter extends RecyclerView.Adapter<ServiceProfileAd
 
     @Override
     public void onBindViewHolder(@NonNull ServiceProfileViewHolder serviceProfileViewHolder, int i) {
-            serviceProfileViewHolder.bind(serviceList.get(i));
+        serviceProfileViewHolder.bind(serviceList.get(i));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ServiceProfileAdapter extends RecyclerView.Adapter<ServiceProfileAd
         }
 
         void bind(Service service) {
-            FoundServiceProfileElement foundServiceProfileElement = new FoundServiceProfileElement(service,view,context);
+            FoundServiceProfileElement foundServiceProfileElement = new FoundServiceProfileElement(service, view, context);
             foundServiceProfileElement.createElement();
         }
     }

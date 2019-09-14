@@ -52,7 +52,7 @@ public class FoundServiceProfileElement implements View.OnClickListener {
     }
 
     private void setData() {
-        nameText.setText(WorkWithStringsApi.cutString(nameString,27));
+        nameText.setText(WorkWithStringsApi.cutString(nameString,27).toUpperCase());
         ratingBar.setRating(avgRating);
     }
 

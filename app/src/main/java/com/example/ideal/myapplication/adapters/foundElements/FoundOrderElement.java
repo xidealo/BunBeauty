@@ -25,7 +25,6 @@ public class FoundOrderElement implements View.OnClickListener {
     private String orderTime;
     private Context context;
     private View view;
-    private WorkWithStringsApi workWithStringsApi;
 
     public FoundOrderElement(Order order, View view, Context context) {
         orderId = order.getOrderId();
@@ -34,7 +33,6 @@ public class FoundOrderElement implements View.OnClickListener {
         orderTime = order.getOrderTime();
         this.context = context;
         this.view = view;
-        workWithStringsApi = new WorkWithStringsApi();
     }
 
     public void createElement(){
@@ -61,8 +59,8 @@ public class FoundOrderElement implements View.OnClickListener {
     }
 
     private void setData() {
-        nameText.setText(workWithStringsApi.cutString(orderName,27));
-        timeText.setText(orderDate + " "+ orderTime);
+        nameText.setText(WorkWithStringsApi.cutString(orderName,27).toUpperCase());
+        timeText.setText(orderDate + " " + orderTime);
     }
 
     @Override
