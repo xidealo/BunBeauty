@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/allPages"
+    tools:context="com.bunbeauty.ideal.myapplication.chat.Messages">
+
+    <LinearLayout
+        android:id="@+id/headerEditServiceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBarMessages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint= "@color/panelColor"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditServiceLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerEditServiceLayout"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/resultsMessagesRecycleView"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditServiceLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerEditServiceLayout" />
+
+    <LinearLayout
+        android:id="@+id/footerEditServiceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_panel_height"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

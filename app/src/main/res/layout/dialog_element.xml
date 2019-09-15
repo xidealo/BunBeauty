@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialogElementLayout"
+    style="@style/block"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/block_text"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    tools:context="com.bunbeauty.ideal.myapplication.adapters.chatElements.DialogElement">
+
+    <LinearLayout
+        android:id="@+id/dialogElementLayoutSecond"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/avatarDialogElementImage"
+            android:layout_width="@dimen/photo_avatar_width"
+            android:layout_height="@dimen/photo_avatar_height"
+            android:layout_marginEnd="10dp"
+            android:background="@color/white"
+            tools:src="@tools:sample/avatars" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialogElementLayoutLast"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/nameDialogElementText"
+            style="@style/mainTextMainScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Name" />
+
+        <TextView
+            android:id="@+id/messageTimeDialogElementText"
+            style="@style/timeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="time" />
+    </LinearLayout>
+</LinearLayout>

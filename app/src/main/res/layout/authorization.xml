@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.bunbeauty.ideal.myapplication.logIn.Authorization"
+    style="@style/LogInPages">
+
+    <ImageView
+        android:id="@+id/logoAuthImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/bun_beauty" />
+
+    <TextView
+        android:id="@+id/titleAuthText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Введите номер телефона"
+        android:layout_marginTop="10dp"
+        style="@style/extraText"
+        android:visibility="invisible"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp">
+
+        <Spinner
+            android:id="@+id/codeAuthSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:background="@color/panelColor"
+            android:popupBackground="@color/panelColor"
+            style="@style/mainText"
+            android:entries="@array/countryCode" />
+
+        <EditText
+            android:id="@+id/phoneAuthInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/lightText"
+            android:textStyle="bold"
+            android:hint="@string/phoneRegistration"
+            android:inputType="phone"
+            android:textColor="@color/white"
+            android:textColorHint="@color/lightText" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/verifyAuthBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/mainButtonLogIn"
+        android:text="Войти"
+        android:visibility="visible"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"/>
+
+    <ProgressBar
+        android:id="@+id/progressBarAuthorization"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint= "@color/white"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
+
+</LinearLayout>

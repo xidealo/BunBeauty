@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainColorBG"
+    tools:context="com.bunbeauty.ideal.myapplication.other.Profile">
+
+    <LinearLayout
+        android:id="@+id/headerProfileLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBarProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/panelColor"
+        app:layout_constraintBottom_toTopOf="@+id/footerProfileLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerProfileLayout" />
+
+    <LinearLayout
+        android:id="@+id/mainLayoutProfile"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/servicesProfileRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerProfileLayout"
+        android:animateLayoutChanges="true">
+
+        <!-- Верхняя часть-->
+        <LinearLayout
+            style="@style/block"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/block_text"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/block_text"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:id="@+id/avatarProfileImage"
+                        android:layout_width="@dimen/photo_width"
+                        android:layout_height="@dimen/photo_height"
+                        android:layout_gravity="center"
+                        tools:srcCompat="@tools:sample/avatars" />
+                </LinearLayout>
+                <!-- Rating bar -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/block_text"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/nameProfileText"
+                        style="@style/mainTextProfile"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/cityProfileText"
+                        style="@style/defaultTextProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/phoneProfileText"
+                        style="@style/defaultTextProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/subscribersProfileText"
+                        style="@style/defaultTextProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:text="TextView" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="2dp">
+
+                <LinearLayout
+                    android:id="@+id/ratingProfileLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/main_button"
+                    android:gravity="center">
+
+                    <RatingBar
+                        android:id="@+id/ratingBarProfile"
+                        style="@android:style/Widget.Holo.RatingBar.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:theme="@style/ratingBarColors" />
+
+                    <TextView
+                        android:id="@+id/withoutRatingProfileText"
+                        style="@style/buttonText"
+                        android:layout_width="250dp"
+                        android:layout_height="@dimen/main_button_height"
+                        android:gravity="center"
+                        android:text="Оценок еще нет"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/subscriptionsProfileLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/main_button"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/subscriptionsProfileText"
+                        style="@style/buttonText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:gravity="center"
+                        android:text="Подписки" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/switcherProfileLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/addServicesProfileBtn"
+                style="@style/smallMainButtonOther"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/main_button_height"
+                android:layout_gravity="start"
+                android:layout_marginEnd="10dp"
+                android:text="@string/addServices"
+                android:visibility="invisible" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/servicesProfileRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/resultsProfileRecycleView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainLayoutProfile">
+
+    </android.support.v7.widget.RecyclerView>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/resultsProfileRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/footerProfileLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/servicesProfileRecyclerView" />
+
+    <LinearLayout
+        android:id="@+id/footerProfileLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_panel_height"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

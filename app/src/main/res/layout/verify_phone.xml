@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LogInPages"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.bunbeauty.ideal.myapplication.logIn.VerifyPhone">
+
+    <ImageView
+        android:id="@+id/logoVerifyImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="150dp"
+        app:srcCompat="@drawable/bun_beauty" />
+
+    <EditText
+        android:id="@+id/codeVerifyInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/lightText"
+        android:ems="10"
+        android:hint="@string/enterCode"
+        android:inputType="number"
+        android:textColor="@color/white"
+        android:textColorHint="@color/lightText" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/alertCodeVerifyText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            style="@style/extraText"
+            android:text="На укказанный вами номер,\n был отправлен код подтверждения"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/verifyVerifyBtn"
+        style="@style/mainButtonLogIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="@string/verifyCode" />
+
+    <TextView
+        android:id="@+id/resendVerifyText"
+        style="@style/extraText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:textColor="@color/white"
+        android:text="@string/resendCode" />
+
+    <TextView
+        android:id="@+id/changePhoneVerifyText"
+        style="@style/extraText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:text="@string/change_number"
+        android:textColor="@color/white" />
+
+    <ProgressBar
+        android:id="@+id/progressBarVerifyCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint= "@color/white"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
+</LinearLayout>
