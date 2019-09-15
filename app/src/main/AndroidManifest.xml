@@ -7,56 +7,57 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.other.App"
+        android:name="com.bunbeauty.ideal.myapplication.other.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/BunBeauty"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.searchService.SearchService"/>
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.subscriptions.Subscribers" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.searchService.SearchService"/>
+        <activity android:name="com.bunbeauty.ideal.myapplication.subscriptions.Subscribers" />
         <activity
-            android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.reviews.PickedComment"
+            android:name="com.bunbeauty.ideal.myapplication.reviews.PickedComment"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.reviews.Comments" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.reviews.Review" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.chat.Messages" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.chat.Dialogs" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.logIn.Registration" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.logIn.Authorization">
+        <activity android:name="com.bunbeauty.ideal.myapplication.reviews.Comments" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.reviews.Review" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.chat.Messages" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.chat.Dialogs" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.logIn.Registration" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.logIn.Authorization">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.other.Profile" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.createService.AdditionService" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.searchService.GuestService" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.searchService.MainScreen" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.createService.MyTime" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.createService.MyCalendar" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.editing.EditService" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.editing.EditProfile" />
-        <activity android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.logIn.VerifyPhone" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.other.Profile" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.createService.AdditionService" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.searchService.GuestService" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.searchService.MainScreen" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.createService.MyTime" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.createService.MyCalendar" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.editing.EditService" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.editing.EditProfile" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.logIn.VerifyPhone" />
         
         <service
-            android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.other.MyService"
+            android:name="com.bunbeauty.ideal.myapplication.other.MyService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service
-            android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.notifications.MyFirebaseInstanceIdService">
+            android:name="com.bunbeauty.ideal.myapplication.notifications.MyFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name="com.android.ideal.myapplication.com.bunbeauty.ideal.myapplication.notifications.MyFirebaseMessagingService">
+            android:name="com.bunbeauty.ideal.myapplication.notifications.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
-        </service>    </application>
+        </service>  
+    </application>
 
 </manifest>
