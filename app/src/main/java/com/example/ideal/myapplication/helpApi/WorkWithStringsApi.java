@@ -135,9 +135,13 @@ public class WorkWithStringsApi {
     }
     public static String doubleCapitalSymbols(String text){
         String[] names = text.split(" ");
-        for (int i = 0; i < names.length; i++) {
-            names[i] = names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
+        if (names.length >1) {
+            for (int i = 0; i < names.length; i++) {
+                names[i] = names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
+            }
+
+            return names[0] + " " + names[1];
         }
-        return names[0] + " " + names[1];
+        return firstCapitalSymbol(names[0]);
     }
 }

@@ -40,7 +40,6 @@ public class FoundOrderElement implements View.OnClickListener {
     }
 
     private void onViewCreated(@NonNull View view) {
-
         nameText = view.findViewById(R.id.nameFoundOrderElementText);
         timeText = view.findViewById(R.id.descriptionFoundOrderElementText);
 

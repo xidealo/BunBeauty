@@ -94,16 +94,14 @@ public class FoundServiceElement implements View.OnClickListener {
         setData();
     }
 
-
-
     private void setData() {
         double inches = getScreenInches();
         //устанавливаем сокращения названий и имен в зависимости от размера экрана
         if(inches<5){
-            nameUserText.setText(WorkWithStringsApi.cutString(nameUserString, 10));
+            nameUserText.setText(WorkWithStringsApi.cutString(nameUserString, 9));
             nameServiceText.setText(WorkWithStringsApi.cutString(nameServiceString.toUpperCase(), 14));
         }else{
-            nameUserText.setText(WorkWithStringsApi.doubleCapitalSymbols(WorkWithStringsApi.cutString(nameUserString, 10)));
+            nameUserText.setText(WorkWithStringsApi.doubleCapitalSymbols(WorkWithStringsApi.cutString(nameUserString, 9)));
             nameServiceText.setText(WorkWithStringsApi.cutString(nameServiceString.toUpperCase(), 18));
         }
         cityText.setText(WorkWithStringsApi.firstCapitalSymbol(cityString));

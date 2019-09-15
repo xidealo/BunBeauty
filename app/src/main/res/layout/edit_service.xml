@@ -40,8 +40,7 @@
                     style="@style/mainText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/nameAddServiceTB"
-                    android:inputType="textPersonName" />
+                    android:hint="@string/nameAddServiceTB" />
             </LinearLayout>
 
             <LinearLayout
@@ -55,8 +54,7 @@
                     style="@style/mainText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Адрес"
-                    android:inputType="textPersonName" />
+                    android:hint="Адрес" />
             </LinearLayout>
 
             <LinearLayout

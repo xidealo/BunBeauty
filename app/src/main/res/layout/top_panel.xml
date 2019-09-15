@@ -27,7 +27,6 @@
         android:gravity="center"
         android:text="Заголовок" />
 
-
     <TextView
         android:id="@+id/settingTopPanelText"
         style="@style/textItemSolid"
