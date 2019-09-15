@@ -1,83 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".createService.AddService"
-    android:theme="@style/allPages">
+    android:background="@color/mainColorBG"
+    tools:context=".editing.EditProfile">
 
-    <EditText
-        android:id="@+id/nameEditProfileInput"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/headerEditProfileLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="33dp"
-        android:layout_marginBottom="24dp"
-        android:ems="10"
-        android:hint="@string/nameAddServiceTB"
-        android:inputType="textPersonName" />
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/cityEditProfileInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="26dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="@string/cityRegistration"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerEditProfileLayout">
 
-    <EditText
-        android:id="@+id/phoneEditProfileInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="26dp"
-        android:ems="10"
-        android:hint="@string/phone"
-        android:inputType="textPersonName" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/editProfileEditProfileBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/edit" />
+            <!-- Топ бар -->
+            <LinearLayout
+                style="@style/block"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/block_text"
+                android:orientation="horizontal"
+                android:padding="5dp">
 
-    <EditText
-        android:id="@+id/codeEditProfileInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="24dp"
-        android:visibility="invisible"
-        android:layout_marginBottom="26dp"
-        android:ems="10"
-        android:hint="@string/enterCode"
-        android:inputType="number" />
-    <Button
-        android:id="@+id/verifyProfileEditProfileBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:layout_gravity="center"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/verifyCode" />
-    <Button
-        android:id="@+id/resendProfileEditProfileBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="invisible"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/resendCode" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="5dp">
 
-</LinearLayout>
+                    <ImageView
+                        android:id="@+id/avatarEditProfileImage"
+                        android:layout_width="@dimen/photo_width"
+                        android:layout_height="@dimen/photo_height"
+                        android:layout_gravity="center"
+                        tools:srcCompat="@tools:sample/avatars" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <Button
+                        android:id="@+id/logOutEditProfileBtn"
+                        style="@style/smallMainButtonOther"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/main_button_height"
+                        android:text="@string/logOut" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/block"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/block_text"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/nameEditProfileInput"
+                    style="@style/mainText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/nameAddServiceTB" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/block"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/block_text"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/surnameEditProfileInput"
+                    style="@style/mainText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/surname" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/block"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/block_text"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/mainText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Spinner
+                    android:id="@+id/citySpinnerEditProfileSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:backgroundTint="@color/panelColor"
+                    android:entries="@array/choice_cites"
+                    android:popupBackground="@color/panelColor" />
+            </LinearLayout>
+
+            <!-- Телефон -->
+            <LinearLayout
+                style="@style/block"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/block_text"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/codeEditProfileSpinner"
+                    style="@style/mainText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:entries="@array/countryCodeForEditService" />
+
+                <EditText
+                    android:id="@+id/phoneEditProfileInput"
+                    style="@style/mainText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/phone"
+                    android:inputType="phone" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/editProfileEditProfileBtn"
+                style="@style/mainButtonOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:text="@string/saveData" />
+
+            <EditText
+                android:id="@+id/codeEditProfileInput"
+                style="@style/mainText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:hint="@string/enterCode"
+                android:inputType="number"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/verifyCodeEditProfileBtn"
+                style="@style/mainButtonOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/verifyCode"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/resendCodeEditProfileBtn"
+                style="@style/mainButtonOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/resendCode"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/footerEditProfileLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_panel_height"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

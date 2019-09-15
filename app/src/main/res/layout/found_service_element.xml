@@ -1,40 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/foundServiceElementLayout"
+    style="@style/block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/block_text"
     android:orientation="horizontal"
-    android:theme="@style/allPages"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:padding="10dp">
 
-    <TextView
-        android:id="@+id/userNameFoundServiceElementText"
-        android:layout_width="95dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="TextView"
-        android:textSize="18sp" />
+    <LinearLayout
+        android:layout_width="@dimen/photo_avatar_width"
+        android:layout_height="@dimen/photo_avatar_height"
+        android:layout_marginEnd="10dp">
 
-    <TextView
-        android:id="@+id/serviceNameFoundServiceElementText"
-        android:layout_width="5dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=" - "
-        android:textSize="18sp" />
+        <ImageView
+            android:id="@+id/avatarFoundServiceElementImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@tools:sample/avatars" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/costFoundServiceElementText"
-        android:layout_width="2dp"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text=" - "
-        android:textSize="18sp" />
+        android:orientation="vertical"
+        android:paddingTop="5dp">
 
-    <TextView
-        android:id="@+id/cityFoundServiceElementText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=" - "
-        android:textSize="18sp" />
+        <TextView
+            android:id="@+id/serviceNameFoundServiceElementText"
+            style="@style/mainTextMainScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Имя услуги"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/cityFoundServiceElementText"
+            style="@style/defaultTextMainScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Город" />
+
+        <RatingBar
+            android:id="@+id/ratingBarFondServiceElement"
+            style="@android:style/Widget.Holo.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:isIndicator="true"
+            android:theme="@style/ratingBarColors" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="90dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/userNameFoundServiceElementText"
+            style="@style/defaultTextMainScreen"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:text="Имя человека" />
+
+        <TextView
+            android:id="@+id/costFoundServiceElementText"
+            style="@style/defaultTextMainScreen"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:text="Цена" />
+    </LinearLayout>
 </LinearLayout>

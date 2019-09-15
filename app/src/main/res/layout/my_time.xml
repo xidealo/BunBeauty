@@ -4,45 +4,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/allPages"
+    android:background="@color/mainColorBG"
     tools:context=".createService.MyTime">
 
     <RelativeLayout
         android:id="@+id/mainMyTimeLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
-    </RelativeLayout>
+        android:layout_height="400dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerMyTimeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/headerMyTimeLayout"
+        app:layout_constraintVertical_bias="0.1"
+        tools:layout_editor_absoluteX="0dp" />
 
     <Button
         android:id="@+id/saveMyTimeBtn"
+        style="@style/mainButtonOther"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Сохранить"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/footerMyTimeLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <android.support.v7.widget.SwitchCompat
-        android:id="@+id/amOrPmMyTimeSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:checked="false"
-        android:text="Первая половина дня"
-        android:textOff="AM"
-        android:textOn="PM"
-        app:layout_constraintBottom_toTopOf="@+id/saveMyTimeBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/servicesProfileScroll"
-        app:showText="true" />
+        app:layout_constraintTop_toBottomOf="@+id/swicherMyTimeLayout" />
 
+    <LinearLayout
+        android:id="@+id/swicherMyTimeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/footerMyTimeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/headerMyTimeLayout"
+        app:layout_constraintVertical_bias="0.85" />
+
+    <LinearLayout
+        android:id="@+id/headerMyTimeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/footerMyTimeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

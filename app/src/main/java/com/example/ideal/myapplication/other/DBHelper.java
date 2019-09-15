@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final  int DATABASE_VERSION = 44;
+    public static final int DATABASE_VERSION = 107;
     public static final String DATABASE_NAME = "MyFirstDB";
 
     //tables name
@@ -14,66 +14,68 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_CONTACTS_SERVICES = "services";
     public static final String TABLE_WORKING_DAYS = "working_days";
     public static final String TABLE_WORKING_TIME = "working_time";
-    public static final String TABLE_DIALOGS = "dialogs";
-    public static final String TABLE_MESSAGE_ORDERS = "messages";
-    public static final String TABLE_MESSAGE_REVIEWS = "message_reviews";
-    public static final String TABLE_REVIEWS_FOR_SERVICE = "reviews_for_service";
-    public static final String TABLE_REVIEWS_FOR_USERS = "reviews_for_users";
+    public static final String TABLE_ORDERS = "orders";
+    public static final String TABLE_REVIEWS = "reviews";
+    public static final String TABLE_PHOTOS = "photos";
+    public static final String TABLE_SUBSCRIBERS = "subscribers";
+    public static final String TABLE_TAGS = "tags";
 
     //for all
-    public  static final  String KEY_ID = "_id";
+    public static final String KEY_ID = "_id";
 
     // users
-    public  static final  String KEY_USER_ID = "phone";
-    public  static final  String KEY_NAME_USERS = "user_name";
-    public  static final  String KEY_CITY_USERS = "city";
-    public  static final  String KEY_PASS_USERS = "pass";
-    public  static final  String KEY_RATING_USERS = "user_rating";
-    public  static final  String KEY_BIRTHDAY_USERS = "birthday";
-    public  static final  String KEY_COUNT_OF_RATES_USERS = "count_of_rates";
-    public  static final  String KEY_PHOTO_LINK_USERS = "photo_link";
+    public static final String KEY_PHONE_USERS = "phone";
+    public static final String KEY_NAME_USERS = "user_name";
+    public static final String KEY_CITY_USERS = "city";
+    public static final String KEY_RATING_USERS = "user_rating";
+    public static final String KEY_SUBSCRIPTIONS_COUNT_USERS = "subscriptions_count";
+    public static final String KEY_SUBSCRIBERS_COUNT_USERS = "subscribers_count";
+    public static final String KEY_COUNT_OF_RATES_USERS = "count_of_rates";
 
     //services
-    public  static final  String KEY_NAME_SERVICES = "service_name";
-    public  static final  String KEY_DESCRIPTION_SERVICES = "description";
-    public  static final  String KEY_RATING_SERVICES = "service_rating";
-    public  static final  String KEY_COUNT_OF_RATES_SERVICES = "count_of_rates";
-    public  static final  String KEY_MIN_COST_SERVICES = "minCost";
+    public static final String KEY_NAME_SERVICES = "service_name";
+    public static final String KEY_RATING_SERVICES = "service_rating";
+    public static final String KEY_DESCRIPTION_SERVICES = "description";
+    public static final String KEY_MIN_COST_SERVICES = "minCost";
+    public static final String KEY_IS_PREMIUM_SERVICES = "is_premium";
+    public static final String KEY_CREATION_DATE_SERVICES = "creation_date";
+    public static final String KEY_CATEGORY_SERVICES = "category";
+    public static final String KEY_ADDRESS_SERVICES = "address";
+    public static final String KEY_COUNT_OF_RATES_SERVICES = "count_of_rates";
 
     //working days
-    public  static final  String KEY_DATE_WORKING_DAYS = "date";
-    public  static final  String KEY_SERVICE_ID_WORKING_DAYS = "service_id";
+    public static final String KEY_DATE_WORKING_DAYS = "date";
+    public static final String KEY_SERVICE_ID_WORKING_DAYS = "service_id";
 
     // working time
-    public  static final  String KEY_TIME_WORKING_TIME = "time";
-    public  static final  String KEY_WORKING_DAYS_ID_WORKING_TIME = "id_Working_Days";
+    public static final String KEY_TIME_WORKING_TIME = "time";
+    public static final String KEY_WORKING_DAYS_ID_WORKING_TIME = "id_working_days";
+    //в случае того, что мастер хочет удалить время на котором есть отклоненный заказ
+    public static final String KEY_IS_BLOCKED_TIME = "is_blocked";
 
-    // dialogs
-    public  static final  String KEY_FIRST_USER_ID_DIALOGS = "first_phone";
-    public  static final  String KEY_SECOND_USER_ID_DIALOGS = "second_phone";
+    //orders
+    public static final String KEY_IS_CANCELED_ORDERS = "is_canceled";
+    public static final String KEY_WORKING_TIME_ID_ORDERS = "working_time_id";
+    public static final String KEY_MESSAGE_TIME_ORDERS = "message_time";
 
-    // messages_orders
-    public  static final  String KEY_DIALOG_ID_MESSAGES = "dialog_id";
-    public  static final  String KEY_MESSAGE_TIME_MESSAGES = "message_time";
-    public  static final  String KEY_IS_CANCELED_MESSAGE_ORDERS = "is_canceled";
-    public  static final  String KEY_TIME_ID_MESSAGES = "time_id";
+    //reviews
+    public static final String KEY_REVIEW_REVIEWS = "review";
+    public static final String KEY_RATING_REVIEWS = "rating";
+    public static final String KEY_TYPE_REVIEWS = "type";
+    public static final String KEY_ORDER_ID_REVIEWS = "order_id";
+    public static final String KEY_TIME_REVIEWS = "review_time";
 
-    //message_reviews
-    public  static final  String KEY_IS_RATE_BY_USER_MESSAGE_REVIEWS = "is_rate_by_user";
-    public  static final  String KEY_IS_RATE_BY_WORKER_MESSAGE_REVIEWS = "is_rate_by_worker";
+    //photos
+    public static final String KEY_PHOTO_LINK_PHOTOS = "photo_link";
+    public static final String KEY_OWNER_ID_PHOTOS = "owner_id";
 
-    //reviews for service
-    public  static final  String KEY_REVIEW_REVIEWS_FOR_SERVICE = "review";
-    public  static final  String KEY_RATING_REVIEWS_FOR_SERVICE = "rating";
-    public  static final  String KEY_SERVICE_ID_REVIEWS_FOR_SERVICE = "rating";
-    public  static final  String KEY_VALUING_PHONE_REVIEWS_FOR_SERVICE = "valuing_phone";
+    //subscribers
+    public static final String KEY_USER_ID = "user_id";
+    public static final String KEY_WORKER_ID = "worker_id";
 
-
-    //reviews for user
-    public  static final  String KEY_VALUING_PHONE_REVIEWS_FOR_USER = "valuing_phone";
-    public  static final  String KEY_ESTIMATED_PHONE_REVIEWS_FOR_USER = "estimated_phone";
-    public  static final  String KEY_REVIEW_REVIEWS_FOR_USER = "review";
-    public  static final  String KEY_RATING_REVIEWS_FOR_USER = "rating";
+    //tags
+    public static final String KEY_SERVICE_ID_TAGS = "service_id";
+    public static final String KEY_TAG_TAGS = "tag";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -82,81 +84,84 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String users = "create table "+ TABLE_CONTACTS_USERS
+        String users = "create table " + TABLE_CONTACTS_USERS
                 + "("
-                + KEY_USER_ID + " text primary key,"
+                + KEY_ID + " text primary key,"
+                + KEY_PHONE_USERS + " text,"
                 + KEY_NAME_USERS + " text,"
-                + KEY_PASS_USERS + " text,"
                 + KEY_CITY_USERS + " text,"
-                + KEY_RATING_USERS + " text,"
-                + KEY_BIRTHDAY_USERS + " text,"
+                + KEY_SUBSCRIPTIONS_COUNT_USERS + " text,"
                 + KEY_COUNT_OF_RATES_USERS + " text,"
-                + KEY_PHOTO_LINK_USERS + " text"
+                + KEY_SUBSCRIBERS_COUNT_USERS + " text,"
+                + KEY_RATING_USERS + " text"
                 + ")";
-        String services = "create table "+ TABLE_CONTACTS_SERVICES
+
+        String services = "create table " + TABLE_CONTACTS_SERVICES
                 + "(" + KEY_ID + " text primary key,"
+                + KEY_USER_ID + " text,"
                 + KEY_NAME_SERVICES + " text,"
-                + KEY_DESCRIPTION_SERVICES+ " text,"
                 + KEY_RATING_SERVICES + " text,"
-                + KEY_COUNT_OF_RATES_SERVICES + " text,"
+                + KEY_DESCRIPTION_SERVICES + " text,"
                 + KEY_MIN_COST_SERVICES + " text,"
-                + KEY_USER_ID + " text"
+                + KEY_IS_PREMIUM_SERVICES + " text,"
+                + KEY_CATEGORY_SERVICES + " text,"
+                + KEY_ADDRESS_SERVICES + " text,"
+                + KEY_COUNT_OF_RATES_SERVICES + " text,"
+                + KEY_CREATION_DATE_SERVICES + " text"
                 + ")";
-        String workingDays = "create table "+ TABLE_WORKING_DAYS
+
+        String workingDays = "create table " + TABLE_WORKING_DAYS
                 + "("
                 + KEY_ID + " text primary key,"
                 + KEY_DATE_WORKING_DAYS + " date,"
                 + KEY_SERVICE_ID_WORKING_DAYS + " text"
                 + ")";
-        String workingTime = "create table "+ TABLE_WORKING_TIME
+
+        String workingTime = "create table " + TABLE_WORKING_TIME
                 + "("
                 + KEY_ID + " text primary key,"
                 + KEY_TIME_WORKING_TIME + " text,"
-                + KEY_USER_ID + " text,"
+                + KEY_IS_BLOCKED_TIME + " text,"
                 + KEY_WORKING_DAYS_ID_WORKING_TIME + " integer"
                 + ")";
-        String dialogs = "create table "+ TABLE_DIALOGS
+
+        String orders = "create table " + TABLE_ORDERS
                 + "("
                 + KEY_ID + " text primary key,"
-                + KEY_FIRST_USER_ID_DIALOGS + " text,"
-                + KEY_SECOND_USER_ID_DIALOGS + " text"
-                + ")";
-        String messagesOrders = "create table "+ TABLE_MESSAGE_ORDERS
-                + "("
-                + KEY_ID + " text primary key,"
-                + KEY_DIALOG_ID_MESSAGES + " text,"
-                + KEY_IS_CANCELED_MESSAGE_ORDERS + " text,"
-                + KEY_TIME_ID_MESSAGES + " text,"
-                + KEY_MESSAGE_TIME_MESSAGES + " text"
+                + KEY_USER_ID + " text,"
+                + KEY_IS_CANCELED_ORDERS + " text,"
+                + KEY_MESSAGE_TIME_ORDERS + " text,"
+                + KEY_WORKING_TIME_ID_ORDERS + " integer"
                 + ")";
 
-        String messagesReviews = "create table "+ TABLE_MESSAGE_REVIEWS
-                + "("
-                + KEY_ID + " text primary key,"
-                + KEY_DIALOG_ID_MESSAGES + " text,"
-                + KEY_IS_RATE_BY_USER_MESSAGE_REVIEWS + " text,"
-                + KEY_IS_RATE_BY_WORKER_MESSAGE_REVIEWS+ " text,"
-                + KEY_TIME_ID_MESSAGES + " text,"
-                + KEY_MESSAGE_TIME_MESSAGES + " text"
+        String reviews = "create table " + TABLE_REVIEWS
+                + "(" + KEY_ID + " text primary key,"
+                + KEY_REVIEW_REVIEWS + " text,"
+                + KEY_RATING_REVIEWS + " text,"
+                + KEY_TYPE_REVIEWS + " text,"
+                + KEY_TIME_REVIEWS + " text,"
+                + KEY_ORDER_ID_REVIEWS + " text"
                 + ")";
 
-        String reviewsForService = "create table "+ TABLE_REVIEWS_FOR_SERVICE
+        String photos = "create table " + TABLE_PHOTOS
                 + "("
                 + KEY_ID + " text primary key,"
-                + KEY_MESSAGE_TIME_MESSAGES + " text,"
-                + KEY_VALUING_PHONE_REVIEWS_FOR_SERVICE + " text,"
-                + KEY_REVIEW_REVIEWS_FOR_SERVICE + " text,"
-                + KEY_RATING_REVIEWS_FOR_SERVICE + " text"
+                + KEY_PHOTO_LINK_PHOTOS + " text,"
+                + KEY_OWNER_ID_PHOTOS + " text"
                 + ")";
 
-        String reviewsForUser = "create table "+ TABLE_REVIEWS_FOR_USERS
+        String subscribers = "create table " + TABLE_SUBSCRIBERS
                 + "("
                 + KEY_ID + " text primary key,"
-                + KEY_MESSAGE_TIME_MESSAGES + " text,"
-                + KEY_VALUING_PHONE_REVIEWS_FOR_USER + " text,"
-                + KEY_ESTIMATED_PHONE_REVIEWS_FOR_USER + " text,"
-                + KEY_REVIEW_REVIEWS_FOR_USER + " text,"
-                + KEY_RATING_REVIEWS_FOR_USER + " text"
+                + KEY_USER_ID + " text,"
+                + KEY_WORKER_ID + " text"
+                + ")";
+
+        String tags = "create table " + TABLE_TAGS
+                + "("
+                + KEY_ID + " text primary key,"
+                + KEY_SERVICE_ID_TAGS + " text,"
+                + KEY_TAG_TAGS + " text"
                 + ")";
 
         // create users table
@@ -171,20 +176,21 @@ public class DBHelper extends SQLiteOpenHelper {
         // create working time table
         db.execSQL(workingTime);
 
-        //create dialogs
-        db.execSQL(dialogs);
+        //create reviews
+        db.execSQL(reviews);
 
-        //create messages_orders
-        db.execSQL(messagesOrders);
+        //create orders
+        db.execSQL(orders);
 
-        //create messages_reviews
-        db.execSQL(messagesReviews);
+        //create photos
+        db.execSQL(photos);
 
-        //create reviews for service
-        db.execSQL(reviewsForService);
+        //create subscribers
+        db.execSQL(subscribers);
 
-        //create reviews for user
-        db.execSQL(reviewsForUser);
+        //create tags
+        db.execSQL(tags);
+
     }
 
     @Override
@@ -193,11 +199,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists " + TABLE_CONTACTS_SERVICES);
         db.execSQL("drop table if exists " + TABLE_WORKING_DAYS);
         db.execSQL("drop table if exists " + TABLE_WORKING_TIME);
-        db.execSQL("drop table if exists " + TABLE_DIALOGS);
-        db.execSQL("drop table if exists " + TABLE_MESSAGE_ORDERS);
-        db.execSQL("drop table if exists " + TABLE_MESSAGE_REVIEWS);
-        db.execSQL("drop table if exists " + TABLE_REVIEWS_FOR_SERVICE);
-        db.execSQL("drop table if exists " + TABLE_REVIEWS_FOR_USERS);
+        db.execSQL("drop table if exists " + TABLE_REVIEWS);
+        db.execSQL("drop table if exists " + TABLE_ORDERS);
+        db.execSQL("drop table if exists " + TABLE_PHOTOS);
+        db.execSQL("drop table if exists " + TABLE_SUBSCRIBERS);
+        db.execSQL("drop table if exists " + TABLE_TAGS);
 
         onCreate(db);
     }

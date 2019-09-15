@@ -1,44 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/allPages"
-    android:orientation="vertical"
-    tools:context=".reviews.Review"
-    >
+    android:background="@color/mainColorBG"
+    tools:context=".reviews.Review">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/headerReviewLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/rate"
-        android:textSize="26sp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        android:layout_gravity="center"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/footerReviewLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerReviewLayout">
 
-    <EditText
-        android:id="@+id/reviewReviewInput"
-        android:inputType="textMultiLine"
-        android:layout_width="312dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="13dp"
-        android:layout_gravity="center"
-        android:ems="10" />
+        <TextView
+            style="@style/mainText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Оценка и отзыв"
+            android:textColor="@color/panelColor" />
 
-    <RatingBar
-        android:id="@+id/ratingBarReview"
-        android:layout_width="wrap_content"
+        <RatingBar
+            android:id="@+id/ratingBarReview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:theme="@style/ratingBarColors"/>
+
+        <LinearLayout
+            style="@style/block"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/block_text"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/reviewReviewInput"
+                style="@style/mainText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:hint="Отзыв"
+                android:inputType="textMultiLine|textCapSentences" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/rateReviewBtn"
+            style="@style/smallMainButtonOther"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:text="@string/rate" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/footerReviewLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"/>
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <Button
-        android:id="@+id/rateReviewBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/rate" />
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

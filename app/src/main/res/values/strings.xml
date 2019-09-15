@@ -1,13 +1,13 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string name="regUser">Зарегестрироваться</string>
     <string name="logOut">Выйти</string>
-    <string name="addServices">Добавить сервис</string>
-    <string name="findServices">Найти сервис</string>
+    <string name="addServices">Добавить услугу</string>
+    <string name="findServices">Найти услугу</string>
     <string name="profile">Профиль</string>
 
     //registration
     <string name="nameRegistration">Имя</string>
-    <string name="surnameRegistration">Фамилия</string>
+    <string name="surname">Фамилия</string>
     <string name="cityRegistration">Город</string>
     <string name="phoneRegistration">Номер телефона</string>
     <string name="passwordRegistration">Пароль</string>
@@ -20,7 +20,7 @@
     <string name="phone">Телефон</string>
 
     //Edit service
-    <string name="edit">Изменить</string>
+    <string name="save">Сохранить</string>
 
     //Edit profile
 
@@ -28,12 +28,11 @@
     <string name="selectedId">selectedId</string>
     <string name="yearId">yearId</string>
 
-
     <string name="BunBeauty">BunBeauty</string>
     <string name="hello_blank_fragment">hello blank fragment</string>
     <string name="status_worker">worker</string>
     <string name="empty_field">Не все поля заполнены</string>
-    <string name="defult_value">-</string>
+    <string name="default_value">-</string>
     <string name="empty_phone_field">Поле с номером телефона не может быть пустым</string>
     <string name="resendCode">Отправить код снова</string>
     <string name="verifyCode">Подтвердить код</string>
@@ -41,20 +40,48 @@
     <string name="canceled">Отказаться</string>
     <string name="Dialogs">Диалоги</string>
     <string name="rate">Оценить</string>
+    <string name="deleteService">Удалить</string>
+    <string name="channel_name">q</string>
+    <string name="channel_description">qq</string>
+
+    //bottom panel
+    <string name="chat">\uf075</string>
+    <string name="user">\uf007</string>
+    <string name="mainScreen">\uf03a</string>
+    <string name="search">\uf002</string>
+    <string name="back">\uf104</string>
+    <string name="settings">\uf303</string>
+    <string name="subscribe_heart">\uf004</string>
+    <string name="premium">\uf091</string>
 
     //array for spinner
     <string-array name="cities">
-        <item>Город</item>
-        <item>dubna</item>
-        <item>dmitrov</item>
-        <item>taldom</item>
-        <item>kimry</item>
+        <item><b>не выбран</b></item>
+        <item><b>dubna</b></item>
+        <item><b>dmitrov</b></item>
+        <item><b>taldom</b></item>
+        <item><b>kimry</b></item>
     </string-array>
 
     <string-array name="searchBy">
-        <item>название сервиса</item>
-        <item>имя и фамилия</item>
+        <item><b>название сервиса</b></item>
+        <item><b>имя и фамилия</b></item>
     </string-array>
 
+    <string-array name="countryCode">
+        <item><b><font android:color="@color/white">+7</font></b></item>
+        <item><b><font android:color="@color/white">+1</font></b></item>
+    </string-array>
+
+    <string-array name="countryCodeForEditService">
+        <item><b><font android:color="@color/black">+7</font></b></item>
+        <item><b><font android:color="@color/black">+1</font></b></item>
+    </string-array>
+
+    <string name="title_activity_picked_comment">PickedComment</string>
+    <string name="saveData">Сохранить данные</string>
+    <string name="subscribed"><![CDATA[<B]]></string>
+    <string name="name">Name</string>
+    <string name="change_number"><u>Именить номер</u></string>
 
 </resources>

@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/foundServiceProfileElementLayout"
+    style="@style/block"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:theme="@style/allPages"
-    tools:context=".fragments.foundElements.foundServiceProfileElement">
+    android:layout_height="wrap_content"
+    android:background="@drawable/profile_block"
+    android:orientation="horizontal"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/serviceNameFoundServiceProfileElementText"
+        style="@style/foundProfileElement"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="TextView"
-        android:textSize="18sp" />
+        android:text="TextView" />
 
+    <RatingBar
+        android:id="@+id/ratingBarFondServiceProfileElement"
+        style="@android:style/Widget.Holo.RatingBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/ratingBarColors"
+        android:isIndicator="true" />
 </LinearLayout>

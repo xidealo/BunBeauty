@@ -2,20 +2,21 @@ package com.example.ideal.myapplication.logIn;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.ideal.myapplication.R;
+import com.example.ideal.myapplication.fragments.objects.User;
 import com.example.ideal.myapplication.helpApi.WorkWithViewApi;
 import com.example.ideal.myapplication.other.DBHelper;
-import com.example.ideal.myapplication.R;
 import com.example.ideal.myapplication.other.Profile;
-import com.example.ideal.myapplication.fragments.objects.User;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -24,49 +25,42 @@ import java.util.Map;
 
 public class Registration extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String STATUS = "status";
-    private static final String FILE_NAME = "Info";
-
-    private static final String PHONE_NUMBER = "Phone number";
-    private static final String REF = "users";
+    private static final String PHONE = "phone";
+    private static final String USERS = "users";
 
     private static final String NAME = "name";
     private static final String CITY = "city";
+    private static final String PHOTO_LINK = "photo link";
+    private static final String AVG_RATING = "avg rating";
+    private static final String COUNT_OF_RATES = "count of rates";
 
-    Button registrateBtn;
-    Button loginBtn;
-
-    EditText nameInput;
-    EditText surnameInput;
-    EditText cityInput;
-    EditText phoneInput;
-
-    DBHelper dbHelper;
-
-    User user;
-
-    SharedPreferences sPref;    //класс для работы с записью в файлы
+    private EditText nameInput;
+    private EditText surnameInput;
+    private EditText phoneInput;
+    private Spinner citySpinner;
+    private String defaultPhotoLink = "https://firebasestorage." +
+            "googleapis.com/v0/b/bun-beauty.appspot.com/o/avatar%2FdefaultAva." +
+            "jpg?alt=media&token=f15dbe15-0541-46cc-8272-2578627ed311";
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration);
 
-        registrateBtn = findViewById(R.id.registrateRegistrationBtn);
-        loginBtn = findViewById(R.id.loginRegistrationBtn);
+        Button registrateBtn = findViewById(R.id.saveDataRegistrationBtn);
 
         nameInput = findViewById(R.id.nameRegistrationInput);
         surnameInput = findViewById(R.id.surnameRegistrationInput);
-        cityInput = findViewById(R.id.cityRegistrationInput);
         phoneInput = findViewById(R.id.phoneRegistrationInput);
+        citySpinner = findViewById(R.id.citySpinnerRegistrationSpinner);
         //Заполняем поле телефона
-        String phoneNumber = getIntent().getStringExtra(PHONE_NUMBER);
+        String phoneNumber = getIntent().getStringExtra(PHONE);
         phoneInput.setText(phoneNumber);
 
         dbHelper = new DBHelper(this);
 
         registrateBtn.setOnClickListener(this);
-        loginBtn.setOnClickListener(this);
     }
 
     @Override
@@ -74,104 +68,161 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
         WorkWithViewApi.hideKeyboard(this);
 
-        switch (v.getId()){
-            case R.id.registrateRegistrationBtn:
+        switch (v.getId()) {
+            case R.id.saveDataRegistrationBtn:
                 //получение данных с инпутов
-                user = new User();
+
                 //проверка на незаполенные поля
-                if(isFullInputs()) {
+                if (areInputsCorrect()) {
                     //если имя не устанавлявается, значит выводим тоаст и выходим из кейса
-                    String fullName = nameInput.getText().toString().toLowerCase() + " " + surnameInput.getText().toString().toLowerCase();
-                    if(!user.setName(fullName)){
-                        Toast.makeText(
-                                this,
-                                "Имя должно содержать только буквы",
-                                Toast.LENGTH_SHORT).show();
+                    String name = nameInput.getText().toString().toLowerCase();
+                    String surname = surnameInput.getText().toString().toLowerCase();
+
+                    if (name.length() > 20) {
+                        assertNameSoLong();
                         break;
+                    } else {
+                        if (surname.length() > 20) {
+                            assertSurnameSoLong();
+                            break;
+                        } else {
+                            User user = new User();
+                            String fullName = name + " " + surname;
+                            user.setName(fullName);
+
+                            String phone = phoneInput.getText().toString();
+                            user.setPhone(phone);
+
+                            String city  = citySpinner.getSelectedItem().toString().toLowerCase();
+                            user.setCity(city);
+                            registration(user);
+                            //идем в профиль
+                            goToProfile();
+                        }
                     }
-                    if(!user.setCity(cityInput.getText().toString().toLowerCase())){
-                        Toast.makeText(
-                                this,
-                                "Название города должно содержать только буквы",
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                    registration(user);
-                    //идем в профиль
-                    goToProfile();
-                }
-                else{
-                    Toast.makeText(
-                            this,
-                            "Не все поля заполнены",
-                            Toast.LENGTH_SHORT).show();
                 }
                 break;
 
-            case R.id.loginRegistrationBtn:
-                // идем в авторизацию
-                goToAuthorization();
-                break;
             default:
                 break;
         }
     }
 
     private void registration(User user) {
-        String phoneNumber = phoneInput.getText().toString();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(REF).child(phoneNumber);
+        DatabaseReference myRef = database.getReference(USERS);
 
-        Map<String,Object> items = new HashMap<>();
-        items.put(NAME,user.getName());
-        items.put(CITY,user.getCity());
+        Map<String, Object> items = new HashMap<>();
+        items.put(NAME, user.getName());
+        items.put(CITY, user.getCity());
+        items.put(PHONE, user.getPhone());
+        items.put(AVG_RATING, 0);
+        items.put(COUNT_OF_RATES, 0);
+        items.put(PHOTO_LINK, defaultPhotoLink);
+
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        user.setId(userId);
+        myRef = myRef.child(userId);
         myRef.updateChildren(items);
+
         //заносим данные о пользователе в локальную базу данных
-        putDataInLocalStorage(user, phoneNumber);
-        // сохраняем статус о том, что пользователь вошел
-        saveStatus();
+        addUserInLocalStorage(user);
     }
 
-    private void putDataInLocalStorage(User user,
-                                       String phoneNumber) {
+    private void addUserInLocalStorage(User user) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         database.delete(DBHelper.TABLE_CONTACTS_USERS, null, null);
 
         ContentValues contentValues = new ContentValues();
-
+        contentValues.put(DBHelper.KEY_ID, user.getId());
         contentValues.put(DBHelper.KEY_NAME_USERS, user.getName());
+        contentValues.put(DBHelper.KEY_RATING_USERS, "0");
         contentValues.put(DBHelper.KEY_CITY_USERS, user.getCity());
-        contentValues.put(DBHelper.KEY_USER_ID, phoneNumber);
+        contentValues.put(DBHelper.KEY_PHONE_USERS, user.getPhone());
+        contentValues.put(DBHelper.KEY_SUBSCRIBERS_COUNT_USERS, "0");
+        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, "0");
 
-        database.insert(DBHelper.TABLE_CONTACTS_USERS,null,contentValues);
+        database.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues);
+
+        putPhotoInLocalStorage(user);
     }
 
-    protected Boolean isFullInputs(){
-        if(nameInput.getText().toString().isEmpty()) return false;
-        if(surnameInput.getText().toString().isEmpty()) return false;
-        if(cityInput.getText().toString().isEmpty()) return false;
+    private void putPhotoInLocalStorage(User user) {
 
-        return  true;
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, user.getId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, defaultPhotoLink);
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, user.getId());
+
+        database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
     }
 
-    private void saveStatus() {
-        sPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putBoolean(STATUS, true);
-        editor.apply();
+    private void putSubscriptionsLocalStorage(User user) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_ID, user.getId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, defaultPhotoLink);
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, user.getId());
+
+        database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
     }
 
-    private  void goToProfile(){
+
+    private Boolean areInputsCorrect() {
+        String name = nameInput.getText().toString();
+        if (name.isEmpty()) {
+            nameInput.setError("Введите своё имя");
+            nameInput.requestFocus();
+            return false;
+        }
+
+        if (!name.matches("[a-zA-ZА-Яа-я\\-]+")) {
+            nameInput.setError("Допустимы только буквы и тире");
+            nameInput.requestFocus();
+            return false;
+        }
+
+        String surname = surnameInput.getText().toString();
+        if (surname.isEmpty()) {
+            surnameInput.setError("Введите свою фамилию");
+            surnameInput.requestFocus();
+            return false;
+        }
+
+        if (!surname.matches("[a-zA-ZА-Яа-я\\-]+")) {
+            surnameInput.setError("Допустимы только буквы и тире");
+            surnameInput.requestFocus();
+            return false;
+        }
+
+        String city = citySpinner.getSelectedItem().toString();
+        if (city.equals("Выбрать город")) {
+            assertNoSelectedCity();
+            return false;
+        }
+
+        return true;
+    }
+
+    private void goToProfile() {
         Intent intent = new Intent(this, Profile.class);
         startActivity(intent);
         finish();
     }
 
-    private  void  goToAuthorization(){
-        Intent intent = new Intent(Registration.this, Authorization.class);
-        startActivity(intent);
-        finish();
+    private void assertNameSoLong() {
+        Toast.makeText(this, "Слишком длинное имя", Toast.LENGTH_SHORT).show();
+    }
+    private void assertSurnameSoLong() {
+        Toast.makeText(this, "Слишком длинная фамилия", Toast.LENGTH_SHORT).show();
+    }
+    private void assertNoSelectedCity() {
+        Toast.makeText(this, "Выберите город", Toast.LENGTH_SHORT).show();
     }
 }

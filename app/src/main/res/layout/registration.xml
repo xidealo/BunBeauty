@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LogInPages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
     android:orientation="vertical"
     tools:context=".logIn.Registration">
 
@@ -17,71 +17,54 @@
 
     <EditText
         android:id="@+id/phoneRegistrationInput"
+        style="@style/lightTextForPhone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:backgroundTint="@color/lightText"
-        android:ems="10"
         android:enabled="false"
-        android:hint="@string/phoneRegistration"
-        android:inputType="phone"
-        android:textColor="@color/white"
-        android:textColorHint="@color/lightText" />
+        android:hint="@string/phoneRegistration" />
 
     <EditText
         android:id="@+id/nameRegistrationInput"
+        style="@style/lightTextForText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="45dp"
-        android:backgroundTint="@color/lightText"
-        android:ems="10"
-        android:hint="@string/nameRegistration"
-        android:inputType="textCapWords"
-        android:textColor="@color/white"
-        android:textColorHint="@color/lightText" />
+        android:hint="@string/nameRegistration" />
 
     <EditText
         android:id="@+id/surnameRegistrationInput"
+        style="@style/lightTextForText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:backgroundTint="@color/lightText"
-        android:ems="10"
-        android:hint="@string/surnameRegistration"
-        android:inputType="textPersonName|textCapWords"
-        android:textColor="@color/white"
-        android:textColorHint="@color/lightText" />
+        android:hint="@string/surname" />
 
-    <EditText
-        android:id="@+id/cityRegistrationInput"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="212dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:backgroundTint="@color/lightText"
-        android:ems="10"
-        android:hint="@string/cityRegistration"
-        android:inputType="textPersonName|textCapWords"
-        android:textColor="@color/white"
-        android:textColorHint="@color/lightText" />
+        android:layout_marginTop="20dp">
+        <Spinner
+            android:id="@+id/citySpinnerRegistrationSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/choice_cites"
+            android:background="@color/white"
+            android:backgroundTint="@color/panelColor"
+            android:popupBackground="@color/panelColor"/>
+    </LinearLayout>
+
 
     <Button
-        android:id="@+id/registrateRegistrationBtn"
+        android:id="@+id/saveDataRegistrationBtn"
+        style="@style/mainButtonLogIn"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:background="@drawable/btn"
-        android:text="@string/regUser"
-        android:textColor="@color/white"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/loginRegistrationBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/logInRegistration" />
-
+        android:gravity="center"
+        android:text="@string/saveData" />
 
 </LinearLayout>

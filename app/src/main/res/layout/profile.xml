@@ -4,187 +4,211 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".other.Profile"
-    android:theme="@style/allPages">
+    android:background="@color/mainColorBG"
+    tools:context=".other.Profile">
 
-    <Button
-        android:id="@+id/logOutProfileBtn"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:text="@string/logOut"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.050000012" />
-
-    <Button
-        android:id="@+id/addServicesProfileBtn"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:text="@string/addServices"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/mainScreenProfileBtn"
-        app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.95" />
-
-    <Button
-        android:id="@+id/findServicesProfileBtn"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:text="@string/findServices"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toEndOf="@+id/mainScreenProfileBtn"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.95" />
-
-    <Button
-        android:id="@+id/mainScreenProfileBtn"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:text="@string/main_screen"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.95" />
-
-    <Button
-        android:id="@+id/editProfileBtn"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="12dp"
-        android:text="@string/edit"
-        app:layout_constraintBottom_toTopOf="@+id/orderProfileScroll"
-        app:layout_constraintEnd_toStartOf="@+id/logOutProfileBtn"
-        app:layout_constraintHorizontal_bias="0.968"
-        app:layout_constraintStart_toEndOf="@+id/nameProfileText"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.666" />
-
-    <Button
-        android:id="@+id/dialogsProfileBtn"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/headerProfileLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/Dialogs"
-        app:layout_constraintBottom_toTopOf="@+id/addServicesProfileBtn"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.SwitchCompat
-        android:id="@+id/servicesOrOrdersProfileSwitch"
-        android:layout_width="wrap_content"
+    <ProgressBar
+        android:id="@+id/progressBarProfile"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:checked="false"
-        android:text="My orders"
-        android:textOff="OFF"
-        android:textOn="ON"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.82"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/servicesProfileScroll"
-        app:layout_constraintVertical_bias="0.100000024"
-        app:showText="true" />
-
-    <ScrollView
-        android:id="@+id/servicesProfileScroll"
-        android:layout_width="330dp"
-        android:layout_height="310dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/panelColor"
+        app:layout_constraintBottom_toTopOf="@+id/footerProfileLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.41">
+        app:layout_constraintTop_toBottomOf="@+id/headerProfileLayout" />
 
+    <LinearLayout
+        android:id="@+id/mainLayoutProfile"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/servicesProfileRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerProfileLayout"
+        android:animateLayoutChanges="true">
+
+        <!-- Верхняя часть-->
         <LinearLayout
-            android:id="@+id/servicesProfileLayout"
+            style="@style/block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/block_text"
             android:orientation="vertical"
-            android:background="@color/yellow1"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent" />
+            android:padding="5dp">
 
-    </ScrollView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-    <ScrollView
-        android:id="@+id/orderProfileScroll"
-        android:layout_width="330dp"
-        android:layout_height="310dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.41">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/block_text"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:id="@+id/avatarProfileImage"
+                        android:layout_width="@dimen/photo_width"
+                        android:layout_height="@dimen/photo_height"
+                        android:layout_gravity="center"
+                        tools:srcCompat="@tools:sample/avatars" />
+                </LinearLayout>
+                <!-- Rating bar -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/block_text"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/nameProfileText"
+                        style="@style/mainTextProfile"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/cityProfileText"
+                        style="@style/defaultTextProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/phoneProfileText"
+                        style="@style/defaultTextProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/subscribersProfileText"
+                        style="@style/defaultTextProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:text="TextView" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="2dp">
+
+                <LinearLayout
+                    android:id="@+id/ratingProfileLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/main_button"
+                    android:gravity="center">
+
+                    <RatingBar
+                        android:id="@+id/ratingBarProfile"
+                        style="@android:style/Widget.Holo.RatingBar.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:theme="@style/ratingBarColors" />
+
+                    <TextView
+                        android:id="@+id/withoutRatingProfileText"
+                        style="@style/buttonText"
+                        android:layout_width="250dp"
+                        android:layout_height="@dimen/main_button_height"
+                        android:gravity="center"
+                        android:text="Оценок еще нет"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/subscriptionsProfileLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/main_button"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/subscriptionsProfileText"
+                        style="@style/buttonText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:gravity="center"
+                        android:text="Подписки" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ordersProfileLayout"
+            android:id="@+id/switcherProfileLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="@color/white"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"
-            />
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    </ScrollView>
+            <Button
+                android:id="@+id/addServicesProfileBtn"
+                style="@style/smallMainButtonOther"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/main_button_height"
+                android:layout_gravity="start"
+                android:layout_marginEnd="10dp"
+                android:text="@string/addServices"
+                android:visibility="invisible" />
+        </LinearLayout>
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/nameProfileText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/cityProfileText"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/servicesProfileRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/resultsProfileRecycleView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.764" />
+        app:layout_constraintTop_toBottomOf="@+id/mainLayoutProfile">
 
-    <TextView
-        android:id="@+id/cityProfileText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginBottom="36dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/servicesProfileScroll"
-        app:layout_constraintStart_toStartOf="parent" />
+    </android.support.v7.widget.RecyclerView>
 
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/resultsProfileRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/footerProfileLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/servicesProfileRecyclerView" />
+
+    <LinearLayout
+        android:id="@+id/footerProfileLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_panel_height"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
