@@ -4,9 +4,9 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.bunbeauty.ideal.myapplication.fragments.objects.Photo;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Service;
-import com.bunbeauty.ideal.myapplication.fragments.objects.User;
+import com.bunbeauty.ideal.myapplication.entity.Photo;
+import com.bunbeauty.ideal.myapplication.entity.Service;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 
@@ -16,14 +16,8 @@ public class LoadingProfileData {
 
     private static final String TAG = "DBInf";
 
-    private static final String AVG_RATING = "avg rating";
     private static final String WORKER_ID = "worker id";
 
-    private static final String CITY = "city";
-    private static final String NAME = "name";
-    private static final String COUNT_OF_RATES = "count of rates";
-    private static final String PHONE = "phone";
-    private static final String TAGS = "tags";
 
     //PHOTOS
     private static final String PHOTO_LINK = "photo link";
@@ -63,11 +57,11 @@ public class LoadingProfileData {
         });
         subscriptionThread.start();
 
-        String userPhone = userSnapshot.child(PHONE).getValue(String.class);
-        String userName = userSnapshot.child(NAME).getValue(String.class);
-        String userCity = userSnapshot.child(CITY).getValue(String.class);
-        long userCountOfRates = userSnapshot.child(COUNT_OF_RATES).getValue(long.class);
-        float userRating = userSnapshot.child(AVG_RATING).getValue(float.class);
+        String userPhone = userSnapshot.child(User.PHONE).getValue(String.class);
+        String userName = userSnapshot.child(User.NAME).getValue(String.class);
+        String userCity = userSnapshot.child(User.CITY).getValue(String.class);
+        long userCountOfRates = userSnapshot.child(User.COUNT_OF_RATES).getValue(long.class);
+        float userRating = userSnapshot.child(User.AVG_RATING).getValue(float.class);
 
         User user = new User();
         user.setId(userId);
@@ -138,8 +132,8 @@ public class LoadingProfileData {
             Log.d(TAG, "loadUserServices: ");
 
             String serviceId = serviceSnap.getKey();
-            String serviceName = serviceSnap.child(NAME).getValue(String.class);
-            float serviceRating = serviceSnap.child(AVG_RATING).getValue(Float.class);
+            String serviceName = serviceSnap.child(Service.NAME).getValue(String.class);
+            float serviceRating = serviceSnap.child(Service.AVG_RATING).getValue(Float.class);
 
             Service service = new Service();
             service.setId(serviceId);
@@ -147,7 +141,7 @@ public class LoadingProfileData {
             service.setUserId(userId);
             service.setAverageRating(serviceRating);
             ArrayList<String> tagsArray = new ArrayList<>();
-            for (DataSnapshot tag : serviceSnap.child(TAGS).getChildren()) {
+            for (DataSnapshot tag : serviceSnap.child(Service.TAGS).getChildren()) {
                 tagsArray.add(tag.getValue(String.class));
             }
             service.setTags(tagsArray);

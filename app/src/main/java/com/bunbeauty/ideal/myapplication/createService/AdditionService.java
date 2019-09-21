@@ -19,10 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.fragments.PremiumElement;
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Photo;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Service;
+import com.bunbeauty.ideal.myapplication.entity.Photo;
+import com.bunbeauty.ideal.myapplication.entity.Service;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement;
@@ -51,28 +52,14 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
 
     private static final String SERVICE_ID = "service id";
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
-    private static final String USERS = "users";
-
-    private static final String SERVICES = "services";
-    private static final String NAME = "name";
-    private static final String COST = "cost";
-    private static final String DESCRIPTION = "description";
-    private static final String IS_PREMIUM = "is premium";
-    private static final String CREATION_DATE = "creation date";
-    private static final String TAGS = "tags";
 
     private static final int PICK_IMAGE_REQUEST = 71;
     private static final String SERVICE_PHOTO = "service photo";
     private static final String PHOTOS = "photos";
     private static final String PHOTO_LINK = "photo link";
-    private static final String CATEGORY = "category";
-    private static final String ADDRESS = "address";
-    private static final String TAG = "DBInf";
     private static final String CODES = "codes";
     private static final String CODE = "code";
     private static final String COUNT = "count";
-    private static final String COUNT_OF_RATES = "count of rates";
-    private static final String AVG_RATING = "avg rating";
 
     private static final int MAX_COUNT_OF_IMAGES = 10;
 
@@ -210,23 +197,23 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference serviceRef = database.getReference(USERS).child(service.getUserId()).child(SERVICES);
+        DatabaseReference serviceRef = database.getReference(User.USERS).child(service.getUserId()).child(Service.SERVICES);
 
         Map<String, Object> items = new HashMap<>();
         Map<String, String> tagsMap = new HashMap<>();
-        items.put(NAME, service.getName().toLowerCase());
-        items.put(AVG_RATING, 0);
-        items.put(COST, service.getCost());
-        items.put(DESCRIPTION, service.getDescription());
-        items.put(IS_PREMIUM, premiumDate);
-        items.put(CATEGORY, service.getCategory());
-        items.put(ADDRESS, service.getAddress());
-        items.put(COUNT_OF_RATES, service.getCountOfRates());
-        items.put(CREATION_DATE, workWithTimeApi.getDateInFormatYMDHMS(new Date()));
+        items.put(Service.NAME, service.getName().toLowerCase());
+        items.put(Service.AVG_RATING, 0);
+        items.put(Service.COST, service.getCost());
+        items.put(Service.DESCRIPTION, service.getDescription());
+        items.put(Service.IS_PREMIUM, premiumDate);
+        items.put(Service.CATEGORY, service.getCategory());
+        items.put(Service.ADDRESS, service.getAddress());
+        items.put(Service.COUNT_OF_RATES, service.getCountOfRates());
+        items.put(Service.CREATION_DATE, workWithTimeApi.getDateInFormatYMDHMS(new Date()));
         for (String tag : service.getTags()) {
             tagsMap.put(String.valueOf(tag.hashCode()), tag);
         }
-        items.put(TAGS, tagsMap);
+        items.put(Service.TAGS, tagsMap);
 
         String serviceId = serviceRef.push().getKey();
         serviceRef = serviceRef.child(serviceId);
@@ -321,7 +308,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     private void uploadImage(Uri filePath, final String serviceId) {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(USERS);
+        DatabaseReference myRef = database.getReference(User.USERS);
 
         if (filePath != null) {
             final String photoId = myRef.push().getKey();
@@ -347,9 +334,9 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     private void uploadPhotos(String storageReference, String serviceId, String photoId) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(USERS)
+        DatabaseReference myRef = database.getReference(User.USERS)
                 .child(getUserId())
-                .child(SERVICES)
+                .child(Service.SERVICES)
                 .child(serviceId)
                 .child(PHOTOS)
                 .child(photoId);

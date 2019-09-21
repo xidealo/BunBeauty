@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.chatElements.MessageOrderElement;
 import com.bunbeauty.ideal.myapplication.adapters.chatElements.MessageReviewElement;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Message;
+import com.bunbeauty.ideal.myapplication.entity.Message;
 
 import java.util.ArrayList;
 

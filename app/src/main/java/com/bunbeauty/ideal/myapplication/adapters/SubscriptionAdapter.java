@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.fragments.objects.User;
+import com.bunbeauty.ideal.myapplication.entity.User;
 
 import java.util.ArrayList;
 

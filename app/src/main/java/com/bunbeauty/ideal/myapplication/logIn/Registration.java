@@ -12,7 +12,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.fragments.objects.User;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi;
 import com.bunbeauty.ideal.myapplication.other.DBHelper;
 import com.bunbeauty.ideal.myapplication.other.Profile;
@@ -24,15 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Registration extends AppCompatActivity implements View.OnClickListener {
-
-    private static final String PHONE = "phone";
-    private static final String USERS = "users";
-
-    private static final String NAME = "name";
-    private static final String CITY = "city";
-    private static final String PHOTO_LINK = "photo link";
-    private static final String AVG_RATING = "avg rating";
-    private static final String COUNT_OF_RATES = "count of rates";
 
     private EditText nameInput;
     private EditText surnameInput;
@@ -55,7 +46,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         phoneInput = findViewById(R.id.phoneRegistrationInput);
         citySpinner = findViewById(R.id.citySpinnerRegistrationSpinner);
         //Заполняем поле телефона
-        String phoneNumber = getIntent().getStringExtra(PHONE);
+        String phoneNumber = getIntent().getStringExtra(User.PHONE);
         phoneInput.setText(phoneNumber);
 
         dbHelper = new DBHelper(this);
@@ -110,15 +101,15 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
     private void registration(User user) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(USERS);
+        DatabaseReference myRef = database.getReference(User.USERS);
 
         Map<String, Object> items = new HashMap<>();
-        items.put(NAME, user.getName());
-        items.put(CITY, user.getCity());
-        items.put(PHONE, user.getPhone());
-        items.put(AVG_RATING, 0);
-        items.put(COUNT_OF_RATES, 0);
-        items.put(PHOTO_LINK, defaultPhotoLink);
+        items.put(User.NAME, user.getName());
+        items.put(User.CITY, user.getCity());
+        items.put(User.PHONE, user.getPhone());
+        items.put(User.AVG_RATING, 0);
+        items.put(User.COUNT_OF_RATES, 0);
+        items.put(User.PHOTO_LINK, defaultPhotoLink);
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         user.setId(userId);

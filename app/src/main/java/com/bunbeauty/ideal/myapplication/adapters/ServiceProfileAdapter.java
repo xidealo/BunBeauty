@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.foundElements.FoundServiceProfileElement;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Service;
+import com.bunbeauty.ideal.myapplication.entity.Service;
 
 import java.util.ArrayList;
 

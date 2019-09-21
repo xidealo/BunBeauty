@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.bunbeauty.ideal.myapplication.entity.Service;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingProfileData;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
@@ -24,8 +26,6 @@ class MyAuthorization {
 
     private static final String TAG = "DBInf";
 
-    private static final String USERS = "users";
-    private static final String SERVICES = "services";
     private static final String ORDERS = "orders";
     private static final String USER_ID = "user id";
     private static final String IS_CANCELED = "is canceled";
@@ -39,8 +39,6 @@ class MyAuthorization {
     private static final String TIME = "time";
     private static final String DATE = "date";
 
-    private static final String PHONE = "phone";
-    private static final String NAME = "name";
     private static final String SERVICE_ID = "service id";
     private static final String WORKER_ID = "worker id";
 
@@ -64,8 +62,8 @@ class MyAuthorization {
 
     void authorizeUser() {
 
-        Query userQuery = FirebaseDatabase.getInstance().getReference(USERS).
-                orderByChild(PHONE).
+        Query userQuery = FirebaseDatabase.getInstance().getReference(User.USERS).
+                orderByChild(User.PHONE).
                 equalTo(myPhoneNumber);
 
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -76,7 +74,7 @@ class MyAuthorization {
                 } else {
                     // Получаем остальные данные о пользователе
                     final DataSnapshot userSnapshot = usersSnapshot.getChildren().iterator().next();
-                    Object name = userSnapshot.child(NAME).getValue();
+                    Object name = userSnapshot.child(User.NAME).getValue();
                     if (name == null) {
                         // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
                         goToRegistration();
@@ -92,7 +90,7 @@ class MyAuthorization {
                         serviceThread = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                LoadingProfileData.loadUserServices(userSnapshot.child(SERVICES),
+                                LoadingProfileData.loadUserServices(userSnapshot.child(Service.SERVICES),
                                         userId,
                                         localDatabase);
                                 serviceThread.interrupt();
@@ -106,7 +104,7 @@ class MyAuthorization {
 
                         //set listener for countOfRates
                         DatabaseReference countOfRatesRef = FirebaseDatabase.getInstance()
-                                .getReference(USERS)
+                                .getReference(User.USERS)
                                 .child(userId)
                                 .child(COUNT_OF_RATES);
                         countOfRatesRef.addValueEventListener(new ValueEventListener() {
@@ -122,7 +120,7 @@ class MyAuthorization {
                         });
                         // set listener for count of Subscribers
                         DatabaseReference countOfSubscribersRef = FirebaseDatabase.getInstance()
-                                .getReference(USERS)
+                                .getReference(User.USERS)
                                 .child(userId);
                         countOfSubscribersRef.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -178,9 +176,9 @@ class MyAuthorization {
             final String workingDayId = String.valueOf(orderSnapshot.child(WORKING_DAY_ID).getValue());
             final String workingTimeId = String.valueOf(orderSnapshot.child(WORKING_TIME_ID).getValue());
             DatabaseReference serviceReference = FirebaseDatabase.getInstance()
-                    .getReference(USERS)
+                    .getReference(User.USERS)
                     .child(workerId)
-                    .child(SERVICES)
+                    .child(Service.SERVICES)
                     .child(serviceId);
 
             serviceReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -220,7 +218,7 @@ class MyAuthorization {
                         });
                         orderThread.start();
 
-                        String serviceName = serviceSnapshot.child(NAME).getValue(String.class);
+                        String serviceName = serviceSnapshot.child(Service.NAME).getValue(String.class);
                         addServiceInLocalStorage(serviceId, serviceName, workerId);
                     }
 
@@ -353,7 +351,7 @@ class MyAuthorization {
     private void goToRegistration() {
         Intent intent = new Intent(context, Registration.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(PHONE, myPhoneNumber);
+        intent.putExtra(User.PHONE, myPhoneNumber);
         context.startActivity(intent);
     }
 

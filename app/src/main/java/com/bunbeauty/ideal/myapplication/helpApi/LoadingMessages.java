@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bunbeauty.ideal.myapplication.entity.Service;
 import com.bunbeauty.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 
@@ -24,7 +25,6 @@ public class LoadingMessages {
     private static final String REVIEW = "review";
     private static final String TYPE = "type";
     private static final String RATING = "rating";
-    private static final String NAME = "name";
     private static final String IS_CANCELED = "is canceled";
 
     public static void load(DataSnapshot workingDaySnapshot, String serviceId, String workingDayId,
@@ -143,7 +143,7 @@ public class LoadingMessages {
         String serviceId = serviceSnapshot.getKey();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_NAME_SERVICES, String.valueOf(serviceSnapshot.child(NAME).getValue()));
+        contentValues.put(DBHelper.KEY_NAME_SERVICES, String.valueOf(serviceSnapshot.child(Service.NAME).getValue()));
         contentValues.put(DBHelper.KEY_USER_ID, ownerId);
 
         boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);

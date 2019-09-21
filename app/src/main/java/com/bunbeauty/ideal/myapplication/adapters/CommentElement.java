@@ -11,7 +11,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Comment;
+import com.bunbeauty.ideal.myapplication.entity.Comment;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.other.DBHelper;

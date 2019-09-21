@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.fragments.objects;
+package com.bunbeauty.ideal.myapplication.entity;
 
 public class Dialog {
     private String userName;

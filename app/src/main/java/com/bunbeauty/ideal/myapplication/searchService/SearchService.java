@@ -18,8 +18,8 @@ import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.ServiceAdapter;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Service;
-import com.bunbeauty.ideal.myapplication.fragments.objects.User;
+import com.bunbeauty.ideal.myapplication.entity.Service;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.Search;
 import com.bunbeauty.ideal.myapplication.other.DBHelper;
@@ -36,10 +36,6 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
 
     // сначала идут константы
     private static final String TAG = "DBInf";
-
-    private static final String USERS = "users";
-    private static final String NAME = "name";
-    private static final String CITY = "city";
 
     private static final String NOT_CHOSEN = "не выбран";
     private static final String NAME_OF_SERVICE = "название сервиса";
@@ -175,8 +171,8 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
     private void getServicesInThisCity(final String userCity) {
         final Search search = new Search(this);
 
-        Query userQuery = FirebaseDatabase.getInstance().getReference(USERS)
-                .orderByChild(CITY)
+        Query userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
+                .orderByChild(User.CITY)
                 .equalTo(userCity);
 
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -221,9 +217,9 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
         final String enteredText = searchLineInput.getText().toString().toLowerCase();
         final Search search = new Search(this);
 
-        Query usersQuery = FirebaseDatabase.getInstance().getReference(USERS);
+        Query usersQuery = FirebaseDatabase.getInstance().getReference(User.USERS);
         if (!city.equals(NOT_CHOSEN)) {
-            usersQuery = usersQuery.orderByChild(CITY).equalTo(city);
+            usersQuery = usersQuery.orderByChild(User.CITY).equalTo(city);
         }
 
         usersQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -266,8 +262,8 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
         final String enteredText = searchLineInput.getText().toString().toLowerCase();
         final Search search = new Search(this);
 
-        Query userQuery = FirebaseDatabase.getInstance().getReference(USERS)
-                .orderByChild(NAME)
+        Query userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
+                .orderByChild(User.NAME)
                 .equalTo(enteredText);
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.MessageAdapter;
 import com.bunbeauty.ideal.myapplication.entity.FBListener;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Message;
+import com.bunbeauty.ideal.myapplication.entity.Message;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingMessages;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;

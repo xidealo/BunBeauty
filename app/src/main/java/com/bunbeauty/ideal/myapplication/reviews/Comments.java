@@ -18,7 +18,9 @@ import android.widget.TextView;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.CommentAdapter;
 import com.bunbeauty.ideal.myapplication.entity.FBListener;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Comment;
+import com.bunbeauty.ideal.myapplication.entity.Comment;
+import com.bunbeauty.ideal.myapplication.entity.Service;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingCommentsData;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData;
@@ -47,9 +49,7 @@ public class Comments extends AppCompatActivity {
     private static final String ORDER_ID = "order_id";
     private static final String OWNER_ID = "owner_id";
     private static final String SERVICE_OWNER_ID = "service owner id";
-    private static final String NAME = "name";
     private static final String SERVICE_ID = "service id";
-    private static final String SERVICES = "services";
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
     private static final String DATE = "date";
@@ -131,7 +131,7 @@ public class Comments extends AppCompatActivity {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference workingDaysRef = firebaseDatabase.getReference(USERS)
                 .child(ownerId)
-                .child(SERVICES)
+                .child(Service.SERVICES)
                 .child(serviceId)
                 .child(WORKING_DAYS);
 
@@ -362,7 +362,7 @@ public class Comments extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
+                comment.setUserName(String.valueOf(userSnapshot.child(User.NAME).getValue()));
                 commentList.add(comment);
                 if (countOfRates == currentCountOfReview) {
                     commentAdapter = new CommentAdapter(commentList.size(), commentList);
@@ -473,7 +473,7 @@ public class Comments extends AppCompatActivity {
                 final DatabaseReference timeRef = FirebaseDatabase.getInstance()
                         .getReference(USERS)
                         .child(workerId)
-                        .child(SERVICES)
+                        .child(Service.SERVICES)
                         .child(serviceId)
                         .child(WORKING_DAYS)
                         .child(workingDayId);
@@ -651,7 +651,7 @@ public class Comments extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                comment.setUserName(String.valueOf(userSnapshot.child(NAME).getValue()));
+                comment.setUserName(String.valueOf(userSnapshot.child(User.NAME).getValue()));
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 commentList.add(comment);
                 if (countOfRates == currentCountOfReview) {

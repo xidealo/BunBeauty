@@ -24,8 +24,9 @@ import android.widget.Toast;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar;
 import com.bunbeauty.ideal.myapplication.entity.FBListener;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.fragments.PremiumElement;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Service;
+import com.bunbeauty.ideal.myapplication.entity.Service;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingUserElementData;
@@ -59,23 +60,15 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     private static final String USER = "user";
     private static final String SERVICE_ID = "service id";
     private static final String TYPE = "type";
-    private static final String SERVICES = "services";
     private static final String IS_PREMIUM = "is premium";
     private static final String SERVICE_OWNER_ID = "service owner id";
-    private static final String USERS = "users";
     private static final String CODES = "codes";
     private static final String CODE = "code";
     private static final String WORKING_DAYS = "working days";
     private static final String WORKING_TIME = "working time";
     private static final String DATE = "date";
     private static final String ORDERS = "orders";
-    private static final String COUNT_OF_RATES = "count of rates";
     private static final String COUNT = "count";
-    private static final String DESCRIPTION = "description";
-    private static final String COST = "cost";
-    private static final String AVG_RATING = "avg rating";
-    private static final String ADDRESS = "address";
-    private static final String NAME = "name";
     private static final String PHOTOS = "photos";
 
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
@@ -175,7 +168,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private void loadServiceData() {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = firebaseDatabase.getReference(USERS)
+        final DatabaseReference myRef = firebaseDatabase.getReference(User.USERS)
                 .child(ownerId);
         //загружаем один раз всю информацию
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -186,25 +179,25 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
                 //подгрузка сервиса
                 final DataSnapshot serviceSnapshot = userSnapshot
-                        .child(SERVICES)
+                        .child(Service.SERVICES)
                         .child(serviceId);
 
                 LoadingGuestServiceData.loadPhotosByServiceId(serviceSnapshot.child(PHOTOS), serviceId, database);
 
                 //LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot, database);
                 Service service = new Service();
-                service.setCost(serviceSnapshot.child(COST).getValue(String.class));
-                service.setAddress(serviceSnapshot.child(ADDRESS).getValue(String.class));
-                service.setDescription(serviceSnapshot.child(DESCRIPTION).getValue(String.class));
-                service.setName(serviceSnapshot.child(NAME).getValue(String.class));
-                service.setAverageRating(serviceSnapshot.child(AVG_RATING).getValue(Float.class));
-                service.setCountOfRates(serviceSnapshot.child(COUNT_OF_RATES).getValue(Long.class));
+                service.setCost(serviceSnapshot.child(Service.COST).getValue(String.class));
+                service.setAddress(serviceSnapshot.child(Service.ADDRESS).getValue(String.class));
+                service.setDescription(serviceSnapshot.child(Service.DESCRIPTION).getValue(String.class));
+                service.setName(serviceSnapshot.child(Service.NAME).getValue(String.class));
+                service.setAverageRating(serviceSnapshot.child(Service.AVG_RATING).getValue(Float.class));
+                service.setCountOfRates(serviceSnapshot.child(Service.COUNT_OF_RATES).getValue(Long.class));
                 service.setIsPremium(WorkWithTimeApi.checkPremium(serviceSnapshot.child(IS_PREMIUM).getValue(String.class)));
 
                 setGuestService(service);
 
                 final DatabaseReference workingDaysRef = myRef
-                        .child(SERVICES)
+                        .child(Service.SERVICES)
                         .child(serviceId)
                         .child(WORKING_DAYS);
 
@@ -311,9 +304,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             }
         });
         //слушатель на данные сервиса
-        final DatabaseReference serviceRef = firebaseDatabase.getReference(USERS)
+        final DatabaseReference serviceRef = firebaseDatabase.getReference(User.USERS)
                 .child(ownerId)
-                .child(SERVICES)
+                .child(Service.SERVICES)
                 .child(serviceId);
         serviceRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -580,9 +573,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     @Override
     public void setPremium() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(USERS)
+        DatabaseReference myRef = database.getReference(User.USERS)
                 .child(getUserId())
-                .child(SERVICES)
+                .child(Service.SERVICES)
                 .child(serviceId)
                 .child(IS_PREMIUM);
         String newPremiumDate = addSevenDayPremium(premiumDate);
@@ -676,7 +669,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         intent.putExtra(SERVICE_ID, serviceId);
         intent.putExtra(TYPE, REVIEW_FOR_SERVICE);
         intent.putExtra(SERVICE_OWNER_ID, ownerId);
-        intent.putExtra(COUNT_OF_RATES, countOfRatesForComments);
+        intent.putExtra(Service.COUNT_OF_RATES, countOfRatesForComments);
         startActivity(intent);
     }
 

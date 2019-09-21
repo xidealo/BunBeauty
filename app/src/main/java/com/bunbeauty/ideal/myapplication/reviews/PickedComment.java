@@ -12,7 +12,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.fragments.objects.User;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.other.DBHelper;
@@ -30,10 +30,6 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
     private static final String USER_NAME = "user name";
     private static final String REVIEW = "review";
     private static final String RATING = "rating";
-
-    private static final String CITY = "city";
-    private static final String NAME = "name";
-    private static final String USERS = "users";
 
     private static final String OWNER_ID = "owner id";
 
@@ -95,7 +91,7 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
     private void loadOwnerAndAddToScreen(String userId) {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(USERS)
+        DatabaseReference myRef = database.getReference(User.USERS)
                 .child(userId);
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -103,8 +99,8 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
             public void onDataChange(@NonNull DataSnapshot user) {
                 User localUser = new User();
                 localUser.setId(ownerId);
-                localUser.setName(String.valueOf(user.child(NAME).getValue()));
-                localUser.setCity(String.valueOf(user.child(CITY).getValue()));
+                localUser.setName(String.valueOf(user.child(User.NAME).getValue()));
+                localUser.setCity(String.valueOf(user.child(User.CITY).getValue()));
                 addUserInLocalStorage(localUser);
             }
 

@@ -27,6 +27,8 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     private ProgressBar progressBar;
     private static final String TAG = "DBInf";
 
+    public Authorization() {
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,11 +60,11 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
-            case  R.id.verifyAuthBtn:
+        switch (v.getId()) {
+            case R.id.verifyAuthBtn:
                 String countryCode = CountryCodes.codes[codeSpinner.getSelectedItemPosition()];
                 myPhoneNumber = countryCode + phoneInput.getText().toString();
-                if(isPhoneCorrect(myPhoneNumber.trim())) {
+                if (isPhoneCorrect(myPhoneNumber.trim())) {
                     verifyBtn.setClickable(false);
                     goToVerifyPhone();
                 }
@@ -73,24 +75,23 @@ public class Authorization extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    protected Boolean isPhoneCorrect(String myPhoneNumber){
-
-        if(myPhoneNumber.length() < 11 || myPhoneNumber.length() > 12) {
+    protected Boolean isPhoneCorrect(String myPhoneNumber) {
+        if (myPhoneNumber.length() < 11 || myPhoneNumber.length() > 12) {
             phoneInput.setError("Некорректный номер");
             phoneInput.requestFocus();
             return false;
         }
-        return  true;
+        return true;
     }
 
-    private void hideViewsOfScreen(){
+    private void hideViewsOfScreen() {
         progressBar.setVisibility(View.VISIBLE);
         codeSpinner.setVisibility(View.GONE);
         phoneInput.setVisibility(View.GONE);
         verifyBtn.setVisibility(View.GONE);
     }
 
-    private void showViewsOnScreen(){
+    private void showViewsOnScreen() {
         codeSpinner.setVisibility(View.VISIBLE);
         enterPhoneText.setVisibility(View.VISIBLE);
         phoneInput.setVisibility(View.VISIBLE);

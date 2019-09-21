@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.foundElements.FoundOrderElement;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Order;
+import com.bunbeauty.ideal.myapplication.entity.Order;
 
 import java.util.ArrayList;
 

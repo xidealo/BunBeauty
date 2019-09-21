@@ -3,8 +3,8 @@ package com.bunbeauty.ideal.myapplication.helpApi;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.bunbeauty.ideal.myapplication.fragments.objects.Photo;
-import com.bunbeauty.ideal.myapplication.fragments.objects.User;
+import com.bunbeauty.ideal.myapplication.entity.Photo;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.other.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 
@@ -15,9 +15,7 @@ public class LoadingUserElementData {
     чтобы загружать минимальные данные,
     которые нужны для элементов RV
     */
-    private static final String NAME = "name";
     private static final String PHOTO_LINK = "photo link";
-    private static final String CITY = "city";
 
     private static SQLiteDatabase localDatabase;
     private static Thread photoThread;
@@ -36,7 +34,7 @@ public class LoadingUserElementData {
         });
         photoThread.start();
 
-        String userName = userSnapshot.child(NAME).getValue(String.class);
+        String userName = userSnapshot.child(User.NAME).getValue(String.class);
         User user = new User();
         user.setId(userId);
         user.setName(userName);
@@ -58,8 +56,8 @@ public class LoadingUserElementData {
         });
         photoThread.start();
 
-        String userName = userSnapshot.child(NAME).getValue(String.class);
-        String userCity = userSnapshot.child(CITY).getValue(String.class);
+        String userName = userSnapshot.child(User.NAME).getValue(String.class);
+        String userCity = userSnapshot.child(User.CITY).getValue(String.class);
         User user = new User();
         user.setId(userId);
         user.setName(userName);

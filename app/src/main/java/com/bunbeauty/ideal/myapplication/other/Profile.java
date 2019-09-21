@@ -24,9 +24,9 @@ import com.bunbeauty.ideal.myapplication.adapters.ServiceProfileAdapter;
 import com.bunbeauty.ideal.myapplication.createService.AdditionService;
 import com.bunbeauty.ideal.myapplication.entity.FBListener;
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Order;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Service;
-import com.bunbeauty.ideal.myapplication.fragments.objects.User;
+import com.bunbeauty.ideal.myapplication.entity.Order;
+import com.bunbeauty.ideal.myapplication.entity.Service;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingProfileData;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
@@ -49,18 +49,11 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     private static final String TAG = "DBInf";
     private static final String OWNER_ID = "owner id";
-    private static final String USERS = "users";
     private static final String REVIEW_FOR_USER = "review for user";
     private static final String STATUS = "status";
     private static final String SUBSCRIPTIONS = "подписки";
     private static final String SERVICE_OWNER_ID = "service owner id";
     private static final String SERVICES = "services";
-    private static final String COUNT_OF_RATES = "count of rates";
-    private static final String AVG_RATING = "avg rating";
-
-    private static final String CITY = "city";
-    private static final String NAME = "name";
-    private static final String PHONE = "phone";
 
     private static final String TYPE = "type";
     private static final String TOKEN = "token";
@@ -181,7 +174,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private void initFCM() {
         String token = FirebaseInstanceId.getInstance().getToken();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(USERS)
+        reference.child(User.USERS)
                 .child(ownerId)
                 .child(TOKEN)
                 .setValue(token);
@@ -210,7 +203,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     private void loadProfileData(final String ownerId) {
         final DatabaseReference userReference = FirebaseDatabase.getInstance()
-                .getReference(USERS)
+                .getReference(User.USERS)
                 .child(ownerId);
         ValueEventListener userListener = userReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -221,15 +214,15 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                         ownerId,
                         database);
 
-                String name = WorkWithStringsApi.doubleCapitalSymbols(userSnapshot.child(NAME).getValue(String.class));
-                String city = WorkWithStringsApi.firstCapitalSymbol(userSnapshot.child(CITY).getValue(String.class));
+                String name = WorkWithStringsApi.doubleCapitalSymbols(userSnapshot.child(User.NAME).getValue(String.class));
+                String city = WorkWithStringsApi.firstCapitalSymbol(userSnapshot.child(User.CITY).getValue(String.class));
 
                 User user = new User();
                 user.setName(name);
                 user.setCity(city);
-                user.setPhone(userSnapshot.child(PHONE).getValue(String.class));
-                user.setCountOfRates(userSnapshot.child(COUNT_OF_RATES).getValue(Long.class));
-                user.setRating(userSnapshot.child(AVG_RATING).getValue(Float.class));
+                user.setPhone(userSnapshot.child(User.PHONE).getValue(String.class));
+                user.setCountOfRates(userSnapshot.child(User.COUNT_OF_RATES).getValue(Long.class));
+                user.setRating(userSnapshot.child(User.AVG_RATING).getValue(Float.class));
                 //for intent
                 setProfile(user);
             }
@@ -539,7 +532,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private void goToUserComments(String status) {
         Intent intent = new Intent(this, Comments.class);
         intent.putExtra(SERVICE_OWNER_ID, ownerId);
-        intent.putExtra(COUNT_OF_RATES, getCountOfRates());
+        intent.putExtra(User.COUNT_OF_RATES, getCountOfRates());
         intent.putExtra(TYPE, status);
         startActivity(intent);
     }

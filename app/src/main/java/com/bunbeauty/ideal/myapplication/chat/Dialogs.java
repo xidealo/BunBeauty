@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.DialogAdapter;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Dialog;
+import com.bunbeauty.ideal.myapplication.entity.Dialog;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;

@@ -1,6 +1,15 @@
-package com.bunbeauty.ideal.myapplication.fragments.objects;
+package com.bunbeauty.ideal.myapplication.entity;
 
 public class User {
+
+    public static final String PHONE = "phone";
+    public static final String USERS = "users";
+
+    public static final String NAME = "name";
+    public static final String CITY = "city";
+    public static final String PHOTO_LINK = "photo link";
+    public static final String AVG_RATING = "avg rating";
+    public static final String COUNT_OF_RATES = "count of rates";
 
     private String phone;
     private String name;

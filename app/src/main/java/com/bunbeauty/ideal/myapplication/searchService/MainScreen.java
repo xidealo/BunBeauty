@@ -22,8 +22,8 @@ import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.ServiceAdapter;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Service;
-import com.bunbeauty.ideal.myapplication.fragments.objects.User;
+import com.bunbeauty.ideal.myapplication.entity.Service;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.Search;
 import com.bunbeauty.ideal.myapplication.other.DBHelper;

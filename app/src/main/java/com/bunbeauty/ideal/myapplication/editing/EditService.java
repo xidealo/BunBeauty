@@ -24,9 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
+import com.bunbeauty.ideal.myapplication.entity.User;
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Photo;
-import com.bunbeauty.ideal.myapplication.fragments.objects.Service;
+import com.bunbeauty.ideal.myapplication.entity.Photo;
+import com.bunbeauty.ideal.myapplication.entity.Service;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement;
 import com.bunbeauty.ideal.myapplication.other.DBHelper;
@@ -53,16 +54,10 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
     private final String TAG = "DBInf";
     private static final String SERVICE_ID = "service id";
-    private static final String USERS = "users";
 
-    private static final String SERVICES = "services";
-    private static final String NAME = "name";
-    private static final String COST = "cost";
-    private static final String DESCRIPTION = "description";
+
+
     private static final String PHOTOS = "photos";
-    private static final String CATEGORY = "category";
-    private static final String ADDRESS = "address";
-    private static final String TAGS = "tags";
 
     private static final String PHOTO_LINK = "photo link";
     private static final String SERVICE_PHOTO = "service photo";
@@ -303,9 +298,9 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database
-                .getReference(USERS)
+                .getReference(User.USERS)
                 .child(getUserId())
-                .child(SERVICES)
+                .child(Service.SERVICES)
                 .child(serviceId)
                 .child(PHOTOS)
                 .child(photoId);
@@ -384,9 +379,9 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private void deletePhotoFromDatabase(final String photoLink) {
 
         Query photoQuery = FirebaseDatabase.getInstance()
-                .getReference(USERS)
+                .getReference(User.USERS)
                 .child(getUserId())
-                .child(SERVICES)
+                .child(Service.SERVICES)
                 .child(serviceId)
                 .child(PHOTOS)
                 .orderByChild(PHOTO_LINK)
@@ -401,9 +396,9 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database
-                            .getReference(USERS)
+                            .getReference(User.USERS)
                             .child(getUserId())
-                            .child(SERVICES)
+                            .child(Service.SERVICES)
                             .child(serviceId)
                             .child(PHOTOS);
 
@@ -534,9 +529,9 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
     private void deleteThisServiceFromServices() {
         DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference(USERS)
+                .getReference(User.USERS)
                 .child(getUserId())
-                .child(SERVICES);
+                .child(Service.SERVICES);
 
         reference.child(serviceId).removeValue();
         deleteServiceFromLocalStorage(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
@@ -551,22 +546,22 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
     private void editServiceInFireBase(Service service) {
         DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference(USERS)
+                .getReference(User.USERS)
                 .child(service.getUserId())
-                .child(SERVICES)
+                .child(Service.SERVICES)
                 .child(service.getId());
 
         Map<String, Object> items = new HashMap<>();
         Map<String, String> tagsMap = new HashMap<>();
-        items.put(NAME, service.getName());
-        items.put(COST, service.getCost());
-        items.put(DESCRIPTION, service.getDescription());
-        items.put(ADDRESS, service.getAddress());
-        items.put(CATEGORY, service.getCategory());
+        items.put(Service.NAME, service.getName());
+        items.put(Service.COST, service.getCost());
+        items.put(Service.DESCRIPTION, service.getDescription());
+        items.put(Service.ADDRESS, service.getAddress());
+        items.put(Service.CATEGORY, service.getCategory());
         for (String tag : service.getTags()) {
             tagsMap.put(String.valueOf(tag.hashCode()), tag);
         }
-        items.put(TAGS, tagsMap);
+        items.put(Service.TAGS, tagsMap);
         reference.updateChildren(items);
 
         editServiceInLocalStorage(service);

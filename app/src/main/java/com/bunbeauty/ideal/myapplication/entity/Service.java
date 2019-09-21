@@ -1,8 +1,20 @@
-package com.bunbeauty.ideal.myapplication.fragments.objects;
+package com.bunbeauty.ideal.myapplication.entity;
 
 import java.util.ArrayList;
 
 public class Service {
+
+    public static final String SERVICES = "services";
+    public static final String NAME = "name";
+    public static final String COST = "cost";
+    public static final String DESCRIPTION = "description";
+    public static final String IS_PREMIUM = "is premium";
+    public static final String CREATION_DATE = "creation date";
+    public static final String TAGS = "tags";
+    public static final String AVG_RATING = "avg rating";
+    public static final String ADDRESS = "address";
+    public static final String COUNT_OF_RATES = "count of rates";
+    public static final String CATEGORY = "category";
 
     private String id;
     private String name;

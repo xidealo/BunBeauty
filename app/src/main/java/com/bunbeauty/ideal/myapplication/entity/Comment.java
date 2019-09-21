@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.fragments.objects;
+package com.bunbeauty.ideal.myapplication.entity;
 
 public class Comment implements Comparable<Comment> {
     private String userId;
