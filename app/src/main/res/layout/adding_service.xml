@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mainColorBG"
-    tools:context="com.bunbeauty.ideal.myapplication.createService.AdditionService">
+    tools:context="com.bunbeauty.ideal.myapplication.createService.AddingService">
 
     <LinearLayout
         android:id="@+id/headerAddServiceLayout"
@@ -29,8 +29,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical">
-
-
             <LinearLayout
                 style="@style/block"
                 android:layout_width="match_parent"

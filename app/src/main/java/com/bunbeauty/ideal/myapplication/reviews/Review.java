@@ -14,10 +14,10 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.entity.RatingReview;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.RatingReview;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
-import com.bunbeauty.ideal.myapplication.other.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

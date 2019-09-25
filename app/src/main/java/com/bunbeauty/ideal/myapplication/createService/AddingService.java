@@ -19,15 +19,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.fragments.PremiumElement;
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement;
-import com.bunbeauty.ideal.myapplication.entity.Photo;
-import com.bunbeauty.ideal.myapplication.entity.Service;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement;
-import com.bunbeauty.ideal.myapplication.other.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.other.IPremium;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,7 +48,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdditionService extends AppCompatActivity implements View.OnClickListener, IPremium {
+public class AddingService extends AppCompatActivity implements View.OnClickListener, IPremium {
 
     private static final String SERVICE_ID = "service id";
     private static final String STATUS_USER_BY_SERVICE = "status UserCreateService";
@@ -84,7 +84,7 @@ public class AdditionService extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.addition_service);
+        setContentView(R.layout.adding_service);
 
         init();
     }

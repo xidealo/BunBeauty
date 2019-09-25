@@ -12,10 +12,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
-import com.bunbeauty.ideal.myapplication.other.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.other.Profile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

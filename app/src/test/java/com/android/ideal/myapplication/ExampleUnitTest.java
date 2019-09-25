@@ -1,5 +1,6 @@
 package com.android.ideal.myapplication;
 
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.buisness.logIn.AuthorizationInteractor;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
 
@@ -37,6 +38,12 @@ public class ExampleUnitTest {
     @Test
     public void whenCutStringAAAAAReturnOneAWithThreeDots(){
         assertEquals(WorkWithStringsApi.cutString("AAAAA",1),"A...");
+    }
+
+    @Test
+    public void whenPhoneEqualTwelve(){
+        AuthorizationInteractor authorizationInteractor = new AuthorizationInteractor();
+        assertEquals(authorizationInteractor.isPhoneCorrect("+79969224186"),true);
     }
 
 }

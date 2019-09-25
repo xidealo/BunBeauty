@@ -4,9 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.bunbeauty.ideal.myapplication.entity.Service;
-import com.bunbeauty.ideal.myapplication.entity.User;
-import com.bunbeauty.ideal.myapplication.other.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;

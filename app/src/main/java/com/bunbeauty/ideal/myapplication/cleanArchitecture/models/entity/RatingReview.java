@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.entity;
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity;
 
 public class RatingReview {
 

@@ -21,12 +21,13 @@ import android.widget.TextView;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.OrderAdapter;
 import com.bunbeauty.ideal.myapplication.adapters.ServiceProfileAdapter;
-import com.bunbeauty.ideal.myapplication.createService.AdditionService;
-import com.bunbeauty.ideal.myapplication.entity.FBListener;
+import com.bunbeauty.ideal.myapplication.createService.AddingService;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener;
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement;
-import com.bunbeauty.ideal.myapplication.entity.Order;
-import com.bunbeauty.ideal.myapplication.entity.Service;
-import com.bunbeauty.ideal.myapplication.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Order;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingProfileData;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
@@ -519,7 +520,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     }
 
     private void goToAddService() {
-        Intent intent = new Intent(this, AdditionService.class);
+        Intent intent = new Intent(this, AddingService.class);
         startActivity(intent);
     }
 

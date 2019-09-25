@@ -11,11 +11,11 @@ import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.chat.Messages;
-import com.bunbeauty.ideal.myapplication.entity.Dialog;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Dialog;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
-import com.bunbeauty.ideal.myapplication.other.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 
 public class DialogElement implements View.OnClickListener {
 

@@ -8,12 +8,12 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bunbeauty.ideal.myapplication.entity.Service;
-import com.bunbeauty.ideal.myapplication.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingProfileData;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
-import com.bunbeauty.ideal.myapplication.other.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.other.Profile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-class MyAuthorization {
+public class MyAuthorization {
 
     private static final String TAG = "DBInf";
 
@@ -54,13 +54,13 @@ class MyAuthorization {
     private Thread timeThread = new Thread();
     private Thread orderThread = new Thread();
 
-    MyAuthorization(Context _context, String _myPhoneNumber) {
+    public MyAuthorization(Context _context, String _myPhoneNumber) {
         context = _context;
         myPhoneNumber = _myPhoneNumber;
         dbHelper = new DBHelper(context);
     }
 
-    void authorizeUser() {
+    public void authorizeUser() {
 
         Query userQuery = FirebaseDatabase.getInstance().getReference(User.USERS).
                 orderByChild(User.PHONE).

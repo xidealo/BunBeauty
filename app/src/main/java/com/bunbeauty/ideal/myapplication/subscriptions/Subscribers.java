@@ -16,14 +16,14 @@ import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.SubscriptionAdapter;
-import com.bunbeauty.ideal.myapplication.entity.FBListener;
-import com.bunbeauty.ideal.myapplication.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.bunbeauty.ideal.myapplication.other.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;

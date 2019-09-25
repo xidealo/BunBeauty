@@ -11,10 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.bunbeauty.ideal.myapplication.other.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.other.Profile;
 
 public class SubscriptionElement implements View.OnClickListener {

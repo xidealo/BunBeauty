@@ -20,15 +20,15 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.entity.Photo;
-import com.bunbeauty.ideal.myapplication.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
-import com.bunbeauty.ideal.myapplication.logIn.Authorization;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.AuthorizationActivity;
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes;
-import com.bunbeauty.ideal.myapplication.other.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.other.MyService;
 import com.bunbeauty.ideal.myapplication.reviews.Comments;
 import com.bunbeauty.ideal.myapplication.searchService.GuestService;
@@ -597,7 +597,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         clearStaticData();
         //ListeningManager.removeAllListeners();
 
-        Intent intent = new Intent(this, Authorization.class);
+        Intent intent = new Intent(this, AuthorizationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

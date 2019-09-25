@@ -13,14 +13,14 @@ import android.widget.ProgressBar;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.MessageAdapter;
-import com.bunbeauty.ideal.myapplication.entity.FBListener;
-import com.bunbeauty.ideal.myapplication.entity.Message;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Message;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingMessages;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
-import com.bunbeauty.ideal.myapplication.other.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
