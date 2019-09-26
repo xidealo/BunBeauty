@@ -11,7 +11,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.buisness.logIn.AuthorizationInteractor;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi;
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes;
 import com.bunbeauty.ideal.myapplication.logIn.MyAuthorization;
@@ -34,8 +34,7 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
         setContentView(R.layout.authorization);
 
         initView();
-        //buisness logic class
-
+        //business logic class
         if (authorizationInteractor.getCurrentFbUser() != null) {
             hideViewsOfScreen();
             myPhoneNumber = authorizationInteractor.getCurrentFbUser().getPhoneNumber();

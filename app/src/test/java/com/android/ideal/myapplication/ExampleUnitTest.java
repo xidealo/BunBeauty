@@ -1,6 +1,6 @@
 package com.android.ideal.myapplication;
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.buisness.logIn.AuthorizationInteractor;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
 

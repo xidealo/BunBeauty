@@ -39,7 +39,7 @@
         <activity android:name="com.bunbeauty.ideal.myapplication.createService.MyCalendar" />
         <activity android:name="com.bunbeauty.ideal.myapplication.editing.EditService" />
         <activity android:name="com.bunbeauty.ideal.myapplication.editing.EditProfile" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.logIn.VerifyPhone" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.VerifyPhoneActivity" />
         
         <service
             android:name="com.bunbeauty.ideal.myapplication.other.MyService"

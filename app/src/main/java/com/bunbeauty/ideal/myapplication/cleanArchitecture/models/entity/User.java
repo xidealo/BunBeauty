@@ -26,7 +26,6 @@ public class User {
         this.countOfRates = countOfRates;
     }
 
-
     public void setPhone(String _phone) {
         phone = _phone;
     }
