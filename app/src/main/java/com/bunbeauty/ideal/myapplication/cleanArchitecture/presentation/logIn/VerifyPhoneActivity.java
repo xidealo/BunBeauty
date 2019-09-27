@@ -11,9 +11,10 @@ import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyCallback;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi;
 
-public class VerifyPhoneActivity extends AppCompatActivity implements View.OnClickListener {
+public class VerifyPhoneActivity extends AppCompatActivity implements View.OnClickListener, VerifyCallback {
 
     private static final String TAG = "DBInf";
 
@@ -40,7 +41,7 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
         codeInput = findViewById(R.id.codeVerifyInput);
         changePhoneText = findViewById(R.id.changePhoneVerifyText);
 
-        verifyPhoneInteractor= new VerifyPhoneInteractor();
+        verifyPhoneInteractor= new VerifyPhoneInteractor(this);
         progressBar = findViewById(R.id.progressBarVerifyCode);
 
         verifyCodeBtn.setOnClickListener(this);
@@ -105,5 +106,13 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
 
     private void goBackToAuthorization() {
         super.onBackPressed();
+    }
+
+    @Override
+    public void callbackWrongCode() {
+        showViewsOnScreen();
+        assertWrongCode();
+        codeInput.setError("Неправильный код");
+        codeInput.requestFocus();
     }
 }
