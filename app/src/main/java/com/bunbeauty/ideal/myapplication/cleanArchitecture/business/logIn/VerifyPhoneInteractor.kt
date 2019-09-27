@@ -21,13 +21,11 @@ class VerifyPhoneInteractor(private val context: Context) {
     private var phoneVerificationId: String = ""
     private val PHONE_NUMBER = "phone number"
 
-    private var phoneNumber: String = ""
-
-    fun verifyCode(code: String) {
+    fun verifyCode(phoneNumber: String, code: String, verifyPhoneActivity: VerifyPhoneActivity) {
         //получаем ответ гугл
         val credential = getCredential(phoneVerificationId, code)
         //заходим с айфоном и токеном
-        signInWithPhoneAuthCredential(credential)
+        signInWithPhoneAuthCredential(phoneNumber, credential, verifyPhoneActivity)
     }
 
     private val verificationCallbacks = object : OnVerificationStateChangedCallbacks() {
@@ -54,7 +52,6 @@ class VerifyPhoneInteractor(private val context: Context) {
     }
 
     fun sendVerificationCode(phoneNumber: String, activity: Activity) {
-        this.phoneNumber = phoneNumber
 
         getInstance().verifyPhoneNumber(
                 phoneNumber, // Phone number to verify
@@ -65,8 +62,6 @@ class VerifyPhoneInteractor(private val context: Context) {
     }
 
     fun resendVerificationCode(phoneNumber: String, activity: Activity, token: ForceResendingToken) {
-        this.phoneNumber = phoneNumber
-
         getInstance().verifyPhoneNumber(
                 phoneNumber, // Phone number to verify
                 60, // Timeout duration
@@ -76,9 +71,9 @@ class VerifyPhoneInteractor(private val context: Context) {
                 token)  // ForceResendingToken from callbacks
     }
 
-    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
+    private fun signInWithPhoneAuthCredential(phoneNumber: String, credential: PhoneAuthCredential, verifyPhoneActivity: VerifyPhoneActivity) {
         val fbAuth: FirebaseAuth = FirebaseAuth.getInstance()
-        val verifyCallback: VerifyCallback = VerifyPhoneActivity()
+        val verifyCallback: VerifyCallback = verifyPhoneActivity
 
         fbAuth.signInWithCredential(credential).addOnCompleteListener { task ->
             //если введен верный код
@@ -91,7 +86,6 @@ class VerifyPhoneInteractor(private val context: Context) {
                 }
             }
         }
-
     }
 
     fun getResendToken(): ForceResendingToken? {

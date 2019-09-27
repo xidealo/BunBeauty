@@ -37,8 +37,8 @@ public class UIRegistrationTests {
     @Test
     public void testRegistration() throws InterruptedException {
         UIAuthorizationActivityTests uiAuthorizationTests = new UIAuthorizationActivityTests();
-        uiAuthorizationTests.testEnterPhoneAuthorization();
-        uiAuthorizationTests.testEnterCodeVerify();
+        uiAuthorizationTests.testEnterPhoneAuthorization("9999999999");
+        uiAuthorizationTests.testEnterCodeVerify("123456");
         //for auth code
         Thread.sleep(10000);
         testEnterDataRegistration();

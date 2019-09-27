@@ -28,8 +28,7 @@ public class UIAuthorizationActivityTests {
         FirebaseAuth.getInstance().signOut();
     }
 
-    void testEnterPhoneAuthorization(){
-        String phone = "9999999999";
+    void testEnterPhoneAuthorization(String phone){
         //set phone
         onView(withId(R.id.phoneAuthInput)).perform(typeText(phone));
         //close keyboard
@@ -37,8 +36,7 @@ public class UIAuthorizationActivityTests {
         //click on button
         onView(withId(R.id.verifyAuthBtn)).perform(click());
     }
-    void testEnterCodeVerify(){
-        String code = "123456";
+    void testEnterCodeVerify(String code){
         //set code
         onView(withId(R.id.codeVerifyInput)).perform(typeText(code));
         //close keyboard
@@ -48,9 +46,17 @@ public class UIAuthorizationActivityTests {
     }
 
     @Test
-    public void testRegistration(){
-        testEnterPhoneAuthorization();
-        testEnterCodeVerify();
+    public void testVerification() throws InterruptedException {
+        testEnterPhoneAuthorization("9999999999");
+        testEnterCodeVerify("123456");
+        Thread.sleep(2000);
+    }
+
+    @Test
+    public void testVerificationWrongCode() throws InterruptedException {
+        testEnterPhoneAuthorization("9999999999");
+        testEnterCodeVerify("123455");
+        Thread.sleep(2000);
     }
 
     @After

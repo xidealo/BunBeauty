@@ -57,7 +57,7 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
                 String code = codeInput.getText().toString();
                 if (code.trim().length() >= 6) {
                     // подтверждаем код и если все хорошо, создаем юзера
-                    verifyPhoneInteractor.verifyCode(code);
+                    verifyPhoneInteractor.verifyCode(verifyPhoneInteractor.getMyPhoneNumber(getIntent()), code, this);
                     hideViewsOfScreen();
 
                     // спрашиваем ответ
@@ -88,7 +88,7 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void showViewsOnScreen() {
-        verifyCodeBtn.setVisibility(View.VISIBLE);
+        //verifyCodeBtn.setVisibility(View.VISIBLE);
         resendCodeText.setVisibility(View.VISIBLE);
         codeInput.setVisibility(View.VISIBLE);
         changePhoneText.setVisibility(View.VISIBLE);
