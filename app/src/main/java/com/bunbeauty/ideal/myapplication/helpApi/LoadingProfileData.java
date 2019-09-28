@@ -57,11 +57,11 @@ public class LoadingProfileData {
         });
         subscriptionThread.start();
 
-        String userPhone = userSnapshot.child(User.PHONE).getValue(String.class);
-        String userName = userSnapshot.child(User.NAME).getValue(String.class);
-        String userCity = userSnapshot.child(User.CITY).getValue(String.class);
-        long userCountOfRates = userSnapshot.child(User.COUNT_OF_RATES).getValue(long.class);
-        float userRating = userSnapshot.child(User.AVG_RATING).getValue(float.class);
+        String userPhone = userSnapshot.child(User.Companion.getPHONE()).getValue(String.class);
+        String userName = userSnapshot.child(User.Companion.getNAME()).getValue(String.class);
+        String userCity = userSnapshot.child(User.Companion.getCITY()).getValue(String.class);
+        long userCountOfRates = userSnapshot.child(User.Companion.getCOUNT_OF_RATES()).getValue(long.class);
+        float userRating = userSnapshot.child(User.Companion.getAVG_RATING()).getValue(float.class);
 
         User user = new User();
         user.setId(userId);

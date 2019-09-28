@@ -47,6 +47,7 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initView(){
+
         verifyBtn = findViewById(R.id.verifyAuthBtn);
         phoneInput = findViewById(R.id.phoneAuthInput);
         enterPhoneText = findViewById(R.id.titleAuthText);

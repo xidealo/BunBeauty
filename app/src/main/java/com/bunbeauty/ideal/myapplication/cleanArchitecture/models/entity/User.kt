@@ -1,0 +1,16 @@
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity
+
+data class User(var id:String = "", var name: String ="", var city:String= "", var phone:String ="",
+                var rating:Float = 0f, var countOfRates:Long = 0, var photoLink:String = "") {
+
+    companion object {
+        val PHONE = "phone"
+        val USERS = "users"
+
+        val NAME = "name"
+        val CITY = "city"
+        val PHOTO_LINK = "photo link"
+        val AVG_RATING = "avg rating"
+        val COUNT_OF_RATES = "count of rates"
+    }
+}

@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +36,8 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initView() {
+        Log.d(TAG, "initView RegistrationActivity: ");
+
         verifyCodeBtn = findViewById(R.id.verifyVerifyBtn);
         resendCodeText = findViewById(R.id.resendVerifyText);
         alertCodeText = findViewById(R.id.alertCodeVerifyText);
@@ -88,7 +91,7 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void showViewsOnScreen() {
-        //verifyCodeBtn.setVisibility(View.VISIBLE);
+        verifyCodeBtn.setVisibility(View.VISIBLE);
         resendCodeText.setVisibility(View.VISIBLE);
         codeInput.setVisibility(View.VISIBLE);
         changePhoneText.setVisibility(View.VISIBLE);

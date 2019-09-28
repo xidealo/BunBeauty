@@ -175,7 +175,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private void initFCM() {
         String token = FirebaseInstanceId.getInstance().getToken();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(User.USERS)
+        reference.child(User.Companion.getUSERS())
                 .child(ownerId)
                 .child(TOKEN)
                 .setValue(token);
@@ -204,7 +204,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
 
     private void loadProfileData(final String ownerId) {
         final DatabaseReference userReference = FirebaseDatabase.getInstance()
-                .getReference(User.USERS)
+                .getReference(User.Companion.getUSERS())
                 .child(ownerId);
         ValueEventListener userListener = userReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -215,15 +215,15 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
                         ownerId,
                         database);
 
-                String name = WorkWithStringsApi.doubleCapitalSymbols(userSnapshot.child(User.NAME).getValue(String.class));
-                String city = WorkWithStringsApi.firstCapitalSymbol(userSnapshot.child(User.CITY).getValue(String.class));
+                String name = WorkWithStringsApi.doubleCapitalSymbols(userSnapshot.child(User.Companion.getNAME()).getValue(String.class));
+                String city = WorkWithStringsApi.firstCapitalSymbol(userSnapshot.child(User.Companion.getCITY()).getValue(String.class));
 
                 User user = new User();
                 user.setName(name);
                 user.setCity(city);
-                user.setPhone(userSnapshot.child(User.PHONE).getValue(String.class));
-                user.setCountOfRates(userSnapshot.child(User.COUNT_OF_RATES).getValue(Long.class));
-                user.setRating(userSnapshot.child(User.AVG_RATING).getValue(Float.class));
+                user.setPhone(userSnapshot.child(User.Companion.getPHONE()).getValue(String.class));
+                user.setCountOfRates(userSnapshot.child(User.Companion.getCOUNT_OF_RATES()).getValue(Long.class));
+                user.setRating(userSnapshot.child(User.Companion.getAVG_RATING()).getValue(Float.class));
                 //for intent
                 setProfile(user);
             }
@@ -533,7 +533,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private void goToUserComments(String status) {
         Intent intent = new Intent(this, Comments.class);
         intent.putExtra(SERVICE_OWNER_ID, ownerId);
-        intent.putExtra(User.COUNT_OF_RATES, getCountOfRates());
+        intent.putExtra(User.Companion.getCOUNT_OF_RATES(), getCountOfRates());
         intent.putExtra(TYPE, status);
         startActivity(intent);
     }

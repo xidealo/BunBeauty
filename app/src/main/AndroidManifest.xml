@@ -23,7 +23,7 @@
         <activity android:name="com.bunbeauty.ideal.myapplication.reviews.Review" />
         <activity android:name="com.bunbeauty.ideal.myapplication.chat.Messages" />
         <activity android:name="com.bunbeauty.ideal.myapplication.chat.Dialogs" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.logIn.Registration" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.RegistrationActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.AuthorizationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -362,7 +362,7 @@ public class Comments extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                comment.setUserName(String.valueOf(userSnapshot.child(User.NAME).getValue()));
+                comment.setUserName(String.valueOf(userSnapshot.child(User.Companion.getNAME()).getValue()));
                 commentList.add(comment);
                 if (countOfRates == currentCountOfReview) {
                     commentAdapter = new CommentAdapter(commentList.size(), commentList);
@@ -651,7 +651,7 @@ public class Comments extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                comment.setUserName(String.valueOf(userSnapshot.child(User.NAME).getValue()));
+                comment.setUserName(String.valueOf(userSnapshot.child(User.Companion.getNAME()).getValue()));
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 commentList.add(comment);
                 if (countOfRates == currentCountOfReview) {

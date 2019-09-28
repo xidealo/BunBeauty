@@ -1,6 +1,7 @@
 package com.android.ideal.myapplication;
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
 
@@ -40,10 +41,43 @@ public class ExampleUnitTest {
         assertEquals(WorkWithStringsApi.cutString("AAAAA",1),"A...");
     }
 
+    //logIn
+    //verifyPhone
     @Test
-    public void whenPhoneEqualTwelve(){
+    public void whenPhoneEqualTwelveVerifyPhone(){
         AuthorizationInteractor authorizationInteractor = new AuthorizationInteractor();
         assertEquals(authorizationInteractor.isPhoneCorrect("+79969224186"),true);
+    }
+    //Registration
+    @Test
+    public void whenCityNotEqualChooseCity(){
+        RegistrationInteractor registrationInteractor = new RegistrationInteractor();
+        assertEquals(registrationInteractor.cityInputCorrect("Выбрать город"),false);
+    }
+
+    @Test
+    public void whenNameCorrectRegistration(){
+        RegistrationInteractor registrationInteractor = new RegistrationInteractor();
+        assertEquals(registrationInteractor.nameInputCorrect("ЫВАЫФЫФфываывфлфвалпуцкльвап"),true);
+    }
+
+    @Test
+    public void whenNameLengthLessTwentyRegistration(){
+        RegistrationInteractor registrationInteractor = new RegistrationInteractor();
+        assertEquals(registrationInteractor.nameLengthLessTwenty("qwertyuiopasdfghjklz"),true);
+    }
+
+
+    @Test
+    public void whenSurnameCorrectRegistration(){
+        RegistrationInteractor registrationInteractor = new RegistrationInteractor();
+        assertEquals(registrationInteractor.surnameInputCorrect("dasfjdfgdlsлывальвыалплд"),true);
+    }
+
+    @Test
+    public void whenSurnameLengthLessTwentyRegistration(){
+        RegistrationInteractor registrationInteractor = new RegistrationInteractor();
+        assertEquals(registrationInteractor.surnameLengthLessTwenty("qwertyuiopasdfghjklz"),true);
     }
 
 }

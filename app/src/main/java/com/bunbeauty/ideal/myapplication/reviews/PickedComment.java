@@ -91,7 +91,7 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
     private void loadOwnerAndAddToScreen(String userId) {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(User.USERS)
+        DatabaseReference myRef = database.getReference(User.Companion.getUSERS())
                 .child(userId);
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -99,8 +99,8 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
             public void onDataChange(@NonNull DataSnapshot user) {
                 User localUser = new User();
                 localUser.setId(ownerId);
-                localUser.setName(String.valueOf(user.child(User.NAME).getValue()));
-                localUser.setCity(String.valueOf(user.child(User.CITY).getValue()));
+                localUser.setName(String.valueOf(user.child(User.Companion.getNAME()).getValue()));
+                localUser.setCity(String.valueOf(user.child(User.Companion.getCITY()).getValue()));
                 addUserInLocalStorage(localUser);
             }
 

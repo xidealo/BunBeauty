@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.RegistrationActivity;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingProfileData;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
@@ -62,8 +63,8 @@ public class MyAuthorization {
 
     public void authorizeUser() {
 
-        Query userQuery = FirebaseDatabase.getInstance().getReference(User.USERS).
-                orderByChild(User.PHONE).
+        Query userQuery = FirebaseDatabase.getInstance().getReference(User.Companion.getUSERS()).
+                orderByChild(User.Companion.getPHONE()).
                 equalTo(myPhoneNumber);
 
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -74,7 +75,7 @@ public class MyAuthorization {
                 } else {
                     // Получаем остальные данные о пользователе
                     final DataSnapshot userSnapshot = usersSnapshot.getChildren().iterator().next();
-                    Object name = userSnapshot.child(User.NAME).getValue();
+                    Object name = userSnapshot.child(User.Companion.getNAME()).getValue();
                     if (name == null) {
                         // Имя в БД отсутствует, значит пользователь не до конца зарегистрировался
                         goToRegistration();
@@ -104,7 +105,7 @@ public class MyAuthorization {
 
                         //set listener for countOfRates
                         DatabaseReference countOfRatesRef = FirebaseDatabase.getInstance()
-                                .getReference(User.USERS)
+                                .getReference(User.Companion.getUSERS())
                                 .child(userId)
                                 .child(COUNT_OF_RATES);
                         countOfRatesRef.addValueEventListener(new ValueEventListener() {
@@ -120,7 +121,7 @@ public class MyAuthorization {
                         });
                         // set listener for count of Subscribers
                         DatabaseReference countOfSubscribersRef = FirebaseDatabase.getInstance()
-                                .getReference(User.USERS)
+                                .getReference(User.Companion.getUSERS())
                                 .child(userId);
                         countOfSubscribersRef.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -176,7 +177,7 @@ public class MyAuthorization {
             final String workingDayId = String.valueOf(orderSnapshot.child(WORKING_DAY_ID).getValue());
             final String workingTimeId = String.valueOf(orderSnapshot.child(WORKING_TIME_ID).getValue());
             DatabaseReference serviceReference = FirebaseDatabase.getInstance()
-                    .getReference(User.USERS)
+                    .getReference(User.Companion.getUSERS())
                     .child(workerId)
                     .child(Service.SERVICES)
                     .child(serviceId);
@@ -349,9 +350,9 @@ public class MyAuthorization {
     }
 
     private void goToRegistration() {
-        Intent intent = new Intent(context, Registration.class);
+        Intent intent = new Intent(context, RegistrationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(User.PHONE, myPhoneNumber);
+        intent.putExtra(User.Companion.getPHONE(), myPhoneNumber);
         context.startActivity(intent);
     }
 

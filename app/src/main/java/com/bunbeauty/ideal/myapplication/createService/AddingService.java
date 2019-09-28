@@ -197,7 +197,7 @@ public class AddingService extends AppCompatActivity implements View.OnClickList
         WorkWithTimeApi workWithTimeApi = new WorkWithTimeApi();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference serviceRef = database.getReference(User.USERS).child(service.getUserId()).child(Service.SERVICES);
+        DatabaseReference serviceRef = database.getReference(User.Companion.getUSERS()).child(service.getUserId()).child(Service.SERVICES);
 
         Map<String, Object> items = new HashMap<>();
         Map<String, String> tagsMap = new HashMap<>();
@@ -308,7 +308,7 @@ public class AddingService extends AppCompatActivity implements View.OnClickList
     private void uploadImage(Uri filePath, final String serviceId) {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(User.USERS);
+        DatabaseReference myRef = database.getReference(User.Companion.getUSERS());
 
         if (filePath != null) {
             final String photoId = myRef.push().getKey();
@@ -334,7 +334,7 @@ public class AddingService extends AppCompatActivity implements View.OnClickList
     private void uploadPhotos(String storageReference, String serviceId, String photoId) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(User.USERS)
+        DatabaseReference myRef = database.getReference(User.Companion.getUSERS())
                 .child(getUserId())
                 .child(Service.SERVICES)
                 .child(serviceId)

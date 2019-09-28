@@ -298,7 +298,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database
-                .getReference(User.USERS)
+                .getReference(User.Companion.getUSERS())
                 .child(getUserId())
                 .child(Service.SERVICES)
                 .child(serviceId)
@@ -379,7 +379,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     private void deletePhotoFromDatabase(final String photoLink) {
 
         Query photoQuery = FirebaseDatabase.getInstance()
-                .getReference(User.USERS)
+                .getReference(User.Companion.getUSERS())
                 .child(getUserId())
                 .child(Service.SERVICES)
                 .child(serviceId)
@@ -396,7 +396,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database
-                            .getReference(User.USERS)
+                            .getReference(User.Companion.getUSERS())
                             .child(getUserId())
                             .child(Service.SERVICES)
                             .child(serviceId)
@@ -529,7 +529,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
     private void deleteThisServiceFromServices() {
         DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference(User.USERS)
+                .getReference(User.Companion.getUSERS())
                 .child(getUserId())
                 .child(Service.SERVICES);
 
@@ -546,7 +546,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
     private void editServiceInFireBase(Service service) {
         DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference(User.USERS)
+                .getReference(User.Companion.getUSERS())
                 .child(service.getUserId())
                 .child(Service.SERVICES)
                 .child(service.getId());
