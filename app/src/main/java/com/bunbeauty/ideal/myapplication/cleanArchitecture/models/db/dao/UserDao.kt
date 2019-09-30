@@ -4,7 +4,7 @@ import android.arch.persistence.room.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.entity.User
 
 @Dao
-public interface UserDao {
+interface UserDao {
 
     fun getAll() : List<User>
 

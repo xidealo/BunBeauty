@@ -62,8 +62,6 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
                     // подтверждаем код и если все хорошо, создаем юзера
                     verifyPhoneInteractor.verifyCode(verifyPhoneInteractor.getMyPhoneNumber(getIntent()), code, this);
                     hideViewsOfScreen();
-
-                    // спрашиваем ответ
                 }
                 break;
             case R.id.resendVerifyText:

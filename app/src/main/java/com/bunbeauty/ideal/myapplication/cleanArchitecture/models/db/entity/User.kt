@@ -4,22 +4,18 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
 @Entity
-class User {
+data class User(@PrimaryKey var id:String = "", var name: String ="", var city:String= "", var phone:String ="",
+                var rating:Float = 0f, var countOfRates:Long = 0, var photoLink:String = "",
+                var subscriptionsCount:Long = 0, var subscribersCount:Long = 0) {
 
-    @PrimaryKey
-    var id: Long = 0
+    companion object {
+        val PHONE = "phone"
+        val USERS = "users"
 
-    var phone: String? = null
-
-    var userName: String? = null
-
-    var city: String? = null
-
-    var rating: Float? = null
-
-    var subscriptionsCount: Long? = 0
-
-    var subscribersCount: Long? = 0
-
-    var ratesCount: Long? = 0
+        val NAME = "name"
+        val CITY = "city"
+        val PHOTO_LINK = "photo link"
+        val AVG_RATING = "avg rating"
+        val COUNT_OF_RATES = "count of rates"
+    }
 }

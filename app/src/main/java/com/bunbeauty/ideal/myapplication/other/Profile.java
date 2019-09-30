@@ -27,7 +27,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListe
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Order;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingProfileData;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;

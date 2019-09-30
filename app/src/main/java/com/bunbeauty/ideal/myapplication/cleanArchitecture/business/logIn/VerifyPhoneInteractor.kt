@@ -21,8 +21,6 @@ class VerifyPhoneInteractor(private val context: Context) {
     private var phoneVerificationId: String = ""
     private val PHONE_NUMBER = "phone number"
 
-
-
     fun verifyCode(phoneNumber: String, code: String, verifyPhoneActivity: VerifyPhoneActivity) {
         //получаем ответ гугл
         val credential = getCredential(phoneVerificationId, code)

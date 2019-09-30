@@ -24,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.entity.User;
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
