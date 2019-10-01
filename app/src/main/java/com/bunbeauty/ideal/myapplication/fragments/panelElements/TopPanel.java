@@ -22,9 +22,9 @@ import com.bunbeauty.ideal.myapplication.editing.EditService;
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity;
 import com.bunbeauty.ideal.myapplication.searchService.GuestService;
 import com.bunbeauty.ideal.myapplication.searchService.MainScreen;
-import com.bunbeauty.ideal.myapplication.other.Profile;
 import com.bunbeauty.ideal.myapplication.searchService.SearchService;
 
 
@@ -130,13 +130,13 @@ public class TopPanel extends Fragment implements View.OnClickListener {
         // Если не мой профиль
         if (!isMyProfile) {
             // Если это профиль
-            if (getContext().getClass() == Profile.class) {
-                Profile profile = (Profile) super.getActivity();
-                String ownerId = profile.getIntent().getStringExtra(OWNER_ID);
+            if (getContext().getClass() == ProfileActivity.class) {
+                ProfileActivity profileActivity = (ProfileActivity) super.getActivity();
+                String ownerId = profileActivity.getIntent().getStringExtra(OWNER_ID);
                 subsApi = new SubscriptionsApi(ownerId, getContext());
                 subsApi.loadCountOfSubscribers(countOfSubsText);
 
-                if (((Profile) super.getActivity()).checkSubscription()) {
+                if (((ProfileActivity) super.getActivity()).checkSubscription()) {
                     setSubscribe();
                 } else {
                     setUnsubscribe();
@@ -275,7 +275,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
     private void checkSubscribe(){
         Class currentClass = getContext().getClass();
         //чужой профиль
-        if (currentClass == Profile.class) {
+        if (currentClass == ProfileActivity.class) {
             if ((boolean) subscribeText.getTag()) {
                 setUnsubscribe();
                 subsApi.unsubscribe();
@@ -319,7 +319,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
     }
 
     private void goToProfile() {
-        Intent intent = new Intent(getContext(), Profile.class);
+        Intent intent = new Intent(getContext(), ProfileActivity.class);
         intent.putExtra(OWNER_ID, serviceOwnerId);
 
         startActivity(intent);

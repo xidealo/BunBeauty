@@ -16,7 +16,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
-import com.bunbeauty.ideal.myapplication.other.Profile;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -124,7 +124,7 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
     private void goToProfile() {
         String ownerId = getIntent().getStringExtra(USER_ID);
 
-        Intent intent = new Intent(this, Profile.class);
+        Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra(OWNER_ID, ownerId);
 
         startActivity(intent);

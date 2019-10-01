@@ -8,7 +8,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.other.Profile;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity;
 
 public class NotificationCancel extends NotificationConstructor {
 
@@ -36,7 +36,7 @@ public class NotificationCancel extends NotificationConstructor {
     public void createNotification() {
         int notificationId = 1;
 
-        Intent intent = new Intent(context, Profile.class);
+        Intent intent = new Intent(context, ProfileActivity.class);
         PendingIntent pIntent = PendingIntent.getActivity(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT );
 

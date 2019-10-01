@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.chat.Dialogs;
 import com.bunbeauty.ideal.myapplication.searchService.MainScreen;
-import com.bunbeauty.ideal.myapplication.other.Profile;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity;
 
 
 public class BottomPanel extends Fragment implements View.OnClickListener {
@@ -75,7 +75,7 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
     private void goToProfile() {
 
         if (!isMyProfile) {
-            Intent intent = new Intent(getContext(), Profile.class);
+            Intent intent = new Intent(getContext(), ProfileActivity.class);
             intent.putExtra(OWNER_ID, myPhone);
             profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
             startActivity(intent);

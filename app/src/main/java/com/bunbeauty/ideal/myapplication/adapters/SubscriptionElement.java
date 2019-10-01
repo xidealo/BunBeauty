@@ -15,7 +15,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
-import com.bunbeauty.ideal.myapplication.other.Profile;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity;
 
 public class SubscriptionElement implements View.OnClickListener {
 
@@ -105,7 +105,7 @@ public class SubscriptionElement implements View.OnClickListener {
     }
 
     private void goToProfile() {
-        Intent intent = new Intent(context, Profile.class);
+        Intent intent = new Intent(context, ProfileActivity.class);
         intent.putExtra(OWNER_ID, workerId);
 
         context.startActivity(intent);

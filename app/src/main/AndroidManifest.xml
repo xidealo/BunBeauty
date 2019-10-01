@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.bunbeauty.ideal.myapplication.other.Profile" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.createService.AddingService" />
         <activity android:name="com.bunbeauty.ideal.myapplication.searchService.GuestService" />
         <activity android:name="com.bunbeauty.ideal.myapplication.searchService.MainScreen" />

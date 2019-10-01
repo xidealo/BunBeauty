@@ -15,7 +15,7 @@ import com.bunbeauty.ideal.myapplication.helpApi.LoadingProfileData;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
-import com.bunbeauty.ideal.myapplication.other.Profile;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -359,7 +359,7 @@ public class MyAuthorization {
     private void goToProfile() {
         // тоже самое необходимо прописать для перехода с регистрации
         //ContextCompat.startForegroundService(context, new Intent(context, MyService.class));
-        Intent intent = new Intent(context, Profile.class);
+        Intent intent = new Intent(context, ProfileActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
         //context.startService(new Intent(context, MyService.class));

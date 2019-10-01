@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.notifications;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -35,13 +36,14 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-        //Log.d(TAG, "sendRegistrationToServer: sending token to server: " + token);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        reference.child(USERS)
-                .child(userId)
-                .child(TOKEN)
-                .setValue(token);
+            reference.child(USERS)
+                    .child(userId)
+                    .child(TOKEN)
+                    .setValue(token);
+        }
     }
 }

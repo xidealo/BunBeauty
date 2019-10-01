@@ -59,8 +59,8 @@ class RegistrationActivity : AppCompatActivity(), View.OnClickListener {
                 val surname: String
 
                 if (nameInput!!.text.toString().isNotEmpty()) {
-                    if (registrationInteractor!!.nameInputCorrect(nameInput!!.text.toString())) {
-                        if (registrationInteractor!!.nameLengthLessTwenty(nameInput!!.text.toString())) {
+                    if (registrationInteractor!!.getIsNameInputCorrect(nameInput!!.text.toString())) {
+                        if (registrationInteractor!!.getIsNameLengthLessTwenty(nameInput!!.text.toString())) {
                             name = nameInput!!.text.toString()
                         } else {
                             assertNameSoLong()
@@ -78,8 +78,8 @@ class RegistrationActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
                 if (!surnameInput!!.text.toString().isEmpty()) {
-                    if (registrationInteractor!!.surnameInputCorrect(surnameInput!!.text.toString())) {
-                        if (registrationInteractor!!.surnameLengthLessTwenty(surnameInput!!.text.toString())) {
+                    if (registrationInteractor!!.getIsSurnameInputCorrect(surnameInput!!.text.toString())) {
+                        if (registrationInteractor!!.getIsSurnameLengthLessTwenty(surnameInput!!.text.toString())) {
                             surname = surnameInput!!.text.toString()
                         } else {
                             assertSurnameSoLong()
@@ -96,7 +96,7 @@ class RegistrationActivity : AppCompatActivity(), View.OnClickListener {
                     return
                 }
 
-                if (registrationInteractor!!.cityInputCorrect(citySpinner!!.selectedItem.toString().toLowerCase())) {
+                if (registrationInteractor!!.getIsCityInputCorrect(citySpinner!!.selectedItem.toString().toLowerCase())) {
                     val fullName = "$name $surname"
                     val user = User(registrationInteractor!!.getUserId(), fullName, citySpinner!!.selectedItem.toString().toLowerCase(),
                             phoneInput!!.text.toString(), 0f, 0, defaultPhotoLink)

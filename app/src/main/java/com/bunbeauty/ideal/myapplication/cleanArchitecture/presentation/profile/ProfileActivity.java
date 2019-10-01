@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.other;
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -34,6 +34,7 @@ import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
+import com.bunbeauty.ideal.myapplication.other.ISwitcher;
 import com.bunbeauty.ideal.myapplication.reviews.Comments;
 import com.bunbeauty.ideal.myapplication.subscriptions.Subscribers;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,7 +47,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 
-public class Profile extends AppCompatActivity implements View.OnClickListener, ISwitcher {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, ISwitcher {
 
     private static final String TAG = "DBInf";
     private static final String OWNER_ID = "owner id";
@@ -88,7 +89,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
     private static ArrayList<String> userIdsFirstSetProfile = new ArrayList<>();
     private LinearLayoutManager layoutManagerSecond;
     private Button addServicesBtn;
-    private int pastVisibleItems, visibleItemCount, totalItemCount, startIndexOfDownload;
     private ProgressBar progressBar;
 
     private SQLiteDatabase database;
@@ -133,7 +133,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener, 
         DBHelper dbHelper = new DBHelper(this);
         database = dbHelper.getReadableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-        startIndexOfDownload = 0;
         manager = getSupportFragmentManager();
         userId = getUserId();
 

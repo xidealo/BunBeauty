@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
@@ -94,7 +95,7 @@ public class MyService extends Service implements Runnable {
         CDTimers = new HashMap<>();
         listenerList = new ArrayList<>();
 
-        Intent notificationIntent = new Intent(this, Profile.class);
+        Intent notificationIntent = new Intent(this, ProfileActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
 

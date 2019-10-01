@@ -59,7 +59,7 @@ public class PanelBuilder {
         transaction.commit();
     }
 
-    // для Profile и всех остальных
+    // для ProfileActivity и всех остальных
     public void buildHeader (FragmentManager manager, String title, int layoutId) {
         if(isMyProfile) {
             topPanel = new TopPanel(title, true);

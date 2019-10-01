@@ -3,7 +3,7 @@
     <string name="logOut">Выйти</string>
     <string name="addServices">Добавить услугу</string>
     <string name="findServices">Найти услугу</string>
-    <string name="profile">Профиль</string>
+    <string name="profileActivity">Профиль</string>
 
     //registration
     <string name="nameRegistration">Имя</string>
@@ -22,7 +22,7 @@
     //Edit service
     <string name="save">Сохранить</string>
 
-    //Edit profile
+    //Edit profileActivity
 
     //tag id
     <string name="selectedId">selectedId</string>

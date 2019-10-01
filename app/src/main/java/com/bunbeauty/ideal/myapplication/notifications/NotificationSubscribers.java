@@ -8,7 +8,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
-import com.bunbeauty.ideal.myapplication.other.Profile;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity;
 
 public class NotificationSubscribers extends NotificationConstructor {
 
@@ -29,7 +29,7 @@ public class NotificationSubscribers extends NotificationConstructor {
     public void createNotification() {
         int notificationId = 3;
 
-        Intent intent = new Intent(context, Profile.class);
+        Intent intent = new Intent(context, ProfileActivity.class);
         PendingIntent pIntent = PendingIntent.getActivity(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT );
 

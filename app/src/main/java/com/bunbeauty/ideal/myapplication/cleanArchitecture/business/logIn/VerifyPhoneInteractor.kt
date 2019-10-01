@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IVerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.VerifyPhoneActivity
 import com.bunbeauty.ideal.myapplication.logIn.MyAuthorization
@@ -15,15 +16,13 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider.*
 import java.util.concurrent.TimeUnit
 
-class VerifyPhoneInteractor(private val context: Context) {
+class VerifyPhoneInteractor(private val context: Context) : IVerifyPhoneInteractor {
     private val TAG = "DBInf"
     private var resendToken: ForceResendingToken? = null
     private var phoneVerificationId: String = ""
     private val PHONE_NUMBER = "phone number"
 
-
-
-    fun verifyCode(phoneNumber: String, code: String, verifyPhoneActivity: VerifyPhoneActivity) {
+    override fun verifyCode(phoneNumber: String, code: String, verifyPhoneActivity: VerifyPhoneActivity) {
         //получаем ответ гугл
         val credential = getCredential(phoneVerificationId, code)
         //заходим с айфоном и токеном
@@ -53,7 +52,7 @@ class VerifyPhoneInteractor(private val context: Context) {
         }
     }
 
-    fun sendVerificationCode(phoneNumber: String, activity: Activity) {
+    override fun sendVerificationCode(phoneNumber: String, activity: Activity) {
 
         getInstance().verifyPhoneNumber(
                 phoneNumber, // Phone number to verify
@@ -63,7 +62,7 @@ class VerifyPhoneInteractor(private val context: Context) {
                 verificationCallbacks)
     }
 
-    fun resendVerificationCode(phoneNumber: String, activity: Activity, token: ForceResendingToken) {
+    override fun resendVerificationCode(phoneNumber: String, activity: Activity, token: ForceResendingToken) {
         getInstance().verifyPhoneNumber(
                 phoneNumber, // Phone number to verify
                 60, // Timeout duration
@@ -73,7 +72,7 @@ class VerifyPhoneInteractor(private val context: Context) {
                 token)  // ForceResendingToken from callbacks
     }
 
-    private fun signInWithPhoneAuthCredential(phoneNumber: String, credential: PhoneAuthCredential, verifyPhoneActivity: VerifyPhoneActivity) {
+    override fun signInWithPhoneAuthCredential(phoneNumber: String, credential: PhoneAuthCredential, verifyPhoneActivity: VerifyPhoneActivity) {
         val fbAuth: FirebaseAuth = FirebaseAuth.getInstance()
         val verifyCallback: VerifyCallback = verifyPhoneActivity
 
@@ -90,11 +89,11 @@ class VerifyPhoneInteractor(private val context: Context) {
         }
     }
 
-    fun getResendToken(): ForceResendingToken? {
+    override fun getResendToken(): ForceResendingToken? {
         return resendToken
     }
 
-    fun getMyPhoneNumber(intent: Intent): String {
+    override fun getMyPhoneNumber(intent: Intent): String {
         return intent.getStringExtra(PHONE_NUMBER)
     }
 }
