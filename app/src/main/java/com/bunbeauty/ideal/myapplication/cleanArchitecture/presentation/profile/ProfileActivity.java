@@ -21,6 +21,8 @@ import android.widget.TextView;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.OrderAdapter;
 import com.bunbeauty.ideal.myapplication.adapters.ServiceProfileAdapter;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ProfileCallback;
 import com.bunbeauty.ideal.myapplication.createService.AddingService;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener;
@@ -44,6 +46,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -93,15 +97,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private SQLiteDatabase database;
 
+    private ProfileInteractor profileInteractor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
 
-        init();
+        initView();
     }
 
-    private void init() {
+    private void initView() {
         LinearLayout subscriptionsLayout = findViewById(R.id.subscriptionsProfileLayout);
         subscriptionsText = findViewById(R.id.subscriptionsProfileText);
 
@@ -135,6 +141,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
         manager = getSupportFragmentManager();
         userId = getUserId();
+        profileInteractor = new ProfileInteractor(this);
 
         // Получаем id владельца профиля
         ownerId = getIntent().getStringExtra(OWNER_ID);
@@ -202,37 +209,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void loadProfileData(final String ownerId) {
-        final DatabaseReference userReference = FirebaseDatabase.getInstance()
-                .getReference(User.Companion.getUSERS())
-                .child(ownerId);
-        ValueEventListener userListener = userReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull final DataSnapshot userSnapshot) {
-                LoadingProfileData.loadUserInfo(userSnapshot, database);
 
-                LoadingProfileData.loadUserServices(userSnapshot.child(SERVICES),
-                        ownerId,
-                        database);
-
-                String name = WorkWithStringsApi.doubleCapitalSymbols(userSnapshot.child(User.Companion.getNAME()).getValue(String.class));
-                String city = WorkWithStringsApi.firstCapitalSymbol(userSnapshot.child(User.Companion.getCITY()).getValue(String.class));
-
-                User user = new User();
-                user.setName(name);
-                user.setCity(city);
-                user.setPhone(userSnapshot.child(User.Companion.getPHONE()).getValue(String.class));
-                user.setCountOfRates(userSnapshot.child(User.Companion.getCOUNT_OF_RATES()).getValue(Long.class));
-                user.setRating(userSnapshot.child(User.Companion.getAVG_RATING()).getValue(Float.class));
-                //for intent
-                setProfile(user);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-
-        ListeningManager.addToListenerList(new FBListener(userReference, userListener));
     }
 
     // получаем данные о пользователе и отображаем в прфоиле
@@ -298,23 +275,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private void setProfile(User user) {
 
-        nameText.setText(user.getName());
-        cityText.setText(user.getCity());
-        phoneText.setText(user.getPhone());
-        //ratingBar
-        float rating = user.getRating();
-        if (rating == 0) {
-            setWithoutRating();
-        } else {
-            addRatingToScreen(rating);
-        }
-
-        //загрузка аватарки
-        int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
-        int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
-        workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width, height);
-
-        updateServicesList(ownerId);
     }
 
     @Override
@@ -360,7 +320,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private long getCountOfSubscribers() {
-
         String sqlQuery =
                 "SELECT " + DBHelper.KEY_SUBSCRIBERS_COUNT_USERS
                         + " FROM " + DBHelper.TABLE_CONTACTS_USERS
@@ -373,6 +332,26 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
         cursor.close();
         return 0;
+    }
+
+    public void setUser(User user) {
+        nameText.setText(user.getName());
+        cityText.setText(user.getCity());
+        phoneText.setText(user.getPhone());
+
+        float rating = user.getRating();
+        if (rating == 0) {
+            setWithoutRating();
+        } else {
+            addRatingToScreen(rating);
+        }
+
+        //загрузка аватарки
+        int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
+        workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width, height);
+
+        updateServicesList(ownerId);
     }
 
     //подгрузка сервисов на serviceList
@@ -550,4 +529,5 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         recyclerView.setVisibility(View.GONE);
         recyclerViewService.setVisibility(View.VISIBLE);
     }
+
 }

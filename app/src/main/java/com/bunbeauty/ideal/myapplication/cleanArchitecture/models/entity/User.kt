@@ -1,6 +1,10 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity
 
-data class User(var id:String = "", var name: String ="", var city:String= "", var phone:String ="",
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
+
+@Entity
+data class User(@PrimaryKey var id:String = "", var name: String ="", var city:String= "", var phone:String ="",
                 var rating:Float = 0f, var countOfRates:Long = 0, var photoLink:String = "") {
 
     companion object {
