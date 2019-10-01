@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity;
 
 public class Comment implements Comparable<Comment> {
+
     private String userId;
     private String userName;
     private float rating;

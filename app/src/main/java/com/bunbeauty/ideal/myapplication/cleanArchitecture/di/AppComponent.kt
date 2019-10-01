@@ -6,7 +6,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.Au
 import dagger.Component
 import javax.inject.Singleton
 
-@Component(modules = arrayOf(AppModule::class))
+@Component(modules = [AppModule::class])
 @Singleton
 interface AppComponent {
 
@@ -15,4 +15,5 @@ interface AppComponent {
     fun getDatabse(context: Context, name: String): LocalDatabase
 
     fun inject(authorizationActivity: AuthorizationActivity)
+
 }

@@ -10,13 +10,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.logIn.Re
 class RegistrationLocalDatabase(context: Context) : RegistrationRepository {
 
     private val TAG = "data_layer"
-
+    //@Inject val localDatabase:LocalDatabase
     private var dbHelper: DBHelper = DBHelper(context)
-    //TODO LOGS
 
     override fun addUser(user: User) {
         Log.d(TAG, "addUser in local storage $user")
-
         addUserInLocalStorage(user)
         addPhotoInLocalStorage(user)
     }
@@ -28,11 +26,11 @@ class RegistrationLocalDatabase(context: Context) : RegistrationRepository {
         val contentValues = ContentValues()
         contentValues.put(DBHelper.KEY_ID, user.id)
         contentValues.put(DBHelper.KEY_NAME_USERS, user.name)
-        contentValues.put(DBHelper.KEY_RATING_USERS, "0")
+        contentValues.put(DBHelper.KEY_RATING_USERS, user.rating)
         contentValues.put(DBHelper.KEY_CITY_USERS, user.city)
         contentValues.put(DBHelper.KEY_PHONE_USERS, user.phone)
-        contentValues.put(DBHelper.KEY_SUBSCRIBERS_COUNT_USERS, "0")
-        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, "0")
+        contentValues.put(DBHelper.KEY_SUBSCRIBERS_COUNT_USERS, user.subscribersCount)
+        contentValues.put(DBHelper.KEY_SUBSCRIPTIONS_COUNT_USERS, user.subscriptionsCount)
 
         dbHelper.writableDatabase.insert(DBHelper.TABLE_CONTACTS_USERS, null, contentValues)
         Log.d(TAG, "addUser in local storage completed")
