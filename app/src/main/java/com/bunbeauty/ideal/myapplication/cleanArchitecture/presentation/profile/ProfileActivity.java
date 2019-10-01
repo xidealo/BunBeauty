@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -25,37 +24,22 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Order;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
-import com.bunbeauty.ideal.myapplication.createService.AddingService;
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.other.ISwitcher;
-import com.bunbeauty.ideal.myapplication.reviews.Comments;
-import com.bunbeauty.ideal.myapplication.subscriptions.Subscribers;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, ISwitcher {
 
     private static final String TAG = "DBInf";
-    private static final String OWNER_ID = "owner id";
     private static final String REVIEW_FOR_USER = "review for user";
-    private static final String STATUS = "status";
     private static final String SUBSCRIPTIONS = "подписки";
-    private static final String SERVICE_OWNER_ID = "service owner id";
-    private static final String SERVICES = "services";
 
-    private static final String TYPE = "type";
-    private static final String TOKEN = "token";
-
-    private String userId;
-    private String ownerId;
     private String countOfRates;
 
     private TextView nameText;
@@ -64,7 +48,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private TextView withoutRatingText;
     private TextView subscribersText;
     private TextView subscriptionsText;
-
     private RatingBar ratingBar;
 
     private LinearLayout ratingForUserLayout;
@@ -81,10 +64,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private RecyclerView recyclerViewService;
 
     private static ArrayList<String> userIdsFirstSetProfile = new ArrayList<>();
-    private LinearLayoutManager layoutManagerSecond;
     private Button addServicesBtn;
     private ProgressBar progressBar;
-
+    private LinearLayout subscriptionsLayout;
     private SQLiteDatabase database;
 
     private ProfileInteractor profileInteractor;
@@ -95,102 +77,67 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.profile);
 
         initView();
+
+        if (profileInteractor.isFirstEnter(getIntent())) {
+            profileInteractor.initFCM(Objects.requireNonNull(profileInteractor.getUserId()));
+        }
+
+        if (profileInteractor.userIsOwner(getIntent())) {
+            showMyProfile();
+        } else {
+            showNotMyProfile();
+        }
     }
 
     private void initView() {
-        LinearLayout subscriptionsLayout = findViewById(R.id.subscriptionsProfileLayout);
+        subscriptionsLayout = findViewById(R.id.subscriptionsProfileLayout);
         subscriptionsText = findViewById(R.id.subscriptionsProfileText);
-
         avatarImage = findViewById(R.id.avatarProfileImage);
-
         withoutRatingText = findViewById(R.id.withoutRatingProfileText);
         ratingBar = findViewById(R.id.ratingBarProfile);
         progressBar = findViewById(R.id.progressBarProfile);
         ratingForUserLayout = findViewById(R.id.ratingProfileLayout);
         addServicesBtn = findViewById(R.id.addServicesProfileBtn);
         mainLayout = findViewById(R.id.mainLayoutProfile);
-
         recyclerView = findViewById(R.id.resultsProfileRecycleView);
         recyclerViewService = findViewById(R.id.servicesProfileRecyclerView);
+        nameText = findViewById(R.id.nameProfileText);
+        cityText = findViewById(R.id.cityProfileText);
+        phoneText = findViewById(R.id.phoneProfileText);
+        subscribersText = findViewById(R.id.subscribersProfileText);
+
+        profileInteractor = new ProfileInteractor(this);
+
         serviceList = new ArrayList<>();
         orderList = new ArrayList<>();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        layoutManagerSecond = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManagerSecond = new LinearLayoutManager(this);
         recyclerViewService.setLayoutManager(layoutManagerSecond);
-
-        nameText = findViewById(R.id.nameProfileText);
-        cityText = findViewById(R.id.cityProfileText);
-        phoneText = findViewById(R.id.phoneProfileText);
-        subscribersText = findViewById(R.id.subscribersProfileText);
-
+        //
         DBHelper dbHelper = new DBHelper(this);
         database = dbHelper.getReadableDatabase();
         workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
+        //
         manager = getSupportFragmentManager();
-        userId = getUserId();
-        profileInteractor = new ProfileInteractor(this);
-
-        // Получаем id владельца профиля
-        ownerId = getIntent().getStringExtra(OWNER_ID);
-        // Проверяем id владельца профиля
-        if (ownerId == null) {
-            // Если null значит пользователь только что вошёл и это его сервис
-            ownerId = userId;
-            initFCM();
-        }
-        // Проверяем совпадают id пользователя и владельца
-        if (userId.equals(ownerId)) {
-            // Совпадают - это мой профиль
-            recyclerViewService.setVisibility(View.GONE);
-
-            SwitcherElement switcherElement = new SwitcherElement("Записи", "Услуги");
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.switcherProfileLayout, switcherElement);
-            transaction.commit();
-
-            addServicesBtn.setOnClickListener(this);
-            subscriptionsLayout.setOnClickListener(this);
-        } else {
-            // Не совпадает - чужой профиль
-            // Скрываем функционал
-            addServicesBtn.setVisibility(View.GONE);
-            subscriptionsLayout.setVisibility(View.INVISIBLE);
-            subscribersText.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-
-            // Отображаем все сервисы пользователя
-            recyclerViewService.setVisibility(View.VISIBLE);
-        }
-
-        avatarImage.setOnClickListener(this);
-    }
-
-    private void initFCM() {
-        String token = FirebaseInstanceId.getInstance().getToken();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(User.Companion.getUSERS())
-                .child(ownerId)
-                .child(TOKEN)
-                .setValue(token);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.addServicesProfileBtn:
-                goToAddService();
+                profileInteractor.goToAddService(this);
                 break;
 
             case R.id.subscriptionsProfileLayout:
-                goToSubscribers(SUBSCRIPTIONS);
+                profileInteractor.goToSubscribers(this, SUBSCRIPTIONS);
                 break;
 
             case R.id.ratingProfileLayout:
-                goToUserComments(REVIEW_FOR_USER);
+                profileInteractor.goToUserComments(this, REVIEW_FOR_USER,
+                        Objects.requireNonNull(profileInteractor.getOwnerId(getIntent())));
                 break;
 
             default:
@@ -198,8 +145,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private void loadProfileData(final String ownerId) {
+    public void showProfileData(User user) {
+        showProfileText(user.getName(), user.getCity(), user.getPhone());
+        createRatingBar(user.getRating());
+        showAvatar();
 
+        updateServicesList(profileInteractor.getOwnerId(getIntent()));
     }
 
     // получаем данные о пользователе и отображаем в прфоиле
@@ -236,7 +187,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 user.setPhone(userCursor.getString(indexPhone));
                 user.setCountOfRates(userCursor.getLong(indexCountOfRates));
                 user.setRating(userCursor.getFloat(indexRating));
-                setProfile(user);
+                showProfileData(user);
             }
         }
         userCursor.close();
@@ -251,62 +202,63 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         + DBHelper.TABLE_CONTACTS_USERS
                         + " WHERE "
                         + DBHelper.KEY_ID + " = ?";
-        Cursor userCursor = database.rawQuery(sqlQuery, new String[]{ownerId});
+        Cursor userCursor = database.rawQuery(sqlQuery, new String[]{profileInteractor.getOwnerId(getIntent())});
 
         if (userCursor.moveToFirst()) {
             int indexCountOfRates = userCursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_USERS);
 
             return countOfRates = userCursor.getString(indexCountOfRates);
-
         }
         userCursor.close();
         return "";
-    }
-
-    private void setProfile(User user) {
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         orderList.clear();
-        if (userId.equals(ownerId)) {
-            updateProfileData(ownerId);
+        createPanels();
+
+        //был я здесь или нет (переписать)
+        if (profileInteractor.getUserId().equals(profileInteractor.getOwnerId(getIntent()))) {
+            updateProfileData(profileInteractor.getOwnerId(getIntent()));
         } else {
-            if (!userIdsFirstSetProfile.contains(ownerId)) {
+            if (!userIdsFirstSetProfile.contains(profileInteractor.getOwnerId(getIntent()))) {
                 //загрузка из фб
-                loadProfileData(ownerId);
-                userIdsFirstSetProfile.add(ownerId);
+                profileInteractor.loadProfile(Objects.requireNonNull(profileInteractor.getOwnerId(getIntent())));
+                userIdsFirstSetProfile.add(profileInteractor.getOwnerId(getIntent()));
             } else {
-                updateProfileData(ownerId);
+                updateProfileData(profileInteractor.getOwnerId(getIntent()));
             }
         }
 
-        PanelBuilder panelBuilder = new PanelBuilder(ownerId);
-        panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
-        panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
-
-        if (userId.equals(ownerId)) {
+        if (profileInteractor.userIsOwner(getIntent())) {
             // если это мой сервис
-            updateOrdersList(userId);
-
+            updateOrdersList(profileInteractor.getUserId());
             // выводим кол-во подписок
-            long subscriptionsCount = SubscriptionsApi.getCountOfSubscriptions(database, userId);
-            String subscriptionText = "Подписки";
-
-            if (subscriptionsCount != 0) {
-                subscriptionText += " (" + subscriptionsCount + ")";
-            }
-            subscriptionsText.setText(subscriptionText);
-            String subscribersBtnText = "Подписчики:";
-            long subscribersCount = getCountOfSubscribers();
-
-            if (subscribersCount != 0) {
-                subscribersBtnText += " " + subscribersCount;
-            }
-            subscribersText.setText(subscribersBtnText);
+            showSubscriptions();
+            showSubscribers();
         }
+    }
+
+    private void showSubscriptions(){
+        long subscriptionsCount = SubscriptionsApi.getCountOfSubscriptions(database, profileInteractor.getUserId());
+        String subscriptionText = "Подписки";
+
+        if (subscriptionsCount != 0) {
+            subscriptionText += " (" + subscriptionsCount + ")";
+        }
+        subscriptionsText.setText(subscriptionText);
+    }
+
+    private void showSubscribers(){
+        String subscribersBtnText = "Подписчики:";
+        long subscribersCount = getCountOfSubscribers();
+
+        if (subscribersCount != 0) {
+            subscribersBtnText += " " + subscribersCount;
+        }
+        subscribersText.setText(subscribersBtnText);
     }
 
     private long getCountOfSubscribers() {
@@ -315,7 +267,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         + " FROM " + DBHelper.TABLE_CONTACTS_USERS
                         + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + " = ?";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{profileInteractor.getUserId()});
         if (cursor.moveToFirst()) {
             int indexSubscribersCount = cursor.getColumnIndex(DBHelper.KEY_SUBSCRIBERS_COUNT_USERS);
             return Long.valueOf(cursor.getString(indexSubscribersCount));
@@ -324,30 +276,27 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         return 0;
     }
 
-    public void setUser(User user) {
-        nameText.setText(user.getName());
-        cityText.setText(user.getCity());
-        phoneText.setText(user.getPhone());
-
-        float rating = user.getRating();
+    private void createRatingBar(float rating) {
         if (rating == 0) {
             setWithoutRating();
         } else {
             addRatingToScreen(rating);
         }
-
-        //загрузка аватарки
+    }
+    private void showAvatar() {
         int width = getResources().getDimensionPixelSize(R.dimen.photo_width);
         int height = getResources().getDimensionPixelSize(R.dimen.photo_height);
-        workWithLocalStorageApi.setPhotoAvatar(ownerId, avatarImage, width, height);
-
-        updateServicesList(ownerId);
+        workWithLocalStorageApi.setPhotoAvatar(profileInteractor.getOwnerId(getIntent()), avatarImage, width, height);
+    }
+    private void showProfileText(String name, String city, String phone){
+        nameText.setText(name);
+        cityText.setText(city);
+        phoneText.setText(phone);
     }
 
     //подгрузка сервисов на serviceList
     private void updateServicesList(String ownerId) {
         serviceList.clear();
-
         //количество сервисов отображаемых на данный момент(старых)
         String sqlQueryService =
                 "SELECT "
@@ -453,12 +402,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         cursor.close();
     }
 
-    private String getUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
-
+    //wtf VALENTOS
     public boolean checkSubscription() {
-
         String sqlQuery =
                 "SELECT * FROM "
                         + DBHelper.TABLE_SUBSCRIBERS
@@ -466,7 +411,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         + DBHelper.KEY_USER_ID + " = ? AND "
                         + DBHelper.KEY_WORKER_ID + " = ?";
 
-        Cursor cursor = database.rawQuery(sqlQuery, new String[]{userId, ownerId});
+        Cursor cursor = database.rawQuery(sqlQuery, new String[]{profileInteractor.getUserId(), profileInteractor.getOwnerId(getIntent())});
         if (cursor.moveToFirst()) {
             cursor.close();
             return true;
@@ -474,6 +419,32 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             cursor.close();
             return false;
         }
+    }
+
+    private void showMyProfile() {
+        recyclerViewService.setVisibility(View.GONE);
+        createSwitcher();
+        addServicesBtn.setOnClickListener(this);
+        subscriptionsLayout.setOnClickListener(this);
+    }
+
+    private void showNotMyProfile() {
+        hideView();
+        recyclerViewService.setVisibility(View.VISIBLE);
+    }
+
+    private void createSwitcher() {
+        SwitcherElement switcherElement = new SwitcherElement("Записи", "Услуги");
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(R.id.switcherProfileLayout, switcherElement);
+        transaction.commit();
+    }
+
+    private void hideView() {
+        addServicesBtn.setVisibility(View.GONE);
+        subscriptionsLayout.setVisibility(View.INVISIBLE);
+        subscribersText.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
     }
 
     private void addRatingToScreen(float avgRating) {
@@ -487,23 +458,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         withoutRatingText.setVisibility(View.VISIBLE);
     }
 
-    private void goToAddService() {
-        Intent intent = new Intent(this, AddingService.class);
-        startActivity(intent);
-    }
-
-    private void goToSubscribers(String status) {
-        Intent intent = new Intent(this, Subscribers.class);
-        intent.putExtra(STATUS, status);
-        startActivity(intent);
-    }
-
-    private void goToUserComments(String status) {
-        Intent intent = new Intent(this, Comments.class);
-        intent.putExtra(SERVICE_OWNER_ID, ownerId);
-        intent.putExtra(User.Companion.getCOUNT_OF_RATES(), getCountOfRates());
-        intent.putExtra(TYPE, status);
-        startActivity(intent);
+    private void createPanels() {
+        PanelBuilder panelBuilder = new PanelBuilder(profileInteractor.getOwnerId(getIntent()));
+        panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout);
+        panelBuilder.buildFooter(manager, R.id.footerProfileLayout);
     }
 
     @Override

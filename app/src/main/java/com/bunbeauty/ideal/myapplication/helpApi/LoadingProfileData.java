@@ -17,8 +17,7 @@ public class LoadingProfileData {
     private static final String TAG = "DBInf";
 
     private static final String WORKER_ID = "worker id";
-
-
+    
     //PHOTOS
     private static final String PHOTO_LINK = "photo link";
 

@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile
 
+import android.app.Activity
 import android.content.Intent
 
 interface IProfileInteractor {
@@ -7,9 +8,13 @@ interface IProfileInteractor {
     fun updateProfile(ownerId:String)
     fun getCountOfRates() : String
     fun getUserId() : String
+    fun getOwnerId(intent: Intent) : String?
     fun checkSubscription() : Boolean
-    fun goToAddService(intent: Intent)
-    fun goToSubscribers(intent: Intent, status:String)
-    fun goToUserComments(intent: Intent, status:String)
+    fun goToAddService(activity: Activity)
+    fun goToSubscribers(activity: Activity, status:String)
+    fun goToUserComments(activity: Activity, status:String, ownerId:String)
+    fun initFCM(ownerId: String)
+    fun isFirstEnter(intent: Intent):Boolean
+    fun userIsOwner(intent: Intent):Boolean
 
 }
