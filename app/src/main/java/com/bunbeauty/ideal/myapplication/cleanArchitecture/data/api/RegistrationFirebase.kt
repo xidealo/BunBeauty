@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import android.util.Log
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.logIn.RegistrationRepository
 import com.google.firebase.database.FirebaseDatabase
 import java.util.*

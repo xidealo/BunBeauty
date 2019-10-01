@@ -11,7 +11,8 @@ import android.widget.Toast
 
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 
 class RegistrationActivity : AppCompatActivity(), View.OnClickListener {

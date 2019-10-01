@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.fragments.PremiumElement;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;

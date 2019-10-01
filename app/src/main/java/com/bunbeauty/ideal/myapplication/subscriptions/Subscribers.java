@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.SubscriptionAdapter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
