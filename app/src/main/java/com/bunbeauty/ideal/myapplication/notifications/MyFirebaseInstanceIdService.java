@@ -35,13 +35,14 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-        //Log.d(TAG, "sendRegistrationToServer: sending token to server: " + token);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        reference.child(USERS)
-                .child(userId)
-                .child(TOKEN)
-                .setValue(token);
+            reference.child(USERS)
+                    .child(userId)
+                    .child(TOKEN)
+                    .setValue(token);
+        }
     }
 }
