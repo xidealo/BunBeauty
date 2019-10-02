@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

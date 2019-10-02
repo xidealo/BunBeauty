@@ -8,7 +8,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.Registration
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.RegistrationLocalDatabase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.logIn.RegistrationRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class RegistrationInteractor : IRegistrationInteractor{

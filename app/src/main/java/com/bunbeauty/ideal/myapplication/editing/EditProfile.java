@@ -26,7 +26,7 @@ import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.AuthorizationActivity;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.AuthorizationActivity;
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.other.MyService;

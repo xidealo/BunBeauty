@@ -8,15 +8,13 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ProfileFireb
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.ProfileLocalDatabase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.logIn.ProfileRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.createService.AddingService
 import com.bunbeauty.ideal.myapplication.reviews.Comments
 import com.bunbeauty.ideal.myapplication.subscriptions.Subscribers
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.iid.FirebaseInstanceId
-import java.util.*
 
 class ProfileInteractor(private val profileActivity: ProfileActivity) : IProfileInteractor, ProfileCallback {
 

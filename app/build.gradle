@@ -46,6 +46,8 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.7'
     implementation 'androidx.room:room-runtime:2.1.0'
     annotationProcessor 'androidx.room:room-compiler:2.1.0'
+    implementation 'com.arello-mobile:moxy:1.1.1'
+    implementation 'com.arello-mobile:moxy-compiler:1.1.1'
 
 }
 repositories {

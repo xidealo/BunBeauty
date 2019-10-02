@@ -6,7 +6,7 @@ import android.content.Intent
 import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IVerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.VerifyPhoneActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.VerifyPhoneActivity
 import com.bunbeauty.ideal.myapplication.logIn.MyAuthorization
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException

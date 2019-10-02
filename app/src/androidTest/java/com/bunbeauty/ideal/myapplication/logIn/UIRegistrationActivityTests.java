@@ -4,7 +4,7 @@ import androidx.test.espresso.Espresso;
 import androidx.test.rule.ActivityTestRule;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.AuthorizationActivity;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.AuthorizationActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.junit.After;

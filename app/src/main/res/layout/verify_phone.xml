@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.VerifyPhoneActivity">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.VerifyPhoneActivity">
 
     <ImageView
         android:id="@+id/logoVerifyImage"

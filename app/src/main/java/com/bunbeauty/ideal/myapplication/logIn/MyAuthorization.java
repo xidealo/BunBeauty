@@ -10,12 +10,12 @@ import android.widget.Toast;
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.RegistrationActivity;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.RegistrationActivity;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingProfileData;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile.ProfileActivity;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

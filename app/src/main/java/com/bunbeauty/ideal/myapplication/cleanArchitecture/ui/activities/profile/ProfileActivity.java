@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.profile;
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

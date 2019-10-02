@@ -2,7 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogI
 
 import android.app.Activity
 import android.content.Intent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.VerifyPhoneActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.VerifyPhoneActivity
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 
