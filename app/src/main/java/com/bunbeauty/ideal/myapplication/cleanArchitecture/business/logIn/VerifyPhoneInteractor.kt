@@ -45,10 +45,10 @@ class VerifyPhoneInteractor(private val context: Context) : IVerifyPhoneInteract
             }
         }
 
-        override fun onCodeSent(verificationId: String, token: ForceResendingToken?) {
+        override fun onCodeSent(verificationId: String, p1: ForceResendingToken) {
             //происходит, когда отослали код
             phoneVerificationId = verificationId
-            resendToken = token
+            resendToken = p1
         }
     }
 

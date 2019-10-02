@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.helpApi;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bunbeauty.ideal.myapplication.fragments.panelElements.BottomPanel;
 import com.bunbeauty.ideal.myapplication.fragments.panelElements.TopPanel;

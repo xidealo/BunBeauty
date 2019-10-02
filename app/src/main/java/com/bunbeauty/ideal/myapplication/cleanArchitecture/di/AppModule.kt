@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.database.LocalDatabase
 import dagger.Module
 import dagger.Provides
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import android.content.Context
 
 @Module

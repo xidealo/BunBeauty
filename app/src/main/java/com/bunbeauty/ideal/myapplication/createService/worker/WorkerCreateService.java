@@ -2,7 +2,7 @@ package com.bunbeauty.ideal.myapplication.createService.worker;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;

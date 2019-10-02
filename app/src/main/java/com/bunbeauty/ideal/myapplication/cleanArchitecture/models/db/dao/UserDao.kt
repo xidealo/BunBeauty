@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 
 @Dao

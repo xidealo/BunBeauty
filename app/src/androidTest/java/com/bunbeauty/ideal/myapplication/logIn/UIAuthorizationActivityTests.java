@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.logIn;
 
-import android.support.test.espresso.Espresso;
-import android.support.test.rule.ActivityTestRule;
+import androidx.test.espresso.Espresso;
+import androidx.test.rule.ActivityTestRule;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.presentation.logIn.AuthorizationActivity;
@@ -12,10 +12,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.typeText;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 public class UIAuthorizationActivityTests {
 

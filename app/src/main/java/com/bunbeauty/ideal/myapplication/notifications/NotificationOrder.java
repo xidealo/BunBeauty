@@ -3,8 +3,8 @@ package com.bunbeauty.ideal.myapplication.notifications;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
