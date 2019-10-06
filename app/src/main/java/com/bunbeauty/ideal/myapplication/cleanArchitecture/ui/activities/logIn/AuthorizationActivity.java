@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn;
 
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,17 +10,29 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
 import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppComponent;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerRoomComponent;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.RoomModule;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.repo.UserRepo;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AuthorizationPresenter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi;
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes;
+import com.bunbeauty.ideal.myapplication.other.App;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 public class AuthorizationActivity extends MvpAppCompatActivity implements View.OnClickListener, AuthorizationView {
 
@@ -33,19 +46,28 @@ public class AuthorizationActivity extends MvpAppCompatActivity implements View.
     private static final String TAG_UI = "tag_ui";
 
     //@InjectPresenter
+    @Inject
     AuthorizationPresenter authorizationPresenter;
 
-    private AppComponent appComponent;
+    /*@ProvidePresenter
+    AuthorizationPresenter providePresenter() {
+        Application. getComponentsManager().getEarthquakesComponent().inject(this);
+        return new EarthquakesListPresenter(earthquakesInteractor, locationInteractor,
+                schedulersProvider);
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        appComponent = DaggerAppComponent.builder().build();
-        appComponent.inject(this);
-        authorizationPresenter = new AuthorizationPresenter();
-
         setContentView(R.layout.authorization);
+
+        DaggerAppComponent.builder()
+                .build()
+                .inject(this);
+        DaggerRoomComponent.builder()
+                .roomModule(new RoomModule(getApplication()))
+                .build();
+
         initView();
 
         authorizationPresenter.authorize();

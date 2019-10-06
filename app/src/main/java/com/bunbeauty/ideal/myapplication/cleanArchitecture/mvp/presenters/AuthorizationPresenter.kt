@@ -2,20 +2,21 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.RoomModule
 import javax.inject.Inject
 
 //@InjectViewState
 class AuthorizationPresenter/*: MvpPresenter<AuthorizationView>() */{
 
     @Inject
-    lateinit var authorizationInteractor:AuthorizationInteractor
+    lateinit var authorizationInteractor: AuthorizationInteractor
 
-    private lateinit var appComponent: AppComponent
+    //private var appComponent: AppComponent = DaggerAppComponent.builder().build()
 
     init {
-        appComponent = DaggerAppComponent.builder().build()
-        appComponent.inject(this)
+        DaggerAppComponent.builder().build().inject(this)
     }
 
     fun authorize(){

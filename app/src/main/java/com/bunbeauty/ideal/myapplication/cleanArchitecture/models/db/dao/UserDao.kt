@@ -6,17 +6,18 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 @Dao
 interface UserDao {
 
-    fun getAll() : List<User>
+    @Query("SELECT * FROM user")
+    fun findAll() : List<User>
 
     @Query("SELECT * FROM user WHERE id = :id")
-    fun getById(id: Long) : List<User>
+    fun findById(id: Long) : List<User>
 
     @Insert
-    fun insert(employee: User)
+    fun insert(user: User) : Long
 
     @Update
-    fun update(employee: User)
+    fun update(user: User)
 
     @Delete
-    fun delete(employee: User)
+    fun delete(user: User)
 }
