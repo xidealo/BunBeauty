@@ -36,6 +36,7 @@ public class UIAuthorizationActivityTests {
         //click on button
         onView(withId(R.id.verifyAuthBtn)).perform(click());
     }
+
     void testEnterCodeVerify(String code){
         //set code
         onView(withId(R.id.codeVerifyInput)).perform(typeText(code));
@@ -43,6 +44,11 @@ public class UIAuthorizationActivityTests {
         Espresso.closeSoftKeyboard();
         //click on button
         onView(withId(R.id.verifyVerifyBtn)).perform(click());
+    }
+    @Test
+    public void testEnterPhone() throws InterruptedException {
+        testEnterPhoneAuthorization("9999999999");
+        Thread.sleep(2000);
     }
 
     @Test

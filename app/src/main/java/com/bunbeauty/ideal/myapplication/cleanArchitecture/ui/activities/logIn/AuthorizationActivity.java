@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn;
 
+import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,70 +11,61 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor;
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppComponent;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AuthorizationPresenter;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi;
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes;
-import com.bunbeauty.ideal.myapplication.logIn.MyAuthorization;
 
-public class AuthorizationActivity extends AppCompatActivity implements View.OnClickListener {
+import org.jetbrains.annotations.NotNull;
+
+public class AuthorizationActivity extends MvpAppCompatActivity implements View.OnClickListener, AuthorizationView {
+
+    private String PHONE_NUMBER = "phone number";
 
     private Button verifyBtn;
     private TextView enterPhoneText;
     private EditText phoneInput;
     private Spinner codeSpinner;
-    private String myPhoneNumber;
     private ProgressBar progressBar;
     private static final String TAG_UI = "tag_ui";
-    private AuthorizationInteractor authorizationInteractor;
 
-    // Это активити
+    //@InjectPresenter
+    AuthorizationPresenter authorizationPresenter;
+
+    private AppComponent appComponent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.authorization);
 
+        appComponent = DaggerAppComponent.builder().build();
+        appComponent.inject(this);
+        authorizationPresenter = new AuthorizationPresenter();
+
+        setContentView(R.layout.authorization);
         initView();
-        //business logic class
-        if (authorizationInteractor.getCurrentFbUser() != null) {
-            hideViewsOfScreen();
-            myPhoneNumber = authorizationInteractor.getCurrentFbUser().getPhoneNumber();
-            MyAuthorization myAuth = new MyAuthorization(AuthorizationActivity.this, myPhoneNumber);
-            myAuth.authorizeUser();
-        } else {
-            showViewsOnScreen();
-        }
-        WorkWithViewApi.hideKeyboard(this);
+
+        authorizationPresenter.authorize();
     }
 
-    private void initView(){
-
+    private void initView() {
         verifyBtn = findViewById(R.id.verifyAuthBtn);
         phoneInput = findViewById(R.id.phoneAuthInput);
         enterPhoneText = findViewById(R.id.titleAuthText);
         progressBar = findViewById(R.id.progressBarAuthorization);
         codeSpinner = findViewById(R.id.codeAuthSpinner);
-
-        authorizationInteractor = new AuthorizationInteractor();
-
         verifyBtn.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.verifyAuthBtn:
-                String countryCode = CountryCodes.codes[codeSpinner.getSelectedItemPosition()];
-                myPhoneNumber = countryCode + phoneInput.getText().toString();
-                if (authorizationInteractor.isPhoneCorrect(myPhoneNumber.trim())) {
-                    enableVerifyBtn(false);
-                    authorizationInteractor.goToVerifyPhone(myPhoneNumber,this);
-                }
-                else {
-                  setPhoneError();
-                }
-                break;
-            default:
-                break;
+        if (v.getId() == R.id.verifyAuthBtn) {
+            authorizationPresenter.authorize(
+                    CountryCodes.codes[codeSpinner.getSelectedItemPosition()] + phoneInput.getText().toString()
+            );
         }
     }
 
@@ -84,7 +75,8 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
         enableVerifyBtn(true);
     }
 
-    private void hideViewsOfScreen() {
+    @Override
+    public void hideViewsOnScreen() {
         Log.d(TAG_UI, "hideViewsOfScreen");
         progressBar.setVisibility(View.VISIBLE);
         codeSpinner.setVisibility(View.GONE);
@@ -92,7 +84,8 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
         verifyBtn.setVisibility(View.GONE);
     }
 
-    private void showViewsOnScreen() {
+    @Override
+    public void showViewsOnScreen() {
         Log.d(TAG_UI, "showViewsOnScreen: ");
         codeSpinner.setVisibility(View.VISIBLE);
         enterPhoneText.setVisibility(View.VISIBLE);
@@ -100,14 +93,28 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
         verifyBtn.setVisibility(View.VISIBLE);
     }
 
-    private void setPhoneError(){
+    @Override
+    public void setPhoneError() {
         Log.d(TAG_UI, "setPhoneError: ");
         phoneInput.setError("Некорректный номер");
         phoneInput.requestFocus();
     }
 
-    private void enableVerifyBtn(Boolean status){
+    @Override
+    public void enableVerifyBtn(boolean status) {
         Log.d(TAG_UI, "enableVerifyBtn: " + status);
         verifyBtn.setClickable(status);
+    }
+
+    @Override
+    public void goToVerifyPhone(@NotNull String myPhoneNumber) {
+        Intent intent = new Intent(this, VerifyPhoneActivity.class);
+        intent.putExtra(PHONE_NUMBER, myPhoneNumber);
+        this.startActivity(intent);
+    }
+
+    @Override
+    public void hideKeyboard() {
+        WorkWithViewApi.hideKeyboard(this);
     }
 }

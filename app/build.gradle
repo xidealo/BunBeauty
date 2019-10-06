@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -38,22 +39,37 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
+    //Espresso
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    //firebase
     implementation 'com.google.firebase:firebase-core:17.2.0'
     implementation 'com.google.firebase:firebase-database:19.1.0'
     implementation 'com.google.firebase:firebase-auth:19.1.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.google.firebase:firebase-storage:19.1.0'
+    //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+    //recycler
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    //dagger
     implementation 'com.google.dagger:dagger:2.17'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.7'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.15'
+
+    //room
     implementation 'androidx.room:room-runtime:2.1.0'
     annotationProcessor 'androidx.room:room-compiler:2.1.0'
-    implementation 'com.arello-mobile:moxy:1.1.1'
-    implementation 'com.arello-mobile:moxy-compiler:1.1.1'
+    kapt 'com.google.dagger:dagger-android-processor:2.15'
+    kapt 'com.google.dagger:dagger-compiler:2.15'
 
+    //moxy
+    implementation 'tech.schoolhelper:moxy-x:1.7.0'
+    annotationProcessor 'tech.schoolhelper:moxy-x-compiler:1.7.0'
+    implementation 'tech.schoolhelper:moxy-x-android:1.7.0'
+    implementation 'tech.schoolhelper:moxy-x-androidx:1.7.0'
 }
 repositories {
     mavenCentral()

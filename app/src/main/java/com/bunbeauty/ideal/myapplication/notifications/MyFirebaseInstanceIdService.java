@@ -18,7 +18,6 @@ public class MyFirebaseInstanceIdService extends FirebaseMessagingService {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
             reference.child(USERS)
                     .child(userId)
                     .child(TOKEN)
