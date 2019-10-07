@@ -1,26 +1,12 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
+import com.arellomobile.mvp.InjectViewState
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.RoomModule
-import javax.inject.Inject
 
-//@InjectViewState
-class AuthorizationPresenter/*: MvpPresenter<AuthorizationView>() */{
-
-    @Inject
-    lateinit var authorizationInteractor: AuthorizationInteractor
-
-    //private var appComponent: AppComponent = DaggerAppComponent.builder().build()
-
-    init {
-        DaggerAppComponent.builder().build().inject(this)
-    }
+@InjectViewState
+class AuthorizationPresenter(val authorizationInteractor: AuthorizationInteractor)/*: MvpPresenter<AuthorizationView>()*/{
 
     fun authorize(){
-
         //business logic class
         if (authorizationInteractor.getCurrentFbUser() != null) {
             //viewState.hideViewsOnScreen()

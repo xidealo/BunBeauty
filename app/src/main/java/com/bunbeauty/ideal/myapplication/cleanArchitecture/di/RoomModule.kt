@@ -1,16 +1,14 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
-import dagger.Module
-import dagger.Provides
 import android.app.Application
-import javax.inject.Singleton
 import androidx.room.Room
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.repo.LocalDatabase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.repo.UserDataSource
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.repo.UserRepo
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AuthorizationPresenter
+import dagger.Module
+import dagger.Provides
+import javax.inject.Singleton
 
 /*
 @Module
@@ -41,7 +39,6 @@ abstract class RoomModule(private val app: Application) {
 
     }
 }*/
-
 
 @Module
 class RoomModule(private val app: Application) {
