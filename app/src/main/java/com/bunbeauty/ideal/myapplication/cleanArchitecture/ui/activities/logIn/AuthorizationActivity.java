@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.android.ideal.myapplication.R;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerRoomComponent;
@@ -40,18 +41,24 @@ public class AuthorizationActivity extends MvpAppCompatActivity implements View.
     @Inject
     AuthorizationInteractor authorizationInteractor;
 
-    @Inject
     @InjectPresenter
     AuthorizationPresenter authorizationPresenter;
+
+    @ProvidePresenter
+    AuthorizationPresenter provideAuthorizationPresenter(){
+        DaggerAppComponent.builder()
+                .build()
+                .inject(this);
+
+        return new AuthorizationPresenter(authorizationInteractor);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.authorization);
 
-        DaggerAppComponent.builder()
-                .build()
-                .inject(this);
+
         DaggerRoomComponent.builder()
                 .roomModule(new RoomModule(getApplication()))
                 .build();
