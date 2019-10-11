@@ -1,8 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IVerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyCallback
@@ -16,11 +14,10 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider.*
 import java.util.concurrent.TimeUnit
 
-class VerifyPhoneInteractor(private val context: Context) : IVerifyPhoneInteractor {
+class VerifyPhoneInteractor : IVerifyPhoneInteractor {
     private val TAG = "DBInf"
-    private var resendToken: ForceResendingToken? = null
-    private var phoneVerificationId: String = ""
-    private val PHONE_NUMBER = "phone number"
+    private lateinit var resendToken: ForceResendingToken
+    private lateinit var phoneVerificationId: String
 
     override fun verifyCode(phoneNumber: String, code: String, verifyPhoneActivity: VerifyPhoneActivity) {
         //получаем ответ гугл
@@ -52,22 +49,21 @@ class VerifyPhoneInteractor(private val context: Context) : IVerifyPhoneInteract
         }
     }
 
-    override fun sendVerificationCode(phoneNumber: String, activity: Activity) {
-
+    override fun sendVerificationCode(phoneNumber: String, verifyPhoneActivity: VerifyPhoneActivity) {
         getInstance().verifyPhoneNumber(
                 phoneNumber, // Phone number to verify
                 60, // Timeout duration
                 TimeUnit.SECONDS, // Unit of timeout
-                activity, // Activity (for callback binding)
+                verifyPhoneActivity, // Activity (for callback binding)
                 verificationCallbacks)
     }
 
-    override fun resendVerificationCode(phoneNumber: String, activity: Activity, token: ForceResendingToken) {
+    override fun resendVerificationCode(phoneNumber: String, token: ForceResendingToken, verifyPhoneActivity: VerifyPhoneActivity) {
         getInstance().verifyPhoneNumber(
                 phoneNumber, // Phone number to verify
                 60, // Timeout duration
                 TimeUnit.SECONDS, // Unit of timeout
-                activity, // Activity (for callback binding)
+                verifyPhoneActivity, // Activity (for callback binding)
                 verificationCallbacks, // OnVerificationStateChangedCallbacks
                 token)  // ForceResendingToken from callbacks
     }
@@ -79,7 +75,7 @@ class VerifyPhoneInteractor(private val context: Context) : IVerifyPhoneInteract
         fbAuth.signInWithCredential(credential).addOnCompleteListener { task ->
             //если введен верный код
             if (task.isSuccessful) {
-                val myAuth = MyAuthorization(context, phoneNumber)
+                val myAuth = MyAuthorization(Activity(), phoneNumber)
                 myAuth.authorizeUser()
             } else {
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {
@@ -93,7 +89,8 @@ class VerifyPhoneInteractor(private val context: Context) : IVerifyPhoneInteract
         return resendToken
     }
 
-    override fun getMyPhoneNumber(intent: Intent): String {
-        return intent.getStringExtra(PHONE_NUMBER)
+    override fun getMyPhoneNumber(): String {
+        //return intent.getStringExtra(PHONE_NUMBER)
+        return "+79100080142" //something from db
     }
 }

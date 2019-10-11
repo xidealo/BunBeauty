@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,11 +10,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyCallback;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.VerifyPhonePresenter;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhoneView;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi;
 
-public class VerifyPhoneActivity extends AppCompatActivity implements View.OnClickListener, VerifyCallback {
+import javax.inject.Inject;
+
+public class VerifyPhoneActivity extends MvpAppCompatActivity implements View.OnClickListener, VerifyCallback, VerifyPhoneView {
 
     private static final String TAG = "DBInf";
 
@@ -25,14 +32,28 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
     private TextView changePhoneText;
     private TextView alertCodeText;
     private ProgressBar progressBar;
-    private VerifyPhoneInteractor verifyPhoneInteractor;
+
+    @Inject
+    VerifyPhoneInteractor verifyPhoneInteractor;
+
+    @InjectPresenter
+    VerifyPhonePresenter verifyPhonePresenter;
+
+    @ProvidePresenter
+    VerifyPhonePresenter provideVerifyPhonePresenter() {
+        DaggerAppComponent.builder()
+                .build()
+                .inject(this);
+        return new VerifyPhonePresenter(verifyPhoneInteractor);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.verify_phone);
+
         initView();
-        verifyPhoneInteractor.sendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(getIntent()),this);
+        verifyPhonePresenter.sendCode(this);
     }
 
     private void initView() {
@@ -44,7 +65,6 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
         codeInput = findViewById(R.id.codeVerifyInput);
         changePhoneText = findViewById(R.id.changePhoneVerifyText);
 
-        verifyPhoneInteractor= new VerifyPhoneInteractor(this);
         progressBar = findViewById(R.id.progressBarVerifyCode);
 
         verifyCodeBtn.setOnClickListener(this);
@@ -57,18 +77,12 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
         WorkWithViewApi.hideKeyboard(this);
         switch (v.getId()) {
             case R.id.verifyVerifyBtn:
-                String code = codeInput.getText().toString();
-                if (code.trim().length() >= 6) {
-                    // подтверждаем код и если все хорошо, создаем юзера
-                    verifyPhoneInteractor.verifyCode(verifyPhoneInteractor.getMyPhoneNumber(getIntent()), code, this);
-                    hideViewsOfScreen();
-                }
+                verifyPhonePresenter.verify(codeInput.getText().toString());
                 break;
             case R.id.resendVerifyText:
                 if (verifyPhoneInteractor.getResendToken() != null) {
-                    assertResendCode();
-                    verifyPhoneInteractor.resendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(getIntent()),
-                            this,verifyPhoneInteractor.getResendToken());
+                    verifyPhoneInteractor.resendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),
+                            verifyPhoneInteractor.getResendToken(), this);
                 }
                 break;
             case R.id.changePhoneVerifyText:
@@ -79,7 +93,8 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void hideViewsOfScreen() {
+    @Override
+    public void hideViewsOnScreen() {
         verifyCodeBtn.setVisibility(View.GONE);
         resendCodeText.setVisibility(View.GONE);
         codeInput.setVisibility(View.GONE);
@@ -88,7 +103,8 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void showViewsOnScreen() {
+    @Override
+    public void showViewsOnScreen() {
         verifyCodeBtn.setVisibility(View.VISIBLE);
         resendCodeText.setVisibility(View.VISIBLE);
         codeInput.setVisibility(View.VISIBLE);
@@ -97,23 +113,26 @@ public class VerifyPhoneActivity extends AppCompatActivity implements View.OnCli
         progressBar.setVisibility(View.GONE);
     }
 
-    private void assertResendCode() {
-        Toast.makeText(this, "Код был отправлен", Toast.LENGTH_SHORT).show();
+    @Override
+    public void showResendCode() {
+        Toast.makeText(this, "Код был отправлен", Toast.LENGTH_LONG).show();
     }
 
-    private void assertWrongCode() {
-        Toast.makeText(this, "Вы ввели неверный код", Toast.LENGTH_SHORT).show();
+    @Override
+    public void showWrongCode() {
+        Toast.makeText(this, "Вы ввели неверный код", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void callbackWrongCode() {
+        showViewsOnScreen();
+        showWrongCode();
+        codeInput.setError("Неправильный код");
+        codeInput.requestFocus();
     }
 
     private void goBackToAuthorization() {
         super.onBackPressed();
     }
 
-    @Override
-    public void callbackWrongCode() {
-        showViewsOnScreen();
-        assertWrongCode();
-        codeInput.setError("Неправильный код");
-        codeInput.requestFocus();
-    }
 }

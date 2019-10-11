@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
 import dagger.Module
 import dagger.Provides
 
@@ -13,10 +14,10 @@ abstract class AppModule {
         @Provides
         fun provideAuthorizationInteractor(): AuthorizationInteractor = AuthorizationInteractor()
 
-        /*@JvmStatic
+
+        @JvmStatic
         @Provides
-        fun provideAuthorizationPresenter(authorizationInteractor: AuthorizationInteractor): AuthorizationPresenter = AuthorizationPresenter(authorizationInteractor)
-*/
+        fun provideVerifyPhoneInteractor(): VerifyPhoneInteractor = VerifyPhoneInteractor()
     }
 }
 
