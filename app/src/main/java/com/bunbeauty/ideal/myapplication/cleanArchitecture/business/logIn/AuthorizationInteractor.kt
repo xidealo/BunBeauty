@@ -6,9 +6,6 @@ import com.google.firebase.auth.FirebaseUser
 
 class AuthorizationInteractor  : IAuthorizationInteractor{
 
-    /*@Inject
-    lateinit var userRepo: UserRepo*/
-
     override fun getCurrentFbUser(): FirebaseUser? {
         return FirebaseAuth.getInstance().currentUser
     }
@@ -20,6 +17,4 @@ class AuthorizationInteractor  : IAuthorizationInteractor{
         }
         return false
     }
-
-
 }

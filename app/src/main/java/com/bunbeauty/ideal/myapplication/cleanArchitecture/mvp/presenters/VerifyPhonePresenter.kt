@@ -14,14 +14,21 @@ class VerifyPhonePresenter(val verifyPhoneInteractor: VerifyPhoneInteractor): Mv
         viewState.showResendCode()
     }
 
-    fun verify(code:String){
+    fun verify(code:String, verifyPhoneActivity: VerifyPhoneActivity){
         if (code.trim().length >= 6) {
-            verifyPhoneInteractor.verifyCode(verifyPhoneInteractor.getMyPhoneNumber(), code, viewState as VerifyPhoneActivity)
+            verifyPhoneInteractor.verifyCode(verifyPhoneInteractor.getMyPhoneNumber(), code, verifyPhoneActivity)
             viewState.showResendCode()
             viewState.hideViewsOnScreen()
         }else{
             viewState.showWrongCode()
         }
+    }
 
+    fun resendCode(verifyPhoneActivity: VerifyPhoneActivity){
+        if (verifyPhoneInteractor.getResendToken() != null) {
+            verifyPhoneInteractor.resendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),
+                    verifyPhoneInteractor.getResendToken()!!, verifyPhoneActivity)
+            viewState.showResendCode()
+        }
     }
 }

@@ -7,26 +7,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.V
 import dagger.Component
 import javax.inject.Singleton
 
-
-/*
-@Singleton
-@Component(modules = [AppModule::class])
-interface AppComponent {
-
-    fun inject(authorizationPresenter: AuthorizationPresenter)
-    fun inject(authorizationActivity: AuthorizationActivity)
-
-    */
-/*fun productDao(): UserDao
-
-    fun demoDatabase(): LocalDatabase
-
-    fun productRepository(): UserRepo
-
-    fun application(): Application*//*
-
-}*/
-
 @Singleton
 @Component(dependencies = [], modules = [AppModule::class])
 interface AppComponent {

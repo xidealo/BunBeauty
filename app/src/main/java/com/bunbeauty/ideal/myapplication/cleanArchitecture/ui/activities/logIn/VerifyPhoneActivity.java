@@ -77,13 +77,10 @@ public class VerifyPhoneActivity extends MvpAppCompatActivity implements View.On
         WorkWithViewApi.hideKeyboard(this);
         switch (v.getId()) {
             case R.id.verifyVerifyBtn:
-                verifyPhonePresenter.verify(codeInput.getText().toString());
+                verifyPhonePresenter.verify(codeInput.getText().toString(), this);
                 break;
             case R.id.resendVerifyText:
-                if (verifyPhoneInteractor.getResendToken() != null) {
-                    verifyPhoneInteractor.resendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),
-                            verifyPhoneInteractor.getResendToken(), this);
-                }
+                verifyPhonePresenter.resendCode(this);
                 break;
             case R.id.changePhoneVerifyText:
                 goBackToAuthorization();

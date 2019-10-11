@@ -15,9 +15,9 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerRoomComponent;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.RoomModule;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AuthorizationPresenter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi;
@@ -29,8 +29,6 @@ import javax.inject.Inject;
 
 public class AuthorizationActivity extends MvpAppCompatActivity implements View.OnClickListener, AuthorizationView {
 
-    private String PHONE_NUMBER = "phone number";
-
     private Button verifyBtn;
     private TextView enterPhoneText;
     private EditText phoneInput;
@@ -41,15 +39,18 @@ public class AuthorizationActivity extends MvpAppCompatActivity implements View.
     @Inject
     AuthorizationInteractor authorizationInteractor;
 
+    @Inject
+    public UserDao injectUserDao() {
+        DaggerRoomComponent.builder()
+                .roomModule(new RoomModule(getApplication()))
+                .build();
+    }
+
     @InjectPresenter
     AuthorizationPresenter authorizationPresenter;
 
     @ProvidePresenter
-    AuthorizationPresenter provideAuthorizationPresenter(){
-        DaggerAppComponent.builder()
-                .build()
-                .inject(this);
-
+    AuthorizationPresenter provideAuthorizationPresenter() {
         return new AuthorizationPresenter(authorizationInteractor);
     }
 
@@ -57,11 +58,6 @@ public class AuthorizationActivity extends MvpAppCompatActivity implements View.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.authorization);
-
-
-        DaggerRoomComponent.builder()
-                .roomModule(new RoomModule(getApplication()))
-                .build();
 
         initView();
 
@@ -126,7 +122,6 @@ public class AuthorizationActivity extends MvpAppCompatActivity implements View.
     @Override
     public void goToVerifyPhone(@NotNull String myPhoneNumber) {
         Intent intent = new Intent(this, VerifyPhoneActivity.class);
-        intent.putExtra(PHONE_NUMBER, myPhoneNumber);
         this.startActivity(intent);
     }
 
