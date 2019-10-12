@@ -1,24 +1,23 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
+import android.app.Application
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.repo.LocalDatabase
 import dagger.Module
 import dagger.Provides
 
 @Module
-abstract class AppModule {
+class AppModule(private val app: Application) {
 
-    @Module
-    companion object {
-        @JvmStatic
-        @Provides
-        fun provideAuthorizationInteractor(): AuthorizationInteractor = AuthorizationInteractor()
+    @Provides
+    fun provideUserDao(): UserDao = LocalDatabase.getDatabase(app).getUserDao()
+    @Provides
+    fun provideAuthorizationInteractor(userDao: UserDao): AuthorizationInteractor = AuthorizationInteractor(userDao)
+    @Provides
+    fun provideVerifyPhoneInteractor(): VerifyPhoneInteractor = VerifyPhoneInteractor()
 
-
-        @JvmStatic
-        @Provides
-        fun provideVerifyPhoneInteractor(): VerifyPhoneInteractor = VerifyPhoneInteractor()
-    }
 }
 
 /*@Module

@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao
 
 import androidx.room.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import io.reactivex.Completable
 
 @Dao
 interface UserDao {
@@ -13,7 +14,7 @@ interface UserDao {
     fun findById(id: Long) : List<User>
 
     @Insert
-    fun insert(user: User) : Long
+    fun insert(user: User) : Completable
 
     @Update
     fun update(user: User)

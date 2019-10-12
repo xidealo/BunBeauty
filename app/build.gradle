@@ -66,20 +66,22 @@ dependencies {
 
     //dagger
     implementation 'com.google.dagger:dagger:2.17'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.15'
-    kapt 'com.google.dagger:dagger-android-processor:2.15'
     kapt 'com.google.dagger:dagger-compiler:2.15'
     implementation 'com.google.dagger:dagger-android:2.15'
+    kapt 'com.google.dagger:dagger-android-processor:2.15'
 
     //room
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
     kapt "androidx.room:room-compiler:$rootProject.roomVersion"
+    implementation "android.arch.persistence.room:rxjava2:1.1.1"
 
     //moxyX
     implementation 'tech.schoolhelper:moxy-x:1.7.0'
     kapt 'tech.schoolhelper:moxy-x-compiler:1.7.0'
     implementation 'tech.schoolhelper:moxy-x-androidx:1.7.0'
 
+    //rxJava and rxKotlin
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'
 
 }
 repositories {

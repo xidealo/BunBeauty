@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.repo
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import io.reactivex.Completable
 import javax.inject.Inject
 
 class UserDataSource @Inject
@@ -15,7 +16,7 @@ constructor(private val userDao: UserDao) : UserRepo {
         return userDao.findAll()
     }
 
-    override fun insert(user: User): Long {
+    override fun insert(user: User): Completable {
         return userDao.insert(user)
     }
 
