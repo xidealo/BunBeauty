@@ -2,23 +2,26 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao
 
 import androidx.room.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-import io.reactivex.Completable
 
 @Dao
 interface UserDao {
 
     @Query("SELECT * FROM user")
-    fun findAll() : List<User>
+    suspend fun findAll() : List<User>
 
     @Query("SELECT * FROM user WHERE id = :id")
-    fun findById(id: Long) : List<User>
+    suspend fun findById(id: String): User
 
     @Insert
-    fun insert(user: User) : Completable
+    suspend fun insert(user: User)
 
     @Update
-    fun update(user: User)
+    suspend fun update(user: User)
 
     @Delete
-    fun delete(user: User)
+    suspend fun delete(user: User)
+
+    @Query("DELETE FROM user")
+    suspend fun deleteAll()
+
 }

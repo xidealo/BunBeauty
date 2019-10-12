@@ -21,6 +21,7 @@ class AuthorizationPresenter(val authorizationInteractor: AuthorizationInteracto
     }
 
     fun authorize(myPhoneNumber:String){
+        authorizationInteractor.clearUsers()
         if (authorizationInteractor.isPhoneCorrect(myPhoneNumber.trim { it <= ' ' })) {
             viewState.enableVerifyBtn(false)
             viewState.goToVerifyPhone(myPhoneNumber)

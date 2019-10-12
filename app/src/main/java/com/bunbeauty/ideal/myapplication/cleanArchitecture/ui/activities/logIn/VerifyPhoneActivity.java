@@ -15,6 +15,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyCallback;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.VerifyPhonePresenter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhoneView;
@@ -42,6 +43,7 @@ public class VerifyPhoneActivity extends MvpAppCompatActivity implements View.On
     @ProvidePresenter
     VerifyPhonePresenter provideVerifyPhonePresenter() {
         DaggerAppComponent.builder()
+                .appModule(new AppModule(getApplication()))
                 .build()
                 .inject(this);
         return new VerifyPhonePresenter(verifyPhoneInteractor);

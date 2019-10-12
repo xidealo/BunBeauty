@@ -3,6 +3,8 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogI
 import com.google.firebase.auth.FirebaseUser
 
 interface IAuthorizationInteractor {
+
+
     fun getCurrentFbUser() : FirebaseUser?
     fun isPhoneCorrect(myPhoneNumber: String) : Boolean
 }
