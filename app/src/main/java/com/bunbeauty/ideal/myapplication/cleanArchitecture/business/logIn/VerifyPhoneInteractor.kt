@@ -1,9 +1,10 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
-import android.app.Activity
 import android.util.Log
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.BaseInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IVerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.VerifyPhoneActivity
 import com.bunbeauty.ideal.myapplication.logIn.MyAuthorization
 import com.google.firebase.FirebaseException
@@ -12,9 +13,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider.*
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 
-class VerifyPhoneInteractor : IVerifyPhoneInteractor {
+class VerifyPhoneInteractor(private val userDao: UserDao) : BaseInteractor(), IVerifyPhoneInteractor {
     private val TAG = "DBInf"
     private lateinit var resendToken: ForceResendingToken
     private lateinit var phoneVerificationId: String
@@ -75,7 +77,7 @@ class VerifyPhoneInteractor : IVerifyPhoneInteractor {
         fbAuth.signInWithCredential(credential).addOnCompleteListener { task ->
             //если введен верный код
             if (task.isSuccessful) {
-                val myAuth = MyAuthorization(Activity(), phoneNumber)
+                val myAuth = MyAuthorization(verifyPhoneActivity, phoneNumber)
                 myAuth.authorizeUser()
             } else {
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {
@@ -89,8 +91,8 @@ class VerifyPhoneInteractor : IVerifyPhoneInteractor {
         return resendToken
     }
 
-    override fun getMyPhoneNumber(): String {
-        //return intent.getStringExtra(PHONE_NUMBER)
-        return "+79100080142" //something from db
+    override fun getMyPhoneNumber(): String = runBlocking {
+        return@runBlocking userDao.findById("1").phone
     }
+
 }

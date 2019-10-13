@@ -16,24 +16,6 @@ class AppModule(private val app: Application) {
     @Provides
     fun provideAuthorizationInteractor(userDao: UserDao): AuthorizationInteractor = AuthorizationInteractor(userDao)
     @Provides
-    fun provideVerifyPhoneInteractor(): VerifyPhoneInteractor = VerifyPhoneInteractor()
+    fun provideVerifyPhoneInteractor(userDao: UserDao): VerifyPhoneInteractor = VerifyPhoneInteractor(userDao)
 
 }
-
-/*@Module
-class AppModule() {
-
-    @Provides
-    @Singleton
-    internal fun providesApplication(): Application {
-        return app
-    }
-    @Provides
-    @Singleton
-    internal fun provideAuthorizationInteractor() : AuthorizationInteractor = AuthorizationInteractor()
-
-    @Provides
-    @Singleton
-    internal fun provideAuthorizationPresenter() : AuthorizationPresenter = AuthorizationPresenter()
-
-}*/
