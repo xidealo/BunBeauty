@@ -3,20 +3,25 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.AuthorizationCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView
+import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData
 
 @InjectViewState
-class AuthorizationPresenter(val authorizationInteractor: AuthorizationInteractor): MvpPresenter<AuthorizationView>(){
+class AuthorizationPresenter(private val authorizationInteractor: AuthorizationInteractor):
+        MvpPresenter<AuthorizationView>() {
+
 
     fun authorize(){
         //business logic class
         if (authorizationInteractor.getCurrentFbUser() != null) {
             viewState.hideViewsOnScreen()
 
-            //из локалки данные (имя)
-            //gotoProf
-            //else
-            //gotoReg
+            if (authorizationInteractor.getUserName()!!.isEmpty()) {
+                viewState.goToRegistration()
+            } else {
+                viewState.goToProfile()
+            }
 
             //val myAuth = MyAuthorization(this@AuthorizationActivity, myPhoneNumber)
             //myAuth.authorizeUser()

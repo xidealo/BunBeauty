@@ -225,8 +225,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             if (!userIdsFirstSetProfile.contains(profileInteractor.getOwnerId(getIntent()))) {
                 //загрузка из фб
-                profileInteractor.loadProfile(Objects.requireNonNull(profileInteractor.getOwnerId(getIntent())));
-                userIdsFirstSetProfile.add(profileInteractor.getOwnerId(getIntent()));
+                //profileInteractor.loadProfile(Objects.requireNonNull(profileInteractor.getOwnerId(getIntent())));
+                //userIdsFirstSetProfile.add(profileInteractor.getOwnerId(getIntent()));
             } else {
                 updateProfileData(profileInteractor.getOwnerId(getIntent()));
             }

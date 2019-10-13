@@ -12,6 +12,9 @@ interface UserDao {
     @Query("SELECT * FROM user WHERE id = :id")
     suspend fun findById(id: String): User
 
+    @Query("SELECT * FROM user WHERE phone = :phone")
+    suspend fun findByPhoneNumber(phone: String?): User?
+
     @Insert
     suspend fun insert(user: User)
 
@@ -23,5 +26,4 @@ interface UserDao {
 
     @Query("DELETE FROM user")
     suspend fun deleteAll()
-
 }

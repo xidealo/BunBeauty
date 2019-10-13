@@ -168,7 +168,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
     private void loadServiceData() {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = firebaseDatabase.getReference(User.Companion.getUSERS())
+        final DatabaseReference myRef = firebaseDatabase.getReference(User.USERS)
                 .child(ownerId);
         //загружаем один раз всю информацию
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -304,7 +304,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             }
         });
         //слушатель на данные сервиса
-        final DatabaseReference serviceRef = firebaseDatabase.getReference(User.Companion.getUSERS())
+        final DatabaseReference serviceRef = firebaseDatabase.getReference(User.USERS)
                 .child(ownerId)
                 .child(Service.SERVICES)
                 .child(serviceId);
@@ -573,7 +573,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
     @Override
     public void setPremium() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(User.Companion.getUSERS())
+        DatabaseReference myRef = database.getReference(User.USERS)
                 .child(getUserId())
                 .child(Service.SERVICES)
                 .child(serviceId)

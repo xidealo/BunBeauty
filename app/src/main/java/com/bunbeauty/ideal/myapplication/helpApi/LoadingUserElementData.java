@@ -34,7 +34,7 @@ public class LoadingUserElementData {
         });
         photoThread.start();
 
-        String userName = userSnapshot.child(User.Companion.getNAME()).getValue(String.class);
+        String userName = userSnapshot.child(User.NAME).getValue(String.class);
         User user = new User();
         user.setId(userId);
         user.setName(userName);
@@ -56,8 +56,8 @@ public class LoadingUserElementData {
         });
         photoThread.start();
 
-        String userName = userSnapshot.child(User.Companion.getNAME()).getValue(String.class);
-        String userCity = userSnapshot.child(User.Companion.getCITY()).getValue(String.class);
+        String userName = userSnapshot.child(User.NAME).getValue(String.class);
+        String userCity = userSnapshot.child(User.CITY).getValue(String.class);
         User user = new User();
         user.setId(userId);
         user.setName(userName);

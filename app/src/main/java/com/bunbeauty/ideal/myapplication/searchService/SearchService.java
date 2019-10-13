@@ -171,8 +171,8 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
     private void getServicesInThisCity(final String userCity) {
         final Search search = new Search(this);
 
-        Query userQuery = FirebaseDatabase.getInstance().getReference(User.Companion.getUSERS())
-                .orderByChild(User.Companion.getCITY())
+        Query userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
+                .orderByChild(User.CITY)
                 .equalTo(userCity);
 
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -217,9 +217,9 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
         final String enteredText = searchLineInput.getText().toString().toLowerCase();
         final Search search = new Search(this);
 
-        Query usersQuery = FirebaseDatabase.getInstance().getReference(User.Companion.getUSERS());
+        Query usersQuery = FirebaseDatabase.getInstance().getReference(User.USERS);
         if (!city.equals(NOT_CHOSEN)) {
-            usersQuery = usersQuery.orderByChild(User.Companion.getCITY()).equalTo(city);
+            usersQuery = usersQuery.orderByChild(User.CITY).equalTo(city);
         }
 
         usersQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -262,8 +262,8 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
         final String enteredText = searchLineInput.getText().toString().toLowerCase();
         final Search search = new Search(this);
 
-        Query userQuery = FirebaseDatabase.getInstance().getReference(User.Companion.getUSERS())
-                .orderByChild(User.Companion.getNAME())
+        Query userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
+                .orderByChild(User.NAME)
                 .equalTo(enteredText);
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

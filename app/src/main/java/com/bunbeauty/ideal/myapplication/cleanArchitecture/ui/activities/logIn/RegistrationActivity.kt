@@ -64,7 +64,7 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
         phoneInput = findViewById(R.id.phoneRegistrationInput)
         citySpinner = findViewById(R.id.citySpinnerRegistrationSpinner)
         //Заполняем поле телефона
-        phoneInput.setText(registrationInteractor.getMyPhoneNumber(intent))
+        phoneInput.setText("+79100080142")//registrationInteractor.getMyPhoneNumber(intent))
 
         registrationBtn.setOnClickListener(this)
     }

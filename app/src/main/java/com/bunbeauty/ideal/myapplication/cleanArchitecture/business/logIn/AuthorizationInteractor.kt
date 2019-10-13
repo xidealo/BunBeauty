@@ -10,8 +10,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-
+import kotlinx.coroutines.runBlocking
 
 class AuthorizationInteractor(private val userDao: UserDao)  : BaseInteractor(), IAuthorizationInteractor{
 
@@ -47,6 +48,19 @@ class AuthorizationInteractor(private val userDao: UserDao)  : BaseInteractor(),
         launch {
             userDao.deleteAll()
         }
+    }
+
+    fun getUserName() = runBlocking {
+
+        val userPhone = FirebaseAuth.getInstance().currentUser!!.phoneNumber
+
+        /*val user = User()
+        user.id = FIRST_ENTER_ID
+        user.phone = userPhone!!
+        userDao.insert(user)*/
+
+        return@runBlocking userDao
+                .findByPhoneNumber(userPhone)?.name
     }
 
 }

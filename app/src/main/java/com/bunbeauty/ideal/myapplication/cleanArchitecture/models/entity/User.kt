@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 data class User(
         @PrimaryKey
         var id:String = "",
-        var name: String ="",
-        var city:String= "",
+        var name: String = "",
+        var city:String = "",
         var phone:String ="",
         var rating:Float = 0f,
         var countOfRates:Long = 0,
@@ -17,13 +17,16 @@ data class User(
         var subscriptionsCount:Long = 0 ) {
 
     companion object {
-        val PHONE = "phone"
-        val USERS = "users"
+        const val USERS = "users"
 
-        val NAME = "name"
-        val CITY = "city"
-        val PHOTO_LINK = "photo link"
-        val AVG_RATING = "avg rating"
-        val COUNT_OF_RATES = "count of rates"
+        const val PHONE = "phone"
+        const val NAME = "name"
+        const val CITY = "city"
+        const val PHOTO_LINK = "photo link"
+        const val AVG_RATING = "avg rating"
+        const val COUNT_OF_RATES = "count of rates"
+
+        const val COUNT_OF_SUBSCRIBERS = "count of subscribers"
+        const val COUNT_OF_SUBSCRIPTIONS = "count of subscriptions"
     }
 }
