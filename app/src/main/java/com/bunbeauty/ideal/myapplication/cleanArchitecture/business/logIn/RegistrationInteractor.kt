@@ -1,17 +1,16 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.BaseInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IRegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.RegistrationFirebase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.RegistrationLocalDatabase
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.logIn.RegistrationRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
-class RegistrationInteractor : IRegistrationInteractor{
+class RegistrationInteractor(private val userDao: UserDao) : BaseInteractor(), IRegistrationInteractor{
 
     override fun getIsCityInputCorrect(city: String): Boolean {
         if (city == "Выбрать город") {
@@ -56,17 +55,11 @@ class RegistrationInteractor : IRegistrationInteractor{
         return FirebaseAuth.getInstance().currentUser!!.uid
     }
 
-    override fun registration(user: User, context: Context) {
-        var registrationRepository: RegistrationRepository = RegistrationFirebase()
+    override fun registration(user: User) {
+        val registrationRepository: RegistrationRepository = RegistrationFirebase()
         registrationRepository.addUser(user)
-
-        registrationRepository = RegistrationLocalDatabase(context)
-        registrationRepository.addUser(user)
-    }
-
-    override fun goToProfile(activity: Activity) {
-        val intent = Intent(activity, ProfileActivity::class.java)
-        activity.startActivity(intent)
-        activity.finish()
+        launch {
+            userDao.insert(user)
+        }
     }
 }

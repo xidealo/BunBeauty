@@ -1,30 +1,53 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
-
 import com.android.ideal.myapplication.R
+import com.arellomobile.mvp.MvpAppCompatActivity
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.RegistrationPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.RegistrationView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
+import javax.inject.Inject
 
-class RegistrationActivity : AppCompatActivity(), View.OnClickListener {
-
-    private var nameInput: EditText? = null
-    private var surnameInput: EditText? = null
-    private var phoneInput: EditText? = null
-    private var citySpinner: Spinner? = null
+class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, RegistrationView {
+    private lateinit var nameInput: EditText
+    private lateinit var surnameInput: EditText
+    private lateinit var phoneInput: EditText
+    private lateinit var citySpinner: Spinner
 
     private val TAG = "DBInf"
 
-    private var registrationInteractor: RegistrationInteractor? = null
+    @Inject
+    lateinit var userDao: UserDao
+
+    @Inject
+    lateinit var registrationInteractor: RegistrationInteractor
+
+    @InjectPresenter
+    lateinit var registrationPresenter: RegistrationPresenter
+
+    @ProvidePresenter
+    internal fun provideRegistrationPresenter(): RegistrationPresenter {
+        DaggerAppComponent
+                .builder()
+                .appModule(AppModule(application))
+                .build().inject(this)
+
+        return RegistrationPresenter(registrationInteractor)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,8 +64,7 @@ class RegistrationActivity : AppCompatActivity(), View.OnClickListener {
         phoneInput = findViewById(R.id.phoneRegistrationInput)
         citySpinner = findViewById(R.id.citySpinnerRegistrationSpinner)
         //Заполняем поле телефона
-        registrationInteractor = RegistrationInteractor()
-        phoneInput!!.setText(registrationInteractor!!.getMyPhoneNumber(intent))
+        phoneInput.setText(registrationInteractor.getMyPhoneNumber(intent))
 
         registrationBtn.setOnClickListener(this)
     }
@@ -51,75 +73,34 @@ class RegistrationActivity : AppCompatActivity(), View.OnClickListener {
         WorkWithViewApi.hideKeyboard(this)
 
         when (v.id) {
-
             R.id.saveDataRegistrationBtn -> {
-                val defaultPhotoLink = "https://firebasestorage." +
-                        "googleapis.com/v0/b/bun-beauty.appspot.com/o/avatar%2FdefaultAva." +
-                        "jpg?alt=media&token=f15dbe15-0541-46cc-8272-2578627ed311"
-                val name: String
-                val surname: String
-
-                if (nameInput!!.text.toString().isNotEmpty()) {
-                    if (registrationInteractor!!.getIsNameInputCorrect(nameInput!!.text.toString())) {
-                        if (registrationInteractor!!.getIsNameLengthLessTwenty(nameInput!!.text.toString())) {
-                            name = nameInput!!.text.toString()
-                        } else {
-                            assertNameSoLong()
-                            return
-                        }
-                    } else {
-                        nameInput!!.error = "Допустимы только буквы и тире"
-                        nameInput!!.requestFocus()
-                        return
-                    }
-                } else {
-                    nameInput!!.error = "Введите своё имя"
-                    nameInput!!.requestFocus()
-                    return
-                }
-
-                if (!surnameInput!!.text.toString().isEmpty()) {
-                    if (registrationInteractor!!.getIsSurnameInputCorrect(surnameInput!!.text.toString())) {
-                        if (registrationInteractor!!.getIsSurnameLengthLessTwenty(surnameInput!!.text.toString())) {
-                            surname = surnameInput!!.text.toString()
-                        } else {
-                            assertSurnameSoLong()
-                            return
-                        }
-                    } else {
-                        surnameInput!!.error = "Допустимы только буквы и тире"
-                        surnameInput!!.requestFocus()
-                        return
-                    }
-                } else {
-                    surnameInput!!.error = "Введите свою фамилию"
-                    surnameInput!!.requestFocus()
-                    return
-                }
-
-                if (registrationInteractor!!.getIsCityInputCorrect(citySpinner!!.selectedItem.toString().toLowerCase())) {
-                    val fullName = "$name $surname"
-                    val user = User(registrationInteractor!!.getUserId(), fullName, citySpinner!!.selectedItem.toString().toLowerCase(),
-                            phoneInput!!.text.toString(), 0f, 0, defaultPhotoLink)
-                    registrationInteractor!!.registration(user, this)
-                    registrationInteractor!!.goToProfile(this)
-                } else {
-                    assertNoSelectedCity()
-                    return
-                }
+                registrationPresenter.registration(
+                        nameInput.text.toString(),
+                        surnameInput.text.toString(),
+                        citySpinner.selectedItem.toString().toLowerCase(),
+                        phoneInput.text.toString()
+                )
             }
         }
     }
 
-    private fun assertNameSoLong() {
-        Toast.makeText(this, "Слишком длинное имя", Toast.LENGTH_SHORT).show()
+    override fun setNameInputError(error: String) {
+        nameInput.error = error
+        nameInput.requestFocus()
     }
 
-    private fun assertSurnameSoLong() {
-        Toast.makeText(this, "Слишком длинная фамилия", Toast.LENGTH_SHORT).show()
+    override fun setSurnameInputError(error: String) {
+        surnameInput.error = error
+        surnameInput.requestFocus()
     }
 
-    private fun assertNoSelectedCity() {
-        Toast.makeText(this, "Выберите город", Toast.LENGTH_SHORT).show()
+    override fun showNoSelectedCity() {
+        Toast.makeText(this, "Выберите город", Toast.LENGTH_LONG).show()
     }
+    override fun goToProfile() {
+        val intent = Intent(this, ProfileActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
 }

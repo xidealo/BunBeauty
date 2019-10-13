@@ -12,7 +12,12 @@ class AuthorizationPresenter(val authorizationInteractor: AuthorizationInteracto
         //business logic class
         if (authorizationInteractor.getCurrentFbUser() != null) {
             viewState.hideViewsOnScreen()
-            //val myPhoneNumber = authorizationInteractor.getCurrentFbUser()!!.phoneNumber
+
+            //из локалки данные (имя)
+            //gotoProf
+            //else
+            //gotoReg
+
             //val myAuth = MyAuthorization(this@AuthorizationActivity, myPhoneNumber)
             //myAuth.authorizeUser()
         } else {

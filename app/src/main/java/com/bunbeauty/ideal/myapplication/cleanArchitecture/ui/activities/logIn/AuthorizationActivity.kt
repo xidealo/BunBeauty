@@ -43,7 +43,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
                 .appModule(AppModule(application))
                 .build().inject(this)
 
-        return AuthorizationPresenter(authorizationInteractor!!)
+        return AuthorizationPresenter(authorizationInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +51,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
         setContentView(R.layout.authorization)
 
         initView()
-        authorizationPresenter!!.authorize()
+        authorizationPresenter.authorize()
     }
 
     private fun initView() {
@@ -65,7 +65,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
 
     override fun onClick(v: View) {
         if (v.id == R.id.verifyAuthBtn) {
-            authorizationPresenter!!.authorize(
+            authorizationPresenter.authorize(
                     CountryCodes.codes[codeSpinner!!.selectedItemPosition] + phoneInput!!.text.toString()
             )
         }

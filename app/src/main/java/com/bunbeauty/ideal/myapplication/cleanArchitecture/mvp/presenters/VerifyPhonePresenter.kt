@@ -7,7 +7,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhone
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.VerifyPhoneActivity
 
 @InjectViewState
-class VerifyPhonePresenter(val verifyPhoneInteractor: VerifyPhoneInteractor): MvpPresenter<VerifyPhoneView>() {
+class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInteractor): MvpPresenter<VerifyPhoneView>() {
 
     fun sendCode(verifyPhoneActivity: VerifyPhoneActivity){
         verifyPhoneInteractor.sendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),  verifyPhoneActivity)
