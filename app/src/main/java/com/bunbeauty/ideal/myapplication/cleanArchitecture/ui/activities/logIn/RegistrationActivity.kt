@@ -13,11 +13,13 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebaseApi
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.RegistrationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.RegistrationView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import javax.inject.Inject
@@ -27,7 +29,6 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
     private lateinit var surnameInput: EditText
     private lateinit var phoneInput: EditText
     private lateinit var citySpinner: Spinner
-
     private val TAG = "DBInf"
 
     @Inject
@@ -38,6 +39,12 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
 
     @InjectPresenter
     lateinit var registrationPresenter: RegistrationPresenter
+
+    @Inject
+    lateinit var userFirebaseApi: UserFirebaseApi
+
+    @Inject
+    lateinit var userRepository: UserRepository
 
     @ProvidePresenter
     internal fun provideRegistrationPresenter(): RegistrationPresenter {
@@ -64,7 +71,7 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
         phoneInput = findViewById(R.id.phoneRegistrationInput)
         citySpinner = findViewById(R.id.citySpinnerRegistrationSpinner)
         //Заполняем поле телефона
-        phoneInput.setText("+79100080142")//registrationInteractor.getMyPhoneNumber(intent))
+        phoneInput.setText(registrationPresenter.getMyPhoneNumber())
 
         registrationBtn.setOnClickListener(this)
     }
@@ -97,6 +104,7 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
     override fun showNoSelectedCity() {
         Toast.makeText(this, "Выберите город", Toast.LENGTH_LONG).show()
     }
+
     override fun goToProfile() {
         val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)

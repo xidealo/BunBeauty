@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -11,9 +10,9 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity

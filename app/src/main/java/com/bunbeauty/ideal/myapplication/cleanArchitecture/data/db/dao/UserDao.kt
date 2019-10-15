@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao
 
 import androidx.room.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
@@ -10,7 +10,7 @@ interface UserDao {
     suspend fun findAll() : List<User>
 
     @Query("SELECT * FROM user WHERE id = :id")
-    suspend fun findById(id: String): User
+    suspend fun findById(id: String): User?
 
     @Query("SELECT * FROM user WHERE phone = :phone")
     suspend fun findByPhoneNumber(phone: String?): User?

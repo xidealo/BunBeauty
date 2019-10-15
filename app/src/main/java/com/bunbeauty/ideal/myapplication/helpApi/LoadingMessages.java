@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.Date;

@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 
 public class LoadingGuestServiceData {

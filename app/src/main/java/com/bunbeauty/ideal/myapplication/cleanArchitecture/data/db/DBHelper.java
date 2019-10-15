@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db;
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

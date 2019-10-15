@@ -21,7 +21,7 @@ import com.bunbeauty.ideal.myapplication.editing.EditProfile;
 import com.bunbeauty.ideal.myapplication.editing.EditService;
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity;
 import com.bunbeauty.ideal.myapplication.searchService.GuestService;
 import com.bunbeauty.ideal.myapplication.searchService.MainScreen;

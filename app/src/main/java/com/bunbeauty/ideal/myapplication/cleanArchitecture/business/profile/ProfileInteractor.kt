@@ -5,7 +5,6 @@ import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ProfileCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ProfileFirebase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.ProfileLocalDatabase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity
@@ -24,8 +23,6 @@ class ProfileInteractor(private val profileActivity: ProfileActivity) : IProfile
     private val STATUS = "status"
     private val TOKEN = "token"
 
-    private val profileLocalDatabase = ProfileLocalDatabase()
-
     override fun loadProfile(ownerId: String) {
         val profileFirebase = ProfileFirebase(this)
         profileFirebase.loadProfileData(ownerId)
@@ -33,13 +30,13 @@ class ProfileInteractor(private val profileActivity: ProfileActivity) : IProfile
 
     override fun callbackGetProfileData(user: User) {
         // отдельный поток
-        profileLocalDatabase.addUserInLocalStorage(user)
+        //profileLocalDatabase.addUserInLocalStorage(user)
         //
         profileActivity.showProfileData(user)
     }
 
     override fun callbackGetService(service: Service) {
-        profileLocalDatabase.addServiceInLocalStorage(service)
+        //profileLocalDatabase.addServiceInLocalStorage(service)
     }
 
     override fun updateProfile(ownerId: String) {

@@ -2,24 +2,18 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
 import android.annotation.SuppressLint
 import android.util.Log
-import android.widget.Toast
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.BaseInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IAuthorizationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class AuthorizationInteractor(private val userDao: UserDao)  : BaseInteractor(), IAuthorizationInteractor{
-
+class AuthorizationInteractor(private val userDao: UserDao)  : BaseRepository(), IAuthorizationInteractor{
     val TAG = "DBInf"
-
     val FIRST_ENTER_ID = "1"
-
 
     override fun getCurrentFbUser(): FirebaseUser? {
         return FirebaseAuth.getInstance().currentUser
@@ -29,7 +23,6 @@ class AuthorizationInteractor(private val userDao: UserDao)  : BaseInteractor(),
     @SuppressLint("CheckResult")
     override fun isPhoneCorrect(myPhoneNumber: String): Boolean {
         if (myPhoneNumber.length == 12) {
-
             launch {
                 val user = User()
                 user.id = FIRST_ENTER_ID
@@ -51,14 +44,7 @@ class AuthorizationInteractor(private val userDao: UserDao)  : BaseInteractor(),
     }
 
     fun getUserName() = runBlocking {
-
         val userPhone = FirebaseAuth.getInstance().currentUser!!.phoneNumber
-
-        /*val user = User()
-        user.id = FIRST_ENTER_ID
-        user.phone = userPhone!!
-        userDao.insert(user)*/
-
         return@runBlocking userDao
                 .findByPhoneNumber(userPhone)?.name
     }

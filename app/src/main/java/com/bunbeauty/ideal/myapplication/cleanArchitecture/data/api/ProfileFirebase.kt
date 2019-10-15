@@ -5,7 +5,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ProfileCallb
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.logIn.ProfileRepository
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import com.google.firebase.database.DataSnapshot
@@ -14,7 +13,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.*
 
-class ProfileFirebase(profileInteractor: ProfileInteractor) : ProfileRepository {
+class ProfileFirebase(profileInteractor: ProfileInteractor){
+
     //TODO LOGS!
     private val profileCallback: ProfileCallback = profileInteractor
 
@@ -58,13 +58,6 @@ class ProfileFirebase(profileInteractor: ProfileInteractor) : ProfileRepository 
         })
 
         ListeningManager.addToListenerList(FBListener(userReference, userListener))
-    }
-
-    override fun updateProfileData() {
-    }
-
-    override fun getCountOfRates(): Long {
-        return 0
     }
 
 }

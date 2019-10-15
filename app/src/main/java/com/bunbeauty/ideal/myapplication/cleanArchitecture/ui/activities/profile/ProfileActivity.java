@@ -20,7 +20,7 @@ import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.OrderAdapter;
 import com.bunbeauty.ideal.myapplication.adapters.ServiceProfileAdapter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Order;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;

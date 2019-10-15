@@ -9,8 +9,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.Registratio
 @InjectViewState
 class RegistrationPresenter(private val registrationInteractor: RegistrationInteractor) : MvpPresenter<RegistrationView>() {
 
-    //TODO unit-test
     fun registration(name: String, surname: String, city: String, phone:String) {
+
         val defaultPhotoLink = "https://firebasestorage." +
                 "googleapis.com/v0/b/bun-beauty.appspot.com/o/avatar%2FdefaultAva." +
                 "jpg?alt=media&token=f15dbe15-0541-46cc-8272-2578627ed311"
@@ -24,6 +24,8 @@ class RegistrationPresenter(private val registrationInteractor: RegistrationInte
         }
 
     }
+
+    fun getMyPhoneNumber() :String = registrationInteractor.getMyPhoneNumber()
 
     private fun isNameCorrect(name: String): Boolean {
         if (name.isEmpty()) {
@@ -68,4 +70,6 @@ class RegistrationPresenter(private val registrationInteractor: RegistrationInte
         }
         return true
     }
+
+
 }

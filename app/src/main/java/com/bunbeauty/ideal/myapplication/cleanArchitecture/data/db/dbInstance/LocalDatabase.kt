@@ -1,10 +1,10 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.repo
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dbInstance
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 

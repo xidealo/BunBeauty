@@ -3,19 +3,20 @@ package com.bunbeauty.ideal.myapplication.adapters.chatElements;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.chat.Messages;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Dialog;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.DBHelper;
 
 public class DialogElement implements View.OnClickListener {
 

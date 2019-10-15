@@ -1,16 +1,11 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
-import android.content.Intent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.BaseInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IRegistrationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.RegistrationFirebase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.logIn.RegistrationRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
-class RegistrationInteractor(private val userDao: UserDao) : BaseInteractor(), IRegistrationInteractor{
+class RegistrationInteractor(private val userRepository: UserRepository) : IRegistrationInteractor {
 
     override fun getIsCityInputCorrect(city: String): Boolean {
         if (city == "Выбрать город") {
@@ -47,19 +42,11 @@ class RegistrationInteractor(private val userDao: UserDao) : BaseInteractor(), I
         return true
     }
 
-    override fun getMyPhoneNumber(intent: Intent): String {
-        return intent.getStringExtra(User.PHONE)
-    }
+    override fun getMyPhoneNumber(): String = userRepository.getById("1").phone
 
-    override fun getUserId():String {
-        return FirebaseAuth.getInstance().currentUser!!.uid
-    }
+    override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
     override fun registration(user: User) {
-        val registrationRepository: RegistrationRepository = RegistrationFirebase()
-        registrationRepository.addUser(user)
-        launch {
-            userDao.insert(user)
-        }
+        userRepository.insert(user)
     }
 }
