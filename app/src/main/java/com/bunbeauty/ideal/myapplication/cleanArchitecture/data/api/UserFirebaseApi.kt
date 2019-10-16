@@ -22,7 +22,7 @@ class UserFirebaseApi: IUserRepository {
         items[User.COUNT_OF_RATES] = user.countOfRates
         items[User.PHOTO_LINK] = user.photoLink
         myRef.updateChildren(items)
-        Log.d(TAG, "User was added completed ")
+        Log.d(TAG, "User inserting completed ")
     }
 
     override fun getById(id:String):User{

@@ -58,8 +58,8 @@ public class ServiceProfileAdapter extends RecyclerView.Adapter<ServiceProfileAd
         }
 
         void bind(Service service) {
-            FoundServiceProfileElement foundServiceProfileElement = new FoundServiceProfileElement(service, view, context);
-            foundServiceProfileElement.createElement();
+            //FoundServiceProfileElement foundServiceProfileElement = new FoundServiceProfileElement(service, view, context);
+            //foundServiceProfileElement.createElement();
         }
     }
 }

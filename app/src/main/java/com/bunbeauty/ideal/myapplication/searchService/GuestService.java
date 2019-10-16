@@ -26,7 +26,6 @@ import com.bunbeauty.ideal.myapplication.createService.MyCalendar;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.fragments.PremiumElement;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingUserElementData;

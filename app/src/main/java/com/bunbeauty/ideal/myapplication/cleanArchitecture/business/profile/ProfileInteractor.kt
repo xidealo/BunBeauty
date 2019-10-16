@@ -1,26 +1,23 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
-import android.app.Activity
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ProfileCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ProfileFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity
-import com.bunbeauty.ideal.myapplication.createService.AddingService
-import com.bunbeauty.ideal.myapplication.reviews.Comments
-import com.bunbeauty.ideal.myapplication.subscriptions.Subscribers
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.iid.FirebaseInstanceId
 
-class ProfileInteractor(private val profileActivity: ProfileActivity) : IProfileInteractor, ProfileCallback {
+class ProfileInteractor(private val userRepository: UserRepository,
+                        private val serviceRepository: ServiceRepository) : BaseRepository(),
+        IProfileInteractor, ProfileCallback {
 
-    private val SERVICE_OWNER_ID = "service owner id"
-    private val TYPE = "type"
     private val OWNER_ID = "owner id"
-    private val STATUS = "status"
     private val TOKEN = "token"
 
     override fun loadProfile(ownerId: String) {
@@ -32,7 +29,7 @@ class ProfileInteractor(private val profileActivity: ProfileActivity) : IProfile
         // отдельный поток
         //profileLocalDatabase.addUserInLocalStorage(user)
         //
-        profileActivity.showProfileData(user)
+        //profileActivity.showUserInfo(user)
     }
 
     override fun callbackGetService(service: Service) {
@@ -47,53 +44,34 @@ class ProfileInteractor(private val profileActivity: ProfileActivity) : IProfile
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun isFirstEnter(intent: Intent) = (intent.getStringExtra(OWNER_ID) == null)
+
     override fun getUserId(): String {
         return FirebaseAuth.getInstance().currentUser!!.uid
     }
 
-    override fun getOwnerId(intent: Intent): String? {
-        return intent.getStringExtra(OWNER_ID)
-    }
+    override fun getOwnerId(intent: Intent) = intent.getStringExtra(OWNER_ID) ?: getUserId()
 
     override fun checkSubscription(): Boolean {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun goToAddService(activity: Activity) {
-        val intent = Intent(activity, AddingService::class.java)
-        activity.startActivity(intent)
-    }
-
-    override fun goToSubscribers(activity: Activity, status: String) {
-        val intent = Intent(activity, Subscribers::class.java)
-        intent.putExtra(STATUS, status)
-        activity.startActivity(intent)
-    }
-
-    override fun goToUserComments(activity: Activity, status: String, ownerId: String) {
-        val intent = Intent(activity, Comments::class.java)
-        intent.putExtra(SERVICE_OWNER_ID, ownerId)
-        intent.putExtra(User.COUNT_OF_RATES, getCountOfRates())
-        intent.putExtra(TYPE, status)
-        activity.startActivity(intent)
-    }
-
-    override fun initFCM(ownerId: String) {
+    override fun initFCM() {
         val token = FirebaseInstanceId.getInstance().token
         val reference = FirebaseDatabase.getInstance().reference
         reference.child(User.USERS)
-                .child(ownerId)
+                .child(getUserId())
                 .child(TOKEN)
                 .setValue(token)
-    }
-
-    override fun isFirstEnter(intent: Intent):Boolean {
-        return getOwnerId(intent) == null
     }
 
     override fun userIsOwner(intent: Intent):Boolean {
         return getUserId() == getOwnerId(intent)
     }
+
+    override fun getProfileOwner(intent: Intent) = userRepository.getById(getOwnerId(intent))
+
+    override fun getProfileServiceList(intent: Intent) = serviceRepository.getAllUserServices(getOwnerId(intent))
 
 
 }

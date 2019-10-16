@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.RegistrationActivity;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingProfileData;

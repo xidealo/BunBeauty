@@ -6,9 +6,10 @@ import java.io.FileDescriptor
 import java.net.Inet4Address
 
 @Entity
-data class ServiceK(
+data class Service(
         @PrimaryKey
         var id:String = "",
+        var userId:String = "",
         var name: String ="",
         var address:String= "",
         var description: String= "",
@@ -22,6 +23,7 @@ data class ServiceK(
     companion object {
         const val SERVICES = "services"
 
+        const val USER_ID = "user_id"
         const val NAME = "name"
         const val ADDRESS = "address"
         const val DESCRIPTION = "description"
