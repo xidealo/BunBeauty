@@ -1,20 +1,14 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile
 
 import android.app.Activity
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
+import android.view.View
+import android.widget.*
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RatingBar
-import android.widget.TextView
-
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -31,18 +25,17 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Order
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingService
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
-import com.bunbeauty.ideal.myapplication.createService.AddingService
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi
 import com.bunbeauty.ideal.myapplication.other.ISwitcher
 import com.bunbeauty.ideal.myapplication.reviews.Comments
 import com.bunbeauty.ideal.myapplication.subscriptions.Subscribers
-
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView, ISwitcher {

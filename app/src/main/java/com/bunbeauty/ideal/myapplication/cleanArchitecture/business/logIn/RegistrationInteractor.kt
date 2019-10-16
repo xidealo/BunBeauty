@@ -6,7 +6,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepo
 import com.google.firebase.auth.FirebaseAuth
 
 class RegistrationInteractor(private val userRepository: UserRepository) : IRegistrationInteractor {
-
+    //TODO UNIT-TEST
     override fun getIsCityInputCorrect(city: String): Boolean {
         if (city == "Выбрать город") {
             return false

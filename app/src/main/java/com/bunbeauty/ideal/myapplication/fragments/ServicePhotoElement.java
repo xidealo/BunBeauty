@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.createService.AddingService;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingService;
 import com.bunbeauty.ideal.myapplication.editing.EditService;
 import com.squareup.picasso.Picasso;
 

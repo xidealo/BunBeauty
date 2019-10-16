@@ -23,23 +23,23 @@
         <activity android:name="com.bunbeauty.ideal.myapplication.reviews.Review" />
         <activity android:name="com.bunbeauty.ideal.myapplication.chat.Messages" />
         <activity android:name="com.bunbeauty.ideal.myapplication.chat.Dialogs" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.RegistrationActivity" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.AuthorizationActivity">
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.createService.AddingService" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingService" />
         <activity android:name="com.bunbeauty.ideal.myapplication.searchService.GuestService" />
         <activity android:name="com.bunbeauty.ideal.myapplication.searchService.MainScreen" />
         <activity android:name="com.bunbeauty.ideal.myapplication.createService.MyTime" />
         <activity android:name="com.bunbeauty.ideal.myapplication.createService.MyCalendar" />
         <activity android:name="com.bunbeauty.ideal.myapplication.editing.EditService" />
         <activity android:name="com.bunbeauty.ideal.myapplication.editing.EditProfile" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn.VerifyPhoneActivity" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity" />
         
         <service
             android:name="com.bunbeauty.ideal.myapplication.other.MyService"

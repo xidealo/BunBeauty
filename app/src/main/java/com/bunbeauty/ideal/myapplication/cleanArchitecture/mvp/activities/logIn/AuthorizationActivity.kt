@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,7 +15,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes
 import javax.inject.Inject

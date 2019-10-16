@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.logIn
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn
 
 import android.content.Intent
 import android.os.Bundle

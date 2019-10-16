@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.chat.Dialogs;
 import com.bunbeauty.ideal.myapplication.searchService.MainScreen;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 
 
 public class BottomPanel extends Fragment implements View.OnClickListener {

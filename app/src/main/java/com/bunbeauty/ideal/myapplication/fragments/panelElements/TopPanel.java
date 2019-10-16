@@ -22,7 +22,7 @@ import com.bunbeauty.ideal.myapplication.editing.EditService;
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.ui.activities.profile.ProfileActivity;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 import com.bunbeauty.ideal.myapplication.searchService.GuestService;
 import com.bunbeauty.ideal.myapplication.searchService.MainScreen;
 import com.bunbeauty.ideal.myapplication.searchService.SearchService;
