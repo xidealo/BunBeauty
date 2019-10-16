@@ -43,8 +43,9 @@ class AuthorizationInteractor(private val userDao: UserDao)  : BaseRepository(),
         }
     }
 
-    fun getUserName() = runBlocking {
-        val userPhone = FirebaseAuth.getInstance().currentUser!!.phoneNumber
+    fun getUserName():String? = runBlocking {
+        val userPhone = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
+
         return@runBlocking userDao
                 .findByPhoneNumber(userPhone)?.name
     }

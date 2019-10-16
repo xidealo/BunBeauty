@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.google.firebase.database.DataSnapshot;
 
 public class LoadingGuestServiceData {
@@ -31,7 +32,7 @@ public class LoadingGuestServiceData {
         contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, String.valueOf(serviceSnapshot.child(Service.DESCRIPTION).getValue()));
         contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, String.valueOf(serviceSnapshot.child(Service.COST).getValue()));
         contentValues.put(DBHelper.KEY_RATING_SERVICES, String.valueOf(serviceSnapshot.child(Service.AVG_RATING).getValue()));
-        contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, String.valueOf(serviceSnapshot.child(Service.IS_PREMIUM).getValue()));
+         //contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, String.valueOf(serviceSnapshot.child(Service.IS_PREMIUM).getValue()));
         contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, String.valueOf(serviceSnapshot.child(Service.CATEGORY).getValue()));
         contentValues.put(DBHelper.KEY_ADDRESS_SERVICES, String.valueOf(serviceSnapshot.child(Service.ADDRESS).getValue()));
         contentValues.put(DBHelper.KEY_COUNT_OF_RATES_SERVICES, String.valueOf(serviceSnapshot.child(Service.COUNT_OF_RATES).getValue()));

@@ -128,7 +128,7 @@ public class AddingService extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.addServiceAddServiceBtn:
                 if (isFullInputs()) {
-                    if (!service.setName(nameServiceInput.getText().toString().trim())) {
+                 /*   if (!service.setName(nameServiceInput.getText().toString().trim())) {
                         Toast.makeText(
                                 this,
                                 "Имя сервиса должно содержать только буквы",
@@ -145,7 +145,7 @@ public class AddingService extends AppCompatActivity implements View.OnClickList
                                 Toast.LENGTH_SHORT).show();
                         break;
                     }
-
+*/
                     String category = categoryElement.getCategory();
 
                     if (category.equals("выбрать категорию")) {
@@ -167,7 +167,7 @@ public class AddingService extends AppCompatActivity implements View.OnClickList
                     service.setCategory(category);
                     service.setAddress(address);
                     service.setCountOfRates(0);
-                    service.setTags(categoryElement.getTagsArray());
+                    //service.setTags(categoryElement.getTagsArray());
                     //less than 10 images
                     if (fpath.size() <= MAX_COUNT_OF_IMAGES) {
                         uploadService(service);
@@ -206,15 +206,15 @@ public class AddingService extends AppCompatActivity implements View.OnClickList
         items.put(Service.AVG_RATING, 0);
         items.put(Service.COST, service.getCost());
         items.put(Service.DESCRIPTION, service.getDescription());
-        items.put(Service.IS_PREMIUM, premiumDate);
+        //items.put(Service.IS_PREMIUM, premiumDate);
         items.put(Service.CATEGORY, service.getCategory());
         items.put(Service.ADDRESS, service.getAddress());
         items.put(Service.COUNT_OF_RATES, service.getCountOfRates());
         items.put(Service.CREATION_DATE, workWithTimeApi.getDateInFormatYMDHMS(new Date()));
-        for (String tag : service.getTags()) {
+      /*  for (String tag : service.getTags()) {
             tagsMap.put(String.valueOf(tag.hashCode()), tag);
         }
-        items.put(Service.TAGS, tagsMap);
+        items.put(Service.TAGS, tagsMap);*/
 
         String serviceId = serviceRef.push().getKey();
         serviceRef = serviceRef.child(serviceId);
@@ -260,11 +260,11 @@ public class AddingService extends AppCompatActivity implements View.OnClickList
 
         contentValues.clear();
         contentValues.put(DBHelper.KEY_SERVICE_ID_TAGS, service.getId());
-        for (String tag : service.getTags()) {
+     /*   for (String tag : service.getTags()) {
             contentValues.put(DBHelper.KEY_TAG_TAGS, tag);
             database.insert(DBHelper.TABLE_TAGS, null, contentValues);
         }
-
+*/
         goToMyCalendar(getString(R.string.status_worker), service.getId());
     }
 
@@ -398,7 +398,7 @@ public class AddingService extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void setPremium() {
-        service.setIsPremium(true);
+        //service.setIsPremium(true);
         setWithPremium();
         premiumLayout.setVisibility(View.GONE);
         premiumDate = addSevenDayPremium(WorkWithTimeApi.getDateInFormatYMDHMS(new Date()));

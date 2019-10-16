@@ -25,7 +25,6 @@ data class User(
         const val PHOTO_LINK = "photo link"
         const val AVG_RATING = "avg rating"
         const val COUNT_OF_RATES = "count of rates"
-
         const val COUNT_OF_SUBSCRIBERS = "count of subscribers"
         const val COUNT_OF_SUBSCRIPTIONS = "count of subscriptions"
     }

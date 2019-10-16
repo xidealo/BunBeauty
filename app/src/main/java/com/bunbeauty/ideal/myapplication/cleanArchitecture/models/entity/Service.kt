@@ -18,8 +18,7 @@ data class Service(
         var countOfRates:Long = 0,
         var cost:Long = 0,
         var creationDate: String= "",
-        var premiumDate: String= "",
-        var tags:List<String>? = null) {
+        var premiumDate: String= ""){
 
     companion object {
         const val SERVICES = "services"
@@ -33,7 +32,5 @@ data class Service(
         const val COUNT_OF_RATES = "count of rates"
         const val CREATION_DATE = "creation date"
         const val PREMIUM_DATE = "premium date"
-        const val TAGS = "tags"
-
     }
 }

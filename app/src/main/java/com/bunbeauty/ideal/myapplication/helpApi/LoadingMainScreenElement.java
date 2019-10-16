@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.google.firebase.database.DataSnapshot;
 
 public class LoadingMainScreenElement {
@@ -24,7 +25,7 @@ public class LoadingMainScreenElement {
             contentValues.put(DBHelper.KEY_NAME_SERVICES, String.valueOf(serviceSnapshot.child(Service.NAME).getValue()));
             contentValues.put(DBHelper.KEY_USER_ID, userId);
             contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, String.valueOf(serviceSnapshot.child(Service.COST).getValue()));
-            contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, String.valueOf(serviceSnapshot.child(Service.IS_PREMIUM).getValue()));
+            //contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, String.valueOf(serviceSnapshot.child(Service.IS_PREMIUM).getValue()));
             contentValues.put(DBHelper.KEY_CREATION_DATE_SERVICES, String.valueOf(serviceSnapshot.child(Service.CREATION_DATE).getValue()));
             contentValues.put(DBHelper.KEY_RATING_SERVICES, String.valueOf(serviceSnapshot.child(Service.AVG_RATING).getValue()));
             contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, String.valueOf(serviceSnapshot.child(Service.CATEGORY).getValue()));

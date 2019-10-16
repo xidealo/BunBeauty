@@ -44,7 +44,6 @@ public class FoundServiceElement implements View.OnClickListener {
     private String userId;
     private Context context;
     private View view;
-    private String isPremium;
 
     public FoundServiceElement(Service service, User user, View view, Context context) {
         serviceId = service.getId();
@@ -53,7 +52,7 @@ public class FoundServiceElement implements View.OnClickListener {
         nameServiceString = service.getName();
         costString = service.getCost();
         userId = user.getId();
-        isPremium = service.getPremiumDate();
+        //isPremium = service.getPremiumDate();
         this.context = context;
         this.view= view;
         avgRating = service.getRating();
@@ -71,7 +70,7 @@ public class FoundServiceElement implements View.OnClickListener {
         costText = view.findViewById(R.id.costFoundServiceElementText);
         ratingBar = view.findViewById(R.id.ratingBarFondServiceElement);
 
-        if (isPremium) {
+      /*  if (isPremium) {
             setPremiumBackground();
 
             ColorStateList sl  = ColorStateList.valueOf(context.getResources().getColor(R.color.panelColor));
@@ -81,7 +80,7 @@ public class FoundServiceElement implements View.OnClickListener {
             setDefaultBackground();
             ColorStateList sl  = ColorStateList.valueOf(context.getResources().getColor(R.color.yellow));
             ratingBar.setProgressTintList(sl);
-        }
+        }*/
 
         avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage);
 

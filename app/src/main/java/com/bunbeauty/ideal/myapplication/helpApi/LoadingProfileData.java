@@ -140,10 +140,10 @@ public class LoadingProfileData {
             service.setUserId(userId);
             service.setRating(serviceRating);
             ArrayList<String> tagsArray = new ArrayList<>();
-            for (DataSnapshot tag : serviceSnap.child(Service.TAGS).getChildren()) {
+           /* for (DataSnapshot tag : serviceSnap.child(Service.TAGS).getChildren()) {
                 tagsArray.add(tag.getValue(String.class));
             }
-            service.setTags(tagsArray);
+            service.setTags(tagsArray);*/
 
             addUserServicesInLocalStorage(service, database);
         }
@@ -201,10 +201,10 @@ public class LoadingProfileData {
 
         contentValues.clear();
         contentValues.put(DBHelper.KEY_SERVICE_ID_TAGS, serviceId);
-        for (String tag : service.getTags()) {
+        /*for (String tag : service.getTags()) {
             contentValues.put(DBHelper.KEY_TAG_TAGS, tag);
             database.insert(DBHelper.TABLE_TAGS, null, contentValues);
-        }
+        }*/
     }
 
     private static void loadPhotos(DataSnapshot userSnapshot) {

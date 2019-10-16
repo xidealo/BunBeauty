@@ -176,7 +176,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 Service service = new Service();
                 service.setId(serviceId);
                 service.setUserId(getUserId());
-                if (!service.setName(nameServiceInput.getText().toString().toLowerCase())) {
+                /*if (!service.setName(nameServiceInput.getText().toString().toLowerCase())) {
                     Toast.makeText(
                             this,
                             "Имя сервиса должно содержать только буквы",
@@ -190,7 +190,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                             "Цена не может содержать больше 8 символов",
                             Toast.LENGTH_SHORT).show();
                     break;
-                }
+                }*/
 
                 if (description.length() != 0) {
                     service.setDescription(description);
@@ -208,7 +208,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
                 }
                 service.setAddress(address);
 
-                service.setTags(categoryElement.getTagsArray());
+                //service.setTags(categoryElement.getTagsArray());
                 Log.d(TAG, "onClick: " + fPathToAdd);
                 if(fPathToAdd.size() <= MAX_COUNT_OF_IMAGES){
                     editServiceInFireBase(service);
@@ -558,10 +558,10 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         items.put(Service.DESCRIPTION, service.getDescription());
         items.put(Service.ADDRESS, service.getAddress());
         items.put(Service.CATEGORY, service.getCategory());
-        for (String tag : service.getTags()) {
+      /*  for (String tag : service.getTags()) {
             tagsMap.put(String.valueOf(tag.hashCode()), tag);
-        }
-        items.put(Service.TAGS, tagsMap);
+        }*/
+        //items.put(Service.TAGS, tagsMap);
         reference.updateChildren(items);
 
         editServiceInLocalStorage(service);
@@ -600,11 +600,11 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         contentValues.clear();
         contentValues.put(DBHelper.KEY_SERVICE_ID_TAGS, serviceId);
-        for (String tag : service.getTags()) {
+     /*   for (String tag : service.getTags()) {
 
             contentValues.put(DBHelper.KEY_TAG_TAGS, tag);
             database.insert(DBHelper.TABLE_TAGS, null, contentValues);
-        }
+        }*/
     }
 
     private void attentionItHasOrders() {
