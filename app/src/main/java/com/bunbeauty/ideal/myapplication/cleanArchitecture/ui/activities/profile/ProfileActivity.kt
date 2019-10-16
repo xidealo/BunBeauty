@@ -22,7 +22,10 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.adapters.OrderAdapter
 import com.bunbeauty.ideal.myapplication.adapters.ServiceProfileAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Order
@@ -30,6 +33,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.bunbeauty.ideal.myapplication.createService.AddingService
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi
@@ -71,10 +75,24 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var database: SQLiteDatabase
 
     @Inject
-    internal lateinit var profileInteractor: ProfileInteractor
+    lateinit var profileInteractor: ProfileInteractor
 
     @InjectPresenter
-    internal lateinit var profilePresenter: ProfilePresenter
+    lateinit var profilePresenter: ProfilePresenter
+
+    @Inject
+    lateinit var userRepository: UserRepository
+    @Inject
+    lateinit var userDao: UserDao
+    @Inject
+    lateinit var userFirebaseApi: UserFirebaseApi
+
+    @Inject
+    lateinit var serviceRepository: UserRepository
+    @Inject
+    lateinit var serviceDao: ServiceDao
+    @Inject
+    lateinit var serviceFirebaseApi: UserFirebaseApi
 
     @ProvidePresenter
     internal fun provideProfilePresenter(): ProfilePresenter {

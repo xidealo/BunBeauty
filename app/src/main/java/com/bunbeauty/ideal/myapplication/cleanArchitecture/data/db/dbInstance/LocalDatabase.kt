@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
@@ -12,7 +13,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 abstract class LocalDatabase : RoomDatabase() {
 
     abstract fun getUserDao(): UserDao
-
+    abstract fun getServiceDao(): ServiceDao
     companion object {
         @Volatile
         private var INSTANCE: LocalDatabase? = null

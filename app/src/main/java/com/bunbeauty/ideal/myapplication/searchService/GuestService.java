@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
@@ -185,13 +186,13 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
                 //LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot, database);
                 Service service = new Service();
-                service.setCost(serviceSnapshot.child(Service.COST).getValue(String.class));
+                service.setCost(serviceSnapshot.child(Service.COST).getValue(Long.class));
                 service.setAddress(serviceSnapshot.child(Service.ADDRESS).getValue(String.class));
                 service.setDescription(serviceSnapshot.child(Service.DESCRIPTION).getValue(String.class));
                 service.setName(serviceSnapshot.child(Service.NAME).getValue(String.class));
-                service.setAverageRating(serviceSnapshot.child(Service.AVG_RATING).getValue(Float.class));
+                service.setRating(serviceSnapshot.child(Service.AVG_RATING).getValue(Float.class));
                 service.setCountOfRates(serviceSnapshot.child(Service.COUNT_OF_RATES).getValue(Long.class));
-                service.setIsPremium(WorkWithTimeApi.checkPremium(serviceSnapshot.child(IS_PREMIUM).getValue(String.class)));
+                //service.setIsPremium(WorkWithTimeApi.checkPremium(serviceSnapshot.child(IS_PREMIUM).getValue(String.class)));
 
                 setGuestService(service);
 
@@ -387,13 +388,13 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
 
             Service service = new Service();
-            service.setCost(cursor.getString(indexMinCost));
+            service.setCost(cursor.getLong(indexMinCost));
             service.setAddress(cursor.getString(indexAddress));
             service.setDescription(cursor.getString(indexDescription));
             service.setName(cursor.getString(indexName));
-            service.setAverageRating(serviceRating);
+            service.setRating(serviceRating);
             service.setCountOfRates(countOfRates);
-            service.setIsPremium(isPremium);
+            //service.setPremiumDate(isPremium);
 
             setGuestService(service);
         }
@@ -407,12 +408,12 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
         addressText.setText("Адрес: " + service.getAddress());
         descriptionText.setText(service.getDescription());
 
-        if (service.getIsPremium()) {
+       /* if (service.getIsPremium()) {
             setWithPremium();
         }
-
+*/
         countOfRatesForComments = String.valueOf(service.getCountOfRates());
-        createRatingBar(service.getAverageRating(), service.getCountOfRates());
+        createRatingBar(service.getRating(), service.getCountOfRates());
         createPhotoFeed(serviceId);
     }
 

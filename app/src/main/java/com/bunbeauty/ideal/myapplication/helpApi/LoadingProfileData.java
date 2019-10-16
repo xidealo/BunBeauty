@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.database.DataSnapshot;
@@ -137,7 +138,7 @@ public class LoadingProfileData {
             service.setId(serviceId);
             service.setName(serviceName);
             service.setUserId(userId);
-            service.setAverageRating(serviceRating);
+            service.setRating(serviceRating);
             ArrayList<String> tagsArray = new ArrayList<>();
             for (DataSnapshot tag : serviceSnap.child(Service.TAGS).getChildren()) {
                 tagsArray.add(tag.getValue(String.class));
@@ -182,7 +183,7 @@ public class LoadingProfileData {
 
         contentValues.put(DBHelper.KEY_NAME_SERVICES, service.getName());
         contentValues.put(DBHelper.KEY_USER_ID, service.getUserId());
-        contentValues.put(DBHelper.KEY_RATING_SERVICES, service.getAverageRating());
+        contentValues.put(DBHelper.KEY_RATING_SERVICES, service.getRating());
 
         boolean hasSomeData = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_CONTACTS_SERVICES, serviceId);
 

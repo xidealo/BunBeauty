@@ -8,6 +8,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.searchService.GuestService;
 
@@ -28,7 +29,7 @@ public class FoundServiceProfileElement implements View.OnClickListener {
     public FoundServiceProfileElement(Service service, View view, Context context) {
         idString = service.getId();
         nameString = service.getName();
-        avgRating = service.getAverageRating();
+        avgRating = service.getRating();
         this.context = context;
         this.view= view;
     }

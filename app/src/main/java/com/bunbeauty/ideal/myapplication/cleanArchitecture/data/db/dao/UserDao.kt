@@ -13,7 +13,7 @@ interface UserDao {
     suspend fun findById(id: String): User?
 
     @Query("SELECT * FROM user WHERE phone = :phone")
-    suspend fun findByPhoneNumber(phone: String?): User?
+    suspend fun findByPhoneNumber(phone: String): User?
 
     @Insert
     suspend fun insert(user: User)

@@ -14,6 +14,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
@@ -39,11 +40,11 @@ public class FoundServiceElement implements View.OnClickListener {
     private String nameUserString;
     private String cityString;
     private String nameServiceString;
-    private String costString;
+    private Long costString;
     private String userId;
     private Context context;
     private View view;
-    private boolean isPremium;
+    private String isPremium;
 
     public FoundServiceElement(Service service, User user, View view, Context context) {
         serviceId = service.getId();
@@ -52,10 +53,10 @@ public class FoundServiceElement implements View.OnClickListener {
         nameServiceString = service.getName();
         costString = service.getCost();
         userId = user.getId();
-        isPremium = service.getIsPremium();
+        isPremium = service.getPremiumDate();
         this.context = context;
         this.view= view;
-        avgRating = service.getAverageRating();
+        avgRating = service.getRating();
     }
 
     public void createElement(){

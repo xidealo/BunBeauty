@@ -19,11 +19,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.fragments.PremiumElement;
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
@@ -113,8 +115,8 @@ public class AddingService extends AppCompatActivity implements View.OnClickList
         dbHelper = new DBHelper(this);
         fpath = new ArrayList<>();
         service = new Service();
-        service.setIsPremium(false);
         premiumDate = "1970-01-01 00:00:00";
+        service.setPremiumDate(premiumDate);
         addServicesBtn.setOnClickListener(this);
         serviceImage.setOnClickListener(this);
         premiumText.setOnClickListener(this);
@@ -230,9 +232,9 @@ public class AddingService extends AppCompatActivity implements View.OnClickList
     protected void onResume() {
         super.onResume();
 
-        if (service.getIsPremium()) {
+        /*if (service.getPremiumDate()) {
             setWithPremium();
-        }
+        }*/
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.buildFooter(manager, R.id.footerAddServiceLayout);

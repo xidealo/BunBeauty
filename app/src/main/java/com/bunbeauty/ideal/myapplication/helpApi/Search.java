@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.database.DataSnapshot;
@@ -152,10 +153,10 @@ public class Search {
                 // Информация об услуге
                 String serviceId = cursor.getString(indexServiceId);
                 String serviceName = cursor.getString(indexServiceName);
-                String serviceCost = cursor.getString(indexServiceCost);
+                long serviceCost = cursor.getLong(indexServiceCost);
                 float serviceRating = Float.valueOf(cursor.getString(indexServiceAvgRating));
 
-                boolean isPremium = WorkWithTimeApi.checkPremium(cursor.getString(indexServiceIsPremium));
+                //boolean isPremium = WorkWithTimeApi.checkPremium();
                 long serviceCountOfRates = cursor.getLong(indexServiceCountOFRates);
                 String creationDate = cursor.getString(indexServiceCreationDate);
 
@@ -163,9 +164,9 @@ public class Search {
                 service.setId(serviceId);
                 service.setName(serviceName);
                 service.setCost(serviceCost);
-                service.setIsPremium(isPremium);
+                service.setPremiumDate(cursor.getString(indexServiceIsPremium));
                 service.setCreationDate(creationDate);
-                service.setAverageRating(serviceRating);
+                service.setRating(serviceRating);
                 service.setCountOfRates(serviceCountOfRates);
 
                 addToServiceList(service, user);
@@ -240,7 +241,7 @@ public class Search {
         coefficients.put(COUNT_OF_RATES,0.15f);
         float points, creationDatePoints, costPoints, ratingPoints, countOfRatesPoints, penaltyPoints;
 
-        boolean isPremium = service.getIsPremium();
+      /*  boolean isPremium = service.getPremiumDate();
 
         if (isPremium) {
             points = 1;
@@ -251,9 +252,9 @@ public class Search {
             ratingPoints = figureRatingPoints(service.getAverageRating(), coefficients.get(RATING));
             countOfRatesPoints = figureCountOfRatesPoints(service.getCountOfRates(), coefficients.get(COUNT_OF_RATES));
             //penaltyPoints = figurePenaltyPoints(service.getId(), user.getId());
-            points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints/* - penaltyPoints*/;
+            points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints*//* - penaltyPoints*//*;
             sortAddition(new Object[]{points, service, user});
-        }
+        }*/
     }
 
     private float figureCreationDatePoints(String creationDate, float coefficient) {
