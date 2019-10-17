@@ -16,7 +16,7 @@ data class Service(
         var category: String= "",
         var rating:Float = 0f,
         var countOfRates:Long = 0,
-        var cost:Long = 0,
+        var cost:String = "",
         var creationDate: String= "",
         var premiumDate: String= ""){
 

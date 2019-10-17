@@ -11,11 +11,11 @@ import kotlinx.coroutines.runBlocking
 class ServiceRepository(val serviceDao: ServiceDao,
                         val serviceFirebaseApi: ServiceFirebaseApi) : BaseRepository(), IServiceRepository {
 
-    override fun insert(service: Service, userId: String) {
+    override fun insert(service: Service) {
         launch {
             serviceDao.insert(service)
         }
-        serviceFirebaseApi.insert(service, userId)
+        serviceFirebaseApi.insert(service)
     }
 
     override fun delete(service: Service) {
@@ -46,5 +46,7 @@ class ServiceRepository(val serviceDao: ServiceDao,
         }
         return services
     }
+
+    fun getIdForNew(userId: String): String = serviceFirebaseApi.getIdForNew(userId)
 
 }

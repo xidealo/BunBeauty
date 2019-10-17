@@ -3,7 +3,10 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
+import java.util.*
 
 @InjectViewState
 class AddingServicePresenter(private val addingServiceInteractor: AddingServiceInteractor) : MvpPresenter<AddingServiceView>() {
@@ -11,8 +14,19 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
     fun addService(name: String, description: String, cost: String, category: String, address: String, tags: List<String>) {
         if (isNameCorrect(name) && isDescriptionCorrect(description) && isCostCorrect(cost)
                 && isCategoryCorrect(category) && isAddressCorrect(address)) {
-            //addingServiceInteractor.addService()
+            val service = Service()
+            service.name = name
+            service.description = description
+            service.cost = cost
+            service.category = category
+            service.address =address
+            service.rating = 0f
+            service.countOfRates = 0
+            service.premiumDate = "1970-01-01 00:00:00"
+            service.creationDate = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
+            service.userId = addingServiceInteractor.getUserId()
 
+            addingServiceInteractor.addService(service, tags)
         }
     }
 

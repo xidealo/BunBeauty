@@ -13,13 +13,14 @@ import kotlin.collections.ArrayList
 
 class ServiceFirebaseApi: IServiceRepository {
 
+
     private val TAG = "data_layer"
 
-    override fun insert(service: Service, userId: String) {
+    override fun insert(service: Service) {
         val database = FirebaseDatabase.getInstance()
         val serviceRef = database
                 .getReference(User.USERS)
-                .child(userId)
+                .child(service.userId)
                 .child(Service.SERVICES)
                 .child(service.id)
 
@@ -68,7 +69,7 @@ class ServiceFirebaseApi: IServiceRepository {
                     service.name = servicesSnpshot.child(Service.NAME).getValue<String>(String::class.java)!!
                     service.address = servicesSnpshot.child(Service.ADDRESS).getValue<String>(String::class.java)!!
                     service.description = servicesSnpshot.child(Service.DESCRIPTION).getValue<String>(String::class.java)!!
-                    service.cost = servicesSnpshot.child(Service.COST).getValue<Long>(Long::class.java)!!
+                    service.cost = servicesSnpshot.child(Service.COST).getValue<String>(String::class.java)!!
                     service.countOfRates = servicesSnpshot.child(Service.COUNT_OF_RATES).getValue<Long>(Long::class.java)!!
                     service.rating = servicesSnpshot.child(Service.AVG_RATING).getValue<Float>(Float::class.java)!!
                     service.category = servicesSnpshot.child(Service.CATEGORY).getValue<String>(String::class.java)!!
@@ -91,4 +92,9 @@ class ServiceFirebaseApi: IServiceRepository {
         return ArrayList()
     }
 
+    fun getIdForNew(userId: String): String{
+        return FirebaseDatabase.getInstance().getReference(User.USERS)
+                .child(userId)
+                .child(Service.SERVICES).push().key!!
+    }
 }

@@ -6,8 +6,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceR
 import com.google.firebase.auth.FirebaseAuth
 
 class AddingServiceInteractor(private val serviceRepository: ServiceRepository) : IAddingServiceInteractor{
-    override fun addService(service: Service) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+    override fun addService(service: Service, tags: List<String>) {
+        service.id = serviceRepository.getIdForNew(getUserId())
+        serviceRepository.insert(service)
     }
 
     override fun getIsNameInputCorrect(name: String): Boolean {

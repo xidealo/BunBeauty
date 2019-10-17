@@ -12,10 +12,12 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.android.ideal.myapplication.R
+import com.arellomobile.mvp.presenter.InjectPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AddingServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
@@ -32,6 +34,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
+import kotlin.math.cos
 
 class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremium, AddingServiceView {
 
@@ -47,11 +51,12 @@ class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremiu
     private lateinit var fpath: ArrayList<Uri>
 
     private lateinit var manager: FragmentManager
-    private lateinit var service: Service
     private lateinit var premiumDate: String
     private lateinit var dbHelper: DBHelper
     private lateinit var categoryElement: CategoryElement
 
+    @InjectPresenter
+    lateinit var addingServicePresenter: AddingServicePresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,21 +77,18 @@ class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremiu
         premiumLayout = findViewById(R.id.premiumAddServiceLayout)
 
         manager = supportFragmentManager
+
         val premiumElement = PremiumElement()
         val transaction = manager.beginTransaction()
         transaction.add(R.id.premiumAddServiceLayout, premiumElement)
-
         categoryElement = CategoryElement(this)
         transaction.add(R.id.categoryAddServiceLayout, categoryElement)
-
         transaction.commit()
 
         //isPremiumLayoutSelected = false
         dbHelper = DBHelper(this)
         fpath = ArrayList()
-        service = Service()
-        premiumDate = "1970-01-01 00:00:00"
-        service.premiumDate = premiumDate
+
         addServicesBtn.setOnClickListener(this)
         serviceImage.setOnClickListener(this)
         premiumText.setOnClickListener(this)
@@ -96,50 +98,17 @@ class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremiu
     override fun onClick(v: View) {
         when (v.id) {
             R.id.addServiceAddServiceBtn -> {
-                /*   if (!service.setName(nameServiceInput.getText().toString().trim())) {
-                        Toast.makeText(
-                                this,
-                                "Имя сервиса должно содержать только буквы",
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-
-                    service.setDescription(descriptionServiceInput.getText().toString().trim());
-
-                    if (!service.setCost(costAddServiceInput.getText().toString().trim())) {
-                        Toast.makeText(
-                                this,
-                                "Цена не может содержать больше 8 символов",
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-*/
-                val category = categoryElement.category
-
-                if (category == "выбрать категорию") {
-                    Toast.makeText(
-                            this,
-                            "Не выбрана категория",
-                            Toast.LENGTH_SHORT).show()
-
-                }
-                val address = addressServiceInput.text.toString().trim { it <= ' ' }
-                if (address.isEmpty()) {
-                    Toast.makeText(
-                            this,
-                            "Не указан адрес",
-                            Toast.LENGTH_SHORT).show()
-
-                }
-                //service.userId = userId
-                service.category = category
-                service.address = address
-                service.countOfRates = 0
-                categoryElement.tagsArray
+                addingServicePresenter.addService(
+                        nameServiceInput.text.toString().toLowerCase(),
+                        descriptionServiceInput.text.toString(),
+                        costAddServiceInput.text.toString(),
+                        categoryElement.category,
+                        addressServiceInput.text.toString(),
+                        categoryElement.tagsArray)
 
                 //less than 10 images
                 if (fpath.size <= MAX_COUNT_OF_IMAGES) {
-                    uploadService(service)
+//                    uploadService(service)
                 } else {
                     showMoreTenImages()
 
@@ -161,7 +130,7 @@ class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremiu
 
         val items = HashMap<String, Any>()
         val tagsMap = HashMap<String, String>()
-        items[Service.NAME] = service.name.toLowerCase()
+        items[Service.NAME] = service.name
         items[Service.AVG_RATING] = 0
         items[Service.COST] = service.cost
         items[Service.DESCRIPTION] = service.description
@@ -375,7 +344,6 @@ class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremiu
         sysdateLong += (86400000 * 7).toLong()
         return WorkWithTimeApi.getDateInFormatYMDHMS(Date(sysdateLong))
     }
-
 
     override fun setWithPremium() {
         noPremiumText.visibility = View.GONE
