@@ -1,9 +1,13 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import android.util.Log
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IUserRepository
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.util.*
 
 class UserFirebaseApi: IUserRepository {
@@ -25,7 +29,31 @@ class UserFirebaseApi: IUserRepository {
         Log.d(TAG, "User inserting completed ")
     }
 
-    override fun getById(id:String):User{
+    override fun getById(id:String): User{
+
+        val database = FirebaseDatabase.getInstance()
+        val userRef = database
+                .getReference(User.USERS)
+                .child(id)
+
+        userRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(userSnpshot: DataSnapshot) {
+                val user = User()
+
+                user.name = userSnpshot.child(User.NAME).getValue<String>(String::class.java)!!
+                user.city = userSnpshot.child(User.CITY).getValue<String>(String::class.java)!!
+                user.phone = userSnpshot.child(User.PHONE).getValue<String>(String::class.java)!!
+                user.photoLink = userSnpshot.child(User.PHOTO_LINK).getValue<String>(String::class.java)!!
+                user.countOfRates = userSnpshot.child(User.COUNT_OF_RATES).getValue<Long>(Long::class.java)!!
+                user.rating = userSnpshot.child(User.AVG_RATING).getValue<Float>(Float::class.java)!!
+                user.subscriptionsCount = userSnpshot.child(User.COUNT_OF_SUBSCRIPTIONS).getValue<Long>(Long::class.java)!!
+                user.subscribersCount = userSnpshot.child(User.COUNT_OF_SUBSCRIBERS).getValue<Long>(Long::class.java)!!
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Some error
+            }
+        })
 
         return User()
     }

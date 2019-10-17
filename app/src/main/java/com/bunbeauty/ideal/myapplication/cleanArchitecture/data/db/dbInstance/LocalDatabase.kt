@@ -11,7 +11,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Tags
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 
-@Database(entities = [User::class, Service::class, Tags::class], version = 1)
+@Database(entities = [User::class, Service::class, Tags::class], version = 2)
 abstract class LocalDatabase : RoomDatabase() {
 
     abstract fun getUserDao(): UserDao
@@ -31,7 +31,9 @@ abstract class LocalDatabase : RoomDatabase() {
                         context.applicationContext,
                         LocalDatabase::class.java,
                         "NoteDatabase"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
+                // ^^^ Убрать ^^^
+
                 INSTANCE = instance
                 return instance
             }

@@ -327,7 +327,7 @@ class AddingService : AppCompatActivity(), View.OnClickListener, IPremium, Addin
         fpath.remove(filePath)
     }
 
-    private fun showPremium() {
+    override fun showPremium() {
        /* if (isPremiumLayoutSelected) {
             premiumLayout.visibility = View.GONE
             isPremiumLayoutSelected = false
