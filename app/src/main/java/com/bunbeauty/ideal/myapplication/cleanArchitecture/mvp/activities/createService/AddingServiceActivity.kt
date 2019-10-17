@@ -33,7 +33,7 @@ import com.google.firebase.storage.FirebaseStorage
 import java.io.IOException
 import java.util.*
 
-class AddingService : AppCompatActivity(), View.OnClickListener, IPremium, AddingServiceView {
+class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremium, AddingServiceView {
 
     private lateinit var nameServiceInput: EditText
     private lateinit var costAddServiceInput: EditText
@@ -52,14 +52,6 @@ class AddingService : AppCompatActivity(), View.OnClickListener, IPremium, Addin
     private lateinit var dbHelper: DBHelper
     private lateinit var categoryElement: CategoryElement
 
-    fun isFullInputs(): Boolean {
-        if (nameServiceInput.text.toString().isEmpty()) return false
-        if (descriptionServiceInput.text.toString().isEmpty()) return false
-        return if (costAddServiceInput.text.toString().isEmpty()) false else true
-    }
-
-    private val userId: String
-        get() = FirebaseAuth.getInstance().currentUser!!.uid
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +95,7 @@ class AddingService : AppCompatActivity(), View.OnClickListener, IPremium, Addin
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.addServiceAddServiceBtn -> if (isFullInputs()) {
+            R.id.addServiceAddServiceBtn -> {
                 /*   if (!service.setName(nameServiceInput.getText().toString().trim())) {
                         Toast.makeText(
                                 this,
@@ -139,11 +131,12 @@ class AddingService : AppCompatActivity(), View.OnClickListener, IPremium, Addin
                             Toast.LENGTH_SHORT).show()
 
                 }
-                service.userId = userId
+                //service.userId = userId
                 service.category = category
                 service.address = address
                 service.countOfRates = 0
-                //service.setTags(categoryElement.getTagsArray());
+                categoryElement.tagsArray
+
                 //less than 10 images
                 if (fpath.size <= MAX_COUNT_OF_IMAGES) {
                     uploadService(service)
@@ -151,8 +144,6 @@ class AddingService : AppCompatActivity(), View.OnClickListener, IPremium, Addin
                     showMoreTenImages()
 
                 }
-            } else {
-                Toast.makeText(this, getString(R.string.empty_field), Toast.LENGTH_SHORT).show()
             }
             R.id.servicePhotoAddServiceImage -> chooseImage()
             R.id.noPremiumAddServiceText -> showPremium()
@@ -279,24 +270,24 @@ class AddingService : AppCompatActivity(), View.OnClickListener, IPremium, Addin
 
     private fun uploadPhotos(storageReference: String, serviceId: String, photoId: String) {
 
-        val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference(User.USERS)
-                .child(userId)
-                .child(Service.SERVICES)
-                .child(serviceId)
-                .child(PHOTOS)
-                .child(photoId)
+        /* val database = FirebaseDatabase.getInstance()
+         val myRef = database.getReference(User.USERS)
+                 .child(userId)
+                 .child(Service.SERVICES)
+                 .child(serviceId)
+                 .child(PHOTOS)
+                 .child(photoId)
 
-        val items = HashMap<String, Any>()
-        items[PHOTO_LINK] = storageReference
-        myRef.updateChildren(items)
+         val items = HashMap<String, Any>()
+         items[PHOTO_LINK] = storageReference
+         myRef.updateChildren(items)
 
-        val photo = Photo()
-        photo.photoId = photoId
-        photo.photoLink = storageReference
-        photo.photoOwnerId = serviceId
+         val photo = Photo()
+         photo.photoId = photoId
+         photo.photoLink = storageReference
+         photo.photoOwnerId = serviceId
 
-        addPhotoInLocalStorage(photo)
+         addPhotoInLocalStorage(photo)*/
     }
 
     private fun addPhotoInLocalStorage(photo: Photo) {
@@ -328,13 +319,13 @@ class AddingService : AppCompatActivity(), View.OnClickListener, IPremium, Addin
     }
 
     override fun showPremium() {
-       /* if (isPremiumLayoutSelected) {
-            premiumLayout.visibility = View.GONE
-            isPremiumLayoutSelected = false
-        } else {
-            premiumLayout.visibility = View.VISIBLE
-            isPremiumLayoutSelected = true
-        }*/
+        /* if (isPremiumLayoutSelected) {
+             premiumLayout.visibility = View.GONE
+             isPremiumLayoutSelected = false
+         } else {
+             premiumLayout.visibility = View.VISIBLE
+             isPremiumLayoutSelected = true
+         }*/
     }
 
     override fun setPremium() {
@@ -420,6 +411,30 @@ class AddingService : AppCompatActivity(), View.OnClickListener, IPremium, Addin
 
     override fun showMoreTenImages() {
         Toast.makeText(this, "Должно быть меньше 10 фотографий", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showNameInputError(error: String) {
+        nameServiceInput.error = error
+        nameServiceInput.requestFocus()
+    }
+
+    override fun showDescriptionInputError(error: String) {
+        descriptionServiceInput.error = error
+        descriptionServiceInput.requestFocus()
+    }
+
+    override fun showCostInputError(error: String) {
+        costAddServiceInput.error = error
+        costAddServiceInput.requestFocus()
+    }
+
+    override fun showCategoryInputError(error: String) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showAddressInputError(error: String) {
+        addressServiceInput.error = error
+        addressServiceInput.requestFocus()
     }
 
     companion object {

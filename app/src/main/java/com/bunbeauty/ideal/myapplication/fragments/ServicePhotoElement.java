@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingService;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity;
 import com.bunbeauty.ideal.myapplication.editing.EditService;
 import com.squareup.picasso.Picasso;
 
@@ -88,7 +88,7 @@ public class ServicePhotoElement extends Fragment implements View.OnClickListene
             //удаление фрагмента
             //если мы на addService
             if (status.equals(ADD_SERVICE)) {
-                AddingService activity = (AddingService) this.getActivity();
+                AddingServiceActivity activity = (AddingServiceActivity) this.getActivity();
                 if (activity != null) {
                     activity.deleteFragment(this, filePath);
                 }

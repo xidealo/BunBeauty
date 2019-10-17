@@ -25,7 +25,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Order
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingService
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
@@ -428,7 +428,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
 
     private fun goToAddService(activity: Activity) {
-        val intent = Intent(activity, AddingService::class.java)
+        val intent = Intent(activity, AddingServiceActivity::class.java)
         activity.startActivity(intent)
     }
 
