@@ -9,4 +9,5 @@ interface IUserRepository {
     fun get(): List<User>
 
     fun getById(id:String): User
+    fun getByPhoneNumber(phoneNumber:String) : User
 }

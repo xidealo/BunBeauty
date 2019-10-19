@@ -337,10 +337,10 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
                 do {
                     val order = Order()
-                    order.orderId = cursor.getString(indexServiceId)
+                    /*order.id = cursor.getString(indexServiceId)
                     order.orderName = cursor.getString(indexServiceName)
                     order.orderDate = cursor.getString(indexDate)
-                    order.orderTime = cursor.getString(indexTime)
+                    order.orderTime = cursor.getString(indexTime)*/
                     orderList.add(order)
                     visibleCount++
                     //пока в курсоре есть строки и есть новые записи

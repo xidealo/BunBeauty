@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import android.util.Log
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IUserRepository
 import com.google.firebase.database.DataSnapshot
@@ -10,7 +9,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.*
 
-class UserFirebaseApi: IUserRepository {
+class UserFirebaseApi : IUserRepository {
 
     private val TAG = "data_layer"
 
@@ -29,8 +28,7 @@ class UserFirebaseApi: IUserRepository {
         Log.d(TAG, "User inserting completed ")
     }
 
-    override fun getById(id:String): User{
-
+    override fun getById(id: String): User {
         val database = FirebaseDatabase.getInstance()
         val userRef = database
                 .getReference(User.USERS)
@@ -69,5 +67,28 @@ class UserFirebaseApi: IUserRepository {
     override fun get(): List<User> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    fun getByPhoneNumberFromFirebase(phoneNumber: String) {
+        val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS).orderByChild(User.PHONE).equalTo(phoneNumber)
+
+        userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(usersSnapshot: DataSnapshot) {
+                if (usersSnapshot.childrenCount == 0L) {
+                    // NULL
+                } else {
+                    // Получаем остальные данные о пользователе
+                    val userSnapshot = usersSnapshot.children.iterator().next()
+                    val name = userSnapshot.child(User.NAME).value
+                    //RETURN USER CALLBACK
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
+    }
+
+    override fun getByPhoneNumber(phoneNumber: String) : User = User()
+
 
 }

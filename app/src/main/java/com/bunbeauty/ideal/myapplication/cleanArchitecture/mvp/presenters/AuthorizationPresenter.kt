@@ -13,9 +13,9 @@ class AuthorizationPresenter(private val authorizationInteractor: AuthorizationI
         if (authorizationInteractor.getCurrentFbUser() != null) {
             viewState.hideViewsOnScreen()
             if (authorizationInteractor.getUserName() != null) {
-                viewState.goToRegistration()
-            } else {
                 viewState.goToProfile()
+            } else {
+                viewState.goToRegistration()
             }
             //val myAuth = MyAuthorization(this@AuthorizationActivity, myPhoneNumber)
             //myAuth.authorizeUser()

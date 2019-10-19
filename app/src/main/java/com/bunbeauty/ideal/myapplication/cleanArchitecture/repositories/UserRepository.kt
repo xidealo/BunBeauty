@@ -7,7 +7,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfac
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class UserRepository(val userDao: UserDao, val userFirebaseApi: UserFirebaseApi) : BaseRepository(), IUserRepository {
+class UserRepository(val userDao: UserDao, private val userFirebaseApi: UserFirebaseApi) : BaseRepository(), IUserRepository {
 
     override fun insert(user: User) {
         launch {
@@ -28,13 +28,13 @@ class UserRepository(val userDao: UserDao, val userFirebaseApi: UserFirebaseApi)
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getById(id: String): User  {
-        var user:User? = null
+    override fun getById(id: String): User {
+        var user: User? = null
         runBlocking {
-            user = userDao.findById(id)
+            user = userDao.getById(id)
         }
 
-        if (user == null){
+        if (user == null) {
             user = userFirebaseApi.getById(id)
             launch {
                 userDao.insert(user!!)
@@ -43,5 +43,18 @@ class UserRepository(val userDao: UserDao, val userFirebaseApi: UserFirebaseApi)
         return user!!
     }
 
+    override fun getByPhoneNumber(phoneNumber: String): User {
+        var user: User? = null
+        runBlocking {
+            user = userDao.getByPhoneNumber(phoneNumber)
+        }
 
+        if (user == null) {
+            user = userFirebaseApi.getByPhoneNumber(phoneNumber)
+            launch {
+                userDao.insert(user!!)
+            }
+        }
+        return user!!
+    }
 }

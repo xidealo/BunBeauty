@@ -6,12 +6,16 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Tags
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.*
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-
-@Database(entities = [User::class, Service::class, Tags::class], version = 2)
+@Database(entities = [User::class,
+    Service::class,
+    Tag::class,
+    WorkingDays::class,
+    WorkingTime::class,
+    Order::class,
+    Photo::class,
+    Review::class], version = 4)
 abstract class LocalDatabase : RoomDatabase() {
 
     abstract fun getUserDao(): UserDao

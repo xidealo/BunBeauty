@@ -5,11 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,11 +16,18 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
-import com.bunbeauty.ideal.myapplication.createService.MyCalendar;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
+import com.bunbeauty.ideal.myapplication.createService.MyCalendar;
 import com.bunbeauty.ideal.myapplication.fragments.PremiumElement;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData;
@@ -33,7 +35,6 @@ import com.bunbeauty.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.other.IPremium;
 import com.bunbeauty.ideal.myapplication.reviews.Comments;
 import com.google.firebase.auth.FirebaseAuth;
@@ -186,7 +187,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
 
                 //LoadingGuestServiceData.addServiceInfoInLocalStorage(serviceSnapshot, database);
                 Service service = new Service();
-                service.setCost(serviceSnapshot.child(Service.COST).getValue(Long.class));
+                service.setCost(serviceSnapshot.child(Service.COST).getValue(String.class));
                 service.setAddress(serviceSnapshot.child(Service.ADDRESS).getValue(String.class));
                 service.setDescription(serviceSnapshot.child(Service.DESCRIPTION).getValue(String.class));
                 service.setName(serviceSnapshot.child(Service.NAME).getValue(String.class));
@@ -388,7 +389,7 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             long countOfRates = Long.valueOf(cursor.getString(indexCountOfRates));
 
             Service service = new Service();
-            service.setCost(cursor.getLong(indexMinCost));
+            service.setCost(cursor.getString(indexMinCost));
             service.setAddress(cursor.getString(indexAddress));
             service.setDescription(cursor.getString(indexDescription));
             service.setName(cursor.getString(indexName));

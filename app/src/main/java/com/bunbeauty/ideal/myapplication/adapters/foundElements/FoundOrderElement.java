@@ -2,10 +2,11 @@ package com.bunbeauty.ideal.myapplication.adapters.foundElements;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Order;
@@ -27,10 +28,10 @@ public class FoundOrderElement implements View.OnClickListener {
     private View view;
 
     public FoundOrderElement(Order order, View view, Context context) {
-        orderId = order.getOrderId();
+        /*orderId = order.getOrderId();
         orderName = order.getOrderName();
         orderDate = order.getOrderDate();
-        orderTime = order.getOrderTime();
+        orderTime = order.getOrderTime();*/
         this.context = context;
         this.view = view;
     }

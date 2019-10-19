@@ -7,13 +7,13 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 interface UserDao {
 
     @Query("SELECT * FROM user")
-    suspend fun findAll() : List<User>
+    suspend fun getAll() : List<User>
 
     @Query("SELECT * FROM user WHERE id = :id")
-    suspend fun findById(id: String): User?
+    suspend fun getById(id: String): User?
 
     @Query("SELECT * FROM user WHERE phone = :phone")
-    suspend fun findByPhoneNumber(phone: String): User?
+    suspend fun getByPhoneNumber(phone: String): User?
 
     @Insert
     suspend fun insert(user: User)

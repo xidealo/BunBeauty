@@ -14,7 +14,6 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.RatingReview;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
@@ -268,7 +267,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
             myRef.updateChildren(items);
             items.clear();
 
-            RatingReview ratingReview = new RatingReview();
+            com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Review ratingReview = new com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Review();
             ratingReview.setId(reviewId);
             ratingReview.setReview(textOfReview);
             ratingReview.setRating(String.valueOf(myRating));
@@ -314,7 +313,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    private void updateReviewInLocalStorage(RatingReview ratingReview) {
+    private void updateReviewInLocalStorage(com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Review ratingReview) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -327,9 +326,9 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
                 new String[]{String.valueOf(ratingReview.getId())});
     }
 
-    //Описываем работу слушателя изменения состояний RatingReview Bar:
+    //Описываем работу слушателя изменения состояний Review Bar:
     public void addListenerOnRatingBar() {
-        //При смене значения рейтинга в нашем элементе RatingReview Bar,
+        //При смене значения рейтинга в нашем элементе Review Bar,
         //это изменение будет сохраняться в myRating
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             public void onRatingChanged(RatingBar ratingBar, float rating,

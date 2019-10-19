@@ -2,9 +2,7 @@ package com.bunbeauty.ideal.myapplication.adapters.foundElements;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
-import androidx.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,12 +11,14 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.android.ideal.myapplication.R;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.searchService.GuestService;
 
 public class FoundServiceElement implements View.OnClickListener {
@@ -40,7 +40,7 @@ public class FoundServiceElement implements View.OnClickListener {
     private String nameUserString;
     private String cityString;
     private String nameServiceString;
-    private Long costString;
+    private String costString;
     private String userId;
     private Context context;
     private View view;

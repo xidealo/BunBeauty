@@ -2,14 +2,13 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IServiceRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class ServiceRepository(val serviceDao: ServiceDao,
-                        val serviceFirebaseApi: ServiceFirebaseApi) : BaseRepository(), IServiceRepository {
+class ServiceRepository(private val serviceDao: ServiceDao,
+                        private val serviceFirebaseApi: ServiceFirebaseApi) : BaseRepository(), IServiceRepository {
 
     override fun insert(service: Service) {
         launch {

@@ -4,7 +4,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.Prof
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ProfileCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Tags
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
@@ -45,7 +45,7 @@ class ProfileFirebase(profileInteractor: ProfileInteractor){
                     service.userId = userSnapshot.key!!
                     service.rating = serviceSnap.child(Service.AVG_RATING).getValue(Float::class.java)!!
                     val tagsArray = ArrayList<String>()
-                    for (tag in serviceSnap.child(Tags.TAGS).children) {
+                    for (tag in serviceSnap.child(Tag.TAGS).children) {
                         tagsArray.add(tag.getValue(String::class.java)!!)
                     }
                     //service.tags = tagsArray

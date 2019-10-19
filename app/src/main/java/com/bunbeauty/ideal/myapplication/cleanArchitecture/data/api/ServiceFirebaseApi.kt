@@ -13,7 +13,6 @@ import kotlin.collections.ArrayList
 
 class ServiceFirebaseApi: IServiceRepository {
 
-
     private val TAG = "data_layer"
 
     override fun insert(service: Service) {

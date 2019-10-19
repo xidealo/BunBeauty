@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
 import android.app.Application
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
@@ -32,16 +33,17 @@ class AppModule(private val app: Application) {
     @Provides
     fun provideUserRepository(userDao: UserDao, userFirebaseApi: UserFirebaseApi): UserRepository = UserRepository(userDao, userFirebaseApi)
     @Provides
-    fun provideServiceRepository(serviceDao: ServiceDao,  serviceFirebaseApi: ServiceFirebaseApi): ServiceRepository = ServiceRepository(serviceDao, serviceFirebaseApi)
+    fun provideServiceRepository(serviceDao: ServiceDao, serviceFirebaseApi: ServiceFirebaseApi): ServiceRepository = ServiceRepository(serviceDao, serviceFirebaseApi)
 
     // INTERACTORS
     @Provides
-    fun provideAuthorizationInteractor(userDao: UserDao): AuthorizationInteractor = AuthorizationInteractor(userDao)
+    fun provideAuthorizationInteractor(userRepository: UserRepository): AuthorizationInteractor = AuthorizationInteractor(userRepository)
     @Provides
     fun provideVerifyPhoneInteractor(userRepository: UserRepository): VerifyPhoneInteractor = VerifyPhoneInteractor(userRepository)
     @Provides
     fun provideRegistrationInteractor(userRepository: UserRepository): RegistrationInteractor = RegistrationInteractor(userRepository)
     @Provides
     fun provideProfileInteractor(userRepository: UserRepository, serviceRepository: ServiceRepository): ProfileInteractor = ProfileInteractor(userRepository,serviceRepository)
-
+    @Provides
+    fun provideAddingServiceInteractor(serviceRepository: ServiceRepository): AddingServiceInteractor = AddingServiceInteractor(serviceRepository)
 }

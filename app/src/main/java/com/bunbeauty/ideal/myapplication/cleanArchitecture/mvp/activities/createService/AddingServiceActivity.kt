@@ -9,16 +9,23 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.android.ideal.myapplication.R
+import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AddingServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
 import com.bunbeauty.ideal.myapplication.fragments.PremiumElement
@@ -26,7 +33,6 @@ import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.other.IPremium
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -35,9 +41,8 @@ import com.google.firebase.storage.FirebaseStorage
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.cos
 
-class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremium, AddingServiceView {
+class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPremium, AddingServiceView {
 
     private lateinit var nameServiceInput: EditText
     private lateinit var costAddServiceInput: EditText
@@ -57,6 +62,26 @@ class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremiu
 
     @InjectPresenter
     lateinit var addingServicePresenter: AddingServicePresenter
+
+    @ProvidePresenter
+    internal fun provideAddingServicePresenter(): AddingServicePresenter {
+        DaggerAppComponent
+                .builder()
+                .appModule(AppModule(application))
+                .build().inject(this)
+
+        return AddingServicePresenter(addingServiceInteractor)
+    }
+
+    @Inject
+    lateinit var addingServiceInteractor: AddingServiceInteractor
+    @Inject
+    lateinit var serviceRepository: ServiceRepository
+    @Inject
+    lateinit var serviceDao: ServiceDao
+    @Inject
+    lateinit var serviceFirebaseApi: ServiceFirebaseApi
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,12 +132,11 @@ class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremiu
                         categoryElement.tagsArray)
 
                 //less than 10 images
-                if (fpath.size <= MAX_COUNT_OF_IMAGES) {
-//                    uploadService(service)
+               /* if (fpath.size <= MAX_COUNT_OF_IMAGES) {
+                   uploadService(service)
                 } else {
                     showMoreTenImages()
-
-                }
+                }*/
             }
             R.id.servicePhotoAddServiceImage -> chooseImage()
             R.id.noPremiumAddServiceText -> showPremium()
@@ -123,36 +147,17 @@ class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremiu
     }
 
     private fun uploadService(service: Service) {
-        val workWithTimeApi = WorkWithTimeApi()
-
-        val database = FirebaseDatabase.getInstance()
-        var serviceRef = database.getReference(User.USERS).child(service.userId).child(Service.SERVICES)
-
-        val items = HashMap<String, Any>()
-        val tagsMap = HashMap<String, String>()
-        items[Service.NAME] = service.name
-        items[Service.AVG_RATING] = 0
-        items[Service.COST] = service.cost
-        items[Service.DESCRIPTION] = service.description
-        //items.put(Service.IS_PREMIUM, premiumDate);
-        items[Service.CATEGORY] = service.category
-        items[Service.ADDRESS] = service.address
-        items[Service.COUNT_OF_RATES] = service.countOfRates
         //items[Service.CREATION_DATE] = workWithTimeApi.getDateInFormatYMDHMS(Date())
         /*  for (String tag : service.getTags()) {
             tagsMap.put(String.valueOf(tag.hashCode()), tag);
         }
         items.put(Service.TAGS, tagsMap);*/
 
-        val serviceId = serviceRef.push().key!!
-        serviceRef = serviceRef.child(serviceId)
-        serviceRef.updateChildren(items)
-
         //service.id = serviceId
         addServiceInLocalStorage(service)
 
         for (path in fpath) {
-            uploadImage(path, serviceId)
+            uploadImage(path, "")
         }
     }
 
@@ -238,8 +243,8 @@ class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremiu
     }
 
     private fun uploadPhotos(storageReference: String, serviceId: String, photoId: String) {
-
-        /* val database = FirebaseDatabase.getInstance()
+/*
+         val database = FirebaseDatabase.getInstance()
          val myRef = database.getReference(User.USERS)
                  .child(userId)
                  .child(Service.SERVICES)
@@ -255,7 +260,6 @@ class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremiu
          photo.photoId = photoId
          photo.photoLink = storageReference
          photo.photoOwnerId = serviceId
-
          addPhotoInLocalStorage(photo)*/
     }
 
@@ -409,13 +413,11 @@ class AddingServiceActivity : AppCompatActivity(), View.OnClickListener, IPremiu
         private const val SERVICE_ID = "service id"
         private const val STATUS_USER_BY_SERVICE = "status UserCreateService"
 
-        private const val PICK_IMAGE_REQUEST = 71
-        private const val SERVICE_PHOTO = "service photo"
-        private const val PHOTOS = "photos"
-        private const val PHOTO_LINK = "photo link"
-        private const val CODES = "codes"
-        private const val CODE = "code"
-        private const val COUNT = "count"
+        const val PICK_IMAGE_REQUEST = 71
+        const val SERVICE_PHOTO = "service photo"
+        const val CODES = "codes"
+        const val CODE = "code"
+        const val COUNT = "count"
 
         private const val MAX_COUNT_OF_IMAGES = 10
     }

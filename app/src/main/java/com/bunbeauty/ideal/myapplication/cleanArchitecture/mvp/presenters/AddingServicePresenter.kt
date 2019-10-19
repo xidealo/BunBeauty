@@ -19,7 +19,7 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             service.description = description
             service.cost = cost
             service.category = category
-            service.address =address
+            service.address = address
             service.rating = 0f
             service.countOfRates = 0
             service.premiumDate = "1970-01-01 00:00:00"
@@ -108,7 +108,7 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             viewState.showAddressInputError("")
             return false
         }
-        if(!addingServiceInteractor.getIsAddressLengthThirty(address)){
+        if (!addingServiceInteractor.getIsAddressLengthThirty(address)) {
             viewState.showAddressInputError("Адрес должен быть меньше 30 символов")
             return false
         }

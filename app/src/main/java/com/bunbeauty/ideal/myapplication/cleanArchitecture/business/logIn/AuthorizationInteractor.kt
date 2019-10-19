@@ -3,15 +3,15 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 import android.annotation.SuppressLint
 import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IAuthorizationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class AuthorizationInteractor(private val userDao: UserDao)  : BaseRepository(), IAuthorizationInteractor{
+class AuthorizationInteractor(private val userRepository: UserRepository)  : BaseRepository(), IAuthorizationInteractor{
     val TAG = "DBInf"
     val FIRST_ENTER_ID = "1"
 
@@ -27,9 +27,8 @@ class AuthorizationInteractor(private val userDao: UserDao)  : BaseRepository(),
                 val user = User()
                 user.id = FIRST_ENTER_ID
                 user.phone = myPhoneNumber
-                userDao.insert(user)
+                userRepository.userDao.insert(user)
                 Log.d(TAG, "user saved")
-                Log.d(TAG, userDao.findById(FIRST_ENTER_ID).toString())
             }
 
             return true
@@ -39,15 +38,13 @@ class AuthorizationInteractor(private val userDao: UserDao)  : BaseRepository(),
 
     fun clearUsers() {
         launch {
-            userDao.deleteAll()
+            userRepository.userDao.deleteAll()
         }
     }
 
     fun getUserName():String? = runBlocking {
         val userPhone = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
-
-        return@runBlocking userDao
-                .findByPhoneNumber(userPhone)?.name
+        return@runBlocking userRepository.getByPhoneNumber(userPhone).name
     }
 
 }
