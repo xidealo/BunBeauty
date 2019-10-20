@@ -8,7 +8,9 @@ data class Tag(
         @PrimaryKey
         var id: String = "",
         var tag: String = "",
-        var serviceId: String) {
+        var serviceId: String = "") {
+
+    lateinit var userId: String
     companion object {
         const val TAGS = "tags"
         const val TAG = "tag"

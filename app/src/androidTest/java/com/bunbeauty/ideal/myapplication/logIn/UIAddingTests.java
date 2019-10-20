@@ -14,7 +14,6 @@ import org.junit.Test;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
@@ -34,6 +33,10 @@ public class UIAddingTests {
         UIAuthorizationActivityTests uiAuthorizationTests = new UIAuthorizationActivityTests();
         uiAuthorizationTests.testEnterPhoneAuthorization("9999999999");
         uiAuthorizationTests.testEnterCodeVerify("123456");
+        Thread.sleep(10000);
+
+        UIRegistrationActivityTests uiRegistrationActivityTests = new UIRegistrationActivityTests();
+        uiRegistrationActivityTests.testEnterDataRegistration();
         //for auth code
         Thread.sleep(10000);
         goToAddingService();
@@ -47,7 +50,7 @@ public class UIAddingTests {
         onView(withId(R.id.addServicesProfileBtn)).perform(click());
     }
 
-    void addService() {
+    void addService() throws InterruptedException {
         //name
         String name = "TestName";
         onView(withId(R.id.nameAddServiceInput)).perform(typeText(name));
@@ -60,9 +63,11 @@ public class UIAddingTests {
         //description
         String description = "Test Description";
         onView(withId(R.id.descriptionAddServiceInput)).perform(typeText(description));
+        Thread.sleep(10000);
+
         Espresso.closeSoftKeyboard();
-        onView(withId(R.id.scrollViewAddService)).perform(scrollTo());
-        //onView(withId(R.id.addServiceAddServiceBtn)).perform(click());
+        //onView(withId(R.id.scrollViewAddService)).perform(scrollTo());
+        onView(withId(R.id.addServiceAddServiceBtn)).perform(click());
     }
 
     @After

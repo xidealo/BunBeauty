@@ -77,10 +77,7 @@ class ServiceFirebaseApi: IServiceRepository {
 
                     serviceList.add(service)
                 }
-
                 val user = User()
-
-
             }
 
             override fun onCancelled(error: DatabaseError) {

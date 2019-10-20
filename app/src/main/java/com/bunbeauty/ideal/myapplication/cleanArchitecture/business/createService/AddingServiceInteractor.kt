@@ -2,14 +2,26 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createServi
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.IAddingServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.TagRepository
 import com.google.firebase.auth.FirebaseAuth
 
-class AddingServiceInteractor(private val serviceRepository: ServiceRepository) : IAddingServiceInteractor{
+class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
+                              private val tagRepository: TagRepository) : IAddingServiceInteractor{
 
     override fun addService(service: Service, tags: List<String>) {
         service.id = serviceRepository.getIdForNew(getUserId())
         serviceRepository.insert(service)
+
+        for(tagText:String in tags){
+            val tag = Tag()
+            tag.id = tagRepository.getIdForNew(service.userId, service.id)
+            tag.tag = tagText
+            tag.serviceId = service.id
+            tag.userId = service.userId
+            tagRepository.insert(tag)
+        }
     }
 
     override fun getIsNameInputCorrect(name: String): Boolean {

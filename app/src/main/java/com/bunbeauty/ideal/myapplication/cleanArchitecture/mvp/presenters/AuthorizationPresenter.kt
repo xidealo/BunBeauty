@@ -11,12 +11,13 @@ class AuthorizationPresenter(private val authorizationInteractor: AuthorizationI
     fun authorize(){
         //business logic class
         if (authorizationInteractor.getCurrentFbUser() != null) {
-            viewState.hideViewsOnScreen()
+            /*viewState.hideViewsOnScreen()
             if (authorizationInteractor.getUserName() != null) {
                 viewState.goToProfile()
             } else {
                 viewState.goToRegistration()
-            }
+            }*/
+            viewState.showViewsOnScreen()
             //val myAuth = MyAuthorization(this@AuthorizationActivity, myPhoneNumber)
             //myAuth.authorizeUser()
         } else {

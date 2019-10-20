@@ -40,7 +40,7 @@ public class UIRegistrationActivityTests {
         testEnterDataRegistration();
     }
 
-    private void testEnterDataRegistration(){
+    void testEnterDataRegistration(){
         String name = "TestName";
         String surnameTest = "TestSurname";
         //set data

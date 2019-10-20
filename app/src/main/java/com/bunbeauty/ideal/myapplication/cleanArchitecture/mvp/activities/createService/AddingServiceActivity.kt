@@ -16,8 +16,10 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebaseApi
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.TagFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.TagDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo
@@ -26,6 +28,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AddingServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.TagRepository
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
 import com.bunbeauty.ideal.myapplication.fragments.PremiumElement
@@ -82,6 +85,12 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
     @Inject
     lateinit var serviceFirebaseApi: ServiceFirebaseApi
 
+    @Inject
+    lateinit var tagRepository: TagRepository
+    @Inject
+    lateinit var tagDao: TagDao
+    @Inject
+    lateinit var tagFirebase: TagFirebase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
