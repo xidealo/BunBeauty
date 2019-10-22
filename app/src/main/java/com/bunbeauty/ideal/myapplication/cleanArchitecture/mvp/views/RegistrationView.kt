@@ -7,4 +7,5 @@ interface RegistrationView: MvpView {
     fun setSurnameInputError(error:String)
     fun showNoSelectedCity()
     fun goToProfile()
+    fun fillPhoneInput(phone: String)
 }

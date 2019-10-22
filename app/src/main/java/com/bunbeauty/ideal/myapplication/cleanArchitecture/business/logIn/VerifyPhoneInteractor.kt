@@ -7,7 +7,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepo
 class VerifyPhoneInteractor(private val userRepository: UserRepository) : BaseRepository(), IVerifyPhoneInteractor {
     private val TAG = "DBInf"
 
-    override fun getMyPhoneNumber(): String = userRepository.getById("1").phone
+    override fun getMyPhoneNumber(): String = /*userRepository.getById("1").phone*/""
 
 
 }

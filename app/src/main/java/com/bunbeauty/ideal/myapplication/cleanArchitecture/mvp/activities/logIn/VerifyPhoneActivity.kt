@@ -36,7 +36,7 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
     @ProvidePresenter
     internal fun provideVerifyPhonePresenter(): VerifyPhonePresenter {
         DaggerAppComponent.builder()
-                .appModule(AppModule(application))
+                .appModule(AppModule(application, intent))
                 .build()
                 .inject(this)
         return VerifyPhonePresenter(verifyPhoneInteractor)
@@ -51,7 +51,7 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
     }
 
     private fun initView() {
-        Log.d(TAG, "initView RegistrationActivity: ")
+        Log.d(TAG, "initView VerifyPhoneActivity: ")
 
         verifyCodeBtn = findViewById(R.id.verifyVerifyBtn)
         resendCodeText = findViewById(R.id.resendVerifyText)
@@ -95,7 +95,7 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
         progressBar.visibility = View.GONE
     }
 
-    override fun showResendCode() {
+    override fun showSendCode() {
         Toast.makeText(this, "Код был отправлен", Toast.LENGTH_LONG).show()
     }
 

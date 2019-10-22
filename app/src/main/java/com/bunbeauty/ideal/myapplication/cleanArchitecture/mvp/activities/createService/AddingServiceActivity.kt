@@ -65,7 +65,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
     internal fun provideAddingServicePresenter(): AddingServicePresenter {
         DaggerAppComponent
                 .builder()
-                .appModule(AppModule(application))
+                .appModule(AppModule(application, intent))
                 .build().inject(this)
 
         return AddingServicePresenter(addingServiceInteractor)

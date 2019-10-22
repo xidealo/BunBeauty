@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
@@ -7,7 +8,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfac
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class UserRepository(val userDao: UserDao, private val userFirebaseApi: UserFirebaseApi) : BaseRepository(), IUserRepository {
+class UserRepository(private val userDao: UserDao,
+                     private val userFirebaseApi: UserFirebaseApi) : BaseRepository(),
+        IUserRepository, IUserSubscriber {
+
+    lateinit var userSubscriber: IUserSubscriber
 
     override fun insert(user: User) {
         launch {
@@ -28,33 +33,47 @@ class UserRepository(val userDao: UserDao, private val userFirebaseApi: UserFire
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getById(id: String): User {
+    override fun deleteById(id: String) {
+        launch {
+            userDao.deleteById(id)
+        }
+    }
+
+    override fun getById(id: String, userSubscriber: IUserSubscriber) {
+        this.userSubscriber = userSubscriber
+
         var user: User? = null
         runBlocking {
             user = userDao.getById(id)
         }
 
         if (user == null) {
-            user = userFirebaseApi.getById(id)
-            launch {
-                userDao.insert(user!!)
-            }
+            userFirebaseApi.getById(id, this)
+        } else {
+            userSubscriber.returnUser(user!!)
         }
-        return user!!
     }
 
-    override fun getByPhoneNumber(phoneNumber: String): User {
+    override fun getByPhoneNumber(phoneNumber: String, userSubscriber: IUserSubscriber) {
+        this.userSubscriber = userSubscriber
+
         var user: User? = null
         runBlocking {
             user = userDao.getByPhoneNumber(phoneNumber)
         }
 
         if (user == null) {
-            user = userFirebaseApi.getByPhoneNumber(phoneNumber)
-            launch {
-                userDao.insert(user!!)
-            }
+            userFirebaseApi.getByPhoneNumber(phoneNumber, this)
+        } else {
+            userSubscriber.returnUser(user!!)
         }
-        return user!!
+    }
+
+    override fun returnUser(user: User) {
+        userSubscriber.returnUser(user)
+        launch {
+            userDao.insert(user)
+            var i = 0
+        }
     }
 }

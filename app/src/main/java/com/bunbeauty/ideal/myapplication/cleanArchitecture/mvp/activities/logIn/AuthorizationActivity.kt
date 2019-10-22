@@ -45,7 +45,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
     internal fun provideAuthorizationPresenter(): AuthorizationPresenter {
         DaggerAppComponent
                 .builder()
-                .appModule(AppModule(application))
+                .appModule(AppModule(application, intent))
                 .build().inject(this)
 
         return AuthorizationPresenter(authorizationInteractor)
@@ -108,7 +108,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
         verifyBtn.isClickable = status
     }
 
-    override fun goToVerifyPhone(myPhoneNumber: String) {
+    override fun goToVerifyPhone(phone: String) {
         val intent = Intent(this, VerifyPhoneActivity::class.java)
         this.startActivity(intent)
     }

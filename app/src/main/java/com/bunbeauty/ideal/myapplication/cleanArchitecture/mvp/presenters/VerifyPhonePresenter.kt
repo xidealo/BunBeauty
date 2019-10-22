@@ -24,7 +24,7 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInterac
 
     fun sendCode(verifyPhoneActivity: VerifyPhoneActivity){
         sendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),  verifyPhoneActivity)
-        viewState.showResendCode()
+        viewState.showSendCode()
     }
 
     fun verify(code:String, verifyPhoneActivity: VerifyPhoneActivity){
@@ -40,7 +40,7 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInterac
         if (getResendToken() != null) {
             resendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),
                     getResendToken()!!, verifyPhoneActivity)
-            viewState.showResendCode()
+            viewState.showSendCode()
         }
     }
 
@@ -80,7 +80,8 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInterac
                 verificationCallbacks)
     }
 
-    private fun resendVerificationCode(phoneNumber: String, token: PhoneAuthProvider.ForceResendingToken, verifyPhoneActivity: VerifyPhoneActivity) {
+    private fun resendVerificationCode(phoneNumber: String, token: PhoneAuthProvider.ForceResendingToken,
+                                       verifyPhoneActivity: VerifyPhoneActivity) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber, // Phone number to verify
                 60, // Timeout duration
@@ -106,10 +107,10 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInterac
             }
         }
 
-        override fun onCodeSent(verificationId: String, p1: PhoneAuthProvider.ForceResendingToken) {
+        override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
             //происходит, когда отослали код
             phoneVerificationId = verificationId
-            resendToken = p1
+            resendToken = token
         }
     }
 }

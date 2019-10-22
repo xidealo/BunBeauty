@@ -3,11 +3,13 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.RegistrationView
 
 @InjectViewState
-class RegistrationPresenter(private val registrationInteractor: RegistrationInteractor) : MvpPresenter<RegistrationView>() {
+class RegistrationPresenter(private val registrationInteractor: RegistrationInteractor) :
+        MvpPresenter<RegistrationView>(), IUserSubscriber {
 
     fun registration(name: String, surname: String, city: String, phone:String) {
 
@@ -25,7 +27,11 @@ class RegistrationPresenter(private val registrationInteractor: RegistrationInte
 
     }
 
-    fun getMyPhoneNumber() :String = registrationInteractor.getMyPhoneNumber()
+    fun getMyPhoneNumber() = registrationInteractor.getMyPhoneNumber(this)
+
+    override fun returnUser(user: User) {
+        viewState.fillPhoneInput(user.phone)
+    }
 
     private fun isNameCorrect(name: String): Boolean {
         if (name.isEmpty()) {
