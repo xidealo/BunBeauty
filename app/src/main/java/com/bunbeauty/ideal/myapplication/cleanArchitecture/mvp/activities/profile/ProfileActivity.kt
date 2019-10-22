@@ -90,7 +90,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     @ProvidePresenter
     internal fun provideProfilePresenter(): ProfilePresenter {
         DaggerAppComponent.builder()
-                .appModule(AppModule(application))
+                .appModule(AppModule(application, intent))
                 .build()
                 .inject(this)
         return ProfilePresenter(profileInteractor)
@@ -117,8 +117,8 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
         initView()
 
-        profilePresenter.initFCM(intent)
-        profilePresenter.showProfile(intent)
+        profilePresenter.initFCM()
+        profilePresenter.showProfile()
     }
 
     private fun initView() {
@@ -160,7 +160,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
             R.id.subscriptionsProfileLayout -> goToSubscribers(this)
 
-            R.id.ratingProfileLayout -> goToUserComments(this, profilePresenter.getOwnerId(intent))
+            R.id.ratingProfileLayout -> goToUserComments(this, profilePresenter.getOwnerId())
 
             else -> {
             }
@@ -171,6 +171,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         showProfileText(user.name, user.city, user.phone)
         createRatingBar(user.rating)
         //showAvatar()
+        hideView()
     }
 
     override fun showUserServices(services: List<Service>) {
@@ -185,7 +186,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
                 + DBHelper.TABLE_CONTACTS_USERS
                 + " WHERE "
                 + DBHelper.KEY_ID + " = ?")
-        val userCursor = database.rawQuery(sqlQuery, arrayOf(profileInteractor.getOwnerId(intent)))
+        val userCursor = database.rawQuery(sqlQuery, arrayOf(profileInteractor.getOwnerId()))
 
         if (userCursor.moveToFirst()) {
             val indexCountOfRates = userCursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_USERS)
@@ -202,7 +203,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         orderList.clear()
         createPanels()
 
-        profilePresenter.updateProfileData(intent)
+        profilePresenter.updateProfileData()
     }
 
     private fun showSubscriptions() {
@@ -236,7 +237,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private fun showAvatar() {
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
         val height = resources.getDimensionPixelSize(R.dimen.photo_height)
-        workWithLocalStorageApi.setPhotoAvatar(profileInteractor.getOwnerId(intent),
+        workWithLocalStorageApi.setPhotoAvatar(profileInteractor.getOwnerId(),
                 avatarImage,
                 width,
                 height)
@@ -361,13 +362,13 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
                 + DBHelper.KEY_USER_ID + " = ? AND "
                 + DBHelper.KEY_WORKER_ID + " = ?")
 
-        val cursor = database.rawQuery(sqlQuery, arrayOf(profileInteractor.getUserId(), profileInteractor.getOwnerId(intent)))
-        if (cursor.moveToFirst()) {
+        val cursor = database.rawQuery(sqlQuery, arrayOf(profileInteractor.getUserId(), profileInteractor.getOwnerId()))
+        return if (cursor.moveToFirst()) {
             cursor.close()
-            return true
+            true
         } else {
             cursor.close()
-            return false
+            false
         }
     }
 

@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
 import android.app.Application
+import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
@@ -20,7 +21,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class AppModule(private val app: Application) {
+class AppModule(private val app: Application, private val intent: Intent) {
     //FIREBASE API
     @Provides
     fun provideUserFirebaseApi(): UserFirebaseApi = UserFirebaseApi()
@@ -53,7 +54,7 @@ class AppModule(private val app: Application) {
     @Provides
     fun provideRegistrationInteractor(userRepository: UserRepository): RegistrationInteractor = RegistrationInteractor(userRepository)
     @Provides
-    fun provideProfileInteractor(userRepository: UserRepository, serviceRepository: ServiceRepository): ProfileInteractor = ProfileInteractor(userRepository,serviceRepository)
+    fun provideProfileInteractor(userRepository: UserRepository, serviceRepository: ServiceRepository): ProfileInteractor = ProfileInteractor(userRepository,serviceRepository, intent)
     @Provides
     fun provideAddingServiceInteractor(serviceRepository: ServiceRepository, tagRepository: TagRepository): AddingServiceInteractor = AddingServiceInteractor(serviceRepository, tagRepository)
 }

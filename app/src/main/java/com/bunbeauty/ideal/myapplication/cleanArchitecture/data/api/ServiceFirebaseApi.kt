@@ -46,11 +46,11 @@ class ServiceFirebaseApi: IServiceRepository {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun get(): List<Service> {
+    override fun get() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getAllUserServices(userId: String): List<Service> {
+    override fun getAllUserServices(userId: String) {
         //val serviceList: ArrayList<Service> = ArrayList()
         val database = FirebaseDatabase.getInstance()
         val servicesRef = database
@@ -84,8 +84,6 @@ class ServiceFirebaseApi: IServiceRepository {
                 // Some error
             }
         })
-
-        return ArrayList()
     }
 
     fun getIdForNew(userId: String): String{

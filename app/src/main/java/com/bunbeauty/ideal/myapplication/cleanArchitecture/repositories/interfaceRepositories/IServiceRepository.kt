@@ -6,7 +6,7 @@ interface IServiceRepository {
     fun insert(service: Service)
     fun delete(service: Service)
     fun update(service: Service)
-    fun get(): List<Service>
+    fun get()
 
-    fun getAllUserServices(userId: String): List<Service>
+    fun getAllUserServices(userId: String)
 }

@@ -5,7 +5,7 @@ import com.arellomobile.mvp.MvpView
 interface VerifyPhoneView: MvpView {
     fun hideViewsOnScreen()
     fun showViewsOnScreen()
-    fun showResendCode()
+    fun showSendCode()
     fun showWrongCode()
     fun callbackWrongCode()
     fun goToRegistration()
