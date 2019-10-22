@@ -101,9 +101,9 @@ public class LoadingGuestServiceData {
         for (DataSnapshot fPhoto : photosSnapshot.getChildren()) {
             Photo photo = new Photo();
 
-            photo.setPhotoId(fPhoto.getKey());
-            photo.setPhotoLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
-            photo.setPhotoOwnerId(serviceId);
+            photo.setId(fPhoto.getKey());
+            photo.setLink(String.valueOf(fPhoto.child(PHOTO_LINK).getValue()));
+            photo.setOwnerId(serviceId);
 
             addPhotoInLocalStorage(photo, localDatabase);
         }
@@ -113,20 +113,20 @@ public class LoadingGuestServiceData {
 
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
-        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
-        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getPhotoOwnerId());
+        contentValues.put(DBHelper.KEY_ID, photo.getId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getLink());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getOwnerId());
 
         boolean isUpdate = WorkWithLocalStorageApi
                 .hasSomeData(DBHelper.TABLE_PHOTOS,
-                        photo.getPhotoId());
+                        photo.getId());
 
         if (isUpdate) {
             localDatabase.update(DBHelper.TABLE_PHOTOS, contentValues,
                     DBHelper.KEY_ID + " = ?",
-                    new String[]{photo.getPhotoId()});
+                    new String[]{photo.getId()});
         } else {
-            contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
+            contentValues.put(DBHelper.KEY_ID, photo.getId());
             localDatabase.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
         }
     }

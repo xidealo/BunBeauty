@@ -10,11 +10,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,14 +18,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.android.ideal.myapplication.R;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
-import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
-import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
+import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement;
+import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -311,9 +312,9 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         myRef.updateChildren(items);
 
         Photo photo = new Photo();
-        photo.setPhotoId(photoId);
-        photo.setPhotoLink(storageReference);
-        photo.setPhotoOwnerId(serviceId);
+        photo.setId(photoId);
+        photo.setLink(storageReference);
+        photo.setOwnerId(serviceId);
 
         addPhotoInLocalStorage(photo, countOfUploadImage);
     }
@@ -324,9 +325,9 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
-        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
-        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getPhotoOwnerId());
+        contentValues.put(DBHelper.KEY_ID, photo.getId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getLink());
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getOwnerId());
 
         database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
 

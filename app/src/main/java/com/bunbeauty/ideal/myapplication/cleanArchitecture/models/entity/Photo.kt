@@ -5,10 +5,12 @@ import androidx.room.PrimaryKey
 
 @Entity
 class Photo(@PrimaryKey
-            var photoId: String = "",
-            var photoLink: String = "",
-            var photoOwnerId: String = "") {
+            var id: String = "",
+            var link: String = "",
+            var ownerId: String = "") {
 
+    lateinit var userId: String
+    lateinit var serviceId: String
     companion object {
         const val PHOTOS = "photos"
         const val PHOTO_LINK = "photo link"

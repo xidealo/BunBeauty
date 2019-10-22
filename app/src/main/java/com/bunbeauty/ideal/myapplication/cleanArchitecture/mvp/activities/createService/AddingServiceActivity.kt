@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService
 
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -22,9 +21,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDa
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.TagDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AddingServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
@@ -40,7 +36,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.FirebaseStorage
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
@@ -56,7 +51,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
     private lateinit var premiumText: TextView
     private lateinit var noPremiumText: TextView
     //храним ссылки на картинки в хранилище
-    private lateinit var fpath: ArrayList<Uri>
+    private lateinit var fpathOfImages: ArrayList<Uri>
 
     private lateinit var manager: FragmentManager
     private lateinit var premiumDate: String
@@ -121,7 +116,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
 
         //isPremiumLayoutSelected = false
         dbHelper = DBHelper(this)
-        fpath = ArrayList()
+        fpathOfImages = ArrayList()
 
         addServicesBtn.setOnClickListener(this)
         serviceImage.setOnClickListener(this)
@@ -132,7 +127,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
     override fun onClick(v: View) {
         when (v.id) {
             R.id.addServiceAddServiceBtn -> {
-                addingServicePresenter.addService(
+                val serviceId = addingServicePresenter.addService(
                         nameServiceInput.text.toString().toLowerCase(),
                         descriptionServiceInput.text.toString(),
                         costAddServiceInput.text.toString(),
@@ -140,33 +135,13 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
                         addressServiceInput.text.toString(),
                         categoryElement.tagsArray)
 
-                //less than 10 images
-               /* if (fpath.size <= MAX_COUNT_OF_IMAGES) {
-                   uploadService(service)
-                } else {
-                    showMoreTenImages()
-                }*/
+                addingServicePresenter.addImages(fpathOfImages, serviceId)
             }
             R.id.servicePhotoAddServiceImage -> chooseImage()
             R.id.noPremiumAddServiceText -> showPremium()
             R.id.yesPremiumAddServiceText -> showPremium()
             else -> {
             }
-        }
-    }
-
-    private fun uploadService(service: Service) {
-        //items[Service.CREATION_DATE] = workWithTimeApi.getDateInFormatYMDHMS(Date())
-        /*  for (String tag : service.getTags()) {
-            tagsMap.put(String.valueOf(tag.hashCode()), tag);
-        }
-        items.put(Service.TAGS, tagsMap);*/
-
-        //service.id = serviceId
-        addServiceInLocalStorage(service)
-
-        for (path in fpath) {
-            uploadImage(path, "")
         }
     }
 
@@ -182,32 +157,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
         panelBuilder.buildHeader(manager, "Создание услуги", R.id.headerAddServiceLayout)
     }
 
-    private fun addServiceInLocalStorage(service: Service) {
-
-        val database = dbHelper.writableDatabase
-
-        //добавление в БД
-        val contentValues = ContentValues()
-        contentValues.put(DBHelper.KEY_ID, service.id)
-        contentValues.put(DBHelper.KEY_NAME_SERVICES, service.name.toLowerCase())
-        contentValues.put(DBHelper.KEY_RATING_SERVICES, "0")
-        contentValues.put(DBHelper.KEY_MIN_COST_SERVICES, service.cost)
-        contentValues.put(DBHelper.KEY_DESCRIPTION_SERVICES, service.description)
-        contentValues.put(DBHelper.KEY_USER_ID, service.userId)
-        contentValues.put(DBHelper.KEY_CATEGORY_SERVICES, service.category)
-        contentValues.put(DBHelper.KEY_ADDRESS_SERVICES, service.address)
-
-        database.insert(DBHelper.TABLE_CONTACTS_SERVICES, null, contentValues)
-
-        contentValues.clear()
-        contentValues.put(DBHelper.KEY_SERVICE_ID_TAGS, service.id)
-        /*   for (String tag : service.getTags()) {
-            contentValues.put(DBHelper.KEY_TAG_TAGS, tag);
-            database.insert(DBHelper.TABLE_TAGS, null, contentValues);
-        }
-*/
-        goToMyCalendar(getString(R.string.status_worker), service.id)
-    }
 
     private fun chooseImage() {
         //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
@@ -226,63 +175,15 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
             try {
                 //установка картинки на activity
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
-
                 addToScreen(bitmap, filePath)
-
                 //serviceImage.setImageBitmap(bitmap);
                 //загрузка картинки в fireStorage
-                fpath.add(filePath)
+                fpathOfImages.add(filePath)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
 
         }
-    }
-
-    private fun uploadImage(filePath: Uri?, serviceId: String) {
-        val firebaseStorage = FirebaseStorage.getInstance()
-        val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference(User.USERS)
-
-        if (filePath != null) {
-            val photoId = myRef.push().key!!
-            val storageReference = firebaseStorage.getReference("$SERVICE_PHOTO/$photoId")
-            storageReference.putFile(filePath).addOnSuccessListener { storageReference.downloadUrl.addOnSuccessListener { uri -> uploadPhotos(uri.toString(), serviceId, photoId) } }.addOnFailureListener { }
-        }
-    }
-
-    private fun uploadPhotos(storageReference: String, serviceId: String, photoId: String) {
-/*
-         val database = FirebaseDatabase.getInstance()
-         val myRef = database.getReference(User.USERS)
-                 .child(userId)
-                 .child(Service.SERVICES)
-                 .child(serviceId)
-                 .child(PHOTOS)
-                 .child(photoId)
-
-         val items = HashMap<String, Any>()
-         items[PHOTO_LINK] = storageReference
-         myRef.updateChildren(items)
-
-         val photo = Photo()
-         photo.photoId = photoId
-         photo.photoLink = storageReference
-         photo.photoOwnerId = serviceId
-         addPhotoInLocalStorage(photo)*/
-    }
-
-    private fun addPhotoInLocalStorage(photo: Photo) {
-
-        val database = dbHelper.writableDatabase
-
-        val contentValues = ContentValues()
-
-        contentValues.put(DBHelper.KEY_ID, photo.photoId)
-        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.photoLink)
-        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.photoOwnerId)
-
-        database.insert(DBHelper.TABLE_PHOTOS, null, contentValues)
     }
 
     private fun addToScreen(bitmap: Bitmap, filePath: Uri?) {
@@ -292,12 +193,11 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
         transaction.commit()
     }
 
-
     fun deleteFragment(fr: ServicePhotoElement, filePath: Uri) {
         val transaction = manager.beginTransaction()
         transaction.remove(fr)
         transaction.commit()
-        fpath.remove(filePath)
+        fpathOfImages.remove(filePath)
     }
 
     override fun showPremium() {
@@ -428,7 +328,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
         const val CODE = "code"
         const val COUNT = "count"
 
-        private const val MAX_COUNT_OF_IMAGES = 10
     }
 
 

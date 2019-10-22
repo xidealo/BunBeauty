@@ -3,7 +3,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IServiceRepository
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -11,11 +10,11 @@ import com.google.firebase.database.ValueEventListener
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ServiceFirebaseApi: IServiceRepository {
+class ServiceFirebaseApi{
 
     private val TAG = "data_layer"
 
-    override fun insert(service: Service) {
+    fun insert(service: Service) {
         val database = FirebaseDatabase.getInstance()
         val serviceRef = database
                 .getReference(User.USERS)
@@ -38,19 +37,19 @@ class ServiceFirebaseApi: IServiceRepository {
         Log.d(TAG, "Service adding completed")
     }
 
-    override fun delete(user: Service) {
+    fun delete(user: Service) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun update(user: Service) {
+    fun update(user: Service) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun get(): List<Service> {
+    fun get(): List<Service> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getAllUserServices(userId: String): List<Service> {
+    fun getAllUserServices(userId: String): List<Service> {
         //val serviceList: ArrayList<Service> = ArrayList()
         val database = FirebaseDatabase.getInstance()
         val servicesRef = database

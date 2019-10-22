@@ -8,9 +8,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,16 +16,20 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
 import com.android.ideal.myapplication.R;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity;
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.other.MyService;
 import com.bunbeauty.ideal.myapplication.reviews.Comments;
 import com.bunbeauty.ideal.myapplication.searchService.GuestService;
@@ -511,9 +512,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         photoRef.setValue(storageReference);
 
         Photo photo = new Photo();
-        photo.setPhotoId(photoId);
-        photo.setPhotoLink(storageReference);
-        photo.setPhotoOwnerId(userId);
+        photo.setId(photoId);
+        photo.setLink(storageReference);
+        photo.setOwnerId(userId);
 
         addPhotoInLocalStorage(photo);
     }
@@ -521,7 +522,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private void addPhotoInLocalStorage(Photo photo) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        String ownerId = photo.getPhotoOwnerId();
+        String ownerId = photo.getOwnerId();
 
         database.delete(
                 DBHelper.TABLE_PHOTOS,
@@ -529,8 +530,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 new String[]{ownerId});
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_ID, photo.getPhotoId());
-        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getPhotoLink());
+        contentValues.put(DBHelper.KEY_ID, photo.getId());
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getLink());
 
         if(hasSomePhoto()) {
             database.update(DBHelper.TABLE_PHOTOS, contentValues,

@@ -1,8 +1,10 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
+import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
@@ -10,8 +12,10 @@ import java.util.*
 
 @InjectViewState
 class AddingServicePresenter(private val addingServiceInteractor: AddingServiceInteractor) : MvpPresenter<AddingServiceView>() {
+    private val MAX_COUNT_OF_IMAGES = 10
 
-    fun addService(name: String, description: String, cost: String, category: String, address: String, tags: List<String>) {
+    fun addService(name: String, description: String, cost: String, category: String, address: String, tags: List<String>): String? {
+        var serviceId: String? = null
         if (isNameCorrect(name) && isDescriptionCorrect(description) && isCostCorrect(cost)
                 && isCategoryCorrect(category) && isAddressCorrect(address)) {
             val service = Service()
@@ -26,12 +30,26 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             service.creationDate = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
             service.userId = addingServiceInteractor.getUserId()
 
-            addingServiceInteractor.addService(service, tags)
+            serviceId = addingServiceInteractor.addService(service, tags)
         }
+        return serviceId
     }
 
-    fun addImage() {
-
+    fun addImages(fpathOfImages: List<Uri>, serviceId: String?) {
+        if (fpathOfImages.size < MAX_COUNT_OF_IMAGES) {
+            if (serviceId != null) {
+                for (path: Uri in fpathOfImages) {
+                    val photo = Photo()
+                    photo.link = path.toString()
+                    photo.ownerId = serviceId
+                    photo.userId = addingServiceInteractor.getUserId()
+                    photo.serviceId = serviceId
+                    addingServiceInteractor.addImage(photo)
+                }
+            }
+        } else {
+            viewState.showMoreTenImages()
+        }
     }
 
     private fun isNameCorrect(name: String): Boolean {

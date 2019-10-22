@@ -15,5 +15,5 @@ interface IAddingServiceInteractor {
     fun getIsAddressInputCorrect(address: String): Boolean
     fun getIsAddressLengthThirty(address: String): Boolean
 
-    fun addService(service:Service,  tags: List<String>)
+    fun addService(service:Service,  tags: List<String>): String
 }

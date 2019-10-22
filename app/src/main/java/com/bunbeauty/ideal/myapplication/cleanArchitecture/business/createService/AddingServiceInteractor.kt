@@ -1,20 +1,26 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService
 
+import android.net.Uri
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.IAddingServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Tag
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.PhotoRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.TagRepository
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 
 class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
-                              private val tagRepository: TagRepository) : IAddingServiceInteractor{
+                              private val tagRepository: TagRepository,
+                              private val photoRepository: PhotoRepository) : IAddingServiceInteractor {
 
-    override fun addService(service: Service, tags: List<String>) {
+    override fun addService(service: Service, tags: List<String>): String {
         service.id = serviceRepository.getIdForNew(getUserId())
         serviceRepository.insert(service)
 
-        for(tagText:String in tags){
+        for (tagText: String in tags) {
             val tag = Tag()
             tag.id = tagRepository.getIdForNew(service.userId, service.id)
             tag.tag = tagText
@@ -22,6 +28,56 @@ class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
             tag.userId = service.userId
             tagRepository.insert(tag)
         }
+        return service.id
+    }
+
+    fun addImage(photo: Photo) {
+        photo.id = photoRepository.getIdForNew(photo.userId, photo.serviceId)
+
+        val storageReference = FirebaseStorage
+                .getInstance()
+                .getReference("${AddingServiceActivity.SERVICE_PHOTO}/$photo.id")
+
+        storageReference.putFile(convertToUri(photo.link)).addOnSuccessListener {
+            storageReference.downloadUrl.addOnSuccessListener {
+                photoRepository.insert(photo)
+            }
+        }.addOnFailureListener {
+
+        }
+    }
+
+    private fun convertToUri(data:String):Uri = Uri.parse(data)
+
+    fun addPhotos(storageReference: String, serviceId: String, photoId: String) {
+/*
+         val database = FirebaseDatabase.getInstance()
+         val myRef = database.getReference(User.USERS)
+                 .child(userId)
+                 .child(Service.SERVICES)
+                 .child(serviceId)
+                 .child(PHOTOS)
+                 .child(photoId)
+
+         val items = HashMap<String, Any>()
+         items[PHOTO_LINK] = storageReference
+         myRef.updateChildren(items)
+
+         val photo = Photo()
+         photo.photoId = photoId
+         photo.photoLink = storageReference
+         photo.photoOwnerId = serviceId
+         addPhotoInLocalStorage(photo)*/
+    }
+
+
+    private fun addPhotoInLocalStorage(photo: Photo) {
+
+/*        val contentValues = ContentValues()
+
+        contentValues.put(DBHelper.KEY_ID, photo.photoId)
+        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.photoLink)
+        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.photoOwnerId)*/
     }
 
     override fun getIsNameInputCorrect(name: String): Boolean {
