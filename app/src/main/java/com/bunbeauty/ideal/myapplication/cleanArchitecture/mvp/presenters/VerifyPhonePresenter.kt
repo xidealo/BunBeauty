@@ -7,76 +7,102 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.Verify
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhoneView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity
+import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 @InjectViewState
-class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInteractor): MvpPresenter<VerifyPhoneView>() {
+class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInteractor):
+        MvpPresenter<VerifyPhoneView>(), VerifyCallback {
 
     private val TAG = "DBInf"
+    private val SEND = "send"
+    private val RESEND = "resend"
     private lateinit var phoneVerificationId: String
-    private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
+    private lateinit var activity: VerifyPhoneActivity
+    private var userName: String = ""
 
-    fun sendCode(verifyPhoneActivity: VerifyPhoneActivity){
-        sendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),  verifyPhoneActivity)
+    //List of actions ('send' or 'resend')
+    var sendingActions = LinkedList<String>()
+    var resendToken: PhoneAuthProvider.ForceResendingToken? = null
+
+    fun sendCode(verifyPhoneActivity: VerifyPhoneActivity) {
+        addAction(SEND)
+        activity = verifyPhoneActivity
+
+        verifyPhoneInteractor.getMyPhoneNumber(this)
         viewState.showSendCode()
     }
 
-    fun verify(code:String, verifyPhoneActivity: VerifyPhoneActivity){
+    override fun callbackGetUserPhone(phone: String) {
+        if (sendingActions.size > 0 && sendingActions[0].equals(SEND)) {
+            sendVerificationCode(phone)
+        } else {
+            resendVerificationCode(phone, resendToken!!, activity)
+        }
+
+        removeFirstAction()
+    }
+
+    override fun callbackGetUserName(name: String) {
+        this.userName = name
+    }
+
+    fun verify(code:String){
         if (code.trim().length >= 6) {
-            verifyCode(code, verifyPhoneActivity)
+            verifyCode(code)
             viewState.hideViewsOnScreen()
-        }else{
+        } else {
             viewState.showWrongCode()
         }
     }
 
-    fun resendCode(verifyPhoneActivity: VerifyPhoneActivity){
-        if (getResendToken() != null) {
-            resendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),
-                    getResendToken()!!, verifyPhoneActivity)
-            viewState.showSendCode()
-        }
+    fun resendCode(){
+        addAction(RESEND)
+
+        verifyPhoneInteractor.getMyPhoneNumber(this)
+        viewState.showSendCode()
     }
 
-    private fun getResendToken(): PhoneAuthProvider.ForceResendingToken? {
-        return resendToken
-    }
-
-    private fun verifyCode(code: String, verifyPhoneActivity: VerifyPhoneActivity) {
+    private fun verifyCode(code: String) {
         //получаем ответ гугл
         val credential = PhoneAuthProvider.getCredential(phoneVerificationId, code)
         //заходим с айфоном и токеном
-        signInWithPhoneAuthCredential(credential, verifyPhoneActivity)
+        signInWithPhoneAuthCredential(credential)
     }
 
-    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential, verifyPhoneActivity: VerifyPhoneActivity) {
+    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         val fbAuth: FirebaseAuth = FirebaseAuth.getInstance()
-        val verifyCallback: VerifyCallback = verifyPhoneActivity
 
         fbAuth.signInWithCredential(credential).addOnCompleteListener { task ->
             //если введен верный код
             if (task.isSuccessful) {
-                    verifyCallback.goToRegistration()
+                if (userName.isEmpty()) {
+                    viewState.goToRegistration()
+                } else {
+                    viewState.goToProfile()
+                }
             } else {
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                    verifyCallback.callbackWrongCode()
+                    viewState.callbackWrongCode()
                 }
             }
         }
     }
 
-    private fun sendVerificationCode(phoneNumber: String, verifyPhoneActivity: VerifyPhoneActivity) {
+    private fun sendVerificationCode(phoneNumber: String) {
+        Log.d(TAG, "send")
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber, // Phone number to verify
                 60, // Timeout duration
                 TimeUnit.SECONDS, // Unit of timeout
-                verifyPhoneActivity, // Activity (for callback binding)
+                activity, // Activity (for callback binding)
                 verificationCallbacks)
     }
 
@@ -89,6 +115,15 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInterac
                 verifyPhoneActivity, // Activity (for callback binding)
                 verificationCallbacks, // OnVerificationStateChangedCallbacks
                 token)  // ForceResendingToken from callbacks
+    }
+
+    // Work with list of actions
+    private fun addAction(action: String) {
+        sendingActions.add(action)
+    }
+
+    private fun removeFirstAction() {
+        sendingActions.removeAt(0)
     }
 
     private val verificationCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {

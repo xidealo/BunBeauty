@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iPr
 
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ProfileCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 
@@ -15,7 +16,7 @@ interface IProfileInteractor {
     fun initFCM()
     fun isFirstEnter():Boolean
     fun userIsOwner():Boolean
-    fun getProfileOwner(userSubscriber: IUserSubscriber)
+    fun getProfileOwner(profileCallback: ProfileCallback)
     fun getProfileServiceList()
 
 }

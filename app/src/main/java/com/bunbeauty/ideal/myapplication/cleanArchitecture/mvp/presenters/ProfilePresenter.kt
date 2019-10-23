@@ -5,12 +5,13 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ProfileCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 
 @InjectViewState
 class ProfilePresenter(private val profileInteractor: ProfileInteractor):
-        MvpPresenter<ProfileView>(), IUserSubscriber {
+        MvpPresenter<ProfileView>(), ProfileCallback {
 
     private val TAG = "DBInf"
 
@@ -43,7 +44,7 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor):
         profileInteractor.getProfileOwner(this)
     }
 
-    override fun returnUser(user: User) {
+    override fun callbackGetUser(user: User) {
         viewState.showUserInfo(user)
     }
 

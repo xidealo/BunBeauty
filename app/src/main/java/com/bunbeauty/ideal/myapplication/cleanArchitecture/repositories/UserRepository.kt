@@ -73,7 +73,6 @@ class UserRepository(private val userDao: UserDao,
         userSubscriber.returnUser(user)
         launch {
             userDao.insert(user)
-            var i = 0
         }
     }
 }

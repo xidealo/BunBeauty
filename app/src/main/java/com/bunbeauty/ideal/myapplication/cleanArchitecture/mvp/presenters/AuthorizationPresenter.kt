@@ -3,13 +3,14 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.AuthorizationCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView
 
 @InjectViewState
 class AuthorizationPresenter(private val authorizationInteractor: AuthorizationInteractor):
-        MvpPresenter<AuthorizationView>(), IUserSubscriber {
+        MvpPresenter<AuthorizationView>(), AuthorizationCallback {
 
     fun authorize(){
         if (authorizationInteractor.getCurrentFbUser() != null) {
@@ -28,11 +29,11 @@ class AuthorizationPresenter(private val authorizationInteractor: AuthorizationI
         }
     }
 
-    override fun returnUser(user: User) {
-        if (user.name.isEmpty()) {
-            viewState.goToRegistration()
-        } else {
-            viewState.goToProfile()
-        }
+    override fun goToRegistration() {
+        viewState.goToRegistration()
+    }
+
+    override fun goToProfile() {
+        viewState.goToProfile()
     }
 }

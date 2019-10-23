@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ProfileCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
@@ -22,7 +23,7 @@ class ProfileInteractor(private val userRepository: UserRepository,
     private val OWNER_ID = "owner id"
     private val TOKEN = "token"
 
-    lateinit var userSubscriber: IUserSubscriber
+    lateinit var profileCallback: ProfileCallback
 
     override fun updateProfile(ownerId: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -57,8 +58,8 @@ class ProfileInteractor(private val userRepository: UserRepository,
         return getUserId() == getOwnerId()
     }
 
-    override fun getProfileOwner(userSubscriber: IUserSubscriber) {
-        this.userSubscriber = userSubscriber
+    override fun getProfileOwner(profileCallback: ProfileCallback) {
+        this.profileCallback = profileCallback
 
         userRepository.getById(getOwnerId(), this)
     }
@@ -66,7 +67,7 @@ class ProfileInteractor(private val userRepository: UserRepository,
     override fun getProfileServiceList() {}/* = serviceRepository.getAllUserServices(getOwnerId(intent))*/
 
     override fun returnUser(user: User) {
-        userSubscriber.returnUser(user)
+        profileCallback.callbackGetUser(user)
     }
 
 }

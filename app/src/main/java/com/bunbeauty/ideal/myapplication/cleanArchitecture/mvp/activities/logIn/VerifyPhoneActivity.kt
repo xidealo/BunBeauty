@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -13,12 +14,13 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.Verify
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.VerifyPhonePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhoneView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import javax.inject.Inject
 
-class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, VerifyCallback, VerifyPhoneView {
+class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, VerifyPhoneView {
 
     private lateinit var verifyCodeBtn: Button
     private lateinit var resendCodeText: TextView
@@ -69,8 +71,8 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
     override fun onClick(v: View) {
         WorkWithViewApi.hideKeyboard(this)
         when (v.id) {
-            R.id.verifyVerifyBtn -> verifyPhonePresenter.verify(codeInput.text.toString(), this)
-            R.id.resendVerifyText -> verifyPhonePresenter.resendCode(this)
+            R.id.verifyVerifyBtn -> verifyPhonePresenter.verify(codeInput.text.toString())
+            R.id.resendVerifyText -> verifyPhonePresenter.resendCode()
             R.id.changePhoneVerifyText -> goBackToAuthorization()
             else -> {
             }
@@ -117,6 +119,12 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
     @Override
     override fun goToRegistration() {
         val intent = Intent(this, RegistrationActivity::class.java)
+        this.startActivity(intent)
+    }
+
+    @Override
+    override fun goToProfile() {
+        val intent = Intent(this, ProfileActivity::class.java)
         this.startActivity(intent)
     }
 

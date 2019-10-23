@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback
 
 interface VerifyCallback {
-    fun callbackWrongCode()
-    fun goToRegistration()
+    fun callbackGetUserPhone(phone: String)
+    fun callbackGetUserName(name: String)
 }

@@ -171,7 +171,13 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         showProfileText(user.name, user.city, user.phone)
         createRatingBar(user.rating)
         //showAvatar()
-        hideView()
+        //hideView()
+        showView()
+    }
+
+    fun showView() {
+        progressBar.visibility = View.GONE
+        mainLayout.visibility = View.VISIBLE
     }
 
     override fun showUserServices(services: List<Service>) {
