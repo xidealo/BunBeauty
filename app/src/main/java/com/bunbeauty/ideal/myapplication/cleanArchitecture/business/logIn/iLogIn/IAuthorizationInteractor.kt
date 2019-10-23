@@ -6,5 +6,5 @@ interface IAuthorizationInteractor {
 
 
     fun getCurrentFbUser() : FirebaseUser?
-    fun isPhoneCorrect(myPhoneNumber: String) : Boolean
+    fun isPhoneCorrect(phone: String) : Boolean
 }

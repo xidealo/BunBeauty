@@ -30,12 +30,14 @@ class UserFirebaseApi {
         val myRef = database.getReference(User.USERS).child(user.id)
 
         val items = HashMap<String, Any>()
+        items[User.PHONE] = user.phone
         items[User.NAME] = user.name
         items[User.CITY] = user.city
-        items[User.PHONE] = user.phone
         items[User.AVG_RATING] = user.rating
         items[User.COUNT_OF_RATES] = user.countOfRates
         items[User.PHOTO_LINK] = user.photoLink
+        items[User.COUNT_OF_SUBSCRIBERS] = user.subscribersCount
+        items[User.COUNT_OF_SUBSCRIPTIONS] = user.subscriptionsCount
         myRef.updateChildren(items)
         Log.d(TAG, "User has been inserted")
     }

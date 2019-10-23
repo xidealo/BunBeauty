@@ -9,7 +9,7 @@ interface AuthorizationView : MvpView {
     fun setPhoneError()
     fun enableVerifyBtn(status:Boolean)
     fun goToVerifyPhone(phone:String)
-    fun goToRegistration()
+    fun goToRegistration(phone: String)
     fun goToProfile()
     fun hideKeyboard()
 }

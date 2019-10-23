@@ -9,7 +9,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.Registratio
 
 @InjectViewState
 class RegistrationPresenter(private val registrationInteractor: RegistrationInteractor) :
-        MvpPresenter<RegistrationView>(), IUserSubscriber {
+        MvpPresenter<RegistrationView>() {
 
     fun registration(name: String, surname: String, city: String, phone:String) {
 
@@ -24,14 +24,9 @@ class RegistrationPresenter(private val registrationInteractor: RegistrationInte
             registrationInteractor.registration(user)
             viewState.goToProfile()
         }
-
     }
 
-    fun getMyPhoneNumber() = registrationInteractor.getMyPhoneNumber(this)
-
-    override fun returnUser(user: User) {
-        viewState.fillPhoneInput(user.phone)
-    }
+    fun getMyPhoneNumber() = registrationInteractor.getMyPhoneNumber()
 
     private fun isNameCorrect(name: String): Boolean {
         if (name.isEmpty()) {
