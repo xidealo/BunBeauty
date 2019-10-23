@@ -28,7 +28,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListe
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar;
-import com.bunbeauty.ideal.myapplication.fragments.PremiumElement;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingUserElementData;
@@ -155,9 +155,9 @@ public class GuestService extends AppCompatActivity implements View.OnClickListe
             noPremiumText.setOnClickListener(this);
             premiumText.setOnClickListener(this);
 
-            PremiumElement premiumElement = new PremiumElement();
+            PremiumElementFragment premiumElementFragment = new PremiumElementFragment();
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.premiumGuestServiceLayout, premiumElement);
+            transaction.add(R.id.premiumGuestServiceLayout, premiumElementFragment);
             transaction.commit();
         } else {
             status = USER;

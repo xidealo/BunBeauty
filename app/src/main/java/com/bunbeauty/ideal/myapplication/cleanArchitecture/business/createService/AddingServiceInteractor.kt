@@ -15,6 +15,7 @@ import com.google.firebase.storage.FirebaseStorage
 class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
                               private val tagRepository: TagRepository,
                               private val photoRepository: PhotoRepository) : IAddingServiceInteractor {
+    var isPremium: Boolean = false
 
     override fun addService(service: Service, tags: List<String>): String {
         service.id = serviceRepository.getIdForNew(getUserId())
@@ -47,38 +48,8 @@ class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
         }
     }
 
+
     private fun convertToUri(data:String):Uri = Uri.parse(data)
-
-    fun addPhotos(storageReference: String, serviceId: String, photoId: String) {
-/*
-         val database = FirebaseDatabase.getInstance()
-         val myRef = database.getReference(User.USERS)
-                 .child(userId)
-                 .child(Service.SERVICES)
-                 .child(serviceId)
-                 .child(PHOTOS)
-                 .child(photoId)
-
-         val items = HashMap<String, Any>()
-         items[PHOTO_LINK] = storageReference
-         myRef.updateChildren(items)
-
-         val photo = Photo()
-         photo.photoId = photoId
-         photo.photoLink = storageReference
-         photo.photoOwnerId = serviceId
-         addPhotoInLocalStorage(photo)*/
-    }
-
-
-    private fun addPhotoInLocalStorage(photo: Photo) {
-
-/*        val contentValues = ContentValues()
-
-        contentValues.put(DBHelper.KEY_ID, photo.photoId)
-        contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.photoLink)
-        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.photoOwnerId)*/
-    }
 
     override fun getIsNameInputCorrect(name: String): Boolean {
         if (!name.matches("[a-zA-ZА-Яа-я\\- ]+".toRegex())) {

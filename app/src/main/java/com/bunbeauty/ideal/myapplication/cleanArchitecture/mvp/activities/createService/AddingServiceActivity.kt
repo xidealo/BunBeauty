@@ -16,7 +16,6 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.TagFirebase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.TagDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
@@ -27,20 +26,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceR
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.TagRepository
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
-import com.bunbeauty.ideal.myapplication.fragments.PremiumElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
-import com.bunbeauty.ideal.myapplication.other.IPremium
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
-class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPremium, AddingServiceView {
+class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, AddingServiceView {
 
     private lateinit var nameServiceInput: EditText
     private lateinit var costAddServiceInput: EditText
@@ -55,7 +48,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
 
     private lateinit var manager: FragmentManager
     private lateinit var premiumDate: String
-    private lateinit var dbHelper: DBHelper
     private lateinit var categoryElement: CategoryElement
 
     @InjectPresenter
@@ -107,15 +99,13 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
 
         manager = supportFragmentManager
 
-        val premiumElement = PremiumElement()
+        val premiumElement = PremiumElementFragment()
         val transaction = manager.beginTransaction()
         transaction.add(R.id.premiumAddServiceLayout, premiumElement)
         categoryElement = CategoryElement(this)
         transaction.add(R.id.categoryAddServiceLayout, categoryElement)
         transaction.commit()
 
-        //isPremiumLayoutSelected = false
-        dbHelper = DBHelper(this)
         fpathOfImages = ArrayList()
 
         addServicesBtn.setOnClickListener(this)
@@ -138,25 +128,29 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
                 addingServicePresenter.addImages(fpathOfImages, serviceId)
             }
             R.id.servicePhotoAddServiceImage -> chooseImage()
-            R.id.noPremiumAddServiceText -> showPremium()
-            R.id.yesPremiumAddServiceText -> showPremium()
+            R.id.noPremiumAddServiceText -> showPremiumState()
+            R.id.yesPremiumAddServiceText -> showPremiumState()
             else -> {
             }
         }
     }
 
+    override fun showPremiumState() {
+        if (addingServicePresenter.isSelectedPremium()) {
+            premiumLayout.visibility = View.GONE
+            addingServicePresenter.setSelectedPremium(false)
+        } else {
+            premiumLayout.visibility = View.VISIBLE
+            addingServicePresenter.setSelectedPremium(true)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-
-        /*if (service.getPremiumDate()) {
-            setWithPremium();
-        }*/
-
         val panelBuilder = PanelBuilder()
         panelBuilder.buildFooter(manager, R.id.footerAddServiceLayout)
         panelBuilder.buildHeader(manager, "Создание услуги", R.id.headerAddServiceLayout)
     }
-
 
     private fun chooseImage() {
         //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
@@ -182,7 +176,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -200,63 +193,15 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
         fpathOfImages.remove(filePath)
     }
 
-    override fun showPremium() {
-        /* if (isPremiumLayoutSelected) {
-             premiumLayout.visibility = View.GONE
-             isPremiumLayoutSelected = false
-         } else {
-             premiumLayout.visibility = View.VISIBLE
-             isPremiumLayoutSelected = true
-         }*/
-    }
-
-    override fun setPremium() {
+   /* fun setPremium() {
         //service.setIsPremium(true);
         setWithPremium()
         premiumLayout.visibility = View.GONE
         premiumDate = addSevenDayPremium(WorkWithTimeApi.getDateInFormatYMDHMS(Date()))
         showPremiumActivated()
     }
+*/
 
-    override fun checkCode(code: String) {
-        //проверка кода
-        val query = FirebaseDatabase.getInstance().getReference(CODES).orderByChild(CODE).equalTo(code)
-        query.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(codesSnapshot: DataSnapshot) {
-                if (codesSnapshot.childrenCount == 0L) {
-                    showWrongCode()
-                } else {
-                    val userSnapshot = codesSnapshot.children.iterator().next()
-                    val count = userSnapshot.child(COUNT).value as Int
-                    if (count > 0) {
-                        setPremium()
-
-                        val codeId = userSnapshot.key!!
-
-                        val myRef = FirebaseDatabase.getInstance()
-                                .getReference(CODES)
-                                .child(codeId)
-                        val items = HashMap<String, Any>()
-                        items[COUNT] = count - 1
-                        myRef.updateChildren(items)
-                    } else {
-                        showOldCode()
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-
-            }
-        })
-    }
-
-    override fun addSevenDayPremium(date: String): String {
-        var sysdateLong = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(date)
-        //86400000 - day * 7 day
-        sysdateLong += (86400000 * 7).toLong()
-        return WorkWithTimeApi.getDateInFormatYMDHMS(Date(sysdateLong))
-    }
 
     override fun setWithPremium() {
         noPremiumText.visibility = View.GONE
@@ -265,33 +210,31 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
     }
 
     override fun goToMyCalendar(status: String, serviceId: String) {
-        showAllDone()
         val intent = Intent(this, MyCalendar::class.java)
         intent.putExtra(SERVICE_ID, serviceId)
         intent.putExtra(STATUS_USER_BY_SERVICE, status)
-
         startActivity(intent)
         finish()
     }
 
     override fun showAllDone() {
-        Toast.makeText(this, "Сервис успешно создан", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Сервис успешно создан", Toast.LENGTH_LONG).show()
     }
 
     override fun showWrongCode() {
-        Toast.makeText(this, "Неверно введен код", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Неверно введен код", Toast.LENGTH_LONG).show()
     }
 
     override fun showOldCode() {
-        Toast.makeText(this, "Код больше не действителен", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Код больше не действителен", Toast.LENGTH_LONG).show()
     }
 
     override fun showPremiumActivated() {
-        Toast.makeText(this, "Премиум активирован", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Премиум активирован", Toast.LENGTH_LONG).show()
     }
 
     override fun showMoreTenImages() {
-        Toast.makeText(this, "Должно быть меньше 10 фотографий", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Должно быть меньше 10 фотографий", Toast.LENGTH_LONG).show()
     }
 
     override fun showNameInputError(error: String) {
@@ -327,8 +270,5 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, IPre
         const val CODES = "codes"
         const val CODE = "code"
         const val COUNT = "count"
-
     }
-
-
 }

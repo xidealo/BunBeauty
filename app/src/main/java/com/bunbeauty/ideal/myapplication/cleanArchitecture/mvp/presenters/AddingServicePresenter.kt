@@ -13,6 +13,7 @@ import java.util.*
 @InjectViewState
 class AddingServicePresenter(private val addingServiceInteractor: AddingServiceInteractor) : MvpPresenter<AddingServiceView>() {
     private val MAX_COUNT_OF_IMAGES = 10
+    private val WORKER = "worker"
 
     fun addService(name: String, description: String, cost: String, category: String, address: String, tags: List<String>): String? {
         var serviceId: String? = null
@@ -46,14 +47,23 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
                     photo.serviceId = serviceId
                     addingServiceInteractor.addImage(photo)
                 }
+                viewState.showAllDone()
+                viewState.goToMyCalendar(WORKER,serviceId)
             }
         } else {
             viewState.showMoreTenImages()
         }
     }
 
-    private fun isNameCorrect(name: String): Boolean {
+    fun isSelectedPremium():Boolean {
+        return addingServiceInteractor.isPremium
+    }
 
+    fun setSelectedPremium(isPremium:Boolean) {
+        addingServiceInteractor.isPremium = isPremium
+    }
+
+    private fun isNameCorrect(name: String): Boolean {
         if (name.isEmpty()) {
             viewState.showNameInputError("Введите имя сервиса")
             return false

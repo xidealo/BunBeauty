@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.bunbeauty.ideal.myapplication.fragments.PremiumElement">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
