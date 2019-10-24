@@ -1,23 +1,56 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.PremiumElementInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.CodeFirebase
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.CodeDao
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.PremiumElementFragmentView
-import com.bunbeauty.ideal.myapplication.other.IPremium
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.CodeRepository
+import javax.inject.Inject
 
 class PremiumElementFragment @SuppressLint("ValidFragment")
 constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFragmentView {
 
-    private lateinit var iPremium: IPremium
     private lateinit var code: String
     private lateinit var codeText: TextView
+
+    @InjectPresenter
+    lateinit var premiumElementPresenter: PremiumElementPresenter
+
+    @ProvidePresenter
+    internal fun provideElementPresenter(): PremiumElementPresenter {
+        DaggerAppComponent
+                .builder()
+                .appModule(AppModule(context as Application, activity!!.intent))
+                .build().inject(this)
+
+        return PremiumElementPresenter(premiumElementInteractor)
+    }
+
+    @Inject
+    lateinit var premiumElementInteractor: PremiumElementInteractor
+
+    @Inject
+    lateinit var codeDao: CodeDao
+    @Inject
+    lateinit var codeFirebase: CodeFirebase
+    @Inject
+    lateinit var codeRepository: CodeRepository
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.premium_element, null)
@@ -32,7 +65,7 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
     override fun onClick(v: View) {
         if (v.id == R.id.setPremiumPremiumElementBtn) {
             code = codeText.text.toString().toLowerCase().trim { it <= ' ' }
-            iPremium.checkCode(code)
+            premiumElementPresenter.setPremium(code)
         }
     }
 
@@ -40,43 +73,15 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
         private val TAG = "DBInf"
     }
 
-    /* fun addSevenDayPremium(date: String): String {
-        var sysdateLong = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(date)
-        //86400000 - day * 7 day
-        sysdateLong += (86400000 * 7).toLong()
-        return WorkWithTimeApi.getDateInFormatYMDHMS(Date(sysdateLong))
-    }*/
+    override fun showWrongCode() {
+        Toast.makeText(context, "Неверно введен код", Toast.LENGTH_LONG).show()
+    }
 
-   /* fun checkCode(code: String) {
-        //проверка кода
-        val query = FirebaseDatabase.getInstance().getReference(AddingServiceActivity.CODES).orderByChild(AddingServiceActivity.CODE).equalTo(code)
-        query.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(codesSnapshot: DataSnapshot) {
-                if (codesSnapshot.childrenCount == 0L) {
-                    showWrongCode()
-                } else {
-                    val userSnapshot = codesSnapshot.children.iterator().next()
-                    val count = userSnapshot.child(AddingServiceActivity.COUNT).value as Int
-                    if (count > 0) {
-                        setPremium()
+    override fun showOldCode() {
+        Toast.makeText(context, "Код больше не действителен", Toast.LENGTH_LONG).show()
+    }
 
-                        val codeId = userSnapshot.key!!
-
-                        val myRef = FirebaseDatabase.getInstance()
-                                .getReference(AddingServiceActivity.CODES)
-                                .child(codeId)
-                        val items = HashMap<String, Any>()
-                        items[AddingServiceActivity.COUNT] = count - 1
-                        myRef.updateChildren(items)
-                    } else {
-                        showOldCode()
-                    }
-                }
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-
-            }
-        })
-    }*/
-
+    override fun showPremiumActivated() {
+        Toast.makeText(context, "Премиум активирован", Toast.LENGTH_LONG).show()
+    }
 }

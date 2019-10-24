@@ -8,11 +8,7 @@ interface AddingServiceView: MvpView {
     fun setWithPremium()
     fun goToMyCalendar(status: String, serviceId: String)
     fun showAllDone()
-    fun showWrongCode()
-    fun showOldCode()
-    fun showPremiumActivated()
     fun showMoreTenImages()
-
 
     fun showNameInputError(error:String)
     fun showDescriptionInputError(error:String)

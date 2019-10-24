@@ -214,18 +214,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
         Toast.makeText(this, "Сервис успешно создан", Toast.LENGTH_LONG).show()
     }
 
-    override fun showWrongCode() {
-        Toast.makeText(this, "Неверно введен код", Toast.LENGTH_LONG).show()
-    }
-
-    override fun showOldCode() {
-        Toast.makeText(this, "Код больше не действителен", Toast.LENGTH_LONG).show()
-    }
-
-    override fun showPremiumActivated() {
-        Toast.makeText(this, "Премиум активирован", Toast.LENGTH_LONG).show()
-    }
-
     override fun showMoreTenImages() {
         Toast.makeText(this, "Должно быть меньше 10 фотографий", Toast.LENGTH_LONG).show()
     }

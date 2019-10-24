@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.PhotoDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.TagDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.*
 
 @Database(entities = [User::class,
@@ -17,13 +14,15 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.*
     WorkingTime::class,
     Order::class,
     Photo::class,
-    Review::class], version = 6)
+    Review::class,
+    Code::class], version = 7)
 abstract class LocalDatabase : RoomDatabase() {
 
     abstract fun getUserDao(): UserDao
     abstract fun getServiceDao(): ServiceDao
     abstract fun getTagDao(): TagDao
     abstract fun getPhotoDao(): PhotoDao
+    abstract fun getCodeDao(): CodeDao
 
     companion object {
         @Volatile

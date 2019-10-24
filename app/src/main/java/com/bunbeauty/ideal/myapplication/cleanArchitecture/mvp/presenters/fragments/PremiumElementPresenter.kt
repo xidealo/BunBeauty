@@ -2,9 +2,13 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragm
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.PremiumElementInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.PremiumElementFragmentView
 
 @InjectViewState
-class PremiumElementPresenter: MvpPresenter<PremiumElementFragmentView>() {
+class PremiumElementPresenter(val premiumElementInteractor: PremiumElementInteractor): MvpPresenter<PremiumElementFragmentView>() {
 
+    fun setPremium(code:String){
+        premiumElementInteractor.checkCode(code)
+    }
 }

@@ -1,11 +1,13 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
 import dagger.Component
 import javax.inject.Singleton
 
@@ -27,4 +29,7 @@ interface AppComponent {
 
     fun inject(addingServiceActivity: AddingServiceActivity)
     fun inject(addingServicePresenter: AddingServicePresenter)
+
+    fun inject(premiumElementFragment: PremiumElementFragment)
+    fun inject(premiumElementPresenter: PremiumElementPresenter)
 }

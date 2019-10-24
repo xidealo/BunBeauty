@@ -3,23 +3,15 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 import android.app.Application
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.PremiumElementInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.PhotoFirebase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebaseApi
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.TagFirebase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebaseApi
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.PhotoDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.TagDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dbInstance.LocalDatabase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.PhotoRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.TagRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.*
 import dagger.Module
 import dagger.Provides
 
@@ -34,7 +26,8 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideTagFirebase(): TagFirebase = TagFirebase()
     @Provides
     fun providePhotoFirebase(): PhotoFirebase= PhotoFirebase()
-
+    @Provides
+    fun provideCodeFirebase(): CodeFirebase = CodeFirebase()
     // DAO
     @Provides
     fun provideUserDao(): UserDao = LocalDatabase.getDatabase(app).getUserDao()
@@ -44,6 +37,8 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideTagDao(): TagDao = LocalDatabase.getDatabase(app).getTagDao()
     @Provides
     fun providePhotoDao(): PhotoDao = LocalDatabase.getDatabase(app).getPhotoDao()
+    @Provides
+    fun provideCodeDao(): CodeDao = LocalDatabase.getDatabase(app).getCodeDao()
 
     //REPOSITORIES
     @Provides
@@ -54,6 +49,8 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideTagRepository(tagDao: TagDao, tagFirebase: TagFirebase): TagRepository = TagRepository(tagDao,tagFirebase)
     @Provides
     fun providePhotoRepository(photoDao: PhotoDao, photoFirebase: PhotoFirebase): PhotoRepository = PhotoRepository(photoDao,photoFirebase)
+    @Provides
+    fun provideCodeRepository(codeDao: CodeDao, codeFirebase: CodeFirebase): CodeRepository = CodeRepository(codeDao,codeFirebase)
 
     // INTERACTORS
     @Provides
@@ -66,4 +63,6 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideProfileInteractor(userRepository: UserRepository, serviceRepository: ServiceRepository): ProfileInteractor = ProfileInteractor(userRepository,serviceRepository, intent)
     @Provides
     fun provideAddingServiceInteractor(serviceRepository: ServiceRepository, tagRepository: TagRepository, photoRepository: PhotoRepository): AddingServiceInteractor = AddingServiceInteractor(serviceRepository, tagRepository,photoRepository)
+    @Provides
+    fun providePremiumElementInteractor(serviceRepository: ServiceRepository, codeRepository: CodeRepository): PremiumElementInteractor = PremiumElementInteractor(serviceRepository,codeRepository)
 }
