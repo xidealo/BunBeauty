@@ -23,6 +23,8 @@ import javax.inject.Inject
 
 class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, AuthorizationView {
 
+    val USER_PHONE = "user phone"
+
     private lateinit var verifyBtn: Button
     private lateinit var enterPhoneText: TextView
     private lateinit var phoneInput: EditText
@@ -110,11 +112,13 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
 
     override fun goToVerifyPhone(phone: String) {
         val intent = Intent(this, VerifyPhoneActivity::class.java)
+        intent.putExtra(USER_PHONE, phone)
         this.startActivity(intent)
     }
 
-    override fun goToRegistration() {
+    override fun goToRegistration(phone: String) {
         val intent = Intent(this, RegistrationActivity::class.java)
+        intent.putExtra(USER_PHONE, phone)
         this.startActivity(intent)
     }
 

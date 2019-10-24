@@ -57,11 +57,11 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     // INTERACTORS
     @Provides
-    fun provideAuthorizationInteractor(userRepository: UserRepository): AuthorizationInteractor = AuthorizationInteractor(userRepository)
+    fun provideAuthorizationInteractor(userRepository: UserRepository): AuthorizationInteractor = AuthorizationInteractor(userRepository, intent)
     @Provides
-    fun provideVerifyPhoneInteractor(userRepository: UserRepository): VerifyPhoneInteractor = VerifyPhoneInteractor(userRepository)
+    fun provideVerifyPhoneInteractor(userRepository: UserRepository): VerifyPhoneInteractor = VerifyPhoneInteractor(userRepository, intent)
     @Provides
-    fun provideRegistrationInteractor(userRepository: UserRepository): RegistrationInteractor = RegistrationInteractor(userRepository)
+    fun provideRegistrationInteractor(userRepository: UserRepository): RegistrationInteractor = RegistrationInteractor(userRepository, intent)
     @Provides
     fun provideProfileInteractor(userRepository: UserRepository, serviceRepository: ServiceRepository): ProfileInteractor = ProfileInteractor(userRepository,serviceRepository, intent)
     @Provides

@@ -72,7 +72,7 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
         WorkWithViewApi.hideKeyboard(this)
         when (v.id) {
             R.id.verifyVerifyBtn -> verifyPhonePresenter.verify(codeInput.text.toString())
-            R.id.resendVerifyText -> verifyPhonePresenter.resendCode()
+            R.id.resendVerifyText -> verifyPhonePresenter.resendCode(this)
             R.id.changePhoneVerifyText -> goBackToAuthorization()
             else -> {
             }

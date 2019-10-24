@@ -18,56 +18,34 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 @InjectViewState
-class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInteractor):
+class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInteractor) :
         MvpPresenter<VerifyPhoneView>(), VerifyCallback {
 
     private val TAG = "DBInf"
-    private val SEND = "send"
-    private val RESEND = "resend"
     private lateinit var phoneVerificationId: String
-    private lateinit var activity: VerifyPhoneActivity
-    private var userName: String = ""
 
-    //List of actions ('send' or 'resend')
-    var sendingActions = LinkedList<String>()
     var resendToken: PhoneAuthProvider.ForceResendingToken? = null
 
     fun sendCode(verifyPhoneActivity: VerifyPhoneActivity) {
-        addAction(SEND)
-        activity = verifyPhoneActivity
-
-        verifyPhoneInteractor.getMyPhoneNumber(this)
+        sendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),
+                verifyPhoneActivity)
         viewState.showSendCode()
     }
 
-    override fun callbackGetUserPhone(phone: String) {
-        if (sendingActions.size > 0 && sendingActions[0].equals(SEND)) {
-            sendVerificationCode(phone)
-        } else {
-            resendVerificationCode(phone, resendToken!!, activity)
-        }
-
-        removeFirstAction()
+    fun resendCode(verifyPhoneActivity: VerifyPhoneActivity) {
+        resendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),
+                resendToken!!,
+                verifyPhoneActivity)
+        viewState.showSendCode()
     }
 
-    override fun callbackGetUserName(name: String) {
-        this.userName = name
-    }
-
-    fun verify(code:String){
+    fun verify(code: String) {
         if (code.trim().length >= 6) {
             verifyCode(code)
             viewState.hideViewsOnScreen()
         } else {
             viewState.showWrongCode()
         }
-    }
-
-    fun resendCode(){
-        addAction(RESEND)
-
-        verifyPhoneInteractor.getMyPhoneNumber(this)
-        viewState.showSendCode()
     }
 
     private fun verifyCode(code: String) {
@@ -77,17 +55,21 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInterac
         signInWithPhoneAuthCredential(credential)
     }
 
+    override fun callbackGetUserName(name: String) {
+        if (name.isEmpty()) {
+            viewState.goToRegistration()
+        } else {
+            viewState.goToProfile()
+        }
+    }
+
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         val fbAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
         fbAuth.signInWithCredential(credential).addOnCompleteListener { task ->
             //если введен верный код
             if (task.isSuccessful) {
-                if (userName.isEmpty()) {
-                    viewState.goToRegistration()
-                } else {
-                    viewState.goToProfile()
-                }
+                verifyPhoneInteractor.getMyName(this)
             } else {
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {
                     viewState.callbackWrongCode()
@@ -96,7 +78,7 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInterac
         }
     }
 
-    private fun sendVerificationCode(phoneNumber: String) {
+    private fun sendVerificationCode(phoneNumber: String, activity: VerifyPhoneActivity) {
         Log.d(TAG, "send")
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber, // Phone number to verify
@@ -115,15 +97,6 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInterac
                 verifyPhoneActivity, // Activity (for callback binding)
                 verificationCallbacks, // OnVerificationStateChangedCallbacks
                 token)  // ForceResendingToken from callbacks
-    }
-
-    // Work with list of actions
-    private fun addAction(action: String) {
-        sendingActions.add(action)
-    }
-
-    private fun removeFirstAction() {
-        sendingActions.removeAt(0)
     }
 
     private val verificationCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {

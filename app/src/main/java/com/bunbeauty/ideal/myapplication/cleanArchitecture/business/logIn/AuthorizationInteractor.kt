@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IAuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.AuthorizationCallback
@@ -13,11 +14,12 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class AuthorizationInteractor(private val userRepository: UserRepository)  : BaseRepository(),
+class AuthorizationInteractor(private val userRepository: UserRepository,
+                              private val intent: Intent)  : BaseRepository(),
         IAuthorizationInteractor, IUserSubscriber{
 
     val TAG = "DBInf"
-    val FIRST_ENTER_ID = "1"
+    //val USER_PHONE = "user phone"
 
     lateinit var authorizationCallback: AuthorizationCallback
 
@@ -25,22 +27,8 @@ class AuthorizationInteractor(private val userRepository: UserRepository)  : Bas
         return FirebaseAuth.getInstance().currentUser
     }
 
-    //TODO add better checker
-    @SuppressLint("CheckResult")
-    override fun isPhoneCorrect(myPhoneNumber: String): Boolean {
-        if (myPhoneNumber.length == 12) {
-            launch {
-                userRepository.deleteById(FIRST_ENTER_ID)
-                val user = User()
-                user.id = FIRST_ENTER_ID
-                user.phone = myPhoneNumber
-                userRepository.insert(user)
-                Log.d(TAG, "user saved")
-            }
-
-            return true
-        }
-        return false
+    override fun isPhoneCorrect(phone: String): Boolean {
+        return phone.length == 12
     }
 
     fun getUserName(authorizationCallback: AuthorizationCallback) {
@@ -52,7 +40,7 @@ class AuthorizationInteractor(private val userRepository: UserRepository)  : Bas
 
     override fun returnUser(user: User) {
         if (user.name.isEmpty()) {
-            authorizationCallback.goToRegistration()
+            authorizationCallback.goToRegistration(user.phone)
         } else {
             authorizationCallback.goToProfile()
         }

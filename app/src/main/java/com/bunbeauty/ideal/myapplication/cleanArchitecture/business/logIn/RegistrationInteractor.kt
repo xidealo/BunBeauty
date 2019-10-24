@@ -1,15 +1,16 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
+import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IRegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 
-class RegistrationInteractor(private val userRepository: UserRepository) : IRegistrationInteractor,
-        IUserSubscriber {
+class RegistrationInteractor(private val userRepository: UserRepository,
+                             private val intent: Intent) : IRegistrationInteractor {
 
-    lateinit var userSubscriber: IUserSubscriber
+    private val USER_PHONE = "user phone"
 
     //TODO UNIT-TEST
     override fun getIsCityInputCorrect(city: String): Boolean {
@@ -47,15 +48,7 @@ class RegistrationInteractor(private val userRepository: UserRepository) : IRegi
         return true
     }
 
-    override fun getMyPhoneNumber(userSubscriber: IUserSubscriber) {
-        this.userSubscriber = userSubscriber
-
-        userRepository.getById("1", this)
-    }
-
-    override fun returnUser(user: User) {
-        userSubscriber.returnUser(user)
-    }
+    override fun getMyPhoneNumber(): String = intent.getStringExtra(USER_PHONE)
 
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
