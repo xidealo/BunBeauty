@@ -12,8 +12,12 @@ import java.util.*
 
 @InjectViewState
 class AddingServicePresenter(private val addingServiceInteractor: AddingServiceInteractor) : MvpPresenter<AddingServiceView>() {
-    private val MAX_COUNT_OF_IMAGES = 10
-    private val WORKER = "worker"
+
+    companion object{
+        private const val MAX_COUNT_OF_IMAGES = 10
+        private const val WORKER = "worker"
+        private const val DEFAULT_PREMIUM_DATE= "1970-01-01 00:00:00"
+    }
 
     fun addService(name: String, description: String, cost: String, category: String, address: String, tags: List<String>): String? {
         var serviceId: String? = null
@@ -27,7 +31,7 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             service.address = address
             service.rating = 0f
             service.countOfRates = 0
-            service.premiumDate = "1970-01-01 00:00:00"
+            service.premiumDate = DEFAULT_PREMIUM_DATE
             service.creationDate = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
             service.userId = addingServiceInteractor.getUserId()
 
@@ -48,19 +52,13 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
                     addingServiceInteractor.addImage(photo)
                 }
                 viewState.showAllDone()
-                viewState.goToMyCalendar(WORKER,serviceId)
+                viewState.hideMainBlocks()
+                viewState.showPremiumBlock()
+                //viewState.goToMyCalendar(WORKER,serviceId)
             }
         } else {
             viewState.showMoreTenImages()
         }
-    }
-
-    fun isSelectedPremium():Boolean {
-        return addingServiceInteractor.isPremium
-    }
-
-    fun setSelectedPremium(isPremium:Boolean) {
-        addingServiceInteractor.isPremium = isPremium
     }
 
     private fun isNameCorrect(name: String): Boolean {

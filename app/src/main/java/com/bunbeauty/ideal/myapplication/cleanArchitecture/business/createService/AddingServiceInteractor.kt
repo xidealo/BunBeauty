@@ -15,7 +15,6 @@ import com.google.firebase.storage.FirebaseStorage
 class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
                               private val tagRepository: TagRepository,
                               private val photoRepository: PhotoRepository) : IAddingServiceInteractor {
-    var isPremium: Boolean = false
 
     override fun addService(service: Service, tags: List<String>): String {
         service.id = serviceRepository.getIdForNew(getUserId())
@@ -47,7 +46,6 @@ class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
 
         }
     }
-
 
     private fun convertToUri(data:String):Uri = Uri.parse(data)
 

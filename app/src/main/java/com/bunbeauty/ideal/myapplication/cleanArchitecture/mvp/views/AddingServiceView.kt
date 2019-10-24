@@ -3,7 +3,8 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 import com.arellomobile.mvp.MvpView
 
 interface AddingServiceView: MvpView {
-    fun showPremiumState ()
+    fun showPremiumBlock()
+    fun hideMainBlocks()
     fun setWithPremium()
     fun goToMyCalendar(status: String, serviceId: String)
     fun showAllDone()

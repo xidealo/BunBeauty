@@ -7,12 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import com.android.ideal.myapplication.R
+import com.arellomobile.mvp.MvpAppCompatFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.PremiumElementFragmentView
 import com.bunbeauty.ideal.myapplication.other.IPremium
 
 class PremiumElementFragment @SuppressLint("ValidFragment")
-constructor() : Fragment(), View.OnClickListener {
+constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFragmentView {
 
     private lateinit var iPremium: IPremium
     private lateinit var code: String

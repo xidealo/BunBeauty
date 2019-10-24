@@ -10,5 +10,4 @@ interface VerifyPhoneView: MvpView {
     fun callbackWrongCode()
     fun goToRegistration()
     fun goToProfile()
-
 }

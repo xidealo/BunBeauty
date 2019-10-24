@@ -20,13 +20,13 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDa
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.TagDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AddingServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.TagRepository
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder
 import java.io.IOException
@@ -47,7 +47,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     private lateinit var fpathOfImages: ArrayList<Uri>
 
     private lateinit var manager: FragmentManager
-    private lateinit var premiumDate: String
     private lateinit var categoryElement: CategoryElement
 
     @InjectPresenter
@@ -94,6 +93,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
         descriptionServiceInput = findViewById(R.id.descriptionAddServiceInput)
         addressServiceInput = findViewById(R.id.addressAddServiceInput)
         premiumText = findViewById(R.id.yesPremiumAddServiceText)
+
         noPremiumText = findViewById(R.id.noPremiumAddServiceText)
         premiumLayout = findViewById(R.id.premiumAddServiceLayout)
 
@@ -110,8 +110,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
 
         addServicesBtn.setOnClickListener(this)
         serviceImage.setOnClickListener(this)
-        premiumText.setOnClickListener(this)
-        noPremiumText.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
@@ -128,21 +126,17 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
                 addingServicePresenter.addImages(fpathOfImages, serviceId)
             }
             R.id.servicePhotoAddServiceImage -> chooseImage()
-            R.id.noPremiumAddServiceText -> showPremiumState()
-            R.id.yesPremiumAddServiceText -> showPremiumState()
             else -> {
             }
         }
     }
 
-    override fun showPremiumState() {
-        if (addingServicePresenter.isSelectedPremium()) {
-            premiumLayout.visibility = View.GONE
-            addingServicePresenter.setSelectedPremium(false)
-        } else {
-            premiumLayout.visibility = View.VISIBLE
-            addingServicePresenter.setSelectedPremium(true)
-        }
+    override fun showPremiumBlock() {
+        premiumLayout.visibility = View.VISIBLE
+    }
+
+    override fun hideMainBlocks() {
+        //premiumLayout.visibility = View.GONE
     }
 
     override fun onResume() {
@@ -201,7 +195,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
         showPremiumActivated()
     }
 */
-
 
     override fun setWithPremium() {
         noPremiumText.visibility = View.GONE

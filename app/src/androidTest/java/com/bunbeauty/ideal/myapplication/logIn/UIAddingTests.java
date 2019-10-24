@@ -35,12 +35,11 @@ public class UIAddingTests {
         uiAuthorizationTests.testEnterCodeVerify("123456");
         Thread.sleep(10000);
 
-        UIRegistrationActivityTests uiRegistrationActivityTests = new UIRegistrationActivityTests();
-        uiRegistrationActivityTests.testEnterDataRegistration();
-        //for auth code
-        Thread.sleep(10000);
+        //UIRegistrationActivityTests uiRegistrationActivityTests = new UIRegistrationActivityTests();
+        //uiRegistrationActivityTests.testEnterDataRegistration();
         goToAddingService();
         addService();
+        Thread.sleep(10000);
     }
 
     void goToAddingService() {

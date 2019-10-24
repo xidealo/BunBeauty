@@ -36,7 +36,7 @@ public class UIRegistrationActivityTests {
         uiAuthorizationTests.testEnterPhoneAuthorization("9999999999");
         uiAuthorizationTests.testEnterCodeVerify("123456");
         //for auth code
-        Thread.sleep(10000);
+        Thread.sleep(20000);
         testEnterDataRegistration();
     }
 
