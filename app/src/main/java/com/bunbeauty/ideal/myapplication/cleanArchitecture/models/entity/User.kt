@@ -12,7 +12,7 @@ data class User(
         var phone:String ="",
         var rating:Float = 0f,
         var countOfRates:Long = 0,
-        var photoLink:String = "",
+        var photoLink:String = DEFAULT_PHOTO_LINK,
         var subscribersCount:Long = 0,
         var subscriptionsCount:Long = 0 ) {
 
@@ -27,5 +27,9 @@ data class User(
         const val COUNT_OF_RATES = "count of rates"
         const val COUNT_OF_SUBSCRIBERS = "count of subscribers"
         const val COUNT_OF_SUBSCRIPTIONS = "count of subscriptions"
+
+        const val DEFAULT_PHOTO_LINK = "https://firebasestorage." +
+                "googleapis.com/v0/b/bun-beauty.appspot.com/o/avatar%2FdefaultAva." +
+                "jpg?alt=media&token=f15dbe15-0541-46cc-8272-2578627ed311"
     }
 }

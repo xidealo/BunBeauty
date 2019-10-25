@@ -22,6 +22,8 @@ import javax.inject.Inject
 
 class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, VerifyPhoneView {
 
+    private val USER_PHONE = "user phone"
+
     private lateinit var verifyCodeBtn: Button
     private lateinit var resendCodeText: TextView
     private lateinit var codeInput: EditText
@@ -117,8 +119,9 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
     }
 
     @Override
-    override fun goToRegistration() {
+    override fun goToRegistration(phone: String) {
         val intent = Intent(this, RegistrationActivity::class.java)
+        intent.putExtra(USER_PHONE, phone)
         this.startActivity(intent)
     }
 

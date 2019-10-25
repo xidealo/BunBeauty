@@ -6,6 +6,7 @@ import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ProfileCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 
@@ -21,11 +22,11 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor):
         }
     }
 
-    fun showProfile() {
+    fun showProfileView() {
         if (profileInteractor.userIsOwner()) {
-            viewState.showMyProfile()
+            viewState.showMyProfileView()
         } else {
-            viewState.showNotMyProfile()
+            viewState.showAlienProfileView()
         }
     }
 
@@ -36,9 +37,7 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor):
         updateServiceList()
     }
 
-    private fun updateServiceList() {
-        //viewState.showUserServices(profileInteractor.getProfileServiceList(intent))
-    }
+    private fun updateServiceList() = profileInteractor.getProfileServiceList(this)
 
     private fun updateUserInfo() {
         profileInteractor.getProfileOwner(this)
@@ -46,6 +45,10 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor):
 
     override fun callbackGetUser(user: User) {
         viewState.showUserInfo(user)
+    }
+
+    override fun callbackGetServiceList(serviceList: List<Service>) {
+        viewState.showUserServices(serviceList)
     }
 
 

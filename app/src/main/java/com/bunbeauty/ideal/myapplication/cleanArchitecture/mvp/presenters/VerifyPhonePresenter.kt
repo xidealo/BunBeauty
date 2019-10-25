@@ -57,7 +57,7 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInterac
 
     override fun callbackGetUserName(name: String) {
         if (name.isEmpty()) {
-            viewState.goToRegistration()
+            viewState.goToRegistration(verifyPhoneInteractor.getMyPhoneNumber())
         } else {
             viewState.goToProfile()
         }

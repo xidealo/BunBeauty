@@ -71,8 +71,10 @@ class UserRepository(private val userDao: UserDao,
 
     override fun returnUser(user: User) {
         userSubscriber.returnUser(user)
-        launch {
-            userDao.insert(user)
+        if (user.name.isNotEmpty()) {
+            launch {
+                userDao.insert(user)
+            }
         }
     }
 }

@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
-        android:id="@+id/progressBarProfile"
+        android:id="@+id/profileProgressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -26,7 +26,7 @@
         app:layout_constraintTop_toBottomOf="@+id/headerProfileLayout" />
 
     <LinearLayout
-        android:id="@+id/mainLayoutProfile"
+        android:id="@+id/mainProfileLayout"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -106,6 +106,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
+                        android:visibility="gone"
                         android:text="TextView" />
                 </LinearLayout>
             </LinearLayout>
@@ -148,6 +149,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:visibility="invisible"
                     android:background="@drawable/main_button"
                     android:gravity="center">
 
@@ -186,19 +188,21 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/resultsProfileRecycleView"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/ordersProfileRecycleView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainLayoutProfile">
+        app:layout_constraintTop_toBottomOf="@+id/mainProfileLayout">
 
     </androidx.recyclerview.widget.RecyclerView>
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/resultsProfileRecycleView"
+        android:id="@+id/ordersProfileRecycleView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/footerProfileLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

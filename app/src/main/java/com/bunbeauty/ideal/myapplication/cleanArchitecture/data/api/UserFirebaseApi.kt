@@ -65,10 +65,11 @@ class UserFirebaseApi {
 
         userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
+                var user = User()
                 if (usersSnapshot.childrenCount > 0L) {
-                    val user = getUserFromSnapshot(usersSnapshot.children.iterator().next())
-                    callback.returnUser(user)
+                    user = getUserFromSnapshot(usersSnapshot.children.iterator().next())
                 }
+                callback.returnUser(user)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
