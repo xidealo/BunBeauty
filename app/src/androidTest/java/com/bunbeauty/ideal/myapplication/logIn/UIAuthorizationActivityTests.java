@@ -37,11 +37,12 @@ public class UIAuthorizationActivityTests {
         onView(withId(R.id.verifyAuthBtn)).perform(click());
     }
 
-    void testEnterCodeVerify(String code){
+    void testEnterCodeVerify(String code) throws InterruptedException {
         //set code
         onView(withId(R.id.codeVerifyInput)).perform(typeText(code));
         //close keyboard
         Espresso.closeSoftKeyboard();
+        Thread.sleep(2000);
         //click on button
         onView(withId(R.id.verifyVerifyBtn)).perform(click());
     }

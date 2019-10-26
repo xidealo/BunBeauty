@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.*
-import androidx.fragment.app.FragmentManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -40,15 +39,15 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     private lateinit var descriptionServiceInput: EditText
     private lateinit var addressServiceInput: EditText
     private lateinit var premiumLayout: LinearLayout
-
+    private lateinit var mainLayout: LinearLayout
+    private lateinit var premiumHeaderLayout: LinearLayout
     private lateinit var premiumText: TextView
     private lateinit var noPremiumText: TextView
     //храним ссылки на картинки в хранилище
     private lateinit var fpathOfImages: ArrayList<Uri>
 
-    private lateinit var manager: FragmentManager
     private lateinit var categoryElement: CategoryElement
-
+    private lateinit var continueButton: Button
     @InjectPresenter
     lateinit var addingServicePresenter: AddingServicePresenter
 
@@ -81,35 +80,28 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.adding_service)
-
         init()
+        showCategory()
     }
 
     private fun init() {
-        val addServicesBtn = findViewById<Button>(R.id.addServiceAddServiceBtn)
-        val serviceImage = findViewById<TextView>(R.id.servicePhotoAddServiceImage)
+        findViewById<Button>(R.id.addServiceAddServiceBtn)
+                .setOnClickListener(this)
+        findViewById<TextView>(R.id.servicePhotoAddServiceImage)
+                .setOnClickListener(this)
+        continueButton = findViewById(R.id.continueAddServiceBtn)
+        continueButton.setOnClickListener(this)
+
         nameServiceInput = findViewById(R.id.nameAddServiceInput)
         costAddServiceInput = findViewById(R.id.costAddServiceInput)
         descriptionServiceInput = findViewById(R.id.descriptionAddServiceInput)
         addressServiceInput = findViewById(R.id.addressAddServiceInput)
         premiumText = findViewById(R.id.yesPremiumAddServiceText)
-
         noPremiumText = findViewById(R.id.noPremiumAddServiceText)
         premiumLayout = findViewById(R.id.premiumAddServiceLayout)
-
-        manager = supportFragmentManager
-
-        val premiumElement = PremiumElementFragment()
-        val transaction = manager.beginTransaction()
-        transaction.add(R.id.premiumAddServiceLayout, premiumElement)
-        categoryElement = CategoryElement(this)
-        transaction.add(R.id.categoryAddServiceLayout, categoryElement)
-        transaction.commit()
-
+        mainLayout = findViewById(R.id.mainLayoutAddService)
+        premiumHeaderLayout = findViewById(R.id.premiumAddServiceHeaderLayout)
         fpathOfImages = ArrayList()
-
-        addServicesBtn.setOnClickListener(this)
-        serviceImage.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
@@ -131,19 +123,12 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
         }
     }
 
-    override fun showPremiumBlock() {
-        premiumLayout.visibility = View.VISIBLE
-    }
-
-    override fun hideMainBlocks() {
-        //premiumLayout.visibility = View.GONE
-    }
 
     override fun onResume() {
         super.onResume()
         val panelBuilder = PanelBuilder()
-        panelBuilder.buildFooter(manager, R.id.footerAddServiceLayout)
-        panelBuilder.buildHeader(manager, "Создание услуги", R.id.headerAddServiceLayout)
+        panelBuilder.buildFooter(supportFragmentManager, R.id.footerAddServiceLayout)
+        panelBuilder.buildHeader(supportFragmentManager, "Создание услуги", R.id.headerAddServiceLayout)
     }
 
     private fun chooseImage() {
@@ -163,7 +148,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
             try {
                 //установка картинки на activity
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
-                addToScreen(bitmap, filePath)
+                addImageToScreen(bitmap, filePath)
                 //serviceImage.setImageBitmap(bitmap);
                 //загрузка картинки в fireStorage
                 fpathOfImages.add(filePath)
@@ -173,28 +158,43 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
         }
     }
 
-    private fun addToScreen(bitmap: Bitmap, filePath: Uri?) {
-        val transaction = manager.beginTransaction()
-        val servicePhotoElement = ServicePhotoElement(bitmap, filePath, "add service")
-        transaction.add(R.id.feedAddServiceLayout, servicePhotoElement)
-        transaction.commit()
+    // плохое место
+    private fun addImageToScreen(bitmap: Bitmap, filePath: Uri?) {
+        supportFragmentManager
+                .beginTransaction()
+                .add(R.id.feedAddServiceLayout, ServicePhotoElement(bitmap, filePath, "add service"))
+                .commit()
     }
 
     fun deleteFragment(fr: ServicePhotoElement, filePath: Uri) {
-        val transaction = manager.beginTransaction()
-        transaction.remove(fr)
-        transaction.commit()
+        supportFragmentManager
+                .beginTransaction()
+                .remove(fr)
+                .commit()
         fpathOfImages.remove(filePath)
     }
+    //
 
-   /* fun setPremium() {
-        //service.setIsPremium(true);
-        setWithPremium()
-        premiumLayout.visibility = View.GONE
-        premiumDate = addSevenDayPremium(WorkWithTimeApi.getDateInFormatYMDHMS(Date()))
-        showPremiumActivated()
+    override fun showCategory() {
+        categoryElement = CategoryElement(this)
+        supportFragmentManager
+                .beginTransaction()
+                .add(R.id.categoryAddServiceLayout, categoryElement)
+                .commit()
     }
-*/
+
+    override fun showPremiumBlock() {
+        supportFragmentManager
+                .beginTransaction()
+                .add(R.id.premiumAddServiceLayout, PremiumElementFragment())
+                .commit()
+
+        premiumLayout.visibility = View.VISIBLE
+    }
+
+    override fun hideMainBlocks() {
+        mainLayout.visibility = View.GONE
+    }
 
     override fun setWithPremium() {
         noPremiumText.visibility = View.GONE
@@ -240,6 +240,14 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     override fun showAddressInputError(error: String) {
         addressServiceInput.error = error
         addressServiceInput.requestFocus()
+    }
+
+    override fun showPremiumHeader() {
+        premiumHeaderLayout.visibility = View.VISIBLE
+    }
+
+    override fun showContinueButton() {
+        continueButton.visibility = View.VISIBLE
     }
 
     companion object {

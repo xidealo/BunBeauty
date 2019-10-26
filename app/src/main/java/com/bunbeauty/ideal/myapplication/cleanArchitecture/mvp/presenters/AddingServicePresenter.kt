@@ -53,7 +53,9 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
                 }
                 viewState.showAllDone()
                 viewState.hideMainBlocks()
+                viewState.showPremiumHeader()
                 viewState.showPremiumBlock()
+                viewState.showContinueButton()
                 //viewState.goToMyCalendar(WORKER,serviceId)
             }
         } else {

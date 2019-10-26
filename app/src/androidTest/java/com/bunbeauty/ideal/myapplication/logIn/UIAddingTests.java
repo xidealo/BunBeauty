@@ -33,10 +33,7 @@ public class UIAddingTests {
         UIAuthorizationActivityTests uiAuthorizationTests = new UIAuthorizationActivityTests();
         uiAuthorizationTests.testEnterPhoneAuthorization("9999999999");
         uiAuthorizationTests.testEnterCodeVerify("123456");
-        Thread.sleep(10000);
-
-        //UIRegistrationActivityTests uiRegistrationActivityTests = new UIRegistrationActivityTests();
-        //uiRegistrationActivityTests.testEnterDataRegistration();
+        Thread.sleep(5000);
         goToAddingService();
         addService();
         Thread.sleep(10000);
@@ -62,10 +59,9 @@ public class UIAddingTests {
         //description
         String description = "Test Description";
         onView(withId(R.id.descriptionAddServiceInput)).perform(typeText(description));
-        Thread.sleep(10000);
+        Thread.sleep(2000);
 
         Espresso.closeSoftKeyboard();
-        //onView(withId(R.id.scrollViewAddService)).perform(scrollTo());
         onView(withId(R.id.addServiceAddServiceBtn)).perform(click());
     }
 

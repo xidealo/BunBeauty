@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,12 +14,15 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.PremiumElementInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.CodeFirebase
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.CodeDao
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.PremiumElementFragmentView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.CodeRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
 import javax.inject.Inject
 
 class PremiumElementFragment @SuppressLint("ValidFragment")
@@ -36,7 +38,7 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
     internal fun provideElementPresenter(): PremiumElementPresenter {
         DaggerAppComponent
                 .builder()
-                .appModule(AppModule(context as Application, activity!!.intent))
+                .appModule(AppModule(activity!!.application, activity!!.intent))
                 .build().inject(this)
 
         return PremiumElementPresenter(premiumElementInteractor)
@@ -46,20 +48,28 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
     lateinit var premiumElementInteractor: PremiumElementInteractor
 
     @Inject
+    lateinit var codeRepository: CodeRepository
+    @Inject
     lateinit var codeDao: CodeDao
     @Inject
     lateinit var codeFirebase: CodeFirebase
+
     @Inject
-    lateinit var codeRepository: CodeRepository
+    lateinit var serviceRepository: ServiceRepository
+    @Inject
+    lateinit var serviceDao: ServiceDao
+    @Inject
+    lateinit var serviceFirebaseApi: ServiceFirebaseApi
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.premium_element, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val setPremiumBtn = view.findViewById<Button>(R.id.setPremiumPremiumElementBtn)
+        view.findViewById<Button>(R.id.setPremiumPremiumElementBtn).setOnClickListener(this)
         codeText = view.findViewById(R.id.codePremiumElement)
-        setPremiumBtn.setOnClickListener(this)
+
     }
 
     override fun onClick(v: View) {
@@ -84,4 +94,5 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
     override fun showPremiumActivated() {
         Toast.makeText(context, "Премиум активирован", Toast.LENGTH_LONG).show()
     }
+
 }

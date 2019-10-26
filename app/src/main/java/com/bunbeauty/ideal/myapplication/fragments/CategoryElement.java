@@ -4,10 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.res.ResourcesCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+
 import com.android.ideal.myapplication.R;
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 @SuppressLint("ValidFragment")
 public class CategoryElement extends Fragment implements View.OnClickListener {
@@ -71,6 +74,7 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.tagsBtn:
                 showTags();
+                WorkWithViewApi.hideKeyboard(Objects.requireNonNull(getActivity()));
                 break;
             case R.id.minimizeTagsBtn:
                 hideTags();
