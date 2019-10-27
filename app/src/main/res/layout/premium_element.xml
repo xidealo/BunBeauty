@@ -8,27 +8,80 @@
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment">
 
     <LinearLayout
+        android:id="@+id/premiumAddServiceHeaderLayout"
+        style="@style/block"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/block_text">
+        android:background="@drawable/block_text"
+        android:minHeight="50dp"
+        android:orientation="horizontal">
 
-        <EditText
+        <TextView
             style="@style/mainText"
-            android:id="@+id/codePremiumElement"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Код" />
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="Премиум" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/panelColor"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/noPremiumPremiumElementText"
+                style="@style/textItemSolid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/premium"
+                android:textColor="@color/white"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/yesPremiumPremiumElementText"
+                style="@style/textItemSolid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/yellow"
+                android:gravity="center"
+                android:text="@string/premium"
+                android:textColor="@color/black"
+                android:visibility="gone" />
+        </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/setPremiumPremiumElementBtn"
-        style="@style/mainButtonOther"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/premium_button"
-        android:textColor="@color/black"
-        android:text="Получить премиум" />
+    <LinearLayout
+        android:id="@+id/premiumAddServiceBottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/block_text">
+
+            <EditText
+                android:id="@+id/codePremiumElement"
+                style="@style/mainText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Код" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/setPremiumPremiumElementBtn"
+            style="@style/mainButtonOther"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/premium_button"
+            android:text="Получить премиум"
+            android:textColor="@color/black" />
+    </LinearLayout>
 </LinearLayout>

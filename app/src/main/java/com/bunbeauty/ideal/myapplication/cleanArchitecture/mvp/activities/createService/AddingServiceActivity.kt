@@ -19,6 +19,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDa
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.TagDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AddingServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
@@ -40,9 +41,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     private lateinit var addressServiceInput: EditText
     private lateinit var premiumLayout: LinearLayout
     private lateinit var mainLayout: LinearLayout
-    private lateinit var premiumHeaderLayout: LinearLayout
-    private lateinit var premiumText: TextView
-    private lateinit var noPremiumText: TextView
     //храним ссылки на картинки в хранилище
     private lateinit var fpathOfImages: ArrayList<Uri>
 
@@ -96,18 +94,15 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
         costAddServiceInput = findViewById(R.id.costAddServiceInput)
         descriptionServiceInput = findViewById(R.id.descriptionAddServiceInput)
         addressServiceInput = findViewById(R.id.addressAddServiceInput)
-        premiumText = findViewById(R.id.yesPremiumAddServiceText)
-        noPremiumText = findViewById(R.id.noPremiumAddServiceText)
         premiumLayout = findViewById(R.id.premiumAddServiceLayout)
         mainLayout = findViewById(R.id.mainLayoutAddService)
-        premiumHeaderLayout = findViewById(R.id.premiumAddServiceHeaderLayout)
         fpathOfImages = ArrayList()
     }
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.addServiceAddServiceBtn -> {
-                val serviceId = addingServicePresenter.addService(
+                val service = addingServicePresenter.addService(
                         nameServiceInput.text.toString().toLowerCase(),
                         descriptionServiceInput.text.toString(),
                         costAddServiceInput.text.toString(),
@@ -115,7 +110,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
                         addressServiceInput.text.toString(),
                         categoryElement.tagsArray)
 
-                addingServicePresenter.addImages(fpathOfImages, serviceId)
+                addingServicePresenter.addImages(fpathOfImages, service)
             }
             R.id.servicePhotoAddServiceImage -> chooseImage()
             else -> {
@@ -182,10 +177,10 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
                 .commit()
     }
 
-    override fun showPremiumBlock() {
+    override fun showPremiumBlock(serivce:Service) {
         supportFragmentManager
                 .beginTransaction()
-                .add(R.id.premiumAddServiceLayout, PremiumElementFragment())
+                .add(R.id.premiumAddServiceLayout, PremiumElementFragment(serivce))
                 .commit()
 
         premiumLayout.visibility = View.VISIBLE
@@ -193,12 +188,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
 
     override fun hideMainBlocks() {
         mainLayout.visibility = View.GONE
-    }
-
-    override fun setWithPremium() {
-        noPremiumText.visibility = View.GONE
-        premiumText.visibility = View.VISIBLE
-        premiumText.isEnabled = false
     }
 
     override fun goToMyCalendar(status: String, serviceId: String) {
@@ -239,10 +228,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     override fun showAddressInputError(error: String) {
         addressServiceInput.error = error
         addressServiceInput.requestFocus()
-    }
-
-    override fun showPremiumHeader() {
-        premiumHeaderLayout.visibility = View.VISIBLE
     }
 
     override fun showContinueButton() {

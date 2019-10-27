@@ -37,12 +37,29 @@ class ServiceFirebaseApi{
         Log.d(TAG, "Service adding completed")
     }
 
-    fun delete(user: Service) {
+    fun delete(service: Service) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun update(user: Service) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun update(service: Service) {
+        val database = FirebaseDatabase.getInstance()
+        val serviceRef = database
+                .getReference(User.USERS)
+                .child(service.userId)
+                .child(Service.SERVICES)
+                .child(service.id)
+
+        val items = HashMap<String, Any>()
+        items[Service.NAME] = service.name
+        items[Service.ADDRESS] = service.address
+        items[Service.DESCRIPTION] = service.description
+        items[Service.COST] = service.cost
+        items[Service.CATEGORY] = service.category
+        items[Service.CREATION_DATE] = service.creationDate
+        items[Service.PREMIUM_DATE] = service.premiumDate
+        items[Service.AVG_RATING] = service.rating
+        items[Service.COUNT_OF_RATES] = service.countOfRates
+        serviceRef.updateChildren(items)
     }
 
     fun get(): List<Service> {

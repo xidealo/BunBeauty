@@ -16,14 +16,12 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
     companion object{
         private const val MAX_COUNT_OF_IMAGES = 10
         private const val WORKER = "worker"
-        private const val DEFAULT_PREMIUM_DATE= "1970-01-01 00:00:00"
     }
 
-    fun addService(name: String, description: String, cost: String, category: String, address: String, tags: List<String>): String? {
-        var serviceId: String? = null
+    fun addService(name: String, description: String, cost: String, category: String, address: String, tags: List<String>): Service {
+        val service = Service()
         if (isNameCorrect(name) && isDescriptionCorrect(description) && isCostCorrect(cost)
                 && isCategoryCorrect(category) && isAddressCorrect(address)) {
-            val service = Service()
             service.name = name
             service.description = description
             service.cost = cost
@@ -31,32 +29,29 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             service.address = address
             service.rating = 0f
             service.countOfRates = 0
-            service.premiumDate = DEFAULT_PREMIUM_DATE
+            service.premiumDate = Service.DEFAULT_PREMIUM_DATE
             service.creationDate = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
             service.userId = addingServiceInteractor.getUserId()
 
-            serviceId = addingServiceInteractor.addService(service, tags)
+            service.id = addingServiceInteractor.addService(service, tags)
         }
-        return serviceId
+        return service
     }
 
-    fun addImages(fpathOfImages: List<Uri>, serviceId: String?) {
+    fun addImages(fpathOfImages: List<Uri>, service: Service) {
         if (fpathOfImages.size < MAX_COUNT_OF_IMAGES) {
-            if (serviceId != null) {
-                for (path: Uri in fpathOfImages) {
-                    val photo = Photo()
-                    photo.link = path.toString()
-                    photo.ownerId = serviceId
-                    photo.userId = addingServiceInteractor.getUserId()
-                    photo.serviceId = serviceId
-                    addingServiceInteractor.addImage(photo)
-                }
-                viewState.showAllDone()
-                viewState.hideMainBlocks()
-                viewState.showPremiumHeader()
-                viewState.showPremiumBlock()
-                viewState.showContinueButton()
+            for (path: Uri in fpathOfImages) {
+                val photo = Photo()
+                photo.link = path.toString()
+                photo.ownerId = service.id
+                photo.userId = addingServiceInteractor.getUserId()
+                photo.serviceId = service.id
+                addingServiceInteractor.addImage(photo)
             }
+            viewState.showAllDone()
+            viewState.hideMainBlocks()
+            viewState.showPremiumBlock(service)
+            viewState.showContinueButton()
         } else {
             viewState.showMoreTenImages()
         }

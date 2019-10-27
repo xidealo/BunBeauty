@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.android.ideal.myapplication.R
@@ -19,6 +20,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.CodeDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.PremiumElementFragmentView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.CodeRepository
@@ -27,6 +29,15 @@ import javax.inject.Inject
 
 class PremiumElementFragment @SuppressLint("ValidFragment")
 constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFragmentView {
+
+    lateinit var service:Service
+    private lateinit var premiumText: TextView
+    private lateinit var noPremiumText: TextView
+    private lateinit var bottomLayout:LinearLayout
+
+    constructor(service:Service) : this(){
+        this.service = service
+    }
 
     private lateinit var code: String
     private lateinit var codeText: TextView
@@ -69,13 +80,16 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<Button>(R.id.setPremiumPremiumElementBtn).setOnClickListener(this)
         codeText = view.findViewById(R.id.codePremiumElement)
+        premiumText = view.findViewById(R.id.yesPremiumPremiumElementText)
+        noPremiumText = view.findViewById(R.id.noPremiumPremiumElementText)
+        bottomLayout = view.findViewById(R.id.premiumAddServiceBottomLayout)
 
     }
 
     override fun onClick(v: View) {
         if (v.id == R.id.setPremiumPremiumElementBtn) {
             code = codeText.text.toString().toLowerCase().trim { it <= ' ' }
-            premiumElementPresenter.setPremium(code)
+            premiumElementPresenter.setPremium(code, service)
         }
     }
 
@@ -90,6 +104,15 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
 
     override fun showPremiumActivated() {
         Toast.makeText(context, "Премиум активирован", Toast.LENGTH_LONG).show()
+    }
+
+    override fun setWithPremium() {
+        noPremiumText.visibility = View.GONE
+        premiumText.visibility = View.VISIBLE
+        premiumText.isEnabled = false
+    }
+    override fun hideBottom() {
+        bottomLayout.visibility = View.GONE
     }
 
 }

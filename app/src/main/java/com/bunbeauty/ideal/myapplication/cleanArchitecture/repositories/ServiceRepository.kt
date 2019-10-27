@@ -22,7 +22,11 @@ class ServiceRepository(private val serviceDao: ServiceDao,
     }
 
     override fun update(service: Service) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        launch {
+            serviceDao.update(service)
+        }
+        serviceFirebaseApi.update(service)
+
     }
 
     override fun get() {

@@ -2,8 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.io.FileDescriptor
-import java.net.Inet4Address
 
 @Entity
 data class Service(
@@ -32,5 +30,6 @@ data class Service(
         const val COUNT_OF_RATES = "count of rates"
         const val CREATION_DATE = "creation date"
         const val PREMIUM_DATE = "premium date"
+        const val DEFAULT_PREMIUM_DATE= "1970-01-01 00:00:00"
     }
 }

@@ -6,7 +6,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.CodeDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.ICodeRepository
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: CodeFirebase) : BaseRepository(), ICodeRepository, ICodeSubscriber {
 
@@ -21,10 +20,9 @@ class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: Cod
     }
 
     override fun update(code: Code) {
-        launch {
+        /*launch {
             codeDao.update(code)
-        }
-
+        }*/
         codeFirebase.update(code)
     }
 
@@ -36,9 +34,9 @@ class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: Cod
         this.codeSubscriber = codeSubscriber
 
         var code: Code? = null
-        runBlocking {
+       /* runBlocking {
             code = codeDao.getByCode(codeString)
-        }
+        }*/
 
         if (code == null) {
             codeFirebase.getByCode(codeString, this)
@@ -58,8 +56,6 @@ class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: Cod
                 }
             }
         }
-
-
     }
 
 }

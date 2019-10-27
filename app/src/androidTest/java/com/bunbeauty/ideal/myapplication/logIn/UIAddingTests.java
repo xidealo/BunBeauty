@@ -39,7 +39,20 @@ public class UIAddingTests {
         Thread.sleep(10000);
     }
 
-    void goToAddingService() {
+    @Test
+    public void testAddingServiceWithPremiumTests() throws InterruptedException {
+        UIAuthorizationActivityTests uiAuthorizationTests = new UIAuthorizationActivityTests();
+        uiAuthorizationTests.testEnterPhoneAuthorization("9999999999");
+        uiAuthorizationTests.testEnterCodeVerify("123456");
+        Thread.sleep(5000);
+        goToAddingService();
+        addService();
+        Thread.sleep(2000);
+        addPremium("bb");
+        Thread.sleep(10000);
+    }
+
+    private void goToAddingService() {
         //switcher
         onView(withId(R.id.rightSwitcherElementBtn)).perform(click());
         // button
@@ -63,6 +76,13 @@ public class UIAddingTests {
 
         Espresso.closeSoftKeyboard();
         onView(withId(R.id.addServiceAddServiceBtn)).perform(click());
+    }
+
+    void addPremium(String premiumCode) throws InterruptedException {
+        onView(withId(R.id.codePremiumElement)).perform(typeText(premiumCode));
+        Thread.sleep(1000);
+
+        onView(withId(R.id.setPremiumPremiumElementBtn)).perform(click());
     }
 
     @After
