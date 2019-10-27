@@ -8,6 +8,7 @@ interface ProfileView: MvpView {
     fun showMyProfileView()
     fun showAlienProfileView()
     fun showUserInfo(user: User)
-    fun showUserServices(services: List<Service>)
+    fun showUserServices(serviceList: List<Service>)
+    fun showBottomPanel()
 
 }

@@ -7,6 +7,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IUserRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.function.LongUnaryOperator
 
 class UserRepository(private val userDao: UserDao,
                      private val userFirebaseApi: UserFirebaseApi) : BaseRepository(),
@@ -26,7 +27,11 @@ class UserRepository(private val userDao: UserDao,
     }
 
     override fun update(user: User) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        launch {
+            userDao.update(user)
+        }
+
+        //TODO("not implemented") To change body of created functions use File | Settings | File Templates.
     }
 
     override fun get(): List<User> {

@@ -45,13 +45,17 @@
     <string name="channel_description">qq</string>
 
     //bottom panel
-    <string name="chat">\uf075</string>
-    <string name="user">\uf007</string>
-    <string name="mainScreen">\uf03a</string>
-    <string name="search">\uf002</string>
-    <string name="back">\uf104</string>
-    <string name="settings">\uf303</string>
-    <string name="subscribe_heart">\uf004</string>
+    <string name="chat_ico">\uf075</string>
+    <string name="profile_ico">\uf007</string>
+    <string name="main_screen_ico">\uf03a</string>
+
+    //top panel
+    <string name="edit_ico"></string>
+    <string name="search_ico">\uf002</string>
+    <string name="back_ico">\uf104</string>
+    <string name="settings_ico">\uf303</string>
+    <string name="subscribe_ico">\uf004</string>
+    <string name="premium_ico">\uf091</string>
     <string name="premium">\uf091</string>
 
     //array for spinner

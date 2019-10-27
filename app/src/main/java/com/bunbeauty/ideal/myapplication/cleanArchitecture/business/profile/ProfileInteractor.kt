@@ -56,7 +56,7 @@ class ProfileInteractor(private val userRepository: UserRepository,
                 .setValue(token)
     }
 
-    override fun userIsOwner():Boolean {
+    override fun isUserOwner():Boolean {
         return getUserId() == getOwnerId()
     }
 
