@@ -5,9 +5,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 
 interface ProfileView: MvpView {
-    fun showMyProfile()
-    fun showNotMyProfile()
+    fun showMyProfileView()
+    fun showAlienProfileView()
     fun showUserInfo(user: User)
-    fun showUserServices(services: List<Service>)
+    fun showUserServices(serviceList: List<Service>)
+    fun showBottomPanel()
 
 }

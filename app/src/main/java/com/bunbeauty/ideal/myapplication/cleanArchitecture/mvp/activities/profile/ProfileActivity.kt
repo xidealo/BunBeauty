@@ -1,71 +1,61 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile
 
-import android.app.Activity
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.adapters.OrderAdapter
 import com.bunbeauty.ideal.myapplication.adapters.ServiceProfileAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebaseApi
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Order
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.BaseActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
+import com.bunbeauty.ideal.myapplication.editing.EditService
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement
-import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
+import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.bunbeauty.ideal.myapplication.other.ISwitcher
 import com.bunbeauty.ideal.myapplication.reviews.Comments
 import com.bunbeauty.ideal.myapplication.subscriptions.Subscribers
+import com.squareup.picasso.Picasso
 import java.util.*
 import javax.inject.Inject
 
-class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView, ISwitcher {
-
-    private lateinit var countOfRates: String
+class ProfileActivity : BaseActivity(), View.OnClickListener, ProfileView, ISwitcher, IEditableActivity {
 
     private lateinit var nameText: TextView
     private lateinit var cityText: TextView
     private lateinit var phoneText: TextView
     private lateinit var withoutRatingText: TextView
     private lateinit var subscribersText: TextView
-    private lateinit var subscriptionsText: TextView
     private lateinit var ratingBar: RatingBar
-
-    private lateinit var ratingForUserLayout: LinearLayout
-    private lateinit var mainLayout: LinearLayout
-
-    private lateinit var workWithLocalStorageApi: WorkWithLocalStorageApi
-    private lateinit var avatarImage: ImageView
-
-    private lateinit var manager: FragmentManager
-
-    private lateinit var orderList: ArrayList<Order>
-    private lateinit var serviceList: ArrayList<Service>
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var recyclerViewService: RecyclerView
     private lateinit var addServicesBtn: Button
+    private lateinit var subscriptionsBtn: Button
     private lateinit var progressBar: ProgressBar
-    private lateinit var subscriptionsLayout: LinearLayout
-    private lateinit var database: SQLiteDatabase
+
+    private lateinit var ratingLayout: LinearLayout
+    private lateinit var mainLayout: LinearLayout
+    private lateinit var avatarImage: ImageView
+    private lateinit var orderRecyclerView: RecyclerView
+    private lateinit var serviceRecyclerView: RecyclerView
+
+    private val manager = supportFragmentManager
 
     @Inject
     lateinit var profileInteractor: ProfileInteractor
@@ -96,71 +86,54 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         return ProfilePresenter(profileInteractor)
     }
 
-    private val countOfSubscribers: Long
-        get() {
-            val sqlQuery = ("SELECT " + DBHelper.KEY_SUBSCRIBERS_COUNT_USERS
-                    + " FROM " + DBHelper.TABLE_CONTACTS_USERS
-                    + " WHERE " + DBHelper.TABLE_CONTACTS_USERS + "." + DBHelper.KEY_ID + " = ?")
-
-            val cursor = database.rawQuery(sqlQuery, arrayOf(profileInteractor.getUserId()))
-            if (cursor.moveToFirst()) {
-                val indexSubscribersCount = cursor.getColumnIndex(DBHelper.KEY_SUBSCRIBERS_COUNT_USERS)
-                return java.lang.Long.valueOf(cursor.getString(indexSubscribersCount))
-            }
-            cursor.close()
-            return 0
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile)
 
         initView()
 
+        showBottomPanel()
         profilePresenter.initFCM()
-        profilePresenter.showProfile()
+        profilePresenter.showProfileView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        profilePresenter.updateProfileData()
+        onProgress()
     }
 
     private fun initView() {
-        subscriptionsLayout = findViewById(R.id.subscriptionsProfileLayout)
-        subscriptionsText = findViewById(R.id.subscriptionsProfileText)
         avatarImage = findViewById(R.id.avatarProfileImage)
         withoutRatingText = findViewById(R.id.withoutRatingProfileText)
-        ratingBar = findViewById(R.id.ratingBarProfile)
-        progressBar = findViewById(R.id.progressBarProfile)
-        ratingForUserLayout = findViewById(R.id.ratingProfileLayout)
+        ratingBar = findViewById(R.id.profileRatingBar)
+        progressBar = findViewById(R.id.profileProgressBar)
+        ratingLayout = findViewById(R.id.ratingProfileLayout)
         addServicesBtn = findViewById(R.id.addServicesProfileBtn)
-        mainLayout = findViewById(R.id.mainLayoutProfile)
-        recyclerView = findViewById(R.id.resultsProfileRecycleView)
-        recyclerViewService = findViewById(R.id.servicesProfileRecyclerView)
+        subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn)
+        mainLayout = findViewById(R.id.mainProfileLayout)
+        orderRecyclerView = findViewById(R.id.ordersProfileRecycleView)
+        serviceRecyclerView = findViewById(R.id.servicesProfileRecyclerView)
         nameText = findViewById(R.id.nameProfileText)
         cityText = findViewById(R.id.cityProfileText)
         phoneText = findViewById(R.id.phoneProfileText)
         subscribersText = findViewById(R.id.subscribersProfileText)
 
-        serviceList = ArrayList()
-        orderList = ArrayList()
-
         val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
+        orderRecyclerView.layoutManager = layoutManager
 
         val layoutManagerSecond = LinearLayoutManager(this)
-        recyclerViewService.layoutManager = layoutManagerSecond
-
-        val dbHelper = DBHelper(this)
-        database = dbHelper.readableDatabase
-        workWithLocalStorageApi = WorkWithLocalStorageApi(database)
-
-        manager = supportFragmentManager
+        serviceRecyclerView.layoutManager = layoutManagerSecond
     }
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.addServicesProfileBtn -> goToAddService(this)
+            R.id.addServicesProfileBtn -> goToAddService()
 
-            R.id.subscriptionsProfileLayout -> goToSubscribers(this)
+            R.id.subscriptionsProfileBtn -> goToSubscribers()
 
-            R.id.ratingProfileLayout -> goToUserComments(this, profilePresenter.getOwnerId())
+            R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
 
             else -> {
             }
@@ -169,84 +142,20 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun showUserInfo(user: User) {
         showProfileText(user.name, user.city, user.phone)
-        createRatingBar(user.rating)
-        //showAvatar()
-        //hideView()
-        showView()
-    }
-
-    fun showView() {
-        progressBar.visibility = View.GONE
-        mainLayout.visibility = View.VISIBLE
-    }
-
-    override fun showUserServices(services: List<Service>) {
-        updateServicesList(services)
-    }
-
-    private fun getCountOfRates(): String {
-        //получаем имя, фамилию и город пользователя по его id
-        val sqlQuery = ("SELECT "
-                + DBHelper.KEY_COUNT_OF_RATES_USERS
-                + " FROM "
-                + DBHelper.TABLE_CONTACTS_USERS
-                + " WHERE "
-                + DBHelper.KEY_ID + " = ?")
-        val userCursor = database.rawQuery(sqlQuery, arrayOf(profileInteractor.getOwnerId()))
-
-        if (userCursor.moveToFirst()) {
-            val indexCountOfRates = userCursor.getColumnIndex(DBHelper.KEY_COUNT_OF_RATES_USERS)
-
-            countOfRates = userCursor.getString(indexCountOfRates)
-            return countOfRates
+        showRating(user.rating)
+        showAvatar(user.photoLink)
+        if (profilePresenter.isUserOwner()) {
+            showSubscribers(user.subscribersCount)
+            showSubscriptions(user.subscriptionsCount)
         }
-        userCursor.close()
-        return ""
+
+        showTopPanel(user.id, user.name)
     }
 
-    override fun onResume() {
-        super.onResume()
-        orderList.clear()
-        createPanels()
-
-        profilePresenter.updateProfileData()
-    }
-
-    private fun showSubscriptions() {
-        val subscriptionsCount = SubscriptionsApi.getCountOfSubscriptions(database, profileInteractor.getUserId())
-        var subscriptionText = "Подписки"
-
-        if (subscriptionsCount != 0L) {
-            subscriptionText += " ($subscriptionsCount)"
-        }
-        subscriptionsText.text = subscriptionText
-    }
-
-    private fun showSubscribers() {
-        var subscribersBtnText = "Подписчики:"
-        val subscribersCount = countOfSubscribers
-
-        if (subscribersCount != 0L) {
-            subscribersBtnText += " $subscribersCount"
-        }
-        subscribersText.text = subscribersBtnText
-    }
-
-    private fun createRatingBar(rating: Float) {
-        if (rating == 0f) {
-            setWithoutRating()
-        } else {
-            addRatingToScreen(rating)
-        }
-    }
-
-    private fun showAvatar() {
-        val width = resources.getDimensionPixelSize(R.dimen.photo_width)
-        val height = resources.getDimensionPixelSize(R.dimen.photo_height)
-        workWithLocalStorageApi.setPhotoAvatar(profileInteractor.getOwnerId(),
-                avatarImage,
-                width,
-                height)
+    override fun showUserServices(serviceList: List<Service>) {
+        val serviceAdapter = ServiceProfileAdapter(serviceList.size, serviceList as ArrayList<Service>)
+        serviceRecyclerView.adapter = serviceAdapter
+        offProgress()
     }
 
     private fun showProfileText(name: String, city: String, phone: String) {
@@ -255,49 +164,55 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         phoneText.text = phone
     }
 
-    //подгрузка сервисов на serviceList
-    private fun updateServicesList(services: List<Service>) {
-        /*serviceList.clear()
-        //количество сервисов отображаемых на данный момент(старых)
-        val sqlQueryService = ("SELECT "
-                + DBHelper.KEY_ID + ", "
-                + DBHelper.KEY_NAME_SERVICES + ", "
-                + DBHelper.KEY_RATING_SERVICES
-                + " FROM "
-                + DBHelper.TABLE_CONTACTS_SERVICES
-                + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ? "
-                + " AND "
-                + DBHelper.KEY_RATING_SERVICES + " IS NOT NULL")
+    private fun showRating(rating: Float) {
+        if (rating == 0f) {
+            showWithoutRating()
+        } else {
+            showRatingBar(rating)
+        }
+    }
 
-        val cursor = database.rawQuery(sqlQueryService, arrayOf(ownerId))
+    private fun showWithoutRating() {
+        withoutRatingText.visibility = View.VISIBLE
+    }
 
-        if (cursor.moveToFirst()) {
-            val indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID)
-            val indexServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES)
-            val indexServiceRating = cursor.getColumnIndex(DBHelper.KEY_RATING_SERVICES)
-            do {
+    private fun showRatingBar(rating: Float) {
+        ratingBar.visibility = View.VISIBLE
+        ratingBar.rating = rating
+        ratingLayout.setOnClickListener(this)
+    }
 
-                val serviceId = cursor.getString(indexServiceId)
-                val serviceName = cursor.getString(indexServiceName)
-                val serviceRating = java.lang.Float.valueOf(cursor.getString(indexServiceRating))
+    private fun showAvatar(photoLink: String) {
+        val width = resources.getDimensionPixelSize(R.dimen.photo_width)
+        val height = resources.getDimensionPixelSize(R.dimen.photo_height)
+        Picasso.get()
+                .load(photoLink)
+                .resize(width, height)
+                .centerCrop()
+                .transform(CircularTransformation())
+                .into(avatarImage)
+    }
 
-                val service = Service()
-                service.id = serviceId
-                service.name = serviceName
-                service.averageRating = serviceRating
+    @SuppressLint("SetTextI18n")
+    private fun showSubscriptions(subscriptionsCount: Long) {
+        if (subscriptionsCount > 0L) {
+            subscriptionsBtn.text = "Подписки: $subscriptionsCount"
+        } else {
+            subscriptionsBtn.text = "Подписки"
+        }
+        subscriptionsBtn.visibility = View.VISIBLE
+    }
 
-                serviceList.add(service)
-            } while (cursor.moveToNext())
-        }*/
-        val serviceAdapter = ServiceProfileAdapter(serviceList.size, services as ArrayList<Service>)
-        recyclerViewService.adapter = serviceAdapter
-        progressBar.visibility = View.GONE
-        mainLayout.visibility = View.VISIBLE
+    @SuppressLint("SetTextI18n")
+    private fun showSubscribers(subscribersCount: Long) {
+        if (subscribersCount > 0L) {
+            subscribersText.text = "Подписчики: $subscribersCount"
+            subscribersText.visibility = View.VISIBLE
+        }
     }
 
     //добавляет вновь добавленные записи (обновление ordersList)
-    private fun updateOrdersList(userId: String) {
+   /* private fun updateOrdersList(userId: String) {
         // количство записей отображаемых на данный момент(старых)
         var visibleCount = orderList.size
 
@@ -344,10 +259,10 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
                 do {
                     val order = Order()
-                    /*order.id = cursor.getString(indexServiceId)
+                    *//*order.id = cursor.getString(indexServiceId)
                     order.orderName = cursor.getString(indexServiceName)
                     order.orderDate = cursor.getString(indexDate)
-                    order.orderTime = cursor.getString(indexTime)*/
+                    order.orderTime = cursor.getString(indexTime)*//*
                     orderList.add(order)
                     visibleCount++
                     //пока в курсоре есть строки и есть новые записи
@@ -356,38 +271,19 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         }
 
         val orderAdapter = OrderAdapter(orderList.size, orderList)
-        recyclerView.adapter = orderAdapter
+        orderRecyclerView.adapter = orderAdapter
         cursor.close()
-    }
+    }*/
 
-    //wtf VALENTOS
-    fun checkSubscription(): Boolean {
-        val sqlQuery = ("SELECT * FROM "
-                + DBHelper.TABLE_SUBSCRIBERS
-                + " WHERE "
-                + DBHelper.KEY_USER_ID + " = ? AND "
-                + DBHelper.KEY_WORKER_ID + " = ?")
-
-        val cursor = database.rawQuery(sqlQuery, arrayOf(profileInteractor.getUserId(), profileInteractor.getOwnerId()))
-        return if (cursor.moveToFirst()) {
-            cursor.close()
-            true
-        } else {
-            cursor.close()
-            false
-        }
-    }
-
-    override fun showMyProfile() {
-        recyclerViewService.visibility = View.GONE
+    override fun showMyProfileView() {
         createSwitcher()
+        orderRecyclerView.visibility = View.VISIBLE
         addServicesBtn.setOnClickListener(this)
-        subscriptionsLayout.setOnClickListener(this)
+        subscriptionsBtn.setOnClickListener(this)
     }
 
-    override fun showNotMyProfile() {
-        hideView()
-        recyclerViewService.visibility = View.VISIBLE
+    override fun showAlienProfileView() {
+        serviceRecyclerView.visibility = View.VISIBLE
     }
 
     private fun createSwitcher() {
@@ -397,60 +293,69 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         transaction.commit()
     }
 
-    private fun hideView() {
-        addServicesBtn.visibility = View.GONE
-        subscriptionsLayout.visibility = View.INVISIBLE
-        subscribersText.visibility = View.GONE
-        recyclerView.visibility = View.GONE
+    private fun showTopPanel(userId: String, userName: String) {
+        val topPanel = TopPanel()
+        topPanel.title = userName
+        topPanel.entityId = userId
+
+        val transaction = manager.beginTransaction()
+        transaction.add(R.id.headerProfileLayout, topPanel)
+        transaction.commit()
     }
 
-    private fun addRatingToScreen(avgRating: Float) {
-        ratingBar.visibility = View.VISIBLE
-        ratingBar.rating = avgRating
-        ratingForUserLayout.setOnClickListener(this)
+    override fun showBottomPanel() {
+        val bottomPanel = BottomPanel()
+
+        val transaction = manager.beginTransaction()
+        transaction.add(R.id.bottomProfileLayout, bottomPanel)
+        transaction.commit()
     }
 
-    private fun setWithoutRating() {
-        ratingBar.visibility = View.GONE
-        withoutRatingText.visibility = View.VISIBLE
+    private fun onProgress() {
+        progressBar.visibility = View.VISIBLE
+        mainLayout.visibility = View.INVISIBLE
     }
 
-    private fun createPanels() {
-        /*val panelBuilder = PanelBuilder(profileInteractor.isMyProfile(intent))
-        panelBuilder.buildHeader(manager, "Профиль", R.id.headerProfileLayout)
-        panelBuilder.buildFooter(manager, R.id.footerProfileLayout)*/
+    private fun offProgress() {
+        progressBar.visibility = View.GONE
+        mainLayout.visibility = View.VISIBLE
     }
 
     override fun firstSwitcherAct() {
-        recyclerViewService.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
+        serviceRecyclerView.visibility = View.GONE
+        orderRecyclerView.visibility = View.VISIBLE
         addServicesBtn.visibility = View.INVISIBLE
     }
 
     override fun secondSwitcherAct() {
         addServicesBtn.visibility = View.VISIBLE
-        recyclerView.visibility = View.GONE
-        recyclerViewService.visibility = View.VISIBLE
+        orderRecyclerView.visibility = View.GONE
+        serviceRecyclerView.visibility = View.VISIBLE
     }
 
-
-    private fun goToAddService(activity: Activity) {
-        val intent = Intent(activity, AddingServiceActivity::class.java)
-        activity.startActivity(intent)
+    override fun goToEditing(id: String) {
+        val intent = Intent(this, EditService::class.java)
+        intent.putExtra(USER_ID, id)
+        this.startActivity(intent)
     }
 
-    private fun goToSubscribers(activity: Activity) {
-        val intent = Intent(activity, Subscribers::class.java)
+    private fun goToAddService() {
+        val intent = Intent(this, AddingServiceActivity::class.java)
+        this.startActivity(intent)
+    }
+
+    private fun goToSubscribers() {
+        val intent = Intent(this, Subscribers::class.java)
         intent.putExtra(STATUS, SUBSCRIPTIONS)
-        activity.startActivity(intent)
+        this.startActivity(intent)
     }
 
-    private fun goToUserComments(activity: Activity, ownerId: String?) {
-        val intent = Intent(activity, Comments::class.java)
+    private fun goToComments(ownerId: String?) {
+        val intent = Intent(this, Comments::class.java)
         intent.putExtra(SERVICE_OWNER_ID, ownerId)
-        intent.putExtra(User.COUNT_OF_RATES, getCountOfRates())
+        //intent.putExtra(User.COUNT_OF_RATES, getCountOfRates())
         intent.putExtra(TYPE, REVIEW_FOR_USER)
-        activity.startActivity(intent)
+        this.startActivity(intent)
     }
 
     companion object {
@@ -461,6 +366,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         private val SERVICE_OWNER_ID = "service owner id"
         private val TYPE = "type"
         private val STATUS = "status"
+        private val USER_ID = "user id"
 
         private val userIdsFirstSetProfile = ArrayList<String>()
     }

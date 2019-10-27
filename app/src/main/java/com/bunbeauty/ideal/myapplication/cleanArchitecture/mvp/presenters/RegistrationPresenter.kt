@@ -13,14 +13,12 @@ class RegistrationPresenter(private val registrationInteractor: RegistrationInte
 
     fun registration(name: String, surname: String, city: String, phone:String) {
 
-        val defaultPhotoLink = "https://firebasestorage." +
-                "googleapis.com/v0/b/bun-beauty.appspot.com/o/avatar%2FdefaultAva." +
-                "jpg?alt=media&token=f15dbe15-0541-46cc-8272-2578627ed311"
-
         if(isNameCorrect(name) && isSurnameCorrect(surname) && isCityCorrect(city)){
-            val fullName =  "$name $surname"
-            val user = User(registrationInteractor.getUserId(), fullName, city,
-                    phone, 0f, 0, defaultPhotoLink)
+            val user = User()
+            user.phone = phone
+            user.name = "$name $surname"
+            user.city = city
+
             registrationInteractor.registration(user)
             viewState.goToProfile()
         }
