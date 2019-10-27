@@ -37,8 +37,5 @@ public class ExampleUnitTest {
         assertEquals(WorkWithStringsApi.cutString("AAAAA",1),"A...");
     }
 
-    //logIn
-
-
 }
 
