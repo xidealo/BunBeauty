@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import android.util.Log
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.google.firebase.database.DataSnapshot
@@ -49,7 +50,7 @@ class ServiceFirebaseApi{
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getAllUserServices(userId: String): List<Service> {
+    fun getAllUserServices(userId: String, serviceSubscriber: IServiceSubscriber): List<Service> {
         //val serviceList: ArrayList<Service> = ArrayList()
         val database = FirebaseDatabase.getInstance()
         val servicesRef = database
@@ -64,6 +65,8 @@ class ServiceFirebaseApi{
                 for (serviceSnapshot in servicesSnpshot.children) {
                     val service = Service()
 
+                    service.id = servicesSnpshot.key!!
+                    service.userId = userId
                     service.name = servicesSnpshot.child(Service.NAME).getValue<String>(String::class.java)!!
                     service.address = servicesSnpshot.child(Service.ADDRESS).getValue<String>(String::class.java)!!
                     service.description = servicesSnpshot.child(Service.DESCRIPTION).getValue<String>(String::class.java)!!
@@ -76,7 +79,8 @@ class ServiceFirebaseApi{
 
                     serviceList.add(service)
                 }
-                val user = User()
+
+                serviceSubscriber.returnServiceList(serviceList)
             }
 
             override fun onCancelled(error: DatabaseError) {

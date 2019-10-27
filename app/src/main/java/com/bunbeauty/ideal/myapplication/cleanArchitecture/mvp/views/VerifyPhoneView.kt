@@ -8,6 +8,6 @@ interface VerifyPhoneView: MvpView {
     fun showSendCode()
     fun showWrongCode()
     fun callbackWrongCode()
-    fun goToRegistration()
+    fun goToRegistration(phone: String)
     fun goToProfile()
 }

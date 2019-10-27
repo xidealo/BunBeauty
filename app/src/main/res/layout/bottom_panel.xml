@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:background="@color/panelColor"
         android:gravity="center"
-        android:text="@string/user" />
+        android:text="@string/profile_ico" />
 
     <TextView
         android:id="@+id/mainScreenBottomPanelText"
@@ -25,7 +25,7 @@
         android:layout_weight="1"
         android:background="@color/panelColor"
         android:gravity="center"
-        android:text="@string/mainScreen" />
+        android:text="@string/main_screen_ico" />
 
     <TextView
         android:id="@+id/chatBottomPanelText"
@@ -36,6 +36,6 @@
         android:layout_weight="1"
         android:background="@color/panelColor"
         android:gravity="center"
-        android:text="@string/chat" />
+        android:text="@string/chat_ico" />
 
 </LinearLayout>

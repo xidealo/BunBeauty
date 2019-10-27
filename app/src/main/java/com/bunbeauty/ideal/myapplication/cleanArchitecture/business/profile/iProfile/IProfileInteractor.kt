@@ -15,8 +15,8 @@ interface IProfileInteractor {
     fun checkSubscription() : Boolean
     fun initFCM()
     fun isFirstEnter():Boolean
-    fun userIsOwner():Boolean
+    fun isUserOwner():Boolean
     fun getProfileOwner(profileCallback: ProfileCallback)
-    fun getProfileServiceList()
+    fun getProfileServiceList(profileCallback: ProfileCallback)
 
 }

@@ -25,7 +25,6 @@ class VerifyPhoneInteractor(private val userRepository: UserRepository,
         userRepository.getByPhoneNumber(getMyPhoneNumber(), this)
     }
 
-
     override fun returnUser(user: User) {
         verifyCallback.callbackGetUserName(user.name)
     }

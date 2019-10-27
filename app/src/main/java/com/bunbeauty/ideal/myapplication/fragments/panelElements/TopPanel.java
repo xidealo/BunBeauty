@@ -136,7 +136,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                 subsApi = new SubscriptionsApi(ownerId, getContext());
                 subsApi.loadCountOfSubscribers(countOfSubsText);
 
-                if (((ProfileActivity) super.getActivity()).checkSubscription()) {
+                if (/*((ProfileActivity) super.getActivity()).checkSubscription()*/true) {
                     setSubscribe();
                 } else {
                     setUnsubscribe();

@@ -188,7 +188,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="@string/premium"
+                            android:text="@string/premium_ico"
                             android:textColor="@color/white"
                             android:visibility="visible" />
 
@@ -199,7 +199,7 @@
                             android:layout_height="match_parent"
                             android:background="@color/yellow"
                             android:gravity="center"
-                            android:text="@string/premium"
+                            android:text="@string/premium_ico"
                             android:textColor="@color/black"
                             android:visibility="gone" />
                     </LinearLayout>
