@@ -1,9 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Update
+import androidx.room.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Code
 
 @Dao
@@ -16,4 +13,7 @@ interface CodeDao {
 
     @Delete
     suspend fun delete(code: Code)
+
+    @Query("SELECT * FROM code WHERE code = :code")
+    suspend fun getByCode(code: String): Code?
 }

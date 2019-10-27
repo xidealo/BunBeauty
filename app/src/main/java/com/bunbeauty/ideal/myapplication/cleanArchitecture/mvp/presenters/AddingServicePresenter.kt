@@ -56,7 +56,6 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
                 viewState.showPremiumHeader()
                 viewState.showPremiumBlock()
                 viewState.showContinueButton()
-                //viewState.goToMyCalendar(WORKER,serviceId)
             }
         } else {
             viewState.showMoreTenImages()

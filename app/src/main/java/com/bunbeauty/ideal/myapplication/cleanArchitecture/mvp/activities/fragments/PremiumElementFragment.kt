@@ -83,12 +83,9 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
         private val TAG = "DBInf"
     }
 
-    override fun showWrongCode() {
-        Toast.makeText(context, "Неверно введен код", Toast.LENGTH_LONG).show()
-    }
-
-    override fun showOldCode() {
-        Toast.makeText(context, "Код больше не действителен", Toast.LENGTH_LONG).show()
+    override fun showError(error: String) {
+        codeText.error = error
+        codeText.requestFocus()
     }
 
     override fun showPremiumActivated() {

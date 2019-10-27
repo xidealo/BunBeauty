@@ -123,7 +123,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
         }
     }
 
-
     override fun onResume() {
         super.onResume()
         val panelBuilder = PanelBuilder()

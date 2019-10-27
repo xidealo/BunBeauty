@@ -1,8 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IAuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.AuthorizationCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
@@ -11,8 +9,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class AuthorizationInteractor(private val userRepository: UserRepository,
                               private val intent: Intent)  : BaseRepository(),

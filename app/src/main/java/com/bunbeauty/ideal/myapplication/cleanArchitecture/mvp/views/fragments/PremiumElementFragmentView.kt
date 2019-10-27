@@ -3,7 +3,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments
 import com.arellomobile.mvp.MvpView
 
 interface PremiumElementFragmentView: MvpView {
-    fun showWrongCode()
-    fun showOldCode()
+    fun showError(error:String)
     fun showPremiumActivated()
 }
