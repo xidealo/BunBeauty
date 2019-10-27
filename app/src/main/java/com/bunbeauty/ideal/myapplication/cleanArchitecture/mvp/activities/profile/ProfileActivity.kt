@@ -29,6 +29,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepo
 import com.bunbeauty.ideal.myapplication.editing.EditService
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
+import com.bunbeauty.ideal.myapplication.editing.EditProfile
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.bunbeauty.ideal.myapplication.other.ISwitcher
 import com.bunbeauty.ideal.myapplication.reviews.Comments
@@ -100,8 +101,8 @@ class ProfileActivity : BaseActivity(), View.OnClickListener, ProfileView, ISwit
     override fun onResume() {
         super.onResume()
 
-        profilePresenter.updateProfileData()
         onProgress()
+        profilePresenter.updateProfileData()
     }
 
     private fun initView() {
@@ -334,7 +335,7 @@ class ProfileActivity : BaseActivity(), View.OnClickListener, ProfileView, ISwit
     }
 
     override fun goToEditing(id: String) {
-        val intent = Intent(this, EditService::class.java)
+        val intent = Intent(this, EditProfile::class.java)
         intent.putExtra(USER_ID, id)
         this.startActivity(intent)
     }

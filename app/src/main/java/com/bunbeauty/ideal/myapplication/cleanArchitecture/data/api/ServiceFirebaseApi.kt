@@ -75,24 +75,24 @@ class ServiceFirebaseApi{
                 .child(userId)
                 .child(Service.SERVICES)
 
-        servicesRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(servicesSnpshot: DataSnapshot) {
+        servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(servicesSnapshot: DataSnapshot) {
 
                 val serviceList: ArrayList<Service> = ArrayList()
-                for (serviceSnapshot in servicesSnpshot.children) {
+                for (serviceSnapshot in servicesSnapshot.children) {
                     val service = Service()
 
-                    service.id = servicesSnpshot.key!!
+                    service.id = serviceSnapshot.key!!
                     service.userId = userId
-                    service.name = servicesSnpshot.child(Service.NAME).getValue<String>(String::class.java)!!
-                    service.address = servicesSnpshot.child(Service.ADDRESS).getValue<String>(String::class.java)!!
-                    service.description = servicesSnpshot.child(Service.DESCRIPTION).getValue<String>(String::class.java)!!
-                    service.cost = servicesSnpshot.child(Service.COST).getValue<String>(String::class.java)!!
-                    service.countOfRates = servicesSnpshot.child(Service.COUNT_OF_RATES).getValue<Long>(Long::class.java)!!
-                    service.rating = servicesSnpshot.child(Service.AVG_RATING).getValue<Float>(Float::class.java)!!
-                    service.category = servicesSnpshot.child(Service.CATEGORY).getValue<String>(String::class.java)!!
-                    service.creationDate = servicesSnpshot.child(Service.CREATION_DATE).getValue<String>(String::class.java)!!
-                    service.premiumDate = servicesSnpshot.child(Service.PREMIUM_DATE).getValue<String>(String::class.java)!!
+                    service.name = serviceSnapshot.child(Service.NAME).getValue<String>(String::class.java)!!
+                    service.address = serviceSnapshot.child(Service.ADDRESS).getValue<String>(String::class.java)!!
+                    service.description = serviceSnapshot.child(Service.DESCRIPTION).getValue<String>(String::class.java)!!
+                    service.cost = serviceSnapshot.child(Service.COST).getValue<String>(String::class.java)!!
+                    service.countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue<Long>(Long::class.java)!!
+                    service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue<Float>(Float::class.java)!!
+                    service.category = serviceSnapshot.child(Service.CATEGORY).getValue<String>(String::class.java)!!
+                    service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).getValue<String>(String::class.java)!!
+                    service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).getValue<String>(String::class.java)!!
 
                     serviceList.add(service)
                 }
