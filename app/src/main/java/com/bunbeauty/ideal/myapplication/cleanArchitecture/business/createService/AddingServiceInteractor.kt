@@ -31,7 +31,7 @@ class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
         return service.id
     }
 
-    fun addImage(photo: Photo) {
+    override fun addImage(photo: Photo) {
         photo.id = photoRepository.getIdForNew(photo.userId, photo.serviceId)
 
         val storageReference = FirebaseStorage
@@ -63,7 +63,7 @@ class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
         return true
     }
 
-    override fun getIsDescriptionLengthLessTwoHunded(description: String): Boolean = description.length < 200
+    override fun getIsDescriptionLengthLessTwoHundred(description: String): Boolean = description.length < 200
 
     override fun getIsCostInputCorrect(cost: String): Boolean {
         if (!cost.matches("[\\d+]+".toRegex())) {

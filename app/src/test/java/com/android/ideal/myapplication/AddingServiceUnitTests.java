@@ -41,6 +41,42 @@ public class AddingServiceUnitTests {
         assertTrue(addingServiceInteractor.getIsNameLengthLessTwenty("qwertyuiopasdfghjkl"));
     }
 
+    @Test
+    public void whenDescriptionLengthLessTwoHundredAddingService() {
+        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
+        assertTrue(addingServiceInteractor.getIsDescriptionLengthLessTwoHundred("qwertyuiopasdfghjkl"));
+    }
+
+    @Test
+    public void whenCostCorrectAddingService() {
+        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
+        assertTrue(addingServiceInteractor.getIsCostInputCorrect("23343564564"));
+    }
+
+    @Test
+    public void whenCostLengthLessTenAddingService() {
+        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
+        assertTrue(addingServiceInteractor.getIsCostLengthLessTen("123456789"));
+    }
+
+    @Test
+    public void whenCategoryCorrectAddingService() {
+        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
+        assertTrue(addingServiceInteractor.getIsCategoryInputCorrect("yopyoyo"));
+    }
+
+    @Test
+    public void whenAddressCorrectAddingService() {
+        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
+        assertTrue(addingServiceInteractor.getIsAddressInputCorrect("ljfngjf ngjafng32234SKJDj"));
+    }
+
+    @Test
+    public void whenAddressLengthLessThirtyAddingService() {
+        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
+        assertTrue(addingServiceInteractor.getIsAddressLengthThirty("1234gfcgv567891234567890"));
+    }
+
     private AddingServiceInteractor getAddingServiceInstance() {
         return new AddingServiceInteractor(serviceRepository, tagRepository, photoRepository);
     }

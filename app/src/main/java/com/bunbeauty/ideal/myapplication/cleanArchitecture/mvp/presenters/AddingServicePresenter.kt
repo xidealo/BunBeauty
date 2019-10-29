@@ -86,7 +86,7 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             return false
         }
 
-        if (!addingServiceInteractor.getIsDescriptionLengthLessTwoHunded(description)) {
+        if (!addingServiceInteractor.getIsDescriptionLengthLessTwoHundred(description)) {
             viewState.showDescriptionInputError("Описание должно быть меньше 200 символов")
             return false
         }
