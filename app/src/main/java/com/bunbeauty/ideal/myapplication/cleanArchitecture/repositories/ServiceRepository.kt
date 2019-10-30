@@ -1,10 +1,17 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
+import android.view.View
+import com.bunbeauty.ideal.myapplication.adapters.ServiceAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IServiceRepository
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -61,6 +68,38 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         }
     }
 
+    override fun getServicesByCity(userCity: String, selectedTagsArray: java.util.ArrayList<String>?) {
+
+        //возвращение всех пользователей из контретного города
+        val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
+                .orderByChild(User.CITY)
+                .equalTo(userCity)
+
+        userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(usersSnapshot: DataSnapshot) {
+                //callback
+               /* val commonList = search.getServicesOfUsers(usersSnapshot,
+                        null, null, null,
+                        category,
+                        selectedTagsArray)
+                for (serviceData in commonList) {
+                    serviceList.add(serviceData[1] as Service)
+                    userList.add(serviceData[2] as User)
+                }
+                serviceAdapter = ServiceAdapter(serviceList.size, serviceList, userList)
+                recyclerView.adapter = serviceAdapter
+                progressBar.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE*/
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
+    }
+
+    override fun getServicesByCityAndCategory(userCity: String, category: String, selectedTagsArray: java.util.ArrayList<String>?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
     fun getIdForNew(userId: String): String = serviceFirebaseApi.getIdForNew(userId)
 
 }

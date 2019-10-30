@@ -15,9 +15,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.adapters.ServiceAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder
 import com.bunbeauty.ideal.myapplication.helpApi.Search
@@ -27,6 +33,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.*
+import javax.inject.Inject
 
 class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView {
 
@@ -47,16 +54,31 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private var isUpdated: Boolean = false
     private lateinit var category: String
 
-    private val userId: String
-        get() = FirebaseAuth.getInstance().currentUser!!.uid
+
+    @InjectPresenter
+    lateinit var mainScreenPresenter: MainScreenPresenter
+    @Inject
+    lateinit var mainScreenInteractor: MainScreenInteractor
+
+    @ProvidePresenter
+    internal fun provideAddingServicePresenter(): MainScreenPresenter {
+        DaggerAppComponent
+                .builder()
+                .appModule(AppModule(application, intent))
+                .build().inject(this)
+
+        return MainScreenPresenter(mainScreenInteractor)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_screen)
 
         init()
-        startLoading()
+        showLoading()
+
         createCategoryFeed()
+
         createMainScreen()
     }
 
@@ -75,6 +97,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         tagsLayout = findViewById(R.id.tagsMainScreenLayout)
         innerLayout = findViewById(R.id.tagsInnerMainScreenLayout)
         progressBar = findViewById(R.id.progressBarMainScreen)
+
         val minimizeTagsBtn = findViewById<Button>(R.id.minimizeTagsMainScreenBtn)
         val clearTagsBtn = findViewById<Button>(R.id.clearTagsMainScreenBtn)
 
@@ -104,7 +127,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             R.id.minimizeTagsMainScreenBtn -> hideTags()
 
             R.id.clearTagsMainScreenBtn -> {
-                startLoading()
+                showLoading()
                 clearCategory()
                 createMainScreen()
             }
@@ -118,7 +141,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     private fun tagClick(tagText: TextView) {
-        startLoading()
+        showLoading()
 
         val text = tagText.text.toString()
         if (selectedTagsArray.contains(text)) {
@@ -134,7 +157,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         createMainScreen()
     }
 
-    override fun startLoading() {
+    override fun showLoading() {
         progressBar.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         serviceList.clear()
@@ -150,9 +173,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                 showTags()
             }
         } else {
-            startLoading()
+            showLoading()
             enableCategory(btn)
-            //category = btn.getText().toString();
+            category = btn.text.toString()
             createMainScreen()
         }
     }
@@ -229,14 +252,13 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     private fun createMainScreen() {
-        //получаем id пользователя
-        val userId = userId
 
+        //get user id
         //получаем город юзера
-        val userCity = getUserCity(userId)
+        //val userCity = getUserCity(userId)
 
         //получаем все сервисы, которые находятся в городе юзера
-        getServicesInThisCity(userCity, category, selectedTagsArray)
+        //getServicesInThisCity(userCity, category, selectedTagsArray)
     }
 
     private fun getUserCity(userId: String): String {
@@ -261,35 +283,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         cursor.close()
         return city*/
         return ""
-    }
-
-    private fun getServicesInThisCity(userCity: String, category: String, selectedTagsArray: ArrayList<String>?) {
-
-        //возвращение всех пользователей из контретного города
-        val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
-                .orderByChild(User.CITY)
-                .equalTo(userCity)
-
-        userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(usersSnapshot: DataSnapshot) {
-
-                val commonList = search.getServicesOfUsers(usersSnapshot,
-                        null, null, null,
-                        category,
-                        selectedTagsArray)
-                for (serviceData in commonList) {
-                    serviceList.add(serviceData[1] as Service)
-                    userList.add(serviceData[2] as User)
-                }
-                serviceAdapter = ServiceAdapter(serviceList.size, serviceList, userList)
-                recyclerView.adapter = serviceAdapter
-                progressBar.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })
     }
 
     override fun showTags() {
