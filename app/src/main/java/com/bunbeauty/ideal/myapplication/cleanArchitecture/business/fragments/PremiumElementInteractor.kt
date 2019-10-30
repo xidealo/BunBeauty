@@ -39,13 +39,14 @@ class PremiumElementInteractor(val serviceRepository: ServiceRepository, private
         }
     }
 
-    private fun activatePremium() {
+    fun activatePremium() {
         service.premiumDate = addSevenDayPremium(service)
         serviceRepository.update(service)
     }
-    private fun decrement(count: String): String = (count.toInt() - 1).toString()
 
-    private fun addSevenDayPremium(service: Service): String {
+    fun decrement(count: String): String = (count.toInt() - 1).toString()
+
+    fun addSevenDayPremium(service: Service): String {
         val sysdateLong: Long = if(service.premiumDate == Service.DEFAULT_PREMIUM_DATE){
             WorkWithTimeApi.getSysdateLong() + (86400000 * 7).toLong()
         }else{

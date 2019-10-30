@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.chat.Dialogs;
-import com.bunbeauty.ideal.myapplication.searchService.MainScreen;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 
 
@@ -83,8 +83,8 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
     }
 
     private void goToMainScreen() {
-        if (getContext().getClass() != MainScreen.class) {
-            Intent intent = new Intent(getContext(), MainScreen.class);
+        if (getContext().getClass() != MainScreenActivity.class) {
+            Intent intent = new Intent(getContext(), MainScreenActivity.class);
             mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
             startActivity(intent);
         }
@@ -114,7 +114,7 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
             profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
         }
 
-        if (getContext().getClass() == MainScreen.class) {
+        if (getContext().getClass() == MainScreenActivity.class) {
             mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
         }
 

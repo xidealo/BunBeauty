@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,7 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.chat.Dialogs
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.BaseActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
-import com.bunbeauty.ideal.myapplication.searchService.MainScreen
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 
 class BottomPanel : Panel() {
 
@@ -43,7 +42,7 @@ class BottomPanel : Panel() {
             profileText.setOnClickListener(this)
         }
 
-        if (activity is MainScreen) {
+        if (activity is MainScreenActivity) {
             mainScreenText.setTextColor(ContextCompat.getColor(context!!, R.color.yellow))
         } else {
             mainScreenText.setOnClickListener(this)

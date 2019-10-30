@@ -24,7 +24,7 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 import com.bunbeauty.ideal.myapplication.searchService.GuestService;
-import com.bunbeauty.ideal.myapplication.searchService.MainScreen;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity;
 import com.bunbeauty.ideal.myapplication.searchService.SearchService;
 
 
@@ -185,7 +185,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                             // Если это не редактирование сервиса
                         } else {
                             // Если это главная страница
-                            if (getContext().getClass() == MainScreen.class) {
+                            if (getContext().getClass() == MainScreenActivity.class) {
                                 settingText.setVisibility(View.GONE);
                                 searchText.setVisibility(View.VISIBLE);
                                 searchText.setOnClickListener(this);

@@ -5,7 +5,7 @@ import android.content.Intent
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.bunbeauty.ideal.myapplication.chat.Dialogs
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
-import com.bunbeauty.ideal.myapplication.searchService.MainScreen
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 
 @SuppressLint("Registered")
 open class BaseActivity : MvpAppCompatActivity() {
@@ -15,7 +15,7 @@ open class BaseActivity : MvpAppCompatActivity() {
     }
 
     fun goToMainScreen() {
-        val intent = Intent(this, MainScreen::class.java)
+        val intent = Intent(this, MainScreenActivity::class.java)
         this.startActivity(intent)
     }
 
