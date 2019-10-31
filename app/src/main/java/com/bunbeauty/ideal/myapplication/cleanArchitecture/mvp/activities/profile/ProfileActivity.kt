@@ -8,6 +8,7 @@ import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
+import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.adapters.ServiceProfileAdapter
@@ -19,14 +20,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.BaseActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
-import com.bunbeauty.ideal.myapplication.editing.EditService
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.editing.EditProfile
@@ -38,7 +37,7 @@ import com.squareup.picasso.Picasso
 import java.util.*
 import javax.inject.Inject
 
-class ProfileActivity : BaseActivity(), View.OnClickListener, ProfileView, ISwitcher, IEditableActivity {
+class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView, ISwitcher, IEditableActivity {
 
     private lateinit var nameText: TextView
     private lateinit var cityText: TextView
@@ -56,27 +55,11 @@ class ProfileActivity : BaseActivity(), View.OnClickListener, ProfileView, ISwit
     private lateinit var orderRecyclerView: RecyclerView
     private lateinit var serviceRecyclerView: RecyclerView
 
-    private val manager = supportFragmentManager
-
     @Inject
     lateinit var profileInteractor: ProfileInteractor
 
     @InjectPresenter
     lateinit var profilePresenter: ProfilePresenter
-
-    @Inject
-    lateinit var userRepository: UserRepository
-    @Inject
-    lateinit var userDao: UserDao
-    @Inject
-    lateinit var userFirebaseApi: UserFirebaseApi
-
-    @Inject
-    lateinit var serviceRepository: UserRepository
-    @Inject
-    lateinit var serviceDao: ServiceDao
-    @Inject
-    lateinit var serviceFirebaseApi: UserFirebaseApi
 
     @ProvidePresenter
     internal fun provideProfilePresenter(): ProfilePresenter {
@@ -134,12 +117,13 @@ class ProfileActivity : BaseActivity(), View.OnClickListener, ProfileView, ISwit
 
             R.id.subscriptionsProfileBtn -> goToSubscribers()
 
-            R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
+            R.id.ratingProfileLayout -> goToComments(getOwnerId())
 
-            else -> {
-            }
+            else -> {}
         }
     }
+
+    fun getOwnerId() = profilePresenter.getOwnerId()
 
     override fun showUserInfo(user: User) {
         showProfileText(user.name, user.city, user.phone)
@@ -154,7 +138,7 @@ class ProfileActivity : BaseActivity(), View.OnClickListener, ProfileView, ISwit
     }
 
     override fun showUserServices(serviceList: List<Service>) {
-        val serviceAdapter = ServiceProfileAdapter(serviceList.size, serviceList as ArrayList<Service>)
+        val serviceAdapter = ServiceProfileAdapter(serviceList as ArrayList<Service>)
         serviceRecyclerView.adapter = serviceAdapter
         offProgress()
     }
@@ -289,17 +273,22 @@ class ProfileActivity : BaseActivity(), View.OnClickListener, ProfileView, ISwit
 
     private fun createSwitcher() {
         val switcherElement = SwitcherElement("Записи", "Услуги")
-        val transaction = manager.beginTransaction()
+        val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.switcherProfileLayout, switcherElement)
         transaction.commit()
     }
 
     private fun showTopPanel(userId: String, userName: String) {
         val topPanel = TopPanel()
-        topPanel.title = userName
+
+        if(profilePresenter.isUserOwner()) {
+            topPanel.title = "Профиль"
+        } else {
+            topPanel.title = userName
+        }
         topPanel.entityId = userId
 
-        val transaction = manager.beginTransaction()
+        val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.headerProfileLayout, topPanel)
         transaction.commit()
     }
@@ -307,7 +296,7 @@ class ProfileActivity : BaseActivity(), View.OnClickListener, ProfileView, ISwit
     override fun showBottomPanel() {
         val bottomPanel = BottomPanel()
 
-        val transaction = manager.beginTransaction()
+        val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.bottomProfileLayout, bottomPanel)
         transaction.commit()
     }

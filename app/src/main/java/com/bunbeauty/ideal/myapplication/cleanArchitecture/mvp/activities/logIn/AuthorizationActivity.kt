@@ -21,6 +21,8 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes
 import javax.inject.Inject
 
+
+
 class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, AuthorizationView {
 
     val USER_PHONE = "user phone"
@@ -36,12 +38,6 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
 
     @InjectPresenter
     lateinit var authorizationPresenter: AuthorizationPresenter
-
-    @Inject
-    lateinit var userDao: UserDao
-
-    @Inject
-    lateinit var userRepository: UserRepository
 
     @ProvidePresenter
     internal fun provideAuthorizationPresenter(): AuthorizationPresenter {
@@ -125,6 +121,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
     override fun goToProfile() {
         val intent = Intent(this, ProfileActivity::class.java)
         this.startActivity(intent)
+        finish()
     }
 
     override fun hideKeyboard() {

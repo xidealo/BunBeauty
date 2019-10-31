@@ -32,7 +32,7 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes;
 import com.bunbeauty.ideal.myapplication.other.MyService;
 import com.bunbeauty.ideal.myapplication.reviews.Comments;
-import com.bunbeauty.ideal.myapplication.searchService.GuestService;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
 import com.bunbeauty.ideal.myapplication.subscriptions.Subscribers;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -604,7 +604,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void clearStaticData() {
-        GuestService.serviceIdsFirstSetGS.clear();
+        //ServiceActivity.Companion.getServiceIdsFirstSetGS().clear();
         Comments.serviceIdsFirstSetComments.clear();
         Comments.userIdsFirstSetComments.clear();
         Subscribers.isFirst = true;

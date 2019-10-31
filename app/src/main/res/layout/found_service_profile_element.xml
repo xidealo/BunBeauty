@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/profile_block"
     android:orientation="horizontal"
+    android:layout_margin="5dp"
     android:padding="10dp">
 
     <TextView

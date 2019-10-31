@@ -6,6 +6,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
 import dagger.Component
@@ -32,4 +33,7 @@ interface AppComponent {
 
     fun inject(premiumElementFragment: PremiumElementFragment)
     fun inject(premiumElementPresenter: PremiumElementPresenter)
+
+    fun inject(serviceActivity: ServiceActivity)
+    fun inject(servicePresenter: ServicePresenter)
 }

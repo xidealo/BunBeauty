@@ -20,7 +20,8 @@ data class Service(
 
     companion object {
         const val SERVICES = "services"
-        const val USER_ID = "user_id"
+        const val SERVICE_ID = "service id"
+        const val USER_ID = "user id"
         const val NAME = "name"
         const val ADDRESS = "address"
         const val DESCRIPTION = "description"

@@ -67,8 +67,30 @@ class ServiceFirebaseApi{
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getAllUserServices(userId: String, serviceSubscriber: IServiceSubscriber): List<Service> {
-        //val serviceList: ArrayList<Service> = ArrayList()
+    fun getById(userId:String, serviceId: String, serviceSubscriber: IServiceSubscriber) {
+        val database = FirebaseDatabase.getInstance()
+        val servicesRef = database
+                .getReference(User.USERS)
+                .child(userId)
+                .child(Service.SERVICES)
+                .child(serviceId)
+
+        servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(serviceSnapshot: DataSnapshot) {
+
+                val service = getServiceFromSnapshot(serviceSnapshot)
+                service.userId = userId
+
+                serviceSubscriber.returnService(service)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Some error
+            }
+        })
+    }
+
+    fun getAllUserServices(userId: String, serviceSubscriber: IServiceSubscriber) {
         val database = FirebaseDatabase.getInstance()
         val servicesRef = database
                 .getReference(User.USERS)
@@ -80,19 +102,9 @@ class ServiceFirebaseApi{
 
                 val serviceList: ArrayList<Service> = ArrayList()
                 for (serviceSnapshot in servicesSnapshot.children) {
-                    val service = Service()
 
-                    service.id = serviceSnapshot.key!!
+                    val service = getServiceFromSnapshot(serviceSnapshot)
                     service.userId = userId
-                    service.name = serviceSnapshot.child(Service.NAME).getValue<String>(String::class.java)!!
-                    service.address = serviceSnapshot.child(Service.ADDRESS).getValue<String>(String::class.java)!!
-                    service.description = serviceSnapshot.child(Service.DESCRIPTION).getValue<String>(String::class.java)!!
-                    service.cost = serviceSnapshot.child(Service.COST).getValue<String>(String::class.java)!!
-                    service.countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue<Long>(Long::class.java)!!
-                    service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue<Float>(Float::class.java)!!
-                    service.category = serviceSnapshot.child(Service.CATEGORY).getValue<String>(String::class.java)!!
-                    service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).getValue<String>(String::class.java)!!
-                    service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).getValue<String>(String::class.java)!!
 
                     serviceList.add(service)
                 }
@@ -104,13 +116,29 @@ class ServiceFirebaseApi{
                 // Some error
             }
         })
-
-        return ArrayList()
     }
 
     fun getIdForNew(userId: String): String{
         return FirebaseDatabase.getInstance().getReference(User.USERS)
                 .child(userId)
                 .child(Service.SERVICES).push().key!!
+    }
+
+    private fun getServiceFromSnapshot(serviceSnapshot: DataSnapshot): Service {
+
+        val service = Service()
+
+        service.id = serviceSnapshot.key!!
+        service.name = serviceSnapshot.child(Service.NAME).getValue<String>(String::class.java)!!
+        service.address = serviceSnapshot.child(Service.ADDRESS).getValue<String>(String::class.java)!!
+        service.description = serviceSnapshot.child(Service.DESCRIPTION).getValue<String>(String::class.java)!!
+        service.cost = serviceSnapshot.child(Service.COST).getValue<String>(String::class.java)!!
+        service.countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue<Long>(Long::class.java)!!
+        service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue<Float>(Float::class.java)!!
+        service.category = serviceSnapshot.child(Service.CATEGORY).getValue<String>(String::class.java)!!
+        service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).getValue<String>(String::class.java)!!
+        service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).getValue<String>(String::class.java)!!
+
+        return Service()
     }
 }

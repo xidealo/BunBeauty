@@ -30,14 +30,13 @@ class ServiceRepository(private val serviceDao: ServiceDao,
             serviceDao.update(service)
         }
         serviceFirebaseApi.update(service)
-
     }
 
     override fun get() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getAllUserServices(userId: String, serviceSubscriber: IServiceSubscriber) {
+    override fun getServicesByUserId(userId: String, serviceSubscriber: IServiceSubscriber) {
         this.serviceSubscriber = serviceSubscriber
         val serviceList: ArrayList<Service> = ArrayList()
 
@@ -58,6 +57,28 @@ class ServiceRepository(private val serviceDao: ServiceDao,
             for (service in serviceList) {
                 serviceDao.insert(service)
             }
+        }
+    }
+
+    fun getById(userId: String, serviceId: String, serviceSubscriber: IServiceSubscriber) {
+        this.serviceSubscriber = serviceSubscriber
+        var service: Service? = null
+
+        runBlocking {
+            service = serviceDao.findById(serviceId)
+        }
+
+        if (service == null) {
+            serviceFirebaseApi.getById("", serviceId, this)
+        } else {
+            serviceSubscriber.returnService(service!!)
+        }
+    }
+
+    override fun returnService(service: Service) {
+        serviceSubscriber.returnService(service)
+        launch {
+            serviceDao.insert(service)
         }
     }
 

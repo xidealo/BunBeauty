@@ -9,5 +9,5 @@ interface IServiceRepository {
     fun update(service: Service)
     fun get()
 
-    fun getAllUserServices(userId: String, serviceSubscriber: IServiceSubscriber)
+    fun getServicesByUserId(userId: String, serviceSubscriber: IServiceSubscriber)
 }
