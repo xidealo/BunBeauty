@@ -15,5 +15,4 @@ interface AddingServiceView: MvpView {
     fun showCostInputError(error:String)
     fun showCategoryInputError(error:String)
     fun showAddressInputError(error:String)
-    fun showContinueButton()
 }

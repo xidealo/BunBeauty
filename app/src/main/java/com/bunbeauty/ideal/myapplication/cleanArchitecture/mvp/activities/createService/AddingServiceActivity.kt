@@ -87,8 +87,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
                 .setOnClickListener(this)
         findViewById<TextView>(R.id.servicePhotoAddServiceImage)
                 .setOnClickListener(this)
-        continueButton = findViewById(R.id.continueAddServiceBtn)
-        continueButton.setOnClickListener(this)
 
         nameServiceInput = findViewById(R.id.nameAddServiceInput)
         costAddServiceInput = findViewById(R.id.costAddServiceInput)
@@ -110,7 +108,9 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
                         addressServiceInput.text.toString(),
                         categoryElement.tagsArray)
 
-                addingServicePresenter.addImages(fpathOfImages, service)
+                if(service!=null){
+                    addingServicePresenter.addImages(fpathOfImages, service)
+                }
             }
             R.id.servicePhotoAddServiceImage -> chooseImage()
             else -> {
@@ -138,7 +138,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
                 && data != null && data.data != null) {
-            val filePath = data.data
+            val filePath = data.data!!
             try {
                 //установка картинки на activity
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
@@ -153,7 +153,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     }
 
     // плохое место
-    private fun addImageToScreen(bitmap: Bitmap, filePath: Uri?) {
+    private fun addImageToScreen(bitmap: Bitmap, filePath: Uri) {
         supportFragmentManager
                 .beginTransaction()
                 .add(R.id.feedAddServiceLayout, ServicePhotoElement(bitmap, filePath, "add service"))
@@ -228,10 +228,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     override fun showAddressInputError(error: String) {
         addressServiceInput.error = error
         addressServiceInput.requestFocus()
-    }
-
-    override fun showContinueButton() {
-        continueButton.visibility = View.VISIBLE
     }
 
     companion object {

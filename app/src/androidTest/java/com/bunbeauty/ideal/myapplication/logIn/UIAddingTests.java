@@ -12,10 +12,13 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.CoreMatchers.anything;
 
 public class UIAddingTests {
 
@@ -35,7 +38,7 @@ public class UIAddingTests {
         uiAuthorizationTests.testEnterCodeVerify("123456");
         Thread.sleep(5000);
         goToAddingService();
-        addService();
+        addService("TestName","123456","Test address","Test Description");
         Thread.sleep(10000);
     }
 
@@ -46,7 +49,7 @@ public class UIAddingTests {
         uiAuthorizationTests.testEnterCodeVerify("123456");
         Thread.sleep(5000);
         goToAddingService();
-        addService();
+        addService("TestName","123456","Test address","Test Description");
         Thread.sleep(2000);
         addPremium("bb");
         Thread.sleep(10000);
@@ -59,23 +62,24 @@ public class UIAddingTests {
         onView(withId(R.id.addServicesProfileBtn)).perform(click());
     }
 
-    void addService() throws InterruptedException {
+    void addService(String name, String cost, String address, String description) throws InterruptedException {
         //name
-        String name = "TestName";
         onView(withId(R.id.nameAddServiceInput)).perform(typeText(name));
         // cost
-        String cost = "123456";
         onView(withId(R.id.costAddServiceInput)).perform(typeText(cost));
         //address
-        String address = "Test address";
         onView(withId(R.id.addressAddServiceInput)).perform(typeText(address));
         //description
-        String description = "Test Description";
         onView(withId(R.id.descriptionAddServiceInput)).perform(typeText(description));
-        Thread.sleep(2000);
+        //category
+        onView(withId(R.id.categoryAddServiceLayout)).perform(click());
 
+        onData(anything()).atPosition(1).perform(click());
+        Thread.sleep(2000);
         Espresso.closeSoftKeyboard();
-        onView(withId(R.id.addServiceAddServiceBtn)).perform(click());
+
+        onView(withId(R.id.addServiceAddServiceBtn))
+                .perform(scrollTo(), click());
     }
 
     void addPremium(String premiumCode) throws InterruptedException {

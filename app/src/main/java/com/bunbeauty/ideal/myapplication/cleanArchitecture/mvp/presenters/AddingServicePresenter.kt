@@ -13,15 +13,16 @@ import java.util.*
 @InjectViewState
 class AddingServicePresenter(private val addingServiceInteractor: AddingServiceInteractor) : MvpPresenter<AddingServiceView>() {
 
-    companion object{
+    companion object {
         private const val MAX_COUNT_OF_IMAGES = 10
         private const val WORKER = "worker"
     }
 
-    fun addService(name: String, description: String, cost: String, category: String, address: String, tags: List<String>): Service {
+    fun addService(name: String, description: String, cost: String, category: String, address: String, tags: List<String>): Service? {
         val service = Service()
-        if (isNameCorrect(name) && isDescriptionCorrect(description) && isCostCorrect(cost)
-                && isCategoryCorrect(category) && isAddressCorrect(address)) {
+
+        if (isNameCorrect(name) && isCostCorrect(cost) && isAddressCorrect(address)
+                && isCategoryCorrect(category) && isDescriptionCorrect(description)) {
             service.name = name
             service.description = description
             service.cost = cost
@@ -34,8 +35,10 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             service.userId = addingServiceInteractor.getUserId()
 
             service.id = addingServiceInteractor.addService(service, tags)
+            return service
+        } else {
+            return null
         }
-        return service
     }
 
     fun addImages(fpathOfImages: List<Uri>, service: Service) {
@@ -50,8 +53,8 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             }
             viewState.showAllDone()
             viewState.hideMainBlocks()
+            Thread.sleep(500)
             viewState.showPremiumBlock(service)
-            viewState.showContinueButton()
         } else {
             viewState.showMoreTenImages()
         }
@@ -77,7 +80,7 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
     private fun isDescriptionCorrect(description: String): Boolean {
 
         if (description.isEmpty()) {
-            viewState.showCostInputError("Введите описание сервиса")
+            viewState.showDescriptionInputError("Введите описание сервиса")
             return false
         }
 

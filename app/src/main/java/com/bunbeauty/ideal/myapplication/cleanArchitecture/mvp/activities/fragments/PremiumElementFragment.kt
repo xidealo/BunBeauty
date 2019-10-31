@@ -14,17 +14,11 @@ import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.PremiumElementInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.CodeFirebase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebaseApi
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.CodeDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.PremiumElementFragmentView
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.CodeRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
 import javax.inject.Inject
 
 class PremiumElementFragment @SuppressLint("ValidFragment")
@@ -58,27 +52,13 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
     @Inject
     lateinit var premiumElementInteractor: PremiumElementInteractor
 
-    @Inject
-    lateinit var codeRepository: CodeRepository
-    @Inject
-    lateinit var codeDao: CodeDao
-    @Inject
-    lateinit var codeFirebase: CodeFirebase
-
-    @Inject
-    lateinit var serviceRepository: ServiceRepository
-    @Inject
-    lateinit var serviceDao: ServiceDao
-    @Inject
-    lateinit var serviceFirebaseApi: ServiceFirebaseApi
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.premium_element, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<Button>(R.id.setPremiumPremiumElementBtn).setOnClickListener(this)
+        view.findViewById<Button>(R.id.continuePremiumElementBtn).setOnClickListener(this)
         codeText = view.findViewById(R.id.codePremiumElement)
         premiumText = view.findViewById(R.id.yesPremiumPremiumElementText)
         noPremiumText = view.findViewById(R.id.noPremiumPremiumElementText)
@@ -87,9 +67,14 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
     }
 
     override fun onClick(v: View) {
-        if (v.id == R.id.setPremiumPremiumElementBtn) {
-            code = codeText.text.toString().toLowerCase().trim { it <= ' ' }
-            premiumElementPresenter.setPremium(code, service)
+        when (v.id) {
+            R.id.setPremiumPremiumElementBtn -> {
+                code = codeText.text.toString().toLowerCase().trim { it <= ' ' }
+                premiumElementPresenter.setPremium(code, service)
+            }
+            R.id.continuePremiumElementBtn -> {
+                //go to
+            }
         }
     }
 

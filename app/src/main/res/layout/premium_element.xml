@@ -83,5 +83,15 @@
             android:background="@drawable/premium_button"
             android:text="Получить премиум"
             android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/continuePremiumElementBtn"
+            style="@style/mainButtonOther"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Продолжить" />
+
     </LinearLayout>
 </LinearLayout>

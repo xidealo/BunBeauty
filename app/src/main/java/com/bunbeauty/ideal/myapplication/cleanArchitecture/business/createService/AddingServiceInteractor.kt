@@ -76,7 +76,7 @@ class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
 
     override fun getIsCategoryInputCorrect(city: String): Boolean {
 
-        if (city == "выбрать категорию") {
+        if (city == "Выбрать категорию") {
             return false
         }
         return true
