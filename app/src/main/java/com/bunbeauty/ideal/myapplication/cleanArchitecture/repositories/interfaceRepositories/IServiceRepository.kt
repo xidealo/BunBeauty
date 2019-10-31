@@ -10,6 +10,6 @@ interface IServiceRepository {
     fun get()
 
     fun getAllUserServices(userId: String, serviceSubscriber: IServiceSubscriber)
-    fun getServicesByCity(userCity: String, selectedTagsArray: java.util.ArrayList<String>?)
+    fun getServicesByCityActual(userCity: String)
     fun getServicesByCityAndCategory(userCity: String, category: String, selectedTagsArray: java.util.ArrayList<String>?)
 }

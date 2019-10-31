@@ -15,7 +15,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.*
     Order::class,
     Photo::class,
     Review::class,
-    Code::class], version = 15)
+    Code::class], version = 16)
 abstract class LocalDatabase : RoomDatabase() {
 
     abstract fun getUserDao(): UserDao

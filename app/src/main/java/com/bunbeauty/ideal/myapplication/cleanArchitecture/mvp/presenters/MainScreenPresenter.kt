@@ -9,8 +9,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenV
 class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor): MvpPresenter<MainScreenView>() {
 
 
-    fun createMainScreen(category:String){
-        mainScreenInteractor.getUserId()
+    fun createMainScreen(){
+        mainScreenInteractor.createMainScreen()
+    }
+
+    fun createMainScreenWithCategory(category: String){
 
     }
+
 }

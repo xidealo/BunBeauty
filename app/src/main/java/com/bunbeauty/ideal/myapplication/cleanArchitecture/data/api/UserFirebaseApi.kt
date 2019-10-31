@@ -43,6 +43,8 @@ class UserFirebaseApi {
     }
 
     fun getById(id: String, callback: IUserSubscriber) {
+        Log.d(TAG, "GET BY ID LOL 1 : ")
+
         val database = FirebaseDatabase.getInstance()
         val userRef = database
                 .getReference(User.USERS)
@@ -50,6 +52,7 @@ class UserFirebaseApi {
 
         userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
+                Log.d(TAG, "GET BY ID LOL 2")
                 val user = getUserFromSnapshot(usersSnapshot)
                 callback.returnUser(user)
             }

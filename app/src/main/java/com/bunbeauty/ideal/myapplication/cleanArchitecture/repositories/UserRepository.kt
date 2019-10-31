@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
+import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
@@ -7,7 +8,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IUserRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.function.LongUnaryOperator
 
 class UserRepository(private val userDao: UserDao,
                      private val userFirebaseApi: UserFirebaseApi) : BaseRepository(),
@@ -30,8 +30,6 @@ class UserRepository(private val userDao: UserDao,
         launch {
             userDao.update(user)
         }
-
-        //TODO("not implemented") To change body of created functions use File | Settings | File Templates.
     }
 
     override fun get(): List<User> {
@@ -44,8 +42,11 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
+    private val TAG = "data_layer"
+
     override fun getById(id: String, userSubscriber: IUserSubscriber) {
         this.userSubscriber = userSubscriber
+        Log.d(TAG, "LOL: ")
 
         var user: User? = null
         runBlocking {
@@ -54,6 +55,7 @@ class UserRepository(private val userDao: UserDao,
 
         if (user == null) {
             userFirebaseApi.getById(id, this)
+            Log.d(TAG, "LOLKA: ")
         } else {
             userSubscriber.returnUser(user!!)
         }

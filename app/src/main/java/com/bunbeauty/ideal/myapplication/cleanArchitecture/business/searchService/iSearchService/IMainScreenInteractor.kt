@@ -2,5 +2,5 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServi
 
 interface IMainScreenInteractor {
     fun getUserId():String
-
+    fun createMainScreen()
 }

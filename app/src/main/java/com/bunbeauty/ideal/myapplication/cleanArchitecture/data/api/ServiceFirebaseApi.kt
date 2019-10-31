@@ -104,7 +104,6 @@ class ServiceFirebaseApi{
                 // Some error
             }
         })
-
         return ArrayList()
     }
 

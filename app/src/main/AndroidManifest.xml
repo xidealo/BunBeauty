@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.bunbeauty.ideal.myapplication.searchService.SearchService"/>
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.PickedPhoto"></activity>
+        <activity android:name="com.bunbeauty.ideal.myapplication.searchService.SearchService" />
         <activity android:name="com.bunbeauty.ideal.myapplication.subscriptions.Subscribers" />
         <activity
             android:name="com.bunbeauty.ideal.myapplication.reviews.PickedComment"
@@ -40,24 +41,20 @@
         <activity android:name="com.bunbeauty.ideal.myapplication.editing.EditService" />
         <activity android:name="com.bunbeauty.ideal.myapplication.editing.EditProfile" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity" />
-        
+
         <service
             android:name="com.bunbeauty.ideal.myapplication.other.MyService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service
-            android:name="com.bunbeauty.ideal.myapplication.notifications.MyFirebaseInstanceIdService">
+        <service android:name="com.bunbeauty.ideal.myapplication.notifications.MyFirebaseInstanceIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
-        <service
-            android:name="com.bunbeauty.ideal.myapplication.notifications.MyFirebaseMessagingService">
+        <service android:name="com.bunbeauty.ideal.myapplication.notifications.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>  
+        </service>
     </application>
 
 </manifest>

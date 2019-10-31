@@ -27,11 +27,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainSc
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder
 import com.bunbeauty.ideal.myapplication.helpApi.Search
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import java.util.*
 import javax.inject.Inject
 
@@ -54,7 +49,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private var isUpdated: Boolean = false
     private lateinit var category: String
 
-
     @InjectPresenter
     lateinit var mainScreenPresenter: MainScreenPresenter
     @Inject
@@ -76,9 +70,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
         init()
         showLoading()
-
         createCategoryFeed()
-
         createMainScreen()
     }
 
@@ -86,10 +78,10 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         search = Search(this)
         serviceList = ArrayList()
         userList = ArrayList()
-        //isUpdated = true
+        isUpdated = true
         categories = ArrayList(listOf(*resources.getStringArray(R.array.categories)))
         selectedTagsArray = ArrayList()
-        //categoriesBtns = arrayOfNulls(categories.size)
+        categoriesBtns = arrayOf()
 
         categoryLayout = findViewById(R.id.categoryMainScreenLayout)
         recyclerView = findViewById(R.id.resultsMainScreenRecycleView)
@@ -109,7 +101,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (recyclerView.computeVerticalScrollOffset() == 0 && !isUpdated)
-                //check for scroll down
                 {
                     serviceList.clear()
                     userList.clear()
@@ -118,8 +109,17 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                 }
             }
         })
+
         minimizeTagsBtn.setOnClickListener(this)
         clearTagsBtn.setOnClickListener(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val panelBuilder = PanelBuilder()
+        panelBuilder.buildFooter(supportFragmentManager, R.id.footerMainScreenLayout)
+        panelBuilder.buildHeader(supportFragmentManager, "Главная", R.id.headerMainScreenLayout)
     }
 
     override fun onClick(v: View) {
@@ -144,6 +144,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         showLoading()
 
         val text = tagText.text.toString()
+
         if (selectedTagsArray.contains(text)) {
             tagText.setBackgroundResource(0)
             tagText.setTextColor(Color.GRAY)
@@ -170,17 +171,17 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             if (tagsLayout.visibility == View.VISIBLE) {
                 hideTags()
             } else {
-                showTags()
+                createTags()
             }
         } else {
             showLoading()
             enableCategory(btn)
             category = btn.text.toString()
-            createMainScreen()
+            mainScreenPresenter.createMainScreenWithCategory(category)
         }
     }
 
-    private fun clearCategory() {
+    override fun clearCategory() {
         for (btn in categoriesBtns) {
             if (category == btn.text.toString()) {
                 category = ""
@@ -197,6 +198,10 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         tagsLayout.visibility = View.GONE
     }
 
+    override fun showTags() {
+        tagsLayout.visibility = View.VISIBLE
+    }
+
     override fun enableCategory(button: Button) {
         button.setBackgroundResource(R.drawable.category_button_pressed)
         button.setTextColor(resources.getColor(R.color.black))
@@ -210,7 +215,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         }
         selectedTagsArray.clear()
         category = button.text.toString()
-        showTags()
+        createTags()
     }
 
     override fun disableCategoryBtn(button: Button) {
@@ -243,15 +248,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        val panelBuilder = PanelBuilder()
-        panelBuilder.buildFooter(supportFragmentManager, R.id.footerMainScreenLayout)
-        panelBuilder.buildHeader(supportFragmentManager, "Главная", R.id.headerMainScreenLayout)
-    }
-
     private fun createMainScreen() {
+
+        mainScreenPresenter.createMainScreen()
 
         //get user id
         //получаем город юзера
@@ -285,7 +284,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         return ""
     }
 
-    override fun showTags() {
+    override fun createTags() {
         val tagsArray = resources
                 .obtainTypedArray(R.array.tags_references)
                 .getTextArray(categories.indexOf(category))
@@ -305,11 +304,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                 tagText.setBackgroundResource(R.drawable.category_button_pressed)
                 tagText.setTextColor(Color.BLACK)
             }
-
             innerLayout.addView(tagText)
         }
-
-        tagsLayout.visibility = View.VISIBLE
+        showTags()
     }
 
     companion object {

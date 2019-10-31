@@ -12,7 +12,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dbInstance.LocalDatabase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.*
 import dagger.Module
 import dagger.Provides
@@ -68,5 +67,5 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun providePremiumElementInteractor(serviceRepository: ServiceRepository, codeRepository: CodeRepository): PremiumElementInteractor = PremiumElementInteractor(serviceRepository,codeRepository)
     @Provides
-    fun provideMainScreenInteractor(serviceRepository: ServiceRepository): MainScreenInteractor = MainScreenInteractor(serviceRepository)
+    fun provideMainScreenInteractor(userRepository: UserRepository,serviceRepository: ServiceRepository): MainScreenInteractor = MainScreenInteractor(userRepository,serviceRepository)
 }

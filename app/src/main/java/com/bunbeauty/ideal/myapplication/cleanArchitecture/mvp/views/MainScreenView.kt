@@ -10,4 +10,6 @@ interface MainScreenView: MvpView {
     fun enableCategory(button: Button)
     fun hideTags()
     fun showLoading()
+    fun createTags()
+    fun clearCategory()
 }
