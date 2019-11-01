@@ -35,19 +35,10 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
     private val TAG = "DBInf"
 
     @Inject
-    lateinit var userDao: UserDao
-
-    @Inject
     lateinit var registrationInteractor: RegistrationInteractor
 
     @InjectPresenter
     lateinit var registrationPresenter: RegistrationPresenter
-
-    @Inject
-    lateinit var userFirebaseApi: UserFirebaseApi
-
-    @Inject
-    lateinit var userRepository: UserRepository
 
     @ProvidePresenter
     internal fun provideRegistrationPresenter(): RegistrationPresenter {

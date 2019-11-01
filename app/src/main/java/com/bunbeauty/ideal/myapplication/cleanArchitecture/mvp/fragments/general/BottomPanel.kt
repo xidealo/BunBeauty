@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.chat.Dialogs
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.BaseActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 
@@ -20,9 +20,9 @@ class BottomPanel : Panel() {
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.profileBottomPanelText -> (activity as BaseActivity).goToProfile()
-            R.id.mainScreenBottomPanelText -> (activity as BaseActivity).goToMainScreen()
-            R.id.chatBottomPanelText -> (activity as BaseActivity).goToChat()
+            R.id.profileBottomPanelText -> goToProfile()
+            R.id.mainScreenBottomPanelText -> goToMainScreen()
+            R.id.chatBottomPanelText -> goToChat()
         }
     }
 
@@ -53,5 +53,20 @@ class BottomPanel : Panel() {
         } else {
             chatText.setOnClickListener(this)
         }
+    }
+
+    fun goToProfile() {
+        val intent = Intent(context, ProfileActivity::class.java)
+        this.startActivity(intent)
+    }
+
+    fun goToMainScreen() {
+        val intent = Intent(context, MainScreenActivity::class.java)
+        this.startActivity(intent)
+    }
+
+    fun goToChat() {
+        val intent = Intent(context, Dialogs::class.java)
+        this.startActivity(intent)
     }
 }

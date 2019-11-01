@@ -39,6 +39,9 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
     @InjectPresenter
     lateinit var premiumElementPresenter: PremiumElementPresenter
 
+    @Inject
+    lateinit var premiumElementInteractor: PremiumElementInteractor
+
     @ProvidePresenter
     internal fun provideElementPresenter(): PremiumElementPresenter {
         DaggerAppComponent
@@ -48,9 +51,6 @@ constructor() : MvpAppCompatFragment(), View.OnClickListener, PremiumElementFrag
 
         return PremiumElementPresenter(premiumElementInteractor)
     }
-
-    @Inject
-    lateinit var premiumElementInteractor: PremiumElementInteractor
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.premium_element, null)

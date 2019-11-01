@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Order;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
-import com.bunbeauty.ideal.myapplication.searchService.GuestService;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
 
 public class FoundOrderElement implements View.OnClickListener {
 
@@ -69,7 +69,7 @@ public class FoundOrderElement implements View.OnClickListener {
     }
 
     private void goToGuestService(){
-        Intent intent = new Intent(context, GuestService.class);
+        Intent intent = new Intent(context, ServiceActivity.class);
         intent.putExtra(SERVICE_ID, orderId);
         context.startActivity(intent);
     }

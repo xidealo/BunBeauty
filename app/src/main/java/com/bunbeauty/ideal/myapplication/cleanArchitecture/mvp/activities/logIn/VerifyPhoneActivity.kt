@@ -129,6 +129,7 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
     override fun goToProfile() {
         val intent = Intent(this, ProfileActivity::class.java)
         this.startActivity(intent)
+        finish()
     }
 
     companion object {

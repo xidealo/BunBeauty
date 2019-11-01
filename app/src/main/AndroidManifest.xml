@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.android.ideal.myapplication">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <application
         android:name="com.bunbeauty.ideal.myapplication.other.App"
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/BunBeauty"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.PickedPhoto"></activity>
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.bunbeauty.ideal.myapplication.searchService.SearchService" />
         <activity android:name="com.bunbeauty.ideal.myapplication.subscriptions.Subscribers" />
         <activity
@@ -34,8 +33,9 @@
         </activity>
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.searchService.GuestService" />
+
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.createService.MyTime" />
         <activity android:name="com.bunbeauty.ideal.myapplication.createService.MyCalendar" />
         <activity android:name="com.bunbeauty.ideal.myapplication.editing.EditService" />

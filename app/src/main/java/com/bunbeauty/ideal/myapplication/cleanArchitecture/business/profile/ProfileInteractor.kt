@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
 import android.content.Intent
+import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
@@ -18,12 +19,11 @@ class ProfileInteractor(private val userRepository: UserRepository,
                         private val serviceRepository: ServiceRepository,
                         private val intent: Intent) : BaseRepository(),
         IProfileInteractor, IUserSubscriber, IServiceSubscriber {
-    override fun loadProfile(ownerId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     private val OWNER_ID = "owner id"
     private val TOKEN = "token"
+    private val TAG = "DBInf"
+    private var i = 0
 
     lateinit var profileCallback: ProfileCallback
 
@@ -31,13 +31,23 @@ class ProfileInteractor(private val userRepository: UserRepository,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun loadProfile(ownerId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getCountOfRates(): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun returnService(service: Service) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun isFirstEnter() = (intent.getStringExtra(OWNER_ID) == null)
 
     override fun getUserId(): String {
+        i++
+        Log.d(TAG, "$i - ")
         return FirebaseAuth.getInstance().currentUser!!.uid
     }
 
@@ -69,7 +79,7 @@ class ProfileInteractor(private val userRepository: UserRepository,
     override fun getProfileServiceList(profileCallback: ProfileCallback) {
         this.profileCallback = profileCallback
 
-        serviceRepository.getAllUserServices(getOwnerId(), this)
+        serviceRepository.getServicesByUserId(getOwnerId(), this)
     }
 
     override fun returnUser(user: User) {

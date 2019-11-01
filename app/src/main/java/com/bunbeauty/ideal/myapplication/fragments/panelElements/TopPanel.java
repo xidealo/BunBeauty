@@ -23,10 +23,9 @@ import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
-import com.bunbeauty.ideal.myapplication.searchService.GuestService;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
 import com.bunbeauty.ideal.myapplication.searchService.SearchService;
-
 
 public class TopPanel extends Fragment implements View.OnClickListener {
 
@@ -146,7 +145,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                 countOfSubsText.setVisibility(View.VISIBLE);
             } else {
                 // Если это страница сервиса
-                if (getContext().getClass() == GuestService.class) {
+                if (getContext().getClass() == ServiceActivity.class) {
                     // Если это мой сервис
                     if (isMyService) {
                         // Если это чужой сервис
@@ -249,7 +248,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
         }
         Class currentClass = getContext().getClass();
         // сервис
-        if (currentClass == GuestService.class) {
+        if (currentClass == ServiceActivity.class) {
             if (isMyService) {
                 goToEditService();
                 return;

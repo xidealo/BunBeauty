@@ -9,6 +9,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.Regist
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dbInstance.LocalDatabase
@@ -18,7 +19,8 @@ import dagger.Provides
 
 @Module
 class AppModule(private val app: Application, private val intent: Intent) {
-    //FIREBASE API
+
+    // FIREBASE API
     @Provides
     fun provideUserFirebaseApi(): UserFirebaseApi = UserFirebaseApi()
     @Provides
@@ -29,6 +31,7 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun providePhotoFirebase(): PhotoFirebase= PhotoFirebase()
     @Provides
     fun provideCodeFirebase(): CodeFirebase = CodeFirebase()
+
     // DAO
     @Provides
     fun provideUserDao(): UserDao = LocalDatabase.getDatabase(app).getUserDao()
@@ -43,29 +46,44 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     //REPOSITORIES
     @Provides
-    fun provideUserRepository(userDao: UserDao, userFirebaseApi: UserFirebaseApi): UserRepository = UserRepository(userDao, userFirebaseApi)
+    fun provideUserRepository(userDao: UserDao, userFirebaseApi: UserFirebaseApi): UserRepository =
+            UserRepository(userDao, userFirebaseApi)
     @Provides
-    fun provideServiceRepository(serviceDao: ServiceDao, serviceFirebaseApi: ServiceFirebaseApi): ServiceRepository = ServiceRepository(serviceDao, serviceFirebaseApi)
+    fun provideServiceRepository(serviceDao: ServiceDao, serviceFirebaseApi: ServiceFirebaseApi): ServiceRepository =
+            ServiceRepository(serviceDao, serviceFirebaseApi)
     @Provides
-    fun provideTagRepository(tagDao: TagDao, tagFirebase: TagFirebase): TagRepository = TagRepository(tagDao,tagFirebase)
+    fun provideTagRepository(tagDao: TagDao, tagFirebase: TagFirebase): TagRepository =
+            TagRepository(tagDao,tagFirebase)
     @Provides
-    fun providePhotoRepository(photoDao: PhotoDao, photoFirebase: PhotoFirebase): PhotoRepository = PhotoRepository(photoDao,photoFirebase)
+    fun providePhotoRepository(photoDao: PhotoDao, photoFirebase: PhotoFirebase): PhotoRepository =
+            PhotoRepository(photoDao,photoFirebase)
     @Provides
-    fun provideCodeRepository(codeDao: CodeDao, codeFirebase: CodeFirebase): CodeRepository = CodeRepository(codeDao,codeFirebase)
+    fun provideCodeRepository(codeDao: CodeDao, codeFirebase: CodeFirebase): CodeRepository =
+            CodeRepository(codeDao,codeFirebase)
 
     // INTERACTORS
     @Provides
-    fun provideAuthorizationInteractor(userRepository: UserRepository): AuthorizationInteractor = AuthorizationInteractor(userRepository, intent)
+    fun provideAuthorizationInteractor(userRepository: UserRepository): AuthorizationInteractor =
+            AuthorizationInteractor(userRepository, intent)
     @Provides
-    fun provideVerifyPhoneInteractor(userRepository: UserRepository): VerifyPhoneInteractor = VerifyPhoneInteractor(userRepository, intent)
+    fun provideVerifyPhoneInteractor(userRepository: UserRepository): VerifyPhoneInteractor =
+            VerifyPhoneInteractor(userRepository, intent)
     @Provides
-    fun provideRegistrationInteractor(userRepository: UserRepository): RegistrationInteractor = RegistrationInteractor(userRepository, intent)
+    fun provideRegistrationInteractor(userRepository: UserRepository): RegistrationInteractor =
+            RegistrationInteractor(userRepository, intent)
     @Provides
-    fun provideProfileInteractor(userRepository: UserRepository, serviceRepository: ServiceRepository): ProfileInteractor = ProfileInteractor(userRepository,serviceRepository, intent)
+    fun provideProfileInteractor(userRepository: UserRepository, serviceRepository: ServiceRepository): ProfileInteractor =
+            ProfileInteractor(userRepository,serviceRepository, intent)
     @Provides
-    fun provideAddingServiceInteractor(serviceRepository: ServiceRepository, tagRepository: TagRepository, photoRepository: PhotoRepository): AddingServiceInteractor = AddingServiceInteractor(serviceRepository, tagRepository,photoRepository)
+    fun provideAddingServiceInteractor(serviceRepository: ServiceRepository, tagRepository: TagRepository, photoRepository: PhotoRepository): AddingServiceInteractor =
+            AddingServiceInteractor(serviceRepository, tagRepository,photoRepository)
     @Provides
-    fun providePremiumElementInteractor(serviceRepository: ServiceRepository, codeRepository: CodeRepository): PremiumElementInteractor = PremiumElementInteractor(serviceRepository,codeRepository)
+    fun providePremiumElementInteractor(serviceRepository: ServiceRepository, codeRepository: CodeRepository): PremiumElementInteractor =
+            PremiumElementInteractor(serviceRepository,codeRepository)
     @Provides
-    fun provideMainScreenInteractor(userRepository: UserRepository,serviceRepository: ServiceRepository): MainScreenInteractor = MainScreenInteractor(userRepository,serviceRepository)
+    fun provideMainScreenInteractor(userRepository: UserRepository,serviceRepository: ServiceRepository): MainScreenInteractor =
+            MainScreenInteractor(userRepository,serviceRepository)
+    @Provides
+    fun provideServiceInteractor(userRepository: UserRepository, serviceRepository: ServiceRepository): ServiceInteractor =
+            ServiceInteractor(userRepository,serviceRepository, intent)
 }

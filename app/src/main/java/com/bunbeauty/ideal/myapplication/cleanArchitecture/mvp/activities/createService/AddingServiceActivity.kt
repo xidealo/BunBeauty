@@ -46,6 +46,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
 
     private lateinit var categoryElement: CategoryElement
     private lateinit var continueButton: Button
+
     @InjectPresenter
     lateinit var addingServicePresenter: AddingServicePresenter
 
@@ -61,19 +62,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
 
     @Inject
     lateinit var addingServiceInteractor: AddingServiceInteractor
-    @Inject
-    lateinit var serviceRepository: ServiceRepository
-    @Inject
-    lateinit var serviceDao: ServiceDao
-    @Inject
-    lateinit var serviceFirebaseApi: ServiceFirebaseApi
-
-    @Inject
-    lateinit var tagRepository: TagRepository
-    @Inject
-    lateinit var tagDao: TagDao
-    @Inject
-    lateinit var tagFirebase: TagFirebase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mainColorBG"
-    tools:context="com.bunbeauty.ideal.myapplication.searchService.GuestService">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity">
 
     <LinearLayout
         android:id="@+id/headerGuestServiceLayout"
@@ -23,7 +23,8 @@
         app:layout_constraintBottom_toTopOf="@+id/footerGuestServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerGuestServiceLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/headerGuestServiceLayout"
+        android:visibility="gone"/>
 
     <ScrollView
         android:id="@+id/guestServiceMainScroll"

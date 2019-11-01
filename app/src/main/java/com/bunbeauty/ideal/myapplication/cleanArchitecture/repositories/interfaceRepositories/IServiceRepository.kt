@@ -9,7 +9,7 @@ interface IServiceRepository {
     fun update(service: Service)
     fun get()
 
-    fun getAllUserServices(userId: String, serviceSubscriber: IServiceSubscriber)
     fun getServicesByCityActual(userCity: String)
     fun getServicesByCityAndCategory(userCity: String, category: String, selectedTagsArray: java.util.ArrayList<String>?)
+    fun getServicesByUserId(userId: String, serviceSubscriber: IServiceSubscriber)
 }

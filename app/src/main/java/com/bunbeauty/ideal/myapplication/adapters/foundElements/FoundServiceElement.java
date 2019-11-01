@@ -19,7 +19,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
-import com.bunbeauty.ideal.myapplication.searchService.GuestService;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
 
 public class FoundServiceElement implements View.OnClickListener {
 
@@ -123,7 +123,7 @@ public class FoundServiceElement implements View.OnClickListener {
     }
 
     private void goToGuestService() {
-        Intent intent = new Intent(context, GuestService.class);
+        Intent intent = new Intent(context, ServiceActivity.class);
         intent.putExtra(SERVICE_ID, serviceId);
         context.startActivity(intent);
     }

@@ -6,9 +6,10 @@ import java.util.Date;
 
 public class WorkWithStringsApi {
 
-    public WorkWithStringsApi(){
+    public WorkWithStringsApi() {
     }
-    static public String cutString (String text, int limit) {
+
+    static public String cutString(String text, int limit) {
         if (text.length() > limit) {
             return text.substring(0, limit).trim() + "...";
         } else {
@@ -30,7 +31,7 @@ public class WorkWithStringsApi {
 
     static public String dateTimeToUserFormat(String dateTime) {
 
-        SimpleDateFormat databaseFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat databaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Date parsingDate = null;
         try {
@@ -39,10 +40,10 @@ public class WorkWithStringsApi {
             e.printStackTrace();
         }
         String month = dateTime.split("-")[1];
-        SimpleDateFormat userFormat = new SimpleDateFormat ("dd '" + monthToString(month) + "' HH:mm:ss");
+        SimpleDateFormat userFormat = new SimpleDateFormat("dd '" + monthToString(month) + "' HH:mm:ss");
         String userDateTime = userFormat.format(parsingDate);
 
-        if(userDateTime.charAt(0)=='0') {
+        if (userDateTime.charAt(0) == '0') {
             userDateTime = userDateTime.substring(1);
         }
 
@@ -51,7 +52,7 @@ public class WorkWithStringsApi {
 
     static public String dateToUserFormat(String date) {
 
-        SimpleDateFormat databaseFormat = new SimpleDateFormat ("yyyy-MM-dd");
+        SimpleDateFormat databaseFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         Date parsingDate = null;
         try {
@@ -60,10 +61,10 @@ public class WorkWithStringsApi {
             e.printStackTrace();
         }
         String month = date.split("-")[1];
-        SimpleDateFormat userFormat = new SimpleDateFormat ("dd '" + monthToString(month) + "'");
+        SimpleDateFormat userFormat = new SimpleDateFormat("dd '" + monthToString(month) + "'");
         String userDate = userFormat.format(parsingDate);
 
-        if(userDate.charAt(0)=='0') {
+        if (userDate.charAt(0) == '0') {
             userDate = userDate.substring(1);
         }
 
@@ -130,12 +131,17 @@ public class WorkWithStringsApi {
         return "";
     }
 
-    static public String firstCapitalSymbol(String text){
-        return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
+    static public String firstCapitalSymbol(String text) {
+        if (text.length() > 1) {
+            return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
+        } else {
+            return text;
+        }
     }
-    public static String doubleCapitalSymbols(String text){
+
+    public static String doubleCapitalSymbols(String text) {
         String[] names = text.split(" ");
-        if (names.length >1) {
+        if (names.length > 1) {
             for (int i = 0; i < names.length; i++) {
                 names[i] = names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
             }
