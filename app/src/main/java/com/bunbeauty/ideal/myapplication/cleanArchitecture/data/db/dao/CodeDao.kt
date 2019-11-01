@@ -5,7 +5,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Code
 
 @Dao
 interface CodeDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(code: Code)
 
     @Update
