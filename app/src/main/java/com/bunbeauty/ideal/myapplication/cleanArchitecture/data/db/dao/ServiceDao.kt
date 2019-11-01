@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao
 
 import androidx.room.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 
 @Dao
 interface ServiceDao {
@@ -16,7 +15,7 @@ interface ServiceDao {
     @Query("SELECT * FROM service WHERE userId = :userId")
     suspend fun findAllByUserId(userId: String?): List<Service>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(service: Service)
 
     @Update

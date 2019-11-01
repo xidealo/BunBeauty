@@ -15,7 +15,7 @@ interface UserDao {
     @Query("SELECT * FROM user WHERE phone = :phone")
     suspend fun getByPhoneNumber(phone: String): User?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: User)
 
     @Update

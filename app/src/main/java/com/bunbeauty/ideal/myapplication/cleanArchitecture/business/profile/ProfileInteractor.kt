@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
 import android.content.Intent
-import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
@@ -19,11 +18,7 @@ class ProfileInteractor(private val userRepository: UserRepository,
                         private val serviceRepository: ServiceRepository,
                         private val intent: Intent) : BaseRepository(),
         IProfileInteractor, IUserSubscriber, IServiceSubscriber {
-
-    private val OWNER_ID = "owner id"
-    private val TOKEN = "token"
     private val TAG = "DBInf"
-    private var i = 0
 
     lateinit var profileCallback: ProfileCallback
 
@@ -46,8 +41,6 @@ class ProfileInteractor(private val userRepository: UserRepository,
     override fun isFirstEnter() = (intent.getStringExtra(OWNER_ID) == null)
 
     override fun getUserId(): String {
-        i++
-        Log.d(TAG, "$i - ")
         return FirebaseAuth.getInstance().currentUser!!.uid
     }
 
@@ -73,7 +66,7 @@ class ProfileInteractor(private val userRepository: UserRepository,
     override fun getProfileOwner(profileCallback: ProfileCallback) {
         this.profileCallback = profileCallback
 
-        userRepository.getById(getOwnerId(), this)
+        userRepository.getById(getOwnerId(), this, isFirstEnter(getOwnerId()))
     }
 
     override fun getProfileServiceList(profileCallback: ProfileCallback) {
@@ -82,11 +75,25 @@ class ProfileInteractor(private val userRepository: UserRepository,
         serviceRepository.getServicesByUserId(getOwnerId(), this)
     }
 
-    override fun returnUser(user: User) {
+    private fun isFirstEnter(id:String):Boolean{
+        if(idS.contains(id)){
+            return false
+        }
+        idS.add(id)
+        return true
+    }
+
+    override fun returnUserAdded(user: User) {
         profileCallback.callbackGetUser(user)
     }
 
     override fun returnServiceList(serviceList: List<Service>) {
         profileCallback.callbackGetServiceList(serviceList)
+    }
+
+    companion object{
+        const val OWNER_ID = "owner id"
+        const val TOKEN = "token"
+        val idS = arrayListOf<String>()
     }
 }

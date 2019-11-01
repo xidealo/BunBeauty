@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.google.firebase.database.DataSnapshot
@@ -39,32 +38,31 @@ class UserFirebaseApi {
         items[User.COUNT_OF_SUBSCRIBERS] = user.subscribersCount
         items[User.COUNT_OF_SUBSCRIPTIONS] = user.subscriptionsCount
         myRef.updateChildren(items)
-        Log.d(TAG, "User has been inserted")
     }
 
     fun getById(id: String, callback: IUserSubscriber) {
-        Log.d(TAG, "GET BY ID LOL 1 : ")
 
-        val database = FirebaseDatabase.getInstance()
-        val userRef = database
+        val userRef =  FirebaseDatabase.getInstance()
                 .getReference(User.USERS)
                 .child(id)
 
         userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
-                Log.d(TAG, "GET BY ID LOL 2")
                 val user = getUserFromSnapshot(usersSnapshot)
-                callback.returnUser(user)
+                callback.returnUserAdded(user)
             }
 
-            override fun onCancelled(error: DatabaseError) {
+            override fun onCancelled(databaseError: DatabaseError) {
                 // Some error
             }
         })
+
     }
 
     fun getByPhoneNumber(phoneNumber: String, callback: IUserSubscriber) {
-        val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS).orderByChild(User.PHONE).equalTo(phoneNumber)
+        val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
+                .orderByChild(User.PHONE)
+                .equalTo(phoneNumber)
 
         userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
@@ -72,7 +70,7 @@ class UserFirebaseApi {
                 if (usersSnapshot.childrenCount > 0L) {
                     user = getUserFromSnapshot(usersSnapshot.children.iterator().next())
                 }
-                callback.returnUser(user)
+                callback.returnUserAdded(user)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

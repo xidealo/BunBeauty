@@ -14,12 +14,14 @@ class MainScreenInteractor(val userRepository: UserRepository,
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
     override fun createMainScreen() {
-        userRepository.getById(getUserId(),this)
+        //userRepository.getById(getUserId(),this)
     }
 
-    override fun returnUser(user: User){
-        //serviceRepository.getServicesByCity(user.city)
+
+    override fun returnUserAdded(user: User) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
 
 
 }

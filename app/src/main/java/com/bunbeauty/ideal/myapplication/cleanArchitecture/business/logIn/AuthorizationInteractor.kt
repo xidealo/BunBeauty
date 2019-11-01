@@ -17,7 +17,7 @@ class AuthorizationInteractor(private val userRepository: UserRepository,
     val TAG = "DBInf"
     //val USER_PHONE = "user phone"
 
-    lateinit var authorizationCallback: AuthorizationCallback
+    private lateinit var authorizationCallback: AuthorizationCallback
 
     override fun getCurrentFbUser(): FirebaseUser? {
         return FirebaseAuth.getInstance().currentUser
@@ -34,12 +34,13 @@ class AuthorizationInteractor(private val userRepository: UserRepository,
         userRepository.getByPhoneNumber(userPhone, this)
     }
 
-    override fun returnUser(user: User) {
+    override fun returnUserAdded(user: User) {
         if (user.name.isEmpty()) {
             authorizationCallback.goToRegistration(user.phone)
         } else {
             authorizationCallback.goToProfile()
         }
     }
+
 
 }

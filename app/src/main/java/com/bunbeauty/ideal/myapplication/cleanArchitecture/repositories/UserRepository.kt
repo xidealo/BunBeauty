@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
-import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
@@ -12,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 class UserRepository(private val userDao: UserDao,
                      private val userFirebaseApi: UserFirebaseApi) : BaseRepository(),
         IUserRepository, IUserSubscriber {
+
 
     lateinit var userSubscriber: IUserSubscriber
 
@@ -44,20 +44,17 @@ class UserRepository(private val userDao: UserDao,
 
     private val TAG = "data_layer"
 
-    override fun getById(id: String, userSubscriber: IUserSubscriber) {
-        this.userSubscriber = userSubscriber
-        Log.d(TAG, "LOL: ")
-
+    override fun getById(id: String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
         var user: User? = null
-        runBlocking {
-            user = userDao.getById(id)
-        }
+        this.userSubscriber = userSubscriber
 
-        if (user == null) {
+        if (isFirstEnter) {
             userFirebaseApi.getById(id, this)
-            Log.d(TAG, "LOLKA: ")
         } else {
-            userSubscriber.returnUser(user!!)
+            runBlocking {
+                user = userDao.getById(id)
+            }
+            userSubscriber.returnUserAdded(user!!)
         }
     }
 
@@ -72,16 +69,19 @@ class UserRepository(private val userDao: UserDao,
         if (user == null) {
             userFirebaseApi.getByPhoneNumber(phoneNumber, this)
         } else {
-            userSubscriber.returnUser(user!!)
+            userSubscriber.returnUserAdded(user!!)
         }
     }
 
-    override fun returnUser(user: User) {
-        userSubscriber.returnUser(user)
+    override fun returnUserAdded(user: User) {
+        userSubscriber.returnUserAdded(user)
+
         if (user.name.isNotEmpty()) {
             launch {
                 userDao.insert(user)
             }
         }
     }
+
+
 }

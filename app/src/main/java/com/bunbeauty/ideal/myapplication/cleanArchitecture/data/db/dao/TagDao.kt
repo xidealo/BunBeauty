@@ -5,7 +5,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Tag
 
 @Dao
 interface TagDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(tag: Tag)
 
     @Update
