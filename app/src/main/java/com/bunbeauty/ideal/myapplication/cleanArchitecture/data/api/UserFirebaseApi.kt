@@ -49,7 +49,7 @@ class UserFirebaseApi {
         userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
                 val user = getUserFromSnapshot(usersSnapshot)
-                callback.returnUserAdded(user)
+                callback.returnAddedUser(user)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -70,7 +70,7 @@ class UserFirebaseApi {
                 if (usersSnapshot.childrenCount > 0L) {
                     user = getUserFromSnapshot(usersSnapshot.children.iterator().next())
                 }
-                callback.returnUserAdded(user)
+                callback.returnAddedUser(user)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

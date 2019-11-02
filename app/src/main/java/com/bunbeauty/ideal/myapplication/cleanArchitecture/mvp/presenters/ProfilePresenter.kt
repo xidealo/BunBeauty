@@ -48,9 +48,4 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor):
     override fun callbackGetServiceList(serviceList: List<Service>) {
         viewState.showUserServices(serviceList)
     }
-
-
-
-
-
 }

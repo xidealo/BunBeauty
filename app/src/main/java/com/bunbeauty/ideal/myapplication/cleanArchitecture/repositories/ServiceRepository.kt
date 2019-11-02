@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
+import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
@@ -16,6 +17,7 @@ import kotlinx.coroutines.runBlocking
 class ServiceRepository(private val serviceDao: ServiceDao,
                         private val serviceFirebaseApi: ServiceFirebaseApi) : BaseRepository(),
         IServiceRepository, IServiceSubscriber {
+
 
     private lateinit var serviceSubscriber: IServiceSubscriber
 
@@ -41,28 +43,27 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getServicesByUserId(userId: String, serviceSubscriber: IServiceSubscriber) {
+    override fun getServicesByUserId(userId: String, serviceSubscriber: IServiceSubscriber, isFirstEnter: Boolean) {
         this.serviceSubscriber = serviceSubscriber
         val serviceList: ArrayList<Service> = ArrayList()
 
-        runBlocking {
-            serviceList.addAll(serviceDao.findAllByUserId(userId))
-        }
-
-        if (serviceList.isEmpty()) {
+        if (isFirstEnter) {
             serviceFirebaseApi.getAllUserServices(userId, this)
         } else {
+            runBlocking {
+                serviceList.addAll(serviceDao.findAllByUserId(userId))
+            }
             serviceSubscriber.returnServiceList(serviceList)
         }
     }
 
     override fun returnServiceList(serviceList: List<Service>) {
-        serviceSubscriber.returnServiceList(serviceList)
+        /*serviceSubscriber.returnServiceList(serviceList)
         launch {
             for (service in serviceList) {
                 serviceDao.insert(service)
             }
-        }
+        }*/
     }
 
     override fun getServicesByCityActual(userCity: String) {
@@ -126,12 +127,17 @@ class ServiceRepository(private val serviceDao: ServiceDao,
     }
 
     override fun returnService(service: Service) {
-        serviceSubscriber.returnService(service)
-        launch {
+        runBlocking {
             serviceDao.insert(service)
         }
+        Log.d(TAG, service.name)
+        getServicesByUserId(service.userId, serviceSubscriber, false)
     }
 
     fun getIdForNew(userId: String): String = serviceFirebaseApi.getIdForNew(userId)
+
+    companion object{
+        const val TAG = "DBInf"
+    }
 
 }

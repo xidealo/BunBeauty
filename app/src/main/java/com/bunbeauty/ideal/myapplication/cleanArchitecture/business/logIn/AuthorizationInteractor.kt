@@ -34,7 +34,7 @@ class AuthorizationInteractor(private val userRepository: UserRepository,
         userRepository.getByPhoneNumber(userPhone, this)
     }
 
-    override fun returnUserAdded(user: User) {
+    override fun returnAddedUser(user: User) {
         if (user.name.isEmpty()) {
             authorizationCallback.goToRegistration(user.phone)
         } else {

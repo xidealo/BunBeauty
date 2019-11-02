@@ -113,13 +113,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
             R.id.subscriptionsProfileBtn -> goToSubscribers()
 
-            R.id.ratingProfileLayout -> goToComments(getOwnerId())
+            R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
 
             else -> {}
         }
     }
-
-    fun getOwnerId() = profilePresenter.getOwnerId()
 
     override fun showUserInfo(user: User) {
         showProfileText(user.name, user.city, user.phone)
@@ -134,6 +132,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showUserServices(serviceList: List<Service>) {
+        //serviceRecyclerView.adapter = null
         val serviceAdapter = ServiceProfileAdapter(serviceList as ArrayList<Service>)
         serviceRecyclerView.adapter = serviceAdapter
         offProgress()
@@ -321,7 +320,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun goToEditing(id: String) {
         val intent = Intent(this, EditProfile::class.java)
-        intent.putExtra(USER_ID, id)
+        intent.putExtra(User.USER_ID, id)
         this.startActivity(intent)
     }
 
@@ -352,9 +351,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         private val SERVICE_OWNER_ID = "service owner id"
         private val TYPE = "type"
         private val STATUS = "status"
-        private val USER_ID = "user id"
-
-        private val userIdsFirstSetProfile = ArrayList<String>()
     }
 
 }

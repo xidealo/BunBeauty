@@ -40,7 +40,7 @@ class ServiceInteractor(private val userRepository: UserRepository,
        serviceCallback.callbackGetService(service)
     }
 
-    override fun returnUserAdded(user: User) {
+    override fun returnAddedUser(user: User) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

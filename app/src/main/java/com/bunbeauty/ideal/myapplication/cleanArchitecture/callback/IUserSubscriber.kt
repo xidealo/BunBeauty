@@ -3,5 +3,5 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 
 interface IUserSubscriber {
-    fun returnUserAdded(user: User)
+    fun returnAddedUser(user: User)
 }

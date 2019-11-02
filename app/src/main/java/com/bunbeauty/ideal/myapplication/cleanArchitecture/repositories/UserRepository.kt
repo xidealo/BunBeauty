@@ -54,7 +54,7 @@ class UserRepository(private val userDao: UserDao,
             runBlocking {
                 user = userDao.getById(id)
             }
-            userSubscriber.returnUserAdded(user!!)
+            userSubscriber.returnAddedUser(user!!)
         }
     }
 
@@ -69,12 +69,12 @@ class UserRepository(private val userDao: UserDao,
         if (user == null) {
             userFirebaseApi.getByPhoneNumber(phoneNumber, this)
         } else {
-            userSubscriber.returnUserAdded(user!!)
+            userSubscriber.returnAddedUser(user!!)
         }
     }
 
-    override fun returnUserAdded(user: User) {
-        userSubscriber.returnUserAdded(user)
+    override fun returnAddedUser(user: User) {
+        userSubscriber.returnAddedUser(user)
 
         if (user.name.isNotEmpty()) {
             launch {

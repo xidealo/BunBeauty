@@ -4,10 +4,7 @@ import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -97,25 +94,31 @@ class ServiceFirebaseApi{
                 .child(userId)
                 .child(Service.SERVICES)
 
-        servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(servicesSnapshot: DataSnapshot) {
+        servicesRef.addChildEventListener(object : ChildEventListener {
 
-                val serviceList: ArrayList<Service> = ArrayList()
-                for (serviceSnapshot in servicesSnapshot.children) {
-
-                    val service = getServiceFromSnapshot(serviceSnapshot)
-                    service.userId = userId
-
-                    serviceList.add(service)
-                }
-
-                serviceSubscriber.returnServiceList(serviceList)
+            override fun onChildAdded(serviceSnapshot: DataSnapshot, pChildName: String?) {
+                returnService(serviceSnapshot, userId, serviceSubscriber)
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Some error
+            override fun onChildChanged(serviceSnapshot: DataSnapshot, pChildName: String?) {
+                returnService(serviceSnapshot, userId, serviceSubscriber)
             }
+
+            override fun onChildRemoved(serviceSnapshot: DataSnapshot) {}
+
+            override fun onChildMoved(serviceSnapshot: DataSnapshot, pChildName: String?) {}
+
+            override fun onCancelled(error: DatabaseError) {}
         })
+
+
+    }
+
+    private fun returnService(serviceSnapshot: DataSnapshot, userId: String, serviceSubscriber: IServiceSubscriber) {
+        val service = getServiceFromSnapshot(serviceSnapshot)
+        service.userId = userId
+
+        serviceSubscriber.returnService(service)
     }
 
     fun getIdForNew(userId: String): String{
@@ -139,6 +142,6 @@ class ServiceFirebaseApi{
         service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).getValue<String>(String::class.java)!!
         service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).getValue<String>(String::class.java)!!
 
-        return Service()
+        return service
     }
 }

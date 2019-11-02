@@ -33,7 +33,7 @@ class FoundServiceProfileElement(private val service: Service,
     private fun goToGuestService() {
         val intent = Intent(context, ServiceActivity::class.java)
         intent.putExtra(Service.SERVICE_ID, service.id)
-        intent.putExtra(Service.USER_ID, (context as ProfileActivity).getOwnerId())
+        intent.putExtra(Service.USER_ID, service.userId)
         context.startActivity(intent)
     }
 

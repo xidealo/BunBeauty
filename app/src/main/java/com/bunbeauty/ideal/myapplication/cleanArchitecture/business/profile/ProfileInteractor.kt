@@ -34,10 +34,6 @@ class ProfileInteractor(private val userRepository: UserRepository,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun returnService(service: Service) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun isFirstEnter() = (intent.getStringExtra(OWNER_ID) == null)
 
     override fun getUserId(): String {
@@ -66,24 +62,28 @@ class ProfileInteractor(private val userRepository: UserRepository,
     override fun getProfileOwner(profileCallback: ProfileCallback) {
         this.profileCallback = profileCallback
 
-        userRepository.getById(getOwnerId(), this, isFirstEnter(getOwnerId()))
+        userRepository.getById(getOwnerId(),
+                this,
+                isFirstEnter(getOwnerId(), cachedUserIds))
     }
 
     override fun getProfileServiceList(profileCallback: ProfileCallback) {
         this.profileCallback = profileCallback
 
-        serviceRepository.getServicesByUserId(getOwnerId(), this)
+        serviceRepository.getServicesByUserId(getOwnerId(),
+                this,
+                isFirstEnter(getOwnerId(), cachedUserIdsForServices))
     }
 
-    private fun isFirstEnter(id:String):Boolean{
-        if(idS.contains(id)){
+    private fun isFirstEnter(id:String, idList: ArrayList<String>):Boolean{
+        if(idList.contains(id)){
             return false
         }
-        idS.add(id)
+        idList.add(id)
         return true
     }
 
-    override fun returnUserAdded(user: User) {
+    override fun returnAddedUser(user: User) {
         profileCallback.callbackGetUser(user)
     }
 
@@ -91,9 +91,14 @@ class ProfileInteractor(private val userRepository: UserRepository,
         profileCallback.callbackGetServiceList(serviceList)
     }
 
+    override fun returnService(service: Service) {
+        TODO("not implemented")
+    }
+
     companion object{
         const val OWNER_ID = "owner id"
         const val TOKEN = "token"
-        val idS = arrayListOf<String>()
+        val cachedUserIds = arrayListOf<String>()
+        val cachedUserIdsForServices = arrayListOf<String>()
     }
 }
