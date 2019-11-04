@@ -32,17 +32,7 @@ class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: Cod
 
     override fun getByCode(codeString: String, codeSubscriber: ICodeSubscriber) {
         this.codeSubscriber = codeSubscriber
-
-        var code: Code? = null
-       /* runBlocking {
-            code = codeDao.getByCode(codeString)
-        }*/
-
-        if (code == null) {
-            codeFirebase.getByCode(codeString, this)
-        } else {
-            codeSubscriber.returnCode(code!!)
-        }
+        codeFirebase.getByCode(codeString, this)
     }
 
     override fun returnCode(code: Code) {

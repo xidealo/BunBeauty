@@ -4,7 +4,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenCa
 
 interface IMainScreenInteractor {
     fun getUserId():String
-    fun getMyUser(mainScreenCallback: MainScreenCallback)
-    fun getUsersByCity(city:String, mainScreenCallback: MainScreenCallback)
-    fun getServicesByUserId(id:String, mainScreenCallback: MainScreenCallback)
+    fun getMainScreenData(mainScreenCallback: MainScreenCallback)
+    fun getUsersByCity(city:String)
+    fun getServicesByUserId(id:String)
+    suspend fun setListenerCountOfReturnServices(countOfUsers:Int)
 }

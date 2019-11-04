@@ -2,8 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 
 import android.widget.Button
 import com.arellomobile.mvp.MvpView
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 
 interface MainScreenView: MvpView {
     fun showTags()
@@ -13,7 +11,7 @@ interface MainScreenView: MvpView {
     fun hideTags()
     fun showLoading()
     fun hideLoading()
-    fun showMainScreen(serviceList: ArrayList<Service>, userList: ArrayList<User>)
+    fun showMainScreen(mainScreenData:ArrayList<ArrayList<Any>>)
     fun createTags()
     fun clearCategory()
 }

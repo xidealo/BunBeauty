@@ -3,11 +3,6 @@ package com.bunbeauty.ideal.myapplication.searchService;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -16,13 +11,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.ServiceAdapter;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.Search;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -188,7 +189,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
                     serviceList.add((Service) serviceData[1]);
                     userList.add((User) serviceData[2]);
                 }
-                serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
+                //serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
                 recyclerView.setAdapter(serviceAdapter);
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
@@ -243,7 +244,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
                 if (commonList.isEmpty()) {
                     attentionNothingFound();
                 } else {
-                    serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
+                    //serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
                     recyclerView.setAdapter(serviceAdapter);
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
@@ -287,7 +288,7 @@ public class SearchService extends AppCompatActivity implements View.OnClickList
                 if (serviceList.isEmpty()) {
                     attentionNothingFound();
                 } else {
-                    serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
+                    //serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
                     recyclerView.setAdapter(serviceAdapter);
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);

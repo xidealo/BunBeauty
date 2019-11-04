@@ -21,8 +21,6 @@ import com.bunbeauty.ideal.myapplication.adapters.ServiceAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder
@@ -161,8 +159,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         recyclerView.visibility = View.VISIBLE
     }
 
-    override fun showMainScreen(serviceList: ArrayList<Service>, userList: ArrayList<User>){
-        serviceAdapter = ServiceAdapter(serviceList.size, serviceList, userList)
+    override fun showMainScreen(mainScreenData:ArrayList<ArrayList<Any>>){
+        serviceAdapter = ServiceAdapter(mainScreenData.size, mainScreenData)
         recyclerView.adapter = serviceAdapter
     }
 

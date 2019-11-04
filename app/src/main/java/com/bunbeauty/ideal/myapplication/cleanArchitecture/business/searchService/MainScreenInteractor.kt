@@ -10,38 +10,84 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.*
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.coroutines.CoroutineContext
 
 class MainScreenInteractor(val userRepository: UserRepository,
-                           val serviceRepository: ServiceRepository) : IMainScreenInteractor, IUserSubscriber, IServiceSubscriber {
+                           val serviceRepository: ServiceRepository) : IMainScreenInteractor,
+        IUserSubscriber, IServiceSubscriber, CoroutineScope {
     lateinit var mainScreenCallback: MainScreenCallback
 
-    override fun getMyUser(mainScreenCallback: MainScreenCallback) {
+    private var job: Job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
+    private var currentCountOfUsers = 0
+    private var cacheScreenData = ArrayList<ArrayList<Any>>()
+    private var cacheServiceList = arrayListOf<Service>()
+    private var cacheUserList = arrayListOf<User>()
+
+    override fun getMainScreenData(mainScreenCallback: MainScreenCallback) {
         this.mainScreenCallback = mainScreenCallback
         userRepository.getById(getUserId(), this, false)
     }
 
-    override fun getUsersByCity(city: String, mainScreenCallback: MainScreenCallback) {
-        this.mainScreenCallback = mainScreenCallback
+    override fun getUsersByCity(city: String) {
         userRepository.getByCity(city, this, isFirstEnter(getUserId(), cachedUserIds))
     }
 
-    override fun getServicesByUserId(id: String, mainScreenCallback: MainScreenCallback) {
+    override fun getServicesByUserId(id: String) {
         serviceRepository.getServicesByUserId(id, this, true)
     }
 
     override fun returnUser(user: User) {
         //here we can get out city
-        mainScreenCallback.getUsersByCity(user)
+        getUsersByCity(user.city)
     }
 
     override fun returnUsers(users: List<User>) {
-        //but later we have to get all users in our city
-        mainScreenCallback.getServicesByUserId(users)
+        launch {
+            setListenerCountOfReturnServices(users.size)
+        }
+
+        cacheUserList.addAll(users)
+
+        for (user in users) {
+            getServicesByUserId(user.id)
+        }
     }
 
     override fun returnServiceList(serviceList: List<Service>) {
-        mainScreenCallback.returnServicesList(serviceList)
+        currentCountOfUsers++
+        cacheServiceList.addAll(serviceList)
+    }
+
+    override suspend fun setListenerCountOfReturnServices(countOfUsers: Int) {
+        while (countOfUsers != currentCountOfUsers) {
+            delay(500)
+        }
+
+        for (service in cacheServiceList) {
+            addToServiceList(service, getUserByService(service))
+        }
+
+        val mainScreenData = ArrayList<ArrayList<Any>>()
+        for (i in cacheScreenData.indices) {
+            //services
+            mainScreenData.add(arrayListOf(cacheScreenData[i][1], cacheScreenData[i][2]))
+        }
+
+        mainScreenCallback.returnMainScreenData(mainScreenData)
+    }
+
+    private fun getUserByService(service: Service): User {
+        for (user in cacheUserList) {
+            if (service.userId == user.id)
+                return user
+        }
+        return User()
     }
 
     override fun returnService(service: Service) {
@@ -57,20 +103,8 @@ class MainScreenInteractor(val userRepository: UserRepository,
         return true
     }
 
-    fun sortServiceList(serviceList: ArrayList<Service>, userList: ArrayList<User>) {
-       /* val commonList = search.getServicesOfUsers(usersSnapshot,
-                null, null, null,
-                category,
-                selectedTagsArray)
-        for (serviceData in commonList) {
-            serviceList.add(serviceData[1] as Service)
-            userList.add(serviceData[2] as User)
-        }*/
-
-    }
-
     // Добавляем конкретную услугу в список в сообветствии с её коэфициентом
-    fun addToServiceList(service: Service, user: User) {
+    private fun addToServiceList(service: Service, user: User) {
         val coefficients = HashMap<String, Float>()
         coefficients[Service.CREATION_DATE] = 0.25f
         coefficients[Service.COST] = 0.07f
@@ -95,20 +129,24 @@ class MainScreenInteractor(val userRepository: UserRepository,
                 coefficients[Service.COUNT_OF_RATES]!!)
 
         val points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints
-        sortAddition(arrayOf(points, service, user))
+        sortAddition(arrayListOf(points, service, user))
+
         //}
     }
 
-    fun sortAddition(serviceData: Array<Any>) {
-        /*  for (i in serviceList.indices) {
-              if (serviceList.get(i)[0] as Float<(serviceData[0]) as Float)
-              {
-                  serviceList.add(i, serviceData)
-                  return
-              }
-          }
+    private fun sortAddition(serviceData: ArrayList<Any>) {
 
-          serviceList.add(serviceList.size, serviceData)*/
+        for (i in cacheServiceList.indices) {
+            if (cacheScreenData.size != 0) {
+                if (cacheScreenData[i][0].toString().toFloat() < (serviceData[0]).toString().toFloat()) {
+                    cacheScreenData.add(i, serviceData)
+                    return
+                }
+            }
+            break
+        }
+
+        cacheScreenData.add(cacheScreenData.size, serviceData)
     }
 
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
