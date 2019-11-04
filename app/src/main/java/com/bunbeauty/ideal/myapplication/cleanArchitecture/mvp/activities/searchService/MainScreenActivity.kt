@@ -27,7 +27,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainSc
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder
 import com.bunbeauty.ideal.myapplication.helpApi.Search
-import java.util.*
 import javax.inject.Inject
 
 class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView {
@@ -42,8 +41,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private lateinit var innerLayout: LinearLayout
     private lateinit var progressBar: ProgressBar
 
-    private lateinit var serviceList: ArrayList<Service>
-    private lateinit var userList: ArrayList<User>
     private lateinit var recyclerView: RecyclerView
     private lateinit var serviceAdapter: ServiceAdapter
     private var isUpdated: Boolean = false
@@ -76,8 +73,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     private fun init() {
         search = Search(this)
-        serviceList = ArrayList()
-        userList = ArrayList()
         isUpdated = true
         categories = ArrayList(listOf(*resources.getStringArray(R.array.categories)))
         selectedTagsArray = ArrayList()
@@ -95,10 +90,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
-        progressBar.visibility = View.VISIBLE
-        recyclerView.visibility = View.GONE
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        /*recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (recyclerView.computeVerticalScrollOffset() == 0 && !isUpdated)
                 {
@@ -108,7 +101,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                     recyclerView.visibility = View.GONE
                 }
             }
-        })
+        })*/
 
         minimizeTagsBtn.setOnClickListener(this)
         clearTagsBtn.setOnClickListener(this)
@@ -161,8 +154,16 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     override fun showLoading() {
         progressBar.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
-        serviceList.clear()
-        userList.clear()
+    }
+
+    override fun hideLoading() {
+        progressBar.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
+    }
+
+    override fun showMainScreen(serviceList: ArrayList<Service>, userList: ArrayList<User>){
+        serviceAdapter = ServiceAdapter(serviceList.size, serviceList, userList)
+        recyclerView.adapter = serviceAdapter
     }
 
     private fun categoriesClick(btn: Button) {
@@ -249,15 +250,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     private fun createMainScreen() {
-
         mainScreenPresenter.createMainScreen()
-
-        //get user id
-        //получаем город юзера
-        //val userCity = getUserCity(userId)
-
-        //получаем все сервисы, которые находятся в городе юзера
-        //getServicesInThisCity(userCity, category, selectedTagsArray)
     }
 
     private fun getUserCity(userId: String): String {

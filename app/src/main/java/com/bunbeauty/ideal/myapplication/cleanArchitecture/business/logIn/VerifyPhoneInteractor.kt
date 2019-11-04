@@ -25,8 +25,12 @@ class VerifyPhoneInteractor(private val userRepository: UserRepository,
         userRepository.getByPhoneNumber(getMyPhoneNumber(), this)
     }
 
-    override fun returnAddedUser(user: User) {
+    override fun returnUser(user: User) {
         verifyCallback.callbackGetUserName(user.name)
+    }
+
+    override fun returnUsers(users: List<User>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }

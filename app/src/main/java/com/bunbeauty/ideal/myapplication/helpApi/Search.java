@@ -216,10 +216,7 @@ public class Search {
     private Long getMaxCountOfRates(){
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String sqlQuery =
-                "SELECT "
-                        + " MAX(CAST(" + DBHelper.KEY_COUNT_OF_RATES_SERVICES + " AS INTEGER)) AS " + MAX_COUNT_OF_RATES
-                        + " FROM "
-                        + DBHelper.TABLE_CONTACTS_SERVICES;
+                "SELECT MAX(CAST(" + DBHelper.KEY_COUNT_OF_RATES_SERVICES + " AS INTEGER)) FROM " +DBHelper.TABLE_CONTACTS_SERVICES;
 
         Cursor cursor = database.rawQuery(sqlQuery, new String[]{});
 
@@ -241,63 +238,20 @@ public class Search {
         coefficients.put(COUNT_OF_RATES,0.15f);
         float points, creationDatePoints, costPoints, ratingPoints, countOfRatesPoints, penaltyPoints;
 
-      /*  boolean isPremium = service.getPremiumDate();
+        //boolean isPremium = service.getPremiumDate();
 
-        if (isPremium) {
+        /*//if (isPremium) {
             points = 1;
             premiumList.add(0, new Object[]{points, service, user});
-        } else {
+        //} else {
             creationDatePoints = figureCreationDatePoints(service.getCreationDate(), coefficients.get(CREATION_DATE));
             costPoints = figureCostPoints(Long.valueOf(service.getCost()), coefficients.get(COST));
-            ratingPoints = figureRatingPoints(service.getAverageRating(), coefficients.get(RATING));
+            //ratingPoints = figureRatingPoints(service.getAverageRating(), coefficients.get(RATING));
             countOfRatesPoints = figureCountOfRatesPoints(service.getCountOfRates(), coefficients.get(COUNT_OF_RATES));
             //penaltyPoints = figurePenaltyPoints(service.getId(), user.getId());
-            points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints*//* - penaltyPoints*//*;
+            //points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints - penaltyPoints;
             sortAddition(new Object[]{points, service, user});
-        }*/
-    }
-
-    private float figureCreationDatePoints(String creationDate, float coefficient) {
-        float creationDatePoints;
-
-        long dateBonus = (WorkWithTimeApi.getMillisecondsStringDate(creationDate) -
-                WorkWithTimeApi.getSysdateLong()) / (3600000*24) + 7;
-        if (dateBonus < 0) {
-            creationDatePoints = 0;
-        } else {
-            creationDatePoints = dateBonus * coefficient / 7;
-        }
-
-        return creationDatePoints;
-    }
-
-    private float figureCostPoints(long cost, float coefficient) {
-        return (1 - cost * 1f / maxCost) * coefficient;
-    }
-
-    private float figureCountOfRatesPoints(long countOfRates, float coefficient) {
-        if(maxCountOfRates!=0) {
-            return (countOfRates / maxCountOfRates) * coefficient;
-        }
-        else {
-            return  0;
-        }
-    }
-
-    private float figureRatingPoints(float rating, float coefficient) {
-        return rating * coefficient / 5;
-    }
-
-
-
-    private float figurePenaltyPoints(String serviceId, String userId) {
-        float penaltyPoints = 0;
-
-        if (!WorkWithLocalStorageApi.hasAvailableTime(serviceId, userId, dbHelper.getReadableDatabase())) {
-            penaltyPoints = 0.3f;
-        }
-
-        return penaltyPoints;
+        //}*/
     }
 
     private void sortAddition(Object[] serviceData) {

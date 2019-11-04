@@ -15,6 +15,9 @@ interface UserDao {
     @Query("SELECT * FROM user WHERE phone = :phone")
     suspend fun getByPhoneNumber(phone: String): User?
 
+    @Query("SELECT * FROM user WHERE city = :city")
+    suspend fun getByCity(city: String): List<User>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: User)
 

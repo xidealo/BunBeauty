@@ -12,6 +12,7 @@ class UserRepository(private val userDao: UserDao,
                      private val userFirebaseApi: UserFirebaseApi) : BaseRepository(),
         IUserRepository, IUserSubscriber {
 
+    private val TAG = "data_layer"
 
     lateinit var userSubscriber: IUserSubscriber
 
@@ -42,8 +43,6 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
-    private val TAG = "data_layer"
-
     override fun getById(id: String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
         var user: User? = null
         this.userSubscriber = userSubscriber
@@ -54,7 +53,7 @@ class UserRepository(private val userDao: UserDao,
             runBlocking {
                 user = userDao.getById(id)
             }
-            userSubscriber.returnAddedUser(user!!)
+            userSubscriber.returnUser(user!!)
         }
     }
 
@@ -69,19 +68,40 @@ class UserRepository(private val userDao: UserDao,
         if (user == null) {
             userFirebaseApi.getByPhoneNumber(phoneNumber, this)
         } else {
-            userSubscriber.returnAddedUser(user!!)
+            userSubscriber.returnUser(user!!)
         }
     }
 
-    override fun returnAddedUser(user: User) {
-        userSubscriber.returnAddedUser(user)
+    override fun getByCity(city: String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
+        var users = listOf<User>()
+        this.userSubscriber = userSubscriber
 
+        if (isFirstEnter) {
+            userFirebaseApi.getByCity(city, this)
+        } else {
+            runBlocking {
+                users = userDao.getByCity(city)
+            }
+            userSubscriber.returnUsers(users)
+        }
+    }
+
+    override fun returnUser(user: User) {
         if (user.name.isNotEmpty()) {
             launch {
                 userDao.insert(user)
             }
         }
+        userSubscriber.returnUser(user)
     }
 
+    override fun returnUsers(users: List<User>) {
+        launch {
+            for(user in users){
+                userDao.insert(user)
+            }
+        }
+        userSubscriber.returnUsers(users)
+    }
 
 }

@@ -18,6 +18,7 @@ class ProfileInteractor(private val userRepository: UserRepository,
                         private val serviceRepository: ServiceRepository,
                         private val intent: Intent) : BaseRepository(),
         IProfileInteractor, IUserSubscriber, IServiceSubscriber {
+
     private val TAG = "DBInf"
 
     lateinit var profileCallback: ProfileCallback
@@ -83,7 +84,7 @@ class ProfileInteractor(private val userRepository: UserRepository,
         return true
     }
 
-    override fun returnAddedUser(user: User) {
+    override fun returnUser(user: User) {
         profileCallback.callbackGetUser(user)
     }
 
@@ -91,9 +92,9 @@ class ProfileInteractor(private val userRepository: UserRepository,
         profileCallback.callbackGetServiceList(serviceList)
     }
 
-    override fun returnService(service: Service) {
-        TODO("not implemented")
-    }
+    override fun returnService(service: Service) {}
+
+    override fun returnUsers(users: List<User>) {}
 
     companion object{
         const val OWNER_ID = "owner id"

@@ -12,6 +12,12 @@ interface ServiceDao {
     @Query("SELECT * FROM service WHERE id = :id")
     suspend fun findById(id: String): Service?
 
+    @Query("SELECT * FROM service ORDER BY cost desc LIMIT 1 ")
+    suspend fun findMaxCostService(): Service
+
+    @Query("SELECT * FROM service ORDER BY countOfRates desc LIMIT 1 ")
+    suspend fun findMaxCountOfRatesService(): Service
+
     @Query("SELECT * FROM service WHERE userId = :userId")
     suspend fun findAllByUserId(userId: String?): List<Service>
 

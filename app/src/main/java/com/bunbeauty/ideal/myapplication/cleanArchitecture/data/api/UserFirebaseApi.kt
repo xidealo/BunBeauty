@@ -49,14 +49,13 @@ class UserFirebaseApi {
         userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
                 val user = getUserFromSnapshot(usersSnapshot)
-                callback.returnAddedUser(user)
+                callback.returnUser(user)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Some error
             }
         })
-
     }
 
     fun getByPhoneNumber(phoneNumber: String, callback: IUserSubscriber) {
@@ -66,11 +65,10 @@ class UserFirebaseApi {
 
         userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
-                var user = User()
                 if (usersSnapshot.childrenCount > 0L) {
-                    user = getUserFromSnapshot(usersSnapshot.children.iterator().next())
+                    val user = getUserFromSnapshot(usersSnapshot.children.iterator().next())
+                    callback.returnUser(user)
                 }
-                callback.returnAddedUser(user)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -78,6 +76,30 @@ class UserFirebaseApi {
             }
         })
     }
+
+    fun getByCity(city: String, callback: IUserSubscriber) {
+
+        val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
+                .orderByChild(User.CITY)
+                .equalTo(city)
+
+        userQuery.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(usersSnapshot: DataSnapshot) {
+                if (usersSnapshot.childrenCount > 0L) {
+                    val users = arrayListOf<User>()
+                    for(userSnapshot in usersSnapshot.children){
+                        users.add(getUserFromSnapshot(userSnapshot))
+                    }
+                    callback.returnUsers(users)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Some error
+            }
+        })
+    }
+
 
     private fun getUserFromSnapshot(userSnapshot: DataSnapshot): User {
         val user = User()

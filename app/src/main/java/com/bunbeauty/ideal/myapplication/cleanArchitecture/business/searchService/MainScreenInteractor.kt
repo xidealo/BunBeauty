@@ -1,27 +1,120 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService
 
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
+import java.util.*
 
 class MainScreenInteractor(val userRepository: UserRepository,
-                           val serviceRepository: ServiceRepository) : IMainScreenInteractor, IUserSubscriber {
+                           val serviceRepository: ServiceRepository) : IMainScreenInteractor, IUserSubscriber, IServiceSubscriber {
+    lateinit var mainScreenCallback: MainScreenCallback
 
+    override fun getMyUser(mainScreenCallback: MainScreenCallback) {
+        this.mainScreenCallback = mainScreenCallback
+        userRepository.getById(getUserId(), this, false)
+    }
+
+    override fun getUsersByCity(city: String, mainScreenCallback: MainScreenCallback) {
+        this.mainScreenCallback = mainScreenCallback
+        userRepository.getByCity(city, this, isFirstEnter(getUserId(), cachedUserIds))
+    }
+
+    override fun getServicesByUserId(id: String, mainScreenCallback: MainScreenCallback) {
+        serviceRepository.getServicesByUserId(id, this, true)
+    }
+
+    override fun returnUser(user: User) {
+        //here we can get out city
+        mainScreenCallback.getUsersByCity(user)
+    }
+
+    override fun returnUsers(users: List<User>) {
+        //but later we have to get all users in our city
+        mainScreenCallback.getServicesByUserId(users)
+    }
+
+    override fun returnServiceList(serviceList: List<Service>) {
+        mainScreenCallback.returnServicesList(serviceList)
+    }
+
+    override fun returnService(service: Service) {
+        //log
+    }
+
+    //and than we have to get all services by this users
+    private fun isFirstEnter(id: String, idList: ArrayList<String>): Boolean {
+        if (idList.contains(id)) {
+            return false
+        }
+        idList.add(id)
+        return true
+    }
+
+    fun sortServiceList(serviceList: ArrayList<Service>, userList: ArrayList<User>) {
+       /* val commonList = search.getServicesOfUsers(usersSnapshot,
+                null, null, null,
+                category,
+                selectedTagsArray)
+        for (serviceData in commonList) {
+            serviceList.add(serviceData[1] as Service)
+            userList.add(serviceData[2] as User)
+        }*/
+
+    }
+
+    // Добавляем конкретную услугу в список в сообветствии с её коэфициентом
+    fun addToServiceList(service: Service, user: User) {
+        val coefficients = HashMap<String, Float>()
+        coefficients[Service.CREATION_DATE] = 0.25f
+        coefficients[Service.COST] = 0.07f
+        coefficients[Service.AVG_RATING] = 0.53f
+        coefficients[Service.COUNT_OF_RATES] = 0.15f
+
+        //boolean isPremium = service.getPremiumDate();
+
+        //if (isPremium) {
+        /*points = 1f
+        premiumList.add(0, arrayOf(points, service, user))*/
+        //} else {
+
+        val creationDatePoints = FiguringServicePoints.figureCreationDatePoints(service.creationDate, coefficients[Service.CREATION_DATE]!!)
+        val costPoints = FiguringServicePoints.figureCostPoints((service.cost).toLong(),
+                serviceRepository.getMaxCost().cost.toLong(),
+                coefficients[Service.COST]!!)
+
+        val ratingPoints = FiguringServicePoints.figureRatingPoints(service.rating, coefficients[Service.AVG_RATING]!!)
+        val countOfRatesPoints = FiguringServicePoints.figureCountOfRatesPoints(service.countOfRates,
+                serviceRepository.getMaxCountOfRates().countOfRates,
+                coefficients[Service.COUNT_OF_RATES]!!)
+
+        val points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints
+        sortAddition(arrayOf(points, service, user))
+        //}
+    }
+
+    fun sortAddition(serviceData: Array<Any>) {
+        /*  for (i in serviceList.indices) {
+              if (serviceList.get(i)[0] as Float<(serviceData[0]) as Float)
+              {
+                  serviceList.add(i, serviceData)
+                  return
+              }
+          }
+
+          serviceList.add(serviceList.size, serviceData)*/
+    }
 
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
-    override fun createMainScreen() {
-        //userRepository.getById(getUserId(),this)
+    companion object {
+        //can be replaced by one var
+        val cachedUserIds = arrayListOf<String>()
     }
-
-
-    override fun returnAddedUser(user: User) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-
-
 }

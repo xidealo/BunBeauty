@@ -16,7 +16,6 @@ class ServiceInteractor(private val userRepository: UserRepository,
                         private val intent: Intent) : BaseRepository(),
         IServiceInteractor, IUserSubscriber, IServiceSubscriber {
 
-
     private val SERVICE_ID = "service id"
     private val USER_ID = "service id"
 
@@ -40,11 +39,15 @@ class ServiceInteractor(private val userRepository: UserRepository,
        serviceCallback.callbackGetService(service)
     }
 
-    override fun returnAddedUser(user: User) {
+    override fun returnUser(user: User) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun returnServiceList(serviceList: List<Service>) {
+    }
+
+    override fun returnUsers(users: List<User>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }
