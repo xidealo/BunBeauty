@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.adapters.foundElements;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,12 +13,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
+import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation;
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
+import com.squareup.picasso.Picasso;
 
 public class FoundServiceElement implements View.OnClickListener {
 
@@ -42,6 +41,7 @@ public class FoundServiceElement implements View.OnClickListener {
     private String nameServiceString;
     private String costString;
     private String userId;
+    private String photoLink;
     private Context context;
     private View view;
 
@@ -52,6 +52,8 @@ public class FoundServiceElement implements View.OnClickListener {
         nameServiceString = service.getName();
         costString = service.getCost();
         userId = user.getId();
+        photoLink = user.getPhotoLink();
+
         //isPremium = service.getPremiumDate();
         this.context = context;
         this.view= view;
@@ -107,16 +109,20 @@ public class FoundServiceElement implements View.OnClickListener {
         costText.setText("Цена \n" + costString);
         ratingBar.setRating(avgRating);
 
-        DBHelper dbHelper = new DBHelper(context);
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        showAvatar();
+    }
 
+    private void showAvatar(){
         int width = context.getResources().getDimensionPixelSize(R.dimen.photo_avatar_width);
         int height = context.getResources().getDimensionPixelSize(R.dimen.photo_avatar_height);
 
-        WorkWithLocalStorageApi workWithLocalStorageApi = new WorkWithLocalStorageApi(database);
-        workWithLocalStorageApi.setPhotoAvatar(userId, avatarImage, width, height);
+        Picasso.get()
+                .load(photoLink)
+                .resize(width, height)
+                .centerCrop()
+                .transform(new CircularTransformation())
+                .into(avatarImage);
     }
-
     @Override
     public void onClick(View v) {
         goToGuestService();

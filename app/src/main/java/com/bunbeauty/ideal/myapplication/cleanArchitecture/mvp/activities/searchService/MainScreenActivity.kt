@@ -31,7 +31,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     private lateinit var search: Search
 
-    private lateinit var categoriesBtns: Array<Button>
+    private var categoriesBtns: ArrayList<Button> = arrayListOf()
     private lateinit var categories: ArrayList<String>
     private lateinit var selectedTagsArray: ArrayList<String>
     private lateinit var categoryLayout: LinearLayout
@@ -73,7 +73,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         isUpdated = true
         categories = ArrayList(listOf(*resources.getStringArray(R.array.categories)))
         selectedTagsArray = ArrayList()
-        categoriesBtns = arrayOf()
 
         categoryLayout = findViewById(R.id.categoryMainScreenLayout)
         recyclerView = findViewById(R.id.resultsMainScreenRecycleView)
@@ -225,8 +224,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     override fun createCategoryFeed(categories: MutableSet<String>) {
         val width = resources.getDimensionPixelSize(R.dimen.categories_width)
         val height = resources.getDimensionPixelSize(R.dimen.categories_height)
-        for (i in categoriesBtns.indices) {
-            categoriesBtns[i] = Button(this)
+        for (i in categories.indices) {
+            categoriesBtns.add(Button(this))
             categoriesBtns[i].setOnClickListener(this)
             categoriesBtns[i].text = categories.toTypedArray()[i]
             categoriesBtns[i].textSize = 14f
@@ -237,7 +236,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             }
 
             val params = LinearLayout.LayoutParams(
-                    (width * categories[i].length / 6.6).toInt(),
+                    (width * categories.toTypedArray()[i].length / 6.6).toInt(),
                     height)
             params.setMargins(10, 10, 10, 16)
             categoriesBtns[i].layoutParams = params

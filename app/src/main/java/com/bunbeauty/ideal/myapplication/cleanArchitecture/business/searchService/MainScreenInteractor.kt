@@ -149,8 +149,8 @@ class MainScreenInteractor(val userRepository: UserRepository,
 
     override fun getCategories(mainScreenData: ArrayList<ArrayList<Any>>): MutableSet<String> {
         val setOfCategories = mutableSetOf<String>()
-        for (i in mainScreenData[1].indices){
-            setOfCategories.add((mainScreenData[i][1] as Service).category)
+        for (i in mainScreenData.indices){
+            setOfCategories.add((mainScreenData[i][0] as Service).category)
         }
         return setOfCategories
     }
