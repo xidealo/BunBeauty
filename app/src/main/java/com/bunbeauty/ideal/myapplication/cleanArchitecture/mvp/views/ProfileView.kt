@@ -10,5 +10,6 @@ interface ProfileView: MvpView {
     fun showUserInfo(user: User)
     fun showUserServices(serviceList: List<Service>)
     fun showBottomPanel()
+    fun showTopPanel(userId: String, userName: String)
 
 }

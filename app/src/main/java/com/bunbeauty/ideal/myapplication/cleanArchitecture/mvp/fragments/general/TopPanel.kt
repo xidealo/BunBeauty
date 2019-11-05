@@ -10,21 +10,27 @@ import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
+import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.squareup.picasso.Picasso
 
-class TopPanel: Panel() {
+class TopPanel : Panel() {
 
     lateinit var title: String
     lateinit var entityId: String
+    lateinit var photoLink: String
+    lateinit var ownerId: String
 
     private lateinit var backText: TextView
     private lateinit var titleText: TextView
     private lateinit var logoImage: ImageView
     private lateinit var multiText: TextView
     private lateinit var avatarLayout: LinearLayout
+    private lateinit var avatarImage: ImageView
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.backTopPanelText ->  super.getActivity()!!.onBackPressed()
+            R.id.backTopPanelText -> super.getActivity()!!.onBackPressed()
         }
     }
 
@@ -39,15 +45,30 @@ class TopPanel: Panel() {
         logoImage = view.findViewById(R.id.logoTopPanelImage)
         multiText = view.findViewById(R.id.multiTopPanelText)
         avatarLayout = view.findViewById(R.id.avatarTopPanelLayout)
+        avatarImage = view.findViewById(R.id.avatarTopPanelImage)
 
         if (!super.getActivity()!!.isTaskRoot) {
+            backText.visibility = View.VISIBLE
             backText.setOnClickListener(this)
         }
 
-        when(context!!.javaClass.name) {
+        when (context!!.javaClass.name) {
             ProfileActivity::class.java.name -> {
                 setTitleText()
-                setEditText()
+                if (entityId.isNotEmpty()) {
+                    setEditText()
+                } else {
+                    setEmptyMultiText()
+                }
+            }
+
+            ServiceActivity::class.java.name -> {
+                setTitleText()
+                if (entityId.isNotEmpty()) {
+                    setEditText()
+                } else {
+                    setOwnerAvatar()
+                }
             }
         }
     }
@@ -63,5 +84,25 @@ class TopPanel: Panel() {
         multiText.setOnClickListener {
             (activity as IEditableActivity).goToEditing(entityId)
         }
+    }
+
+    private fun setEmptyMultiText() {
+        multiText.visibility = View.INVISIBLE
+    }
+
+    private fun setOwnerAvatar() {
+        avatarLayout.visibility = View.VISIBLE
+        avatarLayout.setOnClickListener {
+            (activity as ServiceActivity).goToOwnerProfile (ownerId)
+        }
+
+        val width = resources.getDimensionPixelSize(R.dimen.photo_width)
+        val height = resources.getDimensionPixelSize(R.dimen.photo_height)
+        Picasso.get()
+                .load(photoLink)
+                .resize(width, height)
+                .centerCrop()
+                .transform(CircularTransformation())
+                .into(avatarImage)
     }
 }

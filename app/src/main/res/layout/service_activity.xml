@@ -8,7 +8,7 @@
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity">
 
     <LinearLayout
-        android:id="@+id/headerGuestServiceLayout"
+        android:id="@+id/topServiceLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -20,10 +20,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminateTint="@color/panelColor"
-        app:layout_constraintBottom_toTopOf="@+id/footerGuestServiceLayout"
+        app:layout_constraintBottom_toTopOf="@+id/bottomServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerGuestServiceLayout"
+        app:layout_constraintTop_toBottomOf="@+id/topServiceLayout"
         android:visibility="gone"/>
 
     <ScrollView
@@ -33,10 +33,10 @@
         android:layout_marginBottom="10dp"
         android:scrollbars="none"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/footerGuestServiceLayout"
+        app:layout_constraintBottom_toTopOf="@+id/bottomServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerGuestServiceLayout">
+        app:layout_constraintTop_toBottomOf="@+id/topServiceLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -116,7 +116,7 @@
                         android:id="@+id/costGuestServiceText"
                         style="@style/mainText"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -258,7 +258,7 @@
     </ScrollView>
 
     <LinearLayout
-        android:id="@+id/footerGuestServiceLayout"
+        android:id="@+id/bottomServiceLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"

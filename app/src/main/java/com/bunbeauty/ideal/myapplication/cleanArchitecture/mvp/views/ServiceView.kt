@@ -6,4 +6,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
 
 interface ServiceView: MvpView {
     fun showServiceInfo(service: Service)
+    fun showBottomPanel()
+
 }

@@ -273,18 +273,19 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         transaction.commit()
     }
 
-    private fun showTopPanel(userId: String, userName: String) {
+    override fun showTopPanel(userId: String, userName: String) {
         val topPanel = TopPanel()
 
         if(profilePresenter.isUserOwner()) {
             topPanel.title = "Профиль"
+            topPanel.entityId = userId
         } else {
             topPanel.title = userName
+            topPanel.entityId = ""
         }
-        topPanel.entityId = userId
 
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.headerProfileLayout, topPanel)
+        transaction.add(R.id.topProfileLayout, topPanel)
         transaction.commit()
     }
 

@@ -55,17 +55,17 @@ class BottomPanel : Panel() {
         }
     }
 
-    fun goToProfile() {
+    private fun goToProfile() {
         val intent = Intent(context, ProfileActivity::class.java)
         this.startActivity(intent)
     }
 
-    fun goToMainScreen() {
+    private fun goToMainScreen() {
         val intent = Intent(context, MainScreenActivity::class.java)
         this.startActivity(intent)
     }
 
-    fun goToChat() {
+    private fun goToChat() {
         val intent = Intent(context, Dialogs::class.java)
         this.startActivity(intent)
     }

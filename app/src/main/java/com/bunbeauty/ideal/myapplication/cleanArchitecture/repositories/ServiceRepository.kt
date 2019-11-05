@@ -12,7 +12,6 @@ class ServiceRepository(private val serviceDao: ServiceDao,
                         private val serviceFirebaseApi: ServiceFirebaseApi) : BaseRepository(),
         IServiceRepository, IServiceSubscriber {
 
-
     private lateinit var serviceSubscriber: IServiceSubscriber
 
     override fun insert(service: Service) {
@@ -48,7 +47,7 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         }
     }
 
-    fun getById(userId: String, serviceId: String, serviceSubscriber: IServiceSubscriber) {
+    fun getById(serviceId: String, userId: String, serviceSubscriber: IServiceSubscriber) {
         this.serviceSubscriber = serviceSubscriber
         var service: Service? = null
 
@@ -85,7 +84,7 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         launch {
             serviceDao.insert(service)
         }
-        //
+
         serviceSubscriber.returnService(service)
     }
 
@@ -96,7 +95,7 @@ class ServiceRepository(private val serviceDao: ServiceDao,
                 serviceDao.insert(service)
             }
         }
-        //
+
         serviceSubscriber.returnServiceList(serviceList)
     }
 

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import javax.inject.Inject;
+
 public class Search {
 
     private static final String TAG = "DBInf";
