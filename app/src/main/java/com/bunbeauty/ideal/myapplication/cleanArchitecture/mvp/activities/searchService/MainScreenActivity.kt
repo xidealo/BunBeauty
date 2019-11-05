@@ -65,7 +65,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
         init()
         showLoading()
-        createCategoryFeed()
         createMainScreen()
     }
 
@@ -223,13 +222,13 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     // настроить вид кнопок
-    override fun createCategoryFeed() {
+    override fun createCategoryFeed(categories: MutableSet<String>) {
         val width = resources.getDimensionPixelSize(R.dimen.categories_width)
         val height = resources.getDimensionPixelSize(R.dimen.categories_height)
         for (i in categoriesBtns.indices) {
             categoriesBtns[i] = Button(this)
             categoriesBtns[i].setOnClickListener(this)
-            categoriesBtns[i].text = categories[i]
+            categoriesBtns[i].text = categories.toTypedArray()[i]
             categoriesBtns[i].textSize = 14f
             disableCategoryBtn(categoriesBtns[i])
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

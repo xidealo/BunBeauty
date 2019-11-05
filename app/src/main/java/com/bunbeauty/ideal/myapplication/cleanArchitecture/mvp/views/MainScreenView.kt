@@ -5,7 +5,7 @@ import com.arellomobile.mvp.MvpView
 
 interface MainScreenView: MvpView {
     fun showTags()
-    fun createCategoryFeed()
+    fun createCategoryFeed(categories: MutableSet<String>)
     fun disableCategoryBtn(button: Button)
     fun enableCategory(button: Button)
     fun hideTags()

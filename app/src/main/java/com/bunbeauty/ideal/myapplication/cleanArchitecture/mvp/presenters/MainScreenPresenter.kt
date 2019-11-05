@@ -17,6 +17,7 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
     override fun returnMainScreenData(mainScreenData: ArrayList<ArrayList<Any>>) {
         viewState.hideLoading()
         viewState.showMainScreen(mainScreenData)
+        viewState.createCategoryFeed(mainScreenInteractor.getCategories(mainScreenData))
     }
 
     fun createMainScreenWithCategory(category: String) {

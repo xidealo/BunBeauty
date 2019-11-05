@@ -8,4 +8,5 @@ interface IMainScreenInteractor {
     fun getUsersByCity(city:String)
     fun getServicesByUserId(id:String)
     suspend fun setListenerCountOfReturnServices(countOfUsers:Int)
+    fun getCategories(mainScreenData: ArrayList<ArrayList<Any>>): MutableSet<String>
 }

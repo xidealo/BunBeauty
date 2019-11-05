@@ -135,7 +135,6 @@ class MainScreenInteractor(val userRepository: UserRepository,
     }
 
     private fun sortAddition(serviceData: ArrayList<Any>) {
-
         for (i in cacheServiceList.indices) {
             if (cacheScreenData.size != 0) {
                 if (cacheScreenData[i][0].toString().toFloat() < (serviceData[0]).toString().toFloat()) {
@@ -145,10 +144,16 @@ class MainScreenInteractor(val userRepository: UserRepository,
             }
             break
         }
-
         cacheScreenData.add(cacheScreenData.size, serviceData)
     }
 
+    override fun getCategories(mainScreenData: ArrayList<ArrayList<Any>>): MutableSet<String> {
+        val setOfCategories = mutableSetOf<String>()
+        for (i in mainScreenData[1].indices){
+            setOfCategories.add((mainScreenData[i][1] as Service).category)
+        }
+        return setOfCategories
+    }
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
     companion object {
