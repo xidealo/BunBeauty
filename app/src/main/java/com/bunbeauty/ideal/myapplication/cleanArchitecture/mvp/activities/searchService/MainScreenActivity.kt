@@ -42,7 +42,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private lateinit var recyclerView: RecyclerView
     private lateinit var serviceAdapter: ServiceAdapter
     private var isUpdated: Boolean = false
-    private lateinit var category: String
 
     @InjectPresenter
     lateinit var mainScreenPresenter: MainScreenPresenter
@@ -65,7 +64,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
         init()
         showLoading()
-        createMainScreen()
+        mainScreenPresenter.createMainScreen()
     }
 
     private fun init() {
@@ -118,11 +117,15 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             R.id.clearTagsMainScreenBtn -> {
                 showLoading()
                 clearCategory()
-                createMainScreen()
+                mainScreenPresenter.createMainScreen()
             }
 
             else -> if ((v.parent as View).id == R.id.categoryMainScreenLayout) {
-                categoriesClick(v as Button)
+                //показать тэги
+                //начать поиск по категории
+                mainScreenPresenter.categoriesClick((v as Button).text.toString())
+                mainScreenPresenter.createMainScreenWithCategory(category)
+
             } else {
                 tagClick(v as TextView)
             }
@@ -144,7 +147,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             selectedTagsArray.add(text)
         }
 
-        createMainScreen()
+        mainScreenPresenter.createMainScreen()
     }
 
     override fun showLoading() {
@@ -160,22 +163,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     override fun showMainScreen(mainScreenData:ArrayList<ArrayList<Any>>){
         serviceAdapter = ServiceAdapter(mainScreenData.size, mainScreenData)
         recyclerView.adapter = serviceAdapter
-    }
-
-    private fun categoriesClick(btn: Button) {
-        // Если категория уже выбрана
-        if (category == btn.text.toString()) {
-            if (tagsLayout.visibility == View.VISIBLE) {
-                hideTags()
-            } else {
-                createTags()
-            }
-        } else {
-            showLoading()
-            enableCategory(btn)
-            category = btn.text.toString()
-            mainScreenPresenter.createMainScreenWithCategory(category)
-        }
     }
 
     override fun clearCategory() {
@@ -202,8 +189,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     override fun enableCategory(button: Button) {
         button.setBackgroundResource(R.drawable.category_button_pressed)
         button.setTextColor(resources.getColor(R.color.black))
-        hideTags()
-
         for (categoriesBtn in categoriesBtns) {
             if (category == categoriesBtn.text.toString()) {
                 disableCategoryBtn(categoriesBtn)
@@ -212,7 +197,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         }
         selectedTagsArray.clear()
         category = button.text.toString()
-        createTags()
     }
 
     override fun disableCategoryBtn(button: Button) {
@@ -243,10 +227,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
             categoryLayout.addView(categoriesBtns[i])
         }
-    }
-
-    private fun createMainScreen() {
-        mainScreenPresenter.createMainScreen()
     }
 
     private fun getUserCity(userId: String): String {
@@ -295,7 +275,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             }
             innerLayout.addView(tagText)
         }
-        showTags()
     }
 
     companion object {

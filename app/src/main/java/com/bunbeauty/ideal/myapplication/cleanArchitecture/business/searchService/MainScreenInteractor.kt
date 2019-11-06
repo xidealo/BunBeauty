@@ -18,7 +18,8 @@ import kotlin.coroutines.CoroutineContext
 class MainScreenInteractor(val userRepository: UserRepository,
                            val serviceRepository: ServiceRepository) : IMainScreenInteractor,
         IUserSubscriber, IServiceSubscriber, CoroutineScope {
-    lateinit var mainScreenCallback: MainScreenCallback
+    private lateinit var mainScreenCallback: MainScreenCallback
+    var selectedCategory = ""
 
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
