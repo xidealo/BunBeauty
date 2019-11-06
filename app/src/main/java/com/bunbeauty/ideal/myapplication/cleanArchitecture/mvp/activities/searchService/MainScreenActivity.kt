@@ -116,15 +116,19 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
             R.id.clearTagsMainScreenBtn -> {
                 showLoading()
-                clearCategory()
+                mainScreenPresenter.clearCategory((v as Button).text.toString(), categoriesBtns)
+                selectedTagsArray.clear()
                 mainScreenPresenter.createMainScreen()
             }
 
             else -> if ((v.parent as View).id == R.id.categoryMainScreenLayout) {
                 //показать тэги
                 //начать поиск по категории
-                mainScreenPresenter.categoriesClick((v as Button).text.toString())
-                mainScreenPresenter.createMainScreenWithCategory(category)
+                if (mainScreenPresenter.isSelectedCategory((v as Button).text.toString())){
+                    mainScreenPresenter.setTagsState(tagsLayout.visibility)
+                }else{
+                    mainScreenPresenter.createMainScreenWithCategory(v.text.toString(), v)
+                }
 
             } else {
                 tagClick(v as TextView)
@@ -165,17 +169,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         recyclerView.adapter = serviceAdapter
     }
 
-    override fun clearCategory() {
-        for (btn in categoriesBtns) {
-            if (category == btn.text.toString()) {
-                category = ""
-                disableCategoryBtn(btn)
-                hideTags()
-                selectedTagsArray.clear()
-                break
-            }
-        }
-    }
 
     override fun hideTags() {
         innerLayout.removeAllViews()
@@ -186,7 +179,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         tagsLayout.visibility = View.VISIBLE
     }
 
-    override fun enableCategory(button: Button) {
+    override fun enableCategoryButton(category: String, button: Button) {
         button.setBackgroundResource(R.drawable.category_button_pressed)
         button.setTextColor(resources.getColor(R.color.black))
         for (categoriesBtn in categoriesBtns) {
@@ -196,7 +189,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             }
         }
         selectedTagsArray.clear()
-        category = button.text.toString()
+        //category = button.text.toString()
     }
 
     override fun disableCategoryBtn(button: Button) {
@@ -253,7 +246,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         return ""
     }
 
-    override fun createTags() {
+    override fun createTags(category:String) {
         val tagsArray = resources
                 .obtainTypedArray(R.array.tags_references)
                 .getTextArray(categories.indexOf(category))
