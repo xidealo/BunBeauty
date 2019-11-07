@@ -1,8 +1,8 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Tag
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.database.FirebaseDatabase
 
 class TagFirebase {

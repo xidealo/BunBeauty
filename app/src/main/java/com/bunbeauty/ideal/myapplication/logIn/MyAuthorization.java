@@ -8,8 +8,8 @@ import androidx.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingProfileData;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;

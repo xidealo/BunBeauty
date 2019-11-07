@@ -3,8 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.RegistrationView
 
 @InjectViewState

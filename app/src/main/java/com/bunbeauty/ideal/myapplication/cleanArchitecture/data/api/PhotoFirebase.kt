@@ -1,9 +1,9 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import android.util.Log
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.database.FirebaseDatabase
 
 class PhotoFirebase {

@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Message;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;

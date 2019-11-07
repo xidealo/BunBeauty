@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IUserRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

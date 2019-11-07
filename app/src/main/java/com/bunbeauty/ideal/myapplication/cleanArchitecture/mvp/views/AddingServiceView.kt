@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 
 import com.arellomobile.mvp.MvpView
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
 interface AddingServiceView: MvpView {
     fun showPremiumBlock(service: Service)

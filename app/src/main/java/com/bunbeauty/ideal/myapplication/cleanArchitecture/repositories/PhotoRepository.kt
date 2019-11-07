@@ -2,7 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.PhotoFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.PhotoDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IPhotoRepository
 import kotlinx.coroutines.launch
 
@@ -27,5 +27,9 @@ class PhotoRepository(val photoDao: PhotoDao, val photoFirebase: PhotoFirebase):
     }
 
     fun getIdForNew(userId: String, serviceId:String): String = photoFirebase.getIdForNew(userId,serviceId)
+
+    fun getByServiceId(serviceId: String) {
+
+    }
 
 }

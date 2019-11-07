@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase

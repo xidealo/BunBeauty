@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Code
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

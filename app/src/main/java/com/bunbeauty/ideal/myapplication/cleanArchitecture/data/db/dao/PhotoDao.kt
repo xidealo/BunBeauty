@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao
 
 import androidx.room.*
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 
 @Dao
 interface PhotoDao {

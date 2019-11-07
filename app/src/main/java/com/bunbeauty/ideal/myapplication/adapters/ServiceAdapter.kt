@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.adapters.foundElements.FoundServiceElement
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import java.util.*
 
 class ServiceAdapter(private val numberItems: Int, private val mainScreenData:ArrayList<ArrayList<Any>>) : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() {

@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IServiceRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -20,15 +20,18 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         }
         serviceFirebaseApi.insert(service)
     }
+
     override fun update(service: Service) {
         launch {
             serviceDao.update(service)
         }
         serviceFirebaseApi.update(service)
     }
+
     override fun get() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
     override fun delete(service: Service) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

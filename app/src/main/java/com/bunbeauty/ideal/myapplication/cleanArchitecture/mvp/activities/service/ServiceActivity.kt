@@ -1,15 +1,10 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RatingBar
@@ -22,11 +17,10 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
@@ -35,7 +29,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.bunbeauty.ideal.myapplication.editing.EditService
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.other.IPremium
 import com.bunbeauty.ideal.myapplication.reviews.Comments
@@ -43,9 +36,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.squareup.picasso.Picasso
 
-import java.text.DecimalFormat
 import java.util.Date
 import java.util.HashMap
 import javax.inject.Inject
@@ -59,8 +50,8 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private lateinit var ratingText: TextView
     private lateinit var countOfRatesText: TextView
     private lateinit var withoutRatingText: TextView
-    private lateinit var premiumText: TextView
-    private lateinit var noPremiumText: TextView
+    private lateinit var onPremiumText: TextView
+    private lateinit var offPremiumText: TextView
     private lateinit var imageFeedLayout: LinearLayout
     private lateinit var premiumLayout: LinearLayout
     private lateinit var topPanelLayout: LinearLayout
@@ -68,7 +59,10 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private lateinit var ratingBar: RatingBar
     private lateinit var progressBar: ProgressBar
 
-    private lateinit var userId: String
+    private lateinit var owner: User
+    private lateinit var service: Service
+
+   /* private lateinit var userId: String
     private lateinit var serviceId: String
     private lateinit var ownerId: String
     private lateinit var serviceName: String
@@ -77,10 +71,9 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     private lateinit var service: Service
     private lateinit var status: String
-    private var isMyService: Boolean = false
     private var isPremiumLayoutSelected: Boolean = false
     private lateinit var dbHelper: DBHelper
-    private lateinit var database: SQLiteDatabase
+    private lateinit var database: SQLiteDatabase*/
 
     @Inject
     lateinit var serviceInteractor: ServiceInteractor
@@ -109,24 +102,10 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         super.onResume()
 
         onProgress()
-        servicePresenter.getService()
-
-        /* if (!serviceIdsFirstSetGS.contains(serviceId)) {
-             loadServiceData()
-             serviceIdsFirstSetGS.add(serviceId!!)
-         } else {
-             //получаем данные о сервисе
-             getInfoAboutService(serviceId)
-         }
-
-         buildPanels()
-         imageFeedLayout!!.removeAllViews()
-         createPhotoFeed(serviceId)*/
+        servicePresenter.getUserAndService()
     }
 
     private fun init() {
-        val manager = supportFragmentManager
-
         mainScroll = findViewById(R.id.guestServiceMainScroll)
         costText = findViewById(R.id.costGuestServiceText)
         descriptionText = findViewById(R.id.descriptionGuestServiceText)
@@ -134,48 +113,17 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         ratingText = findViewById(R.id.avgRatingGuestServiceElementText)
         countOfRatesText = findViewById(R.id.countOfRatesGuestServiceElementText)
         withoutRatingText = findViewById(R.id.withoutRatingText)
-        premiumText = findViewById(R.id.yesPremiumGuestServiceText)
-        noPremiumText = findViewById(R.id.noPremiumGuestServiceText)
+        onPremiumText = findViewById(R.id.onPremiumServiceText)
+        offPremiumText = findViewById(R.id.offPremiumServiceText)
         ratingLayout = findViewById(R.id.ratingGuestServiceLayout)
-        premiumLayout = findViewById(R.id.premiumGuestServiceLayout)
+        premiumLayout = findViewById(R.id.premiumServiceLayout)
         imageFeedLayout = findViewById(R.id.feedGuestServiceLayout)
         topPanelLayout = findViewById(R.id.topServiceLayout)
         ratingBar = findViewById(R.id.ratingBarGuestServiceRatingBar)
         progressBar = findViewById(R.id.progressBarGuestService)
 
-        val editScheduleBtn = findViewById<Button>(R.id.editScheduleGuestServiceBtn)
-        val premiumIconLayout = findViewById<LinearLayout>(R.id.premiumIconGuestServiceLayout)
-
-        /*dbHelper = DBHelper(this)
-        database = dbHelper.readableDatabase
-
-        userId = servicePresenter.getUserId()
-        servicePresenter.isMyService()
-
-        serviceId = intent.getStringExtra(SERVICE_ID)
-        ownerId = ""//getOwnerId()
-        // мой сервис или нет?
-        isMyService = userId == ownerId
-
-        //убрана панель премиума
-        isPremiumLayoutSelected = false
-        if (isMyService) {
-            status = WORKER
-            editScheduleBtn.text = "Редактировать расписание"
-            premiumText!!.setOnClickListener(this)
-            noPremiumText!!.setOnClickListener(this)
-            premiumText!!.setOnClickListener(this)
-
-            val premiumElementFragment = PremiumElementFragment()
-            val transaction = manager.beginTransaction()
-            transaction.add(R.id.premiumGuestServiceLayout, premiumElementFragment)
-            transaction.commit()
-        } else {
-            status = USER
-            editScheduleBtn.text = "Расписание"
-            premiumIconLayout.visibility = View.GONE
-        }
-        editScheduleBtn.setOnClickListener(this)*/
+        findViewById<Button>(R.id.scheduleServiceBtn).setOnClickListener(this)
+        findViewById<LinearLayout>(R.id.premiumServiceLayout).setOnClickListener(this)
     }
 
     private fun onProgress() {
@@ -188,26 +136,24 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     @SuppressLint("SetTextI18n")
-    override fun showServiceInfo(service: Service) {
-        if (servicePresenter.isMyService()) {
-            showTopPanelForMyService(service.id, service.name)
-        } else {
-            showTopPanelForAlienService(service.name, User.DEFAULT_PHOTO_LINK, service.userId)
-        }
+    override fun showServiceInfo(owner: User, service: Service) {
+        this.owner = owner
+        this.service = service
 
+        servicePresenter.setTopPanel(owner.id, owner.photoLink, service.id, service.name)
         costText.text = service.cost + " ₽"
         descriptionText.text = service.description
         addressText.text = service.address
-
-        showRating(service.rating)
+        showRating(service.rating, service.countOfRates)
+        servicePresenter.setPremium(owner.id, service.premiumDate)
 
         offProgress()
     }
 
-    private fun showRating(rating: Float) {
+    private fun showRating(rating: Float, countOfRates: Long) {
         if (rating > 0) {
             showRatingBar(rating)
-            countOfRatesText.text = service.countOfRates.toString()
+            countOfRatesText.text = countOfRates.toString()
         } else {
             showWithoutRating()
         }
@@ -232,7 +178,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         transaction.commit()
     }
 
-    private fun showTopPanelForMyService(serviceId: String, serviceName: String) {
+    override fun showTopPanelForMyService(serviceId: String, serviceName: String) {
         val topPanel = TopPanel()
 
         topPanel.title = serviceName
@@ -243,7 +189,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         transaction.commit()
     }
 
-    private fun showTopPanelForAlienService(serviceName: String, ownerPhotoLink: String, ownerId: String) {
+    override fun showTopPanelForAlienService(serviceName: String, ownerPhotoLink: String, ownerId: String) {
         val topPanel = TopPanel()
 
         topPanel.title = serviceName
@@ -255,38 +201,46 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         transaction.commit()
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.editScheduleGuestServiceBtn -> if (status == WORKER) {
-                // если мой сервис, я - воркер
-                // сразу идём редактировать расписание
-                goToMyCalendar(WORKER)
-            } else {
-                // если не мой сервис, я - юзер
-                // проверяем какие дни мне доступны
-                checkScheduleAndGoToCalendar()
-            }
-            R.id.noPremiumGuestServiceText -> showPremium()
-
-            R.id.yesPremiumGuestServiceText -> showPremium()
-
-            R.id.ratingGuestServiceLayout -> goToComments()
-            else -> {
-            }
+    override fun showPremium(isPremium: Boolean) {
+        premiumLayout.visibility = View.VISIBLE
+        if (isPremium) {
+            offPremiumText.visibility = View.GONE
+            onPremiumText.visibility = View.VISIBLE
+        } else {
+            onPremiumText.visibility = View.GONE
+            offPremiumText.visibility = View.VISIBLE
         }
     }
 
-    private fun checkScheduleAndGoToCalendar() {
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.scheduleServiceBtn -> if (servicePresenter.isMyService(owner.id)) {
+                // my service, Im master
+                goToCalendar(User.MASTER)
+            } else {
+                // not my service, Im client
+                //checkScheduleAndGoToCalendar()
+            }
+
+            R.id.offPremiumServiceText -> showPremium()
+
+            R.id.onPremiumServiceText -> showPremium()
+
+            R.id.ratingGuestServiceLayout -> goToComments()
+        }
+    }
+
+    /*private fun checkScheduleAndGoToCalendar() {
         if (WorkWithLocalStorageApi.hasAvailableTime(serviceId, userId, dbHelper!!.readableDatabase)) {
-            goToMyCalendar(USER)
+            goToCalendar(USER)
         } else {
             attentionThisScheduleIsEmpty()
         }
-    }
+    }*/
 
     private fun createPhotoFeed(serviceId: String?) {
 
-        val width = resources.getDimensionPixelSize(R.dimen.photo_width)
+        /*val width = resources.getDimensionPixelSize(R.dimen.photo_width)
         val height = resources.getDimensionPixelSize(R.dimen.photo_height)
 
         val database = dbHelper!!.writableDatabase
@@ -323,7 +277,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
                         .into(serviceImage)
             } while (cursor.moveToNext())
         }
-        cursor.close()
+        cursor.close()*/
     }
 
     private fun attentionThisScheduleIsEmpty() {
@@ -333,39 +287,14 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
                 Toast.LENGTH_SHORT).show()
     }
 
-    /*private fun createRatingBar(avgRating: Float, countOfRates: Long) {
-        Log.d(TAG, "createRatingBar: $countOfRates")
-        if (countOfRates > 0) {
-            Log.d(TAG, "createRatingBar: IN")
-            countOfRatesText!!.visibility = View.VISIBLE
-            ratingText!!.visibility = View.VISIBLE
-            ratingBar!!.visibility = View.VISIBLE
-
-            countOfRatesText!!.text = "($countOfRates оценок)"
-
-            //приводим цифры к виду, чтобы было 2 число после запятой
-            val avgRatingWithFormat = DecimalFormat("#0.00").format(avgRating.toDouble())
-            ratingText!!.text = avgRatingWithFormat
-
-            ratingBar!!.rating = avgRating
-            ratingLayout!!.setOnClickListener(this)
-        } else {
-            Log.d(TAG, "createRatingBar:  SET WITHOUT")
-            setWithoutRating()
-        }
-
-        mainScroll!!.visibility = View.VISIBLE
-        progressBar!!.visibility = View.GONE
-    }*/
-
     private fun showPremium() {
-        if (isPremiumLayoutSelected) {
+       /* if (isPremiumLayoutSelected) {
             premiumLayout!!.visibility = View.GONE
             isPremiumLayoutSelected = false
         } else {
             premiumLayout!!.visibility = View.VISIBLE
             isPremiumLayoutSelected = true
-        }
+        }*/
     }
 
     private fun setWithoutRating() {
@@ -373,12 +302,12 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     private fun setWithPremium() {
-        noPremiumText!!.visibility = View.GONE
-        premiumText!!.visibility = View.VISIBLE
+        offPremiumText!!.visibility = View.GONE
+        onPremiumText!!.visibility = View.VISIBLE
     }
 
     override fun setPremium() {
-        val database = FirebaseDatabase.getInstance()
+        /*val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference(User.USERS)
                 .child(servicePresenter.getUserId())
                 .child(Service.SERVICES)
@@ -390,16 +319,16 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         setWithPremium()
         premiumLayout!!.visibility = View.GONE
         attentionPremiumActivated()
-        updatePremiumLocalStorage(serviceId!!, newPremiumDate)
+        updatePremiumLocalStorage(serviceId!!, newPremiumDate)*/
     }
 
     private fun updatePremiumLocalStorage(serviceId: String, premiumDate: String) {
-        val contentValues = ContentValues()
+       /* val contentValues = ContentValues()
         contentValues.put(DBHelper.KEY_IS_PREMIUM_SERVICES, premiumDate)
         //update
         database!!.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
                 DBHelper.KEY_ID + " = ?",
-                arrayOf(serviceId))
+                arrayOf(serviceId))*/
     }
 
     override fun checkCode(code: String) {
@@ -461,9 +390,9 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         startActivity(intent)
     }
 
-    private fun goToMyCalendar(status: String) {
+    private fun goToCalendar(status: String) {
         val intent = Intent(this, MyCalendar::class.java)
-        intent.putExtra(SERVICE_ID, serviceId)
+        intent.putExtra(Service.SERVICE_ID, "")
         intent.putExtra(STATUS_USER_BY_SERVICE, status)
 
         startActivity(intent)
@@ -477,10 +406,10 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     private fun goToComments() {
         val intent = Intent(this, Comments::class.java)
-        intent.putExtra(SERVICE_ID, serviceId)
+        intent.putExtra(Service.SERVICE_ID, "")
         intent.putExtra(TYPE, REVIEW_FOR_SERVICE)
-        intent.putExtra(SERVICE_OWNER_ID, ownerId)
-        intent.putExtra(Service.COUNT_OF_RATES, countOfRatesForComments)
+        intent.putExtra(Service.USER_ID, "")
+        intent.putExtra(Service.COUNT_OF_RATES, "")
         startActivity(intent)
     }
 
@@ -488,12 +417,8 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
         private val TAG = "DBInf"
 
-        private val WORKER = "worker"
-        private val USER = "user"
-        private val SERVICE_ID = "service id"
         private val TYPE = "type"
         private val IS_PREMIUM = "is premium"
-        private val SERVICE_OWNER_ID = "service owner id"
         private val CODES = "codes"
         private val CODE = "code"
         private val WORKING_DAYS = "working days"

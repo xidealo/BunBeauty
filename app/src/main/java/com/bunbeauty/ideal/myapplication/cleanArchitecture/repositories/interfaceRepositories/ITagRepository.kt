@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Tag
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 
 
 interface ITagRepository {

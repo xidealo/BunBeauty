@@ -2,9 +2,9 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createServi
 
 import android.net.Uri
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.IAddingServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Tag
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.PhotoRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository

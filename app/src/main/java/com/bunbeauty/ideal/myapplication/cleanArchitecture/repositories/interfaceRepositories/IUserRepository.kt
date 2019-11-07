@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface IUserRepository {
     fun insert(user: User)

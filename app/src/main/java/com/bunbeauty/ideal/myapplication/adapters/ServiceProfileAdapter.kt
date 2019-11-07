@@ -8,7 +8,7 @@ import android.view.ViewGroup
 
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.adapters.foundElements.FoundServiceProfileElement
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
 import java.util.ArrayList
 

@@ -2,7 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.TagFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.TagDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Tag
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.ITagRepository
 import kotlinx.coroutines.launch
 

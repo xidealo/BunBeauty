@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.chat.Messages;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Dialog;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;

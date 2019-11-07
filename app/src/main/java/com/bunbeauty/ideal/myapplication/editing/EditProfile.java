@@ -22,8 +22,8 @@ import androidx.fragment.app.FragmentManager;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
@@ -32,7 +32,6 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes;
 import com.bunbeauty.ideal.myapplication.other.MyService;
 import com.bunbeauty.ideal.myapplication.reviews.Comments;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
 import com.bunbeauty.ideal.myapplication.subscriptions.Subscribers;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;

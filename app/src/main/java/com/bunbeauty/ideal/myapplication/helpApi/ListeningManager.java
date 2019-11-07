@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.helpApi;
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.FBListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
