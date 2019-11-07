@@ -7,7 +7,7 @@ interface MainScreenView: MvpView {
     fun showTags()
     fun createCategoryFeed(categories: MutableSet<String>)
     fun disableCategoryBtn(button: Button)
-    fun enableCategoryButton(category: String, button: Button)
+    fun enableCategoryButton(button: Button)
     fun hideTags()
     fun showLoading()
     fun hideLoading()

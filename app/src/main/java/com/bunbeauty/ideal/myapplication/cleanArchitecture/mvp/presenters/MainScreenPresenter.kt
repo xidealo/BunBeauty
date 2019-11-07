@@ -22,14 +22,16 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
         viewState.createCategoryFeed(mainScreenInteractor.getCategories(mainScreenData))
     }
 
-    fun isSelectedCategory(category: String) : Boolean {
+    fun isSelectedCategory(category: String): Boolean {
         if (category == mainScreenInteractor.selectedCategory) {
+            mainScreenInteractor.selectedCategory = ""
             return true
         }
         mainScreenInteractor.selectedCategory = category
         return false
     }
-    fun setTagsState(visibility: Int){
+
+    fun setTagsState(visibility: Int) {
         if (visibility == View.VISIBLE) {
             viewState.hideTags()
         } else {
@@ -37,16 +39,23 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
             viewState.showTags()
         }
     }
+
+    fun disableCategoryBtns(categoriesBtns: ArrayList<Button>) {
+        for (categoriesBtn in categoriesBtns) {
+            viewState.disableCategoryBtn(categoriesBtn)
+        }
+    }
+
     fun createMainScreenWithCategory(category: String, button: Button) {
         viewState.showLoading()
+        viewState.hideTags()
         viewState.enableCategoryButton(button)
         //nah hide?
-        viewState.hideTags()
         viewState.createTags(category)
         viewState.showTags()
     }
 
-    fun clearCategory(category: String, categoriesBtns:ArrayList<Button>) {
+    fun clearCategory(category: String, categoriesBtns: ArrayList<Button>) {
         for (btn in categoriesBtns) {
             if (category == btn.text.toString()) {
                 mainScreenInteractor.selectedCategory = ""

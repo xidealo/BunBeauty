@@ -124,16 +124,22 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             else -> if ((v.parent as View).id == R.id.categoryMainScreenLayout) {
                 //показать тэги
                 //начать поиск по категории
-                if (mainScreenPresenter.isSelectedCategory((v as Button).text.toString())){
+                val category = (v as Button).text.toString()
+                mainScreenPresenter.disableCategoryBtns(categoriesBtns)
+                if (mainScreenPresenter.isSelectedCategory(category)) {
                     mainScreenPresenter.setTagsState(tagsLayout.visibility)
-                }else{
-                    mainScreenPresenter.createMainScreenWithCategory(v.text.toString(), v)
+                } else {
+                    mainScreenPresenter.createMainScreenWithCategory(category, v)
                 }
-
             } else {
                 tagClick(v as TextView)
             }
         }
+    }
+
+    override fun disableCategoryBtn(button: Button) {
+        button.setBackgroundResource(R.drawable.category_button)
+        button.setTextColor(Color.WHITE)
     }
 
     private fun tagClick(tagText: TextView) {
@@ -164,7 +170,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         recyclerView.visibility = View.VISIBLE
     }
 
-    override fun showMainScreen(mainScreenData:ArrayList<ArrayList<Any>>){
+    override fun showMainScreen(mainScreenData: ArrayList<ArrayList<Any>>) {
         serviceAdapter = ServiceAdapter(mainScreenData.size, mainScreenData)
         recyclerView.adapter = serviceAdapter
     }
@@ -179,22 +185,11 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         tagsLayout.visibility = View.VISIBLE
     }
 
-    override fun enableCategoryButton(category: String, button: Button) {
+    override fun enableCategoryButton(button: Button) {
         button.setBackgroundResource(R.drawable.category_button_pressed)
         button.setTextColor(resources.getColor(R.color.black))
-        for (categoriesBtn in categoriesBtns) {
-            if (category == categoriesBtn.text.toString()) {
-                disableCategoryBtn(categoriesBtn)
-                break
-            }
-        }
         selectedTagsArray.clear()
         //category = button.text.toString()
-    }
-
-    override fun disableCategoryBtn(button: Button) {
-        button.setBackgroundResource(R.drawable.category_button)
-        button.setTextColor(Color.WHITE)
     }
 
     // настроить вид кнопок
@@ -206,12 +201,12 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             categoriesBtns[i].setOnClickListener(this)
             categoriesBtns[i].text = categories.toTypedArray()[i]
             categoriesBtns[i].textSize = 14f
-            disableCategoryBtn(categoriesBtns[i])
+            categoriesBtns[i].setBackgroundResource(R.drawable.category_button)
+            categoriesBtns[i].setTextColor(Color.WHITE)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 categoriesBtns[i].setAutoSizeTextTypeUniformWithConfiguration(
                         8, 14, 1, TypedValue.COMPLEX_UNIT_DIP)
             }
-
             val params = LinearLayout.LayoutParams(
                     (width * categories.toTypedArray()[i].length / 6.6).toInt(),
                     height)
@@ -222,31 +217,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         }
     }
 
-    private fun getUserCity(userId: String): String {
-
-      /*  val database = dbHelper.readableDatabase
-        // Получить город юзера
-        // Таблица Users
-        // с фиксированным userId
-        val sqlQuery = ("SELECT " + DBHelper.KEY_CITY_USERS
-                + " FROM " + DBHelper.TABLE_CONTACTS_USERS
-                + " WHERE " + DBHelper.KEY_ID + " = ?")
-
-        val cursor = database.rawQuery(sqlQuery, arrayOf(userId))
-
-        val indexCity = cursor.getColumnIndex(DBHelper.KEY_CITY_USERS)
-        // дефолтное значение
-        var city = "Dubna"
-
-        if (cursor.moveToFirst()) {
-            city = cursor.getString(indexCity)
-        }
-        cursor.close()
-        return city*/
-        return ""
-    }
-
-    override fun createTags(category:String) {
+    override fun createTags(category: String) {
         val tagsArray = resources
                 .obtainTypedArray(R.array.tags_references)
                 .getTextArray(categories.indexOf(category))
