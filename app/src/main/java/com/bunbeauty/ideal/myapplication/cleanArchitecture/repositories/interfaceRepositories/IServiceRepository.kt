@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
 interface IServiceRepository {
     fun insert(service: Service)

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.chatElements.DialogElement;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Dialog;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog;
 
 import java.util.ArrayList;
 

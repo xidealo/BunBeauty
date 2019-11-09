@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

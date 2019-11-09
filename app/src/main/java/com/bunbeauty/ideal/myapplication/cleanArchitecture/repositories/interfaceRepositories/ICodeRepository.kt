@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Code
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 
 interface ICodeRepository {
     fun insert(code: Code)

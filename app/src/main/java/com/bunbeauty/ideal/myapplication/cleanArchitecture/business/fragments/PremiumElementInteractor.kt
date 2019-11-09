@@ -2,8 +2,8 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.CheckPremiumCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Code
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.CodeRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi

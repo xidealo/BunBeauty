@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.CodeFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.CodeDao
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Code
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.ICodeRepository
 import kotlinx.coroutines.launch
 

@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.*
 
 @Database(entities = [User::class,
     Service::class,

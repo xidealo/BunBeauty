@@ -17,10 +17,10 @@ import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.CommentAdapter;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.FBListener;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Comment;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.FBListener;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Comment;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingCommentsData;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData;

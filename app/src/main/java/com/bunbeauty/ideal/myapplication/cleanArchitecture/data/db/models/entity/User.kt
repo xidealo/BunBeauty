@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -32,5 +32,8 @@ data class User(
                 "jpg?alt=media&token=f15dbe15-0541-46cc-8272-2578627ed311"
 
         const val USER_ID = "user id"
+        const val STATUS = "status"
+        const val MASTER = "master"
+        const val CLIENT = "client"
     }
 }

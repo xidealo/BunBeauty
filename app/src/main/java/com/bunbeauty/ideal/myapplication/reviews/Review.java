@@ -267,7 +267,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
             myRef.updateChildren(items);
             items.clear();
 
-            com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Review ratingReview = new com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Review();
+            com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Review ratingReview = new com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Review();
             ratingReview.setId(reviewId);
             ratingReview.setReview(textOfReview);
             ratingReview.setRating(String.valueOf(myRating));
@@ -313,7 +313,7 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    private void updateReviewInLocalStorage(com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Review ratingReview) {
+    private void updateReviewInLocalStorage(com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Review ratingReview) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 

@@ -161,11 +161,12 @@
 
 
                 <LinearLayout
-                    android:id="@+id/premiumIconGuestServiceLayout"
+                    android:id="@+id/premiumServiceLayout"
                     style="@style/block"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/block_text"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -180,41 +181,31 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@color/panelColor"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/noPremiumGuestServiceText"
+                            android:id="@+id/offPremiumServiceText"
                             style="@style/textItemSolid"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="@string/premium_ico"
+                            android:background="@color/panelColor"
                             android:textColor="@color/white"
-                            android:visibility="visible" />
+                            android:text="@string/premium_ico"
+                            android:visibility="gone" />
 
                         <TextView
-                            android:id="@+id/yesPremiumGuestServiceText"
+                            android:id="@+id/onPremiumServiceText"
                             style="@style/textItemSolid"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@color/yellow"
                             android:gravity="center"
-                            android:text="@string/premium_ico"
+                            android:background="@color/yellow"
                             android:textColor="@color/black"
+                            android:text="@string/premium_ico"
                             android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/premiumGuestServiceLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="gone" />
-
             </LinearLayout>
 
             <!-- Нижняя часть фотографии и кнопка-->
@@ -247,11 +238,12 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/editScheduleGuestServiceBtn"
+                    android:id="@+id/scheduleServiceBtn"
                     style="@style/mainButtonOther"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:text="Расписание"/>
             </LinearLayout>
 
         </LinearLayout>

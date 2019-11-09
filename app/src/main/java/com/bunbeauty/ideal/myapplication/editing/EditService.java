@@ -26,9 +26,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Photo;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.Service;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.models.entity.User;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User;
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement;
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
