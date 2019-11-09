@@ -63,7 +63,7 @@ public class WorkWithTimeApi {
         return formatForDateNow.format(date);
     }
 
-    public static Boolean checkPremium(String premiumDate) {
+    public static Boolean getIsPremium(String premiumDate) {
         long premDate = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(premiumDate);
         long sysDate = WorkWithTimeApi.getSysdateLong();
 

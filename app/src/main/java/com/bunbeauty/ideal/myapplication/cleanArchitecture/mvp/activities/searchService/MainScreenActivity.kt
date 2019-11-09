@@ -63,7 +63,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         setContentView(R.layout.main_screen)
 
         init()
-        showLoading()
+
         mainScreenPresenter.createMainScreen()
     }
 
@@ -127,6 +127,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                 val category = (v as Button).text.toString()
                 mainScreenPresenter.disableCategoryBtns(categoriesBtns)
                 if (mainScreenPresenter.isSelectedCategory(category)) {
+                    mainScreenPresenter.createMainScreen()
                     mainScreenPresenter.setTagsState(tagsLayout.visibility)
                 } else {
                     mainScreenPresenter.createMainScreenWithCategory(category, v)
@@ -189,7 +190,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         button.setBackgroundResource(R.drawable.category_button_pressed)
         button.setTextColor(resources.getColor(R.color.black))
         selectedTagsArray.clear()
-        //category = button.text.toString()
     }
 
     // настроить вид кнопок

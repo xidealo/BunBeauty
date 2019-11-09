@@ -13,13 +13,19 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
         MainScreenCallback {
 
     fun createMainScreen() {
+        viewState.showLoading()
         mainScreenInteractor.getMainScreenData(this)
+    }
+
+    override fun returnMainScreenDataWithCreateCategory(mainScreenData: ArrayList<ArrayList<Any>>) {
+        viewState.hideLoading()
+        viewState.showMainScreen(mainScreenData)
+        viewState.createCategoryFeed(mainScreenInteractor.getCategories(mainScreenData))
     }
 
     override fun returnMainScreenData(mainScreenData: ArrayList<ArrayList<Any>>) {
         viewState.hideLoading()
         viewState.showMainScreen(mainScreenData)
-        viewState.createCategoryFeed(mainScreenInteractor.getCategories(mainScreenData))
     }
 
     fun isSelectedCategory(category: String): Boolean {
@@ -53,6 +59,8 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
         //nah hide?
         viewState.createTags(category)
         viewState.showTags()
+
+        mainScreenInteractor.getMainScreenData(category,this)
     }
 
     fun clearCategory(category: String, categoriesBtns: ArrayList<Button>) {
