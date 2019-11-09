@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.database.*
 import java.util.*
@@ -142,17 +143,28 @@ class ServiceFirebaseApi {
         val service = Service()
 
         service.id = serviceSnapshot.key!!
-        service.name = serviceSnapshot.child(Service.NAME).getValue<String>(String::class.java)!!
-        service.address = serviceSnapshot.child(Service.ADDRESS).getValue<String>(String::class.java)!!
-        service.description = serviceSnapshot.child(Service.DESCRIPTION).getValue<String>(String::class.java)!!
-        service.cost = serviceSnapshot.child(Service.COST).getValue<String>(String::class.java)!!
+        service.name = serviceSnapshot.child(Service.NAME).value as String
+        service.address = serviceSnapshot.child(Service.ADDRESS).value as String
+        service.description = serviceSnapshot.child(Service.DESCRIPTION).value as String
+        service.cost = serviceSnapshot.child(Service.COST).value as String
         service.countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue<Long>(Long::class.java)!!
         service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue<Float>(Float::class.java)!!
-        service.category = serviceSnapshot.child(Service.CATEGORY).getValue<String>(String::class.java)!!
-        service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).getValue<String>(String::class.java)!!
-        service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).getValue<String>(String::class.java)!!
+        service.category = serviceSnapshot.child(Service.CATEGORY).value as String
+        service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).value as String
+        service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).value as String
         service.userId = userId
-
+        for(tagSnapshot in serviceSnapshot.child(Tag.TAGS).children){
+            service.tags.add(getTagFromSnapshot(tagSnapshot,service.id, userId))
+        }
         return service
+    }
+
+    private fun getTagFromSnapshot(tagSnapshot:DataSnapshot, serviceId:String, userId: String):Tag{
+        val tag = Tag()
+        tag.id =  tagSnapshot.key!!
+        tag.tag = tagSnapshot.child(Tag.TAG).value as String
+        tag.serviceId = serviceId
+        tag.userId = userId
+        return tag
     }
 }

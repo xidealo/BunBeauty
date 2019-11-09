@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 
 import android.widget.Button
+import android.widget.TextView
 import com.arellomobile.mvp.MvpView
 
 interface MainScreenView: MvpView {
@@ -12,5 +13,7 @@ interface MainScreenView: MvpView {
     fun showLoading()
     fun hideLoading()
     fun showMainScreen(mainScreenData:ArrayList<ArrayList<Any>>)
-    fun createTags(category:String)
+    fun createTags(category:String,selectedTagsArray:ArrayList<String>)
+    fun enableTag(tagText: TextView)
+    fun disableTag(tagText: TextView)
 }

@@ -20,9 +20,9 @@ class MainScreenInteractor(val userRepository: UserRepository,
                            val serviceRepository: ServiceRepository) : IMainScreenInteractor,
         IUserSubscriber, IServiceSubscriber, CoroutineScope {
 
-
     private lateinit var mainScreenCallback: MainScreenCallback
     var selectedCategory = ""
+    var selectedTagsArray: ArrayList<String> = arrayListOf()
 
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
@@ -46,21 +46,17 @@ class MainScreenInteractor(val userRepository: UserRepository,
         }
     }
 
-    private fun clearCache() {
-        cacheMainScreenData.clear()
-        cacheServiceList.clear()
-        cacheUserList.clear()
-        cachePremiumMainScreenData.clear()
-        currentCountOfUsers = 0
-    }
-
     override fun getMainScreenData(category: String, mainScreenCallback: MainScreenCallback) {
         //can add if which will check cache size and if 0 will load from FB
         mainScreenCallback.returnMainScreenData(convertCacheDataToMainScreenData(category,cacheMainScreenData))
     }
 
+    override fun getMainScreenData(selectedTagsArray: ArrayList<String>, mainScreenCallback: MainScreenCallback) {
+        mainScreenCallback.returnMainScreenData(convertCacheDataToMainScreenData(selectedTagsArray,cacheMainScreenData))
+    }
+
     override fun getUsersByCity(city: String) {
-        userRepository.getByCity(city, this, isFirstEnter(getUserId(), cachedUserIds))
+        userRepository.getByCity(city, this, true)
     }
 
     override fun getServicesByUserId(id: String) {
@@ -125,16 +121,23 @@ class MainScreenInteractor(val userRepository: UserRepository,
         return mainScreenData
     }
 
+    override fun convertCacheDataToMainScreenData(selectedTagsArray: ArrayList<String>, cacheMainScreenData: ArrayList<ArrayList<Any>>): ArrayList<ArrayList<Any>> {
+        val mainScreenData = ArrayList<ArrayList<Any>>()
+        for (i in cacheMainScreenData.indices) {
+            //services 1 , users 2
+            for(j in selectedTagsArray.indices){
+                if ((cacheMainScreenData[i][1] as Service).tags.toString().contains(selectedTagsArray[j]))
+                    mainScreenData.add(arrayListOf(cacheMainScreenData[i][1], cacheMainScreenData[i][2]))
+            }
+        }
+        return mainScreenData
+    }
     private fun getUserByService(service: Service): User {
         for (user in cacheUserList) {
             if (service.userId == user.id)
                 return user
         }
         return User()
-    }
-
-    override fun returnService(service: Service) {
-        //log
     }
 
     //and than we have to get all services by this users
@@ -173,7 +176,6 @@ class MainScreenInteractor(val userRepository: UserRepository,
             sortAddition(arrayListOf(points, service, user))
         }
     }
-
 
     private fun sortAddition(serviceData: ArrayList<Any>) {
         for (i in cacheServiceList.indices) {
@@ -216,6 +218,18 @@ class MainScreenInteractor(val userRepository: UserRepository,
         return cacheMainScreenData
     }
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
+
+    private fun clearCache() {
+        cacheMainScreenData.clear()
+        cacheServiceList.clear()
+        cacheUserList.clear()
+        cachePremiumMainScreenData.clear()
+        currentCountOfUsers = 0
+    }
+
+    override fun returnService(service: Service) {
+        //log
+    }
 
     companion object {
         //can be replaced by one var
