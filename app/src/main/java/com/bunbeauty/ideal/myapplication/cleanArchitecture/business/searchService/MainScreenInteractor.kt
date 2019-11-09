@@ -154,7 +154,7 @@ class MainScreenInteractor(val userRepository: UserRepository,
         coefficients[Service.AVG_RATING] = 0.53f
         coefficients[Service.COUNT_OF_RATES] = 0.15f
         //Проверку на премиум вынести, этот метод не должен делать 2 дейсвтия (можно сразу проверять в выборе рандомных премиум сервисов)
-        val isPremium = WorkWithTimeApi.getIsPremium(service.premiumDate)
+        val isPremium = WorkWithTimeApi.checkPremium(service.premiumDate)
 
         if (isPremium) {
             cachePremiumMainScreenData.add(0, arrayListOf(1f, service, user))
