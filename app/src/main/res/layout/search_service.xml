@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/allPages"
-    tools:context="com.bunbeauty.ideal.myapplication.searchService.SearchService">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.SearchServiceActivity">
     <LinearLayout
         android:id="@+id/headerSearchServiceLayout"
         android:layout_width="match_parent"

@@ -82,7 +82,6 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
         }
     }
 
-
     fun clearCategory(categoriesBtns: ArrayList<Button>) {
         viewState.showLoading()
         mainScreenInteractor.selectedTagsArray.clear()

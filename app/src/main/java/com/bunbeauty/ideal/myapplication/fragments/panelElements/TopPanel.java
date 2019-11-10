@@ -25,7 +25,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
-import com.bunbeauty.ideal.myapplication.searchService.SearchService;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.SearchServiceActivity;
 
 public class TopPanel extends Fragment implements View.OnClickListener {
 
@@ -325,7 +325,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
     }
 
     private void goToSearchService() {
-        Intent intent = new Intent(getContext(), SearchService.class);
+        Intent intent = new Intent(getContext(), SearchServiceActivity.class);
         startActivity(intent);
     }
 
