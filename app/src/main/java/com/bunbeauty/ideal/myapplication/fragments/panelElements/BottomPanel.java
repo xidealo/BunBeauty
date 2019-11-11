@@ -52,7 +52,6 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
         profileText.setOnClickListener(this);
         mainScreenText.setOnClickListener(this);
         chatText.setOnClickListener(this);
-
     }
 
     @Override
@@ -121,6 +120,12 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
         if (getContext().getClass() == Dialogs.class) {
             chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
         }
+    }
+
+    public void clearPanel(){
+        chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
     }
 }
 

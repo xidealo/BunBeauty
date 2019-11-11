@@ -103,9 +103,9 @@ class UserFirebaseApi {
 
     private fun getUserFromSnapshot(userSnapshot: DataSnapshot): User {
         val user = User()
-
+        // add defualt value
         user.id = userSnapshot.key!!
-        user.name = userSnapshot.child(User.NAME).getValue<String>(String::class.java)!!
+        user.name = userSnapshot.child(User.NAME).getValue<String>(String::class.java) ?: ""
         user.city = userSnapshot.child(User.CITY).getValue<String>(String::class.java)!!
         user.phone = userSnapshot.child(User.PHONE).getValue<String>(String::class.java)!!
         user.photoLink = userSnapshot.child(User.PHOTO_LINK).getValue<String>(String::class.java)!!

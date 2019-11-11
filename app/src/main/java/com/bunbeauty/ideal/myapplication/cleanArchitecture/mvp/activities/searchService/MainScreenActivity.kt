@@ -37,10 +37,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private lateinit var tagsLayout: LinearLayout
     private lateinit var innerLayout: LinearLayout
     private lateinit var progressBar: ProgressBar
-
+    private lateinit var panelBuilder:PanelBuilder
     private lateinit var recyclerView: RecyclerView
     private lateinit var serviceAdapter: ServiceAdapter
-    private var isUpdated: Boolean = false
 
     @InjectPresenter
     lateinit var mainScreenPresenter: MainScreenPresenter
@@ -62,13 +61,16 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         setContentView(R.layout.main_screen)
 
         init()
-
+        buildPanels()
         mainScreenPresenter.createMainScreen()
     }
-
+    private fun buildPanels(){
+        val panelBuilder = PanelBuilder()
+        panelBuilder.buildFooter(supportFragmentManager, R.id.footerMainScreenLayout)
+        panelBuilder.buildHeader(supportFragmentManager, "Главная", R.id.headerMainScreenLayout)
+    }
     private fun init() {
         search = Search(this)
-        isUpdated = true
         categories = ArrayList(listOf(*resources.getStringArray(R.array.categories)))
 
         categoryLayout = findViewById(R.id.categoryMainScreenLayout)
@@ -102,10 +104,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     override fun onResume() {
         super.onResume()
+        //не создавать каждыц раз, а очишать
+        panelBuilder.clearBottomPanel()
 
-        val panelBuilder = PanelBuilder()
-        panelBuilder.buildFooter(supportFragmentManager, R.id.footerMainScreenLayout)
-        panelBuilder.buildHeader(supportFragmentManager, "Главная", R.id.headerMainScreenLayout)
     }
 
     override fun onClick(v: View) {

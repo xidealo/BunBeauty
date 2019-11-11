@@ -11,6 +11,7 @@ public class PanelBuilder {
 
     private FragmentTransaction transaction;
     private TopPanel topPanel;
+    private  BottomPanel bottomPanel;
 
     private boolean isMyProfile = false;
     private String myId;
@@ -33,7 +34,7 @@ public class PanelBuilder {
     }
 
     public void buildFooter(FragmentManager manager, int layoutId) {
-        BottomPanel bottomPanel = new BottomPanel(isMyProfile, myId);
+        bottomPanel = new BottomPanel(isMyProfile, myId);
         Object object = new Object();
         object.equals(2);
         transaction = manager.beginTransaction();
@@ -72,6 +73,16 @@ public class PanelBuilder {
         transaction.commit();
     }
 
+    public void hideTopPanel(){
+        topPanel.hidePanel();
+    }
+    public void showTopPanel(){
+        topPanel.showPanel();
+    }
+
+    public void clearBottomPanel(){
+        bottomPanel.clearPanel();
+    }
     private String getUserId(){
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }

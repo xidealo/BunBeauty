@@ -25,7 +25,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.SearchServiceActivity;
 
 public class TopPanel extends Fragment implements View.OnClickListener {
 
@@ -42,6 +41,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
     private TextView countOfSubsText;
     private ImageView avatarImage;
     private LinearLayout avatarTopPanelLayout;
+    private LinearLayout mainLayout;
     private ImageView logoImage;
     private TextView settingText;
     private TextView subscribeText;
@@ -113,7 +113,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
         subscribeText = view.findViewById(R.id.subscribeTopPanelText);
         unsubscribeText = view.findViewById(R.id.unsubscribeTopPanelText);
         logoImage = view.findViewById(R.id.logoTopPanelImage);
-
+        mainLayout = view.findViewById(R.id.topPanelMainLayout);
         avatarImage = view.findViewById(R.id.avatarTopPanelImage);
         avatarTopPanelLayout = view.findViewById(R.id.avatarTopPanelLayout);
 
@@ -223,12 +223,14 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.searchTopPanelText:
-                goToSearchService();
+                //вызов фрагмента
+                //goToSearchService();
+                //показать фрагмент
+                //вид топ панели
+                //засчем еще один фрпагмент?
                 break;
 
             case R.id.subscribeTopPanelText:
-                checkSubscribe();
-                break;
 
             case R.id.unsubscribeTopPanelText:
                 checkSubscribe();
@@ -324,14 +326,14 @@ public class TopPanel extends Fragment implements View.OnClickListener {
         startActivity(intent);
     }
 
-    private void goToSearchService() {
-        Intent intent = new Intent(getContext(), SearchServiceActivity.class);
-        startActivity(intent);
-    }
-
     private void deleteService() {
         EditService activity = (EditService) this.getActivity();
         activity.deleteThisService();
     }
-
+    public void hidePanel(){
+        mainLayout.setVisibility(View.GONE);
+    }
+    public void showPanel(){
+        mainLayout.setVisibility(View.VISIBLE);
+    }
 }

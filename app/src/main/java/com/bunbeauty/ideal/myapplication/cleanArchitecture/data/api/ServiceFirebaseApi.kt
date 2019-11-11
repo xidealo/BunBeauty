@@ -141,7 +141,7 @@ class ServiceFirebaseApi {
     private fun getServiceFromSnapshot(serviceSnapshot: DataSnapshot, userId: String): Service {
 
         val service = Service()
-
+        //add default value
         service.id = serviceSnapshot.key!!
         service.name = serviceSnapshot.child(Service.NAME).value as String
         service.address = serviceSnapshot.child(Service.ADDRESS).value as String
