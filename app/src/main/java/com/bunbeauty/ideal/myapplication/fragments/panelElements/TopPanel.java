@@ -4,9 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +12,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.chat.Messages;
-import com.bunbeauty.ideal.myapplication.editing.EditProfile;
-import com.bunbeauty.ideal.myapplication.editing.EditService;
-import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
+import com.bunbeauty.ideal.myapplication.editing.EditProfile;
+import com.bunbeauty.ideal.myapplication.editing.EditService;
+import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 
 public class TopPanel extends Fragment implements View.OnClickListener {
 
@@ -329,11 +330,5 @@ public class TopPanel extends Fragment implements View.OnClickListener {
     private void deleteService() {
         EditService activity = (EditService) this.getActivity();
         activity.deleteThisService();
-    }
-    public void hidePanel(){
-        mainLayout.setVisibility(View.GONE);
-    }
-    public void showPanel(){
-        mainLayout.setVisibility(View.VISIBLE);
     }
 }

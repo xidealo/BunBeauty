@@ -102,13 +102,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         clearTagsBtn.setOnClickListener(this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        //не создавать каждыц раз, а очишать
-        panelBuilder.clearBottomPanel()
-
-    }
-
     override fun onClick(v: View) {
         when (v.id) {
             R.id.minimizeTagsMainScreenBtn -> hideTags()
