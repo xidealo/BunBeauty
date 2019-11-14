@@ -21,14 +21,15 @@ import com.bunbeauty.ideal.myapplication.adapters.ServiceAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
-import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder
 import com.bunbeauty.ideal.myapplication.helpApi.Search
 import javax.inject.Inject
 
 class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView {
-
     private lateinit var search: Search
 
     private var categoriesBtns: ArrayList<Button> = arrayListOf()
@@ -36,8 +37,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private lateinit var categoryLayout: LinearLayout
     private lateinit var tagsLayout: LinearLayout
     private lateinit var innerLayout: LinearLayout
+    private lateinit var searchLayout: LinearLayout
+    private lateinit var headerLayout: LinearLayout
     private lateinit var progressBar: ProgressBar
-    private lateinit var panelBuilder:PanelBuilder
     private lateinit var recyclerView: RecyclerView
     private lateinit var serviceAdapter: ServiceAdapter
 
@@ -61,14 +63,12 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         setContentView(R.layout.main_screen)
 
         init()
-        buildPanels()
+        createTopPanel()
+        createBottomPanel()
+        createSearchPanel()
         mainScreenPresenter.createMainScreen()
     }
-    private fun buildPanels(){
-        val panelBuilder = PanelBuilder()
-        panelBuilder.buildFooter(supportFragmentManager, R.id.footerMainScreenLayout)
-        panelBuilder.buildHeader(supportFragmentManager, "Главная", R.id.headerMainScreenLayout)
-    }
+
     private fun init() {
         search = Search(this)
         categories = ArrayList(listOf(*resources.getStringArray(R.array.categories)))
@@ -79,6 +79,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         tagsLayout = findViewById(R.id.tagsMainScreenLayout)
         innerLayout = findViewById(R.id.tagsInnerMainScreenLayout)
         progressBar = findViewById(R.id.progressBarMainScreen)
+        searchLayout = findViewById(R.id.searchMainScreenLayout)
+        headerLayout = findViewById(R.id.headerMainScreenLayout)
 
         val minimizeTagsBtn = findViewById<Button>(R.id.minimizeTagsMainScreenBtn)
         val clearTagsBtn = findViewById<Button>(R.id.clearTagsMainScreenBtn)
@@ -129,11 +131,50 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         }
     }
 
+    override fun createTopPanel() {
+        val topPanel = TopPanel()
+
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.headerMainScreenLayout, topPanel)
+        transaction.commit()
+    }
+
+    override fun showTopPanel() {
+        headerLayout.visibility = View.VISIBLE
+    }
+
+    override fun hideTopPanel() {
+        headerLayout.visibility = View.GONE
+    }
+
+    override fun createBottomPanel() {
+        val bottomPanel = BottomPanel()
+
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.footerMainScreenLayout, bottomPanel)
+        transaction.commit()
+    }
+
+    override fun createSearchPanel() {
+        val searchServiceFragment = SearchServiceFragment()
+
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.searchMainScreenLayout, searchServiceFragment)
+        transaction.commit()
+    }
+
+    override fun showSearchPanel() {
+        searchLayout.visibility = View.VISIBLE
+    }
+
+    override fun hideSearchPanel() {
+        searchLayout.visibility = View.GONE
+    }
+
     override fun disableCategoryBtn(button: Button) {
         button.setBackgroundResource(R.drawable.category_button)
         button.setTextColor(Color.WHITE)
     }
-
 
     override fun enableTag(tagText: TextView) {
         tagText.setBackgroundResource(R.drawable.category_button_pressed)
@@ -200,7 +241,15 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         }
     }
 
-    override fun createTags(category: String, selectedTagsArray:ArrayList<String>) {
+    override fun showCategory() {
+        categoryLayout.visibility = View.VISIBLE
+    }
+
+    override fun hideCategory() {
+        categoryLayout.visibility = View.GONE
+    }
+
+    override fun createTags(category: String, selectedTagsArray: ArrayList<String>) {
         val tagsArray = resources
                 .obtainTypedArray(R.array.tags_references)
                 .getTextArray(categories.indexOf(category))

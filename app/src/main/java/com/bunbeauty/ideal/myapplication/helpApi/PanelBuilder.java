@@ -73,19 +73,7 @@ public class PanelBuilder {
         transaction.commit();
     }
 
-    public void hideTopPanel(){
-        topPanel.hidePanel();
-    }
-    public void showTopPanel(){
-        topPanel.showPanel();
-    }
-
-    public void clearBottomPanel(){
-        bottomPanel.clearPanel();
-    }
     private String getUserId(){
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
-
-
 }

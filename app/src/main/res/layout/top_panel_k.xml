@@ -64,4 +64,5 @@
             android:layout_gravity="center"
             tools:srcCompat="@tools:sample/avatars" />
     </LinearLayout>
+
 </LinearLayout>

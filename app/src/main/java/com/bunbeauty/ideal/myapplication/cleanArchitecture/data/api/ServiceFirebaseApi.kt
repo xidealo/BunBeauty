@@ -143,15 +143,15 @@ class ServiceFirebaseApi {
         val service = Service()
         //add default value
         service.id = serviceSnapshot.key!!
-        service.name = serviceSnapshot.child(Service.NAME).value as String
-        service.address = serviceSnapshot.child(Service.ADDRESS).value as String
-        service.description = serviceSnapshot.child(Service.DESCRIPTION).value as String
-        service.cost = serviceSnapshot.child(Service.COST).value as String
-        service.countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue<Long>(Long::class.java)!!
-        service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue<Float>(Float::class.java)!!
-        service.category = serviceSnapshot.child(Service.CATEGORY).value as String
-        service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).value as String
-        service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).value as String
+        service.name = serviceSnapshot.child(Service.NAME).value as? String ?: ""
+        service.address = serviceSnapshot.child(Service.ADDRESS).value as? String ?: ""
+        service.description = serviceSnapshot.child(Service.DESCRIPTION).value as? String ?: ""
+        service.cost = serviceSnapshot.child(Service.COST).value as? String ?: "0"
+        service.countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue<Long>(Long::class.java) ?: 0L
+        service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue<Float>(Float::class.java) ?: 0f
+        service.category = serviceSnapshot.child(Service.CATEGORY).value as? String ?: ""
+        service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).value as? String ?: ""
+        service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).value as? String ?: ""
         service.userId = userId
         for(tagSnapshot in serviceSnapshot.child(Tag.TAGS).children){
             service.tags.add(getTagFromSnapshot(tagSnapshot,service.id, userId))
@@ -162,7 +162,7 @@ class ServiceFirebaseApi {
     private fun getTagFromSnapshot(tagSnapshot:DataSnapshot, serviceId:String, userId: String):Tag{
         val tag = Tag()
         tag.id =  tagSnapshot.key!!
-        tag.tag = tagSnapshot.child(Tag.TAG).value as String
+        tag.tag = tagSnapshot.child(Tag.TAG).value as? String ?: ""
         tag.serviceId = serviceId
         tag.userId = userId
         return tag

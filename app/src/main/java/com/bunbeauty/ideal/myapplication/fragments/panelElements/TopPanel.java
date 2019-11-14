@@ -110,7 +110,6 @@ public class TopPanel extends Fragment implements View.OnClickListener {
         titleText = view.findViewById(R.id.titleTopPanelText);
         countOfSubsText = view.findViewById(R.id.countOfSubsTopPanelText);
         settingText = view.findViewById(R.id.settingTopPanelText);
-        searchText = view.findViewById(R.id.searchTopPanelText);
         subscribeText = view.findViewById(R.id.subscribeTopPanelText);
         unsubscribeText = view.findViewById(R.id.unsubscribeTopPanelText);
         logoImage = view.findViewById(R.id.logoTopPanelImage);
@@ -221,14 +220,6 @@ public class TopPanel extends Fragment implements View.OnClickListener {
 
             case R.id.settingTopPanelText:
                 multiClick();
-                break;
-
-            case R.id.searchTopPanelText:
-                //вызов фрагмента
-                //goToSearchService();
-                //показать фрагмент
-                //вид топ панели
-                //засчем еще один фрпагмент?
                 break;
 
             case R.id.subscribeTopPanelText:

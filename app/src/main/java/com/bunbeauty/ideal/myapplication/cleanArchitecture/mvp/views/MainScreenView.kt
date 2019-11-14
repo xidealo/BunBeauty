@@ -16,4 +16,13 @@ interface MainScreenView: MvpView {
     fun createTags(category:String,selectedTagsArray:ArrayList<String>)
     fun enableTag(tagText: TextView)
     fun disableTag(tagText: TextView)
+    fun createTopPanel()
+    fun showTopPanel()
+    fun hideTopPanel()
+    fun createBottomPanel()
+    fun createSearchPanel()
+    fun showSearchPanel()
+    fun hideSearchPanel()
+    fun hideCategory()
+    fun showCategory()
 }

@@ -8,6 +8,8 @@ import android.widget.*
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.SearchServiceFragmentView
 import com.bunbeauty.ideal.myapplication.helpApi.Search
 import com.google.firebase.database.*
@@ -18,6 +20,7 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
     private var city = NOT_CHOSEN
     private var searchBy = NAME_OF_SERVICE
     private lateinit var searchLineInput: EditText
+    private lateinit var backText: TextView
 
     //fragment просто вызывает методы поиска мс, больше ничего не делает?
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -26,9 +29,23 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         init(view)
+
+        when (context!!.javaClass.name) {
+            MainScreenActivity::class.java.name -> {
+                setBack()
+            }
+        }
     }
 
-    private fun init(view: View){
+    private fun setBack() {
+        backText.setOnClickListener {
+            (activity as MainScreenView).hideSearchPanel()
+            (activity as MainScreenView).showTopPanel()
+            (activity as MainScreenView).showCategory()
+        }
+    }
+
+    private fun init(view: View) {
 
         //создаём выпадающее меню на основе массива городов
         //Выпадающее меню
@@ -40,6 +57,7 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
         searchBySpinner.prompt = NAME_OF_SERVICE
 
         searchLineInput = view.findViewById(R.id.searchLineSearchServiceInput)
+        backText = view.findViewById(R.id.backSearchFragmentText)
 
         val findBtn = view.findViewById<TextView>(R.id.findServiceSearchServiceText)
         findBtn.setOnClickListener(this)
@@ -125,8 +143,8 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
     }
 
     private fun searchByWorkerName() {
-       /* val enteredText = searchLineInput.text.toString().toLowerCase()
-        val search = Search()*/
+        /* val enteredText = searchLineInput.text.toString().toLowerCase()
+         val search = Search()*/
 
         /*val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
                 .orderByChild(User.NAME)

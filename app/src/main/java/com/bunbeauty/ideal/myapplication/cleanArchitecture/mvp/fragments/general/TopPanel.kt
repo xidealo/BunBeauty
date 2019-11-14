@@ -10,7 +10,9 @@ import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.squareup.picasso.Picasso
 
@@ -24,6 +26,7 @@ class TopPanel : Panel() {
     private lateinit var backText: TextView
     private lateinit var titleText: TextView
     private lateinit var logoImage: ImageView
+    private lateinit var searchText: TextView
     private lateinit var multiText: TextView
     private lateinit var avatarLayout: LinearLayout
     private lateinit var avatarImage: ImageView
@@ -70,6 +73,11 @@ class TopPanel : Panel() {
                     setOwnerAvatar()
                 }
             }
+
+            MainScreenActivity::class.java.name ->{
+                setLogoImage()
+                setSearchText()
+            }
         }
     }
 
@@ -93,7 +101,7 @@ class TopPanel : Panel() {
     private fun setOwnerAvatar() {
         avatarLayout.visibility = View.VISIBLE
         avatarLayout.setOnClickListener {
-            (activity as ServiceActivity).goToOwnerProfile (ownerId)
+            (activity as ServiceActivity).goToOwnerProfile(ownerId)
         }
 
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
@@ -105,4 +113,19 @@ class TopPanel : Panel() {
                 .transform(CircularTransformation())
                 .into(avatarImage)
     }
+
+    private fun setLogoImage(){
+        logoImage.visibility = View.VISIBLE
+    }
+
+    private fun setSearchText(){
+        multiText.text = resources.getText(R.string.search_ico)
+        multiText.visibility = View.VISIBLE
+        multiText.setOnClickListener {
+            (activity as MainScreenView).hideTopPanel()
+            (activity as MainScreenView).showSearchPanel()
+            (activity as MainScreenView).hideCategory()
+        }
+    }
+
 }

@@ -105,14 +105,14 @@ class UserFirebaseApi {
         val user = User()
         // add defualt value
         user.id = userSnapshot.key!!
-        user.name = userSnapshot.child(User.NAME).getValue<String>(String::class.java) ?: ""
-        user.city = userSnapshot.child(User.CITY).getValue<String>(String::class.java)!!
-        user.phone = userSnapshot.child(User.PHONE).getValue<String>(String::class.java)!!
-        user.photoLink = userSnapshot.child(User.PHOTO_LINK).getValue<String>(String::class.java)!!
-        user.countOfRates = userSnapshot.child(User.COUNT_OF_RATES).getValue<Long>(Long::class.java)!!
-        user.rating = userSnapshot.child(User.AVG_RATING).getValue<Float>(Float::class.java)!!
-        user.subscriptionsCount = userSnapshot.child(User.COUNT_OF_SUBSCRIPTIONS).getValue<Long>(Long::class.java)!!
-        user.subscribersCount = userSnapshot.child(User.COUNT_OF_SUBSCRIBERS).getValue<Long>(Long::class.java)!!
+        user.name = userSnapshot.child(User.NAME).value as? String ?: ""
+        user.city = userSnapshot.child(User.CITY).value as? String ?: ""
+        user.phone = userSnapshot.child(User.PHONE).value as? String ?: ""
+        user.photoLink = userSnapshot.child(User.PHOTO_LINK).value as? String ?: ""
+        user.countOfRates = userSnapshot.child(User.COUNT_OF_RATES).getValue<Long>(Long::class.java) ?: 0L
+        user.rating = userSnapshot.child(User.AVG_RATING).getValue<Float>(Float::class.java) ?: 0f
+        user.subscriptionsCount = userSnapshot.child(User.COUNT_OF_SUBSCRIPTIONS).getValue<Long>(Long::class.java) ?: 0L
+        user.subscribersCount = userSnapshot.child(User.COUNT_OF_SUBSCRIBERS).getValue<Long>(Long::class.java) ?: 0L
 
         return user
     }

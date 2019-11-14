@@ -2,39 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".cleanArchitecture.mvp.activities.fragments.SearchServiceFragment">
 
     <LinearLayout
+        android:id="@+id/searchTopPanelLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_gravity="center"
         android:background="@color/panelColor"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/backSearchFragmentText"
+            style="@style/textItemSolid"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/back_ico" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimaryDark"
                 android:orientation="horizontal"
-                android:padding="3dp">
+                android:padding="5dp">
 
                 <EditText
                     android:id="@+id/searchLineSearchServiceInput"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="270dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:background="@drawable/block_text"
-                    android:ems="10"
-                    android:inputType="textPersonName"
                     android:textStyle="bold" />
 
                 <TextView
@@ -76,7 +86,5 @@
                     android:popupBackground="@color/white" />
             </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
-
 </LinearLayout>

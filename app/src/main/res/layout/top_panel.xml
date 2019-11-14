@@ -36,15 +36,6 @@
         android:layout_weight="1"
         android:gravity="center" />
 
-    <ImageView
-        android:id="@+id/logoTopPanelImage"
-        android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:visibility="gone"
-        app:srcCompat="@drawable/bun_beauty" />
-
     <LinearLayout
         android:id="@+id/avatarTopPanelLayout"
         android:layout_width="wrap_content"
@@ -61,18 +52,6 @@
             android:layout_gravity="center"
             tools:srcCompat="@tools:sample/avatars" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/searchTopPanelText"
-        style="@style/textItemSolid"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="@string/search_ico"
-        android:visibility="gone"
-        tools:srcCompat="@tools:sample/avatars" />
 
     <LinearLayout
         android:layout_width="wrap_content"
