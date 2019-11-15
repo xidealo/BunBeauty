@@ -65,10 +65,11 @@ class UserFirebaseApi {
 
         userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
+                var user = User()
                 if (usersSnapshot.childrenCount > 0L) {
-                    val user = getUserFromSnapshot(usersSnapshot.children.iterator().next())
-                    callback.returnUser(user)
+                    user = getUserFromSnapshot(usersSnapshot.children.iterator().next())
                 }
+                callback.returnUser(user)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -100,6 +101,28 @@ class UserFirebaseApi {
         })
     }
 
+    fun getByName(name: String, callback: IUserSubscriber) {
+
+        val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
+                .orderByChild(User.NAME)
+                .equalTo(name)
+
+        userQuery.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(usersSnapshot: DataSnapshot) {
+                if (usersSnapshot.childrenCount > 0L) {
+                    val users = arrayListOf<User>()
+                    for(userSnapshot in usersSnapshot.children){
+                        users.add(getUserFromSnapshot(userSnapshot))
+                    }
+                    callback.returnUsers(users)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Some error
+            }
+        })
+    }
 
     private fun getUserFromSnapshot(userSnapshot: DataSnapshot): User {
         val user = User()

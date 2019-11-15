@@ -5,16 +5,14 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhoneView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity
-import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhoneView
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 @InjectViewState
@@ -56,7 +54,7 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInterac
     }
 
     override fun callbackGetUserName(name: String) {
-        if (name.isEmpty()) {
+        if (name == "") {
             viewState.goToRegistration(verifyPhoneInteractor.getMyPhoneNumber())
         } else {
             viewState.goToProfile()

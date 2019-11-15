@@ -15,9 +15,10 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.RegistrationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.RegistrationView
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import javax.inject.Inject
 
@@ -73,9 +74,9 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
         when (v.id) {
             R.id.saveDataRegistrationBtn -> {
                 registrationPresenter.registration(
-                        nameInput.text.toString(),
-                        surnameInput.text.toString(),
-                        citySpinner.selectedItem.toString().toLowerCase(),
+                        WorkWithStringsApi.firstCapitalSymbol(nameInput.text.toString()),
+                        WorkWithStringsApi.firstCapitalSymbol(surnameInput.text.toString()),
+                        WorkWithStringsApi.firstCapitalSymbol(citySpinner.selectedItem.toString()),
                         phoneInput.text.toString()
                 )
             }

@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,15 +19,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
-import com.bunbeauty.ideal.myapplication.helpApi.Search
 import javax.inject.Inject
 
-class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView {
-    private lateinit var search: Search
+class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView, ITopPanel {
 
     private var categoriesBtns: ArrayList<Button> = arrayListOf()
     private lateinit var categories: ArrayList<String>
@@ -70,7 +66,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     private fun init() {
-        search = Search(this)
         categories = ArrayList(listOf(*resources.getStringArray(R.array.categories)))
 
         categoryLayout = findViewById(R.id.categoryMainScreenLayout)
@@ -201,6 +196,13 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         recyclerView.adapter = serviceAdapter
     }
 
+    override fun showMainScreenByUserName(name: String) {
+        mainScreenPresenter.createMainScreenWithUserName(name)
+    }
+
+    override fun showMainScreenByServiceName(serviceName: String) {
+        Toast.makeText(this, "Ничего не найдено", Toast.LENGTH_SHORT).show()
+    }
 
     override fun hideTags() {
         innerLayout.removeAllViews()

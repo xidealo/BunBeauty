@@ -48,11 +48,17 @@ class MainScreenInteractor(val userRepository: UserRepository,
 
     override fun getMainScreenData(category: String, mainScreenCallback: MainScreenCallback) {
         //can add if which will check cache size and if 0 will load from FB
-        mainScreenCallback.returnMainScreenData(convertCacheDataToMainScreenData(category,cacheMainScreenData))
+        mainScreenCallback.returnMainScreenData(convertCacheDataToMainScreenData(category, cacheMainScreenData))
+    }
+
+    override fun getMainScreenDataByUserName(userName: String, mainScreenCallback: MainScreenCallback) {
+        this.mainScreenCallback = mainScreenCallback
+        clearCache()
+        userRepository.getByName(userName, this, false)
     }
 
     override fun getMainScreenData(selectedTagsArray: ArrayList<String>, mainScreenCallback: MainScreenCallback) {
-        mainScreenCallback.returnMainScreenData(convertCacheDataToMainScreenData(selectedTagsArray,cacheMainScreenData))
+        mainScreenCallback.returnMainScreenData(convertCacheDataToMainScreenData(selectedTagsArray, cacheMainScreenData))
     }
 
     override fun getUsersByCity(city: String) {
@@ -125,13 +131,14 @@ class MainScreenInteractor(val userRepository: UserRepository,
         val mainScreenData = ArrayList<ArrayList<Any>>()
         for (i in cacheMainScreenData.indices) {
             //services 1 , users 2
-            for(j in selectedTagsArray.indices){
+            for (j in selectedTagsArray.indices) {
                 if ((cacheMainScreenData[i][1] as Service).tags.toString().contains(selectedTagsArray[j]))
                     mainScreenData.add(arrayListOf(cacheMainScreenData[i][1], cacheMainScreenData[i][2]))
             }
         }
         return mainScreenData
     }
+
     private fun getUserByService(service: Service): User {
         for (user in cacheUserList) {
             if (service.userId == user.id)
@@ -217,6 +224,7 @@ class MainScreenInteractor(val userRepository: UserRepository,
         }
         return cacheMainScreenData
     }
+
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
     private fun clearCache() {

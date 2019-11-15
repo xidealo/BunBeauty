@@ -52,6 +52,7 @@ class RegistrationInteractor(private val userRepository: UserRepository,
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
     override fun registration(user: User) {
+        user.id = getUserId()
         userRepository.insert(user)
     }
 }

@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import android.widget.*
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.SearchServiceFragmentView
-import com.bunbeauty.ideal.myapplication.helpApi.Search
-import com.google.firebase.database.*
 
 
 class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClickListener, SearchServiceFragmentView {
@@ -29,7 +27,6 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         init(view)
-
         when (context!!.javaClass.name) {
             MainScreenActivity::class.java.name -> {
                 setBack()
@@ -40,7 +37,7 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
     private fun setBack() {
         backText.setOnClickListener {
             (activity as MainScreenView).hideSearchPanel()
-            (activity as MainScreenView).showTopPanel()
+            (activity as ITopPanel).showTopPanel()
             (activity as MainScreenView).showCategory()
         }
     }
@@ -86,97 +83,16 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
         when (v.id) {
             R.id.findServiceSearchServiceText -> if (searchLineInput.text.toString().toLowerCase() != "") {
                 //обпращаемся к презентору, метод который будет осуществлять поиск
-                search()
-            } else {
-                //showServicesInHomeTown()
-            }
-            else -> {
+                search(searchLineInput.text.toString().toLowerCase())
             }
         }
     }
 
-    private fun getServicesInThisCity(userCity: String) {
-
-    }
-
-    private fun search() {
+    private fun search(data:String) {
         when (searchBy) {
-            "название сервиса" -> searchByNameService()
-            "имя и фамилия" -> searchByWorkerName()
+            NAME_OF_SERVICE ->  (activity as MainScreenView).showMainScreenByServiceName(data)
+            NICKNAME ->  (activity as MainScreenView).showMainScreenByUserName(data)
         }
-    }
-
-    private fun searchByNameService() {
-        val enteredText = searchLineInput.text.toString().toLowerCase()
-        val search = Search(context)
-
-        var usersQuery: Query = FirebaseDatabase.getInstance().getReference(User.USERS)
-        if (city != NOT_CHOSEN) {
-            usersQuery = usersQuery.orderByChild(User.CITY).equalTo(city)
-        }
-
-        usersQuery.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(usersSnapshot: DataSnapshot) {
-                if (usersSnapshot.value == null) {
-                    attentionNothingFound()
-                    return
-                }
-
-                val commonList = search.getServicesOfUsers(usersSnapshot,
-                        enteredText, null, null, null, null)
-                for (serviceData in commonList) {
-                    //serviceList.add(serviceData[1] as Service)
-                    //userList.add(serviceData[2] as User)
-                }
-                if (commonList.isEmpty()) {
-                    attentionNothingFound()
-                } else {
-                    //serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
-                }
-
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                attentionBadConnection()
-            }
-        })
-    }
-
-    private fun searchByWorkerName() {
-        /* val enteredText = searchLineInput.text.toString().toLowerCase()
-         val search = Search()*/
-
-        /*val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
-                .orderByChild(User.NAME)
-                .equalTo(enteredText)*/
-        /*userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(usersSnapshot: DataSnapshot) {
-
-                if (usersSnapshot.value == null) {
-                    attentionNothingFound()
-                    return
-                }
-
-                val commonList = search.getServicesOfUsers(usersSnapshot, null,
-                        enteredText,
-                        city, null, null)
-                for (serviceData in commonList) {
-                    //serviceList.add(serviceData[1] as Service)
-                    //userList.add(serviceData[2] as User)
-                }
-                *//*  if (serviceList.isEmpty()) {
-                      attentionNothingFound()
-                  } else {
-                      //serviceAdapter = new ServiceAdapter(serviceList.size(),serviceList,userList);
-                      recyclerView.adapter = serviceAdapter
-                      hideLoading()
-                  }*//*
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                attentionBadConnection()
-            }
-        })*/
     }
 
     override fun attentionNothingFound() {
@@ -192,5 +108,6 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
         private val TAG = "DBInf"
         const val NOT_CHOSEN = "не выбран"
         const val NAME_OF_SERVICE = "название сервиса"
+        const val NICKNAME = "имя и фамилия"
     }
 }

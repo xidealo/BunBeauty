@@ -31,7 +31,7 @@ class AuthorizationInteractor(private val userRepository: UserRepository,
         this.authorizationCallback = authorizationCallback
 
         val userPhone = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
-        userRepository.getByPhoneNumber(userPhone, this)
+        userRepository.getByPhoneNumber(userPhone, this, true)
     }
 
     override fun returnUser(user: User) {

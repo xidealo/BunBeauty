@@ -17,6 +17,7 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
         viewState.showLoading()
         mainScreenInteractor.getMainScreenData(this)
     }
+
     fun createMainScreenWithCategory(category: String) {
         mainScreenInteractor.selectedTagsArray.clear()
         viewState.showLoading()
@@ -25,6 +26,11 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
         viewState.showTags()
 
         mainScreenInteractor.getMainScreenData(category,this)
+    }
+
+    fun createMainScreenWithUserName(userName:String){
+        viewState.showLoading()
+        mainScreenInteractor.getMainScreenDataByUserName(userName, this)
     }
 
     fun createMainScreenWithTag(tagText: TextView){
@@ -45,6 +51,7 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
         }
         //create
     }
+
     override fun returnMainScreenDataWithCreateCategory(mainScreenData: ArrayList<ArrayList<Any>>) {
         viewState.hideLoading()
         viewState.showMainScreen(mainScreenData)
@@ -52,6 +59,7 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
     }
 
     override fun returnMainScreenData(mainScreenData: ArrayList<ArrayList<Any>>) {
+        //если 0, то выводим, что ничего не нашел
         viewState.hideLoading()
         viewState.showMainScreen(mainScreenData)
     }

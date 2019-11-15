@@ -22,7 +22,7 @@ class VerifyPhoneInteractor(private val userRepository: UserRepository,
     override fun getMyName(verifyCallback: VerifyCallback) {
         this.verifyCallback = verifyCallback
 
-        userRepository.getByPhoneNumber(getMyPhoneNumber(), this)
+        userRepository.getByPhoneNumber(getMyPhoneNumber(), this, true)
     }
 
     override fun returnUser(user: User) {

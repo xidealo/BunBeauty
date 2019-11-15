@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
@@ -26,7 +27,6 @@ class TopPanel : Panel() {
     private lateinit var backText: TextView
     private lateinit var titleText: TextView
     private lateinit var logoImage: ImageView
-    private lateinit var searchText: TextView
     private lateinit var multiText: TextView
     private lateinit var avatarLayout: LinearLayout
     private lateinit var avatarImage: ImageView
@@ -122,7 +122,7 @@ class TopPanel : Panel() {
         multiText.text = resources.getText(R.string.search_ico)
         multiText.visibility = View.VISIBLE
         multiText.setOnClickListener {
-            (activity as MainScreenView).hideTopPanel()
+            (activity as ITopPanel).hideTopPanel()
             (activity as MainScreenView).showSearchPanel()
             (activity as MainScreenView).hideCategory()
         }
