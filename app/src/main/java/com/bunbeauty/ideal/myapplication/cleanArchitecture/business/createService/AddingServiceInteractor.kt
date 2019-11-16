@@ -31,15 +31,26 @@ class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
         return service.id
     }
 
-    override fun addImage(photo: Photo) {
-        photo.id = photoRepository.getIdForNew(photo.userId, photo.serviceId)
+    override fun addImages(fpathOfImages: List<String>, service: Service) {
+        for (path in fpathOfImages) {
+            val photo = Photo()
+            photo.serviceId = service.id
+            photo.userId = service.userId
+            photo.serviceId = service.id
+            addImage(photo, path)
+        }
+    }
+
+    private fun addImage(photo: Photo, path: String) {
+        photo.id = photoRepository.getIdForNew(photo.serviceId, photo.serviceId)
 
         val storageReference = FirebaseStorage
                 .getInstance()
                 .getReference("${AddingServiceActivity.SERVICE_PHOTO}/$photo.id")
 
-        storageReference.putFile(convertToUri(photo.link)).addOnSuccessListener {
+        storageReference.putFile(convertToUri(path)).addOnSuccessListener {
             storageReference.downloadUrl.addOnSuccessListener {
+                photo.link = it.toString()
                 photoRepository.insert(photo)
             }
         }.addOnFailureListener {

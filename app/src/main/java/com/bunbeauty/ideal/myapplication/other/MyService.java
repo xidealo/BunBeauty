@@ -435,13 +435,13 @@ public class MyService extends Service implements Runnable {
                             orderTime = orderCursor.getString(orderCursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME));
                         }
 
-                        Cursor userCursor = LSApi.getUser(workerId);
+                        Cursor userCursor = LSApi.getServiceOwner(workerId);
                         String workerName = "";
                         if (userCursor.moveToFirst()) {
                             workerName = userCursor.getString(userCursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
                         }
 
-                        Cursor serviceCursor = LSApi.getService(serviceId);
+                        Cursor serviceCursor = LSApi.getUserAndService(serviceId);
                         String serviceName = "";
                         if (serviceCursor.moveToFirst()) {
                             serviceName = serviceCursor.getString(serviceCursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES));

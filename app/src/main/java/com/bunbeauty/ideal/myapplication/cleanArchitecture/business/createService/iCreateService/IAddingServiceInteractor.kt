@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService
 
+import android.net.Uri
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
@@ -17,5 +18,5 @@ interface IAddingServiceInteractor {
     fun getIsAddressLengthThirty(address: String): Boolean
 
     fun addService(service:Service,  tags: List<String>): String
-    fun addImage(photo: Photo)
+    fun addImages(fpathOfImages: List<String>, service: Service)
 }

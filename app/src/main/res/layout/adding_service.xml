@@ -8,22 +8,21 @@
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity">
 
     <LinearLayout
-        android:id="@+id/headerAddServiceLayout"
+        android:id="@+id/topAddingServiceLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
-        android:id="@+id/scrollViewAddService"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="10dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/footerAddServiceLayout"
+        app:layout_constraintBottom_toTopOf="@+id/bottomAddServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerAddServiceLayout">
+        app:layout_constraintTop_toBottomOf="@+id/topAddingServiceLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -155,7 +154,7 @@
     </ScrollView>
 
     <LinearLayout
-        android:id="@+id/footerAddServiceLayout"
+        android:id="@+id/bottomAddServiceLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_panel_height"
         android:orientation="horizontal"

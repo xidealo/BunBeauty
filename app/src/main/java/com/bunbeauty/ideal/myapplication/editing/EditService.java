@@ -314,7 +314,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
         Photo photo = new Photo();
         photo.setId(photoId);
         photo.setLink(storageReference);
-        photo.setOwnerId(serviceId);
+        //photo.setOwnerId(serviceId);
 
         addPhotoInLocalStorage(photo, countOfUploadImage);
     }
@@ -327,7 +327,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
         contentValues.put(DBHelper.KEY_ID, photo.getId());
         contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getLink());
-        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getOwnerId());
+        //contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getOwnerId());
 
         database.insert(DBHelper.TABLE_PHOTOS, null, contentValues);
 
@@ -364,17 +364,17 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
     }
 
     private void addToScreen(String photoLink) {
-        FragmentTransaction transaction = manager.beginTransaction();
+        /*FragmentTransaction transaction = manager.beginTransaction();
         ServicePhotoElement servicePhotoElement = new ServicePhotoElement(photoLink);
         transaction.add(R.id.feedEditServiceLayout, servicePhotoElement);
-        transaction.commit();
+        transaction.commit();*/
     }
 
     private void addToScreenNewPhoto(Bitmap bitmap, Uri filePath) {
-        FragmentTransaction transaction = manager.beginTransaction();
+        /*FragmentTransaction transaction = manager.beginTransaction();
         ServicePhotoElement servicePhotoElement = new ServicePhotoElement(bitmap, filePath, "");
         transaction.add(R.id.feedEditServiceLayout, servicePhotoElement);
-        transaction.commit();
+        transaction.commit();*/
     }
 
     private void deletePhotoFromDatabase(final String photoLink) {

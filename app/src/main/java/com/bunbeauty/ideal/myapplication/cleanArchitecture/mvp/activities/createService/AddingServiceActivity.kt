@@ -3,7 +3,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.creat
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
@@ -17,6 +16,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AddingServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
@@ -37,7 +38,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     private lateinit var premiumLayout: LinearLayout
     private lateinit var mainLayout: LinearLayout
     //храним ссылки на картинки в хранилище
-    private lateinit var fpathOfImages: ArrayList<Uri>
+    private lateinit var fpathOfImages: ArrayList<String>
 
     private lateinit var categoryElement: CategoryElement
     private lateinit var continueButton: Button
@@ -61,8 +62,29 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.adding_service)
+
         init()
+        showTopPanel()
+        showBottomPanel()
         showCategory()
+    }
+
+    private fun showTopPanel() {
+        val topPanel = TopPanel()
+
+        topPanel.title = "Создание услуги"
+
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.topAddingServiceLayout, topPanel)
+        transaction.commit()
+    }
+
+    private fun showBottomPanel() {
+        val bottomPanel = BottomPanel()
+
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.bottomAddServiceLayout, bottomPanel)
+        transaction.commit()
     }
 
     private fun init() {
@@ -101,13 +123,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        val panelBuilder = PanelBuilder()
-        panelBuilder.buildFooter(supportFragmentManager, R.id.footerAddServiceLayout)
-        panelBuilder.buildHeader(supportFragmentManager, "Создание услуги", R.id.headerAddServiceLayout)
-    }
-
     private fun chooseImage() {
         //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
         val photoPickerIntent = Intent(Intent.ACTION_PICK)
@@ -119,16 +134,14 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
-                && data != null && data.data != null) {
-            val filePath = data.data!!
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK &&
+                data != null && data.data != null) {
             try {
-                //установка картинки на activity
-                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
-                addImageToScreen(bitmap, filePath)
-                //serviceImage.setImageBitmap(bitmap);
-                //загрузка картинки в fireStorage
-                fpathOfImages.add(filePath)
+                //show image on activity
+                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, data.data)
+                showImage(bitmap, data.data!!.toString())
+
+                fpathOfImages.add(data.data!!.toString())
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -136,21 +149,20 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     }
 
     // плохое место
-    private fun addImageToScreen(bitmap: Bitmap, filePath: Uri) {
+    private fun showImage(bitmap: Bitmap, filePath: String) {
         supportFragmentManager
                 .beginTransaction()
                 .add(R.id.feedAddServiceLayout, ServicePhotoElement(bitmap, filePath, "add service"))
                 .commit()
     }
 
-    fun deleteFragment(fr: ServicePhotoElement, filePath: Uri) {
+    fun removePhoto(servicePhotoElement: ServicePhotoElement, filePath: String) {
         supportFragmentManager
                 .beginTransaction()
-                .remove(fr)
+                .remove(servicePhotoElement)
                 .commit()
         fpathOfImages.remove(filePath)
     }
-    //
 
     override fun showCategory() {
         categoryElement = CategoryElement(this)
@@ -160,10 +172,10 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
                 .commit()
     }
 
-    override fun showPremiumBlock(serivce:Service) {
+    override fun showPremiumBlock(service:Service) {
         supportFragmentManager
                 .beginTransaction()
-                .add(R.id.premiumAddServiceLayout, PremiumElementFragment(serivce))
+                .add(R.id.premiumAddServiceLayout, PremiumElementFragment(service))
                 .commit()
 
         premiumLayout.visibility = View.VISIBLE
@@ -173,13 +185,13 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
         mainLayout.visibility = View.GONE
     }
 
-    override fun goToMyCalendar(status: String, serviceId: String) {
+    /*override fun goToMyCalendar(status: String, serviceId: String) {
         val intent = Intent(this, MyCalendar::class.java)
         intent.putExtra(SERVICE_ID, serviceId)
         intent.putExtra(STATUS_USER_BY_SERVICE, status)
         startActivity(intent)
         finish()
-    }
+    }*/
 
     override fun showAllDone() {
         Toast.makeText(this, "Сервис успешно создан", Toast.LENGTH_LONG).show()

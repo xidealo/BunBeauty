@@ -1,20 +1,23 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
 class Photo(@PrimaryKey
             var id: String = "",
-            var link: String = "",
-            var ownerId: String = "") {
 
-    lateinit var userId: String
-    lateinit var serviceId: String
+            var link: String = "",
+
+            var userId: String = "",
+
+            var serviceId: String = "") {
+
     companion object {
         const val PHOTOS = "photos"
-        const val PHOTO_LINK = "photo link"
-        const val OWNER_ID = "owner id"
+        const val LINK = "link"
+        const val SERVICE_ID = "service id"
     }
 
 }

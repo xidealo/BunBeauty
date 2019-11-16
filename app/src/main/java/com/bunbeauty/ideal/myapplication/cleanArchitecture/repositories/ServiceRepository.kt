@@ -28,14 +28,6 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         serviceFirebaseApi.update(service)
     }
 
-    override fun get() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun delete(service: Service) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun getServicesByUserId(userId: String, serviceSubscriber: IServiceSubscriber, isFirstEnter: Boolean) {
         this.serviceSubscriber = serviceSubscriber
         val serviceList: ArrayList<Service> = ArrayList()
@@ -64,7 +56,7 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         }
     }
 
-    fun getById(serviceId: String, userId: String, serviceSubscriber: IServiceSubscriber) {
+     override fun getById(serviceId: String, userId: String, serviceSubscriber: IServiceSubscriber) {
         this.serviceSubscriber = serviceSubscriber
         var service: Service? = null
 
@@ -116,10 +108,17 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         serviceSubscriber.returnServiceList(serviceList)
     }
 
-    override fun getServicesByCityAndCategory(userCity: String, category: String, selectedTagsArray: java.util.ArrayList<String>?) {
-    }
+    override fun getServicesByCityAndCategory(userCity: String, category: String, selectedTagsArray: java.util.ArrayList<String>?) {}
 
     fun getIdForNew(userId: String): String = serviceFirebaseApi.getIdForNew(userId)
+
+    override fun get() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun delete(service: Service) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     companion object{
         const val TAG = "DBInf"

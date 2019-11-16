@@ -23,7 +23,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingCommentsData;
-import com.bunbeauty.ideal.myapplication.helpApi.LoadingGuestServiceData;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
@@ -237,7 +236,7 @@ public class Comments extends AppCompatActivity {
                         @Override
                         public void onChildRemoved(@NonNull DataSnapshot timeSnapshot) {
                             //при удалении времени
-                            LoadingGuestServiceData.deleteTimeFromLocalStorage(timeSnapshot.getKey(), database);
+                            //LoadingGuestServiceData.deleteTimeFromLocalStorage(timeSnapshot.getKey(), database);
                         }
 
                         @Override

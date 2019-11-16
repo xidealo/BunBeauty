@@ -3,30 +3,29 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserServiceCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IPhotoCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.google.firebase.auth.FirebaseAuth
 
 @InjectViewState
-class ServicePresenter(private val serviceInteractor: ServiceInteractor) :
-        MvpPresenter<ServiceView>(), IUserServiceCallback {
+class ServicePresenter(private val serviceInteractor: ServiceInteractor) : MvpPresenter<ServiceView>(),
+        IPhotoCallback {
 
-    private val TAG = "DBInf"
-
-    fun getUserId(): String {
-        return FirebaseAuth.getInstance().currentUser!!.uid
-    }
+    fun getUserId() = FirebaseAuth.getInstance().currentUser!!.uid
 
     fun isMyService(ownerId: String) = (getUserId() == ownerId)
 
-    fun getUserAndService() {
-        serviceInteractor.getService(this)
+    fun getService() = serviceInteractor.getService()
+
+    fun getServiceOwner() = serviceInteractor.getServiceOwner()
+
+    fun getServicePhotos(serviceId: String, serviceOwnerId: String) {
+        serviceInteractor.getServicePhotos(serviceId, serviceOwnerId, this)
     }
 
-    override fun returnUserAndService(user: User, service: Service) {
-        viewState.showServiceInfo(user, service)
+    override fun returnPhotos(photos: List<Photo>) {
+        viewState.showServiceInfo(photos)
     }
 
     fun setTopPanel(ownerId: String, ownerPhotoLink: String, serviceId: String, serviceName: String) {
@@ -41,5 +40,9 @@ class ServicePresenter(private val serviceInteractor: ServiceInteractor) :
         if (isMyService(ownerId)) {
             viewState.showPremium(serviceInteractor.isPremium(premiumDate))
         }
+    }
+
+    companion object {
+        private val TAG = "DBInf"
     }
 }

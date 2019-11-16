@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.ideal.myapplication.R
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
@@ -74,6 +75,10 @@ class TopPanel : Panel() {
                 }
             }
 
+            AddingServiceActivity::class.java.name -> {
+                setTitleText()
+                setEmptyMultiText()
+              
             MainScreenActivity::class.java.name ->{
                 setLogoImage()
                 setSearchText()

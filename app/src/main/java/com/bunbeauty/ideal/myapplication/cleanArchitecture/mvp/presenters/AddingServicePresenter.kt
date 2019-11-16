@@ -41,16 +41,9 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
         }
     }
 
-    fun addImages(fpathOfImages: List<Uri>, service: Service) {
+    fun addImages(fpathOfImages: List<String>, service: Service) {
         if (fpathOfImages.size < MAX_COUNT_OF_IMAGES) {
-            for (path: Uri in fpathOfImages) {
-                val photo = Photo()
-                photo.link = path.toString()
-                photo.ownerId = service.id
-                photo.userId = addingServiceInteractor.getUserId()
-                photo.serviceId = service.id
-                addingServiceInteractor.addImage(photo)
-            }
+            addingServiceInteractor.addImages(fpathOfImages, service)
             viewState.showAllDone()
             viewState.hideMainBlocks()
             Thread.sleep(500)
