@@ -18,6 +18,9 @@ interface UserDao {
     @Query("SELECT * FROM user WHERE city = :city")
     suspend fun getByCity(city: String): List<User>
 
+    @Query("SELECT * FROM user WHERE city = :city AND name = :name")
+    suspend fun getByCityAndUserName(city: String, name:String): List<User>
+
     @Query("SELECT * FROM user WHERE name = :name")
     suspend fun getByName(name: String): List<User>
 

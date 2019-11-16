@@ -28,9 +28,14 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
         mainScreenInteractor.getMainScreenData(category,this)
     }
 
-    fun createMainScreenWithUserName(userName:String){
+    fun createMainScreenWithSearchUserName(city:String, userName:String){
         viewState.showLoading()
-        mainScreenInteractor.getMainScreenDataByUserName(userName, this)
+        mainScreenInteractor.getMainScreenDataByUserName(city, userName, this)
+    }
+
+    fun createMainScreenWithSearchServiceName(city:String,serviceName:String){
+        viewState.showLoading()
+        mainScreenInteractor.getMainScreenDataByUserName(city, serviceName, this)
     }
 
     fun createMainScreenWithTag(tagText: TextView){

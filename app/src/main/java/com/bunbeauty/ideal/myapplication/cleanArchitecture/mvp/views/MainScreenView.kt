@@ -6,8 +6,8 @@ import com.arellomobile.mvp.MvpView
 
 interface MainScreenView: MvpView {
     fun showTags()
-    fun showMainScreenByUserName(name:String)
-    fun showMainScreenByServiceName(serviceName:String)
+    fun showMainScreenByUserName(city:String, name:String)
+    fun showMainScreenByServiceName(city:String, serviceName:String)
 
     fun createCategoryFeed(categories: MutableSet<String>)
     fun disableCategoryBtn(button: Button)

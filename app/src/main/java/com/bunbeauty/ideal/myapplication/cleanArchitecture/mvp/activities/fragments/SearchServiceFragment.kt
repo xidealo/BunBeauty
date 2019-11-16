@@ -11,6 +11,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.SearchServiceFragmentView
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 
 
 class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClickListener, SearchServiceFragmentView {
@@ -81,17 +82,17 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.findServiceSearchServiceText -> if (searchLineInput.text.toString().toLowerCase() != "") {
+            R.id.findServiceSearchServiceText -> if (searchLineInput.text.toString() != "") {
                 //обпращаемся к презентору, метод который будет осуществлять поиск
-                search(searchLineInput.text.toString().toLowerCase())
+                search(searchLineInput.text.toString())
             }
         }
     }
 
     private fun search(data:String) {
         when (searchBy) {
-            NAME_OF_SERVICE ->  (activity as MainScreenView).showMainScreenByServiceName(data)
-            NICKNAME ->  (activity as MainScreenView).showMainScreenByUserName(data)
+            NAME_OF_SERVICE ->  (activity as MainScreenView).showMainScreenByServiceName(city, WorkWithStringsApi.firstCapitalSymbol(data))
+            NICKNAME ->  (activity as MainScreenView).showMainScreenByUserName(city, WorkWithStringsApi.doubleCapitalSymbols(data))
         }
     }
 

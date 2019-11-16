@@ -51,10 +51,16 @@ class MainScreenInteractor(val userRepository: UserRepository,
         mainScreenCallback.returnMainScreenData(convertCacheDataToMainScreenData(category, cacheMainScreenData))
     }
 
-    override fun getMainScreenDataByUserName(userName: String, mainScreenCallback: MainScreenCallback) {
+    override fun getMainScreenDataByUserName(city: String, userName: String, mainScreenCallback: MainScreenCallback) {
         this.mainScreenCallback = mainScreenCallback
         clearCache()
-        userRepository.getByName(userName, this, false)
+        userRepository.getByCityAndUserName(city, userName, this, true)
+    }
+
+    override fun getMainScreenDataByServiceName(city: String, serviceName: String, mainScreenCallback: MainScreenCallback) {
+        this.mainScreenCallback = mainScreenCallback
+        clearCache()
+        userRepository.getById(getUserId(), this, true)
     }
 
     override fun getMainScreenData(selectedTagsArray: ArrayList<String>, mainScreenCallback: MainScreenCallback) {
@@ -84,6 +90,7 @@ class MainScreenInteractor(val userRepository: UserRepository,
         for (user in users) {
             getServicesByUserId(user.id)
         }
+
     }
 
     override fun returnServiceList(serviceList: List<Service>) {

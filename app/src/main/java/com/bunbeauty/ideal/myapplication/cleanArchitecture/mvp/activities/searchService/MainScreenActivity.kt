@@ -196,11 +196,11 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         recyclerView.adapter = serviceAdapter
     }
 
-    override fun showMainScreenByUserName(name: String) {
-        mainScreenPresenter.createMainScreenWithUserName(name)
+    override fun showMainScreenByUserName(city:String, name: String) {
+        mainScreenPresenter.createMainScreenWithSearchUserName(city, name)
     }
 
-    override fun showMainScreenByServiceName(serviceName: String) {
+    override fun showMainScreenByServiceName(city:String, serviceName: String) {
         Toast.makeText(this, "Ничего не найдено", Toast.LENGTH_SHORT).show()
     }
 

@@ -60,11 +60,10 @@
 
     //array for spinner
     <string-array name="cities">
-        <item><b>город не выбран</b></item>
-        <item><b>dubna</b></item>
-        <item><b>dmitrov</b></item>
-        <item><b>taldom</b></item>
-        <item><b>kimry</b></item>
+        <item><b>Дубна</b></item>
+        <item><b>Дмитров</b></item>
+        <item><b>Талдом</b></item>
+        <item><b>Кимры</b></item>
     </string-array>
 
     <string-array name="searchBy">

@@ -85,6 +85,20 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
+    override fun getByCityAndUserName(city: String, userName:String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
+        var users = listOf<User>()
+        this.userSubscriber = userSubscriber
+
+        if (isFirstEnter) {
+            userFirebaseApi.getByCityAndUserName(city,userName, this)
+        } else {
+            runBlocking {
+                users = userDao.getByCityAndUserName(city, userName)
+            }
+            userSubscriber.returnUsers(users)
+        }
+    }
+
     override fun getByName(name: String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
         var users = listOf<User>()
         this.userSubscriber = userSubscriber

@@ -6,7 +6,8 @@ interface IMainScreenInteractor {
     fun getUserId():String
     fun getMainScreenData(mainScreenCallback: MainScreenCallback)
     fun getMainScreenData(category: String, mainScreenCallback: MainScreenCallback)
-    fun getMainScreenDataByUserName(userName: String, mainScreenCallback: MainScreenCallback)
+    fun getMainScreenDataByUserName(city:String, userName: String, mainScreenCallback: MainScreenCallback)
+    fun getMainScreenDataByServiceName(city:String, serviceName: String, mainScreenCallback: MainScreenCallback)
     fun getMainScreenData(selectedTagsArray: ArrayList<String>, mainScreenCallback: MainScreenCallback)
     fun getUsersByCity(city:String)
     fun getServicesByUserId(id:String)
