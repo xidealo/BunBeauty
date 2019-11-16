@@ -44,12 +44,13 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var addServicesBtn: Button
     private lateinit var subscriptionsBtn: Button
     private lateinit var progressBar: ProgressBar
-
     private lateinit var ratingLayout: LinearLayout
     private lateinit var mainLayout: LinearLayout
     private lateinit var avatarImage: ImageView
     private lateinit var orderRecyclerView: RecyclerView
     private lateinit var serviceRecyclerView: RecyclerView
+
+    private lateinit var profileOwner: User
 
     @Inject
     lateinit var profileInteractor: ProfileInteractor
@@ -120,6 +121,8 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showUserInfo(user: User) {
+        this.profileOwner = user
+
         showProfileText(user.name, user.city, user.phone)
         showRating(user.rating)
         showAvatar(user.photoLink)
@@ -132,8 +135,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showUserServices(serviceList: List<Service>) {
-        //serviceRecyclerView.adapter = null
-        val serviceAdapter = ServiceProfileAdapter(serviceList as ArrayList<Service>)
+        val serviceAdapter = ServiceProfileAdapter(serviceList as ArrayList<Service>, profileOwner)
         serviceRecyclerView.adapter = serviceAdapter
         offProgress()
     }

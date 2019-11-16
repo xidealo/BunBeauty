@@ -11,4 +11,6 @@ interface IServiceRepository {
 
     fun getServicesByCityAndCategory(userCity: String, category: String, selectedTagsArray: java.util.ArrayList<String>?)
     fun getServicesByUserId(userId: String, serviceSubscriber: IServiceSubscriber, isFirstEnter: Boolean)
+
+    fun getById(serviceId: String, userId: String, serviceSubscriber: IServiceSubscriber)
 }

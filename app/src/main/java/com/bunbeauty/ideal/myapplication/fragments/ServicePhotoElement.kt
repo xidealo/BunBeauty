@@ -1,8 +1,6 @@
 package com.bunbeauty.ideal.myapplication.fragments
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,30 +14,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.create
 import com.bunbeauty.ideal.myapplication.editing.EditService
 import com.squareup.picasso.Picasso
 
-class ServicePhotoElement : Fragment, View.OnClickListener {
+class ServicePhotoElement(private val bitmap: Bitmap, private val filePath: String, private val status: String) : Fragment(), View.OnClickListener {
     private lateinit var cancelPhoto: Button
     private lateinit var photo: ImageView
 
-    private lateinit var bitmap: Bitmap
     private lateinit var photoLink: String
-    private lateinit var status: String
-    private lateinit var filePath: Uri
-
-    constructor() {
-        // Required empty public constructor
-    }
-
-    @SuppressLint("ValidFragment")
-    constructor(_bitmap: Bitmap, _filePath: Uri, _status: String) {
-        bitmap = _bitmap
-        filePath = _filePath
-        status = _status
-    }
-
-    @SuppressLint("ValidFragment")
-    constructor(_photoLink: String) {
-        photoLink = _photoLink
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -76,7 +55,7 @@ class ServicePhotoElement : Fragment, View.OnClickListener {
                 //удаление фрагмента
                 //если мы на addService
                 if (status == ADD_SERVICE) {
-                    (this.activity as AddingServiceActivity).deleteFragment(this, filePath)
+                    (this.activity as AddingServiceActivity).removePhoto(this, filePath)
                 } else {
                     (this.activity as EditService).deleteFragment(this, filePath)
                 }

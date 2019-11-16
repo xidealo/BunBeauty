@@ -220,7 +220,7 @@ public class LoadingProfileData {
 
         contentValues.put(DBHelper.KEY_ID, photo.getId());
         contentValues.put(DBHelper.KEY_PHOTO_LINK_PHOTOS, photo.getLink());
-        contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getOwnerId());
+        //contentValues.put(DBHelper.KEY_OWNER_ID_PHOTOS, photo.getOwnerId());
 
         boolean isUpdate = WorkWithLocalStorageApi.hasSomeData(DBHelper.TABLE_PHOTOS,
                 photo.getId());

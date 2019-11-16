@@ -34,10 +34,7 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor):
 
     fun updateProfileData() {
         updateUserInfo()
-        updateServiceList()
     }
-
-    private fun updateServiceList() = profileInteractor.getProfileServiceList(this)
 
     private fun updateUserInfo() = profileInteractor.getProfileOwner(this)
 

@@ -84,6 +84,6 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideMainScreenInteractor(userRepository: UserRepository,serviceRepository: ServiceRepository): MainScreenInteractor =
             MainScreenInteractor(userRepository,serviceRepository)
     @Provides
-    fun provideServiceInteractor(userRepository: UserRepository, serviceRepository: ServiceRepository): ServiceInteractor =
-            ServiceInteractor(userRepository,serviceRepository, intent)
+    fun provideServiceInteractor(photoRepository: PhotoRepository): ServiceInteractor =
+            ServiceInteractor(photoRepository, intent)
 }

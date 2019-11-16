@@ -13,4 +13,7 @@ interface PhotoDao {
 
     @Delete
     suspend fun delete(photo: Photo)
+
+    @Query("SELECT * FROM photo WHERE serviceId = :serviceId")
+    suspend fun findAllByServiceId(serviceId: String): List<Photo>
 }

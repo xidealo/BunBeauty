@@ -513,7 +513,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         Photo photo = new Photo();
         photo.setId(photoId);
         photo.setLink(storageReference);
-        photo.setOwnerId(userId);
+        //photo.setOwnerId(userId);
 
         addPhotoInLocalStorage(photo);
     }
@@ -521,7 +521,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private void addPhotoInLocalStorage(Photo photo) {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        String ownerId = photo.getOwnerId();
+        String ownerId = "";//photo.getOwnerId();
 
         database.delete(
                 DBHelper.TABLE_PHOTOS,

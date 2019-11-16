@@ -20,8 +20,7 @@ class ProfileInteractor(private val userRepository: UserRepository,
         IProfileInteractor, IUserSubscriber, IServiceSubscriber {
 
     private val TAG = "DBInf"
-
-    lateinit var profileCallback: ProfileCallback
+    private lateinit var profileCallback: ProfileCallback
 
     override fun updateProfile(ownerId: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -68,7 +67,7 @@ class ProfileInteractor(private val userRepository: UserRepository,
                 isFirstEnter(getOwnerId(), cachedUserIds))
     }
 
-    override fun getProfileServiceList(profileCallback: ProfileCallback) {
+    private fun getProfileServiceList(profileCallback: ProfileCallback) {
         this.profileCallback = profileCallback
 
         serviceRepository.getServicesByUserId(getOwnerId(),
@@ -86,6 +85,7 @@ class ProfileInteractor(private val userRepository: UserRepository,
 
     override fun returnUser(user: User) {
         profileCallback.callbackGetUser(user)
+        getProfileServiceList(profileCallback)
     }
 
     override fun returnServiceList(serviceList: List<Service>) {

@@ -1,14 +1,20 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
+import android.annotation.SuppressLint
 import android.util.Log
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IPhotoCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class PhotoFirebase {
     private val TAG = "data_layer"
 
+    @SuppressLint("RestrictedApi")
     fun insert(photo: Photo) {
         val database = FirebaseDatabase.getInstance()
         val serviceRef = database
@@ -20,9 +26,46 @@ class PhotoFirebase {
                 .child(photo.id)
 
         val items = HashMap<String, Any>()
-        items[Photo.PHOTO_LINK] = photo.link
+        items[Photo.LINK] = photo.link
         serviceRef.updateChildren(items)
         Log.d(TAG, "Service adding completed")
+    }
+
+    fun getByServiceId(serviceOwnerId: String, serviceId: String,  photoCallback: IPhotoCallback) {
+        val photosRef = FirebaseDatabase.getInstance()
+                .getReference(User.USERS)
+                .child(serviceOwnerId)
+                .child(Service.SERVICES)
+                .child(serviceId)
+                .child(Photo.PHOTOS)
+
+        photosRef.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(photosSnapshot: DataSnapshot) {
+                val photos = ArrayList<Photo>()
+
+                for (photoSnapshot in photosSnapshot.children) {
+                    photos.add(getPhotoFromSnapshot(photoSnapshot, serviceOwnerId, serviceId))
+                }
+
+                photoCallback.returnPhotos(photos)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                //some error
+            }
+        })
+
+    }
+
+    private fun getPhotoFromSnapshot(photoSnapshot: DataSnapshot, serviceOwnerId: String,
+                                     serviceId: String): Photo {
+        val photo = Photo()
+        photo.id = photoSnapshot.key!!
+        photo.link = photoSnapshot.child(Photo.LINK).getValue<String>(String::class.java)!!
+        photo.userId = serviceOwnerId
+        photo.serviceId = serviceId
+
+        return photo
     }
 
     fun getIdForNew(userId: String, serviceId:String): String {

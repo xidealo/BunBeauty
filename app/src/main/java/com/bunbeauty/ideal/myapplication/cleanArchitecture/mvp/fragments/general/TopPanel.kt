@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.ideal.myapplication.R
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
@@ -69,6 +70,11 @@ class TopPanel : Panel() {
                 } else {
                     setOwnerAvatar()
                 }
+            }
+
+            AddingServiceActivity::class.java.name -> {
+                setTitleText()
+                setEmptyMultiText()
             }
         }
     }

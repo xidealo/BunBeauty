@@ -13,6 +13,6 @@ interface IProfileInteractor {
     fun isFirstEnter():Boolean
     fun isUserOwner():Boolean
     fun getProfileOwner(profileCallback: ProfileCallback)
-    fun getProfileServiceList(profileCallback: ProfileCallback)
+    //fun getProfileServiceList(profileCallback: ProfileCallback)
 
 }

@@ -2,10 +2,12 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.database.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ServiceFirebaseApi {
 
@@ -154,5 +156,19 @@ class ServiceFirebaseApi {
         service.userId = userId
 
         return service
+    }
+
+    private fun getPhotosFromSnapshot(photosSnapshot: DataSnapshot, serviceId: String): List<Photo> {
+        val photos = ArrayList<Photo>()
+
+        for (photoSnapshot in photosSnapshot.children) {
+            val photo = Photo()
+            photo.id = photosSnapshot.key!!
+            photo.link = photosSnapshot.child(Photo.LINK).getValue<String>(String::class.java)!!
+            photo.serviceId = serviceId
+            photos.add(photo)
+        }
+
+        return photos
     }
 }

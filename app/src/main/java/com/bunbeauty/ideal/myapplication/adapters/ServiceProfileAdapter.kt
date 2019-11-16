@@ -9,10 +9,11 @@ import android.view.ViewGroup
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.adapters.foundElements.FoundServiceProfileElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 import java.util.ArrayList
 
-class ServiceProfileAdapter(private val serviceList: ArrayList<Service>)
+class ServiceProfileAdapter(private val serviceList: ArrayList<Service>, private val serviceOwner: User)
     : RecyclerView.Adapter<ServiceProfileAdapter.ServiceProfileViewHolder>() {
     private lateinit var context: Context
 
@@ -37,7 +38,7 @@ class ServiceProfileAdapter(private val serviceList: ArrayList<Service>)
     inner class ServiceProfileViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(service: Service) {
-            val foundServiceProfileElement = FoundServiceProfileElement(service, context)
+            val foundServiceProfileElement = FoundServiceProfileElement(service, serviceOwner, context)
             foundServiceProfileElement.createElement(view)
         }
     }

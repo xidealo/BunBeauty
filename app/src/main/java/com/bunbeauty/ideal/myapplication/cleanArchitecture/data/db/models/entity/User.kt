@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entit
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity
 data class User(
@@ -14,7 +15,7 @@ data class User(
         var countOfRates:Long = 0,
         var photoLink:String = DEFAULT_PHOTO_LINK,
         var subscribersCount:Long = 0,
-        var subscriptionsCount:Long = 0 ) {
+        var subscriptionsCount:Long = 0 ): Serializable {
 
     companion object {
         const val USERS = "users"

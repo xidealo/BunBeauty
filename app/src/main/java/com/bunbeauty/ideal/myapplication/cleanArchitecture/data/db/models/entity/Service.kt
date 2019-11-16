@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entit
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity
 data class Service(
@@ -16,11 +17,14 @@ data class Service(
         var countOfRates:Long = 0,
         var cost:String = "",
         var creationDate: String= "",
-        var premiumDate: String= ""){
+        var premiumDate: String= ""): Serializable {
 
     companion object {
         const val SERVICES = "services"
-        const val SERVICE_ID = "service id"
+        const val SERVICE = "service"
+
+        const val SERVICE_OWNER = "service owner"
+
         const val USER_ID = "user id"
         const val NAME = "name"
         const val ADDRESS = "address"

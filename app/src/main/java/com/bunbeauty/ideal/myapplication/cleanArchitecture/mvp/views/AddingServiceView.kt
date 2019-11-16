@@ -6,7 +6,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface AddingServiceView: MvpView {
     fun showPremiumBlock(service: Service)
     fun hideMainBlocks()
-    fun goToMyCalendar(status: String, serviceId: String)
+   /* fun goToMyCalendar(status: String, serviceId: String)*/
     fun showAllDone()
     fun showMoreTenImages()
     fun showCategory()
