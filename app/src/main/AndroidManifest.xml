@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.bunbeauty.ideal.myapplication.searchService.SearchService" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.SearchServiceActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.subscriptions.Subscribers" />
         <activity
             android:name="com.bunbeauty.ideal.myapplication.reviews.PickedComment"

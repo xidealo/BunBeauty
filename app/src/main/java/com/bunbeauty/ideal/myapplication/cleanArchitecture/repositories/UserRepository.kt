@@ -44,12 +44,12 @@ class UserRepository(private val userDao: UserDao,
     }
 
     override fun getById(id: String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
-        var user: User? = null
         this.userSubscriber = userSubscriber
 
         if (isFirstEnter) {
             userFirebaseApi.getById(id, this)
         } else {
+            var user: User? = null
             runBlocking {
                 user = userDao.getById(id)
             }
@@ -57,17 +57,16 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
-    override fun getByPhoneNumber(phoneNumber: String, userSubscriber: IUserSubscriber) {
+    override fun getByPhoneNumber(phoneNumber: String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
         this.userSubscriber = userSubscriber
 
-        var user: User? = null
-        runBlocking {
-            user = userDao.getByPhoneNumber(phoneNumber)
-        }
-
-        if (user == null) {
+        if (isFirstEnter) {
             userFirebaseApi.getByPhoneNumber(phoneNumber, this)
         } else {
+            var user: User? = null
+            runBlocking {
+                user = userDao.getByPhoneNumber(phoneNumber)
+            }
             userSubscriber.returnUser(user!!)
         }
     }
@@ -86,8 +85,36 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
+    override fun getByCityAndUserName(city: String, userName:String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
+        var users = listOf<User>()
+        this.userSubscriber = userSubscriber
+
+        if (isFirstEnter) {
+            userFirebaseApi.getByCityAndUserName(city,userName, this)
+        } else {
+            runBlocking {
+                users = userDao.getByCityAndUserName(city, userName)
+            }
+            userSubscriber.returnUsers(users)
+        }
+    }
+
+    override fun getByName(name: String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
+        var users = listOf<User>()
+        this.userSubscriber = userSubscriber
+
+        if (isFirstEnter) {
+            userFirebaseApi.getByName(name, this)
+        } else {
+            runBlocking {
+                users = userDao.getByName(name)
+            }
+            userSubscriber.returnUsers(users)
+        }
+    }
+
     override fun returnUser(user: User) {
-        if (user.name.isNotEmpty()) {
+        if (user.name != "") {
             launch {
                 userDao.insert(user)
             }

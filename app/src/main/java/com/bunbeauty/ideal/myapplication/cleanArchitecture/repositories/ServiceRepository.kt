@@ -42,7 +42,21 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         }
     }
 
-    override fun getById(serviceId: String, userId: String, serviceSubscriber: IServiceSubscriber) {
+    override fun getServicesByUserIdAndServiceName(userId: String, serviceName:String, serviceSubscriber: IServiceSubscriber, isFirstEnter: Boolean) {
+        this.serviceSubscriber = serviceSubscriber
+        val serviceList: ArrayList<Service> = ArrayList()
+
+        if (isFirstEnter) {
+            serviceFirebaseApi.getServicesByUserIdAndServiceName(userId,serviceName, this)
+        } else {
+            runBlocking {
+                serviceList.addAll(serviceDao.findAllByUserIdAndServiceName(userId,serviceName))
+            }
+            serviceSubscriber.returnServiceList(serviceList)
+        }
+    }
+
+     override fun getById(serviceId: String, userId: String, serviceSubscriber: IServiceSubscriber) {
         this.serviceSubscriber = serviceSubscriber
         var service: Service? = null
 

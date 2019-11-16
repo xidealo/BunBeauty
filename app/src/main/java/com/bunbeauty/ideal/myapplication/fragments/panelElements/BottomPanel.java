@@ -3,19 +3,20 @@ package com.bunbeauty.ideal.myapplication.fragments.panelElements;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.chat.Dialogs;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity;
 
 
 public class BottomPanel extends Fragment implements View.OnClickListener {
@@ -52,7 +53,6 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
         profileText.setOnClickListener(this);
         mainScreenText.setOnClickListener(this);
         chatText.setOnClickListener(this);
-
     }
 
     @Override

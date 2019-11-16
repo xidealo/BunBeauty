@@ -13,7 +13,7 @@ import java.util.*
 
 class ServiceAdapter(private val numberItems: Int, private val mainScreenData:ArrayList<ArrayList<Any>>) : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() {
 
-    private var context: Context? = null
+    private lateinit var context: Context
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ServiceViewHolder {
         context = viewGroup.context

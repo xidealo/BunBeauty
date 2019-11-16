@@ -74,7 +74,7 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.tagsBtn:
                 showTags();
-                WorkWithViewApi.hideKeyboard(Objects.requireNonNull(getActivity()));
+                WorkWithViewApi.INSTANCE.hideKeyboard(Objects.requireNonNull(getActivity()));
                 break;
             case R.id.minimizeTagsBtn:
                 hideTags();

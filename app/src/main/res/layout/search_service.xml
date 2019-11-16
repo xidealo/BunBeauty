@@ -1,122 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    style="@style/allPages"
-    tools:context="com.bunbeauty.ideal.myapplication.searchService.SearchService">
-    <LinearLayout
-        android:id="@+id/headerSearchServiceLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".cleanArchitecture.mvp.activities.fragments.SearchServiceFragment">
 
     <LinearLayout
+        android:id="@+id/searchTopPanelLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/footerSearchServiceLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerSearchServiceLayout">
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:background="@color/panelColor"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/backSearchFragmentText"
+            style="@style/textItemSolid"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/back_ico" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@color/panelColor"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="10dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorPrimaryDark"
-                    android:orientation="horizontal"
-                    android:padding="3dp">
-
-                    <EditText
-                        android:id="@+id/searchLineSearchServiceInput"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/block_text"
-                        android:ems="10"
-                        android:inputType="textPersonName"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/findServiceSearchServiceText"
-                        style="@style/textItemSolid"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="@string/search_ico" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/colorPrimaryDark"
-                    android:padding="5dp">
-
-                    <Spinner
-                        android:id="@+id/citySearchServiceSpinner"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="1"
-                        android:background="@color/white"
-                        android:backgroundTint="@color/white"
-                        android:entries="@array/cities"
-                        android:popupBackground="@color/white" />
-
-                    <Spinner
-                        android:id="@+id/searchBySearchServiceSpinner"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@color/white"
-                        android:backgroundTint="@color/white"
-                        android:entries="@array/searchBy"
-                        android:popupBackground="@color/white" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-        <ProgressBar
-            android:id="@+id/progressBarSearchService"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:indeterminateTint= "@color/panelColor"
-            android:layout_gravity="center"/>
+            android:orientation="vertical"
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/resultsSearchServiceRecycleView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_weight="1">
 
-        </androidx.recyclerview.widget.RecyclerView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark"
+                android:orientation="horizontal"
+                android:padding="5dp">
 
+                <EditText
+                    android:id="@+id/searchLineSearchServiceInput"
+                    android:layout_width="270dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@drawable/block_text"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/findServiceSearchServiceText"
+                    style="@style/textItemSolid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/search_ico" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorPrimaryDark"
+                android:padding="5dp">
+
+                <Spinner
+                    android:id="@+id/citySearchServiceSpinner"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:backgroundTint="@color/white"
+                    android:entries="@array/cities"
+                    android:popupBackground="@color/white" />
+
+                <Spinner
+                    android:id="@+id/searchBySearchServiceSpinner"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:backgroundTint="@color/white"
+                    android:entries="@array/searchBy"
+                    android:popupBackground="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/footerSearchServiceLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_panel_height"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

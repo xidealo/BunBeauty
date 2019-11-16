@@ -11,6 +11,8 @@ interface IUserRepository {
     fun get(): List<User>
 
     fun getById(id:String, userSubscriber: IUserSubscriber, isFirstEnter:Boolean)
-    fun getByPhoneNumber(phoneNumber:String, userSubscriber: IUserSubscriber)
+    fun getByPhoneNumber(phoneNumber:String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean)
     fun getByCity(city:String, userSubscriber: IUserSubscriber, isFirstEnter:Boolean)
+    fun getByName(name:String, userSubscriber: IUserSubscriber, isFirstEnter:Boolean)
+    fun getByCityAndUserName(city: String, userName:String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean)
 }

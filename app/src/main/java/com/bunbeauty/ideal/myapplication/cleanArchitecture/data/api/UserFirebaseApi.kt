@@ -42,7 +42,7 @@ class UserFirebaseApi {
 
     fun getById(id: String, callback: IUserSubscriber) {
 
-        val userRef =  FirebaseDatabase.getInstance()
+        val userRef = FirebaseDatabase.getInstance()
                 .getReference(User.USERS)
                 .child(id)
 
@@ -65,10 +65,11 @@ class UserFirebaseApi {
 
         userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
+                var user = User()
                 if (usersSnapshot.childrenCount > 0L) {
-                    val user = getUserFromSnapshot(usersSnapshot.children.iterator().next())
-                    callback.returnUser(user)
+                    user = getUserFromSnapshot(usersSnapshot.children.iterator().next())
                 }
+                callback.returnUser(user)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -85,9 +86,56 @@ class UserFirebaseApi {
 
         userQuery.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
+                val users = arrayListOf<User>()
+                if (usersSnapshot.childrenCount > 0L) {
+                    for (userSnapshot in usersSnapshot.children) {
+                        users.add(getUserFromSnapshot(userSnapshot))
+                    }
+                }
+                callback.returnUsers(users)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Some error
+            }
+        })
+    }
+
+    fun getByCityAndUserName(city: String, userName: String, callback: IUserSubscriber) {
+
+        val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
+                .orderByChild(User.CITY)
+                .equalTo(city)
+
+        userQuery.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(usersSnapshot: DataSnapshot) {
+                val users = arrayListOf<User>()
+                if (usersSnapshot.childrenCount > 0L) {
+                    for (userSnapshot in usersSnapshot.children) {
+                        if(userName == userSnapshot.child(User.NAME).value as? String ?: "")
+                        users.add(getUserFromSnapshot(userSnapshot))
+                    }
+                }
+                callback.returnUsers(users)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Some error
+            }
+        })
+    }
+
+    fun getByName(name: String, callback: IUserSubscriber) {
+
+        val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
+                .orderByChild(User.NAME)
+                .equalTo(name)
+
+        userQuery.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(usersSnapshot: DataSnapshot) {
                 if (usersSnapshot.childrenCount > 0L) {
                     val users = arrayListOf<User>()
-                    for(userSnapshot in usersSnapshot.children){
+                    for (userSnapshot in usersSnapshot.children) {
                         users.add(getUserFromSnapshot(userSnapshot))
                     }
                     callback.returnUsers(users)
@@ -100,20 +148,31 @@ class UserFirebaseApi {
         })
     }
 
-
     private fun getUserFromSnapshot(userSnapshot: DataSnapshot): User {
         val user = User()
-
+        // add defualt value
         user.id = userSnapshot.key!!
-        user.name = userSnapshot.child(User.NAME).getValue<String>(String::class.java)!!
-        user.city = userSnapshot.child(User.CITY).getValue<String>(String::class.java)!!
-        user.phone = userSnapshot.child(User.PHONE).getValue<String>(String::class.java)!!
-        user.photoLink = userSnapshot.child(User.PHOTO_LINK).getValue<String>(String::class.java)!!
-        user.countOfRates = userSnapshot.child(User.COUNT_OF_RATES).getValue<Long>(Long::class.java)!!
-        user.rating = userSnapshot.child(User.AVG_RATING).getValue<Float>(Float::class.java)!!
-        user.subscriptionsCount = userSnapshot.child(User.COUNT_OF_SUBSCRIPTIONS).getValue<Long>(Long::class.java)!!
-        user.subscribersCount = userSnapshot.child(User.COUNT_OF_SUBSCRIBERS).getValue<Long>(Long::class.java)!!
+        user.name = userSnapshot.child(User.NAME).value as? String ?: ""
+        user.city = userSnapshot.child(User.CITY).value as? String ?: ""
+        user.phone = userSnapshot.child(User.PHONE).value as? String ?: ""
+        user.photoLink = userSnapshot.child(User.PHOTO_LINK).value as? String ?: ""
+        user.countOfRates = userSnapshot.child(User.COUNT_OF_RATES).getValue<Long>(Long::class.java)
+                ?: 0L
+        user.rating = userSnapshot.child(User.AVG_RATING).getValue<Float>(Float::class.java) ?: 0f
+        user.subscriptionsCount = userSnapshot.child(User.COUNT_OF_SUBSCRIPTIONS).getValue<Long>(Long::class.java)
+                ?: 0L
+        user.subscribersCount = userSnapshot.child(User.COUNT_OF_SUBSCRIBERS).getValue<Long>(Long::class.java)
+                ?: 0L
 
         return user
+    }
+    //лучше использовать лист?
+    fun filterByUserName(users: ArrayList<User>, userName:String):ArrayList<User>{
+        for(user in users){
+            if(user.name != userName){
+                users.remove(user)
+            }
+        }
+        return users
     }
 }

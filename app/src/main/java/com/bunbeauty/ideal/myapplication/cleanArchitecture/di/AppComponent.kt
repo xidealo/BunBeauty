@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity
@@ -10,6 +11,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.search
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.SearchServicePresenter
 import dagger.Component
 import javax.inject.Singleton
 
@@ -40,4 +42,7 @@ interface AppComponent {
 
     fun inject(serviceActivity: ServiceActivity)
     fun inject(servicePresenter: ServicePresenter)
+
+    fun inject(searchServiceFragment: SearchServiceFragment)
+    fun inject(searchServicePresenter: SearchServicePresenter)
 }

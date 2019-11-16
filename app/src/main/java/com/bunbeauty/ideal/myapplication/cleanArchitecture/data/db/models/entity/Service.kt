@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
@@ -17,7 +18,9 @@ data class Service(
         var countOfRates:Long = 0,
         var cost:String = "",
         var creationDate: String= "",
-        var premiumDate: String= ""): Serializable {
+        var premiumDate: String= "",
+        @Ignore
+        var tags: ArrayList<Tag> = ArrayList()): Serializable{
 
     companion object {
         const val SERVICES = "services"

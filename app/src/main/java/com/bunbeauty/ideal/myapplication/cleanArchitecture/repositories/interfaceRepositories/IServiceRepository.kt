@@ -13,4 +13,5 @@ interface IServiceRepository {
     fun getServicesByUserId(userId: String, serviceSubscriber: IServiceSubscriber, isFirstEnter: Boolean)
 
     fun getById(serviceId: String, userId: String, serviceSubscriber: IServiceSubscriber)
+    fun getServicesByUserIdAndServiceName(userId: String, serviceName: String, serviceSubscriber: IServiceSubscriber, isFirstEnter: Boolean)
 }

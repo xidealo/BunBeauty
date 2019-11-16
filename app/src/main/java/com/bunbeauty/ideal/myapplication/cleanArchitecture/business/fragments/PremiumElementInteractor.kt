@@ -9,7 +9,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceR
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import java.util.*
 
-class PremiumElementInteractor(val serviceRepository: ServiceRepository, private val codeRepository: CodeRepository) : ICodeSubscriber {
+class PremiumElementInteractor(val serviceRepository: ServiceRepository, private val codeRepository: CodeRepository) :
+        ICodeSubscriber {
 
     lateinit var checkPremiumCallback: CheckPremiumCallback
     lateinit var service: Service
@@ -39,14 +40,14 @@ class PremiumElementInteractor(val serviceRepository: ServiceRepository, private
         }
     }
 
-    fun activatePremium() {
+    private fun activatePremium() {
         service.premiumDate = addSevenDayPremium(service)
         serviceRepository.update(service)
     }
 
-    fun decrement(count: String): String = (count.toInt() - 1).toString()
+    private fun decrement(count: String): String = (count.toInt() - 1).toString()
 
-    fun addSevenDayPremium(service: Service): String {
+    private fun addSevenDayPremium(service: Service): String {
         val sysdateLong: Long = if(service.premiumDate == Service.DEFAULT_PREMIUM_DATE){
             WorkWithTimeApi.getSysdateLong() + (86400000 * 7).toLong()
         }else{

@@ -10,8 +10,11 @@ import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.squareup.picasso.Picasso
 
@@ -75,6 +78,10 @@ class TopPanel : Panel() {
             AddingServiceActivity::class.java.name -> {
                 setTitleText()
                 setEmptyMultiText()
+              
+            MainScreenActivity::class.java.name ->{
+                setLogoImage()
+                setSearchText()
             }
         }
     }
@@ -99,7 +106,7 @@ class TopPanel : Panel() {
     private fun setOwnerAvatar() {
         avatarLayout.visibility = View.VISIBLE
         avatarLayout.setOnClickListener {
-            (activity as ServiceActivity).goToOwnerProfile (ownerId)
+            (activity as ServiceActivity).goToOwnerProfile(ownerId)
         }
 
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
@@ -111,4 +118,19 @@ class TopPanel : Panel() {
                 .transform(CircularTransformation())
                 .into(avatarImage)
     }
+
+    private fun setLogoImage(){
+        logoImage.visibility = View.VISIBLE
+    }
+
+    private fun setSearchText(){
+        multiText.text = resources.getText(R.string.search_ico)
+        multiText.visibility = View.VISIBLE
+        multiText.setOnClickListener {
+            (activity as ITopPanel).hideTopPanel()
+            (activity as MainScreenView).showSearchPanel()
+            (activity as MainScreenView).hideCategory()
+        }
+    }
+
 }

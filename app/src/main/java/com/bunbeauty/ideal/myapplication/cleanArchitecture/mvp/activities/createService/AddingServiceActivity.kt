@@ -12,9 +12,9 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
@@ -24,6 +24,7 @@ import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
@@ -105,7 +106,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
         when (v.id) {
             R.id.addServiceAddServiceBtn -> {
                 val service = addingServicePresenter.addService(
-                        nameServiceInput.text.toString().toLowerCase(),
+                        WorkWithStringsApi.firstCapitalSymbol(nameServiceInput.text.toString()),
                         descriptionServiceInput.text.toString(),
                         costAddServiceInput.text.toString(),
                         categoryElement.category,
