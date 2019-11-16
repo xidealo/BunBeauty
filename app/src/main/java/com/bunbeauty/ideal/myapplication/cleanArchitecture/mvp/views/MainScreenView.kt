@@ -10,6 +10,7 @@ interface MainScreenView: MvpView {
     fun showMainScreenByServiceName(city:String, serviceName:String)
 
     fun createCategoryFeed(categories: MutableSet<String>)
+    fun createMainScreen()
     fun disableCategoryBtn(button: Button)
     fun enableCategoryButton(button: Button)
     fun hideTags()

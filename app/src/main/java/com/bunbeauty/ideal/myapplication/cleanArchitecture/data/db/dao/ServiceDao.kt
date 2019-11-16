@@ -21,6 +21,9 @@ interface ServiceDao {
     @Query("SELECT * FROM service WHERE userId = :userId ORDER BY creationDate")
     suspend fun findAllByUserId(userId: String?): List<Service>
 
+    @Query("SELECT * FROM service WHERE userId = :userId AND name = :name ORDER BY creationDate")
+    suspend fun findAllByUserIdAndServiceName(userId: String, name:String): List<Service>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(service: Service)
 

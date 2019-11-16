@@ -9,8 +9,10 @@ interface IMainScreenInteractor {
     fun getMainScreenDataByUserName(city:String, userName: String, mainScreenCallback: MainScreenCallback)
     fun getMainScreenDataByServiceName(city:String, serviceName: String, mainScreenCallback: MainScreenCallback)
     fun getMainScreenData(selectedTagsArray: ArrayList<String>, mainScreenCallback: MainScreenCallback)
+
     fun getUsersByCity(city:String)
     fun getServicesByUserId(id:String)
+    fun getServicesByUserIdAndServiceName(id: String, serviceName: String)
     fun getCategories(mainScreenData: ArrayList<ArrayList<Any>>): MutableSet<String>
     fun convertCacheDataToMainScreenData(cacheMainScreenData: ArrayList<ArrayList<Any>>) : ArrayList<ArrayList<Any>>
     fun convertCacheDataToMainScreenData(category: String,cacheMainScreenData: ArrayList<ArrayList<Any>>) : ArrayList<ArrayList<Any>>

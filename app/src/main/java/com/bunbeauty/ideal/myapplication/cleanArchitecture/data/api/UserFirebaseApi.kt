@@ -86,13 +86,13 @@ class UserFirebaseApi {
 
         userQuery.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
+                val users = arrayListOf<User>()
                 if (usersSnapshot.childrenCount > 0L) {
-                    val users = arrayListOf<User>()
                     for (userSnapshot in usersSnapshot.children) {
                         users.add(getUserFromSnapshot(userSnapshot))
                     }
-                    callback.returnUsers(users)
                 }
+                callback.returnUsers(users)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -109,14 +109,14 @@ class UserFirebaseApi {
 
         userQuery.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
+                val users = arrayListOf<User>()
                 if (usersSnapshot.childrenCount > 0L) {
-                    var users = arrayListOf<User>()
                     for (userSnapshot in usersSnapshot.children) {
+                        if(userName == userSnapshot.child(User.NAME).value as? String ?: "")
                         users.add(getUserFromSnapshot(userSnapshot))
                     }
-                    users = filterByUserName(users,userName)
-                    callback.returnUsers(users)
                 }
+                callback.returnUsers(users)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

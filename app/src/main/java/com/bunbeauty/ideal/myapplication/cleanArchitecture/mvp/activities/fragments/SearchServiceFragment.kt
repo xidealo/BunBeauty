@@ -65,6 +65,7 @@ class SearchServiceFragment: MvpAppCompatFragment(), View.OnClickListener, Searc
             (activity as MainScreenView).hideSearchPanel()
             (activity as ITopPanel).showTopPanel()
             (activity as MainScreenView).showCategory()
+            (activity as MainScreenView).createMainScreen()
         }
     }
 
@@ -105,10 +106,13 @@ class SearchServiceFragment: MvpAppCompatFragment(), View.OnClickListener, Searc
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.findServiceSearchServiceText -> if (searchLineInput.text.toString() != "") {
+            R.id.findServiceSearchServiceText ->
+                if (searchLineInput.text.toString().trim().isNotEmpty()) {
                 //обпращаемся к презентору, метод который будет осуществлять поиск
                 search(searchLineInput.text.toString())
-            }
+            }else{
+                    (activity as MainScreenView).createMainScreen()
+                }
         }
     }
 

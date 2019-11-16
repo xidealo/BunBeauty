@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +30,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenV
 import javax.inject.Inject
 
 class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView, ITopPanel {
+
 
     private var categoriesBtns: ArrayList<Button> = arrayListOf()
     private lateinit var categories: ArrayList<String>
@@ -62,7 +66,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         createTopPanel()
         createBottomPanel()
         createSearchPanel()
-        mainScreenPresenter.createMainScreen()
+        createMainScreen()
     }
 
     private fun init() {
@@ -142,6 +146,10 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         headerLayout.visibility = View.GONE
     }
 
+    override fun createMainScreen() {
+        mainScreenPresenter.createMainScreen()
+    }
+
     override fun createBottomPanel() {
         val bottomPanel = BottomPanel()
 
@@ -201,7 +209,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     override fun showMainScreenByServiceName(city:String, serviceName: String) {
-        Toast.makeText(this, "Ничего не найдено", Toast.LENGTH_SHORT).show()
+        mainScreenPresenter.createMainScreenWithSearchServiceName(city, serviceName)
     }
 
     override fun hideTags() {

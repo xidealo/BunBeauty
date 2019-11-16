@@ -35,6 +35,8 @@ class MainScreenInteractor(val userRepository: UserRepository,
     private var cacheUserList = arrayListOf<User>()
 
     private var createMainScreenWithCategory = true
+    private var searchByServiceName = false
+    private var serviceName = ""
 
     override fun getMainScreenData(mainScreenCallback: MainScreenCallback) {
         this.mainScreenCallback = mainScreenCallback
@@ -58,9 +60,11 @@ class MainScreenInteractor(val userRepository: UserRepository,
     }
 
     override fun getMainScreenDataByServiceName(city: String, serviceName: String, mainScreenCallback: MainScreenCallback) {
-        this.mainScreenCallback = mainScreenCallback
         clearCache()
-        userRepository.getById(getUserId(), this, true)
+        this.mainScreenCallback = mainScreenCallback
+        searchByServiceName = true
+        this.serviceName = serviceName
+        userRepository.getByCity(city, this, true)
     }
 
     override fun getMainScreenData(selectedTagsArray: ArrayList<String>, mainScreenCallback: MainScreenCallback) {
@@ -75,6 +79,10 @@ class MainScreenInteractor(val userRepository: UserRepository,
         serviceRepository.getServicesByUserId(id, this, true)
     }
 
+    override fun getServicesByUserIdAndServiceName(id: String, serviceName: String) {
+        serviceRepository.getServicesByUserIdAndServiceName(id, serviceName, this, true)
+    }
+
     override fun returnUser(user: User) {
         //here we can get out city
         getUsersByCity(user.city)
@@ -87,10 +95,15 @@ class MainScreenInteractor(val userRepository: UserRepository,
 
         cacheUserList.addAll(users)
 
-        for (user in users) {
-            getServicesByUserId(user.id)
+        if (searchByServiceName) {
+            for (user in users) {
+                getServicesByUserIdAndServiceName(user.id, serviceName)
+            }
+        } else {
+            for (user in users) {
+                getServicesByUserId(user.id)
+            }
         }
-
     }
 
     override fun returnServiceList(serviceList: List<Service>) {
@@ -106,7 +119,9 @@ class MainScreenInteractor(val userRepository: UserRepository,
         for (service in cacheServiceList) {
             addToServiceList(service, getUserByService(service))
         }
+
         cacheMainScreenData = choosePremiumServices(cachePremiumMainScreenData, cacheMainScreenData)
+
         if (createMainScreenWithCategory) {
             createMainScreenWithCategory = false
             mainScreenCallback.returnMainScreenDataWithCreateCategory(convertCacheDataToMainScreenData(cacheMainScreenData))
@@ -235,6 +250,8 @@ class MainScreenInteractor(val userRepository: UserRepository,
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
     private fun clearCache() {
+        searchByServiceName = false
+        serviceName = ""
         cacheMainScreenData.clear()
         cacheServiceList.clear()
         cacheUserList.clear()

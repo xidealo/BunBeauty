@@ -35,7 +35,7 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
 
     fun createMainScreenWithSearchServiceName(city:String,serviceName:String){
         viewState.showLoading()
-        mainScreenInteractor.getMainScreenDataByUserName(city, serviceName, this)
+        mainScreenInteractor.getMainScreenDataByServiceName(city, serviceName, this)
     }
 
     fun createMainScreenWithTag(tagText: TextView){
