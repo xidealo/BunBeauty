@@ -78,6 +78,7 @@ class TopPanel : Panel() {
             AddingServiceActivity::class.java.name -> {
                 setTitleText()
                 setEmptyMultiText()
+            }
               
             MainScreenActivity::class.java.name ->{
                 setLogoImage()
