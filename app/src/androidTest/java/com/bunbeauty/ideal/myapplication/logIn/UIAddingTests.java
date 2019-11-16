@@ -48,7 +48,6 @@ public class UIAddingTests {
         uiAuthorizationTests.testEnterPhoneAuthorization("9999999999");
         uiAuthorizationTests.testEnterCodeVerify("123456");
         Thread.sleep(5000);
-        goToAddingService();
         addService("TestName","123456","Test address","Test Description");
         Thread.sleep(2000);
         addPremium("bb");
@@ -63,6 +62,8 @@ public class UIAddingTests {
     }
 
     void addService(String name, String cost, String address, String description) throws InterruptedException {
+        goToAddingService();
+
         //name
         onView(withId(R.id.nameAddServiceInput)).perform(typeText(name));
         // cost

@@ -21,7 +21,6 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import java.util.*
 import javax.inject.Inject
 
-
 class SearchServiceFragment: MvpAppCompatFragment(), View.OnClickListener, SearchServiceFragmentView {
 
     private var city = NOT_CHOSEN
