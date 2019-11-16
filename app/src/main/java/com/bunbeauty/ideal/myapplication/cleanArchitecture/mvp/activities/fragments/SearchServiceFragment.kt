@@ -7,19 +7,43 @@ import android.view.ViewGroup
 import android.widget.*
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.SearchServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.SearchServiceFragmentView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
+import java.util.*
+import javax.inject.Inject
 
 
-class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClickListener, SearchServiceFragmentView {
+class SearchServiceFragment: MvpAppCompatFragment(), View.OnClickListener, SearchServiceFragmentView {
 
     private var city = NOT_CHOSEN
     private var searchBy = NAME_OF_SERVICE
     private lateinit var searchLineInput: EditText
     private lateinit var backText: TextView
+    private lateinit var citySpinner: Spinner
+
+    @InjectPresenter
+    lateinit var searchServicePresenter: SearchServicePresenter
+    @Inject
+    lateinit var searchServiceInteractor: SearchServiceInteractor
+
+    @ProvidePresenter
+    internal fun provideAddingServicePresenter(): SearchServicePresenter {
+        DaggerAppComponent
+                .builder()
+                .appModule(AppModule(activity!!.application, activity!!.intent))
+                .build().inject(this)
+
+        return SearchServicePresenter(searchServiceInteractor)
+    }
 
     //fragment просто вызывает методы поиска мс, больше ничего не делает?
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -28,6 +52,7 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         init(view)
+        searchServicePresenter.setMyCity(ArrayList(listOf(*resources.getStringArray(R.array.cities))))
         when (context!!.javaClass.name) {
             MainScreenActivity::class.java.name -> {
                 setBack()
@@ -47,8 +72,7 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
 
         //создаём выпадающее меню на основе массива городов
         //Выпадающее меню
-        val citySpinner = view.findViewById<Spinner>(R.id.citySearchServiceSpinner)
-        citySpinner.prompt = NOT_CHOSEN
+        citySpinner = view.findViewById(R.id.citySearchServiceSpinner)
 
         //создаём выпадающее меню "Поиск по"
         val searchBySpinner = view.findViewById<Spinner>(R.id.searchBySearchServiceSpinner)
@@ -79,7 +103,6 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
         }
     }
 
-
     override fun onClick(v: View) {
         when (v.id) {
             R.id.findServiceSearchServiceText -> if (searchLineInput.text.toString() != "") {
@@ -102,6 +125,10 @@ class SearchServiceFragment constructor() : MvpAppCompatFragment(), View.OnClick
 
     override fun attentionBadConnection() {
         Toast.makeText(context, "Плохое соединение", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showMyCity(position: Int) {
+        citySpinner.setSelection(position)
     }
 
     companion object {

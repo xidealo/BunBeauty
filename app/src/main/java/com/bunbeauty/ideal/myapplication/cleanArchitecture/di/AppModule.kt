@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.PremiumElementInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
@@ -86,4 +87,7 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideServiceInteractor(userRepository: UserRepository, serviceRepository: ServiceRepository): ServiceInteractor =
             ServiceInteractor(userRepository,serviceRepository, intent)
+    @Provides
+    fun provideSearchServiceInteractor(userRepository: UserRepository): SearchServiceInteractor =
+            SearchServiceInteractor(userRepository)
 }
