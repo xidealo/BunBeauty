@@ -21,7 +21,7 @@ import com.squareup.picasso.Picasso
 class TopPanel : Panel() {
 
     lateinit var title: String
-    lateinit var entityId: String
+    var entityId: String = ""
     lateinit var photoLink: String
     lateinit var ownerId: String
 
