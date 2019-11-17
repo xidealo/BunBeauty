@@ -5,29 +5,26 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.createService.MyCalendar
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
+import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.editing.EditService
-import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.bunbeauty.ideal.myapplication.reviews.Comments
 import com.squareup.picasso.Picasso
-
 import javax.inject.Inject
 
 class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView, IEditableActivity {
@@ -48,7 +45,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private lateinit var ratingBar: RatingBar
     private lateinit var progressBar: ProgressBar
 
-            private lateinit var serviceOwner: User
+    private lateinit var serviceOwner: User
     private lateinit var service: Service
 
     @Inject
@@ -288,36 +285,36 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         onPremiumText!!.visibility = View.VISIBLE
     }
 
-   /* override fun checkCode(code: String) {
-        //проверка кода
-        val query = FirebaseDatabase.getInstance().getReference(CODES).orderByChild(CODE).equalTo(code)
-        query.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(codesSnapshot: DataSnapshot) {
-                if (codesSnapshot.childrenCount == 0L) {
-                    attentionWrongCode()
-                } else {
-                    val userSnapshot = codesSnapshot.children.iterator().next()
-                    val count = userSnapshot.child(COUNT).getValue(Int::class.javaPrimitiveType!!)!!
-                    if (count > 0) {
-                        setPremium()
+    /* override fun checkCode(code: String) {
+         //проверка кода
+         val query = FirebaseDatabase.getInstance().getReference(CODES).orderByChild(CODE).equalTo(code)
+         query.addListenerForSingleValueEvent(object : ValueEventListener {
+             override fun onDataChange(codesSnapshot: DataSnapshot) {
+                 if (codesSnapshot.childrenCount == 0L) {
+                     attentionWrongCode()
+                 } else {
+                     val userSnapshot = codesSnapshot.children.iterator().next()
+                     val count = userSnapshot.child(COUNT).getValue(Int::class.javaPrimitiveType!!)!!
+                     if (count > 0) {
+                         setPremium()
 
-                        val codeId = userSnapshot.key
+                         val codeId = userSnapshot.key
 
-                        val myRef = FirebaseDatabase.getInstance()
-                                .getReference(CODES)
-                                .child(codeId!!)
-                        val items = HashMap<String, Any>()
-                        items[COUNT] = count - 1
-                        myRef.updateChildren(items)
-                    } else {
-                        attentionOldCode()
-                    }
-                }
-            }
+                         val myRef = FirebaseDatabase.getInstance()
+                                 .getReference(CODES)
+                                 .child(codeId!!)
+                         val items = HashMap<String, Any>()
+                         items[COUNT] = count - 1
+                         myRef.updateChildren(items)
+                     } else {
+                         attentionOldCode()
+                     }
+                 }
+             }
 
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
+             override fun onCancelled(databaseError: DatabaseError) {}
+         })
+     }*/
 
     /*override fun addSevenDayPremium(date: String?): String {
         var sysdateLong = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(date)
@@ -364,7 +361,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     fun goToOwnerProfile(ownerId: String) {
         val intent = Intent(this, ProfileActivity::class.java)
-        intent.putExtra(User.USER_ID, ownerId)
+        intent.putExtra(OWNER_ID, ownerId)
         startActivity(intent)
     }
 
@@ -380,6 +377,8 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     companion object {
 
         private val TAG = "DBInf"
+
+        const val OWNER_ID = "owner id"
 
         private val TYPE = "type"
         private val IS_PREMIUM = "is premium"

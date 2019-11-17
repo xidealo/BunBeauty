@@ -79,8 +79,8 @@ class TopPanel : Panel() {
                 setTitleText()
                 setEmptyMultiText()
             }
-              
-            MainScreenActivity::class.java.name ->{
+
+            MainScreenActivity::class.java.name -> {
                 setLogoImage()
                 setSearchText()
             }
@@ -120,11 +120,11 @@ class TopPanel : Panel() {
                 .into(avatarImage)
     }
 
-    private fun setLogoImage(){
+    private fun setLogoImage() {
         logoImage.visibility = View.VISIBLE
     }
 
-    private fun setSearchText(){
+    private fun setSearchText() {
         multiText.text = resources.getText(R.string.search_ico)
         multiText.visibility = View.VISIBLE
         multiText.setOnClickListener {
