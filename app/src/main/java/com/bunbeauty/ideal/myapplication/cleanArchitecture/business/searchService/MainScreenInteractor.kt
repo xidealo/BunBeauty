@@ -109,6 +109,10 @@ class MainScreenInteractor(val userRepository: UserRepository,
     override fun returnServiceList(serviceList: List<Service>) {
         currentCountOfUsers++
         cacheServiceList.addAll(serviceList)
+
+      /*  if (currentCountOfUsers == countOfUsers) {
+            setListenerCountOfReturnServices
+        }*/
     }
 
     override suspend fun setListenerCountOfReturnServices(countOfUsers: Int) {
@@ -117,7 +121,7 @@ class MainScreenInteractor(val userRepository: UserRepository,
         }
 
         for (service in cacheServiceList) {
-            addToServiceList(service, getUserByService(service))
+            addToServiceList(service, getUserByService(cacheUserList, service))
         }
 
         cacheMainScreenData = choosePremiumServices(cachePremiumMainScreenData, cacheMainScreenData)
@@ -161,7 +165,7 @@ class MainScreenInteractor(val userRepository: UserRepository,
         return mainScreenData
     }
 
-    private fun getUserByService(service: Service): User {
+    fun getUserByService(cacheUserList: ArrayList<User>, service: Service): User {
         for (user in cacheUserList) {
             if (service.userId == user.id)
                 return user
@@ -170,7 +174,7 @@ class MainScreenInteractor(val userRepository: UserRepository,
     }
 
     //and than we have to get all services by this users
-    private fun isFirstEnter(id: String, idList: ArrayList<String>): Boolean {
+    fun isFirstEnter(id: String, idList: ArrayList<String>): Boolean {
         if (idList.contains(id)) {
             return false
         }
