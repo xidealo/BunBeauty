@@ -26,7 +26,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
-import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.editing.EditService
 import com.bunbeauty.ideal.myapplication.reviews.Comments
 import com.squareup.picasso.Picasso

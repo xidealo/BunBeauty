@@ -25,9 +25,10 @@ import com.squareup.picasso.Picasso
 class TopPanel : Panel() {
 
     lateinit var title: String
-    var entityId: String = ""
-    lateinit var photoLink: String
-    lateinit var ownerId: String
+    lateinit var editableEntity: EditableEntity
+    var isEditable = false
+    lateinit var user: User
+
 
     private lateinit var backText: TextView
     private lateinit var titleText: TextView

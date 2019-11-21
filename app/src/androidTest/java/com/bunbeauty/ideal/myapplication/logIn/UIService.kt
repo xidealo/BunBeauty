@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.logIn
 
 import androidx.test.espresso.Espresso
+import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -8,17 +9,20 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@LargeTest
 class UIService {
 
-    @Rule
-    var mActivityRule = ActivityTestRule(ServiceActivity::class.java)
+    companion object {
+        @get:Rule
+        val mActivityRule = ActivityTestRule(ServiceActivity::class.java)
+    }
 
     @Before
     fun setUp() {
         FirebaseAuth.getInstance().signOut()
     }
 
-    @Test
+    @Test (expected = InterruptedException::class)
     fun transitionToService() {
         val uiAuthorizationTests = UIAuthorizationActivityTests()
         uiAuthorizationTests.testEnterPhoneAuthorization("9999999999")
