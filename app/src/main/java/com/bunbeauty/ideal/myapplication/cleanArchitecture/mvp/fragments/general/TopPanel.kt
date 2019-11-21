@@ -25,9 +25,9 @@ import com.squareup.picasso.Picasso
 class TopPanel : Panel() {
 
     lateinit var title: String
-    lateinit var editableEntity: EditableEntity
-    var isEditable = false
-    lateinit var user: User
+    var entityId: String = ""
+    lateinit var photoLink: String
+    lateinit var ownerId: String
 
     private lateinit var backText: TextView
     private lateinit var titleText: TextView
@@ -83,8 +83,8 @@ class TopPanel : Panel() {
                 setTitleText()
                 setEmptyMultiText()
             }
-              
-            MainScreenActivity::class.java.name ->{
+
+            MainScreenActivity::class.java.name -> {
                 setLogoImage()
                 setSearchText()
             }
@@ -124,11 +124,11 @@ class TopPanel : Panel() {
                 .into(avatarImage)
     }
 
-    private fun setLogoImage(){
+    private fun setLogoImage() {
         logoImage.visibility = View.VISIBLE
     }
 
-    private fun setSearchText(){
+    private fun setSearchText() {
         multiText.text = resources.getText(R.string.search_ico)
         multiText.visibility = View.VISIBLE
         multiText.setOnClickListener {
