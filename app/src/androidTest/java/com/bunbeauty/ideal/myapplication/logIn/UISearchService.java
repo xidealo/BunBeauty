@@ -70,7 +70,7 @@ public class UISearchService {
         Thread.sleep(10000);
     }
 
-    public void searchByServiceName(String serviceName) throws InterruptedException {
+    private void searchByServiceName(String serviceName) throws InterruptedException {
         //choose search
         onView(withId(R.id.multiTopPanelText)).perform(click());
         Thread.sleep(3000);

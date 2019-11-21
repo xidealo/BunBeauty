@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback
 
-interface VerifyCallback {
+interface IVerifyCallback {
 
     fun callbackGetUserName(name: String)
 }

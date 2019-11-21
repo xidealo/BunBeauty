@@ -372,7 +372,7 @@ public class EditService extends AppCompatActivity implements View.OnClickListen
 
     private void addToScreenNewPhoto(Bitmap bitmap, Uri filePath) {
         /*FragmentTransaction transaction = manager.beginTransaction();
-        ServicePhotoElement servicePhotoElement = new ServicePhotoElement(bitmap, filePath, "");
+        ServicePhotoElement servicePhotoElement = new ServicePhotoElement(bitmap, filePath);
         transaction.add(R.id.feedEditServiceLayout, servicePhotoElement);
         transaction.commit();*/
     }

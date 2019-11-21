@@ -2,9 +2,9 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServi
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IMainScreenCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
@@ -18,9 +18,9 @@ import kotlin.coroutines.CoroutineContext
 
 class MainScreenInteractor(val userRepository: UserRepository,
                            val serviceRepository: ServiceRepository) : IMainScreenInteractor,
-        IUserSubscriber, IServiceSubscriber, CoroutineScope {
+        IUserCallback, IServiceCallback, CoroutineScope {
 
-    private lateinit var mainScreenCallback: MainScreenCallback
+    private lateinit var mainScreenCallback: IMainScreenCallback
     var selectedCategory = ""
     var selectedTagsArray: ArrayList<String> = arrayListOf()
 
@@ -38,7 +38,7 @@ class MainScreenInteractor(val userRepository: UserRepository,
     private var searchByServiceName = false
     private var serviceName = ""
 
-    override fun getMainScreenData(mainScreenCallback: MainScreenCallback) {
+    override fun getMainScreenData(mainScreenCallback: IMainScreenCallback) {
         this.mainScreenCallback = mainScreenCallback
         if (isFirstEnter(getUserId(), cachedUserIds)) {
             userRepository.getById(getUserId(), this, false)
@@ -48,18 +48,18 @@ class MainScreenInteractor(val userRepository: UserRepository,
         }
     }
 
-    override fun getMainScreenData(category: String, mainScreenCallback: MainScreenCallback) {
+    override fun getMainScreenData(category: String, mainScreenCallback: IMainScreenCallback) {
         //can add if which will check cache size and if 0 will load from FB
         mainScreenCallback.returnMainScreenData(convertCacheDataToMainScreenData(category, cacheMainScreenData))
     }
 
-    override fun getMainScreenDataByUserName(city: String, userName: String, mainScreenCallback: MainScreenCallback) {
+    override fun getMainScreenDataByUserName(city: String, userName: String, mainScreenCallback: IMainScreenCallback) {
         this.mainScreenCallback = mainScreenCallback
         clearCache()
         userRepository.getByCityAndUserName(city, userName, this, true)
     }
 
-    override fun getMainScreenDataByServiceName(city: String, serviceName: String, mainScreenCallback: MainScreenCallback) {
+    override fun getMainScreenDataByServiceName(city: String, serviceName: String, mainScreenCallback: IMainScreenCallback) {
         clearCache()
         this.mainScreenCallback = mainScreenCallback
         searchByServiceName = true
@@ -67,7 +67,7 @@ class MainScreenInteractor(val userRepository: UserRepository,
         userRepository.getByCity(city, this, true)
     }
 
-    override fun getMainScreenData(selectedTagsArray: ArrayList<String>, mainScreenCallback: MainScreenCallback) {
+    override fun getMainScreenData(selectedTagsArray: ArrayList<String>, mainScreenCallback: IMainScreenCallback) {
         mainScreenCallback.returnMainScreenData(convertCacheDataToMainScreenData(selectedTagsArray, cacheMainScreenData))
     }
 

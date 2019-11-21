@@ -15,7 +15,7 @@ data class User(
         var countOfRates:Long = 0,
         var photoLink:String = DEFAULT_PHOTO_LINK,
         var subscribersCount:Long = 0,
-        var subscriptionsCount:Long = 0 ): Serializable {
+        var subscriptionsCount:Long = 0 ): EditableEntity(), Serializable {
 
     companion object {
         const val USERS = "users"
@@ -32,6 +32,7 @@ data class User(
                 "googleapis.com/v0/b/bun-beauty.appspot.com/o/avatar%2FdefaultAva." +
                 "jpg?alt=media&token=f15dbe15-0541-46cc-8272-2578627ed311"
 
+        const val USER = "user"
         const val USER_ID = "user id"
         const val STATUS = "status"
         const val MASTER = "master"

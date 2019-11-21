@@ -2,11 +2,13 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 
 import com.arellomobile.mvp.MvpView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface ServiceView: MvpView {
-    fun showServiceInfo(photos: List<Photo>)
-    fun showBottomPanel()
-    fun showTopPanelForMyService(serviceId: String, serviceName: String)
-    fun showTopPanelForAlienService(serviceName: String, ownerPhotoLink: String, ownerId: String)
+    fun showServiceInfo()
+    fun showPhotos(photos: List<Photo>)
+    fun showTopPanelForMyService(service: Service)
+    fun showTopPanelForAlienService(serviceName: String, serviceOwner: User)
     fun showPremium(isPremium: Boolean)
 }

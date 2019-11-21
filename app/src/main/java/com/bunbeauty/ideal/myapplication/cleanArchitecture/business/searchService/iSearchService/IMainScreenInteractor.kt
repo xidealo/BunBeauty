@@ -1,14 +1,14 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IMainScreenCallback
 
 interface IMainScreenInteractor {
     fun getUserId():String
-    fun getMainScreenData(mainScreenCallback: MainScreenCallback)
-    fun getMainScreenData(category: String, mainScreenCallback: MainScreenCallback)
-    fun getMainScreenDataByUserName(city:String, userName: String, mainScreenCallback: MainScreenCallback)
-    fun getMainScreenDataByServiceName(city:String, serviceName: String, mainScreenCallback: MainScreenCallback)
-    fun getMainScreenData(selectedTagsArray: ArrayList<String>, mainScreenCallback: MainScreenCallback)
+    fun getMainScreenData(mainScreenCallback: IMainScreenCallback)
+    fun getMainScreenData(category: String, mainScreenCallback: IMainScreenCallback)
+    fun getMainScreenDataByUserName(city:String, userName: String, mainScreenCallback: IMainScreenCallback)
+    fun getMainScreenDataByServiceName(city:String, serviceName: String, mainScreenCallback: IMainScreenCallback)
+    fun getMainScreenData(selectedTagsArray: ArrayList<String>, mainScreenCallback: IMainScreenCallback)
 
     fun getUsersByCity(city:String)
     fun getServicesByUserId(id:String)

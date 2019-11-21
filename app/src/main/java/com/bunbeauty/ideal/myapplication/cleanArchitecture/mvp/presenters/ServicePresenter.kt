@@ -5,6 +5,8 @@ import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IPhotoCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.google.firebase.auth.FirebaseAuth
 
@@ -25,14 +27,14 @@ class ServicePresenter(private val serviceInteractor: ServiceInteractor) : MvpPr
     }
 
     override fun returnPhotos(photos: List<Photo>) {
-        viewState.showServiceInfo(photos)
+        viewState.showPhotos(photos)
     }
 
-    fun setTopPanel(ownerId: String, ownerPhotoLink: String, serviceId: String, serviceName: String) {
-        if (isMyService(ownerId)) {
-            viewState.showTopPanelForMyService(serviceId, serviceName)
+    fun setTopPanel(service: Service, serviceOwner: User) {
+        if (isMyService(serviceOwner.id)) {
+            viewState.showTopPanelForMyService(service)
         } else {
-            viewState.showTopPanelForAlienService(serviceName, ownerPhotoLink, ownerId)
+            viewState.showTopPanelForAlienService(service.name, serviceOwner)
         }
     }
 

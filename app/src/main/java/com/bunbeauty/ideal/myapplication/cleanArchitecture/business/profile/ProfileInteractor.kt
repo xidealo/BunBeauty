@@ -2,9 +2,9 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ProfileCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IProfileCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
@@ -17,10 +17,10 @@ import com.google.firebase.iid.FirebaseInstanceId
 class ProfileInteractor(private val userRepository: UserRepository,
                         private val serviceRepository: ServiceRepository,
                         private val intent: Intent) : BaseRepository(),
-        IProfileInteractor, IUserSubscriber, IServiceSubscriber {
+        IProfileInteractor, IUserCallback, IServiceCallback {
 
     private val TAG = "DBInf"
-    private lateinit var profileCallback: ProfileCallback
+    private lateinit var profileCallback: IProfileCallback
 
     override fun updateProfile(ownerId: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -34,13 +34,19 @@ class ProfileInteractor(private val userRepository: UserRepository,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun isFirstEnter() = (intent.getStringExtra(OWNER_ID) == null)
+    override fun isFirstEnter() = (intent.hasExtra(User.USER))
 
     override fun getUserId(): String {
         return FirebaseAuth.getInstance().currentUser!!.uid
     }
 
-    override fun getOwnerId() = intent.getStringExtra(OWNER_ID) ?: getUserId()
+    override fun getOwnerId(): String {
+        return if (intent.hasExtra(User.USER)) {
+            (intent.getSerializableExtra(User.USER) as User).id
+        } else {
+            getUserId()
+        }
+    }
 
     override fun checkSubscription(): Boolean {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -55,19 +61,21 @@ class ProfileInteractor(private val userRepository: UserRepository,
                 .setValue(token)
     }
 
-    override fun isUserOwner():Boolean {
-        return getUserId() == getOwnerId()
-    }
+    override fun isUserOwner() = (getUserId() == getOwnerId())
 
-    override fun getProfileOwner(profileCallback: ProfileCallback) {
+    override fun getProfileOwner(profileCallback: IProfileCallback) {
         this.profileCallback = profileCallback
 
-        userRepository.getById(getOwnerId(),
-                this,
-                isFirstEnter(getOwnerId(), cachedUserIds))
+        if (intent.hasExtra(User.USER)) {
+            returnUser(intent.getSerializableExtra(User.USER) as User)
+        } else {
+            userRepository.getById(getOwnerId(),
+                    this,
+                    isFirstEnter(getOwnerId(), cachedUserIds))
+        }
     }
 
-    private fun getProfileServiceList(profileCallback: ProfileCallback) {
+    private fun getProfileServiceList(profileCallback: IProfileCallback) {
         this.profileCallback = profileCallback
 
         serviceRepository.getServicesByUserId(getOwnerId(),

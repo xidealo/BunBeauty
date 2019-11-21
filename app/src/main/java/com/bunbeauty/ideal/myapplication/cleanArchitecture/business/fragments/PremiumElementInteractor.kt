@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.CheckPremiumCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICheckPremiumCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.CodeRepository
@@ -10,11 +10,11 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import java.util.*
 
 class PremiumElementInteractor(val serviceRepository: ServiceRepository, private val codeRepository: CodeRepository) :
-        ICodeSubscriber {
+        ICodeCallback {
 
-    lateinit var checkPremiumCallback: CheckPremiumCallback
+    lateinit var checkPremiumCallback: ICheckPremiumCallback
     lateinit var service: Service
-    fun checkCode(code: String, checkPremiumCallback: CheckPremiumCallback, service: Service) {
+    fun checkCode(code: String, checkPremiumCallback: ICheckPremiumCallback, service: Service) {
         this.checkPremiumCallback = checkPremiumCallback
         this.service = service
         //проверка кода
