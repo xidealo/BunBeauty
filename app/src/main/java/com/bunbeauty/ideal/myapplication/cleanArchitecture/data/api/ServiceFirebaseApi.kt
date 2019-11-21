@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import android.util.Log
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
@@ -65,7 +65,7 @@ class ServiceFirebaseApi {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getById(userId: String, serviceId: String, serviceSubscriber: IServiceSubscriber) {
+    fun getById(userId: String, serviceId: String, serviceSubscriber: IServiceCallback) {
         val servicesRef = FirebaseDatabase.getInstance()
                 .getReference(User.USERS)
                 .child(userId)
@@ -83,7 +83,7 @@ class ServiceFirebaseApi {
         })
     }
 
-    fun getServicesByUserId(userId: String, serviceSubscriber: IServiceSubscriber) {
+    fun getServicesByUserId(userId: String, serviceSubscriber: IServiceCallback) {
         val servicesRef = FirebaseDatabase.getInstance()
                 .getReference(User.USERS)
                 .child(userId)
@@ -101,7 +101,7 @@ class ServiceFirebaseApi {
         })
     }
 
-    fun getServicesByUserIdAndServiceName(userId: String, serviceName:String, serviceSubscriber: IServiceSubscriber) {
+    fun getServicesByUserIdAndServiceName(userId: String, serviceName:String, serviceSubscriber: IServiceCallback) {
         val servicesRef = FirebaseDatabase.getInstance()
                 .getReference(User.USERS)
                 .child(userId)
@@ -127,7 +127,7 @@ class ServiceFirebaseApi {
         })
     }
 
-    private fun setListener(servicesRef: DatabaseReference, userId: String, serviceSubscriber: IServiceSubscriber) {
+    private fun setListener(servicesRef: DatabaseReference, userId: String, serviceSubscriber: IServiceCallback) {
         servicesRef.addChildEventListener(object : ChildEventListener {
 
             override fun onChildAdded(serviceSnapshot: DataSnapshot, pChildName: String?) {
@@ -146,13 +146,13 @@ class ServiceFirebaseApi {
         })
     }
 
-    private fun returnService(serviceSnapshot: DataSnapshot, userId: String, serviceSubscriber: IServiceSubscriber) {
+    private fun returnService(serviceSnapshot: DataSnapshot, userId: String, serviceSubscriber: IServiceCallback) {
         val service = getServiceFromSnapshot(serviceSnapshot, userId)
 
         serviceSubscriber.returnService(service)
     }
 
-    private fun returnServiceList(servicesSnapshot: DataSnapshot, userId: String, serviceSubscriber: IServiceSubscriber) {
+    private fun returnServiceList(servicesSnapshot: DataSnapshot, userId: String, serviceSubscriber: IServiceCallback) {
         val services = arrayListOf<Service>()
         for (serviceSnapshot in servicesSnapshot.children) {
             services.add(getServiceFromSnapshot(serviceSnapshot, userId))

@@ -13,12 +13,14 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.adapters.ServiceProfileAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.EditableEntity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
@@ -33,7 +35,7 @@ import com.squareup.picasso.Picasso
 import java.util.*
 import javax.inject.Inject
 
-class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView, ISwitcher, IEditableActivity {
+class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView, ISwitcher, IEditableActivity, ITopPanel {
 
     private lateinit var nameText: TextView
     private lateinit var cityText: TextView
@@ -131,7 +133,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             showSubscriptions(user.subscriptionsCount)
         }
 
-        showTopPanel(user.id, user.name)
+        createTopPanel()
     }
 
     override fun showUserServices(serviceList: List<Service>) {
@@ -275,15 +277,15 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         transaction.commit()
     }
 
-    override fun showTopPanel(userId: String, userName: String) {
+    override fun createTopPanel() {
         val topPanel = TopPanel()
 
         if(profilePresenter.isUserOwner()) {
             topPanel.title = "Профиль"
-            topPanel.entityId = userId
+            topPanel.editableEntity = profileOwner
+            topPanel.isEditable = true
         } else {
-            topPanel.title = userName
-            topPanel.entityId = ""
+            topPanel.title = profileOwner.name
         }
 
         val transaction = supportFragmentManager.beginTransaction()
@@ -321,9 +323,9 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         serviceRecyclerView.visibility = View.VISIBLE
     }
 
-    override fun goToEditing(id: String) {
+    override fun goToEditing(editableEntity: EditableEntity) {
         val intent = Intent(this, EditProfile::class.java)
-        intent.putExtra(User.USER_ID, id)
+        intent.putExtra(User.USER, editableEntity as User)
         this.startActivity(intent)
     }
 

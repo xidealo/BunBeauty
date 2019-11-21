@@ -16,20 +16,20 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IPhotoEditable
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AddingServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
-import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement
-import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
-class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, AddingServiceView {
+class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, AddingServiceView,
+        IPhotoEditable {
 
     private lateinit var nameServiceInput: EditText
     private lateinit var costAddServiceInput: EditText
@@ -90,7 +90,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     private fun init() {
         findViewById<Button>(R.id.addServiceAddServiceBtn)
                 .setOnClickListener(this)
-        findViewById<TextView>(R.id.servicePhotoAddServiceImage)
+        findViewById<TextView>(R.id.photoAddingServiceBtn)
                 .setOnClickListener(this)
 
         nameServiceInput = findViewById(R.id.nameAddServiceInput)
@@ -117,13 +117,13 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
                     addingServicePresenter.addImages(fpathOfImages, service)
                 }
             }
-            R.id.servicePhotoAddServiceImage -> chooseImage()
+            R.id.photoAddingServiceBtn -> choosePhoto()
             else -> {
             }
         }
     }
 
-    private fun chooseImage() {
+    override fun choosePhoto() {
         //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
         val photoPickerIntent = Intent(Intent.ACTION_PICK)
         //Тип получаемых объектов - image:
@@ -139,7 +139,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
             try {
                 //show image on activity
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, data.data)
-                showImage(bitmap, data.data!!.toString())
+                showPhoto(bitmap, data.data!!.toString())
 
                 fpathOfImages.add(data.data!!.toString())
             } catch (e: IOException) {
@@ -149,14 +149,14 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     }
 
     // плохое место
-    private fun showImage(bitmap: Bitmap, filePath: String) {
+    override fun showPhoto(bitmap: Bitmap, filePath: String) {
         supportFragmentManager
                 .beginTransaction()
-                .add(R.id.feedAddServiceLayout, ServicePhotoElement(bitmap, filePath, "add service"))
+                .add(R.id.photoAddingServiceLayout, ServicePhotoElement(bitmap, filePath))
                 .commit()
     }
 
-    fun removePhoto(servicePhotoElement: ServicePhotoElement, filePath: String) {
+    override fun removePhoto(servicePhotoElement: ServicePhotoElement, filePath: String) {
         supportFragmentManager
                 .beginTransaction()
                 .remove(servicePhotoElement)
@@ -184,14 +184,6 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     override fun hideMainBlocks() {
         mainLayout.visibility = View.GONE
     }
-
-    /*override fun goToMyCalendar(status: String, serviceId: String) {
-        val intent = Intent(this, MyCalendar::class.java)
-        intent.putExtra(SERVICE_ID, serviceId)
-        intent.putExtra(STATUS_USER_BY_SERVICE, status)
-        startActivity(intent)
-        finish()
-    }*/
 
     override fun showAllDone() {
         Toast.makeText(this, "Сервис успешно создан", Toast.LENGTH_LONG).show()

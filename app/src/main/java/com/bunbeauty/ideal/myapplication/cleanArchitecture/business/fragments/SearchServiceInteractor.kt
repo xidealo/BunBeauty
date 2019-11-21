@@ -1,17 +1,17 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.SearchServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ISearchServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 
-class SearchServiceInteractor(val userRepository: UserRepository) : IUserSubscriber {
+class SearchServiceInteractor(val userRepository: UserRepository) : IUserCallback {
 
-    lateinit var searchServiceCallback: SearchServiceCallback
+    lateinit var searchServiceCallback: ISearchServiceCallback
     var cities = arrayListOf<String>()
 
-    fun setMyCity(cities: ArrayList<String>, searchServiceCallback: SearchServiceCallback) {
+    fun setMyCity(cities: ArrayList<String>, searchServiceCallback: ISearchServiceCallback) {
         this.searchServiceCallback = searchServiceCallback
         this.cities = cities
         userRepository.getById(getUserId(), this, false)

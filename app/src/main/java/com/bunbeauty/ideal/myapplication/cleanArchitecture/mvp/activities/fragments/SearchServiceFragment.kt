@@ -12,7 +12,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopMainScreenPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.SearchServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
@@ -62,7 +62,7 @@ class SearchServiceFragment: MvpAppCompatFragment(), View.OnClickListener, Searc
     private fun setBack() {
         backText.setOnClickListener {
             (activity as MainScreenView).hideSearchPanel()
-            (activity as ITopPanel).showTopPanel()
+            (activity as ITopMainScreenPanel).showTopPanel()
             (activity as MainScreenView).showCategory()
             (activity as MainScreenView).createMainScreen()
         }

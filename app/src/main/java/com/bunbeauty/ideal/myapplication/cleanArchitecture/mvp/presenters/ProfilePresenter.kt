@@ -3,14 +3,14 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ProfileCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IProfileCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 
 @InjectViewState
 class ProfilePresenter(private val profileInteractor: ProfileInteractor):
-        MvpPresenter<ProfileView>(), ProfileCallback {
+        MvpPresenter<ProfileView>(), IProfileCallback {
 
     private val TAG = "DBInf"
 

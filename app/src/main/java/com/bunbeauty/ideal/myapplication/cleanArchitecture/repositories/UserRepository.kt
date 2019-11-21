@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -10,11 +10,11 @@ import kotlinx.coroutines.runBlocking
 
 class UserRepository(private val userDao: UserDao,
                      private val userFirebaseApi: UserFirebaseApi) : BaseRepository(),
-        IUserRepository, IUserSubscriber {
+        IUserRepository, IUserCallback {
 
     private val TAG = "data_layer"
 
-    lateinit var userSubscriber: IUserSubscriber
+    lateinit var userSubscriber: IUserCallback
 
     override fun insert(user: User) {
         launch {
@@ -43,7 +43,7 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
-    override fun getById(id: String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
+    override fun getById(id: String, userSubscriber: IUserCallback, isFirstEnter: Boolean) {
         this.userSubscriber = userSubscriber
 
         if (isFirstEnter) {
@@ -57,7 +57,7 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
-    override fun getByPhoneNumber(phoneNumber: String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
+    override fun getByPhoneNumber(phoneNumber: String, userSubscriber: IUserCallback, isFirstEnter: Boolean) {
         this.userSubscriber = userSubscriber
 
         if (isFirstEnter) {
@@ -71,7 +71,7 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
-    override fun getByCity(city: String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
+    override fun getByCity(city: String, userSubscriber: IUserCallback, isFirstEnter: Boolean) {
         var users = listOf<User>()
         this.userSubscriber = userSubscriber
 
@@ -85,7 +85,7 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
-    override fun getByCityAndUserName(city: String, userName:String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
+    override fun getByCityAndUserName(city: String, userName:String, userSubscriber: IUserCallback, isFirstEnter: Boolean) {
         var users = listOf<User>()
         this.userSubscriber = userSubscriber
 
@@ -99,7 +99,7 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
-    override fun getByName(name: String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean) {
+    override fun getByName(name: String, userSubscriber: IUserCallback, isFirstEnter: Boolean) {
         var users = listOf<User>()
         this.userSubscriber = userSubscriber
 

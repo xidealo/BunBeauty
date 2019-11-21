@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -10,9 +10,9 @@ import kotlinx.coroutines.runBlocking
 
 class ServiceRepository(private val serviceDao: ServiceDao,
                         private val serviceFirebaseApi: ServiceFirebaseApi) : BaseRepository(),
-        IServiceRepository, IServiceSubscriber {
+        IServiceRepository, IServiceCallback {
 
-    private lateinit var serviceSubscriber: IServiceSubscriber
+    private lateinit var serviceSubscriber: IServiceCallback
 
     override fun insert(service: Service) {
         launch {
@@ -28,7 +28,7 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         serviceFirebaseApi.update(service)
     }
 
-    override fun getServicesByUserId(userId: String, serviceSubscriber: IServiceSubscriber, isFirstEnter: Boolean) {
+    override fun getServicesByUserId(userId: String, serviceSubscriber: IServiceCallback, isFirstEnter: Boolean) {
         this.serviceSubscriber = serviceSubscriber
         val serviceList: ArrayList<Service> = ArrayList()
 
@@ -42,7 +42,7 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         }
     }
 
-    override fun getServicesByUserIdAndServiceName(userId: String, serviceName:String, serviceSubscriber: IServiceSubscriber, isFirstEnter: Boolean) {
+    override fun getServicesByUserIdAndServiceName(userId: String, serviceName:String, serviceSubscriber: IServiceCallback, isFirstEnter: Boolean) {
         this.serviceSubscriber = serviceSubscriber
         val serviceList: ArrayList<Service> = ArrayList()
 
@@ -56,7 +56,7 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         }
     }
 
-     override fun getById(serviceId: String, userId: String, serviceSubscriber: IServiceSubscriber) {
+     override fun getById(serviceId: String, userId: String, serviceSubscriber: IServiceCallback) {
         this.serviceSubscriber = serviceSubscriber
         var service: Service? = null
 

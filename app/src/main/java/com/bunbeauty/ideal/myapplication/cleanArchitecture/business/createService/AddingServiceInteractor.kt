@@ -34,7 +34,6 @@ class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
     override fun addImages(fpathOfImages: List<String>, service: Service) {
         for (path in fpathOfImages) {
             val photo = Photo()
-            photo.serviceId = service.id
             photo.userId = service.userId
             photo.serviceId = service.id
             addImage(photo, path)

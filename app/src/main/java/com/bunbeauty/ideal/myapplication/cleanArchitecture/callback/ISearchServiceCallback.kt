@@ -1,5 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback
 
-interface SearchServiceCallback {
+interface ISearchServiceCallback {
     fun setCity(position:Int)
 }

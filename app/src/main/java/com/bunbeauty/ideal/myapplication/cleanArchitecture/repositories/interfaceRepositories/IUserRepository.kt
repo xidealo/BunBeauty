@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface IUserRepository {
@@ -10,9 +10,9 @@ interface IUserRepository {
     fun update(user: User)
     fun get(): List<User>
 
-    fun getById(id:String, userSubscriber: IUserSubscriber, isFirstEnter:Boolean)
-    fun getByPhoneNumber(phoneNumber:String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean)
-    fun getByCity(city:String, userSubscriber: IUserSubscriber, isFirstEnter:Boolean)
-    fun getByName(name:String, userSubscriber: IUserSubscriber, isFirstEnter:Boolean)
-    fun getByCityAndUserName(city: String, userName:String, userSubscriber: IUserSubscriber, isFirstEnter: Boolean)
+    fun getById(id:String, userSubscriber: IUserCallback, isFirstEnter:Boolean)
+    fun getByPhoneNumber(phoneNumber:String, userSubscriber: IUserCallback, isFirstEnter: Boolean)
+    fun getByCity(city:String, userSubscriber: IUserCallback, isFirstEnter:Boolean)
+    fun getByName(name:String, userSubscriber: IUserCallback, isFirstEnter:Boolean)
+    fun getByCityAndUserName(city: String, userName:String, userSubscriber: IUserCallback, isFirstEnter: Boolean)
 }

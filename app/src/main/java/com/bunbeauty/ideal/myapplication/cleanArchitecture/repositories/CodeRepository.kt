@@ -1,15 +1,15 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.CodeFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.CodeDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.ICodeRepository
 import kotlinx.coroutines.launch
 
-class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: CodeFirebase) : BaseRepository(), ICodeRepository, ICodeSubscriber {
+class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: CodeFirebase) : BaseRepository(), ICodeRepository, ICodeCallback {
 
-    lateinit var codeSubscriber: ICodeSubscriber
+    lateinit var codeSubscriber: ICodeCallback
 
     override fun insert(code: Code) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -30,7 +30,7 @@ class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: Cod
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getByCode(codeString: String, codeSubscriber: ICodeSubscriber) {
+    override fun getByCode(codeString: String, codeSubscriber: ICodeCallback) {
         this.codeSubscriber = codeSubscriber
         codeFirebase.getByCode(codeString, this)
     }

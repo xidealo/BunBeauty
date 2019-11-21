@@ -4,7 +4,7 @@ import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IVerifyCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhoneView
 import com.google.firebase.FirebaseException
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 
 @InjectViewState
 class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInteractor) :
-        MvpPresenter<VerifyPhoneView>(), VerifyCallback {
+        MvpPresenter<VerifyPhoneView>(), IVerifyCallback {
 
     private val TAG = "DBInf"
     private lateinit var phoneVerificationId: String
