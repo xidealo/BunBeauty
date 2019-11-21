@@ -70,6 +70,21 @@ public class UISearchService {
         Thread.sleep(10000);
     }
 
+    @Test
+    public void test() throws InterruptedException {
+        UIAuthorizationActivityTests uiAuthorizationTests = new UIAuthorizationActivityTests();
+        uiAuthorizationTests.testEnterPhoneAuthorization("9999999999");
+        uiAuthorizationTests.testEnterCodeVerify("123456");
+        Thread.sleep(7000);
+        UIAddingTests uiAddingTests = new UIAddingTests();
+        uiAddingTests.addService("TestName", "123456", "Test address", "Test Description");
+        UIBottomPanel uiBottomPanel = new UIBottomPanel();
+        uiBottomPanel.goToMainScreen();
+        Thread.sleep(3000);
+        searchByUserName("TestName testsurname");
+        Thread.sleep(10000);
+    }
+
     public void searchByServiceName(String serviceName) throws InterruptedException {
         //choose search
         onView(withId(R.id.multiTopPanelText)).perform(click());

@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 
 interface ICodeRepository {
@@ -9,5 +9,5 @@ interface ICodeRepository {
     fun update(code: Code)
     fun get(): List<Code>
 
-    fun getByCode(codeString:String, codeSubscriber: ICodeSubscriber)
+    fun getByCode(codeString:String, codeSubscriber: ICodeCallback)
 }

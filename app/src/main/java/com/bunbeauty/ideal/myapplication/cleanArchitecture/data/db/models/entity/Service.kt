@@ -20,7 +20,7 @@ data class Service(
         var creationDate: String= "",
         var premiumDate: String= "",
         @Ignore
-        var tags: ArrayList<Tag> = ArrayList()): Serializable{
+        var tags: ArrayList<Tag> = ArrayList()): EditableEntity(), Serializable{
 
     companion object {
         const val SERVICES = "services"

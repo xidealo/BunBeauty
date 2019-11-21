@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.google.firebase.database.DataSnapshot
@@ -19,7 +19,7 @@ class CodeFirebase {
         myRef.updateChildren(items)
     }
 
-    fun getByCode(codeString: String, callback: ICodeSubscriber) {
+    fun getByCode(codeString: String, callback: ICodeCallback) {
         val query = FirebaseDatabase.getInstance().getReference(AddingServiceActivity.CODES).orderByChild(AddingServiceActivity.CODE).equalTo(codeString)
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(codesSnapshot: DataSnapshot) {

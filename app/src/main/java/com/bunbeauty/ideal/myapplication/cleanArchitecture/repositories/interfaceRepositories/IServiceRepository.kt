@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
 interface IServiceRepository {
@@ -10,8 +10,8 @@ interface IServiceRepository {
     fun get()
 
     fun getServicesByCityAndCategory(userCity: String, category: String, selectedTagsArray: java.util.ArrayList<String>?)
-    fun getServicesByUserId(userId: String, serviceSubscriber: IServiceSubscriber, isFirstEnter: Boolean)
+    fun getServicesByUserId(userId: String, serviceSubscriber: IServiceCallback, isFirstEnter: Boolean)
 
-    fun getById(serviceId: String, userId: String, serviceSubscriber: IServiceSubscriber)
-    fun getServicesByUserIdAndServiceName(userId: String, serviceName: String, serviceSubscriber: IServiceSubscriber, isFirstEnter: Boolean)
+    fun getById(serviceId: String, userId: String, serviceSubscriber: IServiceCallback)
+    fun getServicesByUserIdAndServiceName(userId: String, serviceName: String, serviceSubscriber: IServiceCallback, isFirstEnter: Boolean)
 }

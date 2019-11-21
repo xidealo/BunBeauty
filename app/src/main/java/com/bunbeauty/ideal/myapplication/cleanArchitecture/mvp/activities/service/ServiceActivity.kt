@@ -11,26 +11,30 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.EditableEntity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IProfileAvailable
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.bunbeauty.ideal.myapplication.editing.EditService
-import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.bunbeauty.ideal.myapplication.reviews.Comments
 import com.squareup.picasso.Picasso
 
 import javax.inject.Inject
 
-class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView, IEditableActivity {
+class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView, IEditableActivity,
+        ITopPanel, IBottomPanel, IProfileAvailable {
 
     private lateinit var mainScroll: ScrollView
     private lateinit var costText: TextView
@@ -48,7 +52,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private lateinit var ratingBar: RatingBar
     private lateinit var progressBar: ProgressBar
 
-            private lateinit var serviceOwner: User
+    private lateinit var serviceOwner: User
     private lateinit var service: Service
 
     @Inject
@@ -71,15 +75,14 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         setContentView(R.layout.service_activity)
 
         init()
-        showBottomPanel()
+        createBottomPanel()
     }
 
     override fun onResume() {
         super.onResume()
 
         onProgress()
-        this.service = servicePresenter.getService()
-        this.serviceOwner = servicePresenter.getServiceOwner()
+        showServiceInfo()
         servicePresenter.getServicePhotos(service.id, serviceOwner.id)
     }
 
@@ -114,15 +117,17 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     @SuppressLint("SetTextI18n")
-    override fun showServiceInfo(photos: List<Photo>) {
-        servicePresenter.setTopPanel(serviceOwner.id, serviceOwner.photoLink, service.id, service.name)
+    override fun showServiceInfo() {
+        this.service = servicePresenter.getService()
+        this.serviceOwner = servicePresenter.getServiceOwner()
+
         costText.text = service.cost + " ₽"
         descriptionText.text = service.description
         addressText.text = service.address
         showRating(service.rating, service.countOfRates)
         servicePresenter.setPremium(serviceOwner.id, service.premiumDate)
-        showPhotos(photos)
 
+        createTopPanel()
         offProgress()
     }
 
@@ -146,7 +151,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         ratingLayout.setOnClickListener(this)
     }
 
-    override fun showBottomPanel() {
+    override fun createBottomPanel() {
         val bottomPanel = BottomPanel()
 
         val transaction = supportFragmentManager.beginTransaction()
@@ -154,23 +159,25 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         transaction.commit()
     }
 
-    override fun showTopPanelForMyService(serviceId: String, serviceName: String) {
+    override fun createTopPanel () = servicePresenter.setTopPanel(service, serviceOwner)
+
+    override fun showTopPanelForMyService(service: Service) {
         val topPanel = TopPanel()
 
-        topPanel.title = serviceName
-        topPanel.entityId = serviceId
+        topPanel.title = service.name
+        topPanel.editableEntity = service
+        topPanel.isEditable = true
 
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.topServiceLayout, topPanel)
         transaction.commit()
     }
 
-    override fun showTopPanelForAlienService(serviceName: String, ownerPhotoLink: String, ownerId: String) {
+    override fun showTopPanelForAlienService(serviceName: String, serviceOwner: User) {
         val topPanel = TopPanel()
 
         topPanel.title = serviceName
-        topPanel.photoLink = ownerPhotoLink
-        topPanel.ownerId = ownerId
+        topPanel.user = serviceOwner
 
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.topServiceLayout, topPanel)
@@ -188,12 +195,11 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         }
     }
 
-    private fun showPhotos(photos: List<Photo>) {
+    override fun showPhotos(photos: List<Photo>) {
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
         val height = resources.getDimensionPixelSize(R.dimen.photo_height)
 
         for (photo in photos) {
-
             val serviceImage = ImageView(applicationContext)
             val params = LinearLayout.LayoutParams(width, height)
 
@@ -208,13 +214,11 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
                     .centerCrop()
                     .into(serviceImage)
         }
-        //imagesLayout.visibility = View.VISIBLE
     }
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.scheduleServiceBtn -> if (servicePresenter.isMyService(serviceOwner.id)) {
-                // my service, Im master
                 goToCalendar(User.MASTER)
             } else {
                 // not my service, Im client
@@ -237,58 +241,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         }
     }*/
 
-    private fun createPhotoFeed(serviceId: String?) {
-
-        /*val width = resources.getDimensionPixelSize(R.dimen.photo_width)
-        val height = resources.getDimensionPixelSize(R.dimen.photo_height)
-
-        val database = dbHelper!!.writableDatabase
-        //получаем ссылку на фото по id владельца
-        val sqlQuery = ("SELECT "
-                + DBHelper.KEY_PHOTO_LINK_PHOTOS
-                + " FROM "
-                + DBHelper.TABLE_PHOTOS
-                + " WHERE "
-                + DBHelper.KEY_OWNER_ID_PHOTOS + " = ?")
-        val cursor = database.rawQuery(sqlQuery, arrayOf<String>(serviceId!!))
-
-        if (cursor.moveToFirst()) {
-            do {
-                val indexPhotoLink = cursor.getColumnIndex(DBHelper.KEY_PHOTO_LINK_PHOTOS)
-
-                val photoLink = cursor.getString(indexPhotoLink)
-
-                val serviceImage = ImageView(applicationContext)
-
-                val params = LinearLayout.LayoutParams(
-                        width,
-                        height)
-                params.setMargins(15, 15, 15, 15)
-                serviceImage.layoutParams = params
-                serviceImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                imagesLayout!!.addView(serviceImage)
-
-                //установка аватарки
-                Picasso.get()
-                        .load(photoLink)
-                        .resize(width, height)
-                        .centerCrop()
-                        .into(serviceImage)
-            } while (cursor.moveToNext())
-        }
-        cursor.close()*/
-    }
-
-    private fun setWithoutRating() {
-        withoutRatingText!!.visibility = View.VISIBLE
-    }
-
-    private fun setWithPremium() {
-        offPremiumText!!.visibility = View.GONE
-        onPremiumText!!.visibility = View.VISIBLE
-    }
-
-   /* override fun checkCode(code: String) {
+   /* override fun (code: String) {
         //проверка кода
         val query = FirebaseDatabase.getInstance().getReference(CODES).orderByChild(CODE).equalTo(code)
         query.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -319,16 +272,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         })
     }*/
 
-    /*override fun addSevenDayPremium(date: String?): String {
-        var sysdateLong = WorkWithTimeApi.getMillisecondsStringDateWithSeconds(date)
-        if (sysdateLong < WorkWithTimeApi.getSysdateLong()) {
-            sysdateLong = WorkWithTimeApi.getSysdateLong()
-        }
-        //86400000 - day * 7 day
-        sysdateLong += (86400000 * 7).toLong()
-        return WorkWithTimeApi.getDateInFormatYMDHMS(Date(sysdateLong))
-    }*/
-
     private fun attentionThisScheduleIsEmpty() {
         Toast.makeText(
                 this,
@@ -348,9 +291,9 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         Toast.makeText(this, "Премиум активирован", Toast.LENGTH_LONG).show()
     }
 
-    override fun goToEditing(id: String) {
+    override fun goToEditing(editableEntity: EditableEntity) {
         val intent = Intent(this, EditService::class.java)
-        //intent.putExtra(Service.SERVICE_ID, id)
+        intent.putExtra(Service.SERVICE, editableEntity as Service)
         startActivity(intent)
     }
 
@@ -362,9 +305,10 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         startActivity(intent)
     }
 
-    fun goToOwnerProfile(ownerId: String) {
+    // go to owner profile
+    override fun goToProfile(user: User) {
         val intent = Intent(this, ProfileActivity::class.java)
-        intent.putExtra(User.USER_ID, ownerId)
+        intent.putExtra(User.USER, user)
         startActivity(intent)
     }
 

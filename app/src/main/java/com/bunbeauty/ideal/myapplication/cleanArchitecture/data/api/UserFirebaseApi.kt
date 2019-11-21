@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserSubscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -40,7 +40,7 @@ class UserFirebaseApi {
         myRef.updateChildren(items)
     }
 
-    fun getById(id: String, callback: IUserSubscriber) {
+    fun getById(id: String, callback: IUserCallback) {
 
         val userRef = FirebaseDatabase.getInstance()
                 .getReference(User.USERS)
@@ -58,7 +58,7 @@ class UserFirebaseApi {
         })
     }
 
-    fun getByPhoneNumber(phoneNumber: String, callback: IUserSubscriber) {
+    fun getByPhoneNumber(phoneNumber: String, callback: IUserCallback) {
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
                 .orderByChild(User.PHONE)
                 .equalTo(phoneNumber)
@@ -78,7 +78,7 @@ class UserFirebaseApi {
         })
     }
 
-    fun getByCity(city: String, callback: IUserSubscriber) {
+    fun getByCity(city: String, callback: IUserCallback) {
 
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
                 .orderByChild(User.CITY)
@@ -101,7 +101,7 @@ class UserFirebaseApi {
         })
     }
 
-    fun getByCityAndUserName(city: String, userName: String, callback: IUserSubscriber) {
+    fun getByCityAndUserName(city: String, userName: String, callback: IUserCallback) {
 
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
                 .orderByChild(User.CITY)
@@ -125,7 +125,7 @@ class UserFirebaseApi {
         })
     }
 
-    fun getByName(name: String, callback: IUserSubscriber) {
+    fun getByName(name: String, callback: IUserCallback) {
 
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
                 .orderByChild(User.NAME)

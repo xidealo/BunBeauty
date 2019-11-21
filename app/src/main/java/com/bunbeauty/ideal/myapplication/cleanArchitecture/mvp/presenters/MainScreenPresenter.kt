@@ -6,12 +6,12 @@ import android.widget.TextView
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IMainScreenCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 
 @InjectViewState
 class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor) : MvpPresenter<MainScreenView>(),
-        MainScreenCallback {
+        IMainScreenCallback {
 
     fun createMainScreen() {
         viewState.showLoading()

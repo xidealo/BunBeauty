@@ -8,9 +8,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.ideal.myapplication.R
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.EditableEntity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IProfileAvailable
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopMainScreenPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
@@ -21,9 +25,9 @@ import com.squareup.picasso.Picasso
 class TopPanel : Panel() {
 
     lateinit var title: String
-    lateinit var entityId: String
-    lateinit var photoLink: String
-    lateinit var ownerId: String
+    lateinit var editableEntity: EditableEntity
+    var isEditable = false
+    lateinit var user: User
 
     private lateinit var backText: TextView
     private lateinit var titleText: TextView
@@ -59,7 +63,7 @@ class TopPanel : Panel() {
         when (context!!.javaClass.name) {
             ProfileActivity::class.java.name -> {
                 setTitleText()
-                if (entityId.isNotEmpty()) {
+                if (isEditable) {
                     setEditText()
                 } else {
                     setEmptyMultiText()
@@ -68,7 +72,7 @@ class TopPanel : Panel() {
 
             ServiceActivity::class.java.name -> {
                 setTitleText()
-                if (entityId.isNotEmpty()) {
+                if (isEditable) {
                     setEditText()
                 } else {
                     setOwnerAvatar()
@@ -96,7 +100,7 @@ class TopPanel : Panel() {
         multiText.text = resources.getText(R.string.edit_ico)
         multiText.visibility = View.VISIBLE
         multiText.setOnClickListener {
-            (activity as IEditableActivity).goToEditing(entityId)
+            (activity as IEditableActivity).goToEditing(editableEntity)
         }
     }
 
@@ -107,13 +111,13 @@ class TopPanel : Panel() {
     private fun setOwnerAvatar() {
         avatarLayout.visibility = View.VISIBLE
         avatarLayout.setOnClickListener {
-            (activity as ServiceActivity).goToOwnerProfile(ownerId)
+            (activity as IProfileAvailable).goToProfile(user)
         }
 
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
         val height = resources.getDimensionPixelSize(R.dimen.photo_height)
         Picasso.get()
-                .load(photoLink)
+                .load(user.photoLink)
                 .resize(width, height)
                 .centerCrop()
                 .transform(CircularTransformation())
@@ -128,7 +132,7 @@ class TopPanel : Panel() {
         multiText.text = resources.getText(R.string.search_ico)
         multiText.visibility = View.VISIBLE
         multiText.setOnClickListener {
-            (activity as ITopPanel).hideTopPanel()
+            (activity as ITopMainScreenPanel).hideTopPanel()
             (activity as MainScreenView).showSearchPanel()
             (activity as MainScreenView).hideCategory()
         }

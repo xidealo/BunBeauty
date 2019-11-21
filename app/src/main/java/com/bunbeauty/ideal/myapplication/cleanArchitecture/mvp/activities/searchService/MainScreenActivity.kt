@@ -22,14 +22,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopMainScreenPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import javax.inject.Inject
 
-class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView, ITopPanel {
+class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView, ITopMainScreenPanel {
 
 
     private var categoriesBtns: ArrayList<Button> = arrayListOf()

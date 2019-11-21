@@ -108,13 +108,13 @@
                 android:layout_marginTop="10dp">
 
                 <LinearLayout
-                    android:id="@+id/feedAddServiceLayout"
+                    android:id="@+id/photoAddingServiceLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/servicePhotoAddServiceImage"
+                        android:id="@+id/photoAddingServiceBtn"
                         android:layout_width="80dp"
                         android:gravity="center"
                         android:layout_height="wrap_content"
