@@ -22,7 +22,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IProfileAvailable
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
@@ -73,7 +72,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         setContentView(R.layout.service_activity)
 
         init()
-        createBottomPanel()
+        createBottomPanel(supportFragmentManager, R.id.bottomServiceLayout)
     }
 
     override fun onResume() {
@@ -147,14 +146,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         ratingBar.visibility = View.VISIBLE
         ratingBar.rating = rating
         ratingLayout.setOnClickListener(this)
-    }
-
-    override fun createBottomPanel() {
-        val bottomPanel = BottomPanel()
-
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.bottomServiceLayout, bottomPanel)
-        transaction.commit()
     }
 
     override fun createTopPanel () = servicePresenter.setTopPanel(service, serviceOwner)
