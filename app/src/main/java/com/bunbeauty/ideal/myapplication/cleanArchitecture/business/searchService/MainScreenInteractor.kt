@@ -2,16 +2,18 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServi
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IMainScreenCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IMainScreenCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
@@ -29,6 +31,7 @@ class MainScreenInteractor(val userRepository: UserRepository,
         get() = job + Dispatchers.Main
     //cache
     private var currentCountOfUsers = 0
+    private var countOfUsers = 0
     private var cacheMainScreenData = ArrayList<ArrayList<Any>>()
     private var cachePremiumMainScreenData = ArrayList<ArrayList<Any>>()
     private var cacheServiceList = arrayListOf<Service>()
@@ -89,10 +92,7 @@ class MainScreenInteractor(val userRepository: UserRepository,
     }
 
     override fun returnUsers(users: List<User>) {
-        launch {
-            setListenerCountOfReturnServices(users.size)
-        }
-
+        countOfUsers = users.size
         cacheUserList.addAll(users)
 
         if (searchByServiceName) {
@@ -110,16 +110,12 @@ class MainScreenInteractor(val userRepository: UserRepository,
         currentCountOfUsers++
         cacheServiceList.addAll(serviceList)
 
-      /*  if (currentCountOfUsers == countOfUsers) {
-            setListenerCountOfReturnServices
-        }*/
+        if (currentCountOfUsers == countOfUsers) {
+            createMainScreenData()
+        }
     }
 
-    override suspend fun setListenerCountOfReturnServices(countOfUsers: Int) {
-        while (countOfUsers != currentCountOfUsers) {
-            delay(500)
-        }
-
+    override fun createMainScreenData() {
         for (service in cacheServiceList) {
             addToServiceList(service, getUserByService(cacheUserList, service))
         }
@@ -252,6 +248,15 @@ class MainScreenInteractor(val userRepository: UserRepository,
     }
 
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
+
+    override fun isSelectedCategory(category: String): Boolean {
+        if (category == selectedCategory) {
+            selectedCategory = ""
+            return true
+        }
+        selectedCategory = category
+        return false
+    }
 
     private fun clearCache() {
         searchByServiceName = false

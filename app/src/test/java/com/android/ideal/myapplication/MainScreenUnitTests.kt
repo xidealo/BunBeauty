@@ -2,6 +2,7 @@ package com.android.ideal.myapplication
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
@@ -67,11 +68,15 @@ class MainScreenUnitTests {
         val cacheData = ArrayList<ArrayList<Any>>()
         val service = Service()
         val user = User()
-        service.category = "маникюр"
+        val tag = Tag()
+        tag.tag = "Бровничи"
+        val selectedTagsArray = arrayListOf("Бровнич")
+        service.tags.add(tag)
         cacheData.add(getDataList(1, user, service))
         //MS data which we are waiting
         val mainScreenData = ArrayList<ArrayList<Any>>()
-        assertEquals(mainScreenInteractor.convertCacheDataToMainScreenData("педикюр", cacheData), mainScreenData)
+        mainScreenData.add(arrayListOf(cacheData[0][1], cacheData[0][2]))
+        assertEquals(mainScreenInteractor.convertCacheDataToMainScreenData(selectedTagsArray, cacheData), mainScreenData)
     }
 
     @Test
@@ -132,7 +137,6 @@ class MainScreenUnitTests {
     }
 
     //choosePremiumServices
-    //convertCacheDataToMainScreenData
 
     private fun getDataList(points: Int, user: User, service: Service): ArrayList<Any> {
         val data = ArrayList<Any>()

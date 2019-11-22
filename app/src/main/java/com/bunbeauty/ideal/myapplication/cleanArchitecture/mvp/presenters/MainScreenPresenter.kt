@@ -39,6 +39,13 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
     }
 
     fun createMainScreenWithTag(tagText: TextView){
+
+        if (mainScreenInteractor.selectedTagsArray.size == 0) {
+            createMainScreenWithCategory(mainScreenInteractor.selectedCategory)
+        }else{
+            mainScreenInteractor.getMainScreenData(mainScreenInteractor.selectedTagsArray, this)
+        }
+
         if (mainScreenInteractor.selectedTagsArray.contains(tagText.text.toString())) {
             //disable
             viewState.disableTag(tagText)
@@ -48,13 +55,6 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
             viewState.enableTag(tagText)
             mainScreenInteractor.selectedTagsArray.add(tagText.text.toString())
         }
-
-        if (mainScreenInteractor.selectedTagsArray.size == 0) {
-            createMainScreenWithCategory(mainScreenInteractor.selectedCategory)
-        }else{
-            mainScreenInteractor.getMainScreenData(mainScreenInteractor.selectedTagsArray, this)
-        }
-        //create
     }
 
     override fun returnMainScreenDataWithCreateCategory(mainScreenData: ArrayList<ArrayList<Any>>) {
@@ -69,14 +69,7 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
         viewState.showMainScreen(mainScreenData)
     }
 
-    fun isSelectedCategory(category: String): Boolean {
-        if (category == mainScreenInteractor.selectedCategory) {
-            mainScreenInteractor.selectedCategory = ""
-            return true
-        }
-        mainScreenInteractor.selectedCategory = category
-        return false
-    }
+    fun isSelectedCategory(category: String): Boolean = mainScreenInteractor.isSelectedCategory(category)
 
     fun setTagsState(visibility: Int) {
         if (visibility == View.VISIBLE) {

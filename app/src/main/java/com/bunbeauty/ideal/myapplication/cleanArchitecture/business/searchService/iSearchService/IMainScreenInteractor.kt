@@ -9,7 +9,7 @@ interface IMainScreenInteractor {
     fun getMainScreenDataByUserName(city:String, userName: String, mainScreenCallback: IMainScreenCallback)
     fun getMainScreenDataByServiceName(city:String, serviceName: String, mainScreenCallback: IMainScreenCallback)
     fun getMainScreenData(selectedTagsArray: ArrayList<String>, mainScreenCallback: IMainScreenCallback)
-
+    fun isSelectedCategory(category: String) : Boolean
     fun getUsersByCity(city:String)
     fun getServicesByUserId(id:String)
     fun getServicesByUserIdAndServiceName(id: String, serviceName: String)
@@ -18,5 +18,5 @@ interface IMainScreenInteractor {
     fun convertCacheDataToMainScreenData(category: String,cacheMainScreenData: ArrayList<ArrayList<Any>>) : ArrayList<ArrayList<Any>>
     fun convertCacheDataToMainScreenData(selectedTagsArray: ArrayList<String>, cacheMainScreenData: ArrayList<ArrayList<Any>>) : ArrayList<ArrayList<Any>>
 
-    suspend fun setListenerCountOfReturnServices(countOfUsers:Int)
+    fun createMainScreenData()
 }
