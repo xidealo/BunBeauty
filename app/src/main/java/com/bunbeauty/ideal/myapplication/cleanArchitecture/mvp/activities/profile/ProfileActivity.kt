@@ -19,6 +19,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
@@ -35,7 +36,8 @@ import com.squareup.picasso.Picasso
 import java.util.*
 import javax.inject.Inject
 
-class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView, ISwitcher, IEditableActivity, ITopPanel {
+class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView, ISwitcher,
+        IEditableActivity, ITopPanel, IBottomPanel {
 
     private lateinit var nameText: TextView
     private lateinit var cityText: TextView
@@ -75,7 +77,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
         initView()
 
-        showBottomPanel()
+        createBottomPanel(supportFragmentManager, R.id.bottomProfileLayout)
         profilePresenter.initFCM()
         profilePresenter.showProfileView()
     }
@@ -290,14 +292,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.topProfileLayout, topPanel)
-        transaction.commit()
-    }
-
-    override fun showBottomPanel() {
-        val bottomPanel = BottomPanel()
-
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.bottomProfileLayout, bottomPanel)
         transaction.commit()
     }
 

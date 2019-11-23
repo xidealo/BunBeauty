@@ -22,14 +22,15 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopMainScreenPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import javax.inject.Inject
 
-class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView, ITopMainScreenPanel {
+class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView,
+        ITopMainScreenPanel, IBottomPanel {
 
 
     private var categoriesBtns: ArrayList<Button> = arrayListOf()
@@ -64,7 +65,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
         init()
         createTopPanel()
-        createBottomPanel()
+        createBottomPanel(supportFragmentManager, R.id.bottomMainScreenLayout)
         createSearchPanel()
         createMainScreen()
     }
@@ -79,7 +80,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         innerLayout = findViewById(R.id.tagsInnerMainScreenLayout)
         progressBar = findViewById(R.id.progressBarMainScreen)
         searchLayout = findViewById(R.id.searchMainScreenLayout)
-        headerLayout = findViewById(R.id.headerMainScreenLayout)
+        headerLayout = findViewById(R.id.topMainScreenLayout)
 
         val minimizeTagsBtn = findViewById<Button>(R.id.minimizeTagsMainScreenBtn)
         val clearTagsBtn = findViewById<Button>(R.id.clearTagsMainScreenBtn)
@@ -134,7 +135,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         val topPanel = TopPanel()
 
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.headerMainScreenLayout, topPanel)
+        transaction.add(R.id.topMainScreenLayout, topPanel)
         transaction.commit()
     }
 
@@ -148,14 +149,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     override fun createMainScreen() {
         mainScreenPresenter.createMainScreen()
-    }
-
-    override fun createBottomPanel() {
-        val bottomPanel = BottomPanel()
-
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.footerMainScreenLayout, bottomPanel)
-        transaction.commit()
     }
 
     override fun createSearchPanel() {
