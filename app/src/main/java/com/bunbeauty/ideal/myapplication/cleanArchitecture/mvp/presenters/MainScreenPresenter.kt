@@ -22,27 +22,27 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
         mainScreenInteractor.selectedTagsArray.clear()
         viewState.showLoading()
         viewState.hideTags()
-        viewState.createTags(category,mainScreenInteractor.selectedTagsArray)
+        viewState.createTags(category, mainScreenInteractor.selectedTagsArray)
         viewState.showTags()
 
-        mainScreenInteractor.getMainScreenData(category,this)
+        mainScreenInteractor.getMainScreenData(category, this)
     }
 
-    fun createMainScreenWithSearchUserName(city:String, userName:String){
+    fun createMainScreenWithSearchUserName(city: String, userName: String) {
         viewState.showLoading()
         mainScreenInteractor.getMainScreenDataByUserName(city, userName, this)
     }
 
-    fun createMainScreenWithSearchServiceName(city:String,serviceName:String){
+    fun createMainScreenWithSearchServiceName(city: String, serviceName: String) {
         viewState.showLoading()
         mainScreenInteractor.getMainScreenDataByServiceName(city, serviceName, this)
     }
 
-    fun createMainScreenWithTag(tagText: TextView){
+    fun createMainScreenWithTag(tagText: TextView) {
 
         if (mainScreenInteractor.selectedTagsArray.size == 0) {
             createMainScreenWithCategory(mainScreenInteractor.selectedCategory)
-        }else{
+        } else {
             mainScreenInteractor.getMainScreenData(mainScreenInteractor.selectedTagsArray, this)
         }
 
@@ -75,7 +75,7 @@ class MainScreenPresenter(private val mainScreenInteractor: MainScreenInteractor
         if (visibility == View.VISIBLE) {
             viewState.hideTags()
         } else {
-            if(visibility != View.GONE){
+            if (visibility != View.GONE) {
                 viewState.createTags(mainScreenInteractor.selectedCategory, mainScreenInteractor.selectedTagsArray)
                 viewState.showTags()
             }

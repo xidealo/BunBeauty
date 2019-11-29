@@ -338,9 +338,9 @@ public class Dialogs extends AppCompatActivity {
         if (cursor.moveToNext()) {
             String userName = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
             Dialog dialog = new Dialog();
-            dialog.setUserId(userId);
-            dialog.setUserName(userName);
-            dialog.setMessageTime(messageTime);
+            dialog.userId = userId;
+            dialog.userName = userName;
+            dialog.messageTime = messageTime;
             dialogList.add(dialog);
         }
     }

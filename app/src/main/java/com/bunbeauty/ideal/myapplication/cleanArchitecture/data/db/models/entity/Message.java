@@ -10,7 +10,6 @@ public class Message {
     private String userName;
     private String workingTime;
     private String workingDay;
-
     //для Reference
     private String userId;
     private String serviceId;
@@ -19,7 +18,6 @@ public class Message {
     private String orderId;
     private String reviewId;
     private String status;
-
     private String type;
     private String ratingReview;
 

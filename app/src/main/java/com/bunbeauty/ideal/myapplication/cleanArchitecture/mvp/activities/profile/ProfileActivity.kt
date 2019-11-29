@@ -14,15 +14,14 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.adapters.ServiceProfileAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.EditableEntity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
@@ -47,6 +46,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var ratingBar: RatingBar
     private lateinit var addServicesBtn: Button
     private lateinit var subscriptionsBtn: Button
+    private lateinit var dialogsBtn: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var ratingLayout: LinearLayout
     private lateinit var mainLayout: LinearLayout
@@ -97,6 +97,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         ratingLayout = findViewById(R.id.ratingProfileLayout)
         addServicesBtn = findViewById(R.id.addServicesProfileBtn)
         subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn)
+        dialogsBtn = findViewById(R.id.dialogsProfileBtn)
         mainLayout = findViewById(R.id.mainProfileLayout)
         orderRecyclerView = findViewById(R.id.ordersProfileRecycleView)
         serviceRecyclerView = findViewById(R.id.servicesProfileRecyclerView)
@@ -119,8 +120,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             R.id.subscriptionsProfileBtn -> goToSubscribers()
 
             R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
-
-            else -> {}
         }
     }
 
@@ -142,6 +141,14 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         val serviceAdapter = ServiceProfileAdapter(serviceList as ArrayList<Service>, profileOwner)
         serviceRecyclerView.adapter = serviceAdapter
         offProgress()
+    }
+
+    override fun hideSubscriptions() {
+        subscriptionsBtn.visibility = View.GONE
+    }
+
+    override fun showDialogs() {
+        dialogsBtn.visibility = View.VISIBLE
     }
 
     private fun showProfileText(name: String, city: String, phone: String) {
@@ -198,54 +205,54 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     //добавляет вновь добавленные записи (обновление ordersList)
-   /* private fun updateOrdersList(userId: String) {
-        // количство записей отображаемых на данный момент(старых)
-        var visibleCount = orderList.size
+    /* private fun updateOrdersList(userId: String) {
+         // количство записей отображаемых на данный момент(старых)
+         var visibleCount = orderList.size
 
-        // получаем id сервиса, имя сервиса, дату и время всех записей
-        // Из 3-х таблиц: сервисы, рабочие дни, рабочие время
-        // Условие: связка таблиц по id сервиса и id рабочего дня; уточняем пользователя по id
-        val sqlQuery = ("SELECT "
-                + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + ", "
-                + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ", "
-                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_DATE_WORKING_DAYS + ", "
-                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_TIME_WORKING_TIME
-                + " FROM "
-                + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                + DBHelper.TABLE_WORKING_DAYS + ", "
-                + DBHelper.TABLE_WORKING_TIME + ", "
-                + DBHelper.TABLE_ORDERS
-                + " WHERE "
-                + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                + " AND "
-                + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                + " AND "
-                + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'"
-                + " AND "
-                + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                + " AND "
-                + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
-                + " AND "
-                + " STRFTIME('%s', " + DBHelper.KEY_DATE_WORKING_DAYS
-                + ")>=STRFTIME('%s', DATE('now'))")
+         // получаем id сервиса, имя сервиса, дату и время всех записей
+         // Из 3-х таблиц: сервисы, рабочие дни, рабочие время
+         // Условие: связка таблиц по id сервиса и id рабочего дня; уточняем пользователя по id
+         val sqlQuery = ("SELECT "
+                 + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + ", "
+                 + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ", "
+                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_DATE_WORKING_DAYS + ", "
+                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_TIME_WORKING_TIME
+                 + " FROM "
+                 + DBHelper.TABLE_CONTACTS_SERVICES + ", "
+                 + DBHelper.TABLE_WORKING_DAYS + ", "
+                 + DBHelper.TABLE_WORKING_TIME + ", "
+                 + DBHelper.TABLE_ORDERS
+                 + " WHERE "
+                 + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
+                 + " AND "
+                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
+                 + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
+                 + " AND "
+                 + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'"
+                 + " AND "
+                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
+                 + " AND "
+                 + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
+                 + " AND "
+                 + " STRFTIME('%s', " + DBHelper.KEY_DATE_WORKING_DAYS
+                 + ")>=STRFTIME('%s', DATE('now'))")
 
-        val cursor = database.rawQuery(sqlQuery, arrayOf(userId))
+         val cursor = database.rawQuery(sqlQuery, arrayOf(userId))
 
-        val cursorCount = cursor.count
+         val cursorCount = cursor.count
 
-        //если есть новые записи
-        if (cursorCount > visibleCount) {
-            //Идём с конца
-            if (cursor.moveToLast()) {
-                val indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID)
-                val indexServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES)
-                val indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS)
-                val indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME)
+         //если есть новые записи
+         if (cursorCount > visibleCount) {
+             //Идём с конца
+             if (cursor.moveToLast()) {
+                 val indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID)
+                 val indexServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES)
+                 val indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS)
+                 val indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME)
 
-                do {
-                    val order = Order()
-                    *//*order.id = cursor.getString(indexServiceId)
+                 do {
+                     val order = Order()
+                     *//*order.id = cursor.getString(indexServiceId)
                     order.orderName = cursor.getString(indexServiceName)
                     order.orderDate = cursor.getString(indexDate)
                     order.orderTime = cursor.getString(indexTime)*//*
@@ -282,7 +289,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     override fun createTopPanel() {
         val topPanel = TopPanel()
 
-        if(profilePresenter.isUserOwner()) {
+        if (profilePresenter.isUserOwner()) {
             topPanel.title = "Профиль"
             topPanel.editableEntity = profileOwner
             topPanel.isEditable = true

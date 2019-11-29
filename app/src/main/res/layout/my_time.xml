@@ -7,6 +7,13 @@
     android:background="@color/mainColorBG"
     tools:context="com.bunbeauty.ideal.myapplication.createService.MyTime">
 
+    <LinearLayout
+        android:id="@+id/headerMyTimeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <RelativeLayout
         android:id="@+id/mainMyTimeLayout"
         android:layout_width="match_parent"
@@ -42,12 +49,7 @@
         app:layout_constraintTop_toBottomOf="@+id/headerMyTimeLayout"
         app:layout_constraintVertical_bias="0.85" />
 
-    <LinearLayout
-        android:id="@+id/headerMyTimeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <LinearLayout
         android:id="@+id/footerMyTimeLayout"

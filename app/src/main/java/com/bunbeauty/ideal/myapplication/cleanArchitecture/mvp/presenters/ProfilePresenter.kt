@@ -25,6 +25,8 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor):
             viewState.showMyProfileView()
         } else {
             viewState.showAlienProfileView()
+            viewState.hideSubscriptions()
+            viewState.showDialogs()
         }
     }
 
