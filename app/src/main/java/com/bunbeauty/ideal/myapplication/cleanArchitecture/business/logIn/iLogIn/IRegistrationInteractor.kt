@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn
 
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.registration.IRegistrationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface IRegistrationInteractor {
@@ -10,5 +11,5 @@ interface IRegistrationInteractor {
     fun getIsSurnameLengthLessTwenty(surname: String): Boolean
     fun getMyPhoneNumber(): String
     fun getUserId() : String
-    fun registration(user: User)
+    fun registration(user: User, iRegistrationPresenter: IRegistrationPresenter)
 }

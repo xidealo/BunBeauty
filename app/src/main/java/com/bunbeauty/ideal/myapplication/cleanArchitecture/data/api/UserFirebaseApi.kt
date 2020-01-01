@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -78,7 +79,7 @@ class UserFirebaseApi {
         })
     }
 
-    fun getByCity(city: String, callback: IUserCallback) {
+    fun getByCity(city: String, iUsersCallback: IUsersCallback) {
 
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
                 .orderByChild(User.CITY)
@@ -92,7 +93,7 @@ class UserFirebaseApi {
                         users.add(getUserFromSnapshot(userSnapshot))
                     }
                 }
-                callback.returnUsers(users)
+                iUsersCallback.returnUsers(users)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -101,7 +102,7 @@ class UserFirebaseApi {
         })
     }
 
-    fun getByCityAndUserName(city: String, userName: String, callback: IUserCallback) {
+    fun getByCityAndUserName(city: String, userName: String, iUsersCallback: IUsersCallback) {
 
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
                 .orderByChild(User.CITY)
@@ -112,11 +113,11 @@ class UserFirebaseApi {
                 val users = arrayListOf<User>()
                 if (usersSnapshot.childrenCount > 0L) {
                     for (userSnapshot in usersSnapshot.children) {
-                        if(userName == userSnapshot.child(User.NAME).value as? String ?: "")
-                        users.add(getUserFromSnapshot(userSnapshot))
+                        if (userName == userSnapshot.child(User.NAME).value as? String ?: "")
+                            users.add(getUserFromSnapshot(userSnapshot))
                     }
                 }
-                callback.returnUsers(users)
+                iUsersCallback.returnUsers(users)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -125,7 +126,7 @@ class UserFirebaseApi {
         })
     }
 
-    fun getByName(name: String, callback: IUserCallback) {
+    fun getByName(name: String, iUsersCallback: IUsersCallback) {
 
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
                 .orderByChild(User.NAME)
@@ -138,7 +139,7 @@ class UserFirebaseApi {
                     for (userSnapshot in usersSnapshot.children) {
                         users.add(getUserFromSnapshot(userSnapshot))
                     }
-                    callback.returnUsers(users)
+                    iUsersCallback.returnUsers(users)
                 }
             }
 
@@ -166,10 +167,11 @@ class UserFirebaseApi {
 
         return user
     }
+
     //лучше использовать лист?
-    fun filterByUserName(users: ArrayList<User>, userName:String):ArrayList<User>{
-        for(user in users){
-            if(user.name != userName){
+    fun filterByUserName(users: ArrayList<User>, userName: String): ArrayList<User> {
+        for (user in users) {
+            if (user.name != userName) {
                 users.remove(user)
             }
         }

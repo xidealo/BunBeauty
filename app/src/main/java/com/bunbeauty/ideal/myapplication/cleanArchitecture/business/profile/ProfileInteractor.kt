@@ -2,9 +2,10 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IProfileCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
@@ -17,7 +18,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 class ProfileInteractor(private val userRepository: UserRepository,
                         private val serviceRepository: ServiceRepository,
                         private val intent: Intent) : BaseRepository(),
-        IProfileInteractor, IUserCallback, IServiceCallback {
+        IProfileInteractor, IUserCallback, IServiceCallback, IServicesCallback {
 
     private val TAG = "DBInf"
     private lateinit var profileCallback: IProfileCallback
@@ -96,13 +97,11 @@ class ProfileInteractor(private val userRepository: UserRepository,
         getProfileServiceList(profileCallback)
     }
 
-    override fun returnServiceList(serviceList: List<Service>) {
+    override fun returnServices(serviceList: List<Service>) {
         profileCallback.callbackGetServiceList(serviceList)
     }
 
     override fun returnService(service: Service) {}
-
-    override fun returnUsers(users: List<User>) {}
 
     companion object{
         const val OWNER_ID = "owner id"
@@ -110,4 +109,5 @@ class ProfileInteractor(private val userRepository: UserRepository,
         val cachedUserIds = arrayListOf<String>()
         val cachedUserIdsForServices = arrayListOf<String>()
     }
+
 }

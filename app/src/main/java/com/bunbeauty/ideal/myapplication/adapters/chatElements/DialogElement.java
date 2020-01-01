@@ -34,9 +34,9 @@ public class DialogElement implements View.OnClickListener {
     private View view;
 
     public DialogElement(Dialog dialog, View view, Context context) {
-        userName = dialog.userName;
+      /*  userName = dialog.userName;
         userId= dialog.userId;
-        messageTime = dialog.messageTime;
+        messageTime = dialog.messageTime;*/
         this.context = context;
         this.view = view;
     }

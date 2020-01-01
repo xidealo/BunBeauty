@@ -1,7 +1,8 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import android.util.Log
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
@@ -83,7 +84,9 @@ class ServiceFirebaseApi {
         })
     }
 
-    fun getServicesByUserId(userId: String, serviceSubscriber: IServiceCallback) {
+    fun getServicesByUserId(userId: String,
+                            iServiceCallback: IServiceCallback,
+                            iServicesCallback: IServicesCallback) {
         val servicesRef = FirebaseDatabase.getInstance()
                 .getReference(User.USERS)
                 .child(userId)
@@ -91,8 +94,8 @@ class ServiceFirebaseApi {
 
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(servicesSnapshot: DataSnapshot) {
-                returnServiceList(servicesSnapshot, userId, serviceSubscriber)
-                setListener(servicesRef, userId, serviceSubscriber)
+                returnServiceList(servicesSnapshot, userId, iServicesCallback)
+                setListener(servicesRef, userId, iServiceCallback)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -101,7 +104,10 @@ class ServiceFirebaseApi {
         })
     }
 
-    fun getServicesByUserIdAndServiceName(userId: String, serviceName:String, serviceSubscriber: IServiceCallback) {
+    fun getServicesByUserIdAndServiceName(userId: String,
+                                          serviceName: String,
+                                          iServicesCallback: IServicesCallback,
+                                          iServiceCallback: IServiceCallback) {
         val servicesRef = FirebaseDatabase.getInstance()
                 .getReference(User.USERS)
                 .child(userId)
@@ -112,13 +118,13 @@ class ServiceFirebaseApi {
                 val services = arrayListOf<Service>()
 
                 for (serviceSnapshot in servicesSnapshot.children) {
-                    if(serviceName == serviceSnapshot.child(Service.NAME).value as? String ?: "")
-                    services.add(getServiceFromSnapshot(serviceSnapshot, userId))
+                    if (serviceName == serviceSnapshot.child(Service.NAME).value as? String ?: "")
+                        services.add(getServiceFromSnapshot(serviceSnapshot, userId))
                 }
 
-                serviceSubscriber.returnServiceList(services)
+                iServicesCallback.returnServices(services)
 
-                setListener(servicesRef, userId, serviceSubscriber)
+                setListener(servicesRef, userId, iServiceCallback)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -127,15 +133,15 @@ class ServiceFirebaseApi {
         })
     }
 
-    private fun setListener(servicesRef: DatabaseReference, userId: String, serviceSubscriber: IServiceCallback) {
+    private fun setListener(servicesRef: DatabaseReference, userId: String, iServiceCallback: IServiceCallback) {
         servicesRef.addChildEventListener(object : ChildEventListener {
 
             override fun onChildAdded(serviceSnapshot: DataSnapshot, pChildName: String?) {
-                returnService(serviceSnapshot, userId, serviceSubscriber)
+                returnService(serviceSnapshot, userId, iServiceCallback)
             }
 
             override fun onChildChanged(serviceSnapshot: DataSnapshot, pChildName: String?) {
-                returnService(serviceSnapshot, userId, serviceSubscriber)
+                returnService(serviceSnapshot, userId, iServiceCallback)
             }
 
             override fun onChildRemoved(serviceSnapshot: DataSnapshot) {}
@@ -146,18 +152,18 @@ class ServiceFirebaseApi {
         })
     }
 
-    private fun returnService(serviceSnapshot: DataSnapshot, userId: String, serviceSubscriber: IServiceCallback) {
+    private fun returnService(serviceSnapshot: DataSnapshot, userId: String, iServiceCallback: IServiceCallback) {
         val service = getServiceFromSnapshot(serviceSnapshot, userId)
 
-        serviceSubscriber.returnService(service)
+        iServiceCallback.returnService(service)
     }
 
-    private fun returnServiceList(servicesSnapshot: DataSnapshot, userId: String, serviceSubscriber: IServiceCallback) {
+    private fun returnServiceList(servicesSnapshot: DataSnapshot, userId: String, iServicesCallback: IServicesCallback) {
         val services = arrayListOf<Service>()
         for (serviceSnapshot in servicesSnapshot.children) {
             services.add(getServiceFromSnapshot(serviceSnapshot, userId))
         }
-        serviceSubscriber.returnServiceList(services)
+        iServicesCallback.returnServices(services)
     }
 
     fun getIdForNew(userId: String): String {
@@ -175,14 +181,16 @@ class ServiceFirebaseApi {
         service.address = serviceSnapshot.child(Service.ADDRESS).value as? String ?: ""
         service.description = serviceSnapshot.child(Service.DESCRIPTION).value as? String ?: ""
         service.cost = serviceSnapshot.child(Service.COST).value as? String ?: "0"
-        service.countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue<Long>(Long::class.java) ?: 0L
-        service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue<Float>(Float::class.java) ?: 0f
+        service.countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue<Long>(Long::class.java)
+                ?: 0L
+        service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue<Float>(Float::class.java)
+                ?: 0f
         service.category = serviceSnapshot.child(Service.CATEGORY).value as? String ?: ""
         service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).value as? String ?: ""
         service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).value as? String ?: ""
         service.userId = userId
-        for(tagSnapshot in serviceSnapshot.child(Tag.TAGS).children){
-            service.tags.add(getTagFromSnapshot(tagSnapshot,service.id, userId))
+        for (tagSnapshot in serviceSnapshot.child(Tag.TAGS).children) {
+            service.tags.add(getTagFromSnapshot(tagSnapshot, service.id, userId))
         }
         return service
     }
@@ -200,10 +208,10 @@ class ServiceFirebaseApi {
 
         return photos
     }
-  
-    private fun getTagFromSnapshot(tagSnapshot:DataSnapshot, serviceId:String, userId: String): Tag{
+
+    private fun getTagFromSnapshot(tagSnapshot: DataSnapshot, serviceId: String, userId: String): Tag {
         val tag = Tag()
-        tag.id =  tagSnapshot.key!!
+        tag.id = tagSnapshot.key!!
         tag.tag = tagSnapshot.child(Tag.TAG).value as? String ?: ""
         tag.serviceId = serviceId
         tag.userId = userId

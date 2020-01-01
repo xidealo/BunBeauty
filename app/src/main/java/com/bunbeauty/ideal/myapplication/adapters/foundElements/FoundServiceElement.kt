@@ -18,7 +18,9 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import com.squareup.picasso.Picasso
 
-class FoundServiceElement(private val service: Service, private val user: User, private val view: View, private val context: Context) : View.OnClickListener {
+class FoundServiceElement(private val service: Service,
+                          private val user: User, private val view: View,
+                          private val context: Context) : View.OnClickListener {
 
     private lateinit var nameUserText: TextView
     private lateinit var cityText: TextView
@@ -27,7 +29,6 @@ class FoundServiceElement(private val service: Service, private val user: User, 
     private lateinit var avatarImage: ImageView
     private lateinit var ratingBar: RatingBar
     private lateinit var layout: LinearLayout
-
 
     fun createElement() {
         onViewCreated(view)

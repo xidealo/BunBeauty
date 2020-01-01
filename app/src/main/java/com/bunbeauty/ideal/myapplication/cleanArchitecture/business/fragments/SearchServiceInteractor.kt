@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ISearchServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -19,10 +19,6 @@ class SearchServiceInteractor(val userRepository: UserRepository) : IUserCallbac
 
     override fun returnUser(user: User) {
         searchServiceCallback.setCity(cities.indexOf(user.city))
-    }
-
-    override fun returnUsers(users: List<User>) {
-        //log
     }
 
     fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid

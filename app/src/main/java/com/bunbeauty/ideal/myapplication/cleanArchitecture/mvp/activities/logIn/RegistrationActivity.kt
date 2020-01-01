@@ -85,6 +85,10 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
 
     override fun fillPhoneInput(phone: String) = phoneInput.setText(phone)
 
+    override fun showSuccessfulRegistration() {
+        Toast.makeText(this, "Пользователь зарегестирован", Toast.LENGTH_LONG).show()
+    }
+
     override fun setNameInputError(error: String) {
         nameInput.error = error
         nameInput.requestFocus()

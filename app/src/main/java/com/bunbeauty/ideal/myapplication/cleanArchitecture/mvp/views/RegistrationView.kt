@@ -8,4 +8,5 @@ interface RegistrationView: MvpView {
     fun showNoSelectedCity()
     fun goToProfile()
     fun fillPhoneInput(phone: String)
+    fun showSuccessfulRegistration()
 }

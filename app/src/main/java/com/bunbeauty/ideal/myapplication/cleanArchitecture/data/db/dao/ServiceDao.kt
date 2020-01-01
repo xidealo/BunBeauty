@@ -7,24 +7,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 @Dao
 interface ServiceDao {
 
-    @Query("SELECT * FROM service")
-    suspend fun findAll(): List<Service>
-
-    @Query("SELECT * FROM service WHERE id = :id")
-    suspend fun findById(id: String): Service?
-
-    @Query("SELECT * FROM service ORDER BY cost DESC LIMIT 1 ")
-    suspend fun findMaxCostService(): Service
-
-    @Query("SELECT * FROM service ORDER BY countOfRates desc LIMIT 1 ")
-    suspend fun findMaxCountOfRatesService(): Service
-
-    @Query("SELECT * FROM service WHERE userId = :userId ORDER BY creationDate")
-    suspend fun findAllByUserId(userId: String?): List<Service>
-
-    @Query("SELECT * FROM service WHERE userId = :userId AND name = :name ORDER BY creationDate")
-    suspend fun findAllByUserIdAndServiceName(userId: String, name: String): List<Service>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(service: Service)
 
@@ -36,6 +18,24 @@ interface ServiceDao {
 
     @Delete
     suspend fun delete(service: Service)
+
+    @Query("SELECT * FROM service")
+    suspend fun get(): List<Service>
+
+    @Query("SELECT * FROM service WHERE id = :id")
+    suspend fun getById(id: String): Service
+
+    @Query("SELECT * FROM service ORDER BY cost DESC LIMIT 1 ")
+    suspend fun getMaxCostService(): Service
+
+    @Query("SELECT * FROM service ORDER BY countOfRates desc LIMIT 1 ")
+    suspend fun getMaxCountOfRatesService(): Service
+
+    @Query("SELECT * FROM service WHERE userId = :userId ORDER BY creationDate")
+    suspend fun getAllByUserId(userId: String): List<Service>
+
+    @Query("SELECT * FROM service WHERE userId = :userId AND name = :name ORDER BY creationDate")
+    suspend fun getAllByUserIdAndServiceName(userId: String, name: String): List<Service>
 
     @Query("DELETE FROM service")
     suspend fun deleteAll()

@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/allPages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/allPages"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity">
 
     <LinearLayout
@@ -28,113 +28,115 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical">
+
             <LinearLayout
                 android:id="@+id/mainLayoutAddService"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-            <LinearLayout
-                style="@style/block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="50dp"
-                android:background="@drawable/block_text">
-
-                <EditText
-                    android:id="@+id/nameAddServiceInput"
-                    style="@style/mainText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/nameAddServiceTB" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="50dp"
-                android:background="@drawable/block_text">
-
-                <EditText
-                    android:id="@+id/costAddServiceInput"
-                    style="@style/mainText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/costAddServiceTB"
-                    android:inputType="number" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="50dp"
-                android:background="@drawable/block_text">
-
-                <EditText
-                    android:id="@+id/addressAddServiceInput"
-                    style="@style/mainText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="Адрес" />
-            </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/categoryAddServiceLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
-            <LinearLayout
-                style="@style/block"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:minHeight="50dp"
-                android:background="@drawable/block_text">
-
-                <EditText
-                    android:id="@+id/descriptionAddServiceInput"
-                    style="@style/mainText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Описание"
-                    android:inputType="textMultiLine|textCapSentences" />
-            </LinearLayout>
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:layout_marginTop="10dp">
 
                 <LinearLayout
-                    android:id="@+id/photoAddingServiceLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    style="@style/block"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/block_text"
+                    android:minHeight="50dp">
 
-                    <TextView
-                        android:id="@+id/photoAddingServiceBtn"
-                        android:layout_width="80dp"
-                        android:gravity="center"
-                        android:layout_height="wrap_content"
-                        android:textSize="60sp"
-                        android:background="@drawable/plus_photo_bg"
-                        android:textColor="@color/white"
-                        android:layout_marginEnd="15dp"
-                        android:text="+"/>
+                    <EditText
+                        android:id="@+id/nameAddServiceInput"
+                        style="@style/mainText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/nameAddServiceTB" />
                 </LinearLayout>
 
-            </HorizontalScrollView>
+                <LinearLayout
+                    style="@style/block"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/block_text"
+                    android:minHeight="50dp">
 
-            <Button
-                android:id="@+id/addServiceAddServiceBtn"
-                style="@style/mainButtonOther"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="@string/addServices" />
+                    <EditText
+                        android:id="@+id/costAddServiceInput"
+                        style="@style/mainText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/costAddServiceTB"
+                        android:inputType="number" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/block"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/block_text"
+                    android:minHeight="50dp">
+
+                    <EditText
+                        android:id="@+id/addressAddServiceInput"
+                        style="@style/mainText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="Адрес" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/categoryAddServiceLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    style="@style/block"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/block_text"
+                    android:minHeight="50dp">
+
+                    <EditText
+                        android:id="@+id/descriptionAddServiceInput"
+                        style="@style/mainText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Описание"
+                        android:inputType="textMultiLine|textCapSentences" />
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/photoAddingServiceLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/photoAddingServiceBtn"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="15dp"
+                            android:background="@drawable/plus_photo_bg"
+                            android:gravity="center"
+                            android:text="+"
+                            android:textColor="@color/white"
+                            android:textSize="60sp" />
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+                <Button
+                    android:id="@+id/addServiceAddServiceBtn"
+                    style="@style/mainButtonOther"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/addServices" />
 
             </LinearLayout>
 
@@ -145,8 +147,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="gone">
-            </LinearLayout>
+                android:visibility="gone"></LinearLayout>
 
         </LinearLayout>
 

@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createServi
 
 import android.net.Uri
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.IAddingServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IInsertServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
@@ -14,11 +15,11 @@ import com.google.firebase.storage.FirebaseStorage
 
 class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
                               private val tagRepository: TagRepository,
-                              private val photoRepository: PhotoRepository) : IAddingServiceInteractor {
+                              private val photoRepository: PhotoRepository) : IAddingServiceInteractor, IInsertServiceCallback {
 
     override fun addService(service: Service, tags: List<String>): String {
         service.id = serviceRepository.getIdForNew(getUserId())
-        serviceRepository.insert(service)
+        serviceRepository.insert(service, this)
 
         for (tagText: String in tags) {
             val tag = Tag()
@@ -97,5 +98,9 @@ class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
     override fun getIsAddressLengthThirty(address: String): Boolean = address.length < 30
 
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
+
+    override fun returnInsertCallback(service: Service) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 }

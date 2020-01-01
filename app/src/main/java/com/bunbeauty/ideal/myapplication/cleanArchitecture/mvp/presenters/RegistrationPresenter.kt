@@ -3,28 +3,30 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.registration.IRegistrationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.RegistrationView
 
 @InjectViewState
 class RegistrationPresenter(private val registrationInteractor: RegistrationInteractor) :
-        MvpPresenter<RegistrationView>() {
+        MvpPresenter<RegistrationView>(), IRegistrationPresenter {
 
-    fun registration(name: String, surname: String, city: String, phone:String) {
+    fun registration(name: String, surname: String, city: String, phone: String) {
 
-        if(isNameCorrect(name) && isSurnameCorrect(surname) && isCityCorrect(city)){
+        if (isNameCorrect(name) && isSurnameCorrect(surname) && isCityCorrect(city)) {
             val user = User()
             user.phone = phone
             user.name = "$name $surname"
             user.city = city
 
-            registrationInteractor.registration(user)
+            registrationInteractor.registration(user, this)
             viewState.goToProfile()
         }
     }
 
     fun getMyPhoneNumber() = registrationInteractor.getMyPhoneNumber()
 
+    //убрать
     private fun isNameCorrect(name: String): Boolean {
         if (name.isEmpty()) {
             viewState.setNameInputError("Введите своё имя")
@@ -62,12 +64,15 @@ class RegistrationPresenter(private val registrationInteractor: RegistrationInte
     }
 
     private fun isCityCorrect(city: String): Boolean {
-        if(!registrationInteractor.getIsCityInputCorrect(city)){
+        if (!registrationInteractor.getIsCityInputCorrect(city)) {
             viewState.showNoSelectedCity()
             return false
         }
         return true
     }
 
+    override fun showSuccessfulRegistration() {
+        viewState.showSuccessfulRegistration()
+    }
 
 }

@@ -3,8 +3,10 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IMainScreenCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IServiceCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
@@ -20,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
 
 class MainScreenInteractor(val userRepository: UserRepository,
                            val serviceRepository: ServiceRepository) : IMainScreenInteractor,
-        IUserCallback, IServiceCallback, CoroutineScope {
+        IUserCallback, IServiceCallback, CoroutineScope, IUsersCallback, IServicesCallback {
 
     private lateinit var mainScreenCallback: IMainScreenCallback
     var selectedCategory = ""
@@ -106,7 +108,7 @@ class MainScreenInteractor(val userRepository: UserRepository,
         }
     }
 
-    override fun returnServiceList(serviceList: List<Service>) {
+    override fun returnServices(serviceList: List<Service>) {
         currentCountOfUsers++
         cacheServiceList.addAll(serviceList)
 
@@ -276,4 +278,5 @@ class MainScreenInteractor(val userRepository: UserRepository,
         //can be replaced by one var
         val cachedUserIds = arrayListOf<String>()
     }
+
 }

@@ -1,45 +1,46 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebaseApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IUserRepository
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class UserRepository(private val userDao: UserDao,
                      private val userFirebaseApi: UserFirebaseApi) : BaseRepository(),
-        IUserRepository, IUserCallback {
-
-    private val TAG = "data_layer"
+        IUserRepository, IUserCallback, IUsersCallback {
 
     lateinit var userSubscriber: IUserCallback
+    lateinit var usersSubscriber: IUsersCallback
 
-    override fun insert(user: User) {
+    override fun insert(user: User, iInsertUsersCallback: IInsertUsersCallback) {
         launch {
             userDao.insert(user)
+            userFirebaseApi.insert(user)
+            iInsertUsersCallback.returnInsertCallback(user)
         }
-        userFirebaseApi.insert(user)
     }
 
-    override fun delete(user: User) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun delete(user: User, iDeleteUsersCallback: IDeleteUsersCallback) {
+        launch {
+            userDao.delete(user)
+            userFirebaseApi.delete(user)
+            iDeleteUsersCallback.returnDeleteCallback(user)
+        }
     }
 
-    override fun update(user: User) {
+    override fun update(user: User, iUpdateUsersCallback: IUpdateUsersCallback) {
         launch {
             userDao.update(user)
+            userFirebaseApi.update(user)
+            iUpdateUsersCallback.returnUpdateCallback(user)
         }
     }
 
-    override fun get(): List<User> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun deleteById(id: String) {
+    override fun get(iUsersCallback: IUsersCallback) {
         launch {
-            userDao.deleteById(id)
+            iUsersCallback.returnUsers(userDao.get())
         }
     }
 
@@ -49,11 +50,9 @@ class UserRepository(private val userDao: UserDao,
         if (isFirstEnter) {
             userFirebaseApi.getById(id, this)
         } else {
-            var user: User? = null
-            runBlocking {
-                user = userDao.getById(id)
+            launch {
+                userSubscriber.returnUser(userDao.getById(id))
             }
-            userSubscriber.returnUser(user!!)
         }
     }
 
@@ -63,72 +62,70 @@ class UserRepository(private val userDao: UserDao,
         if (isFirstEnter) {
             userFirebaseApi.getByPhoneNumber(phoneNumber, this)
         } else {
-            var user: User? = null
-            runBlocking {
-                user = userDao.getByPhoneNumber(phoneNumber)
+            launch {
+                userSubscriber.returnUser(userDao.getByPhoneNumber(phoneNumber))
             }
-            userSubscriber.returnUser(user!!)
         }
     }
 
-    override fun getByCity(city: String, userSubscriber: IUserCallback, isFirstEnter: Boolean) {
-        var users = listOf<User>()
-        this.userSubscriber = userSubscriber
+    override fun getByCity(city: String, usersSubscriber: IUsersCallback, isFirstEnter: Boolean) {
+        this.usersSubscriber = usersSubscriber
 
         if (isFirstEnter) {
             userFirebaseApi.getByCity(city, this)
         } else {
-            runBlocking {
-                users = userDao.getByCity(city)
+            launch {
+                usersSubscriber.returnUsers(userDao.getByCity(city))
             }
-            userSubscriber.returnUsers(users)
         }
     }
 
-    override fun getByCityAndUserName(city: String, userName:String, userSubscriber: IUserCallback, isFirstEnter: Boolean) {
-        var users = listOf<User>()
-        this.userSubscriber = userSubscriber
-
+    override fun getByCityAndUserName(city: String, userName: String, usersSubscriber: IUsersCallback, isFirstEnter: Boolean) {
+        this.usersSubscriber = usersSubscriber
         if (isFirstEnter) {
-            userFirebaseApi.getByCityAndUserName(city,userName, this)
+            userFirebaseApi.getByCityAndUserName(city, userName, this)
         } else {
-            runBlocking {
-                users = userDao.getByCityAndUserName(city, userName)
+            launch {
+                usersSubscriber.returnUsers(userDao.getByCityAndUserName(city, userName))
             }
-            userSubscriber.returnUsers(users)
         }
     }
 
-    override fun getByName(name: String, userSubscriber: IUserCallback, isFirstEnter: Boolean) {
-        var users = listOf<User>()
-        this.userSubscriber = userSubscriber
-
+    override fun getByName(name: String, usersSubscriber: IUsersCallback, isFirstEnter: Boolean) {
+        this.usersSubscriber = usersSubscriber
         if (isFirstEnter) {
             userFirebaseApi.getByName(name, this)
         } else {
-            runBlocking {
-                users = userDao.getByName(name)
+            launch {
+                usersSubscriber.returnUsers(userDao.getByName(name))
             }
-            userSubscriber.returnUsers(users)
         }
     }
 
+    /*
+    * Return также интсертит значения в локальную базу данных, после того, как оин были получены из FB
+    * Если мы будем инсертить из презентора, то получится, что он заинсертит еще и в FB
+     */
     override fun returnUser(user: User) {
+        //убрать проверку?
         if (user.name != "") {
-            launch {
-                userDao.insert(user)
-            }
+            insertInRoom(user)
         }
+
         userSubscriber.returnUser(user)
     }
 
     override fun returnUsers(users: List<User>) {
-        launch {
-            for(user in users){
-                userDao.insert(user)
-            }
+        for (user in users) {
+            insertInRoom(user)
         }
-        userSubscriber.returnUsers(users)
+        usersSubscriber.returnUsers(users)
     }
 
+
+    override fun insertInRoom(user: User) {
+        launch {
+            userDao.insert(user)
+        }
+    }
 }

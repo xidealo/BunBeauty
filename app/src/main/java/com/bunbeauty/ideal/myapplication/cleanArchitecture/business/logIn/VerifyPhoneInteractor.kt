@@ -2,8 +2,8 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IVerifyPhoneInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IVerifyCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
@@ -28,9 +28,4 @@ class VerifyPhoneInteractor(private val userRepository: UserRepository,
     override fun returnUser(user: User) {
         verifyCallback.callbackGetUserName(user.name)
     }
-
-    override fun returnUsers(users: List<User>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
 }

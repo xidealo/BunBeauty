@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICheckPremiumCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IUpdateServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.CodeRepository
@@ -10,7 +11,7 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import java.util.*
 
 class PremiumElementInteractor(val serviceRepository: ServiceRepository, private val codeRepository: CodeRepository) :
-        ICodeCallback {
+        ICodeCallback, IUpdateServiceCallback {
 
     lateinit var checkPremiumCallback: ICheckPremiumCallback
     lateinit var service: Service
@@ -42,7 +43,7 @@ class PremiumElementInteractor(val serviceRepository: ServiceRepository, private
 
     private fun activatePremium() {
         service.premiumDate = addSevenDayPremium(service)
-        serviceRepository.update(service)
+        serviceRepository.update(service, this)
     }
 
     private fun decrement(count: String): String = (count.toInt() - 1).toString()
@@ -54,6 +55,10 @@ class PremiumElementInteractor(val serviceRepository: ServiceRepository, private
             WorkWithTimeApi.getMillisecondsStringDateWithSeconds(service.premiumDate) + (86400000 * 7).toLong()
         }
         return WorkWithTimeApi.getDateInFormatYMDHMS(Date(sysdateLong))
+    }
+
+    override fun returnUpdateCallback(service: Service) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }

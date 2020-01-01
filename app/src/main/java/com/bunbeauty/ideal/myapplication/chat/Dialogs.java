@@ -3,22 +3,23 @@ package com.bunbeauty.ideal.myapplication.chat;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.adapters.DialogAdapter;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingUserElementData;
 import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -338,9 +339,9 @@ public class Dialogs extends AppCompatActivity {
         if (cursor.moveToNext()) {
             String userName = cursor.getString(cursor.getColumnIndex(DBHelper.KEY_NAME_USERS));
             Dialog dialog = new Dialog();
-            dialog.userId = userId;
+            /*dialog.userId = userId;
             dialog.userName = userName;
-            dialog.messageTime = messageTime;
+            dialog.messageTime = messageTime;*/
             dialogList.add(dialog);
         }
     }

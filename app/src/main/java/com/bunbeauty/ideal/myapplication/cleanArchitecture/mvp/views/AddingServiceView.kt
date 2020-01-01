@@ -10,6 +10,7 @@ interface AddingServiceView: MvpView {
     fun showAllDone()
     fun showMoreTenImages()
     fun showCategory()
+
     fun showNameInputError(error:String)
     fun showDescriptionInputError(error:String)
     fun showCostInputError(error:String)
