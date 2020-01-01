@@ -96,7 +96,7 @@ class ServiceRepository(private val serviceDao: ServiceDao,
 
     override fun returnService(service: Service) {
         insertInRoom(service)
-        iServiceCallback.returnService(service)
+        //iServiceCallback.returnService(service)
     }
 
     override fun returnServices(serviceList: List<Service>) {

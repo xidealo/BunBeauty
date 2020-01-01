@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.registration.IRegistrationPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.IRegistrationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface IRegistrationInteractor {

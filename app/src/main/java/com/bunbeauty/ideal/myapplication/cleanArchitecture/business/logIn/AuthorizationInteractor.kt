@@ -2,7 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IAuthorizationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IAuthorizationCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.IAuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
@@ -15,9 +15,25 @@ class AuthorizationInteractor(private val userRepository: UserRepository,
         IAuthorizationInteractor, IUserCallback {
 
     val TAG = "DBInf"
-    //val USER_PHONE = "user phone"
+    private lateinit var authorizationPresenter: IAuthorizationPresenter
 
-    private lateinit var authorizationCallback: IAuthorizationCallback
+    fun authorize(authorizationPresenter: IAuthorizationPresenter) {
+        this.authorizationPresenter = authorizationPresenter
+
+        if (getCurrentFbUser() != null) {
+            getUserByPhoneNumber(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!)
+        } else {
+            authorizationPresenter.showViewOnScreen()
+        }
+    }
+
+    fun authorize(phone: String, authorizationPresenter: IAuthorizationPresenter) {
+        if (isPhoneCorrect(phone.trim())) {
+            authorizationPresenter.goToVerifyPhone(phone)
+        } else {
+            authorizationPresenter.setPhoneError()
+        }
+    }
 
     override fun getCurrentFbUser(): FirebaseUser? {
         return FirebaseAuth.getInstance().currentUser
@@ -27,18 +43,15 @@ class AuthorizationInteractor(private val userRepository: UserRepository,
         return phone.length == 12
     }
 
-    fun getUserName(authorizationCallback: IAuthorizationCallback) {
-        this.authorizationCallback = authorizationCallback
-
-        val userPhone = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
+    private fun getUserByPhoneNumber(userPhone: String) {
         userRepository.getByPhoneNumber(userPhone, this, true)
     }
 
     override fun returnUser(user: User) {
         if (user.name.isEmpty()) {
-            authorizationCallback.goToRegistration(user.phone)
+            authorizationPresenter.goToRegistration(user.phone)
         } else {
-            authorizationCallback.goToProfile()
+            authorizationPresenter.goToProfile()
         }
     }
 

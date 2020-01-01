@@ -6,10 +6,12 @@ import com.arellomobile.mvp.MvpView
 interface AuthorizationView : MvpView {
     fun hideViewsOnScreen()
     fun showViewsOnScreen()
-    fun setPhoneError()
+    fun showPhoneError(error:String)
     fun enableVerifyBtn(status:Boolean)
     fun goToVerifyPhone(phone:String)
     fun goToRegistration(phone: String)
     fun goToProfile()
     fun hideKeyboard()
+    fun disableButton()
+    fun enableButton()
 }

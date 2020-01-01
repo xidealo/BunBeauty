@@ -10,22 +10,17 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes
 import javax.inject.Inject
 
 
-
 class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, AuthorizationView {
-
-    val USER_PHONE = "user phone"
 
     private lateinit var verifyBtn: Button
     private lateinit var enterPhoneText: TextView
@@ -89,15 +84,16 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
 
     override fun showViewsOnScreen() {
         Log.d(TAG_UI, "showViewsOnScreen: ")
+        progressBar.visibility = View.GONE
         codeSpinner.visibility = View.VISIBLE
         enterPhoneText.visibility = View.VISIBLE
         phoneInput.visibility = View.VISIBLE
         verifyBtn.visibility = View.VISIBLE
     }
 
-    override fun setPhoneError() {
+    override fun showPhoneError(error:String) {
         Log.d(TAG_UI, "setPhoneError: ")
-        phoneInput.error = "Некорректный номер"
+        phoneInput.error = error
         phoneInput.requestFocus()
     }
 
@@ -128,7 +124,16 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
         WorkWithViewApi.hideKeyboard(this)
     }
 
+    override fun disableButton() {
+        verifyBtn.isEnabled = false
+    }
+
+    override fun enableButton() {
+        verifyBtn.isEnabled = true
+    }
+
     companion object {
-        private val TAG_UI = "tag_ui"
+        private const val TAG_UI = "tag_ui"
+        private const val USER_PHONE = "user phone"
     }
 }

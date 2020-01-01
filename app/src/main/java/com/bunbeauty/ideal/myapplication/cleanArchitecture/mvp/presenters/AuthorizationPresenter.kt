@@ -3,28 +3,30 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IAuthorizationCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.IAuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView
 
 @InjectViewState
-class AuthorizationPresenter(private val authorizationInteractor: AuthorizationInteractor):
-        MvpPresenter<AuthorizationView>(), IAuthorizationCallback {
+class AuthorizationPresenter(private val authorizationInteractor: AuthorizationInteractor) :
+        MvpPresenter<AuthorizationView>(), IAuthorizationPresenter {
 
-    fun authorize(){
-        if (authorizationInteractor.getCurrentFbUser() != null) {
-            viewState.hideViewsOnScreen()
-            authorizationInteractor.getUserName(this)
-        } else {
-            viewState.showViewsOnScreen()
-        }
+    fun authorize() {
+        viewState.hideViewsOnScreen()
+        authorizationInteractor.authorize(this)
     }
 
-    fun authorize(phone:String){
-        if (authorizationInteractor.isPhoneCorrect(phone.trim())) {
-            viewState.goToVerifyPhone(phone)
-        } else {
-            viewState.setPhoneError()
-        }
+    fun authorize(phone: String) {
+        viewState.disableButton()
+        authorizationInteractor.authorize(phone, this)
+    }
+
+    override fun showViewOnScreen() {
+        viewState.showViewsOnScreen()
+    }
+
+    override fun setPhoneError() {
+        viewState.enableButton()
+        viewState.showPhoneError("Неккоректный номер телефона")
     }
 
     override fun goToRegistration(phone: String) {
@@ -33,5 +35,9 @@ class AuthorizationPresenter(private val authorizationInteractor: AuthorizationI
 
     override fun goToProfile() {
         viewState.goToProfile()
+    }
+
+    override fun goToVerifyPhone(phone: String) {
+        viewState.goToVerifyPhone(phone)
     }
 }
