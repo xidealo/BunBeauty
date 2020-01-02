@@ -28,6 +28,7 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
     private lateinit var surnameInput: EditText
     private lateinit var phoneInput: EditText
     private lateinit var citySpinner: Spinner
+    private lateinit var registrationBtn:Button
     private val TAG = "DBInf"
 
     @Inject
@@ -51,18 +52,17 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
         setContentView(R.layout.registration)
 
         registrationPresenter.getMyPhoneNumber()
-        initView()
+        init()
     }
 
-    private fun initView() {
+    private fun init() {
         Log.d(TAG, "initView RegistrationActivity: ")
-        val registrationBtn = findViewById<Button>(R.id.saveDataRegistrationBtn)
+        registrationBtn = findViewById(R.id.saveDataRegistrationBtn)
 
         nameInput = findViewById(R.id.nameRegistrationInput)
         surnameInput = findViewById(R.id.surnameRegistrationInput)
         phoneInput = findViewById(R.id.phoneRegistrationInput)
         citySpinner = findViewById(R.id.citySpinnerRegistrationSpinner)
-        //Заполняем поле телефона
         phoneInput.setText(registrationPresenter.getMyPhoneNumber())
 
         registrationBtn.setOnClickListener(this)
@@ -87,6 +87,14 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
 
     override fun showSuccessfulRegistration() {
         Toast.makeText(this, "Пользователь зарегестирован", Toast.LENGTH_LONG).show()
+    }
+
+    override fun disableRegistrationButtnon() {
+        registrationBtn.isEnabled = false
+    }
+
+    override fun enableRegistrationButtnon() {
+        registrationBtn.isEnabled = true
     }
 
     override fun setNameInputError(error: String) {

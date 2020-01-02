@@ -12,12 +12,11 @@ class VerifyPhoneInteractor(private val userRepository: UserRepository,
                             private val intent: Intent) : BaseRepository(),
         IVerifyPhoneInteractor, IUserCallback {
 
-    private val TAG = "DBInf"
-    private val USER_PHONE = "user phone"
+
 
     lateinit var verifyCallback: IVerifyCallback
 
-    override fun getMyPhoneNumber(): String = intent.getStringExtra(USER_PHONE)
+    override fun getMyPhoneNumber(): String = intent.getStringExtra(USER_PHONE)!!
 
     override fun getMyName(verifyCallback: IVerifyCallback) {
         this.verifyCallback = verifyCallback
@@ -27,5 +26,10 @@ class VerifyPhoneInteractor(private val userRepository: UserRepository,
 
     override fun returnUser(user: User) {
         verifyCallback.callbackGetUserName(user.name)
+    }
+
+    companion object{
+        private val TAG = "DBInf"
+        private const val USER_PHONE = "user phone"
     }
 }

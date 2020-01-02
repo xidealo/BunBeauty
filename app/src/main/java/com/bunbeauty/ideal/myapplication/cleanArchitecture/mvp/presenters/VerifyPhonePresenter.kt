@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit
 class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInteractor) :
         MvpPresenter<VerifyPhoneView>(), IVerifyCallback {
 
+    //рефактор, проверки в интерактор
     private val TAG = "DBInf"
     private lateinit var phoneVerificationId: String
 

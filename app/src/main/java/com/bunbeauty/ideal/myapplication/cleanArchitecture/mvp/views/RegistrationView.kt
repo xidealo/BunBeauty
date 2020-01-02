@@ -9,4 +9,6 @@ interface RegistrationView: MvpView {
     fun goToProfile()
     fun fillPhoneInput(phone: String)
     fun showSuccessfulRegistration()
+    fun disableRegistrationButtnon()
+    fun enableRegistrationButtnon()
 }

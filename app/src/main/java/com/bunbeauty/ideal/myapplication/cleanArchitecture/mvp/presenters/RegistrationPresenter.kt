@@ -12,67 +12,53 @@ class RegistrationPresenter(private val registrationInteractor: RegistrationInte
         MvpPresenter<RegistrationView>(), IRegistrationPresenter {
 
     fun registration(name: String, surname: String, city: String, phone: String) {
-
-        if (isNameCorrect(name) && isSurnameCorrect(surname) && isCityCorrect(city)) {
-            val user = User()
-            user.phone = phone
-            user.name = "$name $surname"
-            user.city = city
-
-            registrationInteractor.registration(user, this)
-            viewState.goToProfile()
-        }
+        viewState.disableRegistrationButtnon()
+        val user = User()
+        user.phone = phone
+        user.city = city
+        registrationInteractor.registration(user, name,surname,this)
     }
 
     fun getMyPhoneNumber() = registrationInteractor.getMyPhoneNumber()
 
-    //убрать
-    private fun isNameCorrect(name: String): Boolean {
-        if (name.isEmpty()) {
-            viewState.setNameInputError("Введите своё имя")
-            return false
-        }
-
-        if (!registrationInteractor.getIsNameInputCorrect(name)) {
-            viewState.setNameInputError("Допустимы только буквы и тире")
-            return false
-        }
-
-        if (!registrationInteractor.getIsNameLengthLessTwenty(name)) {
-            viewState.setNameInputError("Слишком длинное имя")
-            return false
-        }
-        return true
-    }
-
-    private fun isSurnameCorrect(surname: String): Boolean {
-        if (surname.isEmpty()) {
-            viewState.setSurnameInputError("Введите свою фамилию")
-            return false
-        }
-
-        if (!registrationInteractor.getIsNameInputCorrect(surname)) {
-            viewState.setSurnameInputError("Допустимы только буквы и тире")
-            return false
-        }
-
-        if (!registrationInteractor.getIsNameLengthLessTwenty(surname)) {
-            viewState.setSurnameInputError("Слишком длинная фамилия")
-            return false
-        }
-        return true
-    }
-
-    private fun isCityCorrect(city: String): Boolean {
-        if (!registrationInteractor.getIsCityInputCorrect(city)) {
-            viewState.showNoSelectedCity()
-            return false
-        }
-        return true
-    }
-
     override fun showSuccessfulRegistration() {
         viewState.showSuccessfulRegistration()
+        viewState.goToProfile()
+    }
+
+    override fun registrationNameInputError() {
+        viewState.enableRegistrationButtnon()
+        viewState.setNameInputError("Допустимы только буквы и тире")
+    }
+
+    override fun registrationNameInputErrorEmpty() {
+        viewState.enableRegistrationButtnon()
+        viewState.setNameInputError("Введите своё имя")
+    }
+
+    override fun registrationNameInputErrorLong() {
+        viewState.enableRegistrationButtnon()
+        viewState.setNameInputError("Слишком длинное имя")
+    }
+
+    override fun registrationSurnameInputError() {
+        viewState.enableRegistrationButtnon()
+        viewState.setSurnameInputError("Допустимы только буквы и тире")
+    }
+
+    override fun registrationSurnameInputErrorEmpty() {
+        viewState.enableRegistrationButtnon()
+        viewState.setSurnameInputError("Введите свою фамилию")
+    }
+
+    override fun registrationSurnameInputErrorLong() {
+        viewState.enableRegistrationButtnon()
+        viewState.setSurnameInputError("Слишком длинная фамилия")
+    }
+
+    override fun registrationCityInputError() {
+        viewState.enableRegistrationButtnon()
+        viewState.showNoSelectedCity()
     }
 
 }

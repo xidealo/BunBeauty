@@ -11,5 +11,5 @@ interface IRegistrationInteractor {
     fun getIsSurnameLengthLessTwenty(surname: String): Boolean
     fun getMyPhoneNumber(): String
     fun getUserId() : String
-    fun registration(user: User, iRegistrationPresenter: IRegistrationPresenter)
+    fun registration(user: User, name: String, surname: String, iRegistrationPresenter: IRegistrationPresenter)
 }
