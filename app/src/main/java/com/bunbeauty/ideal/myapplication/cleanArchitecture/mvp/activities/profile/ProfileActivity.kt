@@ -125,15 +125,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun showUserInfo(user: User) {
         this.profileOwner = user
-
-        showProfileText(user.name, user.city, user.phone)
-        showRating(user.rating)
-        showAvatar(user.photoLink)
-        if (profilePresenter.isUserOwner()) {
-            showSubscribers(user.subscribersCount)
-            showSubscriptions(user.subscriptionsCount)
-        }
-
         createTopPanel()
     }
 
@@ -151,31 +142,24 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         dialogsBtn.visibility = View.VISIBLE
     }
 
-    private fun showProfileText(name: String, city: String, phone: String) {
+    override fun showProfileInfo(name: String, city: String, phone: String) {
         nameText.text = name
         cityText.text = city
         phoneText.text = phone
     }
 
-    private fun showRating(rating: Float) {
-        if (rating == 0f) {
-            showWithoutRating()
-        } else {
-            showRatingBar(rating)
-        }
-    }
-
-    private fun showWithoutRating() {
-        withoutRatingText.visibility = View.VISIBLE
-    }
-
-    private fun showRatingBar(rating: Float) {
+    override fun showRating(rating: Float) {
         ratingBar.visibility = View.VISIBLE
         ratingBar.rating = rating
         ratingLayout.setOnClickListener(this)
     }
 
-    private fun showAvatar(photoLink: String) {
+    override fun showWithoutRating() {
+        withoutRatingText.visibility = View.VISIBLE
+    }
+
+
+    override fun showAvatar(photoLink: String) {
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
         val height = resources.getDimensionPixelSize(R.dimen.photo_height)
         Picasso.get()
@@ -187,17 +171,15 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     @SuppressLint("SetTextI18n")
-    private fun showSubscriptions(subscriptionsCount: Long) {
+    override fun showSubscriptions(subscriptionsCount: Long) {
         if (subscriptionsCount > 0L) {
             subscriptionsBtn.text = "Подписки: $subscriptionsCount"
-        } else {
-            subscriptionsBtn.text = "Подписки"
+            subscriptionsBtn.visibility = View.VISIBLE
         }
-        subscriptionsBtn.visibility = View.VISIBLE
     }
 
     @SuppressLint("SetTextI18n")
-    private fun showSubscribers(subscribersCount: Long) {
+    override fun showSubscribers(subscribersCount: Long) {
         if (subscribersCount > 0L) {
             subscribersText.text = "Подписчики: $subscribersCount"
             subscribersText.visibility = View.VISIBLE
@@ -279,7 +261,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         serviceRecyclerView.visibility = View.VISIBLE
     }
 
-    private fun createSwitcher() {
+    override fun createSwitcher() {
         val switcherElement = SwitcherElement("Записи", "Услуги")
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.switcherProfileLayout, switcherElement)
@@ -350,13 +332,12 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     companion object {
-
         private val TAG = "DBInf"
-        private val REVIEW_FOR_USER = "review for user"
-        private val SUBSCRIPTIONS = "подписки"
-        private val SERVICE_OWNER_ID = "service owner id"
-        private val TYPE = "type"
-        private val STATUS = "status"
+        private const val REVIEW_FOR_USER = "review for user"
+        private const val SUBSCRIPTIONS = "подписки"
+        private const val SERVICE_OWNER_ID = "service owner id"
+        private const val TYPE = "type"
+        private const val STATUS = "status"
     }
 
 }

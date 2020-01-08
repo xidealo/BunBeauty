@@ -11,4 +11,11 @@ interface ProfileView: MvpView {
     fun showUserServices(serviceList: List<Service>)
     fun hideSubscriptions()
     fun showDialogs()
+    fun showProfileInfo(name: String, city: String, phone: String)
+    fun showRating(rating: Float)
+    fun showWithoutRating()
+    fun showAvatar(photoLink: String)
+    fun showSubscribers(subscribersCount: Long)
+    fun showSubscriptions(subscriptionsCount: Long)
+    fun createSwitcher()
 }

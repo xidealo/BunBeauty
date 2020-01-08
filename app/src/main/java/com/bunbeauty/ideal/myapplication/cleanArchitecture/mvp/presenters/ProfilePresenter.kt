@@ -3,33 +3,45 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IProfileCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.IProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 
 @InjectViewState
-class ProfilePresenter(private val profileInteractor: ProfileInteractor):
-        MvpPresenter<ProfileView>(), IProfileCallback {
+class ProfilePresenter(private val profileInteractor: ProfileInteractor) :
+        MvpPresenter<ProfileView>(), IProfilePresenter {
 
     private val TAG = "DBInf"
 
     fun initFCM() {
-        if (profileInteractor.isFirstEnter()) {
-            profileInteractor.initFCM()
-        }
+        profileInteractor.initFCM()
     }
 
     fun showProfileView() {
-        if (profileInteractor.isUserOwner()) {
-            viewState.showMyProfileView()
-        } else {
-            viewState.showAlienProfileView()
-            viewState.hideSubscriptions()
-            viewState.showDialogs()
-        }
+        profileInteractor.showProfile(this)
     }
 
+    override fun showMyProfile() {
+        viewState.showMyProfileView()
+        viewState.createSwitcher()
+    }
+
+    override fun showAlienProfile() {
+        viewState.showAlienProfileView()
+        viewState.hideSubscriptions()
+        viewState.showDialogs()
+    }
+
+    override fun showRating(rating:Float) {
+        viewState.showRating(rating)
+    }
+
+    override fun showWithoutRating() {
+        viewState.showWithoutRating()
+    }
+
+    @Deprecated("Удалить, когда исправим панели")
     fun isUserOwner() = profileInteractor.isUserOwner()
 
     fun getOwnerId() = profileInteractor.getOwnerId()
@@ -41,7 +53,12 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor):
     private fun updateUserInfo() = profileInteractor.getProfileOwner(this)
 
     override fun callbackGetUser(user: User) {
-        viewState.showUserInfo(user)
+        viewState.showProfileInfo(user.name,user.city, user.phone)
+        viewState.showAvatar(user.photoLink)
+        viewState.showSubscribers(user.subscribersCount)
+        viewState.showSubscriptions(user.subscriptionsCount)
+
+        profileInteractor.setRating(user.rating, this)
     }
 
     override fun callbackGetServiceList(serviceList: List<Service>) {
