@@ -8,7 +8,7 @@ interface ProfileView: MvpView {
     fun showMyProfileView()
     fun showAlienProfileView()
     fun showUserInfo(user: User)
-    fun showUserServices(serviceList: List<Service>)
+    fun showUserServices(serviceList: List<Service>, user: User)
     fun hideSubscriptions()
     fun showDialogs()
     fun showProfileInfo(name: String, city: String, phone: String)
@@ -18,4 +18,6 @@ interface ProfileView: MvpView {
     fun showSubscribers(subscribersCount: Long)
     fun showSubscriptions(subscriptionsCount: Long)
     fun createSwitcher()
+    fun showProgress()
+    fun hideProgress()
 }

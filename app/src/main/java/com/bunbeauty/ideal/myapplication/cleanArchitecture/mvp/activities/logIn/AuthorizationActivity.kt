@@ -106,17 +106,20 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
         val intent = Intent(this, VerifyPhoneActivity::class.java)
         intent.putExtra(USER_PHONE, phone)
         this.startActivity(intent)
+        overridePendingTransition(0,0)
     }
 
     override fun goToRegistration(phone: String) {
         val intent = Intent(this, RegistrationActivity::class.java)
         intent.putExtra(USER_PHONE, phone)
         this.startActivity(intent)
+        overridePendingTransition(0,0)
     }
 
     override fun goToProfile() {
         val intent = Intent(this, ProfileActivity::class.java)
         this.startActivity(intent)
+        overridePendingTransition(0,0)
         finish()
     }
 

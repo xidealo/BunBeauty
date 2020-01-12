@@ -18,10 +18,13 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor) :
         profileInteractor.initFCM()
     }
 
-    fun showProfileView() {
+    fun createProfileScreen() {
+        viewState.showProgress()
+        profileInteractor.getProfileOwner(this)
+    }
+    fun showProfile(){
         profileInteractor.showProfile(this)
     }
-
     override fun showMyProfile() {
         viewState.showMyProfileView()
         viewState.createSwitcher()
@@ -33,7 +36,7 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor) :
         viewState.showDialogs()
     }
 
-    override fun showRating(rating:Float) {
+    override fun showRating(rating: Float) {
         viewState.showRating(rating)
     }
 
@@ -46,14 +49,8 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor) :
 
     fun getOwnerId() = profileInteractor.getOwnerId()
 
-    fun updateProfileData() {
-        updateUserInfo()
-    }
-
-    private fun updateUserInfo() = profileInteractor.getProfileOwner(this)
-
-    override fun callbackGetUser(user: User) {
-        viewState.showProfileInfo(user.name,user.city, user.phone)
+    override fun setUserProfile(user: User) {
+        viewState.showProfileInfo(user.name, user.city, user.phone)
         viewState.showAvatar(user.photoLink)
         viewState.showSubscribers(user.subscribersCount)
         viewState.showSubscriptions(user.subscriptionsCount)
@@ -61,7 +58,8 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor) :
         profileInteractor.setRating(user.rating, this)
     }
 
-    override fun callbackGetServiceList(serviceList: List<Service>) {
-        viewState.showUserServices(serviceList)
+    override fun setServiceListWithOwner(serviceList: List<Service>, user: User) {
+        viewState.showUserServices(serviceList, user)
+        viewState.hideProgress()
     }
 }

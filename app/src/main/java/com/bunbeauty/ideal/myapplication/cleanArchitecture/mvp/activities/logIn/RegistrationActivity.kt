@@ -115,6 +115,7 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
         val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)
         finish()
+        overridePendingTransition(0,0)
     }
 
 }

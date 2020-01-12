@@ -4,8 +4,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface IProfilePresenter {
-    fun callbackGetUser(user: User)
-    fun callbackGetServiceList(serviceList: List<Service>)
+    fun setUserProfile(user: User)
+    fun setServiceListWithOwner(serviceList: List<Service>, user: User)
     fun showMyProfile()
     fun showAlienProfile()
     fun showRating(rating:Float)

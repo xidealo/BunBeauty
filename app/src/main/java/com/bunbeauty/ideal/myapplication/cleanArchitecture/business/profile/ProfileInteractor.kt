@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
 import android.content.Intent
-import android.widget.RatingBar
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.IProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServiceCallback
@@ -19,69 +18,11 @@ import com.google.firebase.iid.FirebaseInstanceId
 class ProfileInteractor(private val userRepository: UserRepository,
                         private val serviceRepository: ServiceRepository,
                         private val intent: Intent) : BaseRepository(),
-        IProfileInteractor, IUserCallback, IServiceCallback, IServicesCallback {
+        IProfileInteractor, IUserCallback,IServicesCallback {
 
     private val TAG = "DBInf"
     private lateinit var profilePresenter: IProfilePresenter
-
-    override fun updateProfile(ownerId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun loadProfile(ownerId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getCountOfRates(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun isFirstEnter() = (intent.hasExtra(User.USER))
-
-    override fun getUserId(): String {
-        return FirebaseAuth.getInstance().currentUser!!.uid
-    }
-
-    override fun getOwnerId(): String {
-        return if (intent.hasExtra(User.USER)) {
-            (intent.getSerializableExtra(User.USER) as User).id
-        } else {
-            getUserId()
-        }
-    }
-
-    override fun checkSubscription(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun initFCM() {
-        if (isFirstEnter()) {
-            val token = FirebaseInstanceId.getInstance().token
-            val reference = FirebaseDatabase.getInstance().reference
-            reference.child(User.USERS)
-                    .child(getUserId())
-                    .child(TOKEN)
-                    .setValue(token)
-        }
-    }
-
-    override fun isUserOwner() = (getUserId() == getOwnerId())
-
-    fun showProfile(iProfilePresenter: IProfilePresenter) {
-        if (isUserOwner()) {
-            iProfilePresenter.showMyProfile()
-        } else {
-            iProfilePresenter.showAlienProfile()
-        }
-    }
-
-    fun setRating(rating:Float, iProfilePresenter: IProfilePresenter) {
-      if(rating > 0){
-        iProfilePresenter.showRating(rating)
-      }else{
-        iProfilePresenter.showWithoutRating()
-      }
-    }
+    lateinit var currentUser: User
 
     override fun getProfileOwner(profilePresenter: IProfilePresenter) {
         this.profilePresenter = profilePresenter
@@ -95,12 +36,58 @@ class ProfileInteractor(private val userRepository: UserRepository,
         }
     }
 
-    private fun getProfileServiceList(profilePresenter: IProfilePresenter) {
-        this.profilePresenter = profilePresenter
-
-        serviceRepository.getServicesByUserId(getOwnerId(),
+    private fun getProfileServiceList(userId: String) {
+        serviceRepository.getServicesByUserId(userId,
                 this,
-                isFirstEnter(getOwnerId(), cachedUserIdsForServices))
+                isFirstEnter(userId, cachedUserIdsForServices))
+    }
+
+    override fun returnUser(user: User) {
+        profilePresenter.setUserProfile(user)
+        currentUser = user
+        getProfileServiceList(user.id)
+    }
+
+    override fun returnServices(serviceList: List<Service>) {
+        profilePresenter.setServiceListWithOwner(serviceList, currentUser)
+    }
+
+    override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
+    override fun isFirstEnter() = (intent.hasExtra(User.USER))
+
+    override fun getOwnerId(): String {
+        return if (intent.hasExtra(User.USER)) {
+            (intent.getSerializableExtra(User.USER) as User).id
+        } else {
+            getUserId()
+        }
+    }
+    override fun isUserOwner() = (getUserId() == getOwnerId())
+
+    fun showProfile(iProfilePresenter: IProfilePresenter) {
+        if (isUserOwner()) {
+            iProfilePresenter.showMyProfile()
+        } else {
+            iProfilePresenter.showAlienProfile()
+        }
+    }
+    override fun initFCM() {
+        if (isFirstEnter()) {
+            val token = FirebaseInstanceId.getInstance().token
+            val reference = FirebaseDatabase.getInstance().reference
+            reference.child(User.USERS)
+                    .child(getUserId())
+                    .child(TOKEN)
+                    .setValue(token)
+        }
+    }
+
+    fun setRating(rating: Float, iProfilePresenter: IProfilePresenter) {
+        if (rating > 0) {
+            iProfilePresenter.showRating(rating)
+        } else {
+            iProfilePresenter.showWithoutRating()
+        }
     }
 
     private fun isFirstEnter(id: String, idList: ArrayList<String>): Boolean {
@@ -111,16 +98,21 @@ class ProfileInteractor(private val userRepository: UserRepository,
         return true
     }
 
-    override fun returnUser(user: User) {
-        profilePresenter.callbackGetUser(user)
-        getProfileServiceList(profilePresenter)
+    override fun updateProfile(ownerId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun returnServices(serviceList: List<Service>) {
-        profilePresenter.callbackGetServiceList(serviceList)
+    override fun loadProfile(ownerId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun returnService(service: Service) {}
+    override fun getCountOfRates(): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun checkSubscription(): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     companion object {
         const val OWNER_ID = "owner id"

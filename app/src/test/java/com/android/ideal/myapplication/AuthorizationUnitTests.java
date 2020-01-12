@@ -25,7 +25,6 @@ public class AuthorizationUnitTests {
     @Mock
     Intent intent;
 
-
     //verifyPhone
     @Test
     public void whenPhoneEqualTwelveVerifyPhone(){

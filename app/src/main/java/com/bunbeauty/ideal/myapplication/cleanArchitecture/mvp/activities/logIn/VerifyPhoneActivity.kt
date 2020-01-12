@@ -47,7 +47,6 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.verify_phone)
-
         initView()
         verifyPhonePresenter.sendCode(this)
     }
@@ -118,19 +117,19 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
     override fun goToRegistration(phone: String) {
         val intent = Intent(this, RegistrationActivity::class.java)
         intent.putExtra(USER_PHONE, phone)
-        this.startActivity(intent)
+        startActivity(intent)
+        overridePendingTransition(0,0)
     }
 
     @Override
     override fun goToProfile() {
         val intent = Intent(this, ProfileActivity::class.java)
-        this.startActivity(intent)
+        startActivity(intent)
+        overridePendingTransition(0,0)
         finish()
     }
 
     companion object {
         private val TAG = "DBInf"
     }
-
-
 }

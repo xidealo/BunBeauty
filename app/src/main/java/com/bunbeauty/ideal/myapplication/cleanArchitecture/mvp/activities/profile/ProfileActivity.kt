@@ -54,8 +54,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var orderRecyclerView: RecyclerView
     private lateinit var serviceRecyclerView: RecyclerView
 
-    private lateinit var profileOwner: User
-
     @Inject
     lateinit var profileInteractor: ProfileInteractor
 
@@ -74,19 +72,15 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile)
-
         initView()
-
         createBottomPanel(supportFragmentManager, R.id.bottomProfileLayout)
         profilePresenter.initFCM()
-        profilePresenter.showProfileView()
+        profilePresenter.showProfile()
     }
 
     override fun onResume() {
         super.onResume()
-
-        onProgress()
-        profilePresenter.updateProfileData()
+        profilePresenter.createProfileScreen()
     }
 
     private fun initView() {
@@ -124,14 +118,12 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showUserInfo(user: User) {
-        this.profileOwner = user
         createTopPanel()
     }
 
-    override fun showUserServices(serviceList: List<Service>) {
-        val serviceAdapter = ServiceProfileAdapter(serviceList as ArrayList<Service>, profileOwner)
+    override fun showUserServices(serviceList: List<Service>, user: User) {
+        val serviceAdapter = ServiceProfileAdapter(serviceList as ArrayList<Service>, user)
         serviceRecyclerView.adapter = serviceAdapter
-        offProgress()
     }
 
     override fun hideSubscriptions() {
@@ -157,7 +149,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     override fun showWithoutRating() {
         withoutRatingText.visibility = View.VISIBLE
     }
-
 
     override fun showAvatar(photoLink: String) {
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
@@ -251,7 +242,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }*/
 
     override fun showMyProfileView() {
-        createSwitcher()
         orderRecyclerView.visibility = View.VISIBLE
         addServicesBtn.setOnClickListener(this)
         subscriptionsBtn.setOnClickListener(this)
@@ -271,25 +261,25 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     override fun createTopPanel() {
         val topPanel = TopPanel()
 
-        if (profilePresenter.isUserOwner()) {
-            topPanel.title = "Профиль"
-            topPanel.editableEntity = profileOwner
-            topPanel.isEditable = true
-        } else {
-            topPanel.title = profileOwner.name
-        }
-
+        /* if (profilePresenter.isUserOwner()) {
+             topPanel.title = "Профиль"
+             topPanel.editableEntity = profileOwner
+             topPanel.isEditable = true
+         } else {
+             topPanel.title = profileOwner.name
+         }
+ */
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.topProfileLayout, topPanel)
         transaction.commit()
     }
 
-    private fun onProgress() {
+    override fun showProgress() {
         progressBar.visibility = View.VISIBLE
         mainLayout.visibility = View.INVISIBLE
     }
 
-    private fun offProgress() {
+    override fun hideProgress() {
         progressBar.visibility = View.GONE
         mainLayout.visibility = View.VISIBLE
     }
@@ -314,13 +304,15 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     private fun goToAddService() {
         val intent = Intent(this, AddingServiceActivity::class.java)
-        this.startActivity(intent)
+        startActivity(intent)
+        overridePendingTransition(0,0)
     }
 
     private fun goToSubscribers() {
         val intent = Intent(this, Subscribers::class.java)
         intent.putExtra(STATUS, SUBSCRIPTIONS)
-        this.startActivity(intent)
+        startActivity(intent)
+        overridePendingTransition(0,0)
     }
 
     private fun goToComments(ownerId: String?) {
@@ -328,7 +320,8 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         intent.putExtra(SERVICE_OWNER_ID, ownerId)
         //intent.putExtra(User.COUNT_OF_RATES, getCountOfRates())
         intent.putExtra(TYPE, REVIEW_FOR_USER)
-        this.startActivity(intent)
+        startActivity(intent)
+        overridePendingTransition(0,0)
     }
 
     companion object {

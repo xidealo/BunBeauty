@@ -39,7 +39,10 @@ class TopPanel : Panel() {
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.backTopPanelText -> super.getActivity()!!.onBackPressed()
+            R.id.backTopPanelText -> {
+                activity!!.onBackPressed()
+                activity!!.overridePendingTransition(0,0)
+            }
         }
     }
 
