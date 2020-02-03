@@ -216,7 +216,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     override fun enableCategoryButton(button: Button) {
         button.setBackgroundResource(R.drawable.category_button_pressed)
-        button.setTextColor(resources.getColor(R.color.black))
+        button.setTextColor(Color.BLACK)
     }
 
     // настроить вид кнопок

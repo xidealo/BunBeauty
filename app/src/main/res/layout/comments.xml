@@ -27,7 +27,7 @@
 
     <TextView
         android:id="@+id/withoutReviewsCommentsText"
-        style="@style/mainText"
+        style="@style/mainBlockText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

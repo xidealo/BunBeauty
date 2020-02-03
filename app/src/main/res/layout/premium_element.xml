@@ -17,7 +17,7 @@
         android:orientation="horizontal">
 
         <TextView
-            style="@style/mainText"
+            style="@style/mainBlockText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -33,7 +33,7 @@
 
             <TextView
                 android:id="@+id/noPremiumPremiumElementText"
-                style="@style/textItemSolid"
+                style="@style/iconSolid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -43,7 +43,7 @@
 
             <TextView
                 android:id="@+id/yesPremiumPremiumElementText"
-                style="@style/textItemSolid"
+                style="@style/iconSolid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/yellow"
@@ -67,7 +67,7 @@
 
             <EditText
                 android:id="@+id/codePremiumElement"
-                style="@style/mainText"
+                style="@style/mainBlockText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Код" />

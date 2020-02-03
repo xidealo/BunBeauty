@@ -29,7 +29,6 @@ class TopPanel : Panel() {
     var isEditable = false
     lateinit var user: User
 
-
     private lateinit var backText: TextView
     private lateinit var titleText: TextView
     private lateinit var logoImage: ImageView

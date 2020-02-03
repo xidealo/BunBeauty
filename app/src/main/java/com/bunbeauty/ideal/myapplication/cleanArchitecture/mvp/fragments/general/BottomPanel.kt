@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,9 +21,9 @@ class BottomPanel : Panel() {
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.profileBottomPanelText -> goToProfile()
-            R.id.mainScreenBottomPanelText -> goToMainScreen()
-            R.id.chatBottomPanelText -> goToChat()
+            R.id.profileBottomPanelText -> goTo(ProfileActivity::class.java)
+            R.id.mainScreenBottomPanelText -> goTo( MainScreenActivity::class.java)
+            R.id.chatBottomPanelText -> goTo(Dialogs::class.java)
         }
     }
 
@@ -55,18 +56,9 @@ class BottomPanel : Panel() {
         }
     }
 
-    private fun goToProfile() {
-        val intent = Intent(context, ProfileActivity::class.java)
+    private fun goTo(activityClass: Class<out Activity>) {
+        val intent = Intent(context, activityClass)
         this.startActivity(intent)
-    }
-
-    private fun goToMainScreen() {
-        val intent = Intent(context, MainScreenActivity::class.java)
-        this.startActivity(intent)
-    }
-
-    private fun goToChat() {
-        val intent = Intent(context, Dialogs::class.java)
-        this.startActivity(intent)
+        (context as Activity).overridePendingTransition(0,0)
     }
 }

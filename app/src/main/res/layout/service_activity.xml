@@ -20,11 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminateTint="@color/panelColor"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/bottomServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topServiceLayout"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toBottomOf="@+id/topServiceLayout" />
 
     <ScrollView
         android:id="@+id/mainServiceScroll"
@@ -59,7 +59,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        style="@style/mainText"
+                        style="@style/mainBlockText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="0dp"
@@ -70,13 +70,13 @@
 
                     <TextView
                         android:id="@+id/withoutRatingServiceText"
-                        style="@style/mainText"
+                        style="@style/mainBlockText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingStart="0dp"
                         android:paddingEnd="0dp"
-                        android:visibility="gone"
-                        android:text="Оценок еще нет" />
+                        android:text="Оценок еще нет"
+                        android:visibility="gone" />
 
                     <RatingBar
                         android:id="@+id/ratingServiceBar"
@@ -106,57 +106,31 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/block"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/block_text">
+                <LinearLayout style="@style/block">
 
                     <TextView
                         android:id="@+id/costServiceText"
-                        style="@style/mainText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        style="@style/mainBlockText" />
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/block"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/block_text">
+                <LinearLayout style="@style/block">
 
                     <TextView
                         android:id="@+id/addressServiceText"
-                        style="@style/mainText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        style="@style/mainBlockText" />
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/block"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/block_text"
-                    android:orientation="vertical">
+                <LinearLayout style="@style/block">
 
                     <TextView
-                        style="@style/mainText"
+                        style="@style/mainBlockText"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:padding="0dp"
                         android:text="Описание:" />
 
                     <TextView
                         android:id="@+id/descriptionServiceText"
                         style="@style/defaultText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:padding="0dp" />
-
+                        android:layout_width="match_parent" />
                 </LinearLayout>
 
 
@@ -166,11 +140,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/block_text"
-                    android:visibility="gone"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
-                        style="@style/mainText"
+                        style="@style/mainBlockText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -185,24 +159,24 @@
 
                         <TextView
                             android:id="@+id/offPremiumServiceText"
-                            style="@style/textItemSolid"
+                            style="@style/iconSolid"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center"
                             android:background="@color/panelColor"
-                            android:textColor="@color/white"
+                            android:gravity="center"
                             android:text="@string/premium_ico"
+                            android:textColor="@color/white"
                             android:visibility="gone" />
 
                         <TextView
                             android:id="@+id/onPremiumServiceText"
-                            style="@style/textItemSolid"
+                            style="@style/iconSolid"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center"
                             android:background="@color/yellow"
-                            android:textColor="@color/black"
+                            android:gravity="center"
                             android:text="@string/premium_ico"
+                            android:textColor="@color/black"
                             android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
@@ -243,7 +217,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Расписание"/>
+                    android:text="Расписание" />
             </LinearLayout>
 
         </LinearLayout>
@@ -252,7 +226,7 @@
     <LinearLayout
         android:id="@+id/bottomServiceLayout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

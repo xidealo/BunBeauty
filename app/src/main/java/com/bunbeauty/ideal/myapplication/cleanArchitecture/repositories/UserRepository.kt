@@ -18,7 +18,7 @@ class UserRepository(private val userDao: UserDao,
         launch {
             userDao.insert(user)
             userFirebaseApi.insert(user)
-            iInsertUsersCallback.returnInsertCallback(user)
+            iInsertUsersCallback.returnCreatedCallback(user)
         }
     }
 
@@ -26,7 +26,7 @@ class UserRepository(private val userDao: UserDao,
         launch {
             userDao.delete(user)
             userFirebaseApi.delete(user)
-            iDeleteUsersCallback.returnDeleteCallback(user)
+            iDeleteUsersCallback.returnDeletedCallback()
         }
     }
 
@@ -34,7 +34,7 @@ class UserRepository(private val userDao: UserDao,
         launch {
             userDao.update(user)
             userFirebaseApi.update(user)
-            iUpdateUsersCallback.returnUpdateCallback(user)
+            iUpdateUsersCallback.returnUpdatedCallback(user)
         }
     }
 

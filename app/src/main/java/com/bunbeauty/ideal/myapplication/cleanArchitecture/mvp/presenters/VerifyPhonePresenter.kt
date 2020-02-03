@@ -99,7 +99,6 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: VerifyPhoneInterac
     }
 
     private val verificationCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
             //вызывается, если номер подтвержден
         }

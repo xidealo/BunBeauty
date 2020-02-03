@@ -234,7 +234,7 @@
     <LinearLayout
         android:id="@+id/bottomProfileLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_panel_height"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent" />
 

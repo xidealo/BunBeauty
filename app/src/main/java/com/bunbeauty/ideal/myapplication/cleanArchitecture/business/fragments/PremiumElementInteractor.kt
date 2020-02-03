@@ -57,7 +57,7 @@ class PremiumElementInteractor(val serviceRepository: ServiceRepository, private
         return WorkWithTimeApi.getDateInFormatYMDHMS(Date(sysdateLong))
     }
 
-    override fun returnUpdateCallback(service: Service) {
+    override fun returnUpdatedCallback(obj: Service) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

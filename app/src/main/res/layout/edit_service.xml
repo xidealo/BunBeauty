@@ -37,7 +37,7 @@
 
                 <EditText
                     android:id="@+id/nameEditServiceInput"
-                    style="@style/mainText"
+                    style="@style/mainBlockText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/nameAddServiceTB" />
@@ -51,7 +51,7 @@
 
                 <EditText
                     android:id="@+id/addressEditServiceInput"
-                    style="@style/mainText"
+                    style="@style/mainBlockText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Адрес" />
@@ -65,7 +65,7 @@
 
                 <EditText
                     android:id="@+id/costEditServiceInput"
-                    style="@style/mainText"
+                    style="@style/mainBlockText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/costAddServiceTB"
@@ -80,7 +80,7 @@
 
                 <EditText
                     android:id="@+id/descriptionEditServiceInput"
-                    style="@style/mainText"
+                    style="@style/mainBlockText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Описание"

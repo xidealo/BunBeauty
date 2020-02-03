@@ -107,12 +107,12 @@ class RegistrationInteractor(private val userRepository: UserRepository,
     override fun getMyPhoneNumber(): String = intent.getStringExtra(USER_PHONE)!!
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
-    override fun returnInsertCallback(users: User) {
-        iRegistrationPresenter.showSuccessfulRegistration()
-    }
-
     companion object {
         private const val USER_PHONE = "user phone"
+    }
+
+    override fun returnCreatedCallback(obj: User) {
+        iRegistrationPresenter.showSuccessfulRegistration()
     }
 
 }

@@ -1,7 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.baseSubscribers.BaseDeleteCallback
 
-interface IDeleteUsersCallback {
-    fun returnDeleteCallback(users: User)
-}
+interface IDeleteUsersCallback : BaseDeleteCallback

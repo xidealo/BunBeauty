@@ -12,6 +12,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceR
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.TagRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
+import java.util.*
 
 class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
                               private val tagRepository: TagRepository,
@@ -99,7 +100,7 @@ class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
 
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
-    override fun returnInsertCallback(service: Service) {
+    override fun returnCreatedCallback(obj: Service) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

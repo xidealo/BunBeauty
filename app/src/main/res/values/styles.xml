@@ -97,16 +97,16 @@
     </style>
 
     <!-- Style for icons -->
-    <style name="textItem" >
-        <item name="android:textSize">20sp</item>
+    <style name="icon" >
+        <item name="android:textSize">22sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="textItemRegular" parent="textItem">
+    <style name="iconRegular" parent="icon">
         <item name="fontFamily">@font/font_awesome_second_regular</item>
     </style>
 
-    <style name="textItemSolid" parent="textItem" >
+    <style name="iconSolid" parent="icon" >
         <item name="fontFamily">@font/font_awesome_solid</item>
     </style>
 
@@ -134,15 +134,18 @@
     <style name="defaultText" parent="TextOnPages">
         <item name="android:textSize">14sp</item>
         <item name="android:padding">10dp</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="mainText" parent="TextOnPages">
+    <style name="mainBlockText" parent="TextOnPages">
         <item name="android:textSize">20sp</item>
         <item name="android:padding">10dp</item>
         <item name="android:textCursorDrawable">@color/black</item>
         <item name="android:inputType">textPersonName|textCapSentences</item>
         <item name="android:backgroundTint">@android:color/transparent</item>
         <item name="android:textColorHint">@color/hintColor</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 
     <style name="mainTextMainScreen" parent="TextOnPages">
@@ -175,6 +178,9 @@
     <style name="block" >
         <item name="android:elevation">5dp</item>
         <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:background">@drawable/block_text</item>
     </style>
 
     <style name="ratingBarColors" parent="@android:style/Widget.RatingBar">

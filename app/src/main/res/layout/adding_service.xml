@@ -35,49 +35,28 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    style="@style/block"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/block_text"
-                    android:minHeight="50dp">
+                <LinearLayout style="@style/block">
 
                     <EditText
                         android:id="@+id/nameAddServiceInput"
-                        style="@style/mainText"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        style="@style/mainBlockText"
                         android:hint="@string/nameAddServiceTB" />
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/block"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/block_text"
-                    android:minHeight="50dp">
+                <LinearLayout style="@style/block">
 
                     <EditText
                         android:id="@+id/costAddServiceInput"
-                        style="@style/mainText"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        style="@style/mainBlockText"
                         android:hint="@string/costAddServiceTB"
                         android:inputType="number" />
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/block"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/block_text"
-                    android:minHeight="50dp">
+                <LinearLayout style="@style/block">
 
                     <EditText
                         android:id="@+id/addressAddServiceInput"
-                        style="@style/mainText"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        style="@style/mainBlockText"
                         android:hint="Адрес" />
                 </LinearLayout>
 
@@ -87,18 +66,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
 
-                <LinearLayout
-                    style="@style/block"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/block_text"
-                    android:minHeight="50dp">
+                <LinearLayout style="@style/block">
 
                     <EditText
                         android:id="@+id/descriptionAddServiceInput"
-                        style="@style/mainText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        style="@style/mainBlockText"
                         android:hint="Описание"
                         android:inputType="textMultiLine|textCapSentences" />
                 </LinearLayout>
