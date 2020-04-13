@@ -1,57 +1,55 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
-import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IAuthorizationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.IAuthorizationPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.AuthorizationPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IUserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
-class AuthorizationInteractor(private val userRepository: UserRepository,
-                              private val intent: Intent) : BaseRepository(),
+class AuthorizationInteractor(private val userRepository: IUserRepository) : BaseRepository(),
         IAuthorizationInteractor, IUserCallback {
 
     val TAG = "DBInf"
-    private lateinit var authorizationPresenter: IAuthorizationPresenter
+    private lateinit var authorizationPresenterCallback: AuthorizationPresenterCallback
 
-    fun authorize(authorizationPresenter: IAuthorizationPresenter) {
-        this.authorizationPresenter = authorizationPresenter
+    override fun defaultAuthorize(authorizationPresenterCallback: AuthorizationPresenterCallback) {
+        this.authorizationPresenterCallback = authorizationPresenterCallback
+        authorizationPresenterCallback.hideViewsOnScreen()
 
         if (getCurrentFbUser() != null) {
-            getUserByPhoneNumber(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!)
+            userRepository.getByPhoneNumber(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,
+                    this,
+                    true)
         } else {
-            authorizationPresenter.showViewOnScreen()
+            authorizationPresenterCallback.showViewOnScreen()
         }
     }
 
-    fun authorize(phone: String, authorizationPresenter: IAuthorizationPresenter) {
+    override fun authorize(phone: String, authorizationPresenterCallback: AuthorizationPresenterCallback) {
         if (isPhoneCorrect(phone.trim())) {
-            authorizationPresenter.goToVerifyPhone(phone)
+            authorizationPresenterCallback.goToVerifyPhone(phone)
         } else {
-            authorizationPresenter.setPhoneError()
+            authorizationPresenterCallback.setPhoneError()
         }
     }
 
-    override fun getCurrentFbUser(): FirebaseUser? {
+    private fun getCurrentFbUser(): FirebaseUser? {
         return FirebaseAuth.getInstance().currentUser
     }
 
-    override fun isPhoneCorrect(phone: String): Boolean {
+    fun isPhoneCorrect(phone: String): Boolean {
         return phone.length == 12
-    }
-
-    private fun getUserByPhoneNumber(userPhone: String) {
-        userRepository.getByPhoneNumber(userPhone, this, true)
     }
 
     override fun returnUser(user: User) {
         if (user.name.isEmpty()) {
-            authorizationPresenter.goToRegistration(user.phone)
+            authorizationPresenterCallback.goToRegistration(user.phone)
         } else {
-            authorizationPresenter.goToProfile()
+            authorizationPresenterCallback.goToProfile()
         }
     }
 

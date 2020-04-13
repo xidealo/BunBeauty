@@ -1,10 +1,8 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn
 
-import com.google.firebase.auth.FirebaseUser
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.AuthorizationPresenterCallback
 
 interface IAuthorizationInteractor {
-
-
-    fun getCurrentFbUser() : FirebaseUser?
-    fun isPhoneCorrect(phone: String) : Boolean
+    fun defaultAuthorize(authorizationPresenterCallback: AuthorizationPresenterCallback)
+    fun authorize(phone: String, authorizationPresenterCallback: AuthorizationPresenterCallback)
 }

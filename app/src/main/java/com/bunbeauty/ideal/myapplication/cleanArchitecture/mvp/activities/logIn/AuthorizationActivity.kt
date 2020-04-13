@@ -49,21 +49,21 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
         setContentView(R.layout.authorization)
 
         initView()
-        authorizationPresenter.authorize()
+        authorizationPresenter.defaultAuthorize()
     }
 
     private fun initView() {
-        verifyBtn = findViewById(R.id.verifyAuthBtn)
-        phoneInput = findViewById(R.id.phoneAuthInput)
-        enterPhoneText = findViewById(R.id.titleAuthText)
-        progressBar = findViewById(R.id.progressBarAuthorization)
-        codeSpinner = findViewById(R.id.codeAuthSpinner)
+        verifyBtn = findViewById(R.id.verifyAuthorizationBtn)
+        phoneInput = findViewById(R.id.phoneAuthorizationInput)
+        enterPhoneText = findViewById(R.id.titleAuthorizationText)
+        progressBar = findViewById(R.id.loadingAuthorizationProgressBar)
+        codeSpinner = findViewById(R.id.codeAuthorizationSpinner)
         verifyBtn.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
-        if (v.id == R.id.verifyAuthBtn) {
-            authorizationPresenter.authorize(
+        if (v.id == R.id.verifyAuthorizationBtn) {
+            authorizationPresenter.defaultAuthorize(
                     CountryCodes.codes[codeSpinner.selectedItemPosition] + phoneInput.text.toString()
             )
         }
@@ -91,7 +91,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
         verifyBtn.visibility = View.VISIBLE
     }
 
-    override fun showPhoneError(error:String) {
+    override fun showPhoneError(error: String) {
         Log.d(TAG_UI, "setPhoneError: ")
         phoneInput.error = error
         phoneInput.requestFocus()
@@ -106,20 +106,21 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
         val intent = Intent(this, VerifyPhoneActivity::class.java)
         intent.putExtra(USER_PHONE, phone)
         this.startActivity(intent)
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
     }
 
     override fun goToRegistration(phone: String) {
         val intent = Intent(this, RegistrationActivity::class.java)
         intent.putExtra(USER_PHONE, phone)
         this.startActivity(intent)
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
+        finish()
     }
 
     override fun goToProfile() {
         val intent = Intent(this, ProfileActivity::class.java)
         this.startActivity(intent)
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
         finish()
     }
 

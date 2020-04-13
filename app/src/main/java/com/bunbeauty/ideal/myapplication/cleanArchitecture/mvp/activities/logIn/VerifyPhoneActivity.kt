@@ -113,7 +113,6 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
         super.onBackPressed()
     }
 
-    @Override
     override fun goToRegistration(phone: String) {
         val intent = Intent(this, RegistrationActivity::class.java)
         intent.putExtra(USER_PHONE, phone)
@@ -121,7 +120,6 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
         overridePendingTransition(0,0)
     }
 
-    @Override
     override fun goToProfile() {
         val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)

@@ -13,6 +13,7 @@ class UserRepository(private val userDao: UserDao,
 
     lateinit var userSubscriber: IUserCallback
     lateinit var usersSubscriber: IUsersCallback
+    //TODO(Переделать логику insert, update, id получаем только после инсерта в FB
 
     override fun insert(user: User, iInsertUsersCallback: IInsertUsersCallback) {
         launch {
@@ -101,7 +102,8 @@ class UserRepository(private val userDao: UserDao,
             }
         }
     }
-
+    //Что за даун это написал?
+    //Понял, что это я
     /*
     * Return также интсертит значения в локальную базу данных, после того, как оин были получены из FB
     * Если мы будем инсертить из презентора, то получится, что он заинсертит еще и в FB

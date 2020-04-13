@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class Order (@PrimaryKey
+data class Order (@PrimaryKey
              var id: String = "",
              var userId: String = "",
              var isCanceled: String = "",

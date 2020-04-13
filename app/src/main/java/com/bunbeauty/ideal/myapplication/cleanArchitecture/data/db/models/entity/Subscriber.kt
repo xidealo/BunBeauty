@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class Subscriber(@PrimaryKey
+data class Subscriber(@PrimaryKey
                  val id: String = "",
                  val userId: String = "",
                  val workerId: String = "") {

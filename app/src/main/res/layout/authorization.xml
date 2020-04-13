@@ -9,7 +9,7 @@
     style="@style/LogInPages">
 
     <ImageView
-        android:id="@+id/logoAuthImage"
+        android:id="@+id/logoAuthorizationImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="150dp"
@@ -17,7 +17,7 @@
         app:srcCompat="@drawable/bun_beauty" />
 
     <TextView
-        android:id="@+id/titleAuthText"
+        android:id="@+id/titleAuthorizationText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -33,7 +33,7 @@
         android:layout_marginTop="10dp">
 
         <Spinner
-            android:id="@+id/codeAuthSpinner"
+            android:id="@+id/codeAuthorizationSpinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -44,7 +44,7 @@
             android:entries="@array/countryCode" />
 
         <EditText
-            android:id="@+id/phoneAuthInput"
+            android:id="@+id/phoneAuthorizationInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/lightText"
@@ -56,7 +56,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/verifyAuthBtn"
+        android:id="@+id/verifyAuthorizationBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/mainButtonLogIn"
@@ -66,7 +66,7 @@
         android:layout_gravity="center"/>
 
     <ProgressBar
-        android:id="@+id/progressBarAuthorization"
+        android:id="@+id/loadingAuthorizationProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminateTint= "@color/white"

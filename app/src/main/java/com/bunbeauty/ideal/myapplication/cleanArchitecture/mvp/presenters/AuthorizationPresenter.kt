@@ -3,20 +3,19 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.IAuthorizationPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IAuthorizationInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.AuthorizationPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView
 
 @InjectViewState
-class AuthorizationPresenter(private val authorizationInteractor: AuthorizationInteractor) :
-        MvpPresenter<AuthorizationView>(), IAuthorizationPresenter {
+class AuthorizationPresenter(private val authorizationInteractor: IAuthorizationInteractor) :
+        MvpPresenter<AuthorizationView>(), AuthorizationPresenterCallback {
 
-    fun authorize() {
-        viewState.hideViewsOnScreen()
-        authorizationInteractor.authorize(this)
+    fun defaultAuthorize() {
+        authorizationInteractor.defaultAuthorize(this)
     }
 
-    fun authorize(phone: String) {
-        viewState.disableButton()
+    fun defaultAuthorize(phone: String) {
         authorizationInteractor.authorize(phone, this)
     }
 
@@ -24,9 +23,13 @@ class AuthorizationPresenter(private val authorizationInteractor: AuthorizationI
         viewState.showViewsOnScreen()
     }
 
+    override fun hideViewsOnScreen() {
+        viewState.hideViewsOnScreen()
+    }
+
     override fun setPhoneError() {
         viewState.enableButton()
-        viewState.showPhoneError("Неккоректный номер телефона")
+        viewState.showPhoneError("Некорректный номер телефона")
     }
 
     override fun goToRegistration(phone: String) {

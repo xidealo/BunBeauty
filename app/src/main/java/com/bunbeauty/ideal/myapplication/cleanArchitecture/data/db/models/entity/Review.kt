@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class Review(@PrimaryKey
+data class Review(@PrimaryKey
              var id: String = "",
              var review: String = "",
              var rating: String = "",

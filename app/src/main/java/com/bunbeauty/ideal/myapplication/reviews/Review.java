@@ -296,7 +296,6 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.KEY_RATING_SERVICES, String.valueOf(avgRating));
         contentValues.put(DBHelper.KEY_COUNT_OF_RATES_SERVICES, String.valueOf(count));
-        //update
         database.update(DBHelper.TABLE_CONTACTS_SERVICES, contentValues,
                 DBHelper.KEY_ID + " = ?",
                 new String[]{serviceId});

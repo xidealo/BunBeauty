@@ -1,7 +1,8 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn
 
-interface IAuthorizationPresenter {
+interface AuthorizationPresenterCallback {
     fun showViewOnScreen()
+    fun hideViewsOnScreen()
     fun setPhoneError()
     fun goToRegistration(phone: String)
     fun goToProfile()

@@ -1,11 +1,10 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class Photo(@PrimaryKey
+data class Photo(@PrimaryKey
             var id: String = "",
 
             var link: String = "",

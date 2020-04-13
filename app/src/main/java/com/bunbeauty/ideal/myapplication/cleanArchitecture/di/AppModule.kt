@@ -65,7 +65,7 @@ class AppModule(private val app: Application, private val intent: Intent) {
     // INTERACTORS
     @Provides
     fun provideAuthorizationInteractor(userRepository: UserRepository): AuthorizationInteractor =
-            AuthorizationInteractor(userRepository, intent)
+            AuthorizationInteractor(userRepository)
     @Provides
     fun provideVerifyPhoneInteractor(userRepository: UserRepository): VerifyPhoneInteractor =
             VerifyPhoneInteractor(userRepository, intent)
