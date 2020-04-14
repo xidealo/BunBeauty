@@ -19,7 +19,7 @@
     </style>
 
     <!-- Style for logIn pages -->
-    <style name="LogInPages">
+    <style name="logInPages">
         <item name="windowActionBar">false</item>
         <item name="android:background">@color/logInBackGround</item>
         <item name="windowNoTitle">true</item>
@@ -210,5 +210,19 @@
         <!-- цвет дорожки для неактивного состояния (30% прозрачности) -->
         <item name="android:colorForeground">@android:color/darker_gray</item>
     </style>
+
+    <!-- НОВЫЕ СТИЛИ -->
+    <style name="loginPackageInput">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/lightText</item>
+        <item name="android:textColorHint">@color/lightText</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+
+
+
+    </style>
+
 
 </resources>

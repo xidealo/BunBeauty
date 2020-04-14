@@ -2,76 +2,67 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/logInPages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity"
-    style="@style/LogInPages">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity">
 
     <ImageView
         android:id="@+id/logoAuthorizationImage"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
         android:layout_gravity="center"
+        android:layout_marginTop="150dp"
         app:srcCompat="@drawable/bun_beauty" />
 
     <TextView
         android:id="@+id/titleAuthorizationText"
-        android:layout_width="wrap_content"
+        style="@style/extraText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Введите номер телефона"
         android:layout_marginTop="10dp"
-        style="@style/extraText"
-        android:visibility="invisible"/>
+        android:text="Введите номер телефона"
+        android:visibility="invisible" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:orientation="horizontal"
         android:layout_marginTop="10dp">
 
         <Spinner
             android:id="@+id/codeAuthorizationSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
-            android:background="@color/panelColor"
-            android:popupBackground="@color/panelColor"
             style="@style/mainBlockText"
-            android:entries="@array/countryCode" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/panelColor"
+            android:popupBackground="@color/panelColor" />
 
         <EditText
             android:id="@+id/phoneAuthorizationInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/lightText"
-            android:textStyle="bold"
+            style="@style/loginPackageInput"
             android:hint="@string/phoneRegistration"
-            android:inputType="phone"
-            android:textColor="@color/white"
-            android:textColorHint="@color/lightText" />
+            android:inputType="phone" />
     </LinearLayout>
 
     <Button
         android:id="@+id/verifyAuthorizationBtn"
+        style="@style/mainButtonLogIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/mainButtonLogIn"
-        android:text="Войти"
-        android:visibility="visible"
+        android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:layout_gravity="center"/>
+        android:text="Войти" />
 
     <ProgressBar
         android:id="@+id/loadingAuthorizationProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminateTint= "@color/white"
         android:layout_gravity="center"
-        android:visibility="gone"
-        />
+        android:indeterminateTint="@color/white"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -13,6 +13,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.Author
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
@@ -20,7 +21,7 @@ import com.bunbeauty.ideal.myapplication.logIn.CountryCodes
 import javax.inject.Inject
 
 
-class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, AuthorizationView {
+class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, AuthorizationView, IAdapterSpinner {
 
     private lateinit var verifyBtn: Button
     private lateinit var enterPhoneText: TextView
@@ -49,6 +50,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
         setContentView(R.layout.authorization)
 
         initView()
+
         authorizationPresenter.defaultAuthorize()
     }
 
@@ -58,6 +60,11 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
         enterPhoneText = findViewById(R.id.titleAuthorizationText)
         progressBar = findViewById(R.id.loadingAuthorizationProgressBar)
         codeSpinner = findViewById(R.id.codeAuthorizationSpinner)
+        setAdapter(
+                arrayListOf(*resources.getStringArray(R.array.countryCode)),
+                codeSpinner,
+                this
+        )
         verifyBtn.setOnClickListener(this)
     }
 

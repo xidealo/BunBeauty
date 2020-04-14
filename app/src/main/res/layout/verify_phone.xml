@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/LogInPages"
+    style="@style/logInPages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -18,17 +18,14 @@
 
     <EditText
         android:id="@+id/codeVerifyInput"
+        style="@style/loginPackageInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textStyle="bold"
         android:layout_marginTop="10dp"
-        android:backgroundTint="@color/lightText"
         android:ems="10"
         android:hint="@string/enterCode"
-        android:inputType="number"
-        android:textColor="@color/white"
-        android:textColorHint="@color/lightText" />
+        android:inputType="number" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,12 +35,11 @@
 
         <TextView
             android:id="@+id/alertCodeVerifyText"
+            style="@style/extraText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:gravity="center"
-            style="@style/extraText"
-            android:text="На указанный вами номер,\n был отправлен код подтверждения"/>
+            android:text="На указанный номер,\n был отправлен код подтверждения" />
     </LinearLayout>
 
     <Button
@@ -62,8 +58,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="25dp"
-        android:textColor="@color/white"
-        android:text="@string/resendCode" />
+        android:text="@string/resendCode"
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/changePhoneVerifyText"
@@ -79,8 +75,7 @@
         android:id="@+id/progressBarVerifyCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminateTint= "@color/white"
         android:layout_gravity="center"
-        android:visibility="gone"
-        />
+        android:indeterminateTint="@color/white"
+        android:visibility="gone" />
 </LinearLayout>
