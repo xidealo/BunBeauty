@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/logInPages"
@@ -8,61 +8,60 @@
     android:orientation="vertical"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity">
 
-    <ImageView
-        android:id="@+id/logoAuthorizationImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="150dp"
-        app:srcCompat="@drawable/bun_beauty" />
-
-    <TextView
-        android:id="@+id/titleAuthorizationText"
-        style="@style/extraText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text="Введите номер телефона"
-        android:visibility="invisible" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/verifyAuthorizationBtn">
 
-        <Spinner
-            android:id="@+id/codeAuthorizationSpinner"
-            style="@style/mainBlockText"
+
+        <ImageView
+            android:id="@+id/logoAuthorizationImage"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/panelColor"
-            android:popupBackground="@color/panelColor" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="150dp"
+            app:srcCompat="@drawable/bun_beauty" />
 
-        <EditText
-            android:id="@+id/phoneAuthorizationInput"
-            style="@style/loginPackageInput"
-            android:hint="@string/phoneRegistration"
-            android:inputType="phone" />
+        <TextView
+            android:id="@+id/titleAuthorizationText"
+            style="@style/loginPackageText"
+            android:text="Введите номер телефона" />
+
+        <LinearLayout
+            style="@style/loginPackageLinearLayout"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/codeAuthorizationSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/panelColor"
+                android:entries="@array/countryCode"
+                android:popupBackground="@color/panelColor" />
+
+            <EditText
+                android:id="@+id/phoneAuthorizationInput"
+                style="@style/loginPackageInput"
+                android:hint="@string/phoneRegistration"
+                android:inputType="phone" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/loadingAuthorizationProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/white" />
     </LinearLayout>
 
     <Button
         android:id="@+id/verifyAuthorizationBtn"
         style="@style/mainButtonLogIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:text="Войти" />
 
-    <ProgressBar
-        android:id="@+id/loadingAuthorizationProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminateTint="@color/white"
-        android:visibility="gone" />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

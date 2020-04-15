@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.adapters.CommentAdapter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.FBListener;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Comment;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service;
@@ -69,7 +68,7 @@ public class Comments extends AppCompatActivity {
     private ArrayList<Comment> commentList;
     private RecyclerView recyclerView;
     private TextView withoutRatingText;
-    private CommentAdapter commentAdapter;
+//    private CommentAdapter commentAdapter;
     private String serviceId;
     private String ownerId;
     private long countOfRates;
@@ -364,8 +363,8 @@ public class Comments extends AppCompatActivity {
                 comment.setUserName(String.valueOf(userSnapshot.child(User.NAME).getValue()));
                 commentList.add(comment);
                 if (countOfRates == currentCountOfReview) {
-                    commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                    recyclerView.setAdapter(commentAdapter);
+                 /*   commentAdapter = new CommentAdapter(commentList.size(), commentList);
+                    recyclerView.setAdapter(commentAdapter);*/
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                 }
@@ -654,8 +653,8 @@ public class Comments extends AppCompatActivity {
                 LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 commentList.add(comment);
                 if (countOfRates == currentCountOfReview) {
-                    commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                    recyclerView.setAdapter(commentAdapter);
+                  /*  commentAdapter = new CommentAdapter(commentList.size(), commentList);
+                    recyclerView.setAdapter(commentAdapter);*/
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
 

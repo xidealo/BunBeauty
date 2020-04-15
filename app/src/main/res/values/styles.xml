@@ -24,40 +24,6 @@
         <item name="android:background">@color/logInBackGround</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <!-- Style for main buttons -->
-    <style name="mainButton">
-        <item name="android:width">260dp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">16sp</item>
-        <item name="fontFamily">@font/roboto_bold</item>
-        <item name="android:elevation">5dp</item>
-    </style>
-
-    <style name="mainButtonLogIn" parent="mainButton">
-        <item name="android:background">@drawable/main_button_login_background</item>
-    </style>
-
-    <style name="mainButtonOther" parent="mainButton">
-        <item name="android:background">@drawable/main_button</item>
-    </style>
-
-    <style name="lightBlueButton" parent="mainButton">
-        <item name="fontFamily">@font/font_awesome_solid</item>
-        <item name="android:background">@drawable/tags_button</item>
-        <item name="android:layout_marginTop">4dp</item>
-        <item name="android:layout_marginBottom">4dp</item>
-        <item name="android:layout_marginLeft">30dp</item>
-        <item name="android:layout_marginRight">30dp</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColorHint">@color/white</item>
-    </style>
-
-    <style name="smallMainButtonOther" parent="mainButton">
-        <item name="android:background">@drawable/main_button</item>
-        <item name="android:width">172dp</item>
-        <item name="android:height">36dp</item>
-    </style>
 
     <!-- Style for extra text -->
     <style name="extraText">
@@ -212,17 +178,66 @@
     </style>
 
     <!-- НОВЫЕ СТИЛИ -->
-    <style name="loginPackageInput">
+    <style name="loginPackageText">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:backgroundTint">@color/lightText</item>
-        <item name="android:textColorHint">@color/lightText</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-
-
-
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
     </style>
+
+    <style name="loginPackageLinearLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="loginPackageInput">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:width">200dp</item>
+        <item name="android:textColorHint">@color/lightText</item>
+        <item name="android:backgroundTint">@color/lightText</item>
+    </style>
+
+    <!-- Style for main buttons -->
+    <style name="mainButton">
+        <item name="android:width">260dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:elevation">5dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="mainButtonLogIn" parent="mainButton">
+        <item name="android:background">@drawable/main_button_login_background</item>
+        <item name="android:layout_marginBottom">50dp</item>
+    </style>
+
+    <style name="mainButtonOther" parent="mainButton">
+        <item name="android:background">@drawable/main_button</item>
+    </style>
+
+    <style name="lightBlueButton" parent="mainButton">
+        <item name="fontFamily">@font/font_awesome_solid</item>
+        <item name="android:background">@drawable/tags_button</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginLeft">30dp</item>
+        <item name="android:layout_marginRight">30dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColorHint">@color/white</item>
+    </style>
+
+    <style name="smallMainButtonOther" parent="mainButton">
+        <item name="android:background">@drawable/main_button</item>
+        <item name="android:width">172dp</item>
+        <item name="android:height">36dp</item>
+    </style>
+
 
 
 </resources>
