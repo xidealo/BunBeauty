@@ -1,70 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/logInPages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity">
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        app:srcCompat="@drawable/bun_beauty" />
-
-    <EditText
-        android:id="@+id/phoneRegistrationInput"
-        style="@style/lightTextForPhone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:enabled="false"
-        android:hint="@string/phoneRegistration" />
-
-    <EditText
-        android:id="@+id/nameRegistrationInput"
-        style="@style/lightTextForText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="45dp"
-        android:hint="@string/nameRegistration" />
-
-    <EditText
-        android:id="@+id/surnameRegistrationInput"
-        style="@style/lightTextForText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:hint="@string/surname" />
-
     <LinearLayout
-        android:layout_width="212dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp">
-        <Spinner
-            android:id="@+id/citySpinnerRegistrationSpinner"
+        style="@style/loginPackageMainLinearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/saveRegistrationBtn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/choice_cites"
-            android:background="@color/white"
-            android:backgroundTint="@color/panelColor"
-            android:popupBackground="@color/panelColor"/>
+            app:srcCompat="@drawable/bun_beauty" />
+
+        <LinearLayout
+            style="@style/loginPackageLinearLayout"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/phoneRegistrationInput"
+                style="@style/loginPackageInput"
+                android:hint="@string/phoneRegistration" />
+
+            <EditText
+                android:id="@+id/nameRegistrationInput"
+                style="@style/loginPackageInput"
+                android:hint="@string/nameRegistration" />
+
+            <EditText
+                android:id="@+id/surnameRegistrationInput"
+                style="@style/loginPackageInput"
+                android:hint="@string/surname" />
+
+            <LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <Spinner
+                    android:id="@+id/citySpinnerRegistrationSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:backgroundTint="@color/panelColor"
+                    android:entries="@array/choice_cites"
+                    android:popupBackground="@color/panelColor" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
-
     <Button
-        android:id="@+id/saveDataRegistrationBtn"
+        android:id="@+id/saveRegistrationBtn"
         style="@style/mainButtonLogIn"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:text="@string/saveData" />
-
-</LinearLayout>
+        android:text="сохранить данные"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

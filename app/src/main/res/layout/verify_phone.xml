@@ -5,19 +5,14 @@
     style="@style/logInPages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity">
-
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity">
 
     <LinearLayout
-        style="@style/logInPages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/verifyAuthorizationBtn"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintBottom_toTopOf="@+id/verifyVerifyPhoneBtn"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/logoVerifyImage"
@@ -28,11 +23,11 @@
             app:srcCompat="@drawable/bun_beauty" />
 
         <EditText
-            android:id="@+id/codeVerifyInput"
+            android:id="@+id/codeVerifyPhoneInput"
             style="@style/loginPackageInput"
             android:layout_gravity="center"
             android:hint="@string/enterCode"
-            android:inputType="number" />
+            android:inputType="phone" />
 
         <LinearLayout
             style="@style/loginPackageLinearLayout"
@@ -47,50 +42,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal"
                 android:text="На указанный номер,\n был отправлен код подтверждения" />
         </LinearLayout>
 
         <ProgressBar
-            android:id="@+id/loadingAuthorizationProgressBar"
+            android:id="@+id/loadingVerifyPhoneProgressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminateTint="@color/white" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/loginPackageLinearLayout"
             android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/resendCodeVerifyPhoneText"
+                style="@style/loginPackageText"
+                android:layout_weight="1"
+                android:text="@string/resendCode" />
 
             <TextView
-                android:id="@+id/titleAuthorizationText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:id="@+id/changePhoneVerifyPhoneText"
+                style="@style/loginPackageText"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/resendCode"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:id="@+id/changePhoneVerifyText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/change_number"
-                android:textColor="@color/white" />
+                android:text="@string/change_number" />
         </LinearLayout>
     </LinearLayout>
 
     <Button
-        android:id="@+id/verifyAuthorizationBtn"
+        android:id="@+id/verifyVerifyPhoneBtn"
         style="@style/mainButtonLogIn"
         android:text="Войти"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

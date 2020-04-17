@@ -39,7 +39,7 @@ public class UIAuthorizationActivityTests {
 
     void testEnterCodeVerify(String code) throws InterruptedException {
         //set code
-        onView(withId(R.id.codeVerifyInput)).perform(typeText(code));
+        onView(withId(R.id.codeVerifyPhoneInput)).perform(typeText(code));
         //close keyboard
         Espresso.closeSoftKeyboard();
         Thread.sleep(2000);

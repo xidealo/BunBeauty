@@ -57,7 +57,7 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
 
     private fun init() {
         Log.d(TAG, "initView RegistrationActivity: ")
-        registrationBtn = findViewById(R.id.saveDataRegistrationBtn)
+        registrationBtn = findViewById(R.id.saveRegistrationBtn)
 
         nameInput = findViewById(R.id.nameRegistrationInput)
         surnameInput = findViewById(R.id.surnameRegistrationInput)
@@ -72,7 +72,7 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
         WorkWithViewApi.hideKeyboard(this)
 
         when (v.id) {
-            R.id.saveDataRegistrationBtn -> {
+            R.id.saveRegistrationBtn -> {
                 registrationPresenter.registration(
                         WorkWithStringsApi.firstCapitalSymbol(nameInput.text.toString()),
                         WorkWithStringsApi.firstCapitalSymbol(surnameInput.text.toString()),

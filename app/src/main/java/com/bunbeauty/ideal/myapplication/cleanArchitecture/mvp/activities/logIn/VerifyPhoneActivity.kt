@@ -37,6 +37,7 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
 
     @ProvidePresenter
     internal fun provideVerifyPhonePresenter(): VerifyPhonePresenter {
+
         DaggerAppComponent.builder()
                 .appModule(AppModule(application, intent))
                 .build()
@@ -54,13 +55,13 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
     private fun initView() {
         Log.d(TAG, "initView VerifyPhoneActivity: ")
 
-        verifyCodeBtn = findViewById(R.id.verifyVerifyBtn)
-        resendCodeText = findViewById(R.id.resendVerifyText)
+        verifyCodeBtn = findViewById(R.id.verifyVerifyPhoneBtn)
+        resendCodeText = findViewById(R.id.resendCodeVerifyPhoneText)
         alertCodeText = findViewById(R.id.alertCodeVerifyText)
-        codeInput = findViewById(R.id.codeVerifyInput)
-        changePhoneText = findViewById(R.id.changePhoneVerifyText)
+        codeInput = findViewById(R.id.codeVerifyPhoneInput)
+        changePhoneText = findViewById(R.id.changePhoneVerifyPhoneText)
 
-        progressBar = findViewById(R.id.progressBarVerifyCode)
+        progressBar = findViewById(R.id.loadingVerifyPhoneProgressBar)
 
         verifyCodeBtn.setOnClickListener(this)
         resendCodeText.setOnClickListener(this)
@@ -70,9 +71,9 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
     override fun onClick(v: View) {
         WorkWithViewApi.hideKeyboard(this)
         when (v.id) {
-            R.id.verifyVerifyBtn -> verifyPhonePresenter.verify(codeInput.text.toString())
-            R.id.resendVerifyText -> verifyPhonePresenter.resendCode(this)
-            R.id.changePhoneVerifyText -> goBackToAuthorization()
+            R.id.verifyVerifyPhoneBtn -> verifyPhonePresenter.verify(codeInput.text.toString())
+            R.id.resendCodeVerifyPhoneText -> verifyPhonePresenter.resendCode(this)
+            R.id.changePhoneVerifyPhoneText -> goBackToAuthorization()
         }
     }
 
