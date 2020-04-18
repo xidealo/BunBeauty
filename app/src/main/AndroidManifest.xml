@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity" />
 
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity" />

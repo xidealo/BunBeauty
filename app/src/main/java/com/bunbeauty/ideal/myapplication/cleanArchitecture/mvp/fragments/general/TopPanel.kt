@@ -9,9 +9,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.EditableEntity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IProfileAvailable
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopMainScreenPanel
@@ -82,7 +81,7 @@ class TopPanel : Panel() {
                 }
             }
 
-            AddingServiceActivity::class.java.name -> {
+            CreationServiceActivity::class.java.name -> {
                 setTitleText()
                 setEmptyMultiText()
             }

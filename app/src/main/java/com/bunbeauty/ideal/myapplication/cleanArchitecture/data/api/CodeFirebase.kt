@@ -2,7 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -12,15 +12,15 @@ class CodeFirebase {
 
     fun update(code:Code){
         val myRef = FirebaseDatabase.getInstance()
-                .getReference(AddingServiceActivity.CODES)
+                .getReference(CreationServiceActivity.CODES)
                 .child(code.id)
         val items = HashMap<String, Any>()
-        items[AddingServiceActivity.COUNT] =  code.count.toInt()
+        items[CreationServiceActivity.COUNT] =  code.count.toInt()
         myRef.updateChildren(items)
     }
 
     fun getByCode(codeString: String, callback: ICodeCallback) {
-        val query = FirebaseDatabase.getInstance().getReference(AddingServiceActivity.CODES).orderByChild(AddingServiceActivity.CODE).equalTo(codeString)
+        val query = FirebaseDatabase.getInstance().getReference(CreationServiceActivity.CODES).orderByChild(CreationServiceActivity.CODE).equalTo(codeString)
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(codesSnapshot: DataSnapshot) {
                 val code = Code()

@@ -2,14 +2,14 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import java.util.*
 
 @InjectViewState
-class AddingServicePresenter(private val addingServiceInteractor: AddingServiceInteractor) : MvpPresenter<AddingServiceView>() {
+class CreationServicePresenter(private val creationServiceInteractor: CreationServiceInteractor) : MvpPresenter<AddingServiceView>() {
 
     companion object {
         private const val MAX_COUNT_OF_IMAGES = 10
@@ -30,9 +30,9 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             service.countOfRates = 0
             service.premiumDate = Service.DEFAULT_PREMIUM_DATE
             service.creationDate = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
-            service.userId = addingServiceInteractor.getUserId()
+            service.userId = creationServiceInteractor.getUserId()
 
-            service.id = addingServiceInteractor.addService(service, tags)
+            service.id = creationServiceInteractor.addService(service, tags)
             return service
         } else {
             return null
@@ -41,7 +41,7 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
 
     fun addImages(fpathOfImages: List<String>, service: Service) {
         if (fpathOfImages.size < MAX_COUNT_OF_IMAGES) {
-            addingServiceInteractor.addImages(fpathOfImages, service)
+            creationServiceInteractor.addImages(fpathOfImages, service)
             viewState.showAllDone()
             viewState.hideMainBlocks()
             Thread.sleep(500)
@@ -57,11 +57,11 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             return false
         }
 
-        if (!addingServiceInteractor.getIsNameInputCorrect(name)) {
+        if (!creationServiceInteractor.getIsNameInputCorrect(name)) {
             viewState.showNameInputError("Имя сервиса должно содержать только буквы")
             return false
         }
-        if (!addingServiceInteractor.getIsNameLengthLessTwenty(name)) {
+        if (!creationServiceInteractor.getIsNameLengthLessTwenty(name)) {
             viewState.showNameInputError("Имя сервиса должно быть меньше 20 символов")
             return false
         }
@@ -75,12 +75,12 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             return false
         }
 
-        if (!addingServiceInteractor.getIsDescriptionInputCorrect(description)) {
+        if (!creationServiceInteractor.getIsDescriptionInputCorrect(description)) {
             viewState.showDescriptionInputError("")
             return false
         }
 
-        if (!addingServiceInteractor.getIsDescriptionLengthLessTwoHundred(description)) {
+        if (!creationServiceInteractor.getIsDescriptionLengthLessTwoHundred(description)) {
             viewState.showDescriptionInputError("Описание должно быть меньше 200 символов")
             return false
         }
@@ -94,11 +94,11 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             return false
         }
 
-        if (!addingServiceInteractor.getIsCostInputCorrect(cost)) {
+        if (!creationServiceInteractor.getIsCostInputCorrect(cost)) {
             viewState.showCostInputError("Цена должна содержать только цифры")
             return false
         }
-        if (!addingServiceInteractor.getIsCostLengthLessTen(cost)) {
+        if (!creationServiceInteractor.getIsCostLengthLessTen(cost)) {
             viewState.showCostInputError("Цена должна быть меньше 10 символов")
             return false
         }
@@ -106,7 +106,7 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
     }
 
     private fun isCategoryCorrect(category: String): Boolean {
-        if (!addingServiceInteractor.getIsCategoryInputCorrect(category)) {
+        if (!creationServiceInteractor.getIsCategoryInputCorrect(category)) {
             viewState.showCategoryInputError("Выберите категорию")
             return false
         }
@@ -120,11 +120,11 @@ class AddingServicePresenter(private val addingServiceInteractor: AddingServiceI
             return false
         }
 
-        if (!addingServiceInteractor.getIsAddressInputCorrect(address)) {
+        if (!creationServiceInteractor.getIsAddressInputCorrect(address)) {
             viewState.showAddressInputError("")
             return false
         }
-        if (!addingServiceInteractor.getIsAddressLengthThirty(address)) {
+        if (!creationServiceInteractor.getIsAddressLengthThirty(address)) {
             viewState.showAddressInputError("Адрес должен быть меньше 30 символов")
             return false
         }

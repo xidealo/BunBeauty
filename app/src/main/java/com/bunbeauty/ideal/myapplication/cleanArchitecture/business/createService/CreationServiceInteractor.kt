@@ -6,17 +6,16 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.PhotoRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.TagRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
-import java.util.*
 
-class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
-                              private val tagRepository: TagRepository,
-                              private val photoRepository: PhotoRepository) : IAddingServiceInteractor, IInsertServiceCallback {
+class CreationServiceInteractor(private val serviceRepository: ServiceRepository,
+                                private val tagRepository: TagRepository,
+                                private val photoRepository: PhotoRepository) : IAddingServiceInteractor, IInsertServiceCallback {
 
     override fun addService(service: Service, tags: List<String>): String {
         service.id = serviceRepository.getIdForNew(getUserId())
@@ -47,7 +46,7 @@ class AddingServiceInteractor(private val serviceRepository: ServiceRepository,
 
         val storageReference = FirebaseStorage
                 .getInstance()
-                .getReference("${AddingServiceActivity.SERVICE_PHOTO}/$photo.id")
+                .getReference("${CreationServiceActivity.SERVICE_PHOTO}/$photo.id")
 
         storageReference.putFile(convertToUri(path)).addOnSuccessListener {
             storageReference.downloadUrl.addOnSuccessListener {

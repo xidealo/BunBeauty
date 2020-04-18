@@ -32,7 +32,6 @@ import javax.inject.Inject
 class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView,
         ITopMainScreenPanel, IBottomPanel {
 
-
     private var categoriesBtns: ArrayList<Button> = arrayListOf()
     private lateinit var categories: ArrayList<String>
     private lateinit var categoryLayout: LinearLayout

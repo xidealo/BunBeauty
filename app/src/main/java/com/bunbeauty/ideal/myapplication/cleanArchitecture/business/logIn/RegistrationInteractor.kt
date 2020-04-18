@@ -104,7 +104,7 @@ class RegistrationInteractor(private val userRepository: UserRepository,
         return true
     }
 
-    override fun getMyPhoneNumber(): String = intent.getStringExtra(USER_PHONE)!!
+    override fun getMyPhoneNumber(): String = intent.getStringExtra(User.PHONE) ?: ""
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
     companion object {

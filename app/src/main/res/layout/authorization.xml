@@ -9,19 +9,17 @@
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/verifyAuthorizationBtn">
-
+        style="@style/loginPackageMainLinearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/verifyAuthorizationBtn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/logoAuthorizationImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="150dp"
             app:srcCompat="@drawable/bun_beauty" />
 
         <TextView
@@ -35,11 +33,9 @@
 
             <Spinner
                 android:id="@+id/codeAuthorizationSpinner"
+                style="@style/loginPackageSpinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/panelColor"
-                android:entries="@array/countryCode"
-                android:popupBackground="@color/panelColor" />
+                android:layout_height="wrap_content"/>
 
             <EditText
                 android:id="@+id/phoneAuthorizationInput"
@@ -59,9 +55,9 @@
     <Button
         android:id="@+id/verifyAuthorizationBtn"
         style="@style/mainButtonLogIn"
+        android:text="Войти"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="Войти" />
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

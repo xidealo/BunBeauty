@@ -5,11 +5,16 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.
 import com.google.firebase.auth.PhoneAuthProvider
 
 interface IVerifyPhoneInteractor {
-    fun sendVerificationCode(phoneNumber: String, activity: VerifyPhoneActivity)
-    fun resendVerificationCode(phoneNumber: String, token: PhoneAuthProvider.ForceResendingToken,
-                               verifyPhoneActivity: VerifyPhoneActivity)
+    fun sendVerificationCode(
+            phoneNumber: String,
+            verifyPhonePresenterCallback: VerifyPhonePresenterCallback)
+
+    fun resendVerificationCode(
+            phoneNumber: String,
+            token: PhoneAuthProvider.ForceResendingToken,
+            verifyPhoneActivity: VerifyPhoneActivity)
 
     fun getMyPhoneNumber(): String
-    fun verify(code: String, verifyPresenterCallback: VerifyPhonePresenterCallback)
+    fun verify(code: String, verifyPresenterCallback: VerifyPhonePresenterCallback )
 
 }

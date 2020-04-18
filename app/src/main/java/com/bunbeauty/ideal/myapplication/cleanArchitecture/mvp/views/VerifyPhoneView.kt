@@ -1,8 +1,9 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 
 import com.arellomobile.mvp.MvpView
+import com.google.firebase.auth.PhoneAuthProvider
 
-interface VerifyPhoneView: MvpView {
+interface VerifyPhoneView : MvpView {
     fun hideViewsOnScreen()
     fun showViewsOnScreen()
     fun showSendCode()
@@ -10,4 +11,5 @@ interface VerifyPhoneView: MvpView {
     fun callbackWrongCode()
     fun goToRegistration(phone: String)
     fun goToProfile()
+    fun sendVerificationCode(phoneNumber: String, callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks)
 }

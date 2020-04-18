@@ -24,30 +24,36 @@ class VerifyPhoneInteractor(private val userRepository: IUserRepository,
 
     lateinit var verifyPresenterCallback: VerifyPhonePresenterCallback
     lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
-    private lateinit var phoneVerificationId: String
 
-    override fun getMyPhoneNumber(): String = intent.getStringExtra(USER_PHONE)!!
+    private var phoneVerificationId: String = "1"
 
-    fun getMyName() {
+    override fun getMyPhoneNumber(): String = intent.getStringExtra(User.PHONE)!!
+
+    private fun getMyName() {
         userRepository.getByPhoneNumber(getMyPhoneNumber(), this, true)
     }
 
     override fun returnUser(user: User) {
-        verifyPresenterCallback.callbackGetUserName(user.name)
+        if (user.name.isEmpty()) {
+            verifyPresenterCallback.goToRegistration(getMyPhoneNumber())
+        } else {
+            verifyPresenterCallback.goToProfile()
+        }
     }
 
-    override fun sendVerificationCode(phoneNumber: String, activity: VerifyPhoneActivity) {
+    override fun sendVerificationCode(
+            phoneNumber: String,
+            verifyPhonePresenterCallback: VerifyPhonePresenterCallback) {
         Log.d(TAG, "send")
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNumber, // Phone number to verify
-                60, // Timeout duration
-                TimeUnit.SECONDS, // Unit of timeout
-                activity, // Activity (for callback binding)
-                verificationCallbacks)
+        verifyPhonePresenterCallback.sendVerificationCode(phoneNumber, verificationCallbacks)
+        verifyPhonePresenterCallback.showSendCode()
     }
 
-    override fun resendVerificationCode(phoneNumber: String, token: PhoneAuthProvider.ForceResendingToken,
-                                       verifyPhoneActivity: VerifyPhoneActivity) {
+    override fun resendVerificationCode(
+            phoneNumber: String,
+            token: PhoneAuthProvider.ForceResendingToken,
+            verifyPhoneActivity: VerifyPhoneActivity) {
+
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber, // Phone number to verify
                 60, // Timeout duration
@@ -90,20 +96,11 @@ class VerifyPhoneInteractor(private val userRepository: IUserRepository,
         }
     }
 
-
     private fun verifyCode(code: String) {
         //получаем ответ гугл
         val credential = PhoneAuthProvider.getCredential(phoneVerificationId, code)
         //заходим с айфоном и токеном
         signInWithPhoneAuthCredential(credential)
-    }
-
-    fun callbackGetUserName(name: String) {
-        if (name == "") {
-            verifyPresenterCallback.goToRegistration(getMyPhoneNumber())
-        } else {
-            verifyPresenterCallback.goToProfile()
-        }
     }
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
@@ -121,8 +118,7 @@ class VerifyPhoneInteractor(private val userRepository: IUserRepository,
         }
     }
 
-    companion object{
+    companion object {
         private val TAG = "DBInf"
-        private const val USER_PHONE = "user phone"
     }
 }

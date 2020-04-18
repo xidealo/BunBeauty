@@ -8,10 +8,10 @@
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
+        style="@style/loginPackageMainLinearLayout"
         app:layout_constraintBottom_toTopOf="@+id/verifyVerifyPhoneBtn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -19,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="150dp"
             app:srcCompat="@drawable/bun_beauty" />
 
         <EditText
@@ -54,6 +53,7 @@
 
         <LinearLayout
             style="@style/loginPackageLinearLayout"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <TextView

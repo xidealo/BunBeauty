@@ -11,7 +11,7 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
@@ -19,7 +19,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragme
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IPhotoEditable
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AddingServicePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement
@@ -28,7 +28,7 @@ import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
-class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, AddingServiceView,
+class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, AddingServiceView,
         IPhotoEditable {
 
     private lateinit var nameServiceInput: EditText
@@ -44,24 +44,24 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     private lateinit var continueButton: Button
 
     @InjectPresenter
-    lateinit var addingServicePresenter: AddingServicePresenter
+    lateinit var creationServicePresenter: CreationServicePresenter
+    @Inject
+    lateinit var creationServiceInteractor: CreationServiceInteractor
 
     @ProvidePresenter
-    internal fun provideAddingServicePresenter(): AddingServicePresenter {
+    internal fun provideAddingServicePresenter(): CreationServicePresenter {
         DaggerAppComponent
                 .builder()
                 .appModule(AppModule(application, intent))
                 .build().inject(this)
 
-        return AddingServicePresenter(addingServiceInteractor)
+        return CreationServicePresenter(creationServiceInteractor)
     }
 
-    @Inject
-    lateinit var addingServiceInteractor: AddingServiceInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.adding_service)
+        setContentView(R.layout.creation_service)
 
         init()
         showTopPanel()
@@ -105,7 +105,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
     override fun onClick(v: View) {
         when (v.id) {
             R.id.addServiceAddServiceBtn -> {
-                val service = addingServicePresenter.addService(
+                val service = creationServicePresenter.addService(
                         WorkWithStringsApi.firstCapitalSymbol(nameServiceInput.text.toString()),
                         descriptionServiceInput.text.toString(),
                         costAddServiceInput.text.toString(),
@@ -114,7 +114,7 @@ class AddingServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Addi
                         categoryElement.tagsArray)
 
                 if(service!=null){
-                    addingServicePresenter.addImages(fpathOfImages, service)
+                    creationServicePresenter.addImages(fpathOfImages, service)
                 }
             }
             R.id.photoAddingServiceBtn -> choosePhoto()

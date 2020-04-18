@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.AddingServiceActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity
@@ -28,8 +28,8 @@ interface AppComponent {
     fun inject(profileActivity: ProfileActivity)
     fun inject(profilePresenter: ProfilePresenter)
 
-    fun inject(addingServiceActivity: AddingServiceActivity)
-    fun inject(addingServicePresenter: AddingServicePresenter)
+    fun inject(creationServiceActivity: CreationServiceActivity)
+    fun inject(creationServicePresenter: CreationServicePresenter)
 
     fun inject(premiumElementFragment: PremiumElementFragment)
     fun inject(premiumElementPresenter: PremiumElementPresenter)

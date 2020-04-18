@@ -16,7 +16,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.VerifyPhonePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhoneView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
+import com.google.firebase.auth.PhoneAuthProvider
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.reflect.typeOf
 
 class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, VerifyPhoneView {
 
@@ -49,7 +52,8 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
         super.onCreate(savedInstanceState)
         setContentView(R.layout.verify_phone)
         initView()
-        verifyPhonePresenter.sendCode(this)
+        showViewsOnScreen()
+        verifyPhonePresenter.sendCode()
     }
 
     private fun initView() {
@@ -119,6 +123,7 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
         intent.putExtra(USER_PHONE, phone)
         startActivity(intent)
         overridePendingTransition(0,0)
+        finish()
     }
 
     override fun goToProfile() {
@@ -126,6 +131,15 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
         startActivity(intent)
         overridePendingTransition(0,0)
         finish()
+    }
+
+    override fun sendVerificationCode(phoneNumber: String, callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks) {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phoneNumber, // Phone number to verify
+                60, // Timeout duration
+                TimeUnit.SECONDS, // Unit of timeout
+                this, // Activity (for callback binding)
+                callback)
     }
 
     companion object {

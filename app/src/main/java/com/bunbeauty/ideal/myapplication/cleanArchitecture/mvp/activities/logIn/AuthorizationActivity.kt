@@ -10,6 +10,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
@@ -18,6 +19,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.Author
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes
+import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
 
@@ -48,9 +50,8 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.authorization)
-
         initView()
-
+        FirebaseAuth.getInstance().signOut()
         authorizationPresenter.defaultAuthorize()
     }
 
@@ -111,14 +112,14 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
 
     override fun goToVerifyPhone(phone: String) {
         val intent = Intent(this, VerifyPhoneActivity::class.java)
-        intent.putExtra(USER_PHONE, phone)
+        intent.putExtra(User.PHONE, phone)
         this.startActivity(intent)
         overridePendingTransition(0, 0)
     }
 
     override fun goToRegistration(phone: String) {
         val intent = Intent(this, RegistrationActivity::class.java)
-        intent.putExtra(USER_PHONE, phone)
+        intent.putExtra(User.PHONE, phone)
         this.startActivity(intent)
         overridePendingTransition(0, 0)
         finish()
@@ -145,6 +146,5 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
 
     companion object {
         private const val TAG_UI = "tag_ui"
-        private const val USER_PHONE = "user phone"
     }
 }

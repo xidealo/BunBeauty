@@ -1,6 +1,6 @@
 package com.android.ideal.myapplication;
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.AddingServiceInteractor;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.PhotoRepository;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.TagRepository;
@@ -31,54 +31,54 @@ public class AddingServiceUnitTests {
     //addService
     @Test
     public void whenNameCorrectAddingService() {
-        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
-        assertTrue(addingServiceInteractor.getIsNameInputCorrect("ывафыавдфыщалOLASKFkasdldfal"));
+        CreationServiceInteractor creationServiceInteractor = getAddingServiceInstance();
+        assertTrue(creationServiceInteractor.getIsNameInputCorrect("ывафыавдфыщалOLASKFkasdldfal"));
     }
 
     @Test
     public void whenNameLengthLessTwentyAddingService() {
-        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
-        assertTrue(addingServiceInteractor.getIsNameLengthLessTwenty("qwertyuiopasdfghjkl"));
+        CreationServiceInteractor creationServiceInteractor = getAddingServiceInstance();
+        assertTrue(creationServiceInteractor.getIsNameLengthLessTwenty("qwertyuiopasdfghjkl"));
     }
 
     @Test
     public void whenDescriptionLengthLessTwoHundredAddingService() {
-        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
-        assertTrue(addingServiceInteractor.getIsDescriptionLengthLessTwoHundred("qwertyuiopasdfghjkl"));
+        CreationServiceInteractor creationServiceInteractor = getAddingServiceInstance();
+        assertTrue(creationServiceInteractor.getIsDescriptionLengthLessTwoHundred("qwertyuiopasdfghjkl"));
     }
 
     @Test
     public void whenCostCorrectAddingService() {
-        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
-        assertTrue(addingServiceInteractor.getIsCostInputCorrect("23343564564"));
+        CreationServiceInteractor creationServiceInteractor = getAddingServiceInstance();
+        assertTrue(creationServiceInteractor.getIsCostInputCorrect("23343564564"));
     }
 
     @Test
     public void whenCostLengthLessTenAddingService() {
-        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
-        assertTrue(addingServiceInteractor.getIsCostLengthLessTen("123456789"));
+        CreationServiceInteractor creationServiceInteractor = getAddingServiceInstance();
+        assertTrue(creationServiceInteractor.getIsCostLengthLessTen("123456789"));
     }
 
     @Test
     public void whenCategoryCorrectAddingService() {
-        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
-        assertTrue(addingServiceInteractor.getIsCategoryInputCorrect("yopyoyo"));
+        CreationServiceInteractor creationServiceInteractor = getAddingServiceInstance();
+        assertTrue(creationServiceInteractor.getIsCategoryInputCorrect("yopyoyo"));
     }
 
     @Test
     public void whenAddressCorrectAddingService() {
-        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
-        assertTrue(addingServiceInteractor.getIsAddressInputCorrect("ljfngjf ngjafng32234SKJDj"));
+        CreationServiceInteractor creationServiceInteractor = getAddingServiceInstance();
+        assertTrue(creationServiceInteractor.getIsAddressInputCorrect("ljfngjf ngjafng32234SKJDj"));
     }
 
     @Test
     public void whenAddressLengthLessThirtyAddingService() {
-        AddingServiceInteractor addingServiceInteractor = getAddingServiceInstance();
-        assertTrue(addingServiceInteractor.getIsAddressLengthThirty("1234gfcgv567891234567890"));
+        CreationServiceInteractor creationServiceInteractor = getAddingServiceInstance();
+        assertTrue(creationServiceInteractor.getIsAddressLengthThirty("1234gfcgv567891234567890"));
     }
 
-    private AddingServiceInteractor getAddingServiceInstance() {
-        return new AddingServiceInteractor(serviceRepository, tagRepository, photoRepository);
+    private CreationServiceInteractor getAddingServiceInstance() {
+        return new CreationServiceInteractor(serviceRepository, tagRepository, photoRepository);
     }
 }
 

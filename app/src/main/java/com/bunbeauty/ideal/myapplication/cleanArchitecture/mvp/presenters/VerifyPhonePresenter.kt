@@ -6,6 +6,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhonePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhoneView
+import com.google.firebase.auth.PhoneAuthProvider
 
 @InjectViewState
 class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneInteractor) :
@@ -14,10 +15,10 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneIntera
     //рефактор, проверки в интерактор
     private val TAG = "DBInf"
 
-    fun sendCode(verifyPhoneActivity: VerifyPhoneActivity) {
-        verifyPhoneInteractor.sendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),
-                verifyPhoneActivity)
-        viewState.showSendCode()
+    fun sendCode() {
+        verifyPhoneInteractor.sendVerificationCode(
+                verifyPhoneInteractor.getMyPhoneNumber(),
+                this)
     }
 
     fun resendCode(verifyPhoneActivity: VerifyPhoneActivity) {
@@ -51,7 +52,11 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneIntera
         viewState.goToProfile()
     }
 
-    override fun callbackGetUserName(name: String) {
+    override fun showSendCode() {
+        viewState.showSendCode()
+    }
 
+    override fun sendVerificationCode(phoneNumber: String, callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks) {
+        viewState.sendVerificationCode(phoneNumber, callback)
     }
 }

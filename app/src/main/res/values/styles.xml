@@ -204,6 +204,15 @@
         <item name="android:width">200dp</item>
         <item name="android:textColorHint">@color/lightText</item>
         <item name="android:backgroundTint">@color/lightText</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="loginPackageSpinner">
+        <item name="android:background">@color/white</item>
+        <item name="android:backgroundTint">@color/panelColor</item>
+        <item name="android:popupBackground">@color/panelColor</item>
     </style>
 
     <!-- Style for main buttons -->
