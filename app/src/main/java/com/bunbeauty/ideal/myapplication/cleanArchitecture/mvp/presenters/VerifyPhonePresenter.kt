@@ -4,7 +4,6 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IVerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhonePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhoneView
 import com.google.firebase.auth.PhoneAuthProvider
 
@@ -12,7 +11,6 @@ import com.google.firebase.auth.PhoneAuthProvider
 class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneInteractor) :
         MvpPresenter<VerifyPhoneView>(), VerifyPhonePresenterCallback {
 
-    //рефактор, проверки в интерактор
     private val TAG = "DBInf"
 
     fun sendCode() {

@@ -19,11 +19,12 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
     override fun defaultAuthorize(authorizationPresenterCallback: AuthorizationPresenterCallback) {
         this.authorizationPresenterCallback = authorizationPresenterCallback
         authorizationPresenterCallback.hideViewsOnScreen()
-
         if (getCurrentFbUser() != null) {
-            userRepository.getByPhoneNumber(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,
+            userRepository.getByPhoneNumber(
+                    FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,
                     this,
-                    true)
+                    true
+            )
         } else {
             authorizationPresenterCallback.showViewOnScreen()
         }

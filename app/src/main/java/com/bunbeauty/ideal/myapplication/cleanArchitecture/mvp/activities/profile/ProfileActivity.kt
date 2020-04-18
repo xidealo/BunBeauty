@@ -110,9 +110,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     override fun onClick(v: View) {
         when (v.id) {
             R.id.addServicesProfileBtn -> goToAddService()
-
             R.id.subscriptionsProfileBtn -> goToSubscribers()
-
             R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
         }
     }
@@ -305,14 +303,14 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private fun goToAddService() {
         val intent = Intent(this, CreationServiceActivity::class.java)
         startActivity(intent)
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
     }
 
     private fun goToSubscribers() {
         val intent = Intent(this, Subscribers::class.java)
         intent.putExtra(STATUS, SUBSCRIPTIONS)
         startActivity(intent)
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
     }
 
     private fun goToComments(ownerId: String?) {
@@ -321,7 +319,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         //intent.putExtra(User.COUNT_OF_RATES, getCountOfRates())
         intent.putExtra(TYPE, REVIEW_FOR_USER)
         startActivity(intent)
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
     }
 
     companion object {

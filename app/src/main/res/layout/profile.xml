@@ -14,29 +14,26 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/profileProgressBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminateTint="@color/panelColor"
-        app:layout_constraintBottom_toTopOf="@+id/bottomProfileLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topProfileLayout" />
+     <ProgressBar
+         android:id="@+id/profileProgressBar"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:indeterminateTint="@color/panelColor"
+         app:layout_constraintBottom_toTopOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toBottomOf="parent" />
 
     <LinearLayout
         android:id="@+id/mainProfileLayout"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/servicesProfileRecyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewProfileRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topProfileLayout"
-        android:animateLayoutChanges="true">
+        app:layout_constraintTop_toBottomOf="@+id/topProfileLayout">
 
         <!-- Верхняя часть-->
         <LinearLayout
@@ -44,21 +41,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/block_text"
-            android:orientation="vertical"
-            android:padding="5dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/block_text"
-                    android:orientation="vertical"
-                    android:padding="5dp">
+                    android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/avatarProfileImage"
@@ -67,48 +62,34 @@
                         android:layout_gravity="center"
                         tools:srcCompat="@tools:sample/avatars" />
                 </LinearLayout>
+
                 <!-- Rating bar -->
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/block_text"
                     android:orientation="vertical"
-                    android:padding="5dp">
+                    android:padding="1dp">
 
                     <TextView
                         android:id="@+id/nameProfileText"
                         style="@style/mainTextProfile"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
                         android:text="TextView" />
 
                     <TextView
                         android:id="@+id/cityProfileText"
                         style="@style/defaultTextProfile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
                         android:text="TextView" />
 
                     <TextView
                         android:id="@+id/phoneProfileText"
                         style="@style/defaultTextProfile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
                         android:text="TextView" />
 
                     <TextView
                         android:id="@+id/subscribersProfileText"
                         style="@style/defaultTextProfile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:visibility="gone"
                         android:text="TextView" />
-
                 </LinearLayout>
             </LinearLayout>
 
@@ -133,7 +114,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:visibility="gone"
                         android:theme="@style/ratingBarColors" />
 
                     <TextView
@@ -142,29 +122,18 @@
                         android:layout_width="250dp"
                         android:layout_height="@dimen/main_button_height"
                         android:gravity="center"
-                        android:text="Оценок еще нет"
-                        android:visibility="gone" />
+                        android:text="Оценок еще нет" />
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/subscriptionsProfileBtn"
                     style="@style/smallMainButtonOther"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/main_button_height"
-                    android:layout_gravity="start"
-                    android:layout_marginEnd="10dp"
-                    android:text="Подписки"
-                    android:visibility="invisible" />
+                    android:text="Подписки" />
 
                 <Button
                     android:id="@+id/dialogsProfileBtn"
                     style="@style/smallMainButtonOther"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/main_button_height"
-                    android:layout_gravity="start"
-                    android:layout_marginEnd="10dp"
-                    android:text="Диалог"
-                    android:visibility="gone" />
+                    android:text="Диалог" />
 
                 <!--<LinearLayout
                     android:id="@+id/subscriptionsProfileLayout"
@@ -189,7 +158,7 @@
         <LinearLayout
             android:id="@+id/switcherProfileLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -198,38 +167,30 @@
                 style="@style/smallMainButtonOther"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/main_button_height"
-                android:layout_gravity="start"
-                android:layout_marginEnd="10dp"
-                android:text="@string/addServices"
-                android:visibility="invisible" />
+                android:text="@string/addServices" />
         </LinearLayout>
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/servicesProfileRecyclerView"
+    <LinearLayout
+        android:id="@+id/recyclerViewProfileRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="5dp"
-        android:scrollbars="none"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/ordersProfileRecycleView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainProfileLayout">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/bottomProfileLayout"
+        app:layout_constraintTop_toBottomOf="@id/mainProfileLayout">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/servicesProfileRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ordersProfileRecycleView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scrollbars="none"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/bottomProfileLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/servicesProfileRecyclerView" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ordersProfileRecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/bottomProfileLayout"
