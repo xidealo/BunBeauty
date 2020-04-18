@@ -22,7 +22,7 @@ class BottomPanel : Panel() {
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.profileBottomPanelText -> goTo(ProfileActivity::class.java)
-            R.id.mainScreenBottomPanelText -> goTo( MainScreenActivity::class.java)
+            R.id.mainScreenBottomPanelText -> goTo(MainScreenActivity::class.java)
             R.id.chatBottomPanelText -> goTo(Dialogs::class.java)
         }
     }

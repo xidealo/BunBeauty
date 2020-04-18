@@ -154,8 +154,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         val topPanel = TopPanel()
 
         topPanel.title = service.name
-        topPanel.editableEntity = service
-        topPanel.isEditable = true
 
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.topServiceLayout, topPanel)
@@ -166,7 +164,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         val topPanel = TopPanel()
 
         topPanel.title = serviceName
-        topPanel.user = serviceOwner
 
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.topServiceLayout, topPanel)

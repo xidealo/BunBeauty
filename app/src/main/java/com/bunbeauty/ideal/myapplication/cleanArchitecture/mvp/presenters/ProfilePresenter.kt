@@ -22,9 +22,11 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor) :
         viewState.showProgress()
         profileInteractor.getProfileOwner(this)
     }
+
     fun showProfile(){
         profileInteractor.showProfile(this)
     }
+
     override fun showMyProfile() {
         viewState.showMyProfileView()
         viewState.createSwitcher()
@@ -54,6 +56,7 @@ class ProfilePresenter(private val profileInteractor: ProfileInteractor) :
         viewState.showAvatar(user.photoLink)
         viewState.showSubscribers(user.subscribersCount)
         viewState.showSubscriptions(user.subscriptionsCount)
+        viewState.createTopPanelForMyProfile(user.name)
 
         profileInteractor.setRating(user.rating, this)
     }

@@ -7,12 +7,7 @@
     android:background="@color/mainColorBG"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity">
 
-    <LinearLayout
-        android:id="@+id/topProfileLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent" />
+    <include layout="@layout/part_top_panel" />
 
      <ProgressBar
          android:id="@+id/profileProgressBar"
@@ -33,7 +28,7 @@
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewProfileRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topProfileLayout">
+        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout">
 
         <!-- Верхняя часть-->
         <LinearLayout
@@ -176,7 +171,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/bottomProfileLayout"
+        app:layout_constraintBottom_toTopOf="@id/bottomPanelLayout"
         app:layout_constraintTop_toBottomOf="@id/mainProfileLayout">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -192,11 +187,6 @@
             android:scrollbars="none" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/bottomProfileLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent" />
+    <include layout="@layout/part_bottom_panel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

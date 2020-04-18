@@ -7,7 +7,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface ProfileView: MvpView {
     fun showMyProfileView()
     fun showAlienProfileView()
-    fun showUserInfo(user: User)
+    fun createTopPanelForMyProfile(userName: String)
+    fun createTopPanelForOtherProfile(userName: String)
     fun showUserServices(serviceList: List<Service>, user: User)
     fun hideSubscriptions()
     fun showDialogs()

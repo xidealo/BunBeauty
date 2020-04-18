@@ -4,18 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
     android:background="@color/panelColor"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/backTopPanelText"
         style="@style/iconSolid"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
+        android:layout_weight="1"
         android:gravity="center"
-        android:layout_weight="0.3"
         android:text="@string/back_ico" />
 
     <TextView
@@ -24,7 +23,7 @@
         android:layout_width="100dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="4"
         android:gravity="start"
         android:text="Заголовок" />
 
@@ -32,28 +31,35 @@
         android:id="@+id/logoTopPanelImage"
         android:layout_width="wrap_content"
         android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="4"
         android:visibility="gone"
         app:srcCompat="@drawable/bun_beauty" />
 
     <TextView
-        android:id="@+id/multiTopPanelText"
+        android:id="@+id/editTopPanelText"
         style="@style/iconSolid"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
         android:layout_weight="1"
-        android:paddingEnd="10dp"
-        android:gravity="end" />
+        android:gravity="center"
+        android:text="@string/edit_ico" />
+
+    <TextView
+        android:id="@+id/searchTopPanelText"
+        style="@style/iconSolid"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/search_ico"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/avatarTopPanelLayout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="0.4"
+        android:layout_weight="1"
         android:gravity="center"
-        android:layout_gravity="center"
         android:visibility="gone">
 
         <ImageView
