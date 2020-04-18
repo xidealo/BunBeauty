@@ -88,23 +88,23 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     }
 
     private fun init() {
-        findViewById<Button>(R.id.addServiceAddServiceBtn)
+        findViewById<Button>(R.id.addServiceCreationServiceBtn)
                 .setOnClickListener(this)
-        findViewById<TextView>(R.id.photoAddingServiceBtn)
+        findViewById<TextView>(R.id.photoCreationServiceBtn)
                 .setOnClickListener(this)
 
-        nameServiceInput = findViewById(R.id.nameAddServiceInput)
-        costAddServiceInput = findViewById(R.id.costAddServiceInput)
-        descriptionServiceInput = findViewById(R.id.descriptionAddServiceInput)
-        addressServiceInput = findViewById(R.id.addressAddServiceInput)
-        premiumLayout = findViewById(R.id.premiumAddServiceLayout)
-        mainLayout = findViewById(R.id.mainLayoutAddService)
+        nameServiceInput = findViewById(R.id.nameCreationServiceInput)
+        costAddServiceInput = findViewById(R.id.costCreationServiceInput)
+        descriptionServiceInput = findViewById(R.id.descriptionCreationServiceInput)
+        addressServiceInput = findViewById(R.id.addressCreationServiceInput)
+        premiumLayout = findViewById(R.id.premiumCreationServiceLayout)
+        mainLayout = findViewById(R.id.mainCreationServiceLinearLayout)
         fpathOfImages = ArrayList()
     }
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.addServiceAddServiceBtn -> {
+            R.id.addServiceCreationServiceBtn -> {
                 val service = creationServicePresenter.addService(
                         WorkWithStringsApi.firstCapitalSymbol(nameServiceInput.text.toString()),
                         descriptionServiceInput.text.toString(),
@@ -117,7 +117,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
                     creationServicePresenter.addImages(fpathOfImages, service)
                 }
             }
-            R.id.photoAddingServiceBtn -> choosePhoto()
+            R.id.photoCreationServiceBtn -> choosePhoto()
             else -> {
             }
         }
@@ -152,7 +152,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     override fun showPhoto(bitmap: Bitmap, filePath: String) {
         supportFragmentManager
                 .beginTransaction()
-                .add(R.id.photoAddingServiceLayout, ServicePhotoElement(bitmap, filePath))
+                .add(R.id.photoCreationServiceLayout, ServicePhotoElement(bitmap, filePath))
                 .commit()
     }
 
@@ -168,14 +168,14 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
         categoryElement = CategoryElement(this)
         supportFragmentManager
                 .beginTransaction()
-                .add(R.id.categoryAddServiceLayout, categoryElement)
+                .add(R.id.categoryCreationServiceLayout, categoryElement)
                 .commit()
     }
 
     override fun showPremiumBlock(service:Service) {
         supportFragmentManager
                 .beginTransaction()
-                .add(R.id.premiumAddServiceLayout, PremiumElementFragment(service))
+                .add(R.id.premiumCreationServiceLayout, PremiumElementFragment(service))
                 .commit()
 
         premiumLayout.visibility = View.VISIBLE
