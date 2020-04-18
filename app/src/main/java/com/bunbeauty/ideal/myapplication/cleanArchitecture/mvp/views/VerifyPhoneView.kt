@@ -11,5 +11,12 @@ interface VerifyPhoneView : MvpView {
     fun callbackWrongCode()
     fun goToRegistration(phone: String)
     fun goToProfile()
-    fun sendVerificationCode(phoneNumber: String, callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks)
+    fun sendVerificationCode(
+            phoneNumber: String,
+            callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks)
+
+    fun resendVerificationCode(
+            phoneNumber: String,
+            callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks,
+            token: PhoneAuthProvider.ForceResendingToken)
 }

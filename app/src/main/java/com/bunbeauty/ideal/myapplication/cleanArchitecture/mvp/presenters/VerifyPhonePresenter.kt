@@ -18,14 +18,12 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneIntera
     fun sendCode() {
         verifyPhoneInteractor.sendVerificationCode(
                 verifyPhoneInteractor.getMyPhoneNumber(),
-                this)
+                this
+        )
     }
 
-    fun resendCode(verifyPhoneActivity: VerifyPhoneActivity) {
-        /*verifyPhoneInteractor.resendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(),
-                resendToken!!,
-                verifyPhoneActivity)
-        viewState.showSendCode()*/
+    fun resendCode() {
+        verifyPhoneInteractor.resendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(), this)
     }
 
     fun verify(code: String) {
@@ -56,7 +54,18 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneIntera
         viewState.showSendCode()
     }
 
-    override fun sendVerificationCode(phoneNumber: String, callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks) {
+    override fun sendVerificationCode(
+            phoneNumber: String,
+            callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks
+    ) {
         viewState.sendVerificationCode(phoneNumber, callback)
+    }
+
+    override fun resendVerificationCode(
+            phoneNumber: String,
+            callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks,
+            token: PhoneAuthProvider.ForceResendingToken
+    ) {
+        viewState.resendVerificationCode(phoneNumber, callback, token)
     }
 }

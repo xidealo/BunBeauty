@@ -76,7 +76,7 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
         WorkWithViewApi.hideKeyboard(this)
         when (v.id) {
             R.id.verifyVerifyPhoneBtn -> verifyPhonePresenter.verify(codeInput.text.toString())
-            R.id.resendCodeVerifyPhoneText -> verifyPhonePresenter.resendCode(this)
+            R.id.resendCodeVerifyPhoneText -> verifyPhonePresenter.resendCode()
             R.id.changePhoneVerifyPhoneText -> goBackToAuthorization()
         }
     }
@@ -122,24 +122,43 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
         val intent = Intent(this, RegistrationActivity::class.java)
         intent.putExtra(USER_PHONE, phone)
         startActivity(intent)
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
         finish()
     }
 
     override fun goToProfile() {
         val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
         finish()
     }
 
-    override fun sendVerificationCode(phoneNumber: String, callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks) {
+    override fun sendVerificationCode(
+            phoneNumber: String,
+            callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks
+    ) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber, // Phone number to verify
                 60, // Timeout duration
                 TimeUnit.SECONDS, // Unit of timeout
                 this, // Activity (for callback binding)
-                callback)
+                callback
+        )
+    }
+
+    override fun resendVerificationCode(
+            phoneNumber: String,
+            callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks,
+            token: PhoneAuthProvider.ForceResendingToken
+    ) {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phoneNumber, // Phone number to verify
+                60, // Timeout duration
+                TimeUnit.SECONDS, // Unit of timeout
+                this, // Activity (for callback binding)
+                callback, // OnVerificationStateChangedCallbacks
+                token
+        )  // ForceResendingToken from callbacks
     }
 
     companion object {

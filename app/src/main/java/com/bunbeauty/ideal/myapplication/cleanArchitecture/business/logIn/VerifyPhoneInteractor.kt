@@ -18,8 +18,10 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import java.util.concurrent.TimeUnit
 
-class VerifyPhoneInteractor(private val userRepository: IUserRepository,
-                            private val intent: Intent) : BaseRepository(),
+class VerifyPhoneInteractor(
+        private val userRepository: IUserRepository,
+        private val intent: Intent
+) : BaseRepository(),
         IVerifyPhoneInteractor, IUserCallback {
 
     lateinit var verifyPresenterCallback: VerifyPhonePresenterCallback
@@ -43,7 +45,8 @@ class VerifyPhoneInteractor(private val userRepository: IUserRepository,
 
     override fun sendVerificationCode(
             phoneNumber: String,
-            verifyPhonePresenterCallback: VerifyPhonePresenterCallback) {
+            verifyPhonePresenterCallback: VerifyPhonePresenterCallback
+    ) {
         Log.d(TAG, "send")
         verifyPhonePresenterCallback.sendVerificationCode(phoneNumber, verificationCallbacks)
         verifyPhonePresenterCallback.showSendCode()
@@ -51,16 +54,14 @@ class VerifyPhoneInteractor(private val userRepository: IUserRepository,
 
     override fun resendVerificationCode(
             phoneNumber: String,
-            token: PhoneAuthProvider.ForceResendingToken,
-            verifyPhoneActivity: VerifyPhoneActivity) {
-
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNumber, // Phone number to verify
-                60, // Timeout duration
-                TimeUnit.SECONDS, // Unit of timeout
-                verifyPhoneActivity, // Activity (for callback binding)
-                verificationCallbacks, // OnVerificationStateChangedCallbacks
-                token)  // ForceResendingToken from callbacks
+            verifyPhonePresenterCallback: VerifyPhonePresenterCallback
+    ) {
+        verifyPhonePresenterCallback.resendVerificationCode(
+                phoneNumber,
+                verificationCallbacks,
+                resendToken
+        )
+        verifyPhonePresenterCallback.showSendCode()
     }
 
     override fun verify(code: String, verifyPresenterCallback: VerifyPhonePresenterCallback) {
@@ -77,6 +78,7 @@ class VerifyPhoneInteractor(private val userRepository: IUserRepository,
     private val verificationCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
             //вызывается, если номер подтвержден
+
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
@@ -119,6 +121,6 @@ class VerifyPhoneInteractor(private val userRepository: IUserRepository,
     }
 
     companion object {
-        private val TAG = "DBInf"
+        const val TAG = "DBInf"
     }
 }
