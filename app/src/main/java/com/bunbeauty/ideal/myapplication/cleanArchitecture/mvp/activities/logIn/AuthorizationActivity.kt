@@ -51,7 +51,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
         super.onCreate(savedInstanceState)
         setContentView(R.layout.authorization)
         initView()
-        FirebaseAuth.getInstance().signOut()//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //FirebaseAuth.getInstance().signOut()//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         authorizationPresenter.defaultAuthorize()
     }
 

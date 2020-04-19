@@ -88,7 +88,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         avatarImage = findViewById(R.id.avatarProfileImage)
         withoutRatingText = findViewById(R.id.withoutRatingProfileText)
         ratingBar = findViewById(R.id.profileRatingBar)
-        progressBar = findViewById(R.id.profileProgressBar)
+        progressBar = findViewById(R.id.loadingProfileProgressBar)
         ratingLayout = findViewById(R.id.ratingProfileLayout)
         addServicesBtn = findViewById(R.id.addServicesProfileBtn)
         subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn)

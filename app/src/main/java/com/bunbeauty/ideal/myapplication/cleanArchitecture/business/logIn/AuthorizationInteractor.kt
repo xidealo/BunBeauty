@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 class AuthorizationInteractor(private val userRepository: IUserRepository) : BaseRepository(),
-        IAuthorizationInteractor, IUserCallback {
+    IAuthorizationInteractor, IUserCallback {
 
     val TAG = "DBInf"
     private lateinit var authorizationPresenterCallback: AuthorizationPresenterCallback
@@ -21,16 +21,19 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
         authorizationPresenterCallback.hideViewsOnScreen()
         if (getCurrentFbUser() != null) {
             userRepository.getByPhoneNumber(
-                    FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,
-                    this,
-                    true
+                FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,
+                this,
+                true
             )
         } else {
             authorizationPresenterCallback.showViewOnScreen()
         }
     }
 
-    override fun authorize(phone: String, authorizationPresenterCallback: AuthorizationPresenterCallback) {
+    override fun authorize(
+        phone: String,
+        authorizationPresenterCallback: AuthorizationPresenterCallback
+    ) {
         if (isPhoneCorrect(phone.trim())) {
             authorizationPresenterCallback.goToVerifyPhone(phone)
         } else {
@@ -48,7 +51,12 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
 
     override fun returnUser(user: User) {
         if (user.name.isEmpty()) {
-            authorizationPresenterCallback.goToRegistration(user.phone)
+            if (FirebaseAuth.getInstance().currentUser != null ) {
+                if(FirebaseAuth.getInstance().currentUser!!.phoneNumber != null)
+                    authorizationPresenterCallback.goToRegistration(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!)
+            } else {
+                authorizationPresenterCallback.showViewOnScreen()
+            }
         } else {
             authorizationPresenterCallback.goToProfile()
         }

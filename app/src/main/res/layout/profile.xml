@@ -10,7 +10,7 @@
     <include layout="@layout/part_top_panel" />
 
      <ProgressBar
-         android:id="@+id/profileProgressBar"
+         android:id="@+id/loadingProfileProgressBar"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_gravity="center"

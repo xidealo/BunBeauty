@@ -26,6 +26,7 @@
             <EditText
                 android:id="@+id/phoneRegistrationInput"
                 style="@style/loginPackageInput"
+                android:enabled="false"
                 android:hint="@string/phoneRegistration"
                 android:inputType="phone" />
 
@@ -33,13 +34,13 @@
                 android:id="@+id/nameRegistrationInput"
                 style="@style/loginPackageInput"
                 android:hint="@string/nameRegistration"
-                android:inputType="text" />
+                android:inputType="textPersonName|textCapSentences" />
 
             <EditText
                 android:id="@+id/surnameRegistrationInput"
                 style="@style/loginPackageInput"
                 android:hint="@string/surname"
-                android:inputType="text" />
+                android:inputType="textPersonName|textCapSentences"/>
 
             <LinearLayout
                 android:layout_width="200dp"

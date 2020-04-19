@@ -19,13 +19,13 @@ import com.google.firebase.auth.PhoneAuthProvider
 import java.util.concurrent.TimeUnit
 
 class VerifyPhoneInteractor(
-        private val userRepository: IUserRepository,
-        private val intent: Intent
+    private val userRepository: IUserRepository,
+    private val intent: Intent
 ) : BaseRepository(),
-        IVerifyPhoneInteractor, IUserCallback {
+    IVerifyPhoneInteractor, IUserCallback {
 
     lateinit var verifyPresenterCallback: VerifyPhonePresenterCallback
-    lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
+    var resendToken: PhoneAuthProvider.ForceResendingToken? = null
 
     private var phoneVerificationId: String = "1"
 
@@ -44,8 +44,8 @@ class VerifyPhoneInteractor(
     }
 
     override fun sendVerificationCode(
-            phoneNumber: String,
-            verifyPhonePresenterCallback: VerifyPhonePresenterCallback
+        phoneNumber: String,
+        verifyPhonePresenterCallback: VerifyPhonePresenterCallback
     ) {
         Log.d(TAG, "send")
         verifyPhonePresenterCallback.sendVerificationCode(phoneNumber, verificationCallbacks)
@@ -53,15 +53,17 @@ class VerifyPhoneInteractor(
     }
 
     override fun resendVerificationCode(
-            phoneNumber: String,
-            verifyPhonePresenterCallback: VerifyPhonePresenterCallback
+        phoneNumber: String,
+        verifyPhonePresenterCallback: VerifyPhonePresenterCallback
     ) {
-        verifyPhonePresenterCallback.resendVerificationCode(
+        if (resendToken != null) {
+            verifyPhonePresenterCallback.resendVerificationCode(
                 phoneNumber,
                 verificationCallbacks,
-                resendToken
-        )
-        verifyPhonePresenterCallback.showSendCode()
+                resendToken!!
+            )
+            verifyPhonePresenterCallback.showSendCode()
+        }
     }
 
     override fun verify(code: String, verifyPresenterCallback: VerifyPhonePresenterCallback) {
@@ -75,28 +77,31 @@ class VerifyPhoneInteractor(
         }
     }
 
-    private val verificationCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-            //вызывается, если номер подтвержден
+    private val verificationCallbacks =
+        object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                //вызывается, если номер подтвержден
+            }
 
-        }
+            override fun onVerificationFailed(e: FirebaseException) {
+                if (e is FirebaseAuthInvalidCredentialsException) {
+                    // Invalid request
+                    Log.d(TAG, "Invalid credential: " + e.getLocalizedMessage())
+                } else if (e is FirebaseTooManyRequestsException) {
+                    // SMS quota exceeded
+                    Log.d(TAG, "SMS Quota exceeded.")
+                }
+            }
 
-        override fun onVerificationFailed(e: FirebaseException) {
-            if (e is FirebaseAuthInvalidCredentialsException) {
-                // Invalid request
-                Log.d(TAG, "Invalid credential: " + e.getLocalizedMessage())
-            } else if (e is FirebaseTooManyRequestsException) {
-                // SMS quota exceeded
-                Log.d(TAG, "SMS Quota exceeded.")
+            override fun onCodeSent(
+                verificationId: String,
+                token: PhoneAuthProvider.ForceResendingToken
+            ) {
+                //происходит, когда отослали код
+                phoneVerificationId = verificationId
+                resendToken = token
             }
         }
-
-        override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-            //происходит, когда отослали код
-            phoneVerificationId = verificationId
-            resendToken = token
-        }
-    }
 
     private fun verifyCode(code: String) {
         //получаем ответ гугл

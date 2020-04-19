@@ -50,8 +50,6 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.registration)
-
-        registrationPresenter.getMyPhoneNumber()
         init()
     }
 
@@ -74,8 +72,8 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
         when (v.id) {
             R.id.saveRegistrationBtn -> {
                 registrationPresenter.registration(
-                        WorkWithStringsApi.firstCapitalSymbol(nameInput.text.toString()),
-                        WorkWithStringsApi.firstCapitalSymbol(surnameInput.text.toString()),
+                        WorkWithStringsApi.firstCapitalSymbol(nameInput.text.toString().trim()),
+                        WorkWithStringsApi.firstCapitalSymbol(surnameInput.text.toString().trim()),
                         WorkWithStringsApi.firstCapitalSymbol(citySpinner.selectedItem.toString()),
                         phoneInput.text.toString()
                 )
