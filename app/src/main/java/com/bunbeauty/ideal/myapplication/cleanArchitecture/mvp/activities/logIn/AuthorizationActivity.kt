@@ -26,7 +26,7 @@ import javax.inject.Inject
 class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, AuthorizationView, IAdapterSpinner {
 
     private lateinit var verifyBtn: Button
-    private lateinit var enterPhoneText: TextView
+    private lateinit var titleAuthorizationText: TextView
     private lateinit var phoneInput: EditText
     private lateinit var codeSpinner: Spinner
     private lateinit var progressBar: ProgressBar
@@ -58,7 +58,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
     private fun initView() {
         verifyBtn = findViewById(R.id.verifyAuthorizationBtn)
         phoneInput = findViewById(R.id.phoneAuthorizationInput)
-        enterPhoneText = findViewById(R.id.titleAuthorizationText)
+        titleAuthorizationText = findViewById(R.id.titleAuthorizationText)
         progressBar = findViewById(R.id.loadingAuthorizationProgressBar)
         codeSpinner = findViewById(R.id.codeAuthorizationSpinner)
         setAdapter(
@@ -88,13 +88,14 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
         codeSpinner.visibility = View.GONE
         phoneInput.visibility = View.GONE
         verifyBtn.visibility = View.GONE
+        titleAuthorizationText.visibility = View.GONE
     }
 
     override fun showViewsOnScreen() {
         Log.d(TAG_UI, "showViewsOnScreen: ")
         progressBar.visibility = View.GONE
         codeSpinner.visibility = View.VISIBLE
-        enterPhoneText.visibility = View.VISIBLE
+        titleAuthorizationText.visibility = View.VISIBLE
         phoneInput.visibility = View.VISIBLE
         verifyBtn.visibility = View.VISIBLE
     }

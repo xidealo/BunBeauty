@@ -24,8 +24,6 @@ import kotlin.reflect.typeOf
 
 class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, VerifyPhoneView {
 
-    private val USER_PHONE = "user phone"
-
     private lateinit var verifyCodeBtn: Button
     private lateinit var resendCodeText: TextView
     private lateinit var codeInput: EditText
