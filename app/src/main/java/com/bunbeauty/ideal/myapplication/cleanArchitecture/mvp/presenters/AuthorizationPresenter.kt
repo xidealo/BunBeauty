@@ -10,12 +10,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.Authorizati
 @InjectViewState
 class AuthorizationPresenter(private val authorizationInteractor: IAuthorizationInteractor) :
         MvpPresenter<AuthorizationView>(), AuthorizationPresenterCallback {
-
+    //ПЕРЕИМЕНОВАТЬ
     fun defaultAuthorize() {
         authorizationInteractor.defaultAuthorize(this)
     }
 
-    fun defaultAuthorize(phone: String) {
+    fun authorize(phone: String) {
         authorizationInteractor.authorize(phone, this)
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.constraintlayout.solver.GoalRow
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
@@ -34,10 +35,8 @@ import java.util.*
 import javax.inject.Inject
 
 class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView,
-    TopPanelable,
-    IBottomPanel, ISwitcher {
+    TopPanelable, IBottomPanel, ISwitcher {
 
-    private lateinit var nameText: TextView
     private lateinit var cityText: TextView
     private lateinit var phoneText: TextView
     private lateinit var withoutRatingText: TextView
@@ -53,6 +52,8 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var orderRecyclerView: RecyclerView
     private lateinit var serviceRecyclerView: RecyclerView
 
+    private lateinit var switcherFragment: SwitcherElement
+
     @Inject
     lateinit var profileInteractor: ProfileInteractor
 
@@ -62,9 +63,9 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     @ProvidePresenter
     internal fun provideProfilePresenter(): ProfilePresenter {
         DaggerAppComponent.builder()
-                .appModule(AppModule(application, intent))
-                .build()
-                .inject(this)
+            .appModule(AppModule(application, intent))
+            .build()
+            .inject(this)
         return ProfilePresenter(profileInteractor)
     }
 
@@ -74,13 +75,8 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
         init()
         createBottomPanel(supportFragmentManager)
-
+        createSwitcher()
         profilePresenter.initFCM()
-        profilePresenter.showProfile()
-    }
-
-    override fun onResume() {
-        super.onResume()
         profilePresenter.createProfileScreen()
     }
 
@@ -96,7 +92,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         mainLayout = findViewById(R.id.mainProfileLayout)
         orderRecyclerView = findViewById(R.id.ordersProfileRecycleView)
         serviceRecyclerView = findViewById(R.id.servicesProfileRecyclerView)
-        nameText = findViewById(R.id.nameProfileText)
         cityText = findViewById(R.id.cityProfileText)
         phoneText = findViewById(R.id.phoneProfileText)
         subscribersText = findViewById(R.id.subscribersProfileText)
@@ -109,8 +104,32 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         when (v.id) {
             R.id.addServicesProfileBtn -> goToCreationService()
             R.id.subscriptionsProfileBtn -> goToSubscribers()
+/*
             R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
+*/
         }
+    }
+
+    private fun createSwitcher() {
+        switcherFragment = SwitcherElement("Записи", "Услуги")
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.switcherProfileLayout, switcherFragment)
+        transaction.commit()
+    }
+
+    override fun showProfileInfo(name: String, city: String, phone: String) {
+        cityText.text = city
+        phoneText.text = phone
+    }
+
+    override fun showMyProfileView() {
+        orderRecyclerView.visibility = View.VISIBLE
+        addServicesBtn.setOnClickListener(this)
+        subscriptionsBtn.setOnClickListener(this)
+    }
+
+    override fun showAlienProfileView() {
+        serviceRecyclerView.visibility = View.VISIBLE
     }
 
     override fun createTopPanelForMyProfile(userName: String) {
@@ -134,31 +153,39 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         dialogsBtn.visibility = View.VISIBLE
     }
 
-    override fun showProfileInfo(name: String, city: String, phone: String) {
-        nameText.text = name
-        cityText.text = city
-        phoneText.text = phone
+    override fun hideDialogs() {
+        dialogsBtn.visibility = View.GONE
     }
 
-    override fun showRating(rating: Float) {
-        ratingBar.visibility = View.VISIBLE
-        ratingBar.rating = rating
-        ratingLayout.setOnClickListener(this)
+    override fun showAddService() {
+        addServicesBtn.visibility = View.VISIBLE
+    }
+
+    override fun hideAddService() {
+        addServicesBtn.visibility = View.INVISIBLE
     }
 
     override fun showWithoutRating() {
         withoutRatingText.visibility = View.VISIBLE
+        ratingBar.visibility = View.GONE
+    }
+
+    override fun showRating(rating: Float) {
+        ratingBar.visibility = View.VISIBLE
+        withoutRatingText.visibility = View.GONE
+        ratingBar.rating = rating
+        ratingLayout.setOnClickListener(this)
     }
 
     override fun showAvatar(photoLink: String) {
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
         val height = resources.getDimensionPixelSize(R.dimen.photo_height)
         Picasso.get()
-                .load(photoLink)
-                .resize(width, height)
-                .centerCrop()
-                .transform(CircularTransformation())
-                .into(avatarImage)
+            .load(photoLink)
+            .resize(width, height)
+            .centerCrop()
+            .transform(CircularTransformation())
+            .into(avatarImage)
     }
 
     @SuppressLint("SetTextI18n")
@@ -167,6 +194,14 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             subscriptionsBtn.text = "Подписки: $subscriptionsCount"
             subscriptionsBtn.visibility = View.VISIBLE
         }
+    }
+
+    override fun showSwitcher() {
+        switcherFragment.showSwitcherElement()
+    }
+
+    override fun hideSwitcher() {
+        switcherFragment.hideSwitcherElement()
     }
 
     @SuppressLint("SetTextI18n")
@@ -241,22 +276,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         cursor.close()
     }*/
 
-    override fun showMyProfileView() {
-        orderRecyclerView.visibility = View.VISIBLE
-        addServicesBtn.setOnClickListener(this)
-        subscriptionsBtn.setOnClickListener(this)
-    }
-
-    override fun showAlienProfileView() {
-        serviceRecyclerView.visibility = View.VISIBLE
-    }
-
-    override fun createSwitcher() {
-        val switcherElement = SwitcherElement("Записи", "Услуги")
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.switcherProfileLayout, switcherElement)
-        transaction.commit()
-    }
 
     override fun showProgress() {
         progressBar.visibility = View.VISIBLE
@@ -269,13 +288,13 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun firstSwitcherAct() {
+        hideAddService()
         serviceRecyclerView.visibility = View.GONE
         orderRecyclerView.visibility = View.VISIBLE
-        addServicesBtn.visibility = View.INVISIBLE
     }
 
     override fun secondSwitcherAct() {
-        addServicesBtn.visibility = View.VISIBLE
+        showAddService()
         orderRecyclerView.visibility = View.GONE
         serviceRecyclerView.visibility = View.VISIBLE
     }

@@ -3,7 +3,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.IProfilePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -15,10 +14,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.iid.FirebaseInstanceId
 
-class ProfileInteractor(private val userRepository: UserRepository,
-                        private val serviceRepository: ServiceRepository,
-                        private val intent: Intent) : BaseRepository(),
-        IProfileInteractor, IUserCallback,IServicesCallback {
+class ProfileInteractor(
+    private val userRepository: UserRepository,
+    private val serviceRepository: ServiceRepository,
+    private val intent: Intent
+) : BaseRepository(),
+    IProfileInteractor, IUserCallback, IServicesCallback {
 
     private val TAG = "DBInf"
     private lateinit var profilePresenter: IProfilePresenter
@@ -26,26 +27,40 @@ class ProfileInteractor(private val userRepository: UserRepository,
 
     override fun getProfileOwner(profilePresenter: IProfilePresenter) {
         this.profilePresenter = profilePresenter
-
         if (intent.hasExtra(User.USER)) {
             returnUser(intent.getSerializableExtra(User.USER) as User)
+            whoseProfile((intent.getSerializableExtra(User.USER) as User), profilePresenter)
         } else {
-            userRepository.getById(getOwnerId(),
-                    this,
-                    isFirstEnter(getOwnerId(), cachedUserIds))
-        }
-    }
-
-    private fun getProfileServiceList(userId: String) {
-        serviceRepository.getServicesByUserId(userId,
+            userRepository.getById(
+                getUserId(),
                 this,
-                isFirstEnter(userId, cachedUserIdsForServices))
+                isFirstEnter(getUserId(), cachedUserIds)
+            )
+        }
     }
 
     override fun returnUser(user: User) {
         profilePresenter.setUserProfile(user)
         currentUser = user
         getProfileServiceList(user.id)
+        whoseProfile(user, profilePresenter)
+        setRating(user.rating, profilePresenter)
+    }
+
+    fun setRating(rating: Float, iProfilePresenter: IProfilePresenter) {
+        if (rating > 0) {
+            iProfilePresenter.showRating(rating)
+        } else {
+            iProfilePresenter.showWithoutRating()
+        }
+    }
+
+    private fun getProfileServiceList(userId: String) {
+        serviceRepository.getServicesByUserId(
+            userId,
+            this,
+            isFirstEnter(userId, cachedUserIdsForServices)
+        )
     }
 
     override fun returnServices(serviceList: List<Service>) {
@@ -55,38 +70,23 @@ class ProfileInteractor(private val userRepository: UserRepository,
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
     override fun isFirstEnter() = (intent.hasExtra(User.USER))
 
-    override fun getOwnerId(): String {
-        return if (intent.hasExtra(User.USER)) {
-            (intent.getSerializableExtra(User.USER) as User).id
-        } else {
-            getUserId()
-        }
-    }
-    override fun isUserOwner() = (getUserId() == getOwnerId())
 
-    fun showProfile(iProfilePresenter: IProfilePresenter) {
-        if (isUserOwner()) {
-            iProfilePresenter.showMyProfile()
+    private fun whoseProfile(user: User, iProfilePresenter: IProfilePresenter) {
+        if (user.id == getUserId()) {
+            iProfilePresenter.showMyProfile(user)
         } else {
-            iProfilePresenter.showAlienProfile()
+            iProfilePresenter.showAlienProfile(user)
         }
     }
+
     override fun initFCM() {
         if (isFirstEnter()) {
             val token = FirebaseInstanceId.getInstance().token
             val reference = FirebaseDatabase.getInstance().reference
             reference.child(User.USERS)
-                    .child(getUserId())
-                    .child(TOKEN)
-                    .setValue(token)
-        }
-    }
-
-    fun setRating(rating: Float, iProfilePresenter: IProfilePresenter) {
-        if (rating > 0) {
-            iProfilePresenter.showRating(rating)
-        } else {
-            iProfilePresenter.showWithoutRating()
+                .child(getUserId())
+                .child(TOKEN)
+                .setValue(token)
         }
     }
 

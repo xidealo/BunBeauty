@@ -36,8 +36,8 @@ class BottomPanel : Panel() {
         mainScreenText = view.findViewById(R.id.mainScreenBottomPanelText)
         chatText = view.findViewById(R.id.chatBottomPanelText)
 
-        if ((context is ProfileActivity) &&
-                (context as ProfileActivity).profilePresenter.isUserOwner()) {
+        if ((context is ProfileActivity) /*&&
+                (context as ProfileActivity).profilePresenter.isUserOwner()*/) {
             profileText.setTextColor(ContextCompat.getColor(context!!, R.color.yellow))
         } else {
             profileText.setOnClickListener(this)

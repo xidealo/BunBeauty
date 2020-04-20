@@ -7,9 +7,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IUserRepository
 import kotlinx.coroutines.launch
 
-class UserRepository(private val userDao: UserDao,
-                     private val userFirebaseApi: UserFirebaseApi) : BaseRepository(),
-        IUserRepository, IUserCallback, IUsersCallback {
+class UserRepository(
+    private val userDao: UserDao,
+    private val userFirebaseApi: UserFirebaseApi
+) : BaseRepository(),
+    IUserRepository, IUserCallback, IUsersCallback {
 
     lateinit var userSubscriber: IUserCallback
     lateinit var usersSubscriber: IUsersCallback
@@ -57,7 +59,11 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
-    override fun getByPhoneNumber(phoneNumber: String, userSubscriber: IUserCallback, isFirstEnter: Boolean) {
+    override fun getByPhoneNumber(
+        phoneNumber: String,
+        userSubscriber: IUserCallback,
+        isFirstEnter: Boolean
+    ) {
         this.userSubscriber = userSubscriber
 
         if (isFirstEnter) {
@@ -81,7 +87,12 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
-    override fun getByCityAndUserName(city: String, userName: String, usersSubscriber: IUsersCallback, isFirstEnter: Boolean) {
+    override fun getByCityAndUserName(
+        city: String,
+        userName: String,
+        usersSubscriber: IUsersCallback,
+        isFirstEnter: Boolean
+    ) {
         this.usersSubscriber = usersSubscriber
         if (isFirstEnter) {
             userFirebaseApi.getByCityAndUserName(city, userName, this)
@@ -102,6 +113,7 @@ class UserRepository(private val userDao: UserDao,
             }
         }
     }
+
     //Что за даун это написал?
     //Понял, что это я
     /*

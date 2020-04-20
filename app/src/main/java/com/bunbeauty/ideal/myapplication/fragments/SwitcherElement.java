@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.other.ISwitcher;
@@ -20,6 +21,8 @@ public class SwitcherElement extends Fragment implements View.OnClickListener {
 
     private Button leftBtn;
     private Button rightBtn;
+
+    private LinearLayout mainLayout;
 
     private String leftBtnText;
     private String rightBtnText;
@@ -43,7 +46,7 @@ public class SwitcherElement extends Fragment implements View.OnClickListener {
 
         leftBtn = view.findViewById(R.id.leftSwitcherElementBtn);
         rightBtn = view.findViewById(R.id.rightSwitcherElementBtn);
-
+        mainLayout = view.findViewById(R.id.switcherElementLayout);
         leftBtn.setOnClickListener(this);
         rightBtn.setOnClickListener(this);
 
@@ -53,6 +56,14 @@ public class SwitcherElement extends Fragment implements View.OnClickListener {
     private void setData() {
         leftBtn.setText(leftBtnText);
         rightBtn.setText(rightBtnText);
+    }
+
+    public void showSwitcherElement(){
+        mainLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void hideSwitcherElement(){
+        mainLayout.setVisibility(View.GONE);
     }
 
     @Override

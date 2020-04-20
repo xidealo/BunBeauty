@@ -6,8 +6,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface IProfilePresenter {
     fun setUserProfile(user: User)
     fun setServiceListWithOwner(serviceList: List<Service>, user: User)
-    fun showMyProfile()
-    fun showAlienProfile()
+    fun showMyProfile(user: User)
+    fun showAlienProfile(user: User)
     fun showRating(rating:Float)
     fun showWithoutRating()
 }

@@ -444,8 +444,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
-
-
     private void chooseImage() {
         //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);

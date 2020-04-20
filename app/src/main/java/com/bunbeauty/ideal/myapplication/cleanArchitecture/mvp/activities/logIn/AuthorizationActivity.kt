@@ -19,7 +19,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.Author
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes
-import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
 
@@ -71,7 +70,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
 
     override fun onClick(v: View) {
         if (v.id == R.id.verifyAuthorizationBtn) {
-            authorizationPresenter.defaultAuthorize(
+            authorizationPresenter.authorize(
                     CountryCodes.codes[codeSpinner.selectedItemPosition] + phoneInput.text.toString()
             )
         }

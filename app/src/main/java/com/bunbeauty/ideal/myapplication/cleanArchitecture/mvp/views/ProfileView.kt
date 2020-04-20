@@ -11,14 +11,20 @@ interface ProfileView: MvpView {
     fun createTopPanelForOtherProfile(userName: String)
     fun showUserServices(serviceList: List<Service>, user: User)
     fun hideSubscriptions()
+
     fun showDialogs()
+    fun hideDialogs()
+    fun showAddService()
+    fun hideAddService()
+
     fun showProfileInfo(name: String, city: String, phone: String)
     fun showRating(rating: Float)
     fun showWithoutRating()
     fun showAvatar(photoLink: String)
     fun showSubscribers(subscribersCount: Long)
     fun showSubscriptions(subscriptionsCount: Long)
-    fun createSwitcher()
+    fun showSwitcher()
+    fun hideSwitcher()
     fun showProgress()
     fun hideProgress()
 }

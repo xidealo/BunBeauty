@@ -44,8 +44,8 @@ class UserFirebaseApi {
     fun getById(id: String, callback: IUserCallback) {
 
         val userRef = FirebaseDatabase.getInstance()
-                .getReference(User.USERS)
-                .child(id)
+            .getReference(User.USERS)
+            .child(id)
 
         userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
@@ -61,8 +61,8 @@ class UserFirebaseApi {
 
     fun getByPhoneNumber(phoneNumber: String, callback: IUserCallback) {
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
-                .orderByChild(User.PHONE)
-                .equalTo(phoneNumber)
+            .orderByChild(User.PHONE)
+            .equalTo(phoneNumber)
 
         userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
@@ -82,8 +82,8 @@ class UserFirebaseApi {
     fun getByCity(city: String, iUsersCallback: IUsersCallback) {
 
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
-                .orderByChild(User.CITY)
-                .equalTo(city)
+            .orderByChild(User.CITY)
+            .equalTo(city)
 
         userQuery.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
@@ -105,8 +105,8 @@ class UserFirebaseApi {
     fun getByCityAndUserName(city: String, userName: String, iUsersCallback: IUsersCallback) {
 
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
-                .orderByChild(User.CITY)
-                .equalTo(city)
+            .orderByChild(User.CITY)
+            .equalTo(city)
 
         userQuery.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
@@ -129,8 +129,8 @@ class UserFirebaseApi {
     fun getByName(name: String, iUsersCallback: IUsersCallback) {
 
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
-                .orderByChild(User.NAME)
-                .equalTo(name)
+            .orderByChild(User.NAME)
+            .equalTo(name)
 
         userQuery.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
@@ -157,12 +157,14 @@ class UserFirebaseApi {
         user.city = userSnapshot.child(User.CITY).value as? String ?: ""
         user.phone = userSnapshot.child(User.PHONE).value as? String ?: ""
         user.photoLink = userSnapshot.child(User.PHOTO_LINK).value as? String ?: ""
-        user.countOfRates = userSnapshot.child(User.COUNT_OF_RATES).getValue<Long>(Long::class.java)
+        user.countOfRates = userSnapshot.child(User.COUNT_OF_RATES).getValue(Long::class.java)
+            ?: 0L
+        user.rating = userSnapshot.child(User.AVG_RATING).getValue(Float::class.java) ?: 0f
+        user.subscriptionsCount =
+            userSnapshot.child(User.COUNT_OF_SUBSCRIPTIONS).getValue(Long::class.java)
                 ?: 0L
-        user.rating = userSnapshot.child(User.AVG_RATING).getValue<Float>(Float::class.java) ?: 0f
-        user.subscriptionsCount = userSnapshot.child(User.COUNT_OF_SUBSCRIPTIONS).getValue<Long>(Long::class.java)
-                ?: 0L
-        user.subscribersCount = userSnapshot.child(User.COUNT_OF_SUBSCRIBERS).getValue<Long>(Long::class.java)
+        user.subscribersCount =
+            userSnapshot.child(User.COUNT_OF_SUBSCRIBERS).getValue(Long::class.java)
                 ?: 0L
 
         return user

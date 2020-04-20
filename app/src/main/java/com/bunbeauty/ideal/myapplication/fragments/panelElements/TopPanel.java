@@ -297,9 +297,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
 
     private void goToEditProfile() {
         Intent intent = new Intent(getContext(), EditProfile.class);
-        TextView nameText = super.getActivity().findViewById(R.id.nameProfileText);
         TextView cityText = super.getActivity().findViewById(R.id.cityProfileText);
-        intent.putExtra(USER_NAME, nameText.getText());
         intent.putExtra(USER_CITY, cityText.getText());
         startActivity(intent);
     }
