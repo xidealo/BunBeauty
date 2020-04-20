@@ -11,6 +11,7 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.adapters.ServiceAdapter
 import com.bunbeauty.ideal.myapplication.adapters.ServiceProfileAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -34,7 +35,7 @@ import java.util.*
 import javax.inject.Inject
 
 class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView,
-    ITopPanel, IBottomPanel,  ISwitcher {
+    ITopPanel, IBottomPanel, ISwitcher {
 
     private lateinit var cityText: TextView
     private lateinit var phoneText: TextView
@@ -50,6 +51,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var avatarImage: ImageView
     private lateinit var orderRecyclerView: RecyclerView
     private lateinit var serviceRecyclerView: RecyclerView
+    private lateinit var serviceAdapter: ServiceProfileAdapter
 
     private lateinit var switcherFragment: SwitcherElement
 
@@ -75,6 +77,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         init()
         createBottomPanel(supportFragmentManager)
         createSwitcher()
+        firstSwitcherAct()
         profilePresenter.initFCM()
         profilePresenter.createProfileScreen()
     }
@@ -89,14 +92,17 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn)
         dialogsBtn = findViewById(R.id.dialogsProfileBtn)
         mainLayout = findViewById(R.id.mainProfileLayout)
-        orderRecyclerView = findViewById(R.id.ordersProfileRecycleView)
-        serviceRecyclerView = findViewById(R.id.servicesProfileRecyclerView)
         cityText = findViewById(R.id.cityProfileText)
         phoneText = findViewById(R.id.phoneProfileText)
         subscribersText = findViewById(R.id.subscribersProfileText)
 
+        orderRecyclerView = findViewById(R.id.ordersProfileRecycleView)
+        serviceRecyclerView = findViewById(R.id.servicesProfileRecyclerView)
         orderRecyclerView.layoutManager = LinearLayoutManager(this)
         serviceRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        serviceAdapter = ServiceProfileAdapter(profilePresenter.getServiceLink())
+        serviceRecyclerView.adapter = serviceAdapter
     }
 
     override fun onClick(v: View) {
@@ -140,8 +146,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showUserServices(serviceList: List<Service>, user: User) {
-        val serviceAdapter = ServiceProfileAdapter(serviceList as ArrayList<Service>, user)
-        serviceRecyclerView.adapter = serviceAdapter
+        serviceAdapter.notifyDataSetChanged()
     }
 
     override fun hideSubscriptions() {
