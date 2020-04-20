@@ -22,8 +22,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
-import com.bunbeauty.ideal.myapplication.editing.EditProfile;
-import com.bunbeauty.ideal.myapplication.editing.EditService;
+import com.bunbeauty.ideal.myapplication.editing.EditProfileActivity;
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 
@@ -296,7 +295,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
     }
 
     private void goToEditProfile() {
-        Intent intent = new Intent(getContext(), EditProfile.class);
+        Intent intent = new Intent(getContext(), EditProfileActivity.class);
         TextView cityText = super.getActivity().findViewById(R.id.cityProfileText);
         intent.putExtra(USER_CITY, cityText.getText());
         startActivity(intent);

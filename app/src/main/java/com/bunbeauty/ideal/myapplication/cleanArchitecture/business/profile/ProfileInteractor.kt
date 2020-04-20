@@ -2,7 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.IProfilePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -22,14 +22,14 @@ class ProfileInteractor(
     IProfileInteractor, IUserCallback, IServicesCallback {
 
     private val TAG = "DBInf"
-    private lateinit var profilePresenter: IProfilePresenter
+    private lateinit var profilePresenterCallback: ProfilePresenterCallback
     lateinit var currentUser: User
 
-    override fun getProfileOwner(profilePresenter: IProfilePresenter) {
-        this.profilePresenter = profilePresenter
+    override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
+        this.profilePresenterCallback = profilePresenterCallback
         if (intent.hasExtra(User.USER)) {
             returnUser(intent.getSerializableExtra(User.USER) as User)
-            whoseProfile((intent.getSerializableExtra(User.USER) as User), profilePresenter)
+            whoseProfile((intent.getSerializableExtra(User.USER) as User), profilePresenterCallback)
         } else {
             userRepository.getById(
                 getUserId(),
@@ -40,18 +40,18 @@ class ProfileInteractor(
     }
 
     override fun returnUser(user: User) {
-        profilePresenter.setUserProfile(user)
+        profilePresenterCallback.setUserProfile(user)
         currentUser = user
         getProfileServiceList(user.id)
-        whoseProfile(user, profilePresenter)
-        setRating(user.rating, profilePresenter)
+        whoseProfile(user, profilePresenterCallback)
+        setRating(user.rating, profilePresenterCallback)
     }
 
-    fun setRating(rating: Float, iProfilePresenter: IProfilePresenter) {
+    fun setRating(rating: Float, profilePresenterCallback: ProfilePresenterCallback) {
         if (rating > 0) {
-            iProfilePresenter.showRating(rating)
+            profilePresenterCallback.showRating(rating)
         } else {
-            iProfilePresenter.showWithoutRating()
+            profilePresenterCallback.showWithoutRating()
         }
     }
 
@@ -64,18 +64,18 @@ class ProfileInteractor(
     }
 
     override fun returnServices(serviceList: List<Service>) {
-        profilePresenter.setServiceListWithOwner(serviceList, currentUser)
+        profilePresenterCallback.setServiceListWithOwner(serviceList, currentUser)
     }
 
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
     override fun isFirstEnter() = (intent.hasExtra(User.USER))
 
 
-    private fun whoseProfile(user: User, iProfilePresenter: IProfilePresenter) {
+    private fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         if (user.id == getUserId()) {
-            iProfilePresenter.showMyProfile(user)
+            profilePresenterCallback.showMyProfile(user)
         } else {
-            iProfilePresenter.showAlienProfile(user)
+            profilePresenterCallback.showAlienProfile(user)
         }
     }
 

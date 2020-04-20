@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.IProfilePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
 
 interface IProfileInteractor {
     fun loadProfile(ownerId:String)
@@ -10,7 +10,7 @@ interface IProfileInteractor {
     fun checkSubscription() : Boolean
     fun initFCM()
     fun isFirstEnter():Boolean
-    fun getProfileOwner(profilePresenter: IProfilePresenter)
+    fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback)
     //fun getProfileServiceList(profileCallback: IProfileCallback)
 
 }

@@ -34,6 +34,7 @@ import javax.inject.Inject
 class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, AddingServiceView,
     IPhotoEditable, IBottomPanel, ITopPanel {
 
+    private lateinit var photoCreationServiceBtn: TextView
     private lateinit var nameServiceInput: EditText
     private lateinit var costAddServiceInput: EditText
     private lateinit var descriptionServiceInput: EditText
@@ -46,6 +47,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
 
     private lateinit var categoryElement: CategoryElement
     private lateinit var continueButton: Button
+    private lateinit var addServiceCreationServiceBtn: Button
 
     @InjectPresenter
     lateinit var creationServicePresenter: CreationServicePresenter
@@ -66,36 +68,34 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.creation_service)
-
         init()
         createPanels()
         showCategory()
     }
 
-    private fun createPanels(){
-        createBottomPanel(supportFragmentManager)
-        createTopPanel("Создание услуги", ButtonTask.NONE, supportFragmentManager)
-    }
-
     private fun init() {
-        findViewById<Button>(R.id.addServiceCreationServiceBtn)
-            .setOnClickListener(this)
-        findViewById<TextView>(R.id.photoCreationServiceBtn)
-            .setOnClickListener(this)
-
+        fpathOfImages = ArrayList()
         nameServiceInput = findViewById(R.id.nameCreationServiceInput)
         costAddServiceInput = findViewById(R.id.costCreationServiceInput)
         descriptionServiceInput = findViewById(R.id.descriptionCreationServiceInput)
         addressServiceInput = findViewById(R.id.addressCreationServiceInput)
         premiumLayout = findViewById(R.id.premiumCreationServiceLayout)
         mainLayout = findViewById(R.id.mainCreationServiceLinearLayout)
-        fpathOfImages = ArrayList()
+        addServiceCreationServiceBtn = findViewById(R.id.addServiceCreationServiceBtn)
+        addServiceCreationServiceBtn.setOnClickListener(this)
+        photoCreationServiceBtn = findViewById(R.id.photoCreationServiceBtn)
+        photoCreationServiceBtn.setOnClickListener(this)
+    }
+
+    private fun createPanels() {
+        createBottomPanel(supportFragmentManager)
+        createTopPanel("Создание услуги", ButtonTask.NONE, supportFragmentManager)
     }
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.addServiceCreationServiceBtn -> {
-                val service = creationServicePresenter.addService(
+                creationServicePresenter.addService(
                     WorkWithStringsApi.firstCapitalSymbol(nameServiceInput.text.toString()),
                     descriptionServiceInput.text.toString(),
                     costAddServiceInput.text.toString(),
@@ -103,10 +103,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
                     addressServiceInput.text.toString(),
                     categoryElement.tagsArray
                 )
-
-                if (service != null) {
-                    creationServicePresenter.addImages(fpathOfImages, service)
-                }
+                //creationServicePresenter.addImages(fpathOfImages, service)
             }
             R.id.photoCreationServiceBtn -> choosePhoto()
         }

@@ -10,7 +10,6 @@
     <include layout="@layout/part_top_panel" />
 
     <ScrollView
-        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="2dp"
@@ -18,8 +17,7 @@
         app:layout_constraintBottom_toTopOf="@+id/addServiceCreationServiceBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -119,14 +117,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1dp"
         android:text="@string/addServices"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/part_bottom_panel"
-        tools:layout_editor_absoluteY="731dp" />
-
+    <include layout="@layout/part_bottom_panel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

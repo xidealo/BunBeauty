@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
-interface IProfilePresenter {
+interface ProfilePresenterCallback {
     fun setUserProfile(user: User)
     fun setServiceListWithOwner(serviceList: List<Service>, user: User)
     fun showMyProfile(user: User)
