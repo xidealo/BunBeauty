@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import androidx.constraintlayout.solver.GoalRow
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
@@ -21,7 +20,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.TopPanelable
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 import com.bunbeauty.ideal.myapplication.editing.EditProfile
@@ -35,7 +34,7 @@ import java.util.*
 import javax.inject.Inject
 
 class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView,
-    TopPanelable, IBottomPanel, ISwitcher {
+    ITopPanel, IBottomPanel,  ISwitcher {
 
     private lateinit var cityText: TextView
     private lateinit var phoneText: TextView

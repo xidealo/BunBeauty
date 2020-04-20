@@ -31,7 +31,7 @@ import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
 class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView, IEditableActivity,
-        ITopPanel, IBottomPanel, IProfileAvailable {
+    ITopPanel, IBottomPanel, IProfileAvailable {
 
     private lateinit var mainScroll: ScrollView
     private lateinit var costText: TextView
@@ -124,7 +124,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         showRating(service.rating, service.countOfRates)
         servicePresenter.setPremium(serviceOwner.id, service.premiumDate)
 
-        createTopPanel()
         offProgress()
     }
 
@@ -147,8 +146,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         ratingBar.rating = rating
         ratingLayout.setOnClickListener(this)
     }
-
-    override fun createTopPanel () = servicePresenter.setTopPanel(service, serviceOwner)
 
     override fun showTopPanelForMyService(service: Service) {
         val topPanel = TopPanel()

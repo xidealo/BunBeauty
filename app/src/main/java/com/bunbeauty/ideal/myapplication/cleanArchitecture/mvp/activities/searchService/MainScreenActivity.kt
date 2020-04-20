@@ -63,7 +63,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         setContentView(R.layout.main_screen)
 
         init()
-        createTopPanel()
         createBottomPanel(supportFragmentManager, R.id.bottomMainScreenLayout)
         createSearchPanel()
         createMainScreen()
@@ -130,13 +129,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         }
     }
 
-    override fun createTopPanel() {
-        val topPanel = TopPanel()
-
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.topMainScreenLayout, topPanel)
-        transaction.commit()
-    }
 
     override fun showTopPanel() {
         headerLayout.visibility = View.VISIBLE

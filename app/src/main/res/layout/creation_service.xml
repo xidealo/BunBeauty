@@ -7,14 +7,10 @@
     android:layout_height="match_parent"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity">
 
-    <LinearLayout
-        android:id="@+id/topAddingServiceLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent" />
+    <include layout="@layout/part_top_panel" />
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="2dp"
@@ -22,7 +18,8 @@
         app:layout_constraintBottom_toTopOf="@+id/addServiceCreationServiceBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topAddingServiceLayout">
+        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout"
+        app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -115,23 +112,21 @@
 
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/bottomAddServiceLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_panel_height"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
     <Button
         android:id="@+id/addServiceCreationServiceBtn"
-        style="@style/mainButtonLogIn"
+        style="@style/mainButtonOther"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
         android:text="@string/addServices"
-        app:layout_constraintBottom_toTopOf="@id/bottomAddServiceLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/part_bottom_panel"
+        tools:layout_editor_absoluteY="731dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,8 +15,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IPhotoEditable
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CreationServicePresenter
@@ -29,7 +32,7 @@ import java.util.*
 import javax.inject.Inject
 
 class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, AddingServiceView,
-        IPhotoEditable {
+    IPhotoEditable, IBottomPanel, ITopPanel {
 
     private lateinit var nameServiceInput: EditText
     private lateinit var costAddServiceInput: EditText
@@ -37,6 +40,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     private lateinit var addressServiceInput: EditText
     private lateinit var premiumLayout: LinearLayout
     private lateinit var mainLayout: LinearLayout
+
     //храним ссылки на картинки в хранилище
     private lateinit var fpathOfImages: ArrayList<String>
 
@@ -45,53 +49,39 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
 
     @InjectPresenter
     lateinit var creationServicePresenter: CreationServicePresenter
+
     @Inject
     lateinit var creationServiceInteractor: CreationServiceInteractor
 
     @ProvidePresenter
     internal fun provideAddingServicePresenter(): CreationServicePresenter {
         DaggerAppComponent
-                .builder()
-                .appModule(AppModule(application, intent))
-                .build().inject(this)
+            .builder()
+            .appModule(AppModule(application, intent))
+            .build().inject(this)
 
         return CreationServicePresenter(creationServiceInteractor)
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.creation_service)
 
         init()
-        showTopPanel()
-        showBottomPanel()
+        createPanels()
         showCategory()
     }
 
-    private fun showTopPanel() {
-        val topPanel = TopPanel()
-
-        topPanel.title = "Создание услуги"
-
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.topAddingServiceLayout, topPanel)
-        transaction.commit()
-    }
-
-    private fun showBottomPanel() {
-        val bottomPanel = BottomPanel()
-
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.bottomAddServiceLayout, bottomPanel)
-        transaction.commit()
+    private fun createPanels(){
+        createBottomPanel(supportFragmentManager)
+        createTopPanel("Создание услуги", ButtonTask.NONE, supportFragmentManager)
     }
 
     private fun init() {
         findViewById<Button>(R.id.addServiceCreationServiceBtn)
-                .setOnClickListener(this)
+            .setOnClickListener(this)
         findViewById<TextView>(R.id.photoCreationServiceBtn)
-                .setOnClickListener(this)
+            .setOnClickListener(this)
 
         nameServiceInput = findViewById(R.id.nameCreationServiceInput)
         costAddServiceInput = findViewById(R.id.costCreationServiceInput)
@@ -106,20 +96,19 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
         when (v.id) {
             R.id.addServiceCreationServiceBtn -> {
                 val service = creationServicePresenter.addService(
-                        WorkWithStringsApi.firstCapitalSymbol(nameServiceInput.text.toString()),
-                        descriptionServiceInput.text.toString(),
-                        costAddServiceInput.text.toString(),
-                        categoryElement.category,
-                        addressServiceInput.text.toString(),
-                        categoryElement.tagsArray)
+                    WorkWithStringsApi.firstCapitalSymbol(nameServiceInput.text.toString()),
+                    descriptionServiceInput.text.toString(),
+                    costAddServiceInput.text.toString(),
+                    categoryElement.category,
+                    addressServiceInput.text.toString(),
+                    categoryElement.tagsArray
+                )
 
-                if(service!=null){
+                if (service != null) {
                     creationServicePresenter.addImages(fpathOfImages, service)
                 }
             }
             R.id.photoCreationServiceBtn -> choosePhoto()
-            else -> {
-            }
         }
     }
 
@@ -135,7 +124,8 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK &&
-                data != null && data.data != null) {
+            data != null && data.data != null
+        ) {
             try {
                 //show image on activity
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, data.data)
@@ -151,32 +141,32 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     // плохое место
     override fun showPhoto(bitmap: Bitmap, filePath: String) {
         supportFragmentManager
-                .beginTransaction()
-                .add(R.id.photoCreationServiceLayout, ServicePhotoElement(bitmap, filePath))
-                .commit()
+            .beginTransaction()
+            .add(R.id.photoCreationServiceLayout, ServicePhotoElement(bitmap, filePath))
+            .commit()
     }
 
     override fun removePhoto(servicePhotoElement: ServicePhotoElement, filePath: String) {
         supportFragmentManager
-                .beginTransaction()
-                .remove(servicePhotoElement)
-                .commit()
+            .beginTransaction()
+            .remove(servicePhotoElement)
+            .commit()
         fpathOfImages.remove(filePath)
     }
 
     override fun showCategory() {
         categoryElement = CategoryElement(this)
         supportFragmentManager
-                .beginTransaction()
-                .add(R.id.categoryCreationServiceLayout, categoryElement)
-                .commit()
+            .beginTransaction()
+            .add(R.id.categoryCreationServiceLayout, categoryElement)
+            .commit()
     }
 
-    override fun showPremiumBlock(service:Service) {
+    override fun showPremiumBlock(service: Service) {
         supportFragmentManager
-                .beginTransaction()
-                .add(R.id.premiumCreationServiceLayout, PremiumElementFragment(service))
-                .commit()
+            .beginTransaction()
+            .add(R.id.premiumCreationServiceLayout, PremiumElementFragment(service))
+            .commit()
 
         premiumLayout.visibility = View.VISIBLE
     }

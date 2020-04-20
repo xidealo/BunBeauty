@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.TopPanelable
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.squareup.picasso.Picasso
 
@@ -57,7 +57,7 @@ class TopPanel : Panel() {
                 activity!!.overridePendingTransition(0, 0)
             }
             else -> {
-                (activity!! as TopPanelable).iconClick()
+                (activity!! as ITopPanel).iconClick()
             }
         }
     }
