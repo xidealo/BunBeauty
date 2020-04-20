@@ -7,26 +7,21 @@
     android:background="@color/mainColorBG"
     tools:context="com.bunbeauty.ideal.myapplication.editing.EditProfile">
 
-    <LinearLayout
-        android:id="@+id/headerEditProfileLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent" />
+    <include layout="@layout/part_top_panel"/>
 
     <ScrollView
+        android:id="@+id/scrollView3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/footerEditProfileLayout"
+        app:layout_constraintBottom_toTopOf="@+id/editProfileEditProfileBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerEditProfileLayout">
+        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -71,40 +66,27 @@
                 style="@style/block"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/block_text"
                 android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/nameEditProfileInput"
                     style="@style/mainBlockText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@android:color/transparent"
                     android:hint="@string/nameAddServiceTB" />
             </LinearLayout>
 
             <LinearLayout
                 style="@style/block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/block_text"
                 android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/surnameEditProfileInput"
                     style="@style/mainBlockText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@android:color/transparent"
                     android:hint="@string/surname" />
             </LinearLayout>
 
             <LinearLayout
                 style="@style/block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/block_text"
                 android:orientation="horizontal">
 
                 <TextView
@@ -126,9 +108,6 @@
             <!-- Телефон -->
             <LinearLayout
                 style="@style/block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/block_text"
                 android:orientation="horizontal">
 
                 <Spinner
@@ -142,22 +121,10 @@
                 <EditText
                     android:id="@+id/phoneEditProfileInput"
                     style="@style/mainBlockText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:backgroundTint="@android:color/transparent"
                     android:hint="@string/phone"
                     android:inputType="phone" />
             </LinearLayout>
-
-            <Button
-                android:id="@+id/editProfileEditProfileBtn"
-                style="@style/mainButtonOther"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:text="@string/saveData" />
-
             <EditText
                 android:id="@+id/codeEditProfileInput"
                 style="@style/mainBlockText"
@@ -166,8 +133,7 @@
                 android:layout_marginTop="5dp"
                 android:ems="10"
                 android:hint="@string/enterCode"
-                android:inputType="number"
-                android:visibility="gone" />
+                android:inputType="number" />
 
             <Button
                 android:id="@+id/verifyCodeEditProfileBtn"
@@ -175,8 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="@string/verifyCode"
-                android:visibility="gone" />
+                android:text="@string/verifyCode" />
 
             <Button
                 android:id="@+id/resendCodeEditProfileBtn"
@@ -184,16 +149,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="@string/resendCode"
-                android:visibility="gone" />
+                android:text="@string/resendCode" />
         </LinearLayout>
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/footerEditProfileLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_panel_height"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
+    <Button
+        android:id="@+id/editProfileEditProfileBtn"
+        style="@style/mainButtonOther"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="1dp"
+        android:text="@string/saveData"
+        app:layout_constraintBottom_toTopOf="@id/bottomPanelLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+    <include
+        layout="@layout/part_bottom_panel"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
