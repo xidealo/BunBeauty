@@ -5,12 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mainColorBG"
-    tools:context="com.bunbeauty.ideal.myapplication.editing.EditProfile">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity">
 
     <include layout="@layout/part_top_panel" />
 
     <ScrollView
-        android:id="@+id/scrollView3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"

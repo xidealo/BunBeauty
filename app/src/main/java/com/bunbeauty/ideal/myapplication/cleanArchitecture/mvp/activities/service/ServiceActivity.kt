@@ -243,9 +243,9 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     override fun goToEditing(editableEntity: EditableEntity) {
-        val intent = Intent(this, EditService::class.java)
+      /*  val intent = Intent(this, EditService::class.java)
         intent.putExtra(Service.SERVICE, editableEntity as Service)
-        startActivity(intent)
+        startActivity(intent)*/
     }
 
     private fun goToCalendar(status: String) {

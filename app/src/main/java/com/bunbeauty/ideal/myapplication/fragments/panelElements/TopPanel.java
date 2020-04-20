@@ -22,7 +22,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
-import com.bunbeauty.ideal.myapplication.editing.EditProfileActivity;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity;
 import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 
@@ -176,7 +176,9 @@ public class TopPanel extends Fragment implements View.OnClickListener {
                         avatarImage.setOnClickListener(this);
                         // Если это не диалог
                     } else {
-                        if (getContext().getClass() == EditService.class) {
+                        if (true
+                    //            getContext().getClass() == EditService.class
+                    ) {
                             //multiBtn.setText("Удалить");
                             //Пока что не будет удаления сервиса, потому что много связей и тяжело удалить
                             settingText.setVisibility(View.INVISIBLE);
@@ -258,10 +260,10 @@ public class TopPanel extends Fragment implements View.OnClickListener {
         }
 
         // редактирование сервиса
-        if (currentClass == EditService.class) {
+       /* if (currentClass == EditService.class) {
             deleteService();
             return;
-        }
+        }*/
     }
 
     private void checkSubscribe(){
@@ -302,10 +304,10 @@ public class TopPanel extends Fragment implements View.OnClickListener {
     }
 
     private void goToEditService() {
-        Intent intent = new Intent(getContext(), EditService.class);
+     /*   Intent intent = new Intent(getContext(), EditService.class);
         intent.putExtra(SERVICE_ID, serviceId);
 
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     private void goToProfile() {
@@ -316,7 +318,7 @@ public class TopPanel extends Fragment implements View.OnClickListener {
     }
 
     private void deleteService() {
-        EditService activity = (EditService) this.getActivity();
-        activity.deleteThisService();
+       /* EditService activity = (EditService) this.getActivity();
+        activity.deleteThisService();*/
     }
 }
