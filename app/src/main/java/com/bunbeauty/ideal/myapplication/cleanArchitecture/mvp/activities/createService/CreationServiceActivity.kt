@@ -93,7 +93,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     }
 
     override fun onClick(v: View) {
-        when (v.id) {
+        when(v.id) {
             R.id.addServiceCreationServiceBtn -> {
                 creationServicePresenter.addService(
                     WorkWithStringsApi.firstCapitalSymbol(nameServiceInput.text.toString()),
