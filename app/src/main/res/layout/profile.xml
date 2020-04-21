@@ -23,9 +23,8 @@
     <LinearLayout
         android:id="@+id/mainProfileLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewProfileRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topPanelLayout">
@@ -33,6 +32,7 @@
         <!-- Верхняя часть-->
         <LinearLayout
             style="@style/block"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/block_text"
@@ -127,6 +127,7 @@
                     android:id="@+id/dialogsProfileBtn"
                     style="@style/smallMainButtonOther"
                     android:layout_width="match_parent"
+
                     android:layout_weight="1"
                     android:text="Диалог" />
 
@@ -155,7 +156,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="1dp"
+            android:padding="2dp"
             android:orientation="horizontal">
 
             <Button
@@ -172,7 +173,7 @@
     <LinearLayout
         android:id="@+id/recyclerViewProfileRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/bottomPanelLayout"
         app:layout_constraintTop_toBottomOf="@id/mainProfileLayout">

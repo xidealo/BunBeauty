@@ -25,6 +25,8 @@ class ProfileInteractor(
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
     lateinit var currentUser: User
 
+    var services = mutableListOf<Service>()
+
     override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
         this.profilePresenterCallback = profilePresenterCallback
         if (intent.hasExtra(User.USER)) {
@@ -38,6 +40,9 @@ class ProfileInteractor(
             )
         }
     }
+
+    override fun getServicesLink() = services
+
 
     override fun returnUser(user: User) {
         profilePresenterCallback.setUserProfile(user)
@@ -64,6 +69,7 @@ class ProfileInteractor(
     }
 
     override fun returnServices(serviceList: List<Service>) {
+        services.addAll(serviceList)
         profilePresenterCallback.setServiceListWithOwner(serviceList, currentUser)
     }
 

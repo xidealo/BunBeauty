@@ -23,6 +23,8 @@ class ProfilePresenter(private val profileInteractor: IProfileInteractor) :
         profileInteractor.getProfileOwner(this)
     }
 
+    fun getServiceLink() =  profileInteractor.getServicesLink()
+
     override fun showMyProfile(user: User) {
         viewState.showMyProfileView()
         viewState.showSwitcher()

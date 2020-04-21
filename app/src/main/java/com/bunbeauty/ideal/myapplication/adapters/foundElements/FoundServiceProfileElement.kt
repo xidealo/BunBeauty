@@ -6,15 +6,12 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
-
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 
 class FoundServiceProfileElement(private val service: Service,
-                                 private val serviceOwner: User,
                                  private val context: Context) : View.OnClickListener {
 
     fun createElement(view: View) {
@@ -34,7 +31,6 @@ class FoundServiceProfileElement(private val service: Service,
     private fun goToService() {
         val intent = Intent(context, ServiceActivity::class.java)
         intent.putExtra(Service.SERVICE, service)
-        intent.putExtra(Service.SERVICE_OWNER, serviceOwner)
         /*intent.putExtra(Service.SERVICE_ID, service.id)
         intent.putExtra(Service.USER_ID, service.userId)*/
         context.startActivity(intent)
