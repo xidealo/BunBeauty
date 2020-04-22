@@ -32,6 +32,7 @@ public class AuthorizationUnitTests {
         assertTrue(authorizationInteractor.isPhoneCorrect("+79969224186"));
     }
 
+
     private AuthorizationInteractor getAuthorizationInstance() {
         return new AuthorizationInteractor(userRepository, intent);
     }

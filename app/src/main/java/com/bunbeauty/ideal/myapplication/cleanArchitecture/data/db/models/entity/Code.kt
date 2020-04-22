@@ -8,7 +8,7 @@ class Code(
         @PrimaryKey
         var id: String = "",
         var code: String = "",
-        var count: String = ""){
+        var count: Int = 0){
 
         var codeStatus:String = ""
         var serviceId:String = ""

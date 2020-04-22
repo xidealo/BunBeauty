@@ -1,23 +1,20 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.code.GetCodeCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.CodeFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.CodeDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.ICodeRepository
 import kotlinx.coroutines.launch
 
-class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: CodeFirebase) : BaseRepository(), ICodeRepository, ICodeCallback {
+class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: CodeFirebase) :
+        BaseRepository(), ICodeRepository, GetCodeCallback {
 
-    lateinit var codeSubscriber: ICodeCallback
+    lateinit var codeSubscriber: GetCodeCallback
 
-    override fun insert(code: Code) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun insert(code: Code) {}
 
-    override fun delete(code: Code) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun delete(code: Code) {}
 
     override fun update(code: Code) {
         /*launch {
@@ -27,10 +24,10 @@ class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: Cod
     }
 
     override fun get(): List<Code> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return listOf()
     }
 
-    override fun getByCode(codeString: String, codeSubscriber: ICodeCallback) {
+    override fun getByCode(codeString: String, codeSubscriber: GetCodeCallback) {
         this.codeSubscriber = codeSubscriber
         codeFirebase.getByCode(codeString, this)
     }
@@ -47,5 +44,4 @@ class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: Cod
             }
         }
     }
-
 }

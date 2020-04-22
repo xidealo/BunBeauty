@@ -68,7 +68,6 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
         premiumText = view.findViewById(R.id.yesPremiumPremiumElementText)
         noPremiumText = view.findViewById(R.id.noPremiumPremiumElementText)
         bottomLayout = view.findViewById(R.id.premiumAddServiceBottomLayout)
-
     }
 
     override fun onClick(v: View) {

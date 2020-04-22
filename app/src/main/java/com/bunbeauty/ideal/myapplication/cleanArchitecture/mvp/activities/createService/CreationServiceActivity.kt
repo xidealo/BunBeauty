@@ -91,7 +91,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
         continueCreationServiceBtn.setOnClickListener(this)
     }
 
-
     private fun createPanels() {
         createBottomPanel(supportFragmentManager)
         createTopPanel("Создание услуги", ButtonTask.NONE, supportFragmentManager)
@@ -142,7 +141,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
         }
     }
 
-    // плохое место
     override fun showPhoto(bitmap: Bitmap, filePath: String) {
         supportFragmentManager
             .beginTransaction()
@@ -226,9 +224,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     }
 
     companion object {
-        private const val SERVICE_ID = "service id"
-        private const val STATUS_USER_BY_SERVICE = "status UserCreateService"
-
         const val PICK_IMAGE_REQUEST = 71
         const val SERVICE_PHOTO = "service photo"
         const val CODES = "codes"
