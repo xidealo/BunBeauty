@@ -10,10 +10,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.android.ideal.myapplication.R
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IPhotoEditable
 import com.squareup.picasso.Picasso
 
-class ServicePhotoElement() : Fragment(), View.OnClickListener {
+class ServicePhotoElement : Fragment(), View.OnClickListener {
     private lateinit var removePhotoBtn: Button
     private lateinit var photoImage: ImageView
 
@@ -21,15 +22,13 @@ class ServicePhotoElement() : Fragment(), View.OnClickListener {
     private lateinit var filePath: String
     private var photoLink: String = ""
 
-    constructor(photoLink: String) : this() {
-        this.photoLink = photoLink
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            bitmap = it.getParcelable(BITMAP)!!
+            filePath = it.getString(FILE_PATH)!!
+        }
     }
-
-    constructor(bitmap: Bitmap, filePath: String) : this() {
-        this.bitmap = bitmap
-        this.filePath = filePath
-    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         removePhotoBtn = view.findViewById(R.id.cancelServicePhotoElement)
@@ -50,10 +49,10 @@ class ServicePhotoElement() : Fragment(), View.OnClickListener {
             val height = resources.getDimensionPixelSize(R.dimen.photo_height)
 
             Picasso.get()
-                    .load(photoLink)
-                    .resize(width, height)
-                    .centerCrop()
-                    .into(photoImage)
+                .load(photoLink)
+                .resize(width, height)
+                .centerCrop()
+                .into(photoImage)
         }
     }
 
@@ -62,7 +61,7 @@ class ServicePhotoElement() : Fragment(), View.OnClickListener {
             R.id.cancelServicePhotoElement -> {
                 //remove photoImage
                 (activity as IPhotoEditable).removePhoto(this, filePath)
-                
+
                 /*if (isExist == IS_EXIST) {
                     (this.activity as AddingServiceActivity).removePhoto(this, filePath)
                 } else {
@@ -77,8 +76,28 @@ class ServicePhotoElement() : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.service_photo_element, null)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.service_photo_element, container, false)
+    }
+
+    companion object {
+        private const val TAG = "DBInf"
+        const val FILE_PATH = "file path"
+        const val BITMAP = "bitmap"
+
+        @JvmStatic
+        fun newInstance(
+            bitmap: Bitmap,
+            filePath: String
+        ) =
+            ServicePhotoElement().apply {
+                arguments = Bundle().apply {
+                    putParcelable(BITMAP, bitmap)
+                    putString(FILE_PATH, filePath)
+                }
+            }
     }
 }

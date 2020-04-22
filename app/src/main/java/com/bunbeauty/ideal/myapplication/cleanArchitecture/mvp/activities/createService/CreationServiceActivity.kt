@@ -27,6 +27,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServi
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
@@ -46,7 +47,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     private lateinit var fpathOfImages: ArrayList<String>
 
     private lateinit var categoryElement: CategoryElement
-    private lateinit var continueButton: Button
+    private lateinit var continueCreationServiceBtn: Button
     private lateinit var addServiceCreationServiceBtn: Button
 
     @InjectPresenter
@@ -71,6 +72,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
         init()
         createPanels()
         showCategory()
+        showMainBlock()
     }
 
     private fun init() {
@@ -85,7 +87,10 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
         addServiceCreationServiceBtn.setOnClickListener(this)
         photoCreationServiceBtn = findViewById(R.id.photoCreationServiceBtn)
         photoCreationServiceBtn.setOnClickListener(this)
+        continueCreationServiceBtn = findViewById(R.id.continueCreationServiceBtn)
+        continueCreationServiceBtn.setOnClickListener(this)
     }
+
 
     private fun createPanels() {
         createBottomPanel(supportFragmentManager)
@@ -93,19 +98,21 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     }
 
     override fun onClick(v: View) {
-        when(v.id) {
+        when (v.id) {
             R.id.addServiceCreationServiceBtn -> {
                 creationServicePresenter.addService(
-                    WorkWithStringsApi.firstCapitalSymbol(nameServiceInput.text.toString()),
+                    nameServiceInput.text.toString(),
                     descriptionServiceInput.text.toString(),
                     costAddServiceInput.text.toString(),
                     categoryElement.category,
                     addressServiceInput.text.toString(),
-                    categoryElement.tagsArray
+                    categoryElement.tagsArray,
+                    fpathOfImages
                 )
-                //creationServicePresenter.addImages(fpathOfImages, service)
             }
             R.id.photoCreationServiceBtn -> choosePhoto()
+
+            R.id.continueCreationServiceBtn -> goToSchedule(Service())
         }
     }
 
@@ -139,7 +146,10 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     override fun showPhoto(bitmap: Bitmap, filePath: String) {
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.photoCreationServiceLayout, ServicePhotoElement(bitmap, filePath))
+            .add(
+                R.id.photoCreationServiceLayout,
+                ServicePhotoElement.newInstance(bitmap, filePath)
+            )
             .commit()
     }
 
@@ -162,18 +172,25 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     override fun showPremiumBlock(service: Service) {
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.premiumCreationServiceLayout, PremiumElementFragment(service))
+            .add(R.id.premiumCreationServiceLayout, PremiumElementFragment.newInstance(service))
             .commit()
-
         premiumLayout.visibility = View.VISIBLE
     }
 
-    override fun hideMainBlocks() {
+    override fun hideMainBlock() {
         mainLayout.visibility = View.GONE
+        addServiceCreationServiceBtn.visibility = View.GONE
+        continueCreationServiceBtn.visibility = View.VISIBLE
     }
 
-    override fun showAllDone() {
-        Toast.makeText(this, "Сервис успешно создан", Toast.LENGTH_LONG).show()
+    override fun showMainBlock() {
+        mainLayout.visibility = View.VISIBLE
+        addServiceCreationServiceBtn.visibility = View.VISIBLE
+        continueCreationServiceBtn.visibility = View.GONE
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     override fun showMoreTenImages() {
@@ -202,6 +219,10 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     override fun showAddressInputError(error: String) {
         addressServiceInput.error = error
         addressServiceInput.requestFocus()
+    }
+
+    fun goToSchedule(service: Service) {
+
     }
 
     companion object {

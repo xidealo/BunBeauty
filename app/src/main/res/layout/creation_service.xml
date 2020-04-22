@@ -113,10 +113,15 @@
     <Button
         android:id="@+id/addServiceCreationServiceBtn"
         style="@style/mainButtonOther"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
         android:text="@string/addServices"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/continueCreationServiceBtn"
+        style="@style/mainButtonOther"
+        android:text="Продолжить"
         app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

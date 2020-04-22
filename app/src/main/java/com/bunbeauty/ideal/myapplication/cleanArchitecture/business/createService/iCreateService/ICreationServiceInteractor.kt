@@ -5,7 +5,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationServ
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
-interface IAddingServiceInteractor {
+interface ICreationServiceInteractor {
     fun getUserId(): String
 
     fun getIsNameInputCorrect(name: String): Boolean
@@ -21,6 +21,7 @@ interface IAddingServiceInteractor {
     fun addService(
         service: Service,
         tags: List<String>,
+        fpathOfImages: List<String>,
         creationServicePresenterCallback: CreationServicePresenterCallback
     )
 

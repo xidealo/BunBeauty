@@ -148,6 +148,7 @@
     <!-- Style for block style -->
     <style name="block">
         <item name="android:elevation">5dp</item>
+        <item name="android:orientation">horizontal</item>
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
@@ -240,13 +241,15 @@
 
     <style name="mainButtonOther" parent="mainButton">
         <item name="android:background">@drawable/main_button</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginTop">5dp</item>
     </style>
 
     <style name="lightBlueButton" parent="mainButton">
         <item name="fontFamily">@font/font_awesome_solid</item>
         <item name="android:background">@drawable/tags_button</item>
         <item name="android:layout_marginTop">4dp</item>
-        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
         <item name="android:layout_marginLeft">30dp</item>
         <item name="android:layout_marginRight">30dp</item>
         <item name="android:textSize">20sp</item>

@@ -4,9 +4,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
 interface IServiceRepository {
-    fun insert(service: Service,iInsertServiceCallback: IInsertServiceCallback)
-    fun delete(service: Service, iDeleteServiceCallback: IDeleteServiceCallback)
-    fun update(service: Service, iUpdateServiceCallback: IUpdateServiceCallback)
+    fun insert(service: Service, insertServiceCallback: InsertServiceCallback)
+    fun delete(service: Service, deleteServiceCallback: DeleteServiceCallback)
+    fun update(service: Service, updateServiceCallback: UpdateServiceCallback)
     fun get(iServicesCallback: IServicesCallback)
     fun insertInRoom(service: Service)
 

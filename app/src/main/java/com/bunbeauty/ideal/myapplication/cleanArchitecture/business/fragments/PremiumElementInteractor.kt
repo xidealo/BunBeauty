@@ -2,7 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICheckPremiumCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICodeCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IUpdateServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.UpdateServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.CodeRepository
@@ -11,7 +11,7 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import java.util.*
 
 class PremiumElementInteractor(val serviceRepository: ServiceRepository, private val codeRepository: CodeRepository) :
-        ICodeCallback, IUpdateServiceCallback {
+        ICodeCallback, UpdateServiceCallback {
 
     lateinit var checkPremiumCallback: ICheckPremiumCallback
     lateinit var service: Service
@@ -32,9 +32,8 @@ class PremiumElementInteractor(val serviceRepository: ServiceRepository, private
                 if(code.count == "0"){
                     code.codeStatus = Code.OLD_CODE
                 }
-
+                //MAKE CALLBACK!
                 codeRepository.update(code)
-                checkPremiumCallback.showPremiumActivated()
             }
             Code.OLD_CODE -> checkPremiumCallback.showError("Код больше не действителен")
             Code.WRONG_CODE -> checkPremiumCallback.showError("Неверно введен код")
@@ -58,7 +57,7 @@ class PremiumElementInteractor(val serviceRepository: ServiceRepository, private
     }
 
     override fun returnUpdatedCallback(obj: Service) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkPremiumCallback.showPremiumActivated()
     }
 
 }

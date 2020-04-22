@@ -1,9 +1,9 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService
 
 import android.net.Uri
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.IAddingServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationService.CreationServicePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IInsertServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.InsertServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
@@ -18,13 +18,14 @@ class CreationServiceInteractor(
     private val serviceRepository: ServiceRepository,
     private val tagRepository: TagRepository,
     private val photoRepository: PhotoRepository
-) : IAddingServiceInteractor, IInsertServiceCallback {
+) : ICreationServiceInteractor, InsertServiceCallback {
 
     private lateinit var creationServicePresenterCallback: CreationServicePresenterCallback
 
     override fun addService(
         service: Service,
         tags: List<String>,
+        fpathOfImages: List<String>,
         creationServicePresenterCallback: CreationServicePresenterCallback
     ) {
         this.creationServicePresenterCallback = creationServicePresenterCallback
@@ -33,14 +34,19 @@ class CreationServiceInteractor(
         ) {
             service.id = serviceRepository.getIdForNew(getUserId())
             serviceRepository.insert(service, this)
-            for (tagText: String in tags) {
-                val tag = Tag()
-                tag.id = tagRepository.getIdForNew(service.userId, service.id)
-                tag.tag = tagText
-                tag.serviceId = service.id
-                tag.userId = service.userId
-                tagRepository.insert(tag)
-            }
+            addTags(tags, service)
+            addImages(fpathOfImages, service)
+        }
+    }
+
+    private fun addTags(tags: List<String>, service: Service) {
+        for (tagText: String in tags) {
+            val tag = Tag()
+            tag.id = tagRepository.getIdForNew(service.userId, service.id)
+            tag.tag = tagText
+            tag.serviceId = service.id
+            tag.userId = service.userId
+            tagRepository.insert(tag)
         }
     }
 
@@ -66,6 +72,10 @@ class CreationServiceInteractor(
                 photoRepository.insert(photo)
             }
         }
+    }
+
+    override fun returnCreatedCallback(obj: Service) {
+        creationServicePresenterCallback.showServiceCreated(obj)
     }
 
     private fun convertToUri(data: String): Uri = Uri.parse(data)
@@ -190,9 +200,5 @@ class CreationServiceInteractor(
     override fun getIsAddressLengthThirty(address: String): Boolean = address.length < 30
 
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
-
-    override fun returnCreatedCallback(obj: Service) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
 }

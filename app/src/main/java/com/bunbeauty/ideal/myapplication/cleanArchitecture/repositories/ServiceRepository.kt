@@ -15,24 +15,27 @@ class ServiceRepository(private val serviceDao: ServiceDao,
     private lateinit var iServiceCallback: IServiceCallback
     private lateinit var iServicesCallback: IServicesCallback
 
-    override fun insert(service: Service, iInsertServiceCallback: IInsertServiceCallback) {
+    override fun insert(service: Service, insertServiceCallback: InsertServiceCallback) {
         launch {
             serviceDao.insert(service)
             serviceFirebaseApi.insert(service)
+            insertServiceCallback.returnCreatedCallback(service)
         }
     }
 
-    override fun delete(service: Service, iDeleteServiceCallback: IDeleteServiceCallback) {
+    override fun delete(service: Service, deleteServiceCallback: DeleteServiceCallback) {
         launch {
             serviceDao.delete(service)
             serviceFirebaseApi.delete(service)
+            deleteServiceCallback.returnDeletedCallback()
         }
     }
 
-    override fun update(service: Service, iUpdateServiceCallback: IUpdateServiceCallback) {
+    override fun update(service: Service, updateServiceCallback: UpdateServiceCallback) {
         launch {
             serviceDao.update(service)
             serviceFirebaseApi.update(service)
+            updateServiceCallback.returnUpdatedCallback(service)
         }
     }
 
@@ -77,7 +80,7 @@ class ServiceRepository(private val serviceDao: ServiceDao,
             }
         }
     }
-
+    //Удалить нахуй
     fun getMaxCost(): Service {
         var service = Service()
         runBlocking {

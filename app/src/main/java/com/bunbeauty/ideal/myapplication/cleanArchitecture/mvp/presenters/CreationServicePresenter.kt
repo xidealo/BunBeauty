@@ -19,7 +19,8 @@ class CreationServicePresenter(private val creationServiceInteractor: CreationSe
         cost: String,
         category: String,
         address: String,
-        tags: List<String>
+        tags: List<String>,
+        fpathOfImages: List<String>
     ) {
         val service = Service()
         service.name = name
@@ -32,19 +33,7 @@ class CreationServicePresenter(private val creationServiceInteractor: CreationSe
         service.premiumDate = Service.DEFAULT_PREMIUM_DATE
         service.creationDate = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
         service.userId = creationServiceInteractor.getUserId()
-        creationServiceInteractor.addService(service, tags, this)
-    }
-
-    fun addImages(fpathOfImages: List<String>, service: Service) {
-        if (fpathOfImages.size < MAX_COUNT_OF_IMAGES) {
-            creationServiceInteractor.addImages(fpathOfImages, service)
-            viewState.showAllDone()
-            viewState.hideMainBlocks()
-            Thread.sleep(500)
-            viewState.showPremiumBlock(service)
-        } else {
-            viewState.showMoreTenImages()
-        }
+        creationServiceInteractor.addService(service, tags, fpathOfImages, this)
     }
 
     override fun showNameInputError(error: String) {
@@ -66,8 +55,10 @@ class CreationServicePresenter(private val creationServiceInteractor: CreationSe
     override fun showAddressInputError(error: String) {
         viewState.showAddressInputError(error)
     }
-    companion object {
-        private const val MAX_COUNT_OF_IMAGES = 10
-        private const val WORKER = "worker"
+
+    override fun showServiceCreated(service: Service) {
+        viewState.hideMainBlock()
+        viewState.showPremiumBlock(service)
+        viewState.showMessage("Сервис создан!")
     }
 }

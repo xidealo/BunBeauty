@@ -56,18 +56,12 @@
                     <Button
                         android:id="@+id/logOutEditProfileBtn"
                         style="@style/smallMainButtonOther"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/main_button_height"
                         android:text="@string/logOut" />
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
-                style="@style/block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/block_text"
-                android:orientation="horizontal">
+                style="@style/block">
 
                 <EditText
                     android:id="@+id/nameEditProfileInput"
@@ -76,8 +70,7 @@
             </LinearLayout>
 
             <LinearLayout
-                style="@style/block"
-                android:orientation="horizontal">
+                style="@style/block">
 
                 <EditText
                     android:id="@+id/surnameEditProfileInput"
@@ -86,8 +79,7 @@
             </LinearLayout>
 
             <LinearLayout
-                style="@style/block"
-                android:orientation="horizontal">
+                style="@style/block">
 
                 <TextView
                     style="@style/mainBlockText"
@@ -107,14 +99,13 @@
 
             <!-- Телефон -->
             <LinearLayout
-                style="@style/block"
-                android:orientation="horizontal">
+                style="@style/block">
 
                 <Spinner
                     android:id="@+id/codeEditProfileSpinner"
                     style="@style/mainBlockText"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:entries="@array/countryCodeForEditService" />
 
@@ -139,17 +130,11 @@
             <Button
                 android:id="@+id/verifyCodeEditProfileBtn"
                 style="@style/mainButtonOther"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:text="@string/verifyCode" />
 
             <Button
                 android:id="@+id/resendCodeEditProfileBtn"
                 style="@style/mainButtonOther"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:text="@string/resendCode" />
         </LinearLayout>
     </ScrollView>
@@ -157,9 +142,6 @@
     <Button
         android:id="@+id/editProfileEditProfileBtn"
         style="@style/mainButtonOther"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginBottom="1dp"
         android:text="@string/saveData"
         app:layout_constraintBottom_toTopOf="@id/bottomPanelLayout"
         app:layout_constraintLeft_toLeftOf="parent"
