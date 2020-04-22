@@ -28,20 +28,14 @@ abstract class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomP
     private lateinit var resendCodeEditProfileBtn: Button
     private lateinit var editProfileEditProfileBtn: Button
 
-    fun onCreatу(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.edit_profile)
-        init()
-        createPanels()
-    }
 
-
-    private fun init(){
+    private fun init() {
         avatarEditProfileImage =findViewById(R.id.avatarEditProfileImage)
         logOutEditProfileBtn =findViewById(R.id.logOutEditProfileBtn)
         nameEditProfileInput =findViewById(R.id.nameEditProfileInput)
         surnameEditProfileInput =findViewById(R.id.surnameEditProfileInput)
         citySpinnerEditProfileSpinner =findViewById(R.id.citySpinnerEditProfileSpinner)
+        codeEditProfileSpinner =findViewById(R.id.codeEditProfileSpinner)
         phoneEditProfileInput =findViewById(R.id.phoneEditProfileInput)
         codeEditProfileInput =findViewById(R.id.codeEditProfileInput)
         verifyCodeEditProfileBtn =findViewById(R.id.verifyCodeEditProfileBtn)
