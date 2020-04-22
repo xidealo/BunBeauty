@@ -17,6 +17,7 @@ class PremiumElementServiceInteractor(val serviceRepository: ServiceRepository) 
         service: Service,
         checkPremiumPresenterCallback: CheckPremiumPresenterCallback
     ) {
+
         this.checkPremiumPresenterCallback = checkPremiumPresenterCallback
         service.premiumDate = addSevenDayPremium(service)
         serviceRepository.update(service, this)
