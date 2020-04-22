@@ -12,7 +12,8 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.PremiumElementInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
@@ -27,14 +28,16 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
     private lateinit var premiumText: TextView
     private lateinit var noPremiumText: TextView
     private lateinit var bottomLayout: LinearLayout
-
     private lateinit var codeText: TextView
 
     @InjectPresenter
     lateinit var premiumElementPresenter: PremiumElementPresenter
 
     @Inject
-    lateinit var premiumElementInteractor: PremiumElementInteractor
+    lateinit var premiumElementCodeInteractor: PremiumElementCodeInteractor
+
+    @Inject
+    lateinit var premiumElementServiceInteractor: PremiumElementServiceInteractor
 
     @ProvidePresenter
     internal fun provideElementPresenter(): PremiumElementPresenter {
@@ -43,9 +46,11 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
             .appModule(AppModule(activity!!.application, activity!!.intent))
             .build().inject(this)
 
-        return PremiumElementPresenter(premiumElementInteractor)
+        return PremiumElementPresenter(
+            premiumElementCodeInteractor,
+            premiumElementServiceInteractor
+        )
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,7 +107,6 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
 
     companion object {
         private const val TAG = "DBInf"
-
         @JvmStatic
         fun newInstance(
             service: Service

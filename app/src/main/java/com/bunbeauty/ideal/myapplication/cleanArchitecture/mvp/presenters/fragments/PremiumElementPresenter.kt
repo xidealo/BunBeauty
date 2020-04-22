@@ -2,16 +2,21 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragm
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.PremiumElementInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.ICheckPremiumCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.CheckPremiumPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.PremiumElementFragmentView
 
 @InjectViewState
-class PremiumElementPresenter(private val premiumElementInteractor: PremiumElementInteractor) :
-        MvpPresenter<PremiumElementFragmentView>(), ICheckPremiumCallback {
+class PremiumElementPresenter(
+    private val premiumElementCodeInteractor: PremiumElementCodeInteractor,
+    private val premiumElementServiceInteractor: PremiumElementServiceInteractor
+) :
+    MvpPresenter<PremiumElementFragmentView>(), CheckPremiumPresenterCallback {
     fun setPremium(code: String, service: Service) {
-        premiumElementInteractor.checkCode(code, this, service)
+        premiumElementCodeInteractor.checkCode(code, this)
+        premiumElementServiceInteractor.service = service
     }
 
     override fun showError(error: String) {
@@ -22,5 +27,13 @@ class PremiumElementPresenter(private val premiumElementInteractor: PremiumEleme
         viewState.showPremiumActivated()
         viewState.setWithPremium()
         viewState.hideBottom()
+    }
+
+    override fun activatePremium() {
+        premiumElementServiceInteractor.activatePremium(
+            premiumElementServiceInteractor.service,
+            this
+        )
+
     }
 }

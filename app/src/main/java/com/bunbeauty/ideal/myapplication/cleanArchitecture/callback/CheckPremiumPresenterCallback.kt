@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback
 
-interface ICheckPremiumCallback {
+interface CheckPremiumPresenterCallback {
     fun showError(error:String)
     fun showPremiumActivated()
+    fun activatePremium()
 }
