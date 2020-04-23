@@ -10,11 +10,20 @@ import android.widget.ImageView
 import android.widget.Spinner
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditProfilePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
+import javax.inject.Inject
 
-abstract class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, View.OnClickListener {
+abstract class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, View.OnClickListener,
+    EditProfileView {
 
     private lateinit var avatarEditProfileImage: ImageView
     private lateinit var logOutEditProfileBtn: Button
@@ -28,6 +37,30 @@ abstract class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomP
     private lateinit var resendCodeEditProfileBtn: Button
     private lateinit var editProfileEditProfileBtn: Button
 
+
+
+
+    @InjectPresenter
+    lateinit var editProfilePresenter: EditProfilePresenter
+
+    @Inject
+    lateinit var editProfileInteractor: EditProfileInteractor
+
+    @ProvidePresenter
+    internal fun provideEditProfilePresenter(): EditProfilePresenter{
+        DaggerAppComponent
+            .builder()
+            .appModule(AppModule(application, intent))
+            .build().inject(this)
+        return EditProfilePresenter(editProfileInteractor)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.edit_profile)
+        init()
+        createPanels()
+    }
 
     private fun init() {
         avatarEditProfileImage =findViewById(R.id.avatarEditProfileImage)
@@ -50,10 +83,6 @@ abstract class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomP
     }
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.edit_profile)
-    }
     override fun onClick(v: View) {
         when(v.id){
         }

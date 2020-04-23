@@ -9,6 +9,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.pr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.EditProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
@@ -129,4 +130,9 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideSearchServiceInteractor(userRepository: UserRepository) =
         SearchServiceInteractor(userRepository)
+
+    @Provides
+    fun provideEditProfileInteractor(): EditProfileInteractor {
+        return EditProfileInteractor()
+    }
 }
