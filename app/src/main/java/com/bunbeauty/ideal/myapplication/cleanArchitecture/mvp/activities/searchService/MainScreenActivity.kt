@@ -21,16 +21,16 @@ import com.bunbeauty.ideal.myapplication.adapters.ServiceAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopMainScreenPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import javax.inject.Inject
 
 class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView,
-        ITopMainScreenPanel, IBottomPanel {
+    ITopMainScreenPanel, IBottomPanel {
 
     private var categoriesBtns: ArrayList<Button> = arrayListOf()
     private lateinit var categories: ArrayList<String>
@@ -38,22 +38,22 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private lateinit var tagsLayout: LinearLayout
     private lateinit var innerLayout: LinearLayout
     private lateinit var searchLayout: LinearLayout
-    private lateinit var headerLayout: LinearLayout
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
     private lateinit var serviceAdapter: ServiceAdapter
 
     @InjectPresenter
     lateinit var mainScreenPresenter: MainScreenPresenter
+
     @Inject
     lateinit var mainScreenInteractor: MainScreenInteractor
 
     @ProvidePresenter
     internal fun provideAddingServicePresenter(): MainScreenPresenter {
         DaggerAppComponent
-                .builder()
-                .appModule(AppModule(application, intent))
-                .build().inject(this)
+            .builder()
+            .appModule(AppModule(application, intent))
+            .build().inject(this)
 
         return MainScreenPresenter(mainScreenInteractor)
     }
@@ -63,9 +63,16 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         setContentView(R.layout.main_screen)
 
         init()
-        createBottomPanel(supportFragmentManager, R.id.bottomMainScreenLayout)
+        hideSearchPanel()
+        hideTags()
+        createPanels()
         createSearchPanel()
         createMainScreen()
+    }
+
+    private fun createPanels() {
+        createBottomPanel(supportFragmentManager)
+        createTopPanel("BunBeauty", ButtonTask.NONE, supportFragmentManager)
     }
 
     private fun init() {
@@ -78,25 +85,12 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         innerLayout = findViewById(R.id.tagsInnerMainScreenLayout)
         progressBar = findViewById(R.id.progressBarMainScreen)
         searchLayout = findViewById(R.id.searchMainScreenLayout)
-        headerLayout = findViewById(R.id.topMainScreenLayout)
 
         val minimizeTagsBtn = findViewById<Button>(R.id.minimizeTagsMainScreenBtn)
         val clearTagsBtn = findViewById<Button>(R.id.clearTagsMainScreenBtn)
 
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
-
-        /*recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (recyclerView.computeVerticalScrollOffset() == 0 && !isUpdated)
-                {
-                    serviceList.clear()
-                    userList.clear()
-                    progressBar.visibility = View.VISIBLE
-                    recyclerView.visibility = View.GONE
-                }
-            }
-        })*/
 
         minimizeTagsBtn.setOnClickListener(this)
         clearTagsBtn.setOnClickListener(this)
@@ -129,13 +123,12 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         }
     }
 
-
     override fun showTopPanel() {
-        headerLayout.visibility = View.VISIBLE
+        //headerLayout.visibility = View.VISIBLE
     }
 
     override fun hideTopPanel() {
-        headerLayout.visibility = View.GONE
+        //headerLayout.visibility = View.GONE
     }
 
     override fun createMainScreen() {
@@ -188,11 +181,11 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         recyclerView.adapter = serviceAdapter
     }
 
-    override fun showMainScreenByUserName(city:String, name: String) {
+    override fun showMainScreenByUserName(city: String, name: String) {
         mainScreenPresenter.createMainScreenWithSearchUserName(city, name)
     }
 
-    override fun showMainScreenByServiceName(city:String, serviceName: String) {
+    override fun showMainScreenByServiceName(city: String, serviceName: String) {
         mainScreenPresenter.createMainScreenWithSearchServiceName(city, serviceName)
     }
 
@@ -223,11 +216,13 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             categoriesBtns[i].setTextColor(Color.WHITE)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 categoriesBtns[i].setAutoSizeTextTypeUniformWithConfiguration(
-                        8, 14, 1, TypedValue.COMPLEX_UNIT_DIP)
+                    8, 14, 1, TypedValue.COMPLEX_UNIT_DIP
+                )
             }
             val params = LinearLayout.LayoutParams(
-                    (width * categories.toTypedArray()[i].length / 6.6).toInt(),
-                    height)
+                (width * categories.toTypedArray()[i].length / 6.6).toInt(),
+                height
+            )
             params.setMargins(10, 10, 10, 16)
             categoriesBtns[i].layoutParams = params
 
@@ -245,8 +240,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     override fun createTags(category: String, selectedTagsArray: ArrayList<String>) {
         val tagsArray = resources
-                .obtainTypedArray(R.array.tags_references)
-                .getTextArray(categories.indexOf(category))
+            .obtainTypedArray(R.array.tags_references)
+            .getTextArray(categories.indexOf(category))
 
         for (tag in tagsArray) {
             val tagText = TextView(this)
@@ -255,8 +250,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             tagText.gravity = Gravity.CENTER
             tagText.typeface = ResourcesCompat.getFont(this, R.font.roboto_bold)
             tagText.layoutParams = LinearLayout.LayoutParams(
-                    700,
-                    LinearLayout.LayoutParams.WRAP_CONTENT)
+                700,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
             tagText.setOnClickListener(this)
             tagText.setPadding(0, 16, 0, 16)
             if (selectedTagsArray.contains(tag.toString())) {
