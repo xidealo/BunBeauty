@@ -12,7 +12,6 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopMainScreenPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.SearchServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
@@ -21,7 +20,8 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import java.util.*
 import javax.inject.Inject
 
-class SearchServiceFragment: MvpAppCompatFragment(), View.OnClickListener, SearchServiceFragmentView {
+class SearchServiceFragment : MvpAppCompatFragment(), View.OnClickListener,
+    SearchServiceFragmentView {
 
     private var city = NOT_CHOSEN
     private var searchBy = NAME_OF_SERVICE
@@ -31,21 +31,26 @@ class SearchServiceFragment: MvpAppCompatFragment(), View.OnClickListener, Searc
 
     @InjectPresenter
     lateinit var searchServicePresenter: SearchServicePresenter
+
     @Inject
     lateinit var searchServiceInteractor: SearchServiceInteractor
 
     @ProvidePresenter
     internal fun provideAddingServicePresenter(): SearchServicePresenter {
         DaggerAppComponent
-                .builder()
-                .appModule(AppModule(activity!!.application, activity!!.intent))
-                .build().inject(this)
+            .builder()
+            .appModule(AppModule(activity!!.application, activity!!.intent))
+            .build().inject(this)
 
         return SearchServicePresenter(searchServiceInteractor)
     }
 
     //fragment просто вызывает методы поиска мс, больше ничего не делает?
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.search_service, null)
     }
 
@@ -62,7 +67,6 @@ class SearchServiceFragment: MvpAppCompatFragment(), View.OnClickListener, Searc
     private fun setBack() {
         backText.setOnClickListener {
             (activity as MainScreenView).hideSearchPanel()
-            (activity as ITopMainScreenPanel).showTopPanel()
             (activity as MainScreenView).showCategory()
             (activity as MainScreenView).createMainScreen()
         }
@@ -85,7 +89,12 @@ class SearchServiceFragment: MvpAppCompatFragment(), View.OnClickListener, Searc
         findBtn.setOnClickListener(this)
         //отслеживаем смену городов в выпадающем меню
         citySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, itemSelected: View, selectedItemPosition: Int, selectedId: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                itemSelected: View,
+                selectedItemPosition: Int,
+                selectedId: Long
+            ) {
                 val cityText = itemSelected as TextView
                 city = cityText.text.toString()
             }
@@ -94,7 +103,12 @@ class SearchServiceFragment: MvpAppCompatFragment(), View.OnClickListener, Searc
         }
 
         searchBySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, itemSelected: View, selectedItemPosition: Int, selectedId: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                itemSelected: View,
+                selectedItemPosition: Int,
+                selectedId: Long
+            ) {
                 val searchByText = itemSelected as TextView
                 searchBy = searchByText.text.toString()
             }
@@ -107,18 +121,24 @@ class SearchServiceFragment: MvpAppCompatFragment(), View.OnClickListener, Searc
         when (v.id) {
             R.id.findServiceSearchServiceText ->
                 if (searchLineInput.text.toString().trim().isNotEmpty()) {
-                //обпращаемся к презентору, метод который будет осуществлять поиск
-                search(searchLineInput.text.toString())
-            }else{
+                    //обпращаемся к презентору, метод который будет осуществлять поиск
+                    search(searchLineInput.text.toString())
+                } else {
                     (activity as MainScreenView).createMainScreen()
                 }
         }
     }
 
-    private fun search(data:String) {
+    private fun search(data: String) {
         when (searchBy) {
-            NAME_OF_SERVICE ->  (activity as MainScreenView).showMainScreenByServiceName(city, WorkWithStringsApi.firstCapitalSymbol(data))
-            NICKNAME ->  (activity as MainScreenView).showMainScreenByUserName(city, WorkWithStringsApi.doubleCapitalSymbols(data))
+            NAME_OF_SERVICE -> (activity as MainScreenView).showMainScreenByServiceName(
+                city,
+                WorkWithStringsApi.firstCapitalSymbol(data)
+            )
+            NICKNAME -> (activity as MainScreenView).showMainScreenByUserName(
+                city,
+                WorkWithStringsApi.doubleCapitalSymbols(data)
+            )
         }
     }
 

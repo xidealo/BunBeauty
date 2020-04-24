@@ -11,7 +11,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.Regist
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.EditProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
@@ -117,11 +119,20 @@ class AppModule(private val app: Application, private val intent: Intent) {
         )
 
     @Provides
-    fun provideMainScreenInteractor(
-        userRepository: UserRepository,
+    fun provideMainScreenUserInteractor(
+        userRepository: UserRepository
+    ) =
+        MainScreenUserInteractor(userRepository)
+
+    @Provides
+    fun provideMainScreenServiceInteractor(
         serviceRepository: ServiceRepository
     ) =
-        MainScreenInteractor(userRepository, serviceRepository)
+        MainScreenServiceInteractor(serviceRepository)
+
+    @Provides
+    fun provideMainScreenDataInteractor() =
+        MainScreenDataInteractor()
 
     @Provides
     fun provideServiceInteractor(photoRepository: PhotoRepository) =

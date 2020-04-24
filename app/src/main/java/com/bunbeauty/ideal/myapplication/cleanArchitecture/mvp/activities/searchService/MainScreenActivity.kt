@@ -18,19 +18,21 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.adapters.ServiceAdapter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopMainScreenPanel
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import javax.inject.Inject
 
 class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView,
-    ITopMainScreenPanel, IBottomPanel {
+    ITopPanel, IBottomPanel {
 
     private var categoriesBtns: ArrayList<Button> = arrayListOf()
     private lateinit var categories: ArrayList<String>
@@ -46,7 +48,13 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     lateinit var mainScreenPresenter: MainScreenPresenter
 
     @Inject
-    lateinit var mainScreenInteractor: MainScreenInteractor
+    lateinit var mainScreenUserInteractor: MainScreenUserInteractor
+
+    @Inject
+    lateinit var mainScreenServiceInteractor: MainScreenServiceInteractor
+
+    @Inject
+    lateinit var mainScreenDataInteractor: MainScreenDataInteractor
 
     @ProvidePresenter
     internal fun provideAddingServicePresenter(): MainScreenPresenter {
@@ -55,7 +63,11 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             .appModule(AppModule(application, intent))
             .build().inject(this)
 
-        return MainScreenPresenter(mainScreenInteractor)
+        return MainScreenPresenter(
+            mainScreenUserInteractor,
+            mainScreenServiceInteractor,
+            mainScreenDataInteractor
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,8 +77,10 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         init()
         hideSearchPanel()
         hideTags()
+
         createPanels()
         createSearchPanel()
+
         createMainScreen()
     }
 
@@ -121,14 +135,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                 mainScreenPresenter.createMainScreenWithTag(v as TextView)
             }
         }
-    }
-
-    override fun showTopPanel() {
-        //headerLayout.visibility = View.VISIBLE
-    }
-
-    override fun hideTopPanel() {
-        //headerLayout.visibility = View.GONE
     }
 
     override fun createMainScreen() {

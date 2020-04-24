@@ -8,8 +8,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 
-class RegistrationInteractor(private val userRepository: UserRepository,
-                             private val intent: Intent) : IRegistrationInteractor, IInsertUsersCallback {
+class RegistrationInteractor(
+    private val userRepository: UserRepository,
+    private val intent: Intent
+) : IRegistrationInteractor, IInsertUsersCallback {
 
     private lateinit var iRegistrationPresenter: IRegistrationPresenter
 
@@ -48,11 +50,17 @@ class RegistrationInteractor(private val userRepository: UserRepository,
         return true
     }
 
-    override fun registration(user: User, name: String, surname: String, iRegistrationPresenter: IRegistrationPresenter) {
+    override fun registration(
+        user: User,
+        name: String,
+        surname: String,
+        iRegistrationPresenter: IRegistrationPresenter
+    ) {
         this.iRegistrationPresenter = iRegistrationPresenter
         if (isNameCorrect(name, iRegistrationPresenter)
-                && isSurnameCorrect(surname, iRegistrationPresenter)
-                && isCityCorrect(user.city, iRegistrationPresenter)) {
+            && isSurnameCorrect(surname, iRegistrationPresenter)
+            && isCityCorrect(user.city, iRegistrationPresenter)
+        ) {
             user.id = getUserId()
             user.name = "$name $surname"
             userRepository.insert(user, this)
@@ -60,7 +68,10 @@ class RegistrationInteractor(private val userRepository: UserRepository,
     }
 
     //TODO UNIT TEST
-    private fun isNameCorrect(name: String, iRegistrationPresenter: IRegistrationPresenter): Boolean {
+    private fun isNameCorrect(
+        name: String,
+        iRegistrationPresenter: IRegistrationPresenter
+    ): Boolean {
         if (name.isEmpty()) {
             iRegistrationPresenter.registrationNameInputErrorEmpty()
             return false
@@ -78,7 +89,10 @@ class RegistrationInteractor(private val userRepository: UserRepository,
         return true
     }
 
-    private fun isSurnameCorrect(surname: String, iRegistrationPresenter: IRegistrationPresenter): Boolean {
+    private fun isSurnameCorrect(
+        surname: String,
+        iRegistrationPresenter: IRegistrationPresenter
+    ): Boolean {
         if (surname.isEmpty()) {
             iRegistrationPresenter.registrationSurnameInputErrorEmpty()
             return false
@@ -96,7 +110,10 @@ class RegistrationInteractor(private val userRepository: UserRepository,
         return true
     }
 
-    private fun isCityCorrect(city: String, iRegistrationPresenter: IRegistrationPresenter): Boolean {
+    private fun isCityCorrect(
+        city: String,
+        iRegistrationPresenter: IRegistrationPresenter
+    ): Boolean {
         if (!getIsCityInputCorrect(city)) {
             iRegistrationPresenter.registrationCityInputError()
             return false

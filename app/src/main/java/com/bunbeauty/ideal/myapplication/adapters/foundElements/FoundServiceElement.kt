@@ -18,9 +18,11 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import com.squareup.picasso.Picasso
 
-class FoundServiceElement(private val service: Service,
-                          private val user: User, private val view: View,
-                          private val context: Context) : View.OnClickListener {
+class FoundServiceElement(
+    private val service: Service,
+    private val user: User, private val view: View,
+    private val context: Context
+) : View.OnClickListener {
 
     private lateinit var nameUserText: TextView
     private lateinit var cityText: TextView
@@ -58,7 +60,8 @@ class FoundServiceElement(private val service: Service,
         avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage)
 
         val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+        )
         params.setMargins(10, 10, 10, 10)
         layout.layoutParams = params
 
@@ -72,7 +75,8 @@ class FoundServiceElement(private val service: Service,
             nameUserText.text = WorkWithStringsApi.cutString(user.name, 9)
             nameServiceText.text = WorkWithStringsApi.cutString(service.name.toUpperCase(), 14)
         } else {
-            nameUserText.text = WorkWithStringsApi.doubleCapitalSymbols(WorkWithStringsApi.cutString(user.name, 9))
+            nameUserText.text =
+                WorkWithStringsApi.doubleCapitalSymbols(WorkWithStringsApi.cutString(user.name, 9))
             nameServiceText.text = WorkWithStringsApi.cutString(service.name.toUpperCase(), 18)
         }
         cityText.text = WorkWithStringsApi.firstCapitalSymbol(user.city)
@@ -87,11 +91,11 @@ class FoundServiceElement(private val service: Service,
         val height = context.resources.getDimensionPixelSize(R.dimen.photo_avatar_height)
 
         Picasso.get()
-                .load(user.photoLink)
-                .resize(width, height)
-                .centerCrop()
-                .transform(CircularTransformation())
-                .into(avatarImage)
+            .load(user.photoLink)
+            .resize(width, height)
+            .centerCrop()
+            .transform(CircularTransformation())
+            .into(avatarImage)
     }
 
     override fun onClick(v: View) {

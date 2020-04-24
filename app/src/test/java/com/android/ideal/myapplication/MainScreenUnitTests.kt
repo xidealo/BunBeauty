@@ -1,6 +1,6 @@
 package com.android.ideal.myapplication
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -22,8 +22,8 @@ class MainScreenUnitTests {
     @Mock
     internal lateinit var userRepository: UserRepository
 
-    private val mainScreenInteractor: MainScreenInteractor
-        get() = MainScreenInteractor(userRepository, serviceRepository)
+    private val mainScreenUserInteractor: MainScreenUserInteractor
+        get() = MainScreenUserInteractor(userRepository, serviceRepository)
 
     @Test
     fun convertCacheDataToMainScreenData() {
@@ -35,7 +35,7 @@ class MainScreenUnitTests {
         val mainScreenData = ArrayList<ArrayList<Any>>()
         mainScreenData.add(arrayListOf(cacheData[0][1], cacheData[0][2]))
 
-        assertEquals(mainScreenInteractor.convertCacheDataToMainScreenData(cacheData), mainScreenData)
+        assertEquals(mainScreenUserInteractor.convertCacheDataToMainScreenData(cacheData), mainScreenData)
     }
 
     @Test
@@ -48,7 +48,7 @@ class MainScreenUnitTests {
         //MS data which we are waiting
         val mainScreenData = ArrayList<ArrayList<Any>>()
         mainScreenData.add(arrayListOf(cacheData[0][1], cacheData[0][2]))
-        assertEquals(mainScreenInteractor.convertCacheDataToMainScreenData("маникюр", cacheData), mainScreenData)
+        assertEquals(mainScreenUserInteractor.convertCacheDataToMainScreenData("маникюр", cacheData), mainScreenData)
     }
 
     @Test
@@ -60,7 +60,7 @@ class MainScreenUnitTests {
         cacheData.add(getDataList(1, user, service))
         //MS data which we are waiting
         val mainScreenData = ArrayList<ArrayList<Any>>()
-        assertEquals(mainScreenInteractor.convertCacheDataToMainScreenData("педикюр", cacheData), mainScreenData)
+        assertEquals(mainScreenUserInteractor.convertCacheDataToMainScreenData("педикюр", cacheData), mainScreenData)
     }
 
     @Test
@@ -76,7 +76,7 @@ class MainScreenUnitTests {
         //MS data which we are waiting
         val mainScreenData = ArrayList<ArrayList<Any>>()
         mainScreenData.add(arrayListOf(cacheData[0][1], cacheData[0][2]))
-        assertEquals(mainScreenInteractor.convertCacheDataToMainScreenData(selectedTagsArray, cacheData), mainScreenData)
+        assertEquals(mainScreenUserInteractor.convertCacheDataToMainScreenData(selectedTagsArray, cacheData), mainScreenData)
     }
 
     @Test
@@ -91,7 +91,7 @@ class MainScreenUnitTests {
         cacheUsers.add(user1)
         cacheUsers.add(user2)
 
-        assertEquals(mainScreenInteractor.getUserByService(cacheUsers, service), user1)
+        assertEquals(mainScreenUserInteractor.getUserByService(cacheUsers, service), user1)
     }
 
     @Test
@@ -116,7 +116,7 @@ class MainScreenUnitTests {
         mainScreenData.add(arrayListOf(service2, user))
         mainScreenData.add(arrayListOf(service3, user))
 
-        assertEquals(mainScreenInteractor.getCategories(mainScreenData), categories)
+        assertEquals(mainScreenUserInteractor.getCategories(mainScreenData), categories)
     }
 
     @Test
@@ -125,7 +125,7 @@ class MainScreenUnitTests {
         val user = "1"
         val user2 = "2"
         cacheUsers.add(user)
-        assertEquals(mainScreenInteractor.isFirstEnter(user2, cacheUsers), true)
+        assertEquals(mainScreenUserInteractor.isFirstEnter(user2, cacheUsers), true)
     }
 
     @Test
@@ -133,7 +133,7 @@ class MainScreenUnitTests {
         val cacheUsers = ArrayList<String>()
         val user = "1"
         cacheUsers.add(user)
-        assertEquals(mainScreenInteractor.isFirstEnter(user, cacheUsers), false)
+        assertEquals(mainScreenUserInteractor.isFirstEnter(user, cacheUsers), false)
     }
 
     //choosePremiumServices
