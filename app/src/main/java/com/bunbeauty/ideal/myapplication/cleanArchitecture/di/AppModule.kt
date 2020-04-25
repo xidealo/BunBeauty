@@ -144,6 +144,6 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     @Provides
     fun provideEditProfileInteractor(): EditProfileInteractor {
-        return EditProfileInteractor()
+        return EditProfileInteractor(intent)
     }
 }
