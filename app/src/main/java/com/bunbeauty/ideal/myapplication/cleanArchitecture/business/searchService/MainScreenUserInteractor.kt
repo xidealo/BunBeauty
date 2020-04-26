@@ -2,31 +2,49 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServi
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
-import java.util.*
-import kotlin.collections.ArrayList
 
 class MainScreenUserInteractor(
     val userRepository: UserRepository
 ) : IMainScreenUserInteractor,
-    IUserCallback, IUsersCallback {
+    IUsersCallback {
 
     private lateinit var mainScreenPresenterCallback: MainScreenPresenterCallback
     var selectedCategory = ""
     var selectedTagsArray: ArrayList<String> = arrayListOf()
 
     //cache
-    private var currentCountOfUsers = 0
-    private var cachePremiumMainScreenData = ArrayList<ArrayList<Any>>()
-    private var cacheUserList = arrayListOf<User>()
+    var cacheUserList = arrayListOf<User>()
 
     private var searchByServiceName = false
     private var serviceName = ""
+
+    override fun getUsersByCity(
+        city: String,
+        mainScreenPresenterCallback: MainScreenPresenterCallback
+    ) {
+        this.mainScreenPresenterCallback = mainScreenPresenterCallback
+        userRepository.getByCity(city, this, true)
+    }
+
+    override fun returnUsers(users: List<User>) {
+        cacheUserList.addAll(users)
+
+        if (searchByServiceName) {
+            for (user in users) {
+                mainScreenPresenterCallback.getServicesByUserIdAndServiceName(user.id, serviceName)
+            }
+        } else {
+            for (user in users) {
+                mainScreenPresenterCallback.getServicesByUserId(user)
+            }
+        }
+    }
 
     fun createTags(category: String, mainScreenPresenterCallback: MainScreenPresenterCallback) {
         mainScreenPresenterCallback.createTags(category, selectedTagsArray)
@@ -56,37 +74,6 @@ class MainScreenUserInteractor(
         userRepository.getByCity(city, this, true)
     }
 
-    override fun getUsersByCity(city: String) {
-        userRepository.getByCity(city, this, true)
-    }
-
-    override fun returnUser(user: User) {
-        //here we can get out city
-        getUsersByCity(user.city)
-    }
-
-    override fun returnUsers(users: List<User>) {
-        cacheUserList.addAll(users)
-
-        if (searchByServiceName) {
-            for (user in users) {
-                mainScreenPresenterCallback.getServicesByUserIdAndServiceName(user.id, serviceName)
-            }
-        } else {
-            for (user in users) {
-                mainScreenPresenterCallback.getServicesByUserId(user.id)
-            }
-        }
-    }
-
-    override fun convertCacheDataToMainScreenData(cacheMainScreenData: ArrayList<ArrayList<Any>>): ArrayList<ArrayList<Any>> {
-        val mainScreenData = ArrayList<ArrayList<Any>>()
-        for (i in cacheMainScreenData.indices) {
-            //services
-            mainScreenData.add(arrayListOf(cacheMainScreenData[i][1], cacheMainScreenData[i][2]))
-        }
-        return mainScreenData
-    }
 
     override fun convertCacheDataToMainScreenData(
         category: String,
@@ -128,14 +115,6 @@ class MainScreenUserInteractor(
         return mainScreenData
     }
 
-    fun getUserByService(cacheUserList: ArrayList<User>, service: Service): User {
-        for (user in cacheUserList) {
-            if (service.userId == user.id)
-                return user
-        }
-        return User()
-    }
-
     //and than we have to get all services by this users
     fun isFirstEnter(id: String, idList: ArrayList<String>): Boolean {
         if (idList.contains(id)) {
@@ -143,36 +122,6 @@ class MainScreenUserInteractor(
         }
         idList.add(id)
         return true
-    }
-
-    override fun getCategories(mainScreenData: ArrayList<ArrayList<Any>>): MutableSet<String> {
-        val setOfCategories = mutableSetOf<String>()
-        for (i in mainScreenData.indices) {
-            setOfCategories.add((mainScreenData[i][0] as Service).category)
-        }
-        return setOfCategories
-    }
-
-    private fun choosePremiumServices(
-        premiumList: ArrayList<ArrayList<Any>>,
-        cacheMainScreenData: ArrayList<ArrayList<Any>>
-    ): ArrayList<ArrayList<Any>> {
-        val random = Random()
-        val limit = 3
-
-        if (premiumList.size <= limit) {
-            cacheMainScreenData.addAll(0, premiumList)
-        } else {
-            for (i in 0 until limit) {
-                var premiumService: ArrayList<Any>
-                do {
-                    val index = random.nextInt(premiumList.size)
-                    premiumService = premiumList[index]
-                } while (cacheMainScreenData.contains(premiumService))
-                cacheMainScreenData.add(0, premiumService)
-            }
-        }
-        return cacheMainScreenData
     }
 
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
@@ -190,8 +139,6 @@ class MainScreenUserInteractor(
         searchByServiceName = false
         serviceName = ""
         cacheUserList.clear()
-        cachePremiumMainScreenData.clear()
-        currentCountOfUsers = 0
     }
 
 

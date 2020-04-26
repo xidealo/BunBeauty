@@ -3,9 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 
 class FiguringServicePoints {
-
-    companion object {
-        fun figureCreationDatePoints(creationDate: String, coefficient: Float): Float {
+     fun figureCreationDatePoints(creationDate: String, coefficient: Float): Float {
             val creationDatePoints: Float
 
             val dateBonus = (WorkWithTimeApi.getMillisecondsStringDate(creationDate) - WorkWithTimeApi.getSysdateLong()) / (3600000 * 24) + 7
@@ -34,5 +32,4 @@ class FiguringServicePoints {
             return rating * coefficient / 5
         }
 
-    }
 }

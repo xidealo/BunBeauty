@@ -6,7 +6,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.CodeFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.CodeDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.ICodeRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: CodeFirebase) :
     BaseRepository(), ICodeRepository, GetCodeCallback, UpdateCodeCallback {

@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.chat.Dialogs
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 
@@ -22,7 +24,7 @@ class BottomPanel : Panel() {
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.profileBottomPanelText -> goTo(ProfileActivity::class.java)
-            R.id.mainScreenBottomPanelText -> goTo(MainScreenActivity::class.java)
+            R.id.mainScreenBottomPanelText -> goToMainScreen()
             R.id.chatBottomPanelText -> goTo(Dialogs::class.java)
         }
     }
@@ -58,6 +60,13 @@ class BottomPanel : Panel() {
 
     private fun goTo(activityClass: Class<out Activity>) {
         val intent = Intent(context, activityClass)
+        this.startActivity(intent)
+        (context as Activity).overridePendingTransition(0,0)
+    }
+
+    fun goToMainScreen(){
+        val intent = Intent(context, MainScreenActivity::class.java)
+        intent.putExtra(User.USER, ProfileInteractor.cacheCurrentUser)
         this.startActivity(intent)
         (context as Activity).overridePendingTransition(0,0)
     }

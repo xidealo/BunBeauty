@@ -21,6 +21,7 @@ import com.bunbeauty.ideal.myapplication.adapters.ServiceAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
@@ -29,6 +30,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
+import kotlinx.android.synthetic.main.service_activity.*
 import javax.inject.Inject
 
 class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView,
@@ -106,6 +108,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
+        serviceAdapter = ServiceAdapter(mainScreenPresenter.getMainScreenDataLink())
+        recyclerView.adapter = serviceAdapter
+
         minimizeTagsBtn.setOnClickListener(this)
         clearTagsBtn.setOnClickListener(this)
     }
@@ -182,9 +187,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         recyclerView.visibility = View.VISIBLE
     }
 
-    override fun showMainScreen(mainScreenData: ArrayList<ArrayList<Any>>) {
-        serviceAdapter = ServiceAdapter(mainScreenData.size, mainScreenData)
-        recyclerView.adapter = serviceAdapter
+    override fun showMainScreen(mainScreenData: ArrayList<ArrayList<MainScreenData>>) {
+        serviceAdapter.notifyDataSetChanged()
     }
 
     override fun showMainScreenByUserName(city: String, name: String) {

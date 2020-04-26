@@ -80,6 +80,7 @@ class ProfileInteractor(
     private fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         if (user.id == getUserId()) {
             profilePresenterCallback.showMyProfile(user)
+            cacheCurrentUser = currentUser
         } else {
             profilePresenterCallback.showAlienProfile(user)
         }
@@ -125,5 +126,6 @@ class ProfileInteractor(
         const val TOKEN = "token"
         val cachedUserIds = arrayListOf<String>()
         val cachedUserIdsForServices = arrayListOf<String>()
+        var cacheCurrentUser = User()
     }
 }

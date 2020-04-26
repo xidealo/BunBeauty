@@ -9,6 +9,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 
 @InjectViewState
@@ -19,8 +21,23 @@ class MainScreenPresenter(
 ) : MvpPresenter<MainScreenView>(),
     MainScreenPresenterCallback {
 
+    fun getMainScreenDataLink() = mainScreenDataInteractor.cacheMainScreenData
+
     fun createMainScreen() {
         mainScreenDataInteractor.getMainScreenData(this)
+    }
+
+    override fun getUsersByCity(city: String) {
+        mainScreenUserInteractor.getUsersByCity(city,this)
+    }
+
+    override fun getUsersSize(): Int = mainScreenUserInteractor.cacheUserList.size
+
+    override fun createMainScreenData() {
+        mainScreenDataInteractor.createMainScreenData(
+            mainScreenUserInteractor.cacheUserList,
+            mainScreenServiceInteractor.cacheServiceList
+        )
     }
 
     fun createMainScreenWithCategory(category: String) {
@@ -62,13 +79,16 @@ class MainScreenPresenter(
         }
     }
 
-    override fun returnMainScreenDataWithCreateCategory(mainScreenData: ArrayList<ArrayList<Any>>) {
+    override fun showMainScreenData(mainScreenData: ArrayList<ArrayList<MainScreenData>>) {
         viewState.hideLoading()
         viewState.showMainScreen(mainScreenData)
-        viewState.createCategoryFeed(mainScreenUserInteractor.getCategories(mainScreenData))
     }
 
-    override fun returnMainScreenData(mainScreenData: ArrayList<ArrayList<Any>>) {
+    override fun createCategoryFeed(mainScreenData: ArrayList<ArrayList<MainScreenData>>) {
+        viewState.createCategoryFeed(mainScreenServiceInteractor.getCategories(mainScreenData))
+    }
+
+    override fun returnMainScreenData(mainScreenData: ArrayList<ArrayList<MainScreenData>>) {
         //если 0, то выводим, что ничего не нашел
         viewState.hideLoading()
         viewState.showMainScreen(mainScreenData)
@@ -82,8 +102,8 @@ class MainScreenPresenter(
         viewState.createTags(category, selectedTagsArray)
     }
 
-    override fun getServicesByUserId(userId: String) {
-        mainScreenServiceInteractor.getServicesByUserId(userId)
+    override fun getServicesByUserId(user: User) {
+        mainScreenServiceInteractor.getServicesByUserId(user, this)
     }
 
     override fun getServicesByUserIdAndServiceName(userId: String, serviceName: String) {

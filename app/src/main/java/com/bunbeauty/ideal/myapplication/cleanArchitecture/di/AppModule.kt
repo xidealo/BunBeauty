@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
 import android.app.Application
 import android.content.Intent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
@@ -131,8 +132,8 @@ class AppModule(private val app: Application, private val intent: Intent) {
         MainScreenServiceInteractor(serviceRepository)
 
     @Provides
-    fun provideMainScreenDataInteractor() =
-        MainScreenDataInteractor()
+    fun provideMainScreenDataInteractor(figuringServicePoints: FiguringServicePoints) =
+        MainScreenDataInteractor(intent, figuringServicePoints)
 
     @Provides
     fun provideServiceInteractor(photoRepository: PhotoRepository) =
@@ -146,4 +147,8 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideEditProfileInteractor(): EditProfileInteractor {
         return EditProfileInteractor(intent)
     }
+
+    @Provides
+    fun provideFigureServicePointsApi() = FiguringServicePoints()
+
 }

@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.adapters.foundElements.FoundServiceElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import java.util.*
 
-class ServiceAdapter(private val numberItems: Int, private val mainScreenData:ArrayList<ArrayList<Any>>) : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() {
+class ServiceAdapter(private val mainScreenData: ArrayList<ArrayList<MainScreenData>>) :
+    RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() {
 
     private lateinit var context: Context
 
@@ -27,11 +29,11 @@ class ServiceAdapter(private val numberItems: Int, private val mainScreenData:Ar
     }
 
     override fun onBindViewHolder(serviceViewHolder: ServiceViewHolder, i: Int) {
-        serviceViewHolder.bind(mainScreenData[i][0] as Service, mainScreenData[i][1]as User)
+        serviceViewHolder.bind(mainScreenData[i][0].service, mainScreenData[i][0].user)
     }
 
     override fun getItemCount(): Int {
-        return numberItems
+        return mainScreenData.size
     }
 
     inner class ServiceViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
@@ -43,7 +45,6 @@ class ServiceAdapter(private val numberItems: Int, private val mainScreenData:Ar
     }
 
     companion object {
-
         private val TAG = "DBInf"
     }
 }
