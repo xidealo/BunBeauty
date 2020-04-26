@@ -29,7 +29,7 @@ class CreationServiceInteractor(
         creationServicePresenterCallback: CreationServicePresenterCallback
     ) {
         this.creationServicePresenterCallback = creationServicePresenterCallback
-        if (isNameCorrect(service.name) && isCostCorrect(service.cost) && isAddressCorrect(service.address)
+        if (isNameCorrect(service.name) && isAddressCorrect(service.address)
             && isCategoryCorrect(service.category) && isDescriptionCorrect(service.description)
         ) {
             service.id = serviceRepository.getIdForNew(getUserId())
@@ -117,22 +117,6 @@ class CreationServiceInteractor(
         return true
     }
 
-    private fun isCostCorrect(cost: String): Boolean {
-        if (cost.isEmpty()) {
-            creationServicePresenterCallback.showCostInputError("Введите цену")
-            return false
-        }
-
-        if (!getIsCostInputCorrect(cost)) {
-            creationServicePresenterCallback.showCostInputError("Цена должна содержать только цифры")
-            return false
-        }
-        if (!getIsCostLengthLessTen(cost)) {
-            creationServicePresenterCallback.showCostInputError("Цена должна быть меньше 10 символов")
-            return false
-        }
-        return true
-    }
 
     private fun isCategoryCorrect(category: String): Boolean {
         if (!getIsCategoryInputCorrect(category)) {

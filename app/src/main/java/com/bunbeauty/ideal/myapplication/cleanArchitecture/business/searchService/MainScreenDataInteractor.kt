@@ -108,8 +108,8 @@ class MainScreenDataInteractor(
                 coefficients[Service.CREATION_DATE]!!
             )
             val costPoints = figuringServicePoints.figureCostPoints(
-                (service.cost).toLong(),
-                /* serviceRepository.getMaxCost().cost.toLong()*/1000,
+                (service.cost),
+                mainScreenPresenterCallback.getMaxCost(),
                 coefficients[Service.COST]!!
             )
 
@@ -119,7 +119,7 @@ class MainScreenDataInteractor(
             )
             val countOfRatesPoints = figuringServicePoints.figureCountOfRatesPoints(
                 service.countOfRates,
-                /*serviceRepository.getMaxCountOfRates().countOfRates*/10,
+                mainScreenPresenterCallback.getMaxCountOfRates(),
                 coefficients[Service.COUNT_OF_RATES]!!
             )
 
@@ -163,13 +163,5 @@ class MainScreenDataInteractor(
         }
         return cacheMainScreenData
     }
-
-/*    override fun convertCacheDataToMainScreenData(cacheMainScreenData: ArrayList<ArrayList<MainScreenData>>): ArrayList<ArrayList<MainScreenData>> {
-        val mainScreenData = ArrayList<ArrayList<MainScreenData>>()
-        for (i in cacheMainScreenData.indices) {
-            mainScreenData.add(arrayListOf(cacheMainScreenData[i][0], cacheMainScreenData[i][1]))
-        }
-        return mainScreenData
-    }*/
 
 }

@@ -117,7 +117,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         this.service = servicePresenter.getService()
         this.serviceOwner = servicePresenter.getServiceOwner()
 
-        costText.text = service.cost + " ₽"
+        costText.text = service.cost.toString() + " ₽"
         descriptionText.text = service.description
         addressText.text = service.address
         showRating(service.rating, service.countOfRates)

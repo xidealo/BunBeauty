@@ -80,22 +80,6 @@ class ServiceRepository(private val serviceDao: ServiceDao,
             }
         }
     }
-    //Удалить нахуй
-    fun getMaxCost(): Service {
-        var service = Service()
-        runBlocking {
-            service = serviceDao.getMaxCostService()
-        }
-        return service
-    }
-
-    fun getMaxCountOfRates(): Service {
-        var service = Service()
-        runBlocking {
-            service = serviceDao.getMaxCountOfRatesService()
-        }
-        return service
-    }
 
     override fun returnService(service: Service) {
         insertInRoom(service)

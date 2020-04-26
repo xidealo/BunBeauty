@@ -28,10 +28,14 @@ class MainScreenPresenter(
     }
 
     override fun getUsersByCity(city: String) {
-        mainScreenUserInteractor.getUsersByCity(city,this)
+        mainScreenUserInteractor.getUsersByCity(city, this)
     }
 
     override fun getUsersSize(): Int = mainScreenUserInteractor.cacheUserList.size
+
+    override fun getMaxCost(): Long = mainScreenServiceInteractor.maxCost
+
+    override fun getMaxCountOfRates(): Long = mainScreenServiceInteractor.maxCountOfRates
 
     override fun createMainScreenData() {
         mainScreenDataInteractor.createMainScreenData(
@@ -82,6 +86,11 @@ class MainScreenPresenter(
     override fun showMainScreenData(mainScreenData: ArrayList<ArrayList<MainScreenData>>) {
         viewState.hideLoading()
         viewState.showMainScreen(mainScreenData)
+    }
+
+    override fun showEmptyScreen() {
+        viewState.hideLoading()
+        viewState.showEmptyScreen()
     }
 
     override fun createCategoryFeed(mainScreenData: ArrayList<ArrayList<MainScreenData>>) {

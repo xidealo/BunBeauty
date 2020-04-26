@@ -180,10 +180,10 @@ class ServiceFirebaseApi {
         service.name = serviceSnapshot.child(Service.NAME).value as? String ?: ""
         service.address = serviceSnapshot.child(Service.ADDRESS).value as? String ?: ""
         service.description = serviceSnapshot.child(Service.DESCRIPTION).value as? String ?: ""
-        service.cost = serviceSnapshot.child(Service.COST).value as? String ?: "0"
-        service.countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue<Long>(Long::class.java)
+        service.cost = serviceSnapshot.child(Service.COST).getValue(Long::class.java) ?: 0
+        service.countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue(Long::class.java)
                 ?: 0L
-        service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue<Float>(Float::class.java)
+        service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue(Float::class.java)
                 ?: 0f
         service.category = serviceSnapshot.child(Service.CATEGORY).value as? String ?: ""
         service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).value as? String ?: ""

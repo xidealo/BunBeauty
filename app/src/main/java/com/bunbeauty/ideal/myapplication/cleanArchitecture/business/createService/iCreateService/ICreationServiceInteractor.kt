@@ -1,8 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService
 
-import android.net.Uri
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationService.CreationServicePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
 interface ICreationServiceInteractor {

@@ -102,7 +102,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
                 creationServicePresenter.addService(
                     nameServiceInput.text.toString(),
                     descriptionServiceInput.text.toString(),
-                    costAddServiceInput.text.toString(),
+                    costAddServiceInput.text.toString().toLongOrNull() ?: 0,
                     categoryElement.category,
                     addressServiceInput.text.toString(),
                     categoryElement.tagsArray,

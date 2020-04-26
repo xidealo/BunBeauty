@@ -153,7 +153,7 @@ public class Search {
                 // Информация об услуге
                 String serviceId = cursor.getString(indexServiceId);
                 String serviceName = cursor.getString(indexServiceName);
-                String serviceCost = cursor.getString(indexServiceCost);
+                Long serviceCost = cursor.getLong(indexServiceCost);
                 float serviceRating = Float.valueOf(cursor.getString(indexServiceAvgRating));
 
                 //boolean isPremium = WorkWithTimeApi.checkPremium();

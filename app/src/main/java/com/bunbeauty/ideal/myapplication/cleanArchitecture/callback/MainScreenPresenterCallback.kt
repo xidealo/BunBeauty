@@ -5,6 +5,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface MainScreenPresenterCallback {
     fun showMainScreenData(mainScreenData: ArrayList<ArrayList<MainScreenData>>)
+    fun showEmptyScreen()
     fun createCategoryFeed(mainScreenData: ArrayList<ArrayList<MainScreenData>>)
     fun returnMainScreenData(mainScreenData: ArrayList<ArrayList<MainScreenData>>)
     fun showLoading()
@@ -14,5 +15,7 @@ interface MainScreenPresenterCallback {
     fun getServicesByUserIdAndServiceName(userId: String, serviceName: String)
     fun getUsersByCity(city: String)
     fun getUsersSize(): Int
+    fun getMaxCost(): Long
+    fun getMaxCountOfRates(): Long
     fun createMainScreenData()
 }

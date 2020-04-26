@@ -7,6 +7,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface MainScreenView: MvpView {
     fun showTags()
+    fun showEmptyScreen()
     fun showMainScreenByUserName(city:String, name:String)
     fun showMainScreenByServiceName(city:String, serviceName:String)
     fun createCategoryFeed(categories: MutableSet<String>)

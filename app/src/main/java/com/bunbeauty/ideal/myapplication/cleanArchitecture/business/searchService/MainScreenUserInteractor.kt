@@ -3,7 +3,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUsersCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
@@ -33,6 +32,7 @@ class MainScreenUserInteractor(
     }
 
     override fun returnUsers(users: List<User>) {
+
         cacheUserList.addAll(users)
 
         if (searchByServiceName) {

@@ -45,6 +45,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
     private lateinit var serviceAdapter: ServiceAdapter
+    private lateinit var noResultMainScreenText: TextView
 
     @InjectPresenter
     lateinit var mainScreenPresenter: MainScreenPresenter
@@ -101,6 +102,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         innerLayout = findViewById(R.id.tagsInnerMainScreenLayout)
         progressBar = findViewById(R.id.progressBarMainScreen)
         searchLayout = findViewById(R.id.searchMainScreenLayout)
+        noResultMainScreenText = findViewById(R.id.noResultMainScreenText)
+
+        noResultMainScreenText.visibility = View.GONE
 
         val minimizeTagsBtn = findViewById<Button>(R.id.minimizeTagsMainScreenBtn)
         val clearTagsBtn = findViewById<Button>(R.id.clearTagsMainScreenBtn)
@@ -208,12 +212,15 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         tagsLayout.visibility = View.VISIBLE
     }
 
+    override fun showEmptyScreen() {
+        noResultMainScreenText.visibility = View.VISIBLE
+    }
+
     override fun enableCategoryButton(button: Button) {
         button.setBackgroundResource(R.drawable.category_button_pressed)
         button.setTextColor(Color.BLACK)
     }
 
-    // настроить вид кнопок
     override fun createCategoryFeed(categories: MutableSet<String>) {
         val width = resources.getDimensionPixelSize(R.dimen.categories_width)
         val height = resources.getDimensionPixelSize(R.dimen.categories_height)

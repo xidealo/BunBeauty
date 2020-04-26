@@ -16,7 +16,7 @@ class CreationServicePresenter(private val creationServiceInteractor: CreationSe
     fun addService(
         name: String,
         description: String,
-        cost: String,
+        cost: Long,
         category: String,
         address: String,
         tags: List<String>,
