@@ -10,6 +10,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 
@@ -25,6 +26,10 @@ class MainScreenPresenter(
 
     fun createMainScreen() {
         mainScreenDataInteractor.getMainScreenData(this)
+    }
+
+    fun showCurrentMainScreen(){
+        mainScreenDataInteractor.showCurrentMainScreen(this)
     }
 
     override fun getUsersByCity(city: String) {
@@ -83,7 +88,7 @@ class MainScreenPresenter(
         }
     }
 
-    override fun showMainScreenData(mainScreenData: ArrayList<ArrayList<MainScreenData>>) {
+    override fun showMainScreenData(mainScreenData: ArrayList<MainScreenData>) {
         viewState.hideLoading()
         viewState.showMainScreen(mainScreenData)
     }
@@ -93,11 +98,11 @@ class MainScreenPresenter(
         viewState.showEmptyScreen()
     }
 
-    override fun createCategoryFeed(mainScreenData: ArrayList<ArrayList<MainScreenData>>) {
-        viewState.createCategoryFeed(mainScreenServiceInteractor.getCategories(mainScreenData))
+    override fun createCategoryFeed(services: List<Service>) {
+        viewState.createCategoryFeed(mainScreenServiceInteractor.getCategories(services))
     }
 
-    override fun returnMainScreenData(mainScreenData: ArrayList<ArrayList<MainScreenData>>) {
+    override fun returnMainScreenData(mainScreenData: ArrayList<MainScreenData>) {
         //если 0, то выводим, что ничего не нашел
         viewState.hideLoading()
         viewState.showMainScreen(mainScreenData)

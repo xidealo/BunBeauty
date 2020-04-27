@@ -12,6 +12,9 @@ interface IMainScreenDataInteractor {
     )
 
     fun getMainScreenData(mainScreenPresenterCallback: MainScreenPresenterCallback)
+
+    fun showCurrentMainScreen(mainScreenPresenterCallback: MainScreenPresenterCallback)
+
     fun getMainScreenData(
         selectedTagsArray: ArrayList<String>,
         mainScreenPresenterCallback: MainScreenPresenterCallback

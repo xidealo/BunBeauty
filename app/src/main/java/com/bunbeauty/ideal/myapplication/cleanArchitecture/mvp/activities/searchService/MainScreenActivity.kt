@@ -134,7 +134,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                 val category = (v as Button).text.toString()
                 mainScreenPresenter.disableCategoryBtns(categoriesBtns)
                 if (mainScreenPresenter.isSelectedCategory(category)) {
-                    mainScreenPresenter.createMainScreen()
+                    mainScreenPresenter.showCurrentMainScreen()
                     mainScreenPresenter.setTagsState(tagsLayout.visibility)
                 } else {
                     mainScreenPresenter.createMainScreenWithCategory(category)
@@ -191,7 +191,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         recyclerView.visibility = View.VISIBLE
     }
 
-    override fun showMainScreen(mainScreenData: ArrayList<ArrayList<MainScreenData>>) {
+    override fun showMainScreen(mainScreenData: ArrayList<MainScreenData>) {
         serviceAdapter.notifyDataSetChanged()
     }
 

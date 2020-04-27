@@ -1,13 +1,14 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface MainScreenPresenterCallback {
-    fun showMainScreenData(mainScreenData: ArrayList<ArrayList<MainScreenData>>)
+    fun showMainScreenData(mainScreenData: ArrayList<MainScreenData>)
     fun showEmptyScreen()
-    fun createCategoryFeed(mainScreenData: ArrayList<ArrayList<MainScreenData>>)
-    fun returnMainScreenData(mainScreenData: ArrayList<ArrayList<MainScreenData>>)
+    fun createCategoryFeed(mainScreenData: List<Service>)
+    fun returnMainScreenData(mainScreenData: ArrayList<MainScreenData>)
     fun showLoading()
     fun createTags(category: String, selectedTagsArray: ArrayList<String>)
 

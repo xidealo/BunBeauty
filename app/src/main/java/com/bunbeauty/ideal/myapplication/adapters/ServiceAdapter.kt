@@ -12,7 +12,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import java.util.*
 
-class ServiceAdapter(private val mainScreenData: ArrayList<ArrayList<MainScreenData>>) :
+class ServiceAdapter(private val mainScreenData: ArrayList<MainScreenData>) :
     RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() {
 
     private lateinit var context: Context
@@ -29,7 +29,7 @@ class ServiceAdapter(private val mainScreenData: ArrayList<ArrayList<MainScreenD
     }
 
     override fun onBindViewHolder(serviceViewHolder: ServiceViewHolder, i: Int) {
-        serviceViewHolder.bind(mainScreenData[i][0].service, mainScreenData[i][0].user)
+        serviceViewHolder.bind(mainScreenData[i].service, mainScreenData[i].user)
     }
 
     override fun getItemCount(): Int {

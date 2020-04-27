@@ -17,8 +17,9 @@ class MainScreenDataInteractor(
     private val figuringServicePoints: FiguringServicePoints
 ) : IMainScreenDataInteractor {
 
-    var cacheMainScreenData = ArrayList<ArrayList<MainScreenData>>()
-    private var cachePremiumMainScreenData = ArrayList<ArrayList<MainScreenData>>()
+    var cacheMainScreenData = ArrayList<MainScreenData>()
+    private var constCacheMainScreenData = ArrayList<MainScreenData>()
+    private var cachePremiumMainScreenData = ArrayList<MainScreenData>()
     private var createMainScreenWithCategory = true
     private var cacheServiceList = ArrayList<Service>()
 
@@ -47,13 +48,30 @@ class MainScreenDataInteractor(
         mainScreenPresenterCallback: MainScreenPresenterCallback
     ) {
         //can add if which will check cache size and if 0 will load from FB
-        /* mainScreenPresenterCallback.showLoading()
-         mainScreenPresenterCallback.returnMainScreenData(
-             convertCacheDataToMainScreenData(
-                 category,
-                 cacheMainScreenData
-             )
-         )*/
+        this.mainScreenPresenterCallback = mainScreenPresenterCallback
+        mainScreenPresenterCallback.showLoading()
+        mainScreenPresenterCallback.returnMainScreenData(
+            sortDataWithCategory(
+                category,
+                constCacheMainScreenData
+            )
+        )
+    }
+
+    override fun showCurrentMainScreen(mainScreenPresenterCallback: MainScreenPresenterCallback) {
+        this.mainScreenPresenterCallback = mainScreenPresenterCallback
+        cacheMainScreenData.clear()
+        cacheMainScreenData.addAll(constCacheMainScreenData)
+        mainScreenPresenterCallback.returnMainScreenData(constCacheMainScreenData)
+    }
+
+    private fun sortDataWithCategory(
+        category: String,
+        constCacheMainScreenData: ArrayList<MainScreenData>
+    ): ArrayList<MainScreenData> {
+        cacheMainScreenData.clear()
+        cacheMainScreenData.addAll(constCacheMainScreenData.filter { it.service.category == category })
+        return cacheMainScreenData
     }
 
     override fun createMainScreenData(
@@ -67,6 +85,7 @@ class MainScreenDataInteractor(
         }
 
         cacheMainScreenData = choosePremiumServices(cachePremiumMainScreenData, cacheMainScreenData)
+        constCacheMainScreenData.addAll(cacheMainScreenData)
 
         if (createMainScreenWithCategory) {
             createMainScreenWithCategory = false
@@ -74,7 +93,7 @@ class MainScreenDataInteractor(
                 cacheMainScreenData
             )
             //TODO(Send only services)
-            mainScreenPresenterCallback.createCategoryFeed(cacheMainScreenData)
+            mainScreenPresenterCallback.createCategoryFeed(cacheMainScreenData.map { it.service })
         } else {
             mainScreenPresenterCallback.returnMainScreenData(
                 cacheMainScreenData
@@ -101,7 +120,7 @@ class MainScreenDataInteractor(
         val isPremium = WorkWithTimeApi.checkPremium(service.premiumDate)
 
         if (isPremium) {
-            cachePremiumMainScreenData.add(0, arrayListOf(MainScreenData(1f, user, service)))
+            cachePremiumMainScreenData.add(0, MainScreenData(1f, user, service))
         } else {
             val creationDatePoints = figuringServicePoints.figureCreationDatePoints(
                 service.creationDate,
@@ -124,14 +143,14 @@ class MainScreenDataInteractor(
             )
 
             val points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints
-            sortAddition(arrayListOf(MainScreenData(points, user, service)))
+            sortAddition(MainScreenData(points, user, service))
         }
     }
 
-    private fun sortAddition(serviceData: ArrayList<MainScreenData>) {
+    private fun sortAddition(serviceData: MainScreenData) {
         for (i in cacheServiceList.indices) {
             if (cacheMainScreenData.size != 0) {
-                if (cacheMainScreenData[i][0].weight < (serviceData[0]).weight
+                if (cacheMainScreenData[i].weight < (serviceData).weight
                 ) {
                     cacheMainScreenData.add(i, serviceData)
                     return
@@ -143,9 +162,9 @@ class MainScreenDataInteractor(
     }
 
     private fun choosePremiumServices(
-        premiumList: ArrayList<ArrayList<MainScreenData>>,
-        cacheMainScreenData: ArrayList<ArrayList<MainScreenData>>
-    ): ArrayList<ArrayList<MainScreenData>> {
+        premiumList: ArrayList<MainScreenData>,
+        cacheMainScreenData: ArrayList<MainScreenData>
+    ): ArrayList<MainScreenData> {
         val random = Random()
         val limit = 3
 
@@ -153,7 +172,7 @@ class MainScreenDataInteractor(
             cacheMainScreenData.addAll(0, premiumList)
         } else {
             for (i in 0 until limit) {
-                var premiumService: ArrayList<MainScreenData>
+                var premiumService: MainScreenData
                 do {
                     val index = random.nextInt(premiumList.size)
                     premiumService = premiumList[index]

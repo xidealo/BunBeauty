@@ -17,7 +17,7 @@ interface MainScreenView: MvpView {
     fun hideTags()
     fun showLoading()
     fun hideLoading()
-    fun showMainScreen(mainScreenData:ArrayList<ArrayList<MainScreenData>>)
+    fun showMainScreen(mainScreenData:ArrayList<MainScreenData>)
     fun createTags(category:String,selectedTagsArray:ArrayList<String>)
     fun enableTag(tagText: TextView)
     fun disableTag(tagText: TextView)
