@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService
 
 import android.content.Intent
+import android.widget.TextView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
@@ -23,6 +24,10 @@ class MainScreenDataInteractor(
     private var createMainScreenWithCategory = true
     private var cacheServiceList = ArrayList<Service>()
 
+    var selectedCategory = ""
+
+    var selectedTagsArray: ArrayList<String> = arrayListOf()
+
     private lateinit var mainScreenPresenterCallback: MainScreenPresenterCallback
 
     override fun getMainScreenData(mainScreenPresenterCallback: MainScreenPresenterCallback) {
@@ -32,30 +37,54 @@ class MainScreenDataInteractor(
     }
 
     override fun getMainScreenData(
-        selectedTagsArray: ArrayList<String>,
-        mainScreenPresenterCallback: MainScreenPresenterCallback
-    ) {
-        /*   mainScreenPresenterCallback.returnMainScreenData(
-               convertCacheDataToMainScreenData(
-                   selectedTagsArray,
-                   cacheMainScreenData
-               )
-           )*/
-    }
-
-    override fun getMainScreenData(
         category: String,
         mainScreenPresenterCallback: MainScreenPresenterCallback
     ) {
-        //can add if which will check cache size and if 0 will load from FB
         this.mainScreenPresenterCallback = mainScreenPresenterCallback
+        selectedTagsArray.clear()
+
         mainScreenPresenterCallback.showLoading()
+        mainScreenPresenterCallback.clearTags()
+        mainScreenPresenterCallback.createTags(category, selectedTagsArray)
+        mainScreenPresenterCallback.showTags()
+
         mainScreenPresenterCallback.returnMainScreenData(
             sortDataWithCategory(
                 category,
                 constCacheMainScreenData
             )
         )
+    }
+
+    override fun getMainScreenData(
+        tagText: TextView,
+        selectedTagsArray: ArrayList<String>,
+        mainScreenPresenterCallback: MainScreenPresenterCallback
+    ) {
+        this.mainScreenPresenterCallback = mainScreenPresenterCallback
+        val txt = tagText.text.toString()
+
+        if (selectedTagsArray.contains(tagText.text.toString())) {
+            //disable
+            mainScreenPresenterCallback.disableTag(tagText)
+            selectedTagsArray.remove(tagText.text.toString())
+        } else {
+            //enable
+            mainScreenPresenterCallback.enableTag(tagText)
+            selectedTagsArray.add(tagText.text.toString())
+        }
+
+        if (selectedTagsArray.size == 0) {
+            getMainScreenData(selectedCategory, mainScreenPresenterCallback)
+        } else {
+            mainScreenPresenterCallback.returnMainScreenData(
+                sortDataWithTags(
+                    selectedTagsArray,
+                    constCacheMainScreenData
+                )
+            )
+        }
+
     }
 
     override fun showCurrentMainScreen(mainScreenPresenterCallback: MainScreenPresenterCallback) {
@@ -71,6 +100,20 @@ class MainScreenDataInteractor(
     ): ArrayList<MainScreenData> {
         cacheMainScreenData.clear()
         cacheMainScreenData.addAll(constCacheMainScreenData.filter { it.service.category == category })
+        return cacheMainScreenData
+    }
+
+    private fun sortDataWithTags(
+        tags: ArrayList<String>,
+        constCacheMainScreenData: ArrayList<MainScreenData>
+    ): ArrayList<MainScreenData> {
+        val foundData = mutableSetOf<MainScreenData>()
+        cacheMainScreenData.clear()
+
+        for (tag in tags) {
+            foundData.addAll(constCacheMainScreenData.filter { it -> it.service.tags.any { it.tag == tag } })
+        }
+        cacheMainScreenData.addAll(foundData)
         return cacheMainScreenData
     }
 
@@ -92,7 +135,6 @@ class MainScreenDataInteractor(
             mainScreenPresenterCallback.showMainScreenData(
                 cacheMainScreenData
             )
-            //TODO(Send only services)
             mainScreenPresenterCallback.createCategoryFeed(cacheMainScreenData.map { it.service })
         } else {
             mainScreenPresenterCallback.returnMainScreenData(
@@ -181,6 +223,15 @@ class MainScreenDataInteractor(
             }
         }
         return cacheMainScreenData
+    }
+
+    override fun isSelectedCategory(category: String): Boolean {
+        if (category == selectedCategory) {
+            selectedCategory = ""
+            return true
+        }
+        selectedCategory = category
+        return false
     }
 
 }

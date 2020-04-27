@@ -14,8 +14,6 @@ class MainScreenUserInteractor(
     IUsersCallback {
 
     private lateinit var mainScreenPresenterCallback: MainScreenPresenterCallback
-    var selectedCategory = ""
-    var selectedTagsArray: ArrayList<String> = arrayListOf()
 
     //cache
     var cacheUserList = arrayListOf<User>()
@@ -44,10 +42,6 @@ class MainScreenUserInteractor(
                 mainScreenPresenterCallback.getServicesByUserId(user)
             }
         }
-    }
-
-    fun createTags(category: String, mainScreenPresenterCallback: MainScreenPresenterCallback) {
-        mainScreenPresenterCallback.createTags(category, selectedTagsArray)
     }
 
     override fun getMainScreenDataByUserName(
@@ -126,21 +120,11 @@ class MainScreenUserInteractor(
 
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
-    override fun isSelectedCategory(category: String): Boolean {
-        if (category == selectedCategory) {
-            selectedCategory = ""
-            return true
-        }
-        selectedCategory = category
-        return false
-    }
-
     private fun clearCache() {
         searchByServiceName = false
         serviceName = ""
         cacheUserList.clear()
     }
-
 
     companion object {
         //can be replaced by one var

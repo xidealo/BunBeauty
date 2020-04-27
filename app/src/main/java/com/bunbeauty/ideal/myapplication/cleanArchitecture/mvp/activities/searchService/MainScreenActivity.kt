@@ -125,7 +125,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
             R.id.clearTagsMainScreenBtn -> {
                 mainScreenPresenter.clearCategory(categoriesBtns)
-                mainScreenPresenter.createMainScreen()
+                mainScreenPresenter.showCurrentMainScreen()
             }
 
             else -> if ((v.parent as View).id == R.id.categoryMainScreenLayout) {
@@ -174,10 +174,11 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     override fun enableTag(tagText: TextView) {
         tagText.setBackgroundResource(R.drawable.category_button_pressed)
         tagText.setTextColor(Color.BLACK)
+        val txt = tagText.text.toString()
     }
 
     override fun disableTag(tagText: TextView) {
-        tagText.setBackgroundResource(0)
+        tagText.setBackgroundResource(R.drawable.block_text)
         tagText.setTextColor(Color.GRAY)
     }
 
@@ -204,8 +205,11 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     override fun hideTags() {
-        innerLayout.removeAllViews()
         tagsLayout.visibility = View.GONE
+    }
+
+    override fun clearTags() {
+        innerLayout.removeAllViews()
     }
 
     override fun showTags() {
@@ -265,19 +269,25 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             tagText.text = tag.toString()
             tagText.setTextColor(Color.GRAY)
             tagText.gravity = Gravity.CENTER
+            tagText.setBackgroundResource(R.drawable.block_text)
+            tagText.textSize = 16f
             tagText.typeface = ResourcesCompat.getFont(this, R.font.roboto_bold)
-            tagText.layoutParams = LinearLayout.LayoutParams(
-                700,
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
+            params.setMargins(10, 0, 10, 0)
+            tagText.layoutParams = params
             tagText.setOnClickListener(this)
-            tagText.setPadding(0, 16, 0, 16)
+            tagText.setPadding(8, 8, 8, 8)
+
             if (selectedTagsArray.contains(tag.toString())) {
                 tagText.setBackgroundResource(R.drawable.category_button_pressed)
                 tagText.setTextColor(Color.BLACK)
             }
             innerLayout.addView(tagText)
         }
+
     }
 
     companion object {

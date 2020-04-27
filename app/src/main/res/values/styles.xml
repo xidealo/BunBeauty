@@ -250,10 +250,8 @@
     <style name="lightBlueButton" parent="mainButton">
         <item name="fontFamily">@font/font_awesome_solid</item>
         <item name="android:background">@drawable/tags_button</item>
-        <item name="android:layout_marginTop">4dp</item>
-        <item name="android:layout_marginBottom">10dp</item>
-        <item name="android:layout_marginLeft">30dp</item>
-        <item name="android:layout_marginRight">30dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColorHint">@color/white</item>
     </style>

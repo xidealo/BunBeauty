@@ -6,7 +6,6 @@ import com.arellomobile.mvp.MvpView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 
 interface MainScreenView: MvpView {
-    fun showTags()
     fun showEmptyScreen()
     fun showMainScreenByUserName(city:String, name:String)
     fun showMainScreenByServiceName(city:String, serviceName:String)
@@ -14,11 +13,13 @@ interface MainScreenView: MvpView {
     fun createMainScreen()
     fun disableCategoryBtn(button: Button)
     fun enableCategoryButton(button: Button)
+    fun showTags()
     fun hideTags()
+    fun clearTags()
+    fun createTags(category:String,selectedTagsArray:ArrayList<String>)
     fun showLoading()
     fun hideLoading()
     fun showMainScreen(mainScreenData:ArrayList<MainScreenData>)
-    fun createTags(category:String,selectedTagsArray:ArrayList<String>)
     fun enableTag(tagText: TextView)
     fun disableTag(tagText: TextView)
     fun createSearchPanel()

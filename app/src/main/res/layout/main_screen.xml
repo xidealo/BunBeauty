@@ -53,20 +53,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll">
 
-        <ScrollView
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="50dp"
             android:fadingEdge="vertical"
             android:scrollbars="none">
 
             <LinearLayout
                 android:id="@+id/tagsInnerMainScreenLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:orientation="vertical" />
+                android:orientation="horizontal" />
 
-        </ScrollView>
+        </HorizontalScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -80,8 +80,7 @@
                 android:layout_height="36dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/font_awesome_solid"
-                android:gravity="center_horizontal"
-                android:paddingTop="8dp"
+                android:gravity="center"
                 android:text="" />
 
             <Button
@@ -91,8 +90,7 @@
                 android:layout_height="36dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/font_awesome_solid"
-                android:gravity="center_horizontal"
-                android:paddingTop="8dp"
+                android:gravity="center"
                 android:text="" />
         </LinearLayout>
     </LinearLayout>

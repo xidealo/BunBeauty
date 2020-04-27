@@ -28,12 +28,22 @@ class MainScreenPresenter(
         mainScreenDataInteractor.getMainScreenData(this)
     }
 
-    fun showCurrentMainScreen(){
+    fun showCurrentMainScreen() {
         mainScreenDataInteractor.showCurrentMainScreen(this)
     }
 
     override fun getUsersByCity(city: String) {
         mainScreenUserInteractor.getUsersByCity(city, this)
+    }
+
+    fun createMainScreenWithCategory(category: String) {
+        mainScreenDataInteractor.getMainScreenData(category, this)
+    }
+
+    fun createMainScreenWithTag(tagText: TextView) {
+        mainScreenDataInteractor.getMainScreenData(
+            tagText, mainScreenDataInteractor.selectedTagsArray, this
+        )
     }
 
     override fun getUsersSize(): Int = mainScreenUserInteractor.cacheUserList.size
@@ -49,13 +59,12 @@ class MainScreenPresenter(
         )
     }
 
-    fun createMainScreenWithCategory(category: String) {
-        mainScreenUserInteractor.selectedTagsArray.clear()
-        mainScreenUserInteractor.createTags(category, this)
-        viewState.createTags(category, mainScreenUserInteractor.selectedTagsArray)
-        viewState.hideTags()
-        viewState.showTags()
-        mainScreenDataInteractor.getMainScreenData(category, this)
+    override fun enableTag(tagText: TextView) {
+        viewState.enableTag(tagText)
+    }
+
+    override fun disableTag(tagText: TextView) {
+        viewState.disableTag(tagText)
     }
 
     fun createMainScreenWithSearchUserName(city: String, userName: String) {
@@ -64,28 +73,6 @@ class MainScreenPresenter(
 
     fun createMainScreenWithSearchServiceName(city: String, serviceName: String) {
         mainScreenUserInteractor.getMainScreenDataByServiceName(city, serviceName, this)
-    }
-
-    fun createMainScreenWithTag(tagText: TextView) {
-
-        if (mainScreenUserInteractor.selectedTagsArray.size == 0) {
-            createMainScreenWithCategory(mainScreenUserInteractor.selectedCategory)
-        } else {
-            mainScreenDataInteractor.getMainScreenData(
-                mainScreenUserInteractor.selectedTagsArray,
-                this
-            )
-        }
-
-        if (mainScreenUserInteractor.selectedTagsArray.contains(tagText.text.toString())) {
-            //disable
-            viewState.disableTag(tagText)
-            mainScreenUserInteractor.selectedTagsArray.remove(tagText.text.toString())
-        } else {
-            //enable
-            viewState.enableTag(tagText)
-            mainScreenUserInteractor.selectedTagsArray.add(tagText.text.toString())
-        }
     }
 
     override fun showMainScreenData(mainScreenData: ArrayList<MainScreenData>) {
@@ -112,6 +99,18 @@ class MainScreenPresenter(
         viewState.showLoading()
     }
 
+    override fun showTags() {
+        viewState.showTags()
+    }
+
+    override fun hideTags() {
+        viewState.hideTags()
+    }
+
+    override fun clearTags() {
+        viewState.clearTags()
+    }
+
     override fun createTags(category: String, selectedTagsArray: ArrayList<String>) {
         viewState.createTags(category, selectedTagsArray)
     }
@@ -128,7 +127,7 @@ class MainScreenPresenter(
     }
 
     fun isSelectedCategory(category: String): Boolean =
-        mainScreenUserInteractor.isSelectedCategory(category)
+        mainScreenDataInteractor.isSelectedCategory(category)
 
     fun setTagsState(visibility: Int) {
         if (visibility == View.VISIBLE) {
@@ -136,8 +135,8 @@ class MainScreenPresenter(
         } else {
             if (visibility != View.GONE) {
                 viewState.createTags(
-                    mainScreenUserInteractor.selectedCategory,
-                    mainScreenUserInteractor.selectedTagsArray
+                    mainScreenDataInteractor.selectedCategory,
+                    mainScreenDataInteractor.selectedTagsArray
                 )
                 viewState.showTags()
             }
@@ -152,10 +151,10 @@ class MainScreenPresenter(
 
     fun clearCategory(categoriesBtns: ArrayList<Button>) {
         viewState.showLoading()
-        mainScreenUserInteractor.selectedTagsArray.clear()
+        mainScreenDataInteractor.selectedTagsArray.clear()
         for (btn in categoriesBtns) {
-            if (mainScreenUserInteractor.selectedCategory == btn.text.toString()) {
-                mainScreenUserInteractor.selectedCategory = ""
+            if (mainScreenDataInteractor.selectedCategory == btn.text.toString()) {
+                mainScreenDataInteractor.selectedCategory = ""
                 viewState.disableCategoryBtn(btn)
                 viewState.hideTags()
                 break

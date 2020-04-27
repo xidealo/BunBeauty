@@ -16,7 +16,6 @@ interface IMainScreenUserInteractor {
         mainScreenPresenterCallback: MainScreenPresenterCallback
     )
 
-    fun isSelectedCategory(category: String): Boolean
     fun getUsersByCity(
         city: String, mainScreenPresenterCallback: MainScreenPresenterCallback
     )

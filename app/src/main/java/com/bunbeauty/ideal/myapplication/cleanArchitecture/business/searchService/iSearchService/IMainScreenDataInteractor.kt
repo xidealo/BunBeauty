@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService
 
+import android.widget.TextView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -16,6 +17,7 @@ interface IMainScreenDataInteractor {
     fun showCurrentMainScreen(mainScreenPresenterCallback: MainScreenPresenterCallback)
 
     fun getMainScreenData(
+        tagText: TextView,
         selectedTagsArray: ArrayList<String>,
         mainScreenPresenterCallback: MainScreenPresenterCallback
     )
@@ -25,4 +27,5 @@ interface IMainScreenDataInteractor {
         mainScreenPresenterCallback: MainScreenPresenterCallback
     )
 
+    fun isSelectedCategory(category: String): Boolean
 }
