@@ -14,6 +14,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
@@ -22,7 +23,7 @@ import org.w3c.dom.Text
 import javax.inject.Inject
 
 class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, View.OnClickListener,
-    EditProfileView {
+    EditProfileView, IAdapterSpinner{
 
     private lateinit var avatarEditProfileImage: ImageView
     private lateinit var logOutEditProfileBtn: Button
@@ -71,6 +72,10 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         verifyCodeEditProfileBtn = findViewById(R.id.verifyCodeEditProfileBtn)
         resendCodeEditProfileBtn = findViewById(R.id.resendCodeEditProfileBtn)
         editProfileEditProfileBtn = findViewById(R.id.editProfileEditProfileBtn)
+        setAdapter(arrayListOf(*resources.getStringArray(R.array.cities)),
+            citySpinnerEditProfileSpinner,
+            this
+        )
     }
 
 
@@ -91,6 +96,7 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         phoneEditProfileInput.text = user.phone
         showAvatar(user.photoLink)
         setSpinnerSelection(citySpinnerEditProfileSpinner, user.city)
+
     }
 
     override fun showAvatar(photoLink: String) {
