@@ -28,7 +28,7 @@ class ProfilePresenter(private val profileInteractor: IProfileInteractor) :
     override fun showMyProfile(user: User) {
         viewState.showMyProfileView()
         viewState.showSwitcher()
-        viewState.createTopPanelForMyProfile(user.name)
+        viewState.createTopPanelForMyProfile("${user.name} ${user.surname}")
         viewState.hideDialogs()
     }
 
@@ -36,7 +36,7 @@ class ProfilePresenter(private val profileInteractor: IProfileInteractor) :
         viewState.showAlienProfileView()
         viewState.hideSubscriptions()
         viewState.hideSwitcher()
-        viewState.createTopPanelForOtherProfile(user.name)
+        viewState.createTopPanelForOtherProfile("${user.name} ${user.surname}")
         viewState.showDialogs()
     }
 

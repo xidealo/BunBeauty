@@ -16,6 +16,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
+import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.squareup.picasso.Picasso
 import org.w3c.dom.Text
 import javax.inject.Inject
 
@@ -85,10 +87,30 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
 
     override fun showEditProfile(user: User) {
         nameEditProfileInput.text = user.name
-        surnameEditProfileInput.text = user.name
+        surnameEditProfileInput.text = user.surname
         phoneEditProfileInput.text = user.phone
+        showAvatar(user.photoLink)
+        setSpinnerSelection(citySpinnerEditProfileSpinner, user.city)
+    }
 
+    override fun showAvatar(photoLink: String) {
+        val width = resources.getDimensionPixelSize(R.dimen.photo_width)
+        val height = resources.getDimensionPixelSize(R.dimen.photo_height)
+        Picasso.get()
+            .load(photoLink)
+            .resize(width, height)
+            .centerCrop()
+            .transform(CircularTransformation())
+            .into(avatarEditProfileImage)
+    }
 
+    fun setSpinnerSelection(spinner: Spinner, selectedValue: String) {
+        var position =
+            (spinner.adapter as ArrayAdapter<String>).getPosition(selectedValue)
+        if (position == -1) {
+            position = 0
+        }
+        spinner.setSelection(position)
     }
 
 

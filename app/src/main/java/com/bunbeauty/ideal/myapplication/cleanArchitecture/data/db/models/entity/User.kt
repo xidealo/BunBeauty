@@ -9,6 +9,7 @@ data class User(
         @PrimaryKey
         var id:String = "",
         var name: String = "",
+        var surname: String ="",
         var city:String = "",
         var phone:String ="",
         var rating:Float = 0f,

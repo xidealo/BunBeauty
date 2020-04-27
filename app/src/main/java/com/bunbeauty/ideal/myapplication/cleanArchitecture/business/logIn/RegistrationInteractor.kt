@@ -62,7 +62,8 @@ class RegistrationInteractor(
             && isCityCorrect(user.city, iRegistrationPresenter)
         ) {
             user.id = getUserId()
-            user.name = "$name $surname"
+            user.name = name
+            user.surname = surname
             userRepository.insert(user, this)
         }
     }
