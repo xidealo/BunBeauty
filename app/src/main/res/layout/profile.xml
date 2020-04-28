@@ -163,8 +163,8 @@
                 android:id="@+id/addServicesProfileBtn"
                 style="@style/smallMainButtonOther"
                 android:layout_width="wrap_content"
-                android:layout_marginEnd="2dp"
                 android:layout_height="@dimen/main_button_height"
+                android:layout_marginEnd="2dp"
                 android:text="@string/addServices" />
         </LinearLayout>
 

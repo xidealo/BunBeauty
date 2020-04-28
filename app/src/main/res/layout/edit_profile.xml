@@ -131,12 +131,14 @@
             <Button
                 android:id="@+id/verifyCodeEditProfileBtn"
                 style="@style/mainButtonOther"
-                android:text="@string/verifyCode" />
+                android:text="@string/verifyCode"
+                />
 
             <Button
                 android:id="@+id/resendCodeEditProfileBtn"
                 style="@style/mainButtonOther"
-                android:text="@string/resendCode" />
+                android:text="@string/resendCode"
+                />
         </LinearLayout>
     </ScrollView>
 

@@ -307,7 +307,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun goToEditProfile(user: User) {
         val intent = Intent(this, EditProfileActivity::class.java)
-        intent.putExtra(User.USER, profilePresenter.getUser())
+        intent.putExtra(User.USER, user)
         this.startActivity(intent)
     }
 

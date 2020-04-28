@@ -58,6 +58,10 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         init()
         createPanels()
         editProfilePresenter.createEditProfileScreen()
+        hideCode()
+        hideResentCode()
+        hideVerifyCode()
+
     }
 
     private fun init() {
@@ -95,6 +99,7 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         showAvatar(user.photoLink)
         setSpinnerSelection(citySpinnerEditProfileSpinner, user.city)
 
+
     }
 
     override fun showAvatar(photoLink: String) {
@@ -106,6 +111,29 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
             .centerCrop()
             .transform(CircularTransformation())
             .into(avatarEditProfileImage)
+    }
+
+    override fun showCode(){
+        codeEditProfileInput.visibility =View.VISIBLE
+    }
+    override fun hideCode(){
+        codeEditProfileInput.visibility =View.GONE
+    }
+
+
+    override fun showVerifyCode(){
+        verifyCodeEditProfileBtn.visibility =View.VISIBLE
+    }
+    override fun hideVerifyCode(){
+        verifyCodeEditProfileBtn.visibility =View.GONE
+    }
+
+
+    override fun showResentCode(){
+        resendCodeEditProfileBtn.visibility =View.VISIBLE
+    }
+    override fun hideResentCode(){
+        resendCodeEditProfileBtn.visibility =View.GONE
     }
 
     fun setSpinnerSelection(spinner: Spinner, selectedValue: String) {

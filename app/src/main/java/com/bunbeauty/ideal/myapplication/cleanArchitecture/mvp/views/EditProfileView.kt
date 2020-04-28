@@ -7,4 +7,13 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface EditProfileView: MvpView {
     fun showEditProfile(user: User)
     fun showAvatar(photoLink: String)
+
+    fun showCode()
+    fun hideCode()
+
+    fun showVerifyCode()
+    fun hideVerifyCode()
+
+    fun showResentCode()
+    fun hideResentCode()
 }
