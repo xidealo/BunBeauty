@@ -22,27 +22,12 @@ interface AppComponent {
 
     fun inject(authorizationActivity: AuthorizationActivity)
     fun inject(verifyPhoneActivity: VerifyPhoneActivity)
-
     fun inject(registrationActivity: RegistrationActivity)
-    fun inject(registrationPresenter: RegistrationPresenter)
-
     fun inject(profileActivity: ProfileActivity)
-    fun inject(profilePresenter: ProfilePresenter)
-
     fun inject(creationServiceActivity: CreationServiceActivity)
-    fun inject(creationServicePresenter: CreationServicePresenter)
-
     fun inject(premiumElementFragment: PremiumElementFragment)
-    fun inject(premiumElementPresenter: PremiumElementPresenter)
-
     fun inject(mainScreenActivity: MainScreenActivity)
-    fun inject(mainScreenPresenter: MainScreenPresenter)
-
     fun inject(serviceActivity: ServiceActivity)
-    fun inject(servicePresenter: ServicePresenter)
-
     fun inject(searchServiceFragment: SearchServiceFragment)
-    fun inject(searchServicePresenter: SearchServicePresenter)
-
     fun inject(editProfileActivity: EditProfileActivity)
 }

@@ -1,32 +1,31 @@
 package com.bunbeauty.ideal.myapplication.adapters
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.adapters.foundElements.FoundServiceProfileElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
-import java.util.ArrayList
-
-class ServiceProfileAdapter(private val serviceList: MutableList<Service>)
-    : RecyclerView.Adapter<ServiceProfileAdapter.ServiceProfileViewHolder>() {
+class ServiceProfileAdapter(private val serviceList: MutableList<Service>, private val user: User) :
+    RecyclerView.Adapter<ServiceProfileAdapter.ServiceProfileViewHolder>() {
     private lateinit var context: Context
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ServiceProfileViewHolder {
         context = viewGroup.context
         val layoutInflater = LayoutInflater.from(viewGroup.context)
-        val view = layoutInflater.inflate(R.layout.found_service_profile_element,
-                viewGroup, false)
+        val view = layoutInflater.inflate(
+            R.layout.found_service_profile_element,
+            viewGroup, false
+        )
         return ServiceProfileViewHolder(view)
     }
 
     override fun onBindViewHolder(serviceProfileViewHolder: ServiceProfileViewHolder, i: Int) {
-        serviceProfileViewHolder.bind(serviceList[i])
+        serviceProfileViewHolder.bind(serviceList[i], user)
     }
 
     override fun getItemCount(): Int {
@@ -35,8 +34,8 @@ class ServiceProfileAdapter(private val serviceList: MutableList<Service>)
 
     inner class ServiceProfileViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(service: Service) {
-            val foundServiceProfileElement = FoundServiceProfileElement(service, context)
+        fun bind(service: Service, user: User) {
+            val foundServiceProfileElement = FoundServiceProfileElement(service, user, context)
             foundServiceProfileElement.createElement(view)
         }
     }

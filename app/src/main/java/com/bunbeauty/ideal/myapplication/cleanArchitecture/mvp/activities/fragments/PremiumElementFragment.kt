@@ -19,6 +19,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.PremiumElementFragmentView
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import javax.inject.Inject
 
 class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
@@ -104,6 +105,8 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
     override fun hideBottom() {
         bottomLayout.visibility = View.GONE
     }
+
+    fun isPremium(premiumDate: String): Boolean = WorkWithTimeApi.checkPremium(premiumDate)
 
     companion object {
         private const val TAG = "DBInf"

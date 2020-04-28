@@ -10,20 +10,28 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.PhotoRepository
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
+import com.google.firebase.auth.FirebaseAuth
 
 class ServiceInteractor(private val photoRepository: PhotoRepository, private val intent: Intent) :
     BaseRepository(), IServiceInteractor, IPhotoCallback {
 
     private lateinit var photoCallback: IPhotoCallback
+    private lateinit var user: User
+    private lateinit var service: Service
 
     override fun createServiceScreen(servicePresenterCallback: ServicePresenterCallback) {
         val service = intent.getSerializableExtra(Service.SERVICE) as Service
-        servicePresenterCallback.showService(service)
+        val user = intent.getSerializableExtra(User.USER) as User
+        this.user = user
+        this.service = service
+
+        servicePresenterCallback.showPremium(service)
+
+        servicePresenterCallback.showService(user, service)
     }
 
-    fun getServiceOwner() = intent.extras?.get(Service.SERVICE_OWNER) as User
+    private fun isMyService(): Boolean = getUserId() == user.id
 
-    fun isPremium(premiumDate: String): Boolean = WorkWithTimeApi.checkPremium(premiumDate)
 
     fun getServicePhotos(serviceId: String, serviceOwnerId: String, photoCallback: IPhotoCallback) {
         this.photoCallback = photoCallback
@@ -35,5 +43,6 @@ class ServiceInteractor(private val photoRepository: PhotoRepository, private va
         photoCallback.returnPhotos(photos)
     }
 
+    private fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
 }

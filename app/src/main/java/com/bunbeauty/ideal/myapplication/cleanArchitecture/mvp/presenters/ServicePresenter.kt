@@ -21,20 +21,16 @@ class ServicePresenter(private val serviceInteractor: IServiceInteractor) :
         serviceInteractor.createServiceScreen(this)
     }
 
-    override fun showService(service: Service) {
-        viewState.showService(service)
+    override fun showService(user: User, service: Service) {
+        viewState.showService(user, service)
         viewState.hideLoading()
     }
 
+    override fun showPremium(service: Service) {
+        viewState.showPremium(service)
+    }
 
-    fun getUserId() = FirebaseAuth.getInstance().currentUser!!.uid
-
-    fun isMyService(ownerId: String) = (getUserId() == ownerId)
-
-    /*  fun getService() = serviceInteractor.getService()
-
-      fun getServiceOwner() = serviceInteractor.getServiceOwner()
-
+    /*
       fun getServicePhotos(serviceId: String, serviceOwnerId: String) {
           serviceInteractor.getServicePhotos(serviceId, serviceOwnerId, this)
       }*/
@@ -43,25 +39,8 @@ class ServicePresenter(private val serviceInteractor: IServiceInteractor) :
         viewState.showPhotos(photos)
     }
 
-    fun setTopPanel(service: Service, serviceOwner: User) {
-        if (isMyService(serviceOwner.id)) {
-            viewState.showTopPanelForMyService(service)
-        } else {
-            viewState.showTopPanelForAlienService(service.name, serviceOwner)
-        }
-    }
-
-    fun setPremium(ownerId: String, premiumDate: String) {
-        if (isMyService(ownerId)) {
-/*
-            viewState.showPremium(serviceInteractor.isPremium(premiumDate))
-*/
-        }
-    }
-
     companion object {
         private val TAG = "DBInf"
     }
-
 
 }

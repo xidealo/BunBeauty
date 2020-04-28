@@ -89,7 +89,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     private fun createPanels() {
         createBottomPanel(supportFragmentManager)
-        createTopPanel("BunBeauty", ButtonTask.NONE, supportFragmentManager)
+        createTopPanel("BunBeauty", ButtonTask.SEARCH, supportFragmentManager)
     }
 
     private fun init() {

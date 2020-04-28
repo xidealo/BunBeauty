@@ -115,50 +115,8 @@
                         android:layout_width="match_parent" />
                 </LinearLayout>
 
+                <include layout="@layout/premium_element" />
 
-                <LinearLayout
-                    android:id="@+id/premiumServiceLayout"
-                    style="@style/block"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/block_text"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/mainBlockText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:text="Премиум" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/offPremiumServiceText"
-                            style="@style/iconSolid"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@color/panelColor"
-                            android:gravity="center"
-                            android:text="@string/premium_ico"
-                            android:textColor="@color/white" />
-
-                        <TextView
-                            android:id="@+id/onPremiumServiceText"
-                            style="@style/iconSolid"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@color/yellow"
-                            android:gravity="center"
-                            android:text="@string/premium_ico"
-                            android:textColor="@color/black" />
-                    </LinearLayout>
-                </LinearLayout>
             </LinearLayout>
 
             <!-- Нижняя часть фотографии и кнопка-->
@@ -182,9 +140,7 @@
                             android:id="@+id/imagesServiceLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                        </LinearLayout>
+                            android:orientation="horizontal"/>
                     </HorizontalScrollView>
                 </LinearLayout>
             </LinearLayout>

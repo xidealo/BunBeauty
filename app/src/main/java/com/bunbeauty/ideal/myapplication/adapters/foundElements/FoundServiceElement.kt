@@ -105,7 +105,7 @@ class FoundServiceElement(
     private fun goToGuestService() {
         val intent = Intent(context, ServiceActivity::class.java)
         intent.putExtra(Service.SERVICE, service)
-        intent.putExtra(Service.SERVICE_OWNER, user)
+        intent.putExtra(User.USER, user)
         context.startActivity(intent)
     }
 

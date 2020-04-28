@@ -20,14 +20,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragme
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IPhotoEditable
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.BottomPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject

@@ -99,8 +99,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         orderRecyclerView.layoutManager = LinearLayoutManager(this)
         serviceRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        serviceAdapter = ServiceProfileAdapter(profilePresenter.getServiceLink())
-        serviceRecyclerView.adapter = serviceAdapter
     }
 
     override fun onClick(v: View) {
@@ -120,9 +118,12 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         transaction.commit()
     }
 
-    override fun showProfileInfo(name: String, city: String, phone: String) {
-        cityText.text = city
-        phoneText.text = phone
+    override fun showProfileInfo(user: User) {
+        cityText.text = user.city
+        phoneText.text = user.phone
+
+        serviceAdapter = ServiceProfileAdapter(profilePresenter.getServiceLink(), user)
+        serviceRecyclerView.adapter = serviceAdapter
     }
 
     override fun showMyProfileView() {

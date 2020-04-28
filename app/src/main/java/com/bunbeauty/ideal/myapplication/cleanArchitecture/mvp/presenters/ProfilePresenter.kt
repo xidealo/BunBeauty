@@ -23,8 +23,6 @@ class ProfilePresenter(private val profileInteractor: IProfileInteractor) :
         profileInteractor.getProfileOwner(this)
     }
 
-    fun getUser() = profileInteractor.getCurrentUser()
-
     fun getServiceLink() = profileInteractor.getServicesLink()
 
     fun checkIconClick() {
@@ -63,7 +61,7 @@ class ProfilePresenter(private val profileInteractor: IProfileInteractor) :
     }
 
     override fun setUserProfile(user: User) {
-        viewState.showProfileInfo(user.name, user.city, user.phone)
+        viewState.showProfileInfo(user)
         viewState.showAvatar(user.photoLink)
         viewState.showSubscribers(user.subscribersCount)
         viewState.showSubscriptions(user.subscriptionsCount)

@@ -7,10 +7,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface ServiceView: MvpView {
     fun showPhotos(photos: List<Photo>)
-    fun showTopPanelForMyService(service: Service)
-    fun showTopPanelForAlienService(serviceName: String, serviceOwner: User)
-    fun showPremium(isPremium: Boolean)
-    fun showService(service: Service)
+    fun showPremium(service: Service)
+    fun showService(user: User, service: Service)
     fun showLoading()
     fun hideLoading()
 }

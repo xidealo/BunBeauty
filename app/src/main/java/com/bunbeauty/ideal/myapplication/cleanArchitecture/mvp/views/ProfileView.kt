@@ -17,7 +17,7 @@ interface ProfileView: MvpView {
     fun showAddService()
     fun hideAddService()
 
-    fun showProfileInfo(name: String, city: String, phone: String)
+    fun showProfileInfo(user: User)
     fun showRating(rating: Float)
     fun showWithoutRating()
     fun showAvatar(photoLink: String)

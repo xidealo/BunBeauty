@@ -16,6 +16,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IProfileAvailable
@@ -41,11 +42,8 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private lateinit var ratingText: TextView
     private lateinit var countOfRatesText: TextView
     private lateinit var withoutRatingText: TextView
-    private lateinit var onPremiumText: TextView
-    private lateinit var offPremiumText: TextView
 
     private lateinit var imagesLayout: LinearLayout
-    private lateinit var premiumLayout: LinearLayout
     private lateinit var topPanelLayout: LinearLayout
     private lateinit var ratingLayout: LinearLayout
     private lateinit var ratingBar: RatingBar
@@ -83,20 +81,17 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         ratingText = findViewById(R.id.ratingServiceText)
         countOfRatesText = findViewById(R.id.countOfRatesServiceText)
         withoutRatingText = findViewById(R.id.withoutRatingServiceText)
-        onPremiumText = findViewById(R.id.onPremiumServiceText)
-        offPremiumText = findViewById(R.id.offPremiumServiceText)
+
         ratingLayout = findViewById(R.id.ratingServiceLayout)
-        premiumLayout = findViewById(R.id.premiumServiceLayout)
         imagesLayout = findViewById(R.id.imagesServiceLayout)
         topPanelLayout = findViewById(R.id.topPanelLayout)
         ratingBar = findViewById(R.id.ratingServiceBar)
         progressBar = findViewById(R.id.progressServiceBar)
 
         findViewById<Button>(R.id.scheduleServiceBtn).setOnClickListener(this)
-        findViewById<LinearLayout>(R.id.premiumServiceLayout).setOnClickListener(this)
     }
 
-    override fun showService(service: Service) {
+    override fun showService(user: User, service: Service) {
         createTopPanel(service.name, ButtonTask.GO_TO_PROFILE, supportFragmentManager)
         costText.text = service.cost.toString()
         addressText.text = service.address
@@ -136,26 +131,14 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         ratingLayout.setOnClickListener(this)
     }
 
-    override fun showTopPanelForMyService(service: Service) {
-        //topPanel.title = service.name
-    }
+    override fun showPremium(service: Service) {
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.premiumCreationServiceLayout, PremiumElementFragment.newInstance(service))
+            .commit()
 
-    override fun showTopPanelForAlienService(serviceName: String, serviceOwner: User) {
-        val topPanel = TopPanel()
-        topPanel.title = serviceName
+        //premiumLayout.visibility = View.VISIBLE
     }
-
-    override fun showPremium(isPremium: Boolean) {
-        premiumLayout.visibility = View.VISIBLE
-        if (isPremium) {
-            offPremiumText.visibility = View.GONE
-            onPremiumText.visibility = View.VISIBLE
-        } else {
-            onPremiumText.visibility = View.GONE
-            offPremiumText.visibility = View.VISIBLE
-        }
-    }
-
 
     override fun showPhotos(photos: List<Photo>) {
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
@@ -181,7 +164,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     override fun onClick(v: View) {
         when (v.id) {
             R.id.scheduleServiceBtn -> {
-                if (servicePresenter.isMyService("0")) {
+                if (true) {
                     goToCalendar(User.MASTER)
                 } else {
                     // not my service, Im client
@@ -189,9 +172,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
                 }
             }
 
-            R.id.offPremiumServiceText -> showPremium(false)
-
-            R.id.onPremiumServiceText -> showPremium(true)
 
             R.id.ratingServiceLayout -> goToComments()
         }
@@ -235,7 +215,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         val intent = Intent(this, MyCalendar::class.java)
         //intent.putExtra(Service.SERVICE_ID, "")
         intent.putExtra(STATUS_USER_BY_SERVICE, status)
-
         startActivity(intent)
     }
 
