@@ -136,14 +136,14 @@ class TopPanel : Panel() {
         searchText.visibility = View.GONE
         avatarLayout.visibility = View.VISIBLE
 
-        val width = resources.getDimensionPixelSize(R.dimen.photo_width)
+    /*    val width = resources.getDimensionPixelSize(R.dimen.photo_width)
         val height = resources.getDimensionPixelSize(R.dimen.photo_height)
         Picasso.get()
             .load(photoLink)
             .resize(width, height)
             .centerCrop()
             .transform(CircularTransformation())
-            .into(avatarImage)
+            .into(avatarImage)*/
     }
 
     private fun hideIcon() {

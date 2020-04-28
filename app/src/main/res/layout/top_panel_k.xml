@@ -64,8 +64,8 @@
 
         <ImageView
             android:id="@+id/avatarTopPanelImage"
-            android:layout_width="@dimen/photo_avatar_height"
-            android:layout_height="@dimen/photo_avatar_height"
+            android:layout_width="@dimen/photo_small_avatar_height"
+            android:layout_height="@dimen/photo_small_avatar_height"
             android:layout_gravity="center"
             tools:srcCompat="@tools:sample/avatars" />
     </LinearLayout>

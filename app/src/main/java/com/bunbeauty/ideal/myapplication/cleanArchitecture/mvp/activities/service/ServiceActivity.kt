@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -16,6 +15,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IProfileAvailable
@@ -27,12 +27,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.reviews.Comments
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.service_activity.*
 import javax.inject.Inject
 
-class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView, IEditableActivity,
-    ITopPanel, IBottomPanel, IProfileAvailable {
+class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView,
+    IEditableActivity, ITopPanel, IBottomPanel, IProfileAvailable {
 
     private lateinit var mainScroll: ScrollView
+
     private lateinit var costText: TextView
     private lateinit var descriptionText: TextView
     private lateinit var addressText: TextView
@@ -41,15 +43,13 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private lateinit var withoutRatingText: TextView
     private lateinit var onPremiumText: TextView
     private lateinit var offPremiumText: TextView
+
     private lateinit var imagesLayout: LinearLayout
     private lateinit var premiumLayout: LinearLayout
     private lateinit var topPanelLayout: LinearLayout
     private lateinit var ratingLayout: LinearLayout
     private lateinit var ratingBar: RatingBar
     private lateinit var progressBar: ProgressBar
-
-    private lateinit var serviceOwner: User
-    private lateinit var service: Service
 
     @Inject
     lateinit var serviceInteractor: ServiceInteractor
@@ -60,26 +60,19 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     @ProvidePresenter
     internal fun provideServicePresenter(): ServicePresenter {
         DaggerAppComponent.builder()
-                .appModule(AppModule(application, intent))
-                .build()
-                .inject(this)
+            .appModule(AppModule(application, intent))
+            .build()
+            .inject(this)
         return ServicePresenter(serviceInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.service_activity)
-
         init()
         createBottomPanel(supportFragmentManager)
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        onProgress()
-        showServiceInfo()
-        servicePresenter.getServicePhotos(service.id, serviceOwner.id)
+        showLoading()
+        servicePresenter.createServiceScreen()
     }
 
     private fun init() {
@@ -103,28 +96,25 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         findViewById<LinearLayout>(R.id.premiumServiceLayout).setOnClickListener(this)
     }
 
-    private fun onProgress() {
-        progressBar.visibility = View.VISIBLE
+    override fun showService(service: Service) {
+        createTopPanel(service.name, ButtonTask.GO_TO_PROFILE, supportFragmentManager)
+        costText.text = service.cost.toString()
+        addressText.text = service.address
+        descriptionText.text = service.description
     }
 
-    private fun offProgress() {
+    override fun showLoading() {
+        progressBar.visibility = View.VISIBLE
+        mainScroll.visibility = View.GONE
+        scheduleServiceBtn.visibility = View.GONE
+    }
+
+    override fun hideLoading() {
         progressBar.visibility = View.GONE
         mainScroll.visibility = View.VISIBLE
+        scheduleServiceBtn.visibility = View.VISIBLE
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun showServiceInfo() {
-        this.service = servicePresenter.getService()
-        this.serviceOwner = servicePresenter.getServiceOwner()
-
-        costText.text = service.cost.toString() + " ₽"
-        descriptionText.text = service.description
-        addressText.text = service.address
-        showRating(service.rating, service.countOfRates)
-        servicePresenter.setPremium(serviceOwner.id, service.premiumDate)
-
-        offProgress()
-    }
 
     private fun showRating(rating: Float, countOfRates: Long) {
         if (rating > 0) {
@@ -166,6 +156,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         }
     }
 
+
     override fun showPhotos(photos: List<Photo>) {
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
         val height = resources.getDimensionPixelSize(R.dimen.photo_height)
@@ -180,20 +171,22 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
             imagesLayout.addView(serviceImage)
 
             Picasso.get()
-                    .load(photo.link)
-                    .resize(width, height)
-                    .centerCrop()
-                    .into(serviceImage)
+                .load(photo.link)
+                .resize(width, height)
+                .centerCrop()
+                .into(serviceImage)
         }
     }
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.scheduleServiceBtn -> if (servicePresenter.isMyService(serviceOwner.id)) {
-                goToCalendar(User.MASTER)
-            } else {
-                // not my service, Im client
-                //checkScheduleAndGoToCalendar()
+            R.id.scheduleServiceBtn -> {
+                if (servicePresenter.isMyService("0")) {
+                    goToCalendar(User.MASTER)
+                } else {
+                    // not my service, Im client
+                    //checkScheduleAndGoToCalendar()
+                }
             }
 
             R.id.offPremiumServiceText -> showPremium(false)
@@ -214,9 +207,10 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     private fun attentionThisScheduleIsEmpty() {
         Toast.makeText(
-                this,
-                "Пользователь еще не написал расписание к этому сервису.",
-                Toast.LENGTH_SHORT).show()
+            this,
+            "Пользователь еще не написал расписание к этому сервису.",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun attentionWrongCode() {
@@ -232,9 +226,9 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     override fun goToEditing(editableEntity: EditableEntity) {
-      /*  val intent = Intent(this, EditService::class.java)
-        intent.putExtra(Service.SERVICE, editableEntity as Service)
-        startActivity(intent)*/
+        /*  val intent = Intent(this, EditService::class.java)
+          intent.putExtra(Service.SERVICE, editableEntity as Service)
+          startActivity(intent)*/
     }
 
     private fun goToCalendar(status: String) {

@@ -24,7 +24,7 @@
         android:layout_height="0dp"
         android:layout_margin="2dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout"
+        app:layout_constraintBottom_toTopOf="@+id/scheduleServiceBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topPanelLayout">
@@ -90,14 +90,16 @@
 
                     <TextView
                         android:id="@+id/costServiceText"
-                        style="@style/mainBlockText" />
+                        style="@style/mainBlockText"
+                        android:hint="@string/cost" />
                 </LinearLayout>
 
                 <LinearLayout style="@style/block">
 
                     <TextView
                         android:id="@+id/addressServiceText"
-                        style="@style/mainBlockText" />
+                        style="@style/mainBlockText"
+                        android:hint="Адрес" />
                 </LinearLayout>
 
                 <LinearLayout style="@style/block">
@@ -185,19 +187,21 @@
                         </LinearLayout>
                     </HorizontalScrollView>
                 </LinearLayout>
-
-                <Button
-                    android:id="@+id/scheduleServiceBtn"
-                    style="@style/mainButtonOther"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Расписание" />
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 
+    <Button
+        android:id="@+id/scheduleServiceBtn"
+        style="@style/mainButtonOther"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Расписание"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <include layout="@layout/part_bottom_panel" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

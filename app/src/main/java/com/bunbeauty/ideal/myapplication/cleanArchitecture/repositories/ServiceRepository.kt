@@ -8,9 +8,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfac
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class ServiceRepository(private val serviceDao: ServiceDao,
-                        private val serviceFirebaseApi: ServiceFirebaseApi) : BaseRepository(),
-        IServiceRepository, IServiceCallback, IServicesCallback {
+class ServiceRepository(
+    private val serviceDao: ServiceDao,
+    private val serviceFirebaseApi: ServiceFirebaseApi
+) : BaseRepository(),
+    IServiceRepository, IServiceCallback, IServicesCallback {
 
     private lateinit var iServiceCallback: IServiceCallback
     private lateinit var iServicesCallback: IServicesCallback
@@ -46,7 +48,12 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         }
     }
 
-    override fun getById(serviceId: String, userId: String, iServiceCallback: IServiceCallback, isFirstEnter: Boolean) {
+    override fun getById(
+        serviceId: String,
+        userId: String,
+        iServiceCallback: IServiceCallback,
+        isFirstEnter: Boolean
+    ) {
         this.iServiceCallback = iServiceCallback
 
         if (isFirstEnter) {
@@ -58,7 +65,11 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         }
     }
 
-    override fun getServicesByUserId(userId: String, iServicesCallback: IServicesCallback, isFirstEnter: Boolean) {
+    override fun getServicesByUserId(
+        userId: String,
+        iServicesCallback: IServicesCallback,
+        isFirstEnter: Boolean
+    ) {
         this.iServicesCallback = iServicesCallback
         if (isFirstEnter) {
             serviceFirebaseApi.getServicesByUserId(userId, this, this)
@@ -69,14 +80,21 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         }
     }
 
-    override fun getServicesByUserIdAndServiceName(userId: String, serviceName: String, iServicesCallback: IServicesCallback,
-                                                   isFirstEnter: Boolean) {
+    override fun getServicesByUserIdAndServiceName(
+        userId: String, serviceName: String, iServicesCallback: IServicesCallback,
+        isFirstEnter: Boolean
+    ) {
         this.iServicesCallback = iServicesCallback
         if (isFirstEnter) {
             serviceFirebaseApi.getServicesByUserIdAndServiceName(userId, serviceName, this, this)
         } else {
             launch {
-                iServicesCallback.returnServices(serviceDao.getAllByUserIdAndServiceName(userId, serviceName))
+                iServicesCallback.returnServices(
+                    serviceDao.getAllByUserIdAndServiceName(
+                        userId,
+                        serviceName
+                    )
+                )
             }
         }
     }
@@ -99,7 +117,12 @@ class ServiceRepository(private val serviceDao: ServiceDao,
         }
     }
 
-    override fun getServicesByCityAndCategory(userCity: String, category: String, selectedTagsArray: ArrayList<String>) {}
+    override fun getServicesByCityAndCategory(
+        userCity: String,
+        category: String,
+        selectedTagsArray: ArrayList<String>
+    ) {
+    }
 
     fun getIdForNew(userId: String): String = serviceFirebaseApi.getIdForNew(userId)
 

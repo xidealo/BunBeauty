@@ -41,7 +41,7 @@
                     <EditText
                         android:id="@+id/costCreationServiceInput"
                         style="@style/mainBlockText"
-                        android:hint="@string/costAddServiceTB"
+                        android:hint="@string/cost"
                         android:inputType="number" />
                 </LinearLayout>
 
