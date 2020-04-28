@@ -32,6 +32,7 @@ class UserFirebaseApi {
         val items = HashMap<String, Any>()
         items[User.PHONE] = user.phone
         items[User.NAME] = user.name
+        items[User.SURNAME] = user.surname
         items[User.CITY] = user.city
         items[User.AVG_RATING] = user.rating
         items[User.COUNT_OF_RATES] = user.countOfRates
@@ -154,6 +155,7 @@ class UserFirebaseApi {
         // add defualt value
         user.id = userSnapshot.key!!
         user.name = userSnapshot.child(User.NAME).value as? String ?: ""
+        user.surname = userSnapshot.child(User.SURNAME).value as? String ?: ""
         user.city = userSnapshot.child(User.CITY).value as? String ?: ""
         user.phone = userSnapshot.child(User.PHONE).value as? String ?: ""
         user.photoLink = userSnapshot.child(User.PHOTO_LINK).value as? String ?: ""
@@ -170,13 +172,4 @@ class UserFirebaseApi {
         return user
     }
 
-    //лучше использовать лист?
-    fun filterByUserName(users: ArrayList<User>, userName: String): ArrayList<User> {
-        for (user in users) {
-            if (user.name != userName) {
-                users.remove(user)
-            }
-        }
-        return users
-    }
 }

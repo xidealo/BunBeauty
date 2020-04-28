@@ -27,4 +27,6 @@ interface ProfileView: MvpView {
     fun hideSwitcher()
     fun showProgress()
     fun hideProgress()
+    fun goToEditProfile(user: User)
+    fun subscribe()
 }

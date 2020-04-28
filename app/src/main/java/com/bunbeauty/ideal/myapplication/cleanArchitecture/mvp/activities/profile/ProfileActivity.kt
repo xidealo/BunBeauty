@@ -302,12 +302,17 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun iconClick() {
-        // if isOwner - goToEdit
-        // else - subscribe
+        profilePresenter.checkIconClick()
+    }
 
+    override fun goToEditProfile(user: User) {
         val intent = Intent(this, EditProfileActivity::class.java)
-        //intent.putExtra(User.USER, editableEntity as User)
+        intent.putExtra(User.USER, profilePresenter.getUser())
         this.startActivity(intent)
+    }
+
+    override fun subscribe() {
+
     }
 
     private fun goToCreationService() {

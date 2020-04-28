@@ -10,4 +10,6 @@ interface ProfilePresenterCallback {
     fun showAlienProfile(user: User)
     fun showRating(rating:Float)
     fun showWithoutRating()
+    fun goToEditProfile(user: User)
+    fun subscribe()
 }

@@ -23,7 +23,9 @@ class ProfileInteractor(
 
     private val TAG = "DBInf"
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
-    lateinit var currentUser: User
+    private lateinit var currentUser: User
+
+    override fun getCurrentUser(): User = currentUser
 
     var services = mutableListOf<Service>()
 
@@ -42,7 +44,6 @@ class ProfileInteractor(
     }
 
     override fun getServicesLink() = services
-
 
     override fun returnUser(user: User) {
         profilePresenterCallback.setUserProfile(user)
@@ -76,7 +77,6 @@ class ProfileInteractor(
     override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
     override fun isFirstEnter() = (intent.hasExtra(User.USER))
 
-
     private fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         if (user.id == getUserId()) {
             profilePresenterCallback.showMyProfile(user)
@@ -94,6 +94,14 @@ class ProfileInteractor(
                 .child(getUserId())
                 .child(TOKEN)
                 .setValue(token)
+        }
+    }
+
+    override fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback) {
+        if (currentUser.id == getUserId()) {
+            profilePresenterCallback.goToEditProfile(currentUser)
+        } else {
+            profilePresenterCallback.subscribe()
         }
     }
 

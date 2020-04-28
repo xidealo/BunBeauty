@@ -71,7 +71,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         setContentView(R.layout.service_activity)
 
         init()
-        createBottomPanel(supportFragmentManager, R.id.bottomServiceLayout)
+        createBottomPanel(supportFragmentManager)
     }
 
     override fun onResume() {
@@ -95,7 +95,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         ratingLayout = findViewById(R.id.ratingServiceLayout)
         premiumLayout = findViewById(R.id.premiumServiceLayout)
         imagesLayout = findViewById(R.id.imagesServiceLayout)
-        topPanelLayout = findViewById(R.id.topServiceLayout)
+        topPanelLayout = findViewById(R.id.topPanelLayout)
         ratingBar = findViewById(R.id.ratingServiceBar)
         progressBar = findViewById(R.id.progressServiceBar)
 
@@ -147,23 +147,12 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     override fun showTopPanelForMyService(service: Service) {
-        val topPanel = TopPanel()
-
-        topPanel.title = service.name
-
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.topServiceLayout, topPanel)
-        transaction.commit()
+        //topPanel.title = service.name
     }
 
     override fun showTopPanelForAlienService(serviceName: String, serviceOwner: User) {
         val topPanel = TopPanel()
-
         topPanel.title = serviceName
-
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.topServiceLayout, topPanel)
-        transaction.commit()
     }
 
     override fun showPremium(isPremium: Boolean) {

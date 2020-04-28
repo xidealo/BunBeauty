@@ -72,18 +72,16 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         verifyCodeEditProfileBtn = findViewById(R.id.verifyCodeEditProfileBtn)
         resendCodeEditProfileBtn = findViewById(R.id.resendCodeEditProfileBtn)
         editProfileEditProfileBtn = findViewById(R.id.editProfileEditProfileBtn)
-        setAdapter(arrayListOf(*resources.getStringArray(R.array.cities)),
+        setAdapter(arrayListOf(*resources.getStringArray(R.array.choice_cites)),
             citySpinnerEditProfileSpinner,
             this
         )
     }
 
-
     private fun createPanels() {
         createBottomPanel(supportFragmentManager)
         createTopPanel("Редактирование профиля", ButtonTask.NONE, supportFragmentManager)
     }
-
 
     override fun onClick(v: View) {
         when (v.id) {

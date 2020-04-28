@@ -2,13 +2,14 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entit
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity
 data class Tag(
         @PrimaryKey
         var id: String = "",
         var tag: String = "",
-        var serviceId: String = "") {
+        var serviceId: String = ""):Serializable {
 
     lateinit var userId: String
     companion object {

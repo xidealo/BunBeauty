@@ -23,6 +23,7 @@ data class User(
 
         const val PHONE = "phone"
         const val NAME = "name"
+        const val SURNAME = "surname"
         const val CITY = "city"
         const val PHOTO_LINK = "photo link"
         const val AVG_RATING = "avg rating"

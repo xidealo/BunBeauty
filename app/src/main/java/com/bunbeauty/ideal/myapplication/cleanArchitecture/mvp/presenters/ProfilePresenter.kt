@@ -10,7 +10,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 
 @InjectViewState
 class ProfilePresenter(private val profileInteractor: IProfileInteractor) :
-        MvpPresenter<ProfileView>(), ProfilePresenterCallback {
+    MvpPresenter<ProfileView>(), ProfilePresenterCallback {
 
     private val TAG = "DBInf"
 
@@ -23,7 +23,13 @@ class ProfilePresenter(private val profileInteractor: IProfileInteractor) :
         profileInteractor.getProfileOwner(this)
     }
 
-    fun getServiceLink() =  profileInteractor.getServicesLink()
+    fun getUser() = profileInteractor.getCurrentUser()
+
+    fun getServiceLink() = profileInteractor.getServicesLink()
+
+    fun checkIconClick() {
+        profileInteractor.checkIconClick(this)
+    }
 
     override fun showMyProfile(user: User) {
         viewState.showMyProfileView()
@@ -46,6 +52,14 @@ class ProfilePresenter(private val profileInteractor: IProfileInteractor) :
 
     override fun showWithoutRating() {
         viewState.showWithoutRating()
+    }
+
+    override fun goToEditProfile(user: User) {
+        viewState.goToEditProfile(user)
+    }
+
+    override fun subscribe() {
+        viewState.subscribe()
     }
 
     override fun setUserProfile(user: User) {
