@@ -19,4 +19,12 @@ class EditProfilePresenter(private val editProfileInteractor: EditProfileInterac
         viewState.showEditProfile(user)
     }
 
+    fun saveData(name: String, surname: String, city: String, phone: String) {
+        val user = User()
+        user.name = name
+        user.surname = surname
+        user.city = city
+        user.phone = phone
+        editProfileInteractor.saveData(user,this)
+    }
 }

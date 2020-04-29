@@ -9,4 +9,7 @@ class EditProfileInteractor(private val intent: Intent){
         val user = intent.getSerializableExtra(User.USER) as User
         editProfilePresenterCallback.showEditProfile(user)
     }
+    fun saveData(
+     user: User,
+     callback: EditProfilePresenterCallback){}
 }
