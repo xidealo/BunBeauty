@@ -23,9 +23,9 @@ class PremiumElementPresenter(
         viewState.showError(error)
     }
 
-    override fun showPremiumActivated() {
+    override fun showPremiumActivated(service: Service) {
         viewState.showPremiumActivated()
-        viewState.setWithPremium()
+        viewState.setWithPremium(service.premiumDate)
         viewState.hideBottom()
     }
 

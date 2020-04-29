@@ -64,8 +64,9 @@
                     <EditText
                         android:id="@+id/descriptionCreationServiceInput"
                         style="@style/mainBlockText"
+                        android:maxLines="1"
                         android:hint="Описание"
-                        android:inputType="textMultiLine|textCapSentences" />
+                        android:inputType="textCapSentences" />
                 </LinearLayout>
 
                 <HorizontalScrollView
@@ -103,6 +104,10 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical" />
+
+
+
+
 
         </LinearLayout>
 

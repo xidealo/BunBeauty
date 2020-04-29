@@ -115,7 +115,11 @@
                         android:layout_width="match_parent" />
                 </LinearLayout>
 
-                <include layout="@layout/premium_element" />
+                <fragment
+                    android:id="@+id/premiumBlockServiceActivity"
+                    class="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
@@ -140,7 +144,7 @@
                             android:id="@+id/imagesServiceLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"/>
+                            android:orientation="horizontal" />
                     </HorizontalScrollView>
                 </LinearLayout>
             </LinearLayout>

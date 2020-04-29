@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -53,6 +54,7 @@ class TopPanel : Panel() {
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.backTopPanelText -> {
+                backText.setBackgroundColor(Color.parseColor("#63C4DB"))
                 activity!!.onBackPressed()
                 activity!!.overridePendingTransition(0, 0)
             }
@@ -136,14 +138,14 @@ class TopPanel : Panel() {
         searchText.visibility = View.GONE
         avatarLayout.visibility = View.VISIBLE
 
-    /*    val width = resources.getDimensionPixelSize(R.dimen.photo_width)
+        val width = resources.getDimensionPixelSize(R.dimen.photo_width)
         val height = resources.getDimensionPixelSize(R.dimen.photo_height)
         Picasso.get()
             .load(photoLink)
             .resize(width, height)
             .centerCrop()
             .transform(CircularTransformation())
-            .into(avatarImage)*/
+            .into(avatarImage)
     }
 
     private fun hideIcon() {

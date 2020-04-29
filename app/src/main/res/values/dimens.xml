@@ -10,8 +10,8 @@
     <dimen name="photo_avatar_width">65dp</dimen>
     <dimen name="photo_avatar_height">65dp</dimen>
 
-    <dimen name="photo_small_avatar_width">25dp</dimen>
-    <dimen name="photo_small_avatar_height">25dp</dimen>
+    <dimen name="photo_small_avatar_width">35dp</dimen>
+    <dimen name="photo_small_avatar_height">35dp</dimen>
 
     <dimen name="bottom_panel_height">60dp</dimen>
 

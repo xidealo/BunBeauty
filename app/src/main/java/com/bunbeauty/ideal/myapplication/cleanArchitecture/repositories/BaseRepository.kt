@@ -8,5 +8,5 @@ import kotlin.coroutines.CoroutineContext
 abstract class BaseRepository : CoroutineScope {
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+        get() = job + Dispatchers.IO
 }

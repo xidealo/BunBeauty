@@ -30,6 +30,8 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
     private lateinit var noPremiumText: TextView
     private lateinit var bottomLayout: LinearLayout
     private lateinit var codeText: TextView
+    private lateinit var setPremiumPremiumElementBtn: Button
+    private lateinit var premiumDatePremiumElementText: TextView
 
     @InjectPresenter
     lateinit var premiumElementPresenter: PremiumElementPresenter
@@ -69,11 +71,13 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<Button>(R.id.setPremiumPremiumElementBtn).setOnClickListener(this)
         codeText = view.findViewById(R.id.codePremiumElement)
         premiumText = view.findViewById(R.id.yesPremiumPremiumElementText)
         noPremiumText = view.findViewById(R.id.noPremiumPremiumElementText)
         bottomLayout = view.findViewById(R.id.premiumAddServiceBottomLayout)
+        premiumDatePremiumElementText = view.findViewById(R.id.premiumDatePremiumElementText)
+        setPremiumPremiumElementBtn = view.findViewById(R.id.setPremiumPremiumElementBtn)
+        setPremiumPremiumElementBtn.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
@@ -96,20 +100,32 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
         Toast.makeText(context, "Премиум активирован", Toast.LENGTH_LONG).show()
     }
 
-    override fun setWithPremium() {
+    override fun setWithPremium(premiumDate: String) {
         noPremiumText.visibility = View.GONE
         premiumText.visibility = View.VISIBLE
         premiumText.isEnabled = false
+        setPremiumPremiumElementBtn.text = "Продлить премиум"
+        premiumDatePremiumElementText.text = "Премиум до ${WorkWithTimeApi.getDateInFormatMD(
+            WorkWithTimeApi.getMillisecondsStringDate(premiumDate)
+        )}"
     }
 
     override fun hideBottom() {
         bottomLayout.visibility = View.GONE
     }
 
-    fun isPremium(premiumDate: String): Boolean = WorkWithTimeApi.checkPremium(premiumDate)
+    fun setPremium(service: Service) {
+        this.service = service
+        if (isPremium(service.premiumDate)) {
+            setWithPremium(service.premiumDate)
+        }
+    }
+
+    private fun isPremium(premiumDate: String): Boolean = WorkWithTimeApi.checkPremium(premiumDate)
 
     companion object {
         private const val TAG = "DBInf"
+
         @JvmStatic
         fun newInstance(
             service: Service

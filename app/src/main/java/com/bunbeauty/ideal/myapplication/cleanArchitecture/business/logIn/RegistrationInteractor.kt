@@ -15,6 +15,20 @@ class RegistrationInteractor(
 
     private lateinit var iRegistrationPresenter: IRegistrationPresenter
 
+    override fun registration(
+        user: User,
+        iRegistrationPresenter: IRegistrationPresenter
+    ) {
+        this.iRegistrationPresenter = iRegistrationPresenter
+        if (isNameCorrect(user.name, iRegistrationPresenter)
+            && isSurnameCorrect(user.surname, iRegistrationPresenter)
+            && isCityCorrect(user.city, iRegistrationPresenter)
+        ) {
+            user.id = getUserId()
+            userRepository.insert(user, this)
+        }
+    }
+
     override fun getIsCityInputCorrect(city: String): Boolean {
         if (city == "Выбрать город") {
             return false
@@ -50,23 +64,7 @@ class RegistrationInteractor(
         return true
     }
 
-    override fun registration(
-        user: User,
-        name: String,
-        surname: String,
-        iRegistrationPresenter: IRegistrationPresenter
-    ) {
-        this.iRegistrationPresenter = iRegistrationPresenter
-        if (isNameCorrect(name, iRegistrationPresenter)
-            && isSurnameCorrect(surname, iRegistrationPresenter)
-            && isCityCorrect(user.city, iRegistrationPresenter)
-        ) {
-            user.id = getUserId()
-            user.name = name
-            user.surname = surname
-            userRepository.insert(user, this)
-        }
-    }
+
 
     //TODO UNIT TEST
     private fun isNameCorrect(

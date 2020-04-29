@@ -5,7 +5,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IUserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UserRepository(
     private val userDao: UserDao,
@@ -15,13 +17,15 @@ class UserRepository(
 
     lateinit var userSubscriber: IUserCallback
     lateinit var usersSubscriber: IUsersCallback
-    //TODO(Переделать логику insert, update, id получаем только после инсерта в FB
 
     override fun insert(user: User, iInsertUsersCallback: IInsertUsersCallback) {
         launch {
             userDao.insert(user)
             userFirebaseApi.insert(user)
-            iInsertUsersCallback.returnCreatedCallback(user)
+
+            withContext(Dispatchers.Main) {
+                iInsertUsersCallback.returnCreatedCallback(user)
+            }
         }
     }
 
@@ -29,7 +33,9 @@ class UserRepository(
         launch {
             userDao.delete(user)
             userFirebaseApi.delete(user)
-            iDeleteUsersCallback.returnDeletedCallback()
+            withContext(Dispatchers.Main) {
+                iDeleteUsersCallback.returnDeletedCallback()
+            }
         }
     }
 
@@ -37,13 +43,18 @@ class UserRepository(
         launch {
             userDao.update(user)
             userFirebaseApi.update(user)
-            iUpdateUsersCallback.returnUpdatedCallback(user)
+            withContext(Dispatchers.Main) {
+                iUpdateUsersCallback.returnUpdatedCallback(user)
+            }
         }
     }
 
     override fun get(iUsersCallback: IUsersCallback) {
         launch {
-            iUsersCallback.returnUsers(userDao.get())
+            val users = userDao.get()
+            withContext(Dispatchers.Main) {
+                iUsersCallback.returnUsers(users)
+            }
         }
     }
 
@@ -54,7 +65,10 @@ class UserRepository(
             userFirebaseApi.getById(id, this)
         } else {
             launch {
-                userSubscriber.returnUser(userDao.getById(id))
+                val users = userDao.getById(id)
+                withContext(Dispatchers.Main) {
+                    userSubscriber.returnUser(users)
+                }
             }
         }
     }
@@ -70,7 +84,10 @@ class UserRepository(
             userFirebaseApi.getByPhoneNumber(phoneNumber, this)
         } else {
             launch {
-                userSubscriber.returnUser(userDao.getByPhoneNumber(phoneNumber))
+                val users = userDao.getByPhoneNumber(phoneNumber)
+                withContext(Dispatchers.Main) {
+                    userSubscriber.returnUser(users)
+                }
             }
         }
     }
@@ -82,7 +99,10 @@ class UserRepository(
             userFirebaseApi.getByCity(city, this)
         } else {
             launch {
-                usersSubscriber.returnUsers(userDao.getByCity(city))
+                val users = userDao.getByCity(city)
+                withContext(Dispatchers.Main) {
+                    usersSubscriber.returnUsers(users)
+                }
             }
         }
     }
@@ -98,7 +118,10 @@ class UserRepository(
             userFirebaseApi.getByCityAndUserName(city, userName, this)
         } else {
             launch {
-                usersSubscriber.returnUsers(userDao.getByCityAndUserName(city, userName))
+                val users = userDao.getByCityAndUserName(city, userName)
+                withContext(Dispatchers.Main) {
+                    usersSubscriber.returnUsers(users)
+                }
             }
         }
     }
@@ -109,23 +132,19 @@ class UserRepository(
             userFirebaseApi.getByName(name, this)
         } else {
             launch {
-                usersSubscriber.returnUsers(userDao.getByName(name))
+                val users = userDao.getByName(name)
+                withContext(Dispatchers.Main) {
+                    usersSubscriber.returnUsers(users)
+                }
             }
         }
     }
-
-    //Что за даун это написал?
-    //Понял, что это я
-    /*
-    * Return также интсертит значения в локальную базу данных, после того, как оин были получены из FB
-    * Если мы будем инсертить из презентора, то получится, что он заинсертит еще и в FB
-     */
+    //Insert after get in FB
     override fun returnUser(user: User) {
         //убрать проверку?
         if (user.name != "") {
             insertInRoom(user)
         }
-
         userSubscriber.returnUser(user)
     }
 
@@ -135,7 +154,6 @@ class UserRepository(
         }
         usersSubscriber.returnUsers(users)
     }
-
 
     override fun insertInRoom(user: User) {
         launch {

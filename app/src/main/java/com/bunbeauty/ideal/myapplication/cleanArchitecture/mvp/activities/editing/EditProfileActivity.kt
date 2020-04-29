@@ -84,11 +84,12 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
 
     private fun createPanels() {
         createBottomPanel(supportFragmentManager)
-        createTopPanel("Редактирование профиля", ButtonTask.NONE, supportFragmentManager)
+        createTopPanel("Редактирование", ButtonTask.NONE, supportFragmentManager)
     }
 
     override fun onClick(v: View) {
         when (v.id) {
+
         }
     }
 
@@ -98,8 +99,6 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         phoneEditProfileInput.text = user.phone
         showAvatar(user.photoLink)
         setSpinnerSelection(citySpinnerEditProfileSpinner, user.city)
-
-
     }
 
     override fun showAvatar(photoLink: String) {

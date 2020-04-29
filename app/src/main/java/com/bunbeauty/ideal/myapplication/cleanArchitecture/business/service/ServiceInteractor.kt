@@ -17,6 +17,8 @@ class ServiceInteractor(private val photoRepository: PhotoRepository, private va
 
     private lateinit var photoCallback: IPhotoCallback
     private lateinit var user: User
+
+
     private lateinit var service: Service
 
     override fun createServiceScreen(servicePresenterCallback: ServicePresenterCallback) {
@@ -24,14 +26,13 @@ class ServiceInteractor(private val photoRepository: PhotoRepository, private va
         val user = intent.getSerializableExtra(User.USER) as User
         this.user = user
         this.service = service
-
         servicePresenterCallback.showPremium(service)
-
         servicePresenterCallback.showService(user, service)
     }
 
-    private fun isMyService(): Boolean = getUserId() == user.id
+    override fun getOwner() = user
 
+    private fun isMyService(): Boolean = getUserId() == user.id
 
     fun getServicePhotos(serviceId: String, serviceOwnerId: String, photoCallback: IPhotoCallback) {
         this.photoCallback = photoCallback

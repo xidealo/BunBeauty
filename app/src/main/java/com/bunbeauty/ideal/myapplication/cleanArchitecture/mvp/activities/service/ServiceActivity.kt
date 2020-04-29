@@ -22,7 +22,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IProfileAvailable
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
@@ -48,6 +47,8 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private lateinit var ratingLayout: LinearLayout
     private lateinit var ratingBar: RatingBar
     private lateinit var progressBar: ProgressBar
+
+    private lateinit var premiumElementFragment: PremiumElementFragment
 
     @Inject
     lateinit var serviceInteractor: ServiceInteractor
@@ -88,11 +89,19 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         ratingBar = findViewById(R.id.ratingServiceBar)
         progressBar = findViewById(R.id.progressServiceBar)
 
+        premiumElementFragment = supportFragmentManager
+            .findFragmentById(R.id.premiumBlockServiceActivity) as PremiumElementFragment
+
         findViewById<Button>(R.id.scheduleServiceBtn).setOnClickListener(this)
     }
 
     override fun showService(user: User, service: Service) {
-        createTopPanel(service.name, ButtonTask.GO_TO_PROFILE, supportFragmentManager)
+        createTopPanel(
+            service.name,
+            ButtonTask.GO_TO_PROFILE,
+            user.photoLink,
+            supportFragmentManager
+        )
         costText.text = service.cost.toString()
         addressText.text = service.address
         descriptionText.text = service.description
@@ -132,12 +141,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     override fun showPremium(service: Service) {
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.premiumCreationServiceLayout, PremiumElementFragment.newInstance(service))
-            .commit()
-
-        //premiumLayout.visibility = View.VISIBLE
+        premiumElementFragment.setPremium(service)
     }
 
     override fun showPhotos(photos: List<Photo>) {
@@ -177,13 +181,10 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         }
     }
 
-    /*private fun checkScheduleAndGoToCalendar() {
-        if (WorkWithLocalStorageApi.hasAvailableTime(serviceId, userId, dbHelper!!.readableDatabase)) {
-            goToCalendar(USER)
-        } else {
-            attentionThisScheduleIsEmpty()
-        }
-    }*/
+    override fun iconClick() {
+        super.iconClick()
+        goToProfile(servicePresenter.getOwner())
+    }
 
     private fun attentionThisScheduleIsEmpty() {
         Toast.makeText(

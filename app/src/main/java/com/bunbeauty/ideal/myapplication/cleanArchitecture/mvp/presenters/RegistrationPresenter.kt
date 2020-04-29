@@ -9,14 +9,16 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.Registratio
 
 @InjectViewState
 class RegistrationPresenter(private val registrationInteractor: RegistrationInteractor) :
-        MvpPresenter<RegistrationView>(), IRegistrationPresenter {
+    MvpPresenter<RegistrationView>(), IRegistrationPresenter {
 
     fun registration(name: String, surname: String, city: String, phone: String) {
         viewState.disableRegistrationButtnon()
         val user = User()
         user.phone = phone
         user.city = city
-        registrationInteractor.registration(user, name,surname,this)
+        user.name = name
+        user.surname = surname
+        registrationInteractor.registration(user, this)
     }
 
     fun getMyPhoneNumber() = registrationInteractor.getMyPhoneNumber()

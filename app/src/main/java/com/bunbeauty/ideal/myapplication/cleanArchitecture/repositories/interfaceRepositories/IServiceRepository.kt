@@ -10,7 +10,6 @@ interface IServiceRepository {
     fun get(iServicesCallback: IServicesCallback)
     fun insertInRoom(service: Service)
 
-    fun getServicesByCityAndCategory(userCity: String, category: String, selectedTagsArray: ArrayList<String>)
     fun getServicesByUserId(userId: String, iServicesCallback: IServicesCallback, isFirstEnter: Boolean)
 
     fun getById(serviceId: String, userId: String, iServiceCallback: IServiceCallback, isFirstEnter: Boolean)

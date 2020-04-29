@@ -21,6 +21,8 @@ class ServicePresenter(private val serviceInteractor: IServiceInteractor) :
         serviceInteractor.createServiceScreen(this)
     }
 
+    fun getOwner() = serviceInteractor.getOwner()
+
     override fun showService(user: User, service: Service) {
         viewState.showService(user, service)
         viewState.hideLoading()

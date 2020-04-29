@@ -4,7 +4,7 @@ import com.arellomobile.mvp.MvpView
 
 interface PremiumElementFragmentView: MvpView {
     fun showError(error:String)
+    fun setWithPremium(premiumDate: String)
     fun showPremiumActivated()
-    fun setWithPremium()
     fun hideBottom()
 }

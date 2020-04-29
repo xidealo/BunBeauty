@@ -33,6 +33,6 @@ class PremiumElementServiceInteractor(val serviceRepository: ServiceRepository) 
     }
 
     override fun returnUpdatedCallback(obj: Service) {
-        checkPremiumPresenterCallback.showPremiumActivated()
+        checkPremiumPresenterCallback.showPremiumActivated(obj)
     }
 }
