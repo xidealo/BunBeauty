@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.chat.Dialogs
+import com.bunbeauty.ideal.myapplication.chat.DialogsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
@@ -25,7 +25,7 @@ class BottomPanel : Panel() {
         when (v!!.id) {
             R.id.profileBottomPanelText -> goTo(ProfileActivity::class.java)
             R.id.mainScreenBottomPanelText -> goToMainScreen()
-            R.id.chatBottomPanelText -> goTo(Dialogs::class.java)
+            R.id.chatBottomPanelText -> goTo(DialogsActivity::class.java)
         }
     }
 
@@ -51,7 +51,7 @@ class BottomPanel : Panel() {
             mainScreenText.setOnClickListener(this)
         }
 
-        if (activity is Dialogs) {
+        if (activity is DialogsActivity) {
             chatText.setTextColor(ContextCompat.getColor(context!!, R.color.yellow))
         } else {
             chatText.setOnClickListener(this)

@@ -2,59 +2,43 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.bunbeauty.ideal.myapplication.chat.Dialogs"
-    style="@style/allPages">
+    style="@style/allPages"
+    tools:context="com.bunbeauty.ideal.myapplication.chat.DialogsActivity">
 
-    <LinearLayout
-        android:id="@+id/topPanelDialogsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent">
-    </LinearLayout>
+    <include layout="@layout/part_top_panel" />
 
     <TextView
         android:id="@+id/noDialogsDialogsText"
-        android:layout_width="wrap_content"
+        style="@style/mainBlockText"
+        android:gravity="center"
         android:layout_height="wrap_content"
         android:text="Нет диалогов"
-        android:visibility="gone"
-        style="@style/mainBlockText"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanelDialogsLayout"
+        app:layout_constraintBottom_toTopOf="@+id/topPanelLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topPanelDialogsLayout"/>
+        app:layout_constraintTop_toBottomOf="@+id/bottomPanelLayout" />
 
     <ProgressBar
         android:id="@+id/progressBarDialogs"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminateTint= "@color/panelColor"
         android:layout_gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanelDialogsLayout"
+        android:indeterminateTint="@color/panelColor"
+        app:layout_constraintBottom_toTopOf="@+id/topPanelLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topPanelDialogsLayout"/>
+        app:layout_constraintTop_toBottomOf="@+id/bottomPanelLayout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/resultsDialogsRecycleView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/topPanelDialogsLayout"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanelDialogsLayout"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    </androidx.recyclerview.widget.RecyclerView>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout"/>
 
-    <LinearLayout
-        android:id="@+id/bottomPanelDialogsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
-    </LinearLayout>
+    <include layout="@layout/part_bottom_panel" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

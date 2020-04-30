@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import com.arellomobile.mvp.MvpAppCompatActivity
-import com.bunbeauty.ideal.myapplication.chat.Dialogs
+import com.bunbeauty.ideal.myapplication.chat.DialogsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 
@@ -20,7 +20,7 @@ open class BaseActivity : MvpAppCompatActivity() {
     }
 
     fun goToChat() {
-        val intent = Intent(this, Dialogs::class.java)
+        val intent = Intent(this, DialogsActivity::class.java)
         this.startActivity(intent)
     }
 }

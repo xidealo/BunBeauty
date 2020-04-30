@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.chat.Dialogs;
+import com.bunbeauty.ideal.myapplication.chat.DialogsActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity;
 
@@ -91,8 +91,8 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
     }
 
     private void goToDialogs() {
-        if (getContext().getClass() != Dialogs.class) {
-            Intent intent = new Intent(getContext(), Dialogs.class);
+        if (getContext().getClass() != DialogsActivity.class) {
+            Intent intent = new Intent(getContext(), DialogsActivity.class);
             chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
             startActivity(intent);
         }
@@ -118,7 +118,7 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
             mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
         }
 
-        if (getContext().getClass() == Dialogs.class) {
+        if (getContext().getClass() == DialogsActivity.class) {
             chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
         }
     }

@@ -279,7 +279,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         cursor.close()
     }*/
 
-
     override fun showProgress() {
         progressBar.visibility = View.VISIBLE
         mainLayout.visibility = View.INVISIBLE
