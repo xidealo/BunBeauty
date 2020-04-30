@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity">
+
+    <include layout="@layout/part_top_panel" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
+                android:id="@+id/daysScheduleLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:columnCount="7"
+                android:foregroundGravity="center"
+                android:orientation="horizontal" />
+
+            <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
+                android:id="@+id/timeScheduleLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:columnCount="8"
+                android:foregroundGravity="center"
+                android:orientation="horizontal" />
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparentGrey"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout" />
+
+    <include layout="@layout/part_bottom_panel" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

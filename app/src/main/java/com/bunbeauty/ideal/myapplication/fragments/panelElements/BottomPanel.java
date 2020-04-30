@@ -77,7 +77,7 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
         if (!isMyProfile) {
             Intent intent = new Intent(getContext(), ProfileActivity.class);
             intent.putExtra(OWNER_ID, myPhone);
-            profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+            profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.yellow));
             startActivity(intent);
         }
     }
@@ -85,7 +85,7 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
     private void goToMainScreen() {
         if (getContext().getClass() != MainScreenActivity.class) {
             Intent intent = new Intent(getContext(), MainScreenActivity.class);
-            mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+            mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.yellow));
             startActivity(intent);
         }
     }
@@ -93,7 +93,7 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
     private void goToDialogs() {
         if (getContext().getClass() != DialogsActivity.class) {
             Intent intent = new Intent(getContext(), DialogsActivity.class);
-            chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+            chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.yellow));
             startActivity(intent);
         }
     }
@@ -111,15 +111,15 @@ public class BottomPanel extends Fragment implements View.OnClickListener {
 
     private void highlightCurrentPage() {
         if (isMyProfile) {
-            profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+            profileText.setTextColor(ContextCompat.getColor(getContext(), R.color.yellow));
         }
 
         if (getContext().getClass() == MainScreenActivity.class) {
-            mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+            mainScreenText.setTextColor(ContextCompat.getColor(getContext(), R.color.yellow));
         }
 
         if (getContext().getClass() == DialogsActivity.class) {
-            chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.selectedButton));
+            chatText.setTextColor(ContextCompat.getColor(getContext(), R.color.yellow));
         }
     }
 }

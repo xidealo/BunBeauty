@@ -12,6 +12,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.Regist
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.EditProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
@@ -27,6 +28,7 @@ import dagger.Provides
 class AppModule(private val app: Application, private val intent: Intent) {
 
     // FIREBASE API
+
     @Provides
     fun provideUserFirebaseApi() = UserFirebaseApi()
 
@@ -43,6 +45,7 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideCodeFirebase() = CodeFirebase()
 
     // DAO
+
     @Provides
     fun provideUserDao() = LocalDatabase.getDatabase(app).getUserDao()
 
@@ -59,6 +62,7 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideCodeDao() = LocalDatabase.getDatabase(app).getCodeDao()
 
     //REPOSITORIES
+
     @Provides
     fun provideUserRepository(userDao: UserDao, userFirebaseApi: UserFirebaseApi) =
         UserRepository(userDao, userFirebaseApi)
@@ -80,6 +84,7 @@ class AppModule(private val app: Application, private val intent: Intent) {
         CodeRepository(codeDao, codeFirebase)
 
     // INTERACTORS
+
     @Provides
     fun provideAuthorizationInteractor(userRepository: UserRepository) =
         AuthorizationInteractor(userRepository)
@@ -149,6 +154,12 @@ class AppModule(private val app: Application, private val intent: Intent) {
     }
 
     @Provides
+    fun provideScheduleInteractor() = ScheduleInteractor()
+
+    //APIs
+
+    @Provides
     fun provideFigureServicePointsApi() = FiguringServicePoints()
+
 
 }
