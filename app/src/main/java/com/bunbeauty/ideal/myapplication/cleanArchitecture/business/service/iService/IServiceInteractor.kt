@@ -5,5 +5,5 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface IServiceInteractor {
     fun createServiceScreen(servicePresenterCallback: ServicePresenterCallback)
-    fun getOwner(): User
+    fun iconClick(servicePresenterCallback: ServicePresenterCallback)
 }

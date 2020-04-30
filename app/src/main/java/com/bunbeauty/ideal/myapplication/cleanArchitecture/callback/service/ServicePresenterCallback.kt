@@ -4,6 +4,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface ServicePresenterCallback {
-    fun showService(user: User, service: Service)
+    fun showService(service: Service)
     fun showPremium(service: Service)
+    fun createOwnServiceTopPanel(service: Service)
+    fun createAlienServiceTopPanel(user: User, service: Service)
+
+    fun goToEditService(service: Service)
+    fun goToProfile(user: User)
 }

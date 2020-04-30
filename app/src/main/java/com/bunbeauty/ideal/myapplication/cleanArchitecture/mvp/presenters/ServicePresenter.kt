@@ -21,16 +21,35 @@ class ServicePresenter(private val serviceInteractor: IServiceInteractor) :
         serviceInteractor.createServiceScreen(this)
     }
 
-    fun getOwner() = serviceInteractor.getOwner()
+    fun iconClick() {
+        serviceInteractor.iconClick(this)
+    }
 
-    override fun showService(user: User, service: Service) {
-        viewState.showService(user, service)
+    override fun showService(service: Service) {
+        viewState.showService(service)
         viewState.hideLoading()
     }
 
     override fun showPremium(service: Service) {
         viewState.showPremium(service)
     }
+
+    override fun createOwnServiceTopPanel(service: Service) {
+        viewState.createOwnServiceTopPanel(service)
+    }
+
+    override fun createAlienServiceTopPanel(user: User, service: Service) {
+        viewState.createAlienServiceTopPanel(user, service)
+    }
+
+    override fun goToEditService(service: Service) {
+        viewState.goToEditService(service)
+    }
+
+    override fun goToProfile(user: User) {
+        viewState.goToProfile(user)
+    }
+
 
     /*
       fun getServicePhotos(serviceId: String, serviceOwnerId: String) {

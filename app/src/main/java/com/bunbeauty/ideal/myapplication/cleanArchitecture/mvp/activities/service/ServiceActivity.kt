@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.service_activity.*
 import javax.inject.Inject
 
 class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView,
-    IEditableActivity, ITopPanel, IBottomPanel, IProfileAvailable {
+    ITopPanel, IBottomPanel, IProfileAvailable {
 
     private lateinit var mainScroll: ScrollView
 
@@ -72,6 +72,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         createBottomPanel(supportFragmentManager)
         showLoading()
         servicePresenter.createServiceScreen()
+        hidePremium()
     }
 
     private fun init() {
@@ -95,13 +96,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         findViewById<Button>(R.id.scheduleServiceBtn).setOnClickListener(this)
     }
 
-    override fun showService(user: User, service: Service) {
-        createTopPanel(
-            service.name,
-            ButtonTask.GO_TO_PROFILE,
-            user.photoLink,
-            supportFragmentManager
-        )
+    override fun showService(service: Service) {
         costText.text = service.cost.toString()
         addressText.text = service.address
         descriptionText.text = service.description
@@ -118,7 +113,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         mainScroll.visibility = View.VISIBLE
         scheduleServiceBtn.visibility = View.VISIBLE
     }
-
 
     private fun showRating(rating: Float, countOfRates: Long) {
         if (rating > 0) {
@@ -142,6 +136,27 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     override fun showPremium(service: Service) {
         premiumElementFragment.setPremium(service)
+    }
+
+    override fun createOwnServiceTopPanel(service: Service) {
+        createTopPanel(
+            service.name,
+            ButtonTask.EDIT,
+            supportFragmentManager
+        )
+    }
+
+    override fun createAlienServiceTopPanel(user: User, service: Service) {
+        createTopPanel(
+            service.name,
+            ButtonTask.GO_TO_PROFILE,
+            user.photoLink,
+            supportFragmentManager
+        )
+    }
+
+    override fun hidePremium() {
+        premiumElementFragment.hidePremium()
     }
 
     override fun showPhotos(photos: List<Photo>) {
@@ -168,14 +183,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     override fun onClick(v: View) {
         when (v.id) {
             R.id.scheduleServiceBtn -> {
-                if (true) {
-                    goToCalendar(User.MASTER)
-                } else {
-                    // not my service, Im client
-                    //checkScheduleAndGoToCalendar()
-                }
             }
-
 
             R.id.ratingServiceLayout -> goToComments()
         }
@@ -183,33 +191,13 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     override fun iconClick() {
         super.iconClick()
-        goToProfile(servicePresenter.getOwner())
+        servicePresenter.iconClick()
     }
 
-    private fun attentionThisScheduleIsEmpty() {
-        Toast.makeText(
-            this,
-            "Пользователь еще не написал расписание к этому сервису.",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    private fun attentionWrongCode() {
-        Toast.makeText(this, "Неверно введен код", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun attentionOldCode() {
-        Toast.makeText(this, "Код больше не действителен", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun attentionPremiumActivated() {
-        Toast.makeText(this, "Премиум активирован", Toast.LENGTH_LONG).show()
-    }
-
-    override fun goToEditing(editableEntity: EditableEntity) {
-        /*  val intent = Intent(this, EditService::class.java)
-          intent.putExtra(Service.SERVICE, editableEntity as Service)
-          startActivity(intent)*/
+    override fun goToEditService(service: Service) {
+        /* val intent = Intent(this, EditService::class.java)
+         intent.putExtra(Service.SERVICE, editableEntity as Service)
+         startActivity(intent)*/
     }
 
     private fun goToCalendar(status: String) {
@@ -239,18 +227,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
         private val TAG = "DBInf"
 
-        const val OWNER_ID = "owner id"
-
         private val TYPE = "type"
-        private val IS_PREMIUM = "is premium"
-        private val CODES = "codes"
-        private val CODE = "code"
-        private val WORKING_DAYS = "working days"
-        private val WORKING_TIME = "working time"
-        private val DATE = "date"
-        private val ORDERS = "orders"
-        private val COUNT = "count"
-        private val PHOTOS = "photos"
 
         private val STATUS_USER_BY_SERVICE = "status UserCreateService"
 

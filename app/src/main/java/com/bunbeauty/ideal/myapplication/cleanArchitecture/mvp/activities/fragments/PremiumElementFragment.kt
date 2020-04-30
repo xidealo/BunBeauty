@@ -29,6 +29,7 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
     private lateinit var premiumText: TextView
     private lateinit var noPremiumText: TextView
     private lateinit var bottomLayout: LinearLayout
+    private lateinit var maimPremiumElementLayout: LinearLayout
     private lateinit var codeText: TextView
     private lateinit var setPremiumPremiumElementBtn: Button
     private lateinit var premiumDatePremiumElementText: TextView
@@ -75,6 +76,7 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
         premiumText = view.findViewById(R.id.yesPremiumPremiumElementText)
         noPremiumText = view.findViewById(R.id.noPremiumPremiumElementText)
         bottomLayout = view.findViewById(R.id.premiumAddServiceBottomLayout)
+        maimPremiumElementLayout = view.findViewById(R.id.maimPremiumElementLayout)
         premiumDatePremiumElementText = view.findViewById(R.id.premiumDatePremiumElementText)
         setPremiumPremiumElementBtn = view.findViewById(R.id.setPremiumPremiumElementBtn)
         setPremiumPremiumElementBtn.setOnClickListener(this)
@@ -114,6 +116,10 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
         bottomLayout.visibility = View.GONE
     }
 
+    override fun hidePremium() {
+        maimPremiumElementLayout.visibility = View.GONE
+    }
+
     fun setPremium(service: Service) {
         this.service = service
         if (isPremium(service.premiumDate)) {
@@ -122,6 +128,8 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
     }
 
     private fun isPremium(premiumDate: String): Boolean = WorkWithTimeApi.checkPremium(premiumDate)
+
+
 
     companion object {
         private const val TAG = "DBInf"

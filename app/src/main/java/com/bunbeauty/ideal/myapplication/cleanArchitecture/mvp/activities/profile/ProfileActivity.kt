@@ -75,7 +75,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         init()
         createBottomPanel(supportFragmentManager)
         createSwitcher()
-        firstSwitcherAct()
+        //firstSwitcherAct()
         profilePresenter.initFCM()
         profilePresenter.createProfileScreen()
     }
@@ -112,10 +112,10 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     private fun createSwitcher() {
-        switcherFragment = SwitcherElement("Записи", "Услуги")
+      /*  switcherFragment = SwitcherElement("Записи", "Услуги")
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.switcherProfileLayout, switcherFragment)
-        transaction.commit()
+        transaction.commit()*/
     }
 
     override fun showProfileInfo(user: User) {
@@ -200,11 +200,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showSwitcher() {
-        switcherFragment.showSwitcherElement()
+       // switcherFragment.showSwitcherElement()
     }
 
     override fun hideSwitcher() {
-        switcherFragment.hideSwitcherElement()
+        //switcherFragment.hideSwitcherElement()
     }
 
     @SuppressLint("SetTextI18n")
