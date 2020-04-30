@@ -62,6 +62,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         daysLayout.setOnTouchListener(this)
         timeLayout = findViewById(R.id.timeScheduleLayout)
         timeLayout.setOnTouchListener(this)
+        timeLayout.visibility = View.GONE
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -87,18 +88,15 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         }
     }
 
-    private fun getScreenWidth(): Int {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics.widthPixels
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun createTimeButtons() {
         for (i in 0 until TIME_RAW_COUNT) {
             for (j in 0 until TIME_COLUMN_COUNT) {
                 val button = Button(this)
-                button.layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, 100)
+                button.layoutParams = LinearLayout.LayoutParams(
+                    getScreenWidth() / TIME_COLUMN_COUNT,
+                    WRAP_CONTENT
+                )
                 clearButtonSelection(button)
                 button.text = schedulePresenter.getTineString(i * TIME_COLUMN_COUNT + j)
                 button.setOnTouchListener(this)
@@ -110,6 +108,12 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         for (i in 0 until timeButtons.size) {
             addViewToContainer(timeButtons[i], timeLayout)
         }
+    }
+
+    private fun getScreenWidth(): Int {
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics.widthPixels
     }
 
     private fun addViewToContainer(view: View, container: ViewGroup) {
@@ -125,26 +129,24 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         when (motionEvent.action) {
             MotionEvent.ACTION_DOWN -> {
                 touchId++
-                clearSelection(daysLayout)
+                clearSelection(view, daysButtons)
             }
             MotionEvent.ACTION_MOVE -> {
                 select(view, motionEvent)
             }
             MotionEvent.ACTION_UP -> {
-                clearSelection(timeLayout)
+                timeLayout.visibility = View.VISIBLE
+                clearSelection(view, timeButtons)
             }
         }
 
         return true
     }
 
-    private fun clearSelection(view: View) {
+    private fun clearSelection(view: View, buttons: List<Button>) {
         when (view) {
             daysLayout -> {
-                clearButtonsSelection(daysButtons)
-            }
-            timeLayout -> {
-                clearButtonsSelection(timeButtons)
+                clearButtonsSelection(buttons)
             }
         }
     }
@@ -167,6 +169,11 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
                 continue
             }
 
+            if (isAlreadyTouched(button)) {
+                return
+            }
+
+            button.setTag(R.id.touchIdTag, touchId)
             if (isButtonSelected(button)) {
                 clearButtonSelection(button)
             } else {
@@ -183,18 +190,24 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         }
     }
 
+    private fun isAlreadyTouched(button: Button): Boolean {
+        return button.getTag(R.id.touchIdTag) == touchId
+    }
+
     private fun isButtonSelected(button: Button): Boolean {
-        return button.tag == TOUCHED
+        val a = button.getTag(R.id.touchedTag)
+
+        return button.getTag(R.id.touchedTag) == TOUCHED
     }
 
     private fun selectButton(button: Button) {
         button.setBackgroundResource(R.drawable.yellow_button)
-        button.tag = TOUCHED
+        button.setTag(R.id.touchedTag, TOUCHED)
     }
 
     private fun clearButtonSelection(button: Button) {
         button.setBackgroundResource(R.drawable.white_button)
-        button.tag = NOT_TOUCHED
+        button.setTag(R.id.touchedTag, NOT_TOUCHED)
     }
 
     private fun isButtonTouched(button: Button, motionEvent: MotionEvent): Boolean {
@@ -207,8 +220,8 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
     companion object {
         private const val WEEK_DAY_COUNT = 7
         private const val WEEK_COUNT = 4
-        private const val TIME_COLUMN_COUNT = 8
-        private const val TIME_RAW_COUNT = 6
+        private const val TIME_COLUMN_COUNT = 6
+        private const val TIME_RAW_COUNT = 8
 
         private const val TOUCHED = "touched"
         private const val NOT_TOUCHED = "not touched"

@@ -28,11 +28,12 @@
                 android:orientation="horizontal" />
 
             <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
+                android:layout_marginTop="10dp"
                 android:id="@+id/timeScheduleLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:columnCount="8"
+                android:columnCount="6"
                 android:foregroundGravity="center"
                 android:orientation="horizontal" />
         </LinearLayout>
