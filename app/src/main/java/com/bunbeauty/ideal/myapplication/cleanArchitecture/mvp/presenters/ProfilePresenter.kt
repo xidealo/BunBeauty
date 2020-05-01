@@ -2,31 +2,47 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileDialogInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileDialogInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 
 @InjectViewState
-class ProfilePresenter(private val profileInteractor: IProfileInteractor) :
+class ProfilePresenter(
+    private val profileUserInteractor: IProfileUserInteractor,
+    private val profileServiceInteractor: IProfileServiceInteractor,
+    private val profileDialogInteractor: IProfileDialogInteractor
+) :
     MvpPresenter<ProfileView>(), ProfilePresenterCallback {
 
     private val TAG = "DBInf"
 
     fun initFCM() {
-        profileInteractor.initFCM()
+        profileUserInteractor.initFCM()
     }
 
     fun createProfileScreen() {
         viewState.showProgress()
-        profileInteractor.getProfileOwner(this)
+        profileUserInteractor.getProfileOwner(this)
     }
 
-    fun getServiceLink() = profileInteractor.getServicesLink()
+    fun getServiceLink() = profileServiceInteractor.getServicesLink()
 
     fun checkIconClick() {
-        profileInteractor.checkIconClick(this)
+        profileUserInteractor.checkIconClick(this)
+    }
+
+    fun goToDialog() {
+        profileDialogInteractor.goToDialog(
+            User.getMyId(),
+            profileUserInteractor.getCurrentUser(),
+            this
+        )
     }
 
     override fun showMyProfile(user: User) {
@@ -56,8 +72,16 @@ class ProfilePresenter(private val profileInteractor: IProfileInteractor) :
         viewState.goToEditProfile(user)
     }
 
+    override fun goToDialog(dialog: Dialog) {
+
+    }
+
     override fun subscribe() {
         viewState.subscribe()
+    }
+
+    override fun getProfileServiceList(userId: String) {
+        profileServiceInteractor.getServicesByUserId(userId, this)
     }
 
     override fun setUserProfile(user: User) {
@@ -68,8 +92,8 @@ class ProfilePresenter(private val profileInteractor: IProfileInteractor) :
         viewState.hideAddService()
     }
 
-    override fun setServiceListWithOwner(serviceList: List<Service>, user: User) {
-        viewState.showUserServices(serviceList, user)
+    override fun setServiceList(serviceList: List<Service>) {
+        viewState.showUserServices(serviceList, profileUserInteractor.getCurrentUser())
         viewState.hideProgress()
     }
 }

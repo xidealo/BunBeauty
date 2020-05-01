@@ -7,15 +7,19 @@ import androidx.room.RoomDatabase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.*
 
-@Database(entities = [User::class,
-    Service::class,
-    Tag::class,
-    WorkingDays::class,
-    WorkingTime::class,
-    Order::class,
-    Photo::class,
-    Review::class,
-    Code::class], version = 24)
+@Database(
+    entities = [User::class,
+        Service::class,
+        Tag::class,
+        WorkingDays::class,
+        WorkingTime::class,
+        Order::class,
+        Photo::class,
+        Review::class,
+        Code::class,
+        Dialog::class,
+        Message::class], version = 27
+)
 abstract class LocalDatabase : RoomDatabase() {
 
     abstract fun getUserDao(): UserDao
@@ -23,6 +27,7 @@ abstract class LocalDatabase : RoomDatabase() {
     abstract fun getTagDao(): TagDao
     abstract fun getPhotoDao(): PhotoDao
     abstract fun getCodeDao(): CodeDao
+    abstract fun getDialogDao(): DialogDao
 
     companion object {
         @Volatile
@@ -35,9 +40,9 @@ abstract class LocalDatabase : RoomDatabase() {
             }
             synchronized(this) {
                 val instance = Room.databaseBuilder(
-                        context.applicationContext,
-                        LocalDatabase::class.java,
-                        "NoteDatabase"
+                    context.applicationContext,
+                    LocalDatabase::class.java,
+                    "NoteDatabase"
                 ).fallbackToDestructiveMigration().build()
                 // ^^^ Убрать ^^^
 

@@ -2,16 +2,16 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServi
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 
 class MainScreenUserInteractor(
     val userRepository: UserRepository
 ) : IMainScreenUserInteractor,
-    IUsersCallback {
+    UsersCallback {
 
     private lateinit var mainScreenPresenterCallback: MainScreenPresenterCallback
 

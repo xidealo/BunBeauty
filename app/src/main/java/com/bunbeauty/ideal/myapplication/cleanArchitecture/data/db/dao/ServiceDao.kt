@@ -5,19 +5,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
 @Dao
-interface ServiceDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(service: Service)
+interface ServiceDao : BaseDao<Service> {
 
     @Insert
     suspend fun insertPhotos(photos: List<Photo>)
-
-    @Update
-    suspend fun update(service: Service)
-
-    @Delete
-    suspend fun delete(service: Service)
 
     @Query("SELECT * FROM service")
     suspend fun get(): List<Service>

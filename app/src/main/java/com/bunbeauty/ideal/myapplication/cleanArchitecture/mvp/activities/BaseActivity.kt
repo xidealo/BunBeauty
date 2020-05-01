@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import com.arellomobile.mvp.MvpAppCompatActivity
-import com.bunbeauty.ideal.myapplication.chat.DialogsActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.DialogsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 

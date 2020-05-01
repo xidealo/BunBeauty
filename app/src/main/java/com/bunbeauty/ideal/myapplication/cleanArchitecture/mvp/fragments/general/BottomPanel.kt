@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.chat.DialogsActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.DialogsActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
@@ -66,7 +66,7 @@ class BottomPanel : Panel() {
 
     fun goToMainScreen(){
         val intent = Intent(context, MainScreenActivity::class.java)
-        intent.putExtra(User.USER, ProfileInteractor.cacheCurrentUser)
+        intent.putExtra(User.USER, ProfileUserInteractor.cacheCurrentUser)
         this.startActivity(intent)
         (context as Activity).overridePendingTransition(0,0)
     }

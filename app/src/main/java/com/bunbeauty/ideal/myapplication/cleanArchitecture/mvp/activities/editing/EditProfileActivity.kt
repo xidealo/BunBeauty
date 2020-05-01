@@ -8,12 +8,11 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.EditProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity
@@ -23,9 +22,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfile
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
-import org.w3c.dom.Text
 import javax.inject.Inject
-import kotlin.math.log
 
 class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, View.OnClickListener,
     EditProfileView, IAdapterSpinner {

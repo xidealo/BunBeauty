@@ -15,15 +15,15 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.AuthorizationPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AuthorizationView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.AuthorizationPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.AuthorizationView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import com.bunbeauty.ideal.myapplication.logIn.CountryCodes
-import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
 
-class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, AuthorizationView, IAdapterSpinner {
+class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
+    AuthorizationView, IAdapterSpinner {
 
     private lateinit var verifyBtn: Button
     private lateinit var titleAuthorizationText: TextView
@@ -44,7 +44,9 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener, Auth
                 .appModule(AppModule(application, intent))
                 .build().inject(this)
 
-        return AuthorizationPresenter(authorizationInteractor)
+        return AuthorizationPresenter(
+            authorizationInteractor
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

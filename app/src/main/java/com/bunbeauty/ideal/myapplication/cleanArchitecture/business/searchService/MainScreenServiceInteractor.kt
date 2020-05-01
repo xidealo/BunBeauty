@@ -5,7 +5,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
 
 class MainScreenServiceInteractor(private val serviceRepository: ServiceRepository) :
     IServicesCallback, IMainScreenServiceInteractor {

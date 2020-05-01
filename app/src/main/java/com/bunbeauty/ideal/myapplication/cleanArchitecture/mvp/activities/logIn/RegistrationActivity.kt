@@ -16,13 +16,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.Regist
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.RegistrationPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.RegistrationView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.RegistrationPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.RegistrationView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import javax.inject.Inject
 
-class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, RegistrationView {
+class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener,
+    RegistrationView {
 
     private lateinit var nameInput: EditText
     private lateinit var surnameInput: EditText
@@ -44,7 +45,9 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener, Regis
                 .appModule(AppModule(application, intent))
                 .build().inject(this)
 
-        return RegistrationPresenter(registrationInteractor)
+        return RegistrationPresenter(
+            registrationInteractor
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

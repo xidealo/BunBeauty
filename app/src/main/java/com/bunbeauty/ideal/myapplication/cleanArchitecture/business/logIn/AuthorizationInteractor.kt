@@ -4,9 +4,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.AuthorizationPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IUserRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 

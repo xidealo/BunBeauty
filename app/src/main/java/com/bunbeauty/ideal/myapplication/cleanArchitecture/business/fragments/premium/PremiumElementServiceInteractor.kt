@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.p
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.CheckPremiumPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.UpdateServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import java.util.*
 

@@ -14,15 +14,15 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.VerifyPhonePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.VerifyPhoneView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.VerifyPhonePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.VerifyPhoneView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import com.google.firebase.auth.PhoneAuthProvider
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.reflect.typeOf
 
-class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, VerifyPhoneView {
+class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener,
+    VerifyPhoneView {
 
     private lateinit var verifyCodeBtn: Button
     private lateinit var resendCodeText: TextView
@@ -44,7 +44,9 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener, Verify
                 .appModule(AppModule(application, intent))
                 .build()
                 .inject(this)
-        return VerifyPhonePresenter(verifyPhoneInteractor)
+        return VerifyPhonePresenter(
+            verifyPhoneInteractor
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

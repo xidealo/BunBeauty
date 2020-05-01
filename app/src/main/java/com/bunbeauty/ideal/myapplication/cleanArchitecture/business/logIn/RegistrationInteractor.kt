@@ -3,15 +3,15 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IRegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.IRegistrationPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IInsertUsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.InsertUsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 
 class RegistrationInteractor(
     private val userRepository: UserRepository,
     private val intent: Intent
-) : IRegistrationInteractor, IInsertUsersCallback {
+) : IRegistrationInteractor, InsertUsersCallback {
 
     private lateinit var iRegistrationPresenter: IRegistrationPresenter
 

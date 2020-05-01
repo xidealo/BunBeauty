@@ -4,8 +4,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith

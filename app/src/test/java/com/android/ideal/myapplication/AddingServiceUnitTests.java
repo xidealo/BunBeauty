@@ -1,9 +1,9 @@
 package com.android.ideal.myapplication;
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.PhotoRepository;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.TagRepository;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoRepository;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.TagRepository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

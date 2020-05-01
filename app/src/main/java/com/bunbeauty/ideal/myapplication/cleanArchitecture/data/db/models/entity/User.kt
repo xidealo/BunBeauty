@@ -2,23 +2,28 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entit
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.auth.FirebaseAuth
 import java.io.Serializable
 
 @Entity
 data class User(
-        @PrimaryKey
-        var id:String = "",
-        var name: String = "",
-        var surname: String ="",
-        var city:String = "",
-        var phone:String ="",
-        var rating:Float = 0f,
-        var countOfRates:Long = 0,
-        var photoLink:String = DEFAULT_PHOTO_LINK,
-        var subscribersCount:Long = 0,
-        var subscriptionsCount:Long = 0 ): EditableEntity(), Serializable {
+    @PrimaryKey
+    var id: String = "",
+    var name: String = "",
+    var surname: String = "",
+    var city: String = "",
+    var phone: String = "",
+    var rating: Float = 0f,
+    var countOfRates: Long = 0,
+    var photoLink: String = DEFAULT_PHOTO_LINK,
+    var subscribersCount: Long = 0,
+    var subscriptionsCount: Long = 0
+) : EditableEntity(), Serializable {
 
     companion object {
+
+        fun getMyId(): String = FirebaseAuth.getInstance().currentUser!!.uid
+
         const val USERS = "users"
 
         const val PHONE = "phone"

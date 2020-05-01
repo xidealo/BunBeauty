@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 import android.app.Application
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
@@ -10,8 +11,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.pr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.EditProfileInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileDialogInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
@@ -19,7 +22,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.Serv
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dbInstance.LocalDatabase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.*
 import dagger.Module
 import dagger.Provides
 
@@ -28,10 +31,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     // FIREBASE API
     @Provides
-    fun provideUserFirebaseApi() = UserFirebaseApi()
+    fun provideUserFirebaseApi() = UserFirebase()
 
     @Provides
-    fun provideServiceFirebaseApi() = ServiceFirebaseApi()
+    fun provideServiceFirebaseApi() = ServiceFirebase()
 
     @Provides
     fun provideTagFirebase() = TagFirebase()
@@ -41,6 +44,9 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     @Provides
     fun provideCodeFirebase() = CodeFirebase()
+
+    @Provides
+    fun provideDialogFirebase() = DialogFirebase()
 
     // DAO
     @Provides
@@ -58,14 +64,17 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideCodeDao() = LocalDatabase.getDatabase(app).getCodeDao()
 
+    @Provides
+    fun provideDialogDao() = LocalDatabase.getDatabase(app).getDialogDao()
+
     //REPOSITORIES
     @Provides
-    fun provideUserRepository(userDao: UserDao, userFirebaseApi: UserFirebaseApi) =
-        UserRepository(userDao, userFirebaseApi)
+    fun provideUserRepository(userDao: UserDao, userFirebase: UserFirebase) =
+        UserRepository(userDao, userFirebase)
 
     @Provides
-    fun provideServiceRepository(serviceDao: ServiceDao, serviceFirebaseApi: ServiceFirebaseApi) =
-        ServiceRepository(serviceDao, serviceFirebaseApi)
+    fun provideServiceRepository(serviceDao: ServiceDao, serviceFirebase: ServiceFirebase) =
+        ServiceRepository(serviceDao, serviceFirebase)
 
     @Provides
     fun provideTagRepository(tagDao: TagDao, tagFirebase: TagFirebase) =
@@ -78,6 +87,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideCodeRepository(codeDao: CodeDao, codeFirebase: CodeFirebase) =
         CodeRepository(codeDao, codeFirebase)
+
+    @Provides
+    fun provideDialogRepository(dialogDao: DialogDao, dialogFirebase: DialogFirebase) =
+        DialogRepository(dialogDao, dialogFirebase)
 
     // INTERACTORS
     @Provides
@@ -93,11 +106,22 @@ class AppModule(private val app: Application, private val intent: Intent) {
         RegistrationInteractor(userRepository, intent)
 
     @Provides
-    fun provideProfileInteractor(
-        userRepository: UserRepository,
+    fun provideProfileUserInteractor(
+        userRepository: UserRepository
+    ) =
+        ProfileUserInteractor(userRepository, intent)
+
+    @Provides
+    fun provideProfileServiceInteractor(
         serviceRepository: ServiceRepository
     ) =
-        ProfileInteractor(userRepository, serviceRepository, intent)
+        ProfileServiceInteractor(serviceRepository)
+
+    @Provides
+    fun provideProfileDialogInteractor(
+        dialogRepository: DialogRepository
+    ) =
+        ProfileDialogInteractor(dialogRepository)
 
     @Provides
     fun provideAddingServiceInteractor(
@@ -144,9 +168,13 @@ class AppModule(private val app: Application, private val intent: Intent) {
         SearchServiceInteractor(userRepository)
 
     @Provides
-    fun provideEditProfileInteractor(): EditProfileInteractor {
-        return EditProfileInteractor(intent)
-    }
+    fun provideEditProfileInteractor() =
+        EditProfileInteractor(
+            intent
+        )
+
+    @Provides
+    fun provideDialogsInteractor() = DialogsInteractor()
 
     @Provides
     fun provideFigureServicePointsApi() = FiguringServicePoints()

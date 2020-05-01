@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.adapters.SubscriptionAdapter;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.SubscriptionAdapter;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.FBListener;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;

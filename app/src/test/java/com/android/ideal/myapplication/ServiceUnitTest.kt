@@ -2,7 +2,7 @@ package com.android.ideal.myapplication
 
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.PhotoRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoRepository
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import io.mockk.mockk
 import junit.framework.TestCase.*

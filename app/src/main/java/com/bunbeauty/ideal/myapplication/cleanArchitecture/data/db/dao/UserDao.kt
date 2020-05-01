@@ -4,7 +4,7 @@ import androidx.room.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 @Dao
-interface UserDao {
+interface UserDao: BaseDao<User> {
 
     @Query("SELECT * FROM user")
     suspend fun get() : List<User>
@@ -23,15 +23,6 @@ interface UserDao {
 
     @Query("SELECT * FROM user WHERE name = :name")
     suspend fun getByName(name: String): List<User>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(user: User)
-
-    @Update
-    suspend fun update(user: User)
-
-    @Delete
-    suspend fun delete(user: User)
 
     @Query("DELETE FROM user")
     suspend fun deleteAll()

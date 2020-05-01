@@ -8,9 +8,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.PhotoRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.ServiceRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.TagRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.TagRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 

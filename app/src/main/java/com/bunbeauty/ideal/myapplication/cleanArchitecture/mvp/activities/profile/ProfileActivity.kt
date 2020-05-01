@@ -11,8 +11,10 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.adapters.ServiceProfileAdapter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ServiceProfileAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileDialogInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
@@ -54,7 +56,13 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var switcherFragment: SwitcherElement
 
     @Inject
-    lateinit var profileInteractor: ProfileInteractor
+    lateinit var profileUserInteractor: ProfileUserInteractor
+
+    @Inject
+    lateinit var profileServiceInteractor: ProfileServiceInteractor
+
+    @Inject
+    lateinit var profileDialogInteractor: ProfileDialogInteractor
 
     @InjectPresenter
     lateinit var profilePresenter: ProfilePresenter
@@ -65,7 +73,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             .appModule(AppModule(application, intent))
             .build()
             .inject(this)
-        return ProfilePresenter(profileInteractor)
+        return ProfilePresenter(
+            profileUserInteractor,
+            profileServiceInteractor,
+            profileDialogInteractor
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,6 +117,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         when (v.id) {
             R.id.addServicesProfileBtn -> goToCreationService()
             R.id.subscriptionsProfileBtn -> goToSubscribers()
+            R.id.dialogsProfileBtn -> profilePresenter.goToDialog()
 /*
             R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
 */
@@ -112,10 +125,10 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     private fun createSwitcher() {
-      /*  switcherFragment = SwitcherElement("Записи", "Услуги")
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.switcherProfileLayout, switcherFragment)
-        transaction.commit()*/
+        /*  switcherFragment = SwitcherElement("Записи", "Услуги")
+          val transaction = supportFragmentManager.beginTransaction()
+          transaction.add(R.id.switcherProfileLayout, switcherFragment)
+          transaction.commit()*/
     }
 
     override fun showProfileInfo(user: User) {
@@ -200,7 +213,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showSwitcher() {
-       // switcherFragment.showSwitcherElement()
+        // switcherFragment.showSwitcherElement()
     }
 
     override fun hideSwitcher() {

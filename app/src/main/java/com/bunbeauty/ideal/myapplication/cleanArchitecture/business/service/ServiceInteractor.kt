@@ -7,9 +7,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.service.Serv
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.PhotoRepository
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoRepository
 import com.google.firebase.auth.FirebaseAuth
 
 class ServiceInteractor(private val photoRepository: PhotoRepository, private val intent: Intent) :

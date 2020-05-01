@@ -6,17 +6,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhonePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.BaseRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.interfaceRepositories.IUserRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
-import java.util.concurrent.TimeUnit
 
 class VerifyPhoneInteractor(
     private val userRepository: IUserRepository,

@@ -4,12 +4,14 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Order (@PrimaryKey
-             var id: String = "",
-             var userId: String = "",
-             var isCanceled: String = "",
-             var messageTime: String = "",
-             var workingTimeId: String = "" ){
+data class Order(
+    @PrimaryKey
+    var id: String = "",
+    var userId: String = "",
+    var isCanceled: String = "",
+    var messageTime: String = "",
+    var workingTimeId: String = ""
+) {
     companion object {
         const val ORDERS = "orders"
         const val USER_ID = "user id"

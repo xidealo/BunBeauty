@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.DialogsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
@@ -30,4 +31,5 @@ interface AppComponent {
     fun inject(serviceActivity: ServiceActivity)
     fun inject(searchServiceFragment: SearchServiceFragment)
     fun inject(editProfileActivity: EditProfileActivity)
+    fun inject(dialogsActivity: DialogsActivity)
 }

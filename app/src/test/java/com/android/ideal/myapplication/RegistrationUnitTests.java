@@ -3,7 +3,7 @@ package com.android.ideal.myapplication;
 import android.content.Intent;
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.repositories.UserRepository;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
