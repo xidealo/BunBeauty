@@ -6,7 +6,6 @@ import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.Button
 import android.widget.LinearLayout
 import com.android.ideal.myapplication.R
@@ -24,8 +23,9 @@ import javax.inject.Inject
 
 class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListener {
 
-    private lateinit var daysLayout: CustomGridLayout
-    private lateinit var timeLayout: CustomGridLayout
+    private lateinit var daysGrid: CustomGridLayout
+    private lateinit var timeGrid: CustomGridLayout
+    private lateinit var timeLayout: LinearLayout
     private val daysButtons = ArrayList<Button>()
     private val timeButtons = ArrayList<Button>()
 
@@ -58,10 +58,11 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
 
     @SuppressLint("ClickableViewAccessibility")
     private fun init() {
-        daysLayout = findViewById(R.id.daysScheduleLayout)
-        daysLayout.setOnTouchListener(this)
+        daysGrid = findViewById(R.id.daysScheduleGrid)
+        daysGrid.setOnTouchListener(this)
+        timeGrid = findViewById(R.id.timeScheduleGrid)
+        timeGrid.setOnTouchListener(this)
         timeLayout = findViewById(R.id.timeScheduleLayout)
-        timeLayout.setOnTouchListener(this)
         timeLayout.visibility = View.GONE
     }
 
@@ -70,11 +71,13 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         for (weekIndex in 0 until WEEK_COUNT) {
             for (weekDayIndex in 0 until WEEK_DAY_COUNT) {
                 val button = Button(this)
+                button.setPadding(button.paddingStart, 0, button.paddingEnd, 0)
                 button.layoutParams = LinearLayout.LayoutParams(
                     getScreenWidth() / WEEK_DAY_COUNT,
-                    getScreenWidth() / WEEK_DAY_COUNT
+                    getScreenWidth() / (WEEK_DAY_COUNT * 1.5).toInt()
                 )
                 clearButtonSelection(button)
+                setButtonEnabled(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex)
                 button.text =
                     schedulePresenter.getDateString(weekIndex * WEEK_DAY_COUNT + weekDayIndex)
                 button.setOnTouchListener(this)
@@ -84,8 +87,12 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         }
 
         for (i in 0 until daysButtons.size) {
-            addViewToContainer(daysButtons[i], daysLayout)
+            addViewToContainer(daysButtons[i], daysGrid)
         }
+    }
+
+    private fun setButtonEnabled(button: Button, dayIndex: Int) {
+        button.isEnabled = schedulePresenter.isPastDay(dayIndex)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -93,9 +100,10 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         for (i in 0 until TIME_RAW_COUNT) {
             for (j in 0 until TIME_COLUMN_COUNT) {
                 val button = Button(this)
+                button.setPadding(button.paddingStart, 0, button.paddingEnd, 0)
                 button.layoutParams = LinearLayout.LayoutParams(
                     getScreenWidth() / TIME_COLUMN_COUNT,
-                    WRAP_CONTENT
+                    getScreenWidth() / (TIME_COLUMN_COUNT * 1.5).toInt()
                 )
                 clearButtonSelection(button)
                 button.text = schedulePresenter.getTineString(i * TIME_COLUMN_COUNT + j)
@@ -106,7 +114,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         }
 
         for (i in 0 until timeButtons.size) {
-            addViewToContainer(timeButtons[i], timeLayout)
+            addViewToContainer(timeButtons[i], timeGrid)
         }
     }
 
@@ -129,44 +137,48 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         when (motionEvent.action) {
             MotionEvent.ACTION_DOWN -> {
                 touchId++
-                clearSelection(view, daysButtons)
+                clearSelection(view)
+                select(view, motionEvent)
+                timeLayout.visibility = View.VISIBLE
             }
             MotionEvent.ACTION_MOVE -> {
                 select(view, motionEvent)
-            }
-            MotionEvent.ACTION_UP -> {
-                timeLayout.visibility = View.VISIBLE
-                clearSelection(view, timeButtons)
             }
         }
 
         return true
     }
 
-    private fun clearSelection(view: View, buttons: List<Button>) {
-        when (view) {
-            daysLayout -> {
-                clearButtonsSelection(buttons)
+    private fun clearSelection(view: View) {
+        when (view.id) {
+            R.id.daysScheduleGrid -> {
+                clearButtonsSelection(daysButtons)
+                clearButtonsSelection(timeButtons)
             }
         }
     }
 
     private fun select(view: View, motionEvent: MotionEvent) {
-        when (view) {
-            daysLayout -> {
+        when (view.id) {
+            R.id.daysScheduleGrid -> {
                 selectButton(motionEvent, daysButtons)
             }
 
-            timeLayout -> {
+            R.id.timeScheduleGrid -> {
                 selectButton(motionEvent, timeButtons)
             }
         }
     }
 
     private fun selectButton(motionEvent: MotionEvent, buttons: List<Button>) {
+
         for (button in buttons) {
             if (!isButtonTouched(button, motionEvent)) {
                 continue
+            }
+
+            if (!button.isEnabled) {
+                return
             }
 
             if (isAlreadyTouched(button)) {
@@ -195,8 +207,6 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
     }
 
     private fun isButtonSelected(button: Button): Boolean {
-        val a = button.getTag(R.id.touchedTag)
-
         return button.getTag(R.id.touchedTag) == TOUCHED
     }
 
@@ -225,7 +235,5 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
 
         private const val TOUCHED = "touched"
         private const val NOT_TOUCHED = "not touched"
-
-
     }
 }

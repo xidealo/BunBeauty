@@ -55,7 +55,7 @@
 
                     <Button
                         android:id="@+id/logOutEditProfileBtn"
-                        style="@style/smallMainButtonOther"
+                        style="@style/smallMainButton"
                         android:text="@string/logOut" />
                 </LinearLayout>
             </LinearLayout>
@@ -125,13 +125,13 @@
 
             <Button
                 android:id="@+id/verifyCodeEditProfileBtn"
-                style="@style/mainButtonOther"
+                style="@style/mainButton"
                 android:text="@string/verifyCode"
                 />
 
             <Button
                 android:id="@+id/resendCodeEditProfileBtn"
-                style="@style/mainButtonOther"
+                style="@style/mainButton"
                 android:text="@string/resendCode"
                 />
         </LinearLayout>
@@ -139,7 +139,7 @@
 
     <Button
         android:id="@+id/editProfileEditProfileBtn"
-        style="@style/mainButtonOther"
+        style="@style/mainButton"
         android:text="@string/saveData"
         app:layout_constraintBottom_toTopOf="@id/bottomPanelLayout"
         app:layout_constraintLeft_toLeftOf="parent"

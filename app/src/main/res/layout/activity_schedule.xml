@@ -19,29 +19,60 @@
             android:orientation="vertical">
 
             <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
-                android:id="@+id/daysScheduleLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:columnCount="7"
-                android:foregroundGravity="center"
-                android:orientation="horizontal" />
+                android:id="@+id/daysScheduleGrid"
+                style="@style/horizontalLayout"
+                android:columnCount="7">
 
-            <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
-                android:layout_marginTop="10dp"
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="ПН" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="ВТ" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="СР" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="ЧТ" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="ПТ" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="СБ" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="ВС" />
+            </com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout>
+
+            <LinearLayout
                 android:id="@+id/timeScheduleLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:columnCount="6"
-                android:foregroundGravity="center"
-                android:orientation="horizontal" />
+                android:orientation="vertical"
+                android:layout_height="wrap_content" >
+                <TextView
+                    style="@style/wideLabel"
+                    android:text="Время"
+                    app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout" />
+
+                <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
+                    android:id="@+id/timeScheduleGrid"
+                    style="@style/horizontalLayout"
+                    android:columnCount="6" />
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/wideLabel"
         android:background="@color/transparentGrey"
         app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout" />
 

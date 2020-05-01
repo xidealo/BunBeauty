@@ -77,7 +77,7 @@
 
         <Button
             android:id="@+id/setPremiumPremiumElementBtn"
-            style="@style/mainButtonOther"
+            style="@style/mainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

@@ -16,4 +16,8 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
     fun getTineString(timeIndex: Int): String {
         return scheduleInteractor.getTineString(timeIndex)
     }
+
+    fun isPastDay(dayIndex: Int): Boolean {
+        return scheduleInteractor.isPastDay(dayIndex)
+    }
 }

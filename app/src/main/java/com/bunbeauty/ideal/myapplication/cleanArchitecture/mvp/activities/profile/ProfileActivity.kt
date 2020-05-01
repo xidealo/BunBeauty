@@ -52,9 +52,10 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var serviceRecyclerView: RecyclerView
     private lateinit var serviceAdapter: ServiceProfileAdapter
 
-    private lateinit var dialogsProfileBtn: Button
     private lateinit var addServicesBtn: Button
     private lateinit var subscriptionsBtn: Button
+    private lateinit var dialogsBtn: Button
+    private lateinit var scheduleBtn: Button
 
     private lateinit var switcherFragment: SwitcherElement
 
@@ -90,7 +91,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         init()
         createBottomPanel(supportFragmentManager)
         createSwitcher()
-        //firstSwitcherAct()
         profilePresenter.initFCM()
         profilePresenter.createProfileScreen()
     }
@@ -101,9 +101,13 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         ratingBar = findViewById(R.id.profileRatingBar)
         progressBar = findViewById(R.id.loadingProfileProgressBar)
         ratingLayout = findViewById(R.id.ratingProfileLayout)
+
         addServicesBtn = findViewById(R.id.addServicesProfileBtn)
         subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn)
-        dialogsProfileBtn = findViewById(R.id.dialogsProfileBtn)
+        dialogsBtn = findViewById(R.id.dialogsProfileBtn)
+        scheduleBtn = findViewById(R.id.scheduleProfileBtn)
+        scheduleBtn.setOnClickListener(this)
+
         mainLayout = findViewById(R.id.mainProfileLayout)
         cityText = findViewById(R.id.cityProfileText)
         phoneText = findViewById(R.id.phoneProfileText)
@@ -114,17 +118,15 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         orderRecyclerView.layoutManager = LinearLayoutManager(this)
         serviceRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        dialogsProfileBtn.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.addServicesProfileBtn -> goToCreationService()
             R.id.subscriptionsProfileBtn -> goToSubscribers()
-            R.id.dialogsProfileBtn -> profilePresenter.goToDialog()
-/*
-            R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
-*/
+            R.id.scheduleProfileBtn -> goToSchedule()
+
+            // R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
         }
     }
 
@@ -170,11 +172,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showDialogs() {
-        dialogsProfileBtn.visibility = View.VISIBLE
+        dialogsBtn.visibility = View.VISIBLE
     }
 
     override fun hideDialogs() {
-        dialogsProfileBtn.visibility = View.GONE
+        dialogsBtn.visibility = View.GONE
     }
 
     override fun showAddService() {
@@ -279,8 +281,14 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         overridePendingTransition(0, 0)
     }
 
-    private fun goToSubscribers() {
+    private fun goToSchedule() {
         val intent = Intent(this, ScheduleActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(0, 0)
+    }
+
+    private fun goToSubscribers() {
+        val intent = Intent(this, Subscribers::class.java)
         intent.putExtra(STATUS, SUBSCRIPTIONS)
         startActivity(intent)
         overridePendingTransition(0, 0)
@@ -296,7 +304,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     companion object {
-        private val TAG = "DBInf"
+        private const val TAG = "DBInf"
         private const val REVIEW_FOR_USER = "review for user"
         private const val SUBSCRIPTIONS = "подписки"
         private const val SERVICE_OWNER_ID = "service owner id"

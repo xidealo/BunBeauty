@@ -60,7 +60,7 @@
 
         <Button
             android:id="@+id/rateReviewBtn"
-            style="@style/smallMainButtonOther"
+            style="@style/smallMainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

@@ -9,6 +9,14 @@
 
     <include layout="@layout/part_top_panel" />
 
+    <Button
+        android:id="@+id/scheduleProfileBtn"
+        style="@style/smallMainButton"
+        android:text="Расписание"
+        app:layout_constraintBottom_toTopOf="@id/bottomPanelLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ProgressBar
         android:id="@+id/loadingProfileProgressBar"
         android:layout_width="match_parent"
@@ -27,14 +35,14 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout">
+        app:layout_constraintTop_toBottomOf="@id/topPanelLayout">
 
         <!-- Верхняя часть-->
         <LinearLayout
             style="@style/block"
-            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/block_text"
             android:orientation="vertical">
 
@@ -118,14 +126,14 @@
 
                 <Button
                     android:id="@+id/subscriptionsProfileBtn"
-                    style="@style/smallMainButtonOther"
+                    style="@style/smallMainButton"
                     android:layout_width="match_parent"
                     android:layout_weight="1"
                     android:text="Подписки" />
 
                 <Button
                     android:id="@+id/dialogsProfileBtn"
-                    style="@style/smallMainButtonOther"
+                    style="@style/smallMainButton"
                     android:layout_width="match_parent"
 
                     android:layout_weight="1"
@@ -156,12 +164,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="2dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="2dp">
 
             <Button
                 android:id="@+id/addServicesProfileBtn"
-                style="@style/smallMainButtonOther"
+                style="@style/smallMainButton"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginEnd="2dp"

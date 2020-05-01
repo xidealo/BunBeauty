@@ -72,7 +72,7 @@
 
     <Button
         android:id="@+id/verifyVerifyPhoneBtn"
-        style="@style/mainButtonLogIn"
+        style="@style/loginButton"
         android:text="Войти"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

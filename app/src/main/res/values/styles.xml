@@ -225,7 +225,7 @@
     </style>
 
     <!-- Style for main buttons -->
-    <style name="mainButton">
+    <style name="baseButton">
         <item name="android:width">260dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
@@ -236,18 +236,18 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="mainButtonLogIn" parent="mainButton">
+    <style name="loginButton" parent="baseButton">
         <item name="android:background">@drawable/main_button_login_background</item>
         <item name="android:layout_marginBottom">50dp</item>
     </style>
 
-    <style name="mainButtonOther" parent="mainButton">
+    <style name="mainButton" parent="baseButton">
         <item name="android:background">@drawable/main_button</item>
         <item name="android:layout_marginBottom">5dp</item>
         <item name="android:layout_marginTop">5dp</item>
     </style>
 
-    <style name="lightBlueButton" parent="mainButton">
+    <style name="lightBlueButton" parent="baseButton">
         <item name="fontFamily">@font/font_awesome_solid</item>
         <item name="android:background">@drawable/tags_button</item>
         <item name="android:layout_marginTop">2dp</item>
@@ -256,7 +256,7 @@
         <item name="android:textColorHint">@color/white</item>
     </style>
 
-    <style name="smallMainButtonOther">
+    <style name="smallMainButton">
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">14sp</item>
@@ -266,6 +266,27 @@
         <item name="android:width">160dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">36dp</item>
+    </style>
+
+    <style name="weekDayText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="horizontalLayout">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="wideLabel">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
     </style>
 
 </resources>

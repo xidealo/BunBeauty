@@ -15,7 +15,6 @@
     <color name="logInBackGround">#0093B7</color>
 
     <color name="grey50">#888888</color>
-    <color name="activeButton">#FFFFFF</color>
     <color name="disabledButton">#7fffffff</color>
     <color name="dayWithTimes">#0091B7</color>
     <color name="hintColor">#808080</color>

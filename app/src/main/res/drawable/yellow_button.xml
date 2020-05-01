@@ -4,20 +4,14 @@
 
     <item android:state_pressed="true" >
         <shape>
-            <solid android:color="@color/activeButton"/>
+            <solid android:color="@color/white"/>
             <stroke
                 android:width="3dp"
                 android:color="@color/transparentGrey" />
             <corners
                 android:radius="8dp" />
-            <padding
-                android:top="5dp"
-                android:bottom="5dp"
-                android:left="5dp"
-                android:right="5dp"/>
         </shape>
     </item>
-
 
     <item>
         <shape>
@@ -27,11 +21,6 @@
                 android:color="@color/transparentGrey" />
             <corners
                 android:radius="8dp" />
-            <padding
-                android:top="5dp"
-                android:bottom="5dp"
-                android:left="5dp"
-                android:right="5dp"/>
         </shape>
     </item>
 </selector>

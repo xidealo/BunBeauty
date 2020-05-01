@@ -4,7 +4,7 @@
 
     <item android:state_pressed="true" >
         <shape>
-            <solid android:color="@color/activeButton"/>
+            <solid android:color="@color/white"/>
             <stroke
                 android:width="3dp"
                 android:color="@color/transparentGrey" />
