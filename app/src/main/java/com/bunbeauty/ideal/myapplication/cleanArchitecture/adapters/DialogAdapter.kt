@@ -11,7 +11,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import java.util.*
 
 class DialogAdapter(
-    private val dialogList: ArrayList<Dialog>
+    private val dialogList: List<Dialog>
 ) : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): DialogViewHolder {

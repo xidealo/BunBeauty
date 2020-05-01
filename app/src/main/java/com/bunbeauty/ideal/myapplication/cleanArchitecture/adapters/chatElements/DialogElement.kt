@@ -39,9 +39,6 @@ class DialogElement(
     }
 
     private fun showAvatar(user: User) {
-        /*val width = context.resources.getDimensionPixelSize(R.dimen.photo_avatar_width)
-        val height = context.resources.getDimensionPixelSize(R.dimen.photo_avatar_height)*/
-
         Picasso.get()
             .load(user.photoLink)
             .resize(65, 65)

@@ -13,12 +13,21 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
     private var dialogs = mutableListOf<Dialog>()
     private lateinit var dialogsPresenterCallback: DialogsPresenterCallback
 
+    override fun getDialogsLink() = dialogs
+
     override fun getDialogs(dialogsPresenterCallback: DialogsPresenterCallback) {
         this.dialogsPresenterCallback = dialogsPresenterCallback
         dialogRepository.getByUserId(User.getMyId(), this)
     }
 
     override fun returnList(objects: List<Dialog>) {
+
+        if(objects.isEmpty()){
+            dialogsPresenterCallback.showEmptyDialogs()
+            dialogsPresenterCallback.hideLoading()
+            return
+        }
+
         dialogs.addAll(objects)
         dialogsPresenterCallback.getUsers(dialogs)
     }
@@ -31,6 +40,6 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
             val dialogWithUserId = dialogs.find { it.user.id == user.id }
             dialogWithUserId!!.user = user
         }
-        dialogsPresenterCallback.showDialogs()
+        dialogsPresenterCallback.showDialogs(dialogs)
     }
 }

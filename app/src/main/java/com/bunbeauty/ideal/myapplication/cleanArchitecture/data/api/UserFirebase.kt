@@ -43,7 +43,6 @@ class UserFirebase {
     }
 
     fun getById(id: String, callback: UserCallback) {
-
         val userRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
             .child(id)

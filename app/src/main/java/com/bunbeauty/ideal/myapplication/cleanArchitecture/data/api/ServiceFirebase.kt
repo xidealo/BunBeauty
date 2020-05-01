@@ -97,7 +97,7 @@ class ServiceFirebase {
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(servicesSnapshot: DataSnapshot) {
                 iServicesCallback.returnServices(returnServiceList(servicesSnapshot, userId))
-                setListener(servicesRef, userId, iServiceCallback)
+                //setListener(servicesRef, userId, iServiceCallback)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -128,7 +128,7 @@ class ServiceFirebase {
 
                 iServicesCallback.returnServices(services)
 
-                setListener(servicesRef, userId, iServiceCallback)
+                //setListener(servicesRef, userId, iServiceCallback)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -137,7 +137,7 @@ class ServiceFirebase {
         })
     }
 
-    private fun setListener(
+    /*private fun setListener(
         servicesRef: DatabaseReference,
         userId: String,
         iServiceCallback: IServiceCallback
@@ -158,7 +158,7 @@ class ServiceFirebase {
 
             override fun onCancelled(error: DatabaseError) {}
         })
-    }
+    }*/
 
     private fun returnService(
         serviceSnapshot: DataSnapshot,

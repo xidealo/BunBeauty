@@ -105,6 +105,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         addServicesBtn = findViewById(R.id.addServicesProfileBtn)
         subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn)
         dialogsBtn = findViewById(R.id.dialogsProfileBtn)
+        dialogsBtn.setOnClickListener(this)
         scheduleBtn = findViewById(R.id.scheduleProfileBtn)
         scheduleBtn.setOnClickListener(this)
 
@@ -117,13 +118,13 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         serviceRecyclerView = findViewById(R.id.servicesProfileRecyclerView)
         orderRecyclerView.layoutManager = LinearLayoutManager(this)
         serviceRecyclerView.layoutManager = LinearLayoutManager(this)
-
     }
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.addServicesProfileBtn -> goToCreationService()
             R.id.subscriptionsProfileBtn -> goToSubscribers()
+            R.id.dialogsProfileBtn -> profilePresenter.goToDialog()
             R.id.scheduleProfileBtn -> goToSchedule()
 
             // R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
@@ -131,10 +132,10 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     private fun createSwitcher() {
-        /*  switcherFragment = SwitcherElement("Записи", "Услуги")
-          val transaction = supportFragmentManager.beginTransaction()
-          transaction.add(R.id.switcherProfileLayout, switcherFragment)
-          transaction.commit()*/
+        switcherFragment = SwitcherElement("Записи", "Услуги")
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.switcherProfileLayout, switcherFragment)
+        transaction.commit()
     }
 
     override fun showProfileInfo(user: User) {
@@ -219,11 +220,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showSwitcher() {
-        // switcherFragment.showSwitcherElement()
+        switcherFragment.showSwitcherElement()
     }
 
     override fun hideSwitcher() {
-        //switcherFragment.hideSwitcherElement()
+        switcherFragment.hideSwitcherElement()
     }
 
     @SuppressLint("SetTextI18n")
@@ -268,7 +269,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun goToDialog(dialog: Dialog) {
         val intent = Intent(this, EditProfileActivity::class.java)
-
     }
 
     override fun subscribe() {

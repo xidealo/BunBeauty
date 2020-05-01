@@ -23,6 +23,8 @@ class DialogsPresenter(
         dialogsDialogInteractor.getDialogs(this)
     }
 
+    fun getDialogsLink() = dialogsDialogInteractor.getDialogsLink()
+
     override fun getUsers(dialogs: List<Dialog>) {
         dialogsUserInteractor.getUsers(dialogs, this)
     }
@@ -31,8 +33,26 @@ class DialogsPresenter(
         dialogsDialogInteractor.fillDialogs(users, this)
     }
 
-    override fun showDialogs() {
+    override fun showDialogs(dialogs: List<Dialog>) {
+        viewState.hideLoading()
+        viewState.hideEmptyDialogs()
+        viewState.showDialogs(dialogs)
+    }
 
+    override fun showLoading() {
+        viewState.showLoading()
+    }
+
+    override fun hideLoading() {
+        viewState.hideLoading()
+    }
+
+    override fun showEmptyDialogs() {
+        viewState.showEmptyDialogs()
+    }
+
+    override fun hideEmptyDialogs() {
+        viewState.hideEmptyDialogs()
     }
 
 }
