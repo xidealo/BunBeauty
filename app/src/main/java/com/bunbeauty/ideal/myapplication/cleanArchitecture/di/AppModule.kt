@@ -15,8 +15,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.Edit
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.EditProfileInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
