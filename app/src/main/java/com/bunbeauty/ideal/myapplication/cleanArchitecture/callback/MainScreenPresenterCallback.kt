@@ -16,7 +16,6 @@ interface MainScreenPresenterCallback {
     fun clearTags()
     fun createTags(category:String,selectedTagsArray:ArrayList<String>)
     fun getServicesByUserId(user: User)
-    fun getServicesByUserIdAndServiceName(userId: String, serviceName: String)
     fun getUsersByCity(city: String)
     fun getUsersSize(): Int
     fun getMaxCost(): Long

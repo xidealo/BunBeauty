@@ -32,16 +32,9 @@ class MainScreenUserInteractor(
     override fun returnUsers(users: List<User>) {
 
         cacheUserList.addAll(users)
-
-        if (searchByServiceName) {
-            for (user in users) {
-                mainScreenPresenterCallback.getServicesByUserIdAndServiceName(user.id, serviceName)
-            }
-        } else {
             for (user in users) {
                 mainScreenPresenterCallback.getServicesByUserId(user)
             }
-        }
     }
 
     override fun getMainScreenDataByUserName(

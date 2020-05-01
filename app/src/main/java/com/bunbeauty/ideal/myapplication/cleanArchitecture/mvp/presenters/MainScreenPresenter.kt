@@ -119,13 +119,6 @@ class MainScreenPresenter(
         mainScreenServiceInteractor.getServicesByUserId(user, this)
     }
 
-    override fun getServicesByUserIdAndServiceName(userId: String, serviceName: String) {
-        mainScreenServiceInteractor.getServicesByUserIdAndServiceName(
-            userId,
-            serviceName
-        )
-    }
-
     fun isSelectedCategory(category: String): Boolean =
         mainScreenDataInteractor.isSelectedCategory(category)
 

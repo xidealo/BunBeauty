@@ -106,37 +106,6 @@ class ServiceFirebase {
         })
     }
 
-    fun getServicesByUserIdAndServiceName(
-        userId: String,
-        serviceName: String,
-        iServicesCallback: IServicesCallback,
-        iServiceCallback: IServiceCallback
-    ) {
-        val servicesRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
-            .child(userId)
-            .child(Service.SERVICES)
-
-        servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(servicesSnapshot: DataSnapshot) {
-                val services = arrayListOf<Service>()
-
-                for (serviceSnapshot in servicesSnapshot.children) {
-                    if (serviceName == serviceSnapshot.child(Service.NAME).value as? String ?: "")
-                        services.add(getServiceFromSnapshot(serviceSnapshot, userId))
-                }
-
-                iServicesCallback.returnServices(services)
-
-                //setListener(servicesRef, userId, iServiceCallback)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Some error
-            }
-        })
-    }
-
     /*private fun setListener(
         servicesRef: DatabaseReference,
         userId: String,

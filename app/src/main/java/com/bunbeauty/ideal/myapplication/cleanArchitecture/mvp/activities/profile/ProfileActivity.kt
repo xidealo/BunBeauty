@@ -71,6 +71,9 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     @InjectPresenter
     lateinit var profilePresenter: ProfilePresenter
 
+
+    private var arr = arrayListOf(2,3,5,2,54)
+
     @ProvidePresenter
     internal fun provideProfilePresenter(): ProfilePresenter {
         DaggerAppComponent.builder()
@@ -93,6 +96,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         createSwitcher()
         profilePresenter.initFCM()
         profilePresenter.createProfileScreen()
+
     }
 
     private fun init() {

@@ -7,6 +7,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
@@ -32,10 +33,10 @@ class CreationServiceInteractor(
         if (isNameCorrect(service.name) && isAddressCorrect(service.address)
             && isCategoryCorrect(service.category) && isDescriptionCorrect(service.description)
         ) {
-            service.id = serviceRepository.getIdForNew(getUserId())
+            service.id = serviceRepository.getIdForNew(User.getMyId())
             serviceRepository.insert(service, this)
             addTags(tags, service)
-            addImages(fpathOfImages, service)
+            //addImages(fpathOfImages, service)
         }
     }
 
@@ -182,7 +183,5 @@ class CreationServiceInteractor(
     override fun getIsAddressInputCorrect(address: String): Boolean = true
 
     override fun getIsAddressLengthThirty(address: String): Boolean = address.length < 30
-
-    override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
 }

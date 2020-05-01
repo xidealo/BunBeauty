@@ -11,8 +11,8 @@ class TagRepository(private val tagDao: TagDao,
     override fun insert(tag: Tag) {
         launch {
             tagDao.insert(tag)
+            tagFirebase.insert(tag)
         }
-        tagFirebase.insert(tag)
     }
 
     override fun delete(tag: Tag) {

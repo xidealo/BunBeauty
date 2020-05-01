@@ -17,10 +17,6 @@ class MainScreenServiceInteractor(private val serviceRepository: ServiceReposito
     private var currentCountOfUsers = 0
     private lateinit var mainScreenPresenterCallback: MainScreenPresenterCallback
 
-    override fun getServicesByUserIdAndServiceName(userId: String, serviceName: String) {
-        serviceRepository.getServicesByUserIdAndServiceName(userId, serviceName, this, true)
-    }
-
     override fun getServicesByUserId(
         user: User,
         mainScreenPresenterCallback: MainScreenPresenterCallback
