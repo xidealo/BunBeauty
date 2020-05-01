@@ -20,8 +20,8 @@ class ServiceRepository(
 
     override fun insert(service: Service, insertServiceCallback: InsertServiceCallback) {
         launch {
-            //serviceDao.insert(service)
             serviceFirebase.insert(service)
+            //serviceDao.insert(service)
             withContext(Dispatchers.Main) {
                 insertServiceCallback.returnCreatedCallback(service)
             }

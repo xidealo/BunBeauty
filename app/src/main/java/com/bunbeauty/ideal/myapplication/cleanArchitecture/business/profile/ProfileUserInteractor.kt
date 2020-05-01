@@ -57,7 +57,7 @@ class ProfileUserInteractor(
         }
     }
 
-    private fun isFirstEnter() = (intent.hasExtra(User.USER))
+    //private fun fromRegistration() = (intent.hasExtra())
 
     private fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         if (user.id == User.getMyId()) {
@@ -69,14 +69,14 @@ class ProfileUserInteractor(
     }
 
     override fun initFCM() {
-        if (isFirstEnter()) {
-            val token = FirebaseInstanceId.getInstance().token
+       // if (fromRegistartion()) {
+      /*      val token = FirebaseInstanceId.getInstance().token
             val reference = FirebaseDatabase.getInstance().reference
             reference.child(User.USERS)
                 .child(User.getMyId())
                 .child(TOKEN)
-                .setValue(token)
-        }
+                .setValue(token)*/
+        //}
     }
 
     override fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback) {

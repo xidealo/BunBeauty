@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editi
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import com.android.ideal.myapplication.R
@@ -22,8 +21,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditPr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
+
 
 class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, View.OnClickListener,
     EditProfileView, IAdapterSpinner {
@@ -130,15 +131,17 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         setSpinnerSelection(citySpinnerEditProfileSpinner, user.city)
     }
 
-    override fun setNameEditProfileInputError(error: String){
-        nameEditProfileInput.error =error
+    override fun setNameEditProfileInputError(error: String) {
+        nameEditProfileInput.error = error
         nameEditProfileInput.requestFocus()
     }
-    override fun setSurnameEditProfileInputError(error: String){
-        surnameEditProfileInput.error =error
+
+    override fun setSurnameEditProfileInputError(error: String) {
+        surnameEditProfileInput.error = error
         surnameEditProfileInput.requestFocus()
     }
-    override fun setPhoneEditProfileInputError(error: String){
+
+    override fun setPhoneEditProfileInputError(error: String) {
         phoneEditProfileInput.error = error
         phoneEditProfileInput.requestFocus()
     }
@@ -188,10 +191,19 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     }
 
     fun logOut() {
+
+        val tokenRef = FirebaseDatabase
+            .getInstance()
+            .getReference(User.USERS)
+            .child(User.getMyId())
+            .child(User.TOKEN)
+        tokenRef.setValue("-")
+
         val intent = Intent(this, AuthorizationActivity::class.java)
         startActivity(intent)
         overridePendingTransition(0, 0)
         FirebaseAuth.getInstance().signOut()
+
         finish()
     }
 
@@ -245,4 +257,5 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
          private const val PHOTO_LINK = "photo link"
          private const val TOKEN = "token"
      }*/
+
 }

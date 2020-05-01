@@ -16,8 +16,7 @@ class ServiceFirebase {
     private val TAG = "data_layer"
 
     fun insert(service: Service) {
-        val database = FirebaseDatabase.getInstance()
-        val serviceRef = database
+        val serviceRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
             .child(service.userId)
             .child(Service.SERVICES)
@@ -35,7 +34,7 @@ class ServiceFirebase {
         items[Service.COUNT_OF_RATES] = service.countOfRates
         serviceRef.updateChildren(items)
 
-        Log.d(TAG, "Service adding completed")
+        //Log.d(TAG, "Service adding completed")
     }
 
     fun delete(service: Service) {

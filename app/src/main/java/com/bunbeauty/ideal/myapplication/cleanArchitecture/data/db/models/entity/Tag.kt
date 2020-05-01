@@ -14,10 +14,11 @@ import java.io.Serializable
     )]
 )
 data class Tag(
-        @PrimaryKey
-        var id: String = "",
-        var tag: String = "",
-        var serviceId: String = ""):Serializable {
+    @PrimaryKey
+    var id: String = "",
+    var tag: String = "",
+    var serviceId: String = ""
+) : Serializable {
 
     lateinit var userId: String
 

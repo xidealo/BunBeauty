@@ -44,5 +44,6 @@ data class User(
         const val STATUS = "status"
         const val MASTER = "master"
         const val CLIENT = "client"
+        const val TOKEN = "token"
     }
 }

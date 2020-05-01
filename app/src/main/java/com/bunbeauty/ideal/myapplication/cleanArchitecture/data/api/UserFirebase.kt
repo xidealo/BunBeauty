@@ -13,18 +13,6 @@ class UserFirebase {
 
     private val TAG = "data_layer"
 
-    fun delete(user: User) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    fun update(user: User) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    fun get(): List<User> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     fun insert(user: User) {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference(User.USERS).child(user.id)
@@ -41,6 +29,20 @@ class UserFirebase {
         items[User.COUNT_OF_SUBSCRIPTIONS] = user.subscriptionsCount
         myRef.updateChildren(items)
     }
+
+    fun delete(user: User) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun update(user: User) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun get(): List<User> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
 
     fun getById(id: String, callback: UserCallback) {
         val userRef = FirebaseDatabase.getInstance()
