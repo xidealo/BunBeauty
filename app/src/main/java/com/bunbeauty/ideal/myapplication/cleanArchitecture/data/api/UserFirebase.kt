@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.database.DataSnapshot
@@ -42,7 +42,7 @@ class UserFirebase {
         myRef.updateChildren(items)
     }
 
-    fun getById(id: String, callback: IUserCallback) {
+    fun getById(id: String, callback: UserCallback) {
 
         val userRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
@@ -60,7 +60,7 @@ class UserFirebase {
         })
     }
 
-    fun getByPhoneNumber(phoneNumber: String, callback: IUserCallback) {
+    fun getByPhoneNumber(phoneNumber: String, callback: UserCallback) {
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
             .orderByChild(User.PHONE)
             .equalTo(phoneNumber)

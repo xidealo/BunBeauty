@@ -10,7 +10,8 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsDialogInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
@@ -31,7 +32,10 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     private lateinit var noDialogsText: TextView
 
     @Inject
-    lateinit var dialogsInteractor: DialogsInteractor
+    lateinit var dialogsDialogInteractor: DialogsDialogInteractor
+
+    @Inject
+    lateinit var dialogsUserInteractor: DialogsUserInteractor
 
     @InjectPresenter
     lateinit var dialogsPresenter: DialogsPresenter
@@ -42,7 +46,7 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
             .appModule(AppModule(application, intent))
             .build()
             .inject(this)
-        return DialogsPresenter(dialogsInteractor)
+        return DialogsPresenter(dialogsDialogInteractor, dialogsUserInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +54,7 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
         setContentView(R.layout.dialogs)
         createPanels()
         init()
+        dialogsPresenter.getDialogs()
     }
 
     private fun init() {

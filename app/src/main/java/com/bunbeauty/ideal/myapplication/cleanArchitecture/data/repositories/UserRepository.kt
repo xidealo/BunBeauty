@@ -13,9 +13,9 @@ class UserRepository(
     private val userDao: UserDao,
     private val userFirebase: UserFirebase
 ) : BaseRepository(),
-    IUserRepository, IUserCallback, UsersCallback {
+    IUserRepository, UserCallback, UsersCallback {
 
-    lateinit var userSubscriber: IUserCallback
+    lateinit var userSubscriber: UserCallback
     lateinit var usersSubscriber: UsersCallback
 
     override fun insert(user: User, insertUsersCallback: InsertUsersCallback) {
@@ -58,7 +58,7 @@ class UserRepository(
         }
     }
 
-    override fun getById(id: String, userSubscriber: IUserCallback, isFirstEnter: Boolean) {
+    override fun getById(id: String, userSubscriber: UserCallback, isFirstEnter: Boolean) {
         this.userSubscriber = userSubscriber
 
         if (isFirstEnter) {
@@ -75,7 +75,7 @@ class UserRepository(
 
     override fun getByPhoneNumber(
         phoneNumber: String,
-        userSubscriber: IUserCallback,
+        userSubscriber: UserCallback,
         isFirstEnter: Boolean
     ) {
         this.userSubscriber = userSubscriber

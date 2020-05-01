@@ -1,0 +1,36 @@
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat
+
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.iChat.IDialogsDialogInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.chat.DialogsPresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DialogsCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.DialogRepository
+
+class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
+    IDialogsDialogInteractor, DialogsCallback {
+
+    private var dialogs = mutableListOf<Dialog>()
+    private lateinit var dialogsPresenterCallback: DialogsPresenterCallback
+
+    override fun getDialogs(dialogsPresenterCallback: DialogsPresenterCallback) {
+        this.dialogsPresenterCallback = dialogsPresenterCallback
+        dialogRepository.getByUserId(User.getMyId(), this)
+    }
+
+    override fun returnList(objects: List<Dialog>) {
+        dialogs.addAll(objects)
+        dialogsPresenterCallback.getUsers(dialogs)
+    }
+
+    override fun fillDialogs(
+        users: List<User>,
+        dialogsPresenterCallback: DialogsPresenterCallback
+    ) {
+        for (user in users) {
+            val dialogWithUserId = dialogs.find { it.user.id == user.id }
+            dialogWithUserId!!.user = user
+        }
+        dialogsPresenterCallback.showDialogs()
+    }
+}
