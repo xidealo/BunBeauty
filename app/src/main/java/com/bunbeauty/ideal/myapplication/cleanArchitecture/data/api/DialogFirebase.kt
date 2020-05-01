@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DialogsCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -36,7 +35,7 @@ class DialogFirebase {
 
         dialogsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dialogsSnapshot: DataSnapshot) {
-
+                dialogsCallback.returnList(returnDialogList(dialogsSnapshot, userId))
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -45,8 +44,31 @@ class DialogFirebase {
         })
     }
 
+    private fun returnDialogList(
+        dialogsSnapshot: DataSnapshot,
+        userId: String
+    ): ArrayList<Dialog> {
+        val dialogs = arrayListOf<Dialog>()
+        for (dialogSnapshot in dialogsSnapshot.children) {
+            dialogs.add(getDialogFromSnapshot(dialogSnapshot, userId))
+        }
+        return dialogs
+    }
+
+    private fun getDialogFromSnapshot(dialogSnapshot: DataSnapshot, userId: String): Dialog {
+
+        val dialog = Dialog()
+        dialog.id = dialogSnapshot.key!!
+        dialog.ownerId = userId
+        dialog.isChecked = dialogSnapshot.child(Dialog.IS_CHECKED).value as? Boolean ?: true
+        dialog.user.id = dialogSnapshot.child(Dialog.COMPANION_ID).value as? String ?: ""
+        dialog.lastMessage.id = dialogSnapshot.child(Dialog.MESSAGE_ID).value as? String ?: ""
+
+        return dialog
+    }
+
     fun getIdForNew(userId: String) = FirebaseDatabase.getInstance().getReference(User.USERS)
-            .child(userId)
-            .child(Dialog.DIALOGS).push().key!!
+        .child(userId)
+        .child(Dialog.DIALOGS).push().key!!
 
 }

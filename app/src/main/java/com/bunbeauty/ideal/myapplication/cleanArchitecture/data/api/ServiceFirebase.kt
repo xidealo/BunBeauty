@@ -96,7 +96,7 @@ class ServiceFirebase {
 
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(servicesSnapshot: DataSnapshot) {
-                returnServiceList(servicesSnapshot, userId, iServicesCallback)
+                iServicesCallback.returnServices(returnServiceList(servicesSnapshot, userId))
                 setListener(servicesRef, userId, iServiceCallback)
             }
 
@@ -172,14 +172,13 @@ class ServiceFirebase {
 
     private fun returnServiceList(
         servicesSnapshot: DataSnapshot,
-        userId: String,
-        iServicesCallback: IServicesCallback
-    ) {
+        userId: String
+    ): ArrayList<Service> {
         val services = arrayListOf<Service>()
         for (serviceSnapshot in servicesSnapshot.children) {
             services.add(getServiceFromSnapshot(serviceSnapshot, userId))
         }
-        iServicesCallback.returnServices(services)
+        return services
     }
 
     fun getIdForNew(userId: String): String {

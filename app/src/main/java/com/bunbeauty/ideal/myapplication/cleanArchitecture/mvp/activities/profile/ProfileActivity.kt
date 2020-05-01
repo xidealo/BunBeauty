@@ -15,6 +15,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ServiceProfi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
@@ -43,9 +44,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var withoutRatingText: TextView
     private lateinit var subscribersText: TextView
     private lateinit var ratingBar: RatingBar
-    private lateinit var addServicesBtn: Button
-    private lateinit var subscriptionsBtn: Button
-    private lateinit var dialogsBtn: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var ratingLayout: LinearLayout
     private lateinit var mainLayout: LinearLayout
@@ -53,6 +51,10 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var orderRecyclerView: RecyclerView
     private lateinit var serviceRecyclerView: RecyclerView
     private lateinit var serviceAdapter: ServiceProfileAdapter
+
+    private lateinit var dialogsProfileBtn: Button
+    private lateinit var addServicesBtn: Button
+    private lateinit var subscriptionsBtn: Button
 
     private lateinit var switcherFragment: SwitcherElement
 
@@ -101,7 +103,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         ratingLayout = findViewById(R.id.ratingProfileLayout)
         addServicesBtn = findViewById(R.id.addServicesProfileBtn)
         subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn)
-        dialogsBtn = findViewById(R.id.dialogsProfileBtn)
+        dialogsProfileBtn = findViewById(R.id.dialogsProfileBtn)
         mainLayout = findViewById(R.id.mainProfileLayout)
         cityText = findViewById(R.id.cityProfileText)
         phoneText = findViewById(R.id.phoneProfileText)
@@ -112,6 +114,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         orderRecyclerView.layoutManager = LinearLayoutManager(this)
         serviceRecyclerView.layoutManager = LinearLayoutManager(this)
 
+        dialogsProfileBtn.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
@@ -167,11 +170,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showDialogs() {
-        dialogsBtn.visibility = View.VISIBLE
+        dialogsProfileBtn.visibility = View.VISIBLE
     }
 
     override fun hideDialogs() {
-        dialogsBtn.visibility = View.GONE
+        dialogsProfileBtn.visibility = View.GONE
     }
 
     override fun showAddService() {
@@ -229,70 +232,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         }
     }
 
-    //добавляет вновь добавленные записи (обновление ordersList)
-    /* private fun updateOrdersList(userId: String) {
-         // количство записей отображаемых на данный момент(старых)
-         var visibleCount = orderList.size
-
-         // получаем id сервиса, имя сервиса, дату и время всех записей
-         // Из 3-х таблиц: сервисы, рабочие дни, рабочие время
-         // Условие: связка таблиц по id сервиса и id рабочего дня; уточняем пользователя по id
-         val sqlQuery = ("SELECT "
-                 + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + ", "
-                 + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_NAME_SERVICES + ", "
-                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_DATE_WORKING_DAYS + ", "
-                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_TIME_WORKING_TIME
-                 + " FROM "
-                 + DBHelper.TABLE_CONTACTS_SERVICES + ", "
-                 + DBHelper.TABLE_WORKING_DAYS + ", "
-                 + DBHelper.TABLE_WORKING_TIME + ", "
-                 + DBHelper.TABLE_ORDERS
-                 + " WHERE "
-                 + DBHelper.TABLE_CONTACTS_SERVICES + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_SERVICE_ID_WORKING_DAYS
-                 + " AND "
-                 + DBHelper.TABLE_WORKING_TIME + "." + DBHelper.KEY_ID
-                 + " = " + DBHelper.KEY_WORKING_TIME_ID_ORDERS
-                 + " AND "
-                 + DBHelper.KEY_IS_CANCELED_ORDERS + " = 'false'"
-                 + " AND "
-                 + DBHelper.TABLE_WORKING_DAYS + "." + DBHelper.KEY_ID + " = " + DBHelper.KEY_WORKING_DAYS_ID_WORKING_TIME
-                 + " AND "
-                 + DBHelper.TABLE_ORDERS + "." + DBHelper.KEY_USER_ID + " = ? "
-                 + " AND "
-                 + " STRFTIME('%s', " + DBHelper.KEY_DATE_WORKING_DAYS
-                 + ")>=STRFTIME('%s', DATE('now'))")
-
-         val cursor = database.rawQuery(sqlQuery, arrayOf(userId))
-
-         val cursorCount = cursor.count
-
-         //если есть новые записи
-         if (cursorCount > visibleCount) {
-             //Идём с конца
-             if (cursor.moveToLast()) {
-                 val indexServiceId = cursor.getColumnIndex(DBHelper.KEY_ID)
-                 val indexServiceName = cursor.getColumnIndex(DBHelper.KEY_NAME_SERVICES)
-                 val indexDate = cursor.getColumnIndex(DBHelper.KEY_DATE_WORKING_DAYS)
-                 val indexTime = cursor.getColumnIndex(DBHelper.KEY_TIME_WORKING_TIME)
-
-                 do {
-                     val order = Order()
-                     *//*order.id = cursor.getString(indexServiceId)
-                    order.orderName = cursor.getString(indexServiceName)
-                    order.orderDate = cursor.getString(indexDate)
-                    order.orderTime = cursor.getString(indexTime)*//*
-                    orderList.add(order)
-                    visibleCount++
-                    //пока в курсоре есть строки и есть новые записи
-                } while (cursor.moveToPrevious() && cursorCount > visibleCount)
-            }
-        }
-
-        val orderAdapter = OrderAdapter(orderList.size, orderList)
-        orderRecyclerView.adapter = orderAdapter
-        cursor.close()
-    }*/
-
     override fun showProgress() {
         progressBar.visibility = View.VISIBLE
         mainLayout.visibility = View.INVISIBLE
@@ -323,6 +262,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         val intent = Intent(this, EditProfileActivity::class.java)
         intent.putExtra(User.USER, user)
         this.startActivity(intent)
+    }
+
+    override fun goToDialog(dialog: Dialog) {
+        val intent = Intent(this, EditProfileActivity::class.java)
+
     }
 
     override fun subscribe() {

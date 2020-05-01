@@ -22,7 +22,7 @@ class DialogRepository(
     override fun insert(dialog: Dialog, insertDialogCallback: InsertDialogCallback) {
         launch {
             dialog.id = dialogFirebase.getIdForNew(dialog.ownerId)
-            dialogDao.insert(dialog)
+            //dialogDao.insert(dialog)
             dialogFirebase.insert(dialog)
             withContext(Dispatchers.Main) {
                 insertDialogCallback.returnCreatedCallback(dialog)
@@ -44,7 +44,9 @@ class DialogRepository(
 
     override fun getByUserId(userId: String, dialogsCallback: DialogsCallback) {
         this.dialogsCallback = dialogsCallback
-        dialogFirebase.getDialogsByUserId(userId, this)
+        launch {
+            dialogFirebase.getDialogsByUserId(userId, dialogsCallback)
+        }
     }
 
     override fun returnList(objects: List<Dialog>) {

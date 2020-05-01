@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 
 import com.arellomobile.mvp.MvpView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
@@ -28,5 +29,6 @@ interface ProfileView: MvpView {
     fun showProgress()
     fun hideProgress()
     fun goToEditProfile(user: User)
+    fun goToDialog(dialog: Dialog)
     fun subscribe()
 }

@@ -73,7 +73,7 @@ class ProfilePresenter(
     }
 
     override fun goToDialog(dialog: Dialog) {
-
+        viewState.goToDialog(dialog)
     }
 
     override fun subscribe() {
