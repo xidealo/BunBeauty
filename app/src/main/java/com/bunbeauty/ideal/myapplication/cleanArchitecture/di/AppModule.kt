@@ -15,6 +15,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.Edit
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
@@ -30,6 +33,7 @@ import dagger.Provides
 class AppModule(private val app: Application, private val intent: Intent) {
 
     // FIREBASE API
+
     @Provides
     fun provideUserFirebaseApi() = UserFirebase()
 
@@ -49,6 +53,7 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideDialogFirebase() = DialogFirebase()
 
     // DAO
+
     @Provides
     fun provideUserDao() = LocalDatabase.getDatabase(app).getUserDao()
 
@@ -175,6 +180,11 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     @Provides
     fun provideDialogsInteractor() = DialogsInteractor()
+
+    @Provides
+    fun provideScheduleInteractor() = ScheduleInteractor()
+
+    //APIs
 
     @Provides
     fun provideFigureServicePointsApi() = FiguringServicePoints()

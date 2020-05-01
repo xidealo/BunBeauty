@@ -8,7 +8,7 @@
                 android:color="@color/panelColor"/>
             <stroke
                 android:width="3dp"
-                android:color="@color/grey05" />
+                android:color="@color/transparentGrey" />
             <corners
                 android:radius="5dp" />
             <padding

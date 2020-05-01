@@ -4,10 +4,10 @@
 
     <item>
         <shape>
-            <solid android:color="@color/selectedButton"/>
+            <solid android:color="@color/yellow"/>
             <stroke
                 android:width="3dp"
-                android:color="@color/grey05" />
+                android:color="@color/transparentGrey" />
             <corners
                 android:radius="4dp" />
         </shape>

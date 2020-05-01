@@ -164,7 +164,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                         removedHours.add(btnText);
                         btn.setTag(R.string.selectedId, false);
                     } else {
-                        btn.setBackgroundResource(R.drawable.pressed_button);
+                        btn.setBackgroundResource(R.drawable.yellow_button);
                         workingHours.add(btnText);
                         removedHours.remove(btnText);
                         btn.setTag(R.string.selectedId, true);
@@ -185,7 +185,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                             removeSelection(selectedTime);
                             workingHours.clear();
                         }
-                        btn.setBackgroundResource(R.drawable.pressed_button);
+                        btn.setBackgroundResource(R.drawable.yellow_button);
                         workingHours.add(btnText);
                         btn.setTag(R.string.selectedId, true);
                     }
@@ -270,7 +270,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
             for (int j = 0; j < COLUMNS_COUNT; j++) {
                 String time = (String) timeBtns[i][j].getText();
                 if (removedHours.contains(time)) {
-                    timeBtns[i][j].setBackgroundResource(R.drawable.day_button);
+                    timeBtns[i][j].setBackgroundResource(R.drawable.white_button);
                     timeBtns[i][j].setTag(R.string.selectedId, false);
                 }
             }
@@ -286,7 +286,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                     time = "0" + time;
                 }
                 if (workingHours.contains(time)) {
-                    timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
+                    timeBtns[i][j].setBackgroundResource(R.drawable.yellow_button);
                     timeBtns[i][j].setTag(R.string.selectedId, true);
                 }
             }
@@ -319,7 +319,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 if (!currentTimeId.equals("0")) {
                     Log.d(TAG, "isBlockedTime(currentTimeId): " + isBlockedTime(currentTimeId));
                     if (!isBlockedTime(currentTimeId)) {
-                        timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
+                        timeBtns[i][j].setBackgroundResource(R.drawable.yellow_button);
                         timeBtns[i][j].setTag(R.string.selectedId, true);
 
                         // Проверка записан ли кто-то на это время
@@ -351,7 +351,7 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                     // Проверка на то, что я записан на данное время
                     if (myOrderTime.equals(time)) {
                         timeBtns[i][j].setClickable(false);
-                        timeBtns[i][j].setBackgroundResource(R.drawable.pressed_button);
+                        timeBtns[i][j].setBackgroundResource(R.drawable.yellow_button);
                         timeBtns[i][j].setTag(R.string.selectedId, true);
                     } else {
                         timeBtns[i][j].setBackgroundResource(R.drawable.disabled_button);

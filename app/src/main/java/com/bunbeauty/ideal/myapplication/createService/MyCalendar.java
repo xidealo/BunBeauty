@@ -104,7 +104,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                         for (int j = 0; j < DAYS_COUNT; j++) {
                             if (Boolean.valueOf(dayBtns[i][j].getTag(R.string.selectedId).toString())) {
                                 dayBtns[i][j].setTag(R.string.selectedId, false);
-                                dayBtns[i][j].setBackgroundResource(R.drawable.day_button);
+                                dayBtns[i][j].setBackgroundResource(R.drawable.white_button);
                                 break;
                             }
                         }
@@ -114,7 +114,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 } else {
                     // Была выбрана - снимаем выделение
                     btn.setTag(R.string.selectedId, false);
-                    btn.setBackgroundResource(R.drawable.day_button);
+                    btn.setBackgroundResource(R.drawable.white_button);
                 }
                 break;
         }
@@ -182,7 +182,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
                 //положение, бэкграунд, размеры
                 dayBtns[i][j].setX(j * (btnWidth + margin) + margin);
                 dayBtns[i][j].setY((i + 1) * (btnHeight + margin) + margin);
-                dayBtns[i][j].setBackgroundResource(R.drawable.day_button);
+                dayBtns[i][j].setBackgroundResource(R.drawable.white_button);
                 dayBtns[i][j].setLayoutParams(new ViewGroup.LayoutParams(btnWidth, btnHeight));
 
                 //тэги
