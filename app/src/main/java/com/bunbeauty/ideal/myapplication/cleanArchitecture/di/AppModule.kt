@@ -172,9 +172,9 @@ class AppModule(private val app: Application, private val intent: Intent) {
         SearchServiceInteractor(userRepository)
 
     @Provides
-    fun provideEditProfileInteractor() =
+    fun provideEditProfileInteractor(userRepository: UserRepository) =
         EditProfileInteractor(
-            intent
+            intent, userRepository
         )
 
     @Provides

@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editi
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.android.ideal.myapplication.R
@@ -104,14 +105,42 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         }
     }
 
+    override fun disableEditProfileEditButton() {
+        editProfileEditProfileBtn.isEnabled = false
+    }
+
+    override fun enableEditProfileEditButton() {
+        editProfileEditProfileBtn.isEnabled = true
+    }
+
+    override fun showNoSelectedCity() {
+        Toast.makeText(this, "Выберите город", Toast.LENGTH_LONG).show()
+    }
+
+    override fun showPhoneError(error: String) {
+        phoneEditProfileInput.error = error
+        phoneEditProfileInput.requestFocus()
+    }
+
     override fun showEditProfile(user: User) {
         nameEditProfileInput.text = user.name
         surnameEditProfileInput.text = user.surname
         phoneEditProfileInput.text = user.phone
         showAvatar(user.photoLink)
         setSpinnerSelection(citySpinnerEditProfileSpinner, user.city)
+    }
 
-
+    override fun setNameEditProfileInputError(error: String){
+        nameEditProfileInput.error =error
+        nameEditProfileInput.requestFocus()
+    }
+    override fun setSurnameEditProfileInputError(error: String){
+        surnameEditProfileInput.error =error
+        surnameEditProfileInput.requestFocus()
+    }
+    override fun setPhoneEditProfileInputError(error: String){
+        phoneEditProfileInput.error = error
+        phoneEditProfileInput.requestFocus()
     }
 
     override fun showAvatar(photoLink: String) {
@@ -133,7 +162,6 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         codeEditProfileInput.visibility = View.GONE
     }
 
-
     override fun showVerifyCode() {
         verifyCodeEditProfileBtn.visibility = View.VISIBLE
     }
@@ -141,7 +169,6 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     override fun hideVerifyCode() {
         verifyCodeEditProfileBtn.visibility = View.GONE
     }
-
 
     override fun showResentCode() {
         resendCodeEditProfileBtn.visibility = View.VISIBLE
@@ -218,6 +245,4 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
          private const val PHOTO_LINK = "photo link"
          private const val TOKEN = "token"
      }*/
-
-
 }
