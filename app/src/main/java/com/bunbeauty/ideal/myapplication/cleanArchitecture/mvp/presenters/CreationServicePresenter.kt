@@ -5,6 +5,7 @@ import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationService.CreationServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import java.util.*
@@ -32,7 +33,7 @@ class CreationServicePresenter(private val creationServiceInteractor: CreationSe
         service.countOfRates = 0
         service.premiumDate = Service.DEFAULT_PREMIUM_DATE
         service.creationDate = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
-        service.userId = creationServiceInteractor.getUserId()
+        service.userId = User.getMyId()
         creationServiceInteractor.addService(service, tags, fpathOfImages, this)
     }
 

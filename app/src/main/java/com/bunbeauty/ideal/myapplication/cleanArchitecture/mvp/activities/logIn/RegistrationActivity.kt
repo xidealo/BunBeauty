@@ -90,11 +90,11 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener,
         Toast.makeText(this, "Пользователь зарегестирован", Toast.LENGTH_LONG).show()
     }
 
-    override fun disableRegistrationButtnon() {
+    override fun disableRegistrationButton() {
         registrationBtn.isEnabled = false
     }
 
-    override fun enableRegistrationButtnon() {
+    override fun enableRegistrationButton() {
         registrationBtn.isEnabled = true
     }
 

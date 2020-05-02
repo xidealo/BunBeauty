@@ -21,7 +21,8 @@ import com.squareup.picasso.Picasso
 
 class FoundServiceElement(
     private val service: Service,
-    private val user: User, private val view: View,
+    private val user: User,
+    private val view: View,
     private val context: Context
 ) : View.OnClickListener {
 

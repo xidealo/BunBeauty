@@ -4,8 +4,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationServ
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
 interface ICreationServiceInteractor {
-    fun getUserId(): String
-
     fun getIsNameInputCorrect(name: String): Boolean
     fun getIsNameLengthLessTwenty(name: String): Boolean
     fun getIsDescriptionInputCorrect(description: String): Boolean

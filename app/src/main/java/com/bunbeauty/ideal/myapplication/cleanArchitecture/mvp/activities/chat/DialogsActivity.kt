@@ -1,16 +1,18 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat
 
 import android.os.Bundle
+import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.DialogAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsDialogInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
@@ -19,19 +21,20 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.DialogsPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.DialogsView
-import java.util.*
 import javax.inject.Inject
 
 class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, DialogsView {
 
-    private lateinit var progressBar: ProgressBar
-    private lateinit var manager: FragmentManager
-    private lateinit var dialogList: ArrayList<Dialog>
+    private lateinit var loadingProgressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
     private lateinit var noDialogsText: TextView
+    private lateinit var dialogAdapter: DialogAdapter
 
     @Inject
-    lateinit var dialogsInteractor: DialogsInteractor
+    lateinit var dialogsDialogInteractor: DialogsDialogInteractor
+
+    @Inject
+    lateinit var dialogsUserInteractor: DialogsUserInteractor
 
     @InjectPresenter
     lateinit var dialogsPresenter: DialogsPresenter
@@ -42,7 +45,7 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
             .appModule(AppModule(application, intent))
             .build()
             .inject(this)
-        return DialogsPresenter(dialogsInteractor)
+        return DialogsPresenter(dialogsDialogInteractor, dialogsUserInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,21 +53,42 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
         setContentView(R.layout.dialogs)
         createPanels()
         init()
+        hideEmptyDialogs()
+        dialogsPresenter.getDialogs()
     }
 
     private fun init() {
         recyclerView = findViewById(R.id.resultsDialogsRecycleView)
-        progressBar = findViewById(R.id.progressBarDialogs)
+        loadingProgressBar = findViewById(R.id.progressBarDialogs)
         noDialogsText = findViewById(R.id.noDialogsDialogsText)
-        dialogList = ArrayList()
-        val layoutManager = LinearLayoutManager(this)
-        /*recyclerView.setLayoutManager(layoutManager)*/
-        manager = supportFragmentManager
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        dialogAdapter = DialogAdapter(dialogsPresenter.getDialogsLink())
+        recyclerView.adapter = dialogAdapter
     }
 
     private fun createPanels() {
         createBottomPanel(supportFragmentManager)
         createTopPanel("Диалоги", ButtonTask.NONE, supportFragmentManager)
+    }
+
+    override fun showDialogs(dialogList: List<Dialog>) {
+        dialogAdapter.notifyDataSetChanged()
+    }
+
+    override fun showLoading() {
+        loadingProgressBar.visibility = View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        loadingProgressBar.visibility = View.GONE
+    }
+
+    override fun showEmptyDialogs() {
+        noDialogsText.visibility = View.VISIBLE
+    }
+
+    override fun hideEmptyDialogs() {
+        noDialogsText.visibility = View.GONE
     }
 
 }

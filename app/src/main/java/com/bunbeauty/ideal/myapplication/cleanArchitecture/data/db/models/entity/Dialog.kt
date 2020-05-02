@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entit
 
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
+import java.io.Serializable
 
 @Entity(
     foreignKeys = [ForeignKey(
@@ -21,8 +22,10 @@ data class Dialog(
     var user: User = User(), //with who
     @Embedded(prefix = "message_")
     var lastMessage: Message = Message()
-){
-    companion object{
+) : Serializable {
+    companion object {
+        const val DIALOG = "dialog"
+        const val COMPANION_DIALOG = "companion dialog"
         const val DIALOGS = "dialogs"
         const val IS_CHECKED = "is checked"
         const val COMPANION_ID = "companion id"

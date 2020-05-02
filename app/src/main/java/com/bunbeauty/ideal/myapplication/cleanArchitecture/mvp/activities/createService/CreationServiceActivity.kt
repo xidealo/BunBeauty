@@ -129,12 +129,19 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
                 //show image on activity
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, data.data)
                 showPhoto(bitmap, data.data!!.toString())
-
                 fpathOfImages.add(data.data!!.toString())
             } catch (e: IOException) {
                 e.printStackTrace()
             }
         }
+    }
+
+    override fun showPremiumBlock(service: Service) {
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.premiumCreationServiceLayout, PremiumElementFragment.newInstance(service))
+            .commit()
+        premiumLayout.visibility = View.VISIBLE
     }
 
     override fun showPhoto(bitmap: Bitmap, filePath: String) {
@@ -161,14 +168,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
             .beginTransaction()
             .add(R.id.categoryCreationServiceLayout, categoryElement)
             .commit()
-    }
-
-    override fun showPremiumBlock(service: Service) {
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.premiumCreationServiceLayout, PremiumElementFragment.newInstance(service))
-            .commit()
-        premiumLayout.visibility = View.VISIBLE
     }
 
     override fun hideMainBlock() {

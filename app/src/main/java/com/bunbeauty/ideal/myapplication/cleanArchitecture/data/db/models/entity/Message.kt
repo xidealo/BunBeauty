@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(
     foreignKeys = [ForeignKey(
@@ -19,7 +20,14 @@ data class Message(
     var id: String = "",
     @ColumnInfo(index = true)
     var dialogId: String = "",
+    var userId: String = "",
     var message: String = "",
     var time: String = ""
-) {
+) : Serializable {
+
+    companion object {
+        const val MESSAGES = "messages"
+        const val MESSAGE = "message"
+        const val TIME = "time"
+    }
 }

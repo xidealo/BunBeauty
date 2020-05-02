@@ -4,7 +4,7 @@ import android.content.Intent
 import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IVerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhonePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
@@ -19,7 +19,7 @@ class VerifyPhoneInteractor(
     private val userRepository: IUserRepository,
     private val intent: Intent
 ) : BaseRepository(),
-    IVerifyPhoneInteractor, IUserCallback {
+    IVerifyPhoneInteractor, UserCallback {
 
     lateinit var verifyPresenterCallback: VerifyPhonePresenterCallback
     var resendToken: PhoneAuthProvider.ForceResendingToken? = null

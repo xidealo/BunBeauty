@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +9,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements.DialogElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
-import java.util.*
 
 class DialogAdapter(
-    private val dialogList: ArrayList<Dialog>
+    private val dialogList: List<Dialog>
 ) : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): DialogViewHolder {
@@ -19,7 +19,7 @@ class DialogAdapter(
         val layoutIdForListItem = R.layout.dialog_element
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false)
-        return DialogViewHolder(view)
+        return DialogViewHolder(view, context)
     }
 
     override fun onBindViewHolder(dialogViewHolder: DialogViewHolder, i: Int) {
@@ -30,10 +30,10 @@ class DialogAdapter(
         return dialogList.size
     }
 
-    inner class DialogViewHolder(private val view: View) :
+    inner class DialogViewHolder(private val view: View, private val context: Context) :
         ViewHolder(view) {
         fun bind(dialog: Dialog) {
-            val dialogElement = DialogElement(view)
+            val dialogElement = DialogElement(view, context)
             dialogElement.createElement(dialog)
         }
     }

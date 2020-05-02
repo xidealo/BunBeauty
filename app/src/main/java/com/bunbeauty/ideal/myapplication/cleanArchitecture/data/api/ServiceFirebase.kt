@@ -16,8 +16,7 @@ class ServiceFirebase {
     private val TAG = "data_layer"
 
     fun insert(service: Service) {
-        val database = FirebaseDatabase.getInstance()
-        val serviceRef = database
+        val serviceRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
             .child(service.userId)
             .child(Service.SERVICES)
@@ -35,7 +34,7 @@ class ServiceFirebase {
         items[Service.COUNT_OF_RATES] = service.countOfRates
         serviceRef.updateChildren(items)
 
-        Log.d(TAG, "Service adding completed")
+        //Log.d(TAG, "Service adding completed")
     }
 
     fun delete(service: Service) {
@@ -97,7 +96,7 @@ class ServiceFirebase {
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(servicesSnapshot: DataSnapshot) {
                 iServicesCallback.returnServices(returnServiceList(servicesSnapshot, userId))
-                setListener(servicesRef, userId, iServiceCallback)
+                //setListener(servicesRef, userId, iServiceCallback)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -106,38 +105,7 @@ class ServiceFirebase {
         })
     }
 
-    fun getServicesByUserIdAndServiceName(
-        userId: String,
-        serviceName: String,
-        iServicesCallback: IServicesCallback,
-        iServiceCallback: IServiceCallback
-    ) {
-        val servicesRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
-            .child(userId)
-            .child(Service.SERVICES)
-
-        servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(servicesSnapshot: DataSnapshot) {
-                val services = arrayListOf<Service>()
-
-                for (serviceSnapshot in servicesSnapshot.children) {
-                    if (serviceName == serviceSnapshot.child(Service.NAME).value as? String ?: "")
-                        services.add(getServiceFromSnapshot(serviceSnapshot, userId))
-                }
-
-                iServicesCallback.returnServices(services)
-
-                setListener(servicesRef, userId, iServiceCallback)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Some error
-            }
-        })
-    }
-
-    private fun setListener(
+    /*private fun setListener(
         servicesRef: DatabaseReference,
         userId: String,
         iServiceCallback: IServiceCallback
@@ -158,7 +126,7 @@ class ServiceFirebase {
 
             override fun onCancelled(error: DatabaseError) {}
         })
-    }
+    }*/
 
     private fun returnService(
         serviceSnapshot: DataSnapshot,

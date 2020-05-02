@@ -21,8 +21,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditPr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
+
 
 class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, View.OnClickListener,
     EditProfileView, IAdapterSpinner {
@@ -63,7 +65,6 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         hideCode()
         hideResentCode()
         hideVerifyCode()
-
     }
 
     private fun init() {
@@ -104,14 +105,44 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         }
     }
 
+    override fun disableEditProfileEditButton() {
+        editProfileEditProfileBtn.isEnabled = false
+    }
+
+    override fun enableEditProfileEditButton() {
+        editProfileEditProfileBtn.isEnabled = true
+    }
+
+    override fun showNoSelectedCity() {
+        Toast.makeText(this, "Выберите город", Toast.LENGTH_LONG).show()
+    }
+
+    override fun showPhoneError(error: String) {
+        phoneEditProfileInput.error = error
+        phoneEditProfileInput.requestFocus()
+    }
+
     override fun showEditProfile(user: User) {
         nameEditProfileInput.text = user.name
         surnameEditProfileInput.text = user.surname
         phoneEditProfileInput.text = user.phone
         showAvatar(user.photoLink)
         setSpinnerSelection(citySpinnerEditProfileSpinner, user.city)
+    }
 
+    override fun setNameEditProfileInputError(error: String) {
+        nameEditProfileInput.error = error
+        nameEditProfileInput.requestFocus()
+    }
 
+    override fun setSurnameEditProfileInputError(error: String) {
+        surnameEditProfileInput.error = error
+        surnameEditProfileInput.requestFocus()
+    }
+
+    override fun setPhoneEditProfileInputError(error: String) {
+        phoneEditProfileInput.error = error
+        phoneEditProfileInput.requestFocus()
     }
 
     override fun showAvatar(photoLink: String) {
@@ -133,7 +164,6 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         codeEditProfileInput.visibility = View.GONE
     }
 
-
     override fun showVerifyCode() {
         verifyCodeEditProfileBtn.visibility = View.VISIBLE
     }
@@ -141,7 +171,6 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     override fun hideVerifyCode() {
         verifyCodeEditProfileBtn.visibility = View.GONE
     }
-
 
     override fun showResentCode() {
         resendCodeEditProfileBtn.visibility = View.VISIBLE
@@ -161,63 +190,19 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     }
 
     fun logOut() {
+
+        val tokenRef = FirebaseDatabase
+            .getInstance()
+            .getReference(User.USERS)
+            .child(User.getMyId())
+            .child(User.TOKEN)
+        tokenRef.setValue("-")
+
         val intent = Intent(this, AuthorizationActivity::class.java)
         startActivity(intent)
         overridePendingTransition(0, 0)
         FirebaseAuth.getInstance().signOut()
+
         finish()
     }
-
-    /* private fun areInputsCorrect(): Boolean {
-         val name = nameInput!!.text.toString()
-         if (name.isEmpty()) {
-             nameInput!!.error = "Введите своё имя"
-             nameInput!!.requestFocus()
-             return false
-         }
-         if (!name.matches("[a-zA-ZА-Яа-я\\-]+")) {
-             nameInput!!.error = "Допустимы только буквы и тире"
-             nameInput!!.requestFocus()
-             return false
-         }
-         val surname = surnameInput!!.text.toString()
-         if (surname.isEmpty()) {
-             surnameInput!!.error = "Введите свою фамилию"
-             surnameInput!!.requestFocus()
-             return false
-         }
-         if (!surname.matches("[a-zA-ZА-Яа-я\\-]+")) {
-             surnameInput!!.error = "Допустимы только буквы и тире"
-             surnameInput!!.requestFocus()
-             return false
-         }
-         val city = citySpinner!!.selectedItem.toString()
-         if (city == "Выбрать город") {
-             assertNoSelectedCity()
-             return false
-         }
-         return true
-     }*/
-
-    /* private fun goToLogIn() {
-         FirebaseAuth.getInstance().signOut()
-         ListeningManager.removeAllListeners()
-         stopService(Intent(this, MyService::class.java))
-         //ListeningManager.removeAllListeners();
-         val intent = Intent(this, AuthorizationActivity::class.java)
-         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-         startActivity(intent)
-     }*/
-
-    /* companion object {
-         private const val USERS = "users"
-         private const val USER_NAME = "name"
-         private const val USER_CITY = "city"
-         private const val PHONE = "phone"
-         private const val AVATAR = "avatar"
-         private const val PHOTO_LINK = "photo link"
-         private const val TOKEN = "token"
-     }*/
-
-
 }

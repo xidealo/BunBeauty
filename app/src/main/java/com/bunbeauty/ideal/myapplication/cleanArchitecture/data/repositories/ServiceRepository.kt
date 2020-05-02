@@ -20,8 +20,8 @@ class ServiceRepository(
 
     override fun insert(service: Service, insertServiceCallback: InsertServiceCallback) {
         launch {
-            serviceDao.insert(service)
             serviceFirebase.insert(service)
+            serviceDao.insert(service)
             withContext(Dispatchers.Main) {
                 insertServiceCallback.returnCreatedCallback(service)
             }
@@ -96,48 +96,17 @@ class ServiceRepository(
         }
     }
 
-    override fun getServicesByUserIdAndServiceName(
-        userId: String, serviceName: String, iServicesCallback: IServicesCallback,
-        isFirstEnter: Boolean
-    ) {
-        this.iServicesCallback = iServicesCallback
-        if (isFirstEnter) {
-            serviceFirebase.getServicesByUserIdAndServiceName(userId, serviceName, this, this)
-        } else {
-            launch {
-                val services = serviceDao.getAllByUserIdAndServiceName(
-                    userId,
-                    serviceName
-                )
-                withContext(Dispatchers.Main) {
-                    iServicesCallback.returnServices(
-                        services
-                    )
-                }
-            }
-        }
-    }
-
     override fun returnService(service: Service) {
-        insertInRoom(service)
         //iServiceCallback.returnService(service)
     }
 
     override fun returnServices(serviceList: List<Service>) {
         for (service in serviceList) {
-            insertInRoom(service)
+            //insertInRoom(service)
         }
-
-
         iServicesCallback.returnServices(serviceList)
-
     }
 
-    override fun insertInRoom(service: Service) {
-        launch {
-            serviceDao.insert(service)
-        }
-    }
 
     fun getIdForNew(userId: String): String = serviceFirebase.getIdForNew(userId)
 

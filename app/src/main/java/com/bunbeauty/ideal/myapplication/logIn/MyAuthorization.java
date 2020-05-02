@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity;
-import com.bunbeauty.ideal.myapplication.helpApi.LoadingProfileData;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
@@ -84,7 +83,7 @@ public class MyAuthorization {
                         clearSQLite();
 
                         final SQLiteDatabase localDatabase = dbHelper.getWritableDatabase();
-                        LoadingProfileData.loadUserInfo(userSnapshot, localDatabase);
+                       /* LoadingProfileData.loadUserInfo(userSnapshot, localDatabase);
 
                         final String userId = userSnapshot.getKey();
                         //counter
@@ -101,18 +100,18 @@ public class MyAuthorization {
 
                         LoadingProfileData.addSubscriptionsCountInLocalStorage(userSnapshot, localDatabase);
                         LoadingProfileData.addSubscribersCountInLocalStorage(userSnapshot, localDatabase);
-                        loadMyOrders(userSnapshot.child(ORDERS));
+                        loadMyOrders(userSnapshot.child(ORDERS));*/
 
                         //set listener for countOfRates
                         DatabaseReference countOfRatesRef = FirebaseDatabase.getInstance()
                                 .getReference(User.USERS)
-                                .child(userId)
+                                .child("userId")
                                 .child(COUNT_OF_RATES);
                         countOfRatesRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot userSnapshotCountOfRates) {
                                 String countOfRates = userSnapshotCountOfRates.getValue(Long.class).toString();
-                                updateCountOfRatesInLocalStorage(countOfRates,userId);
+                                updateCountOfRatesInLocalStorage(countOfRates,"userId");
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -122,11 +121,11 @@ public class MyAuthorization {
                         // set listener for count of Subscribers
                         DatabaseReference countOfSubscribersRef = FirebaseDatabase.getInstance()
                                 .getReference(User.USERS)
-                                .child(userId);
+                                .child("userId");
                         countOfSubscribersRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                                LoadingProfileData.addSubscribersCountInLocalStorage(userSnapshot, localDatabase);
+                               // LoadingProfileData.addSubscribersCountInLocalStorage(userSnapshot, localDatabase);
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {

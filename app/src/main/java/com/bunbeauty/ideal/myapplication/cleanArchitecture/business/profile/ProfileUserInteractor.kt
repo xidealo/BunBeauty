@@ -3,14 +3,10 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.IUserCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.iid.FirebaseInstanceId
 
@@ -18,7 +14,7 @@ class ProfileUserInteractor(
     private val userRepository: UserRepository,
     private val intent: Intent
 ) : BaseRepository(),
-    IProfileUserInteractor, IUserCallback {
+    IProfileUserInteractor, UserCallback {
 
     private val TAG = "DBInf"
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
@@ -61,7 +57,7 @@ class ProfileUserInteractor(
         }
     }
 
-    private fun isFirstEnter() = (intent.hasExtra(User.USER))
+    //private fun fromRegistration() = (intent.hasExtra())
 
     private fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         if (user.id == User.getMyId()) {
@@ -73,14 +69,14 @@ class ProfileUserInteractor(
     }
 
     override fun initFCM() {
-        if (isFirstEnter()) {
-            val token = FirebaseInstanceId.getInstance().token
+       // if (fromRegistartion()) {
+      /*      val token = FirebaseInstanceId.getInstance().token
             val reference = FirebaseDatabase.getInstance().reference
             reference.child(User.USERS)
                 .child(User.getMyId())
                 .child(TOKEN)
-                .setValue(token)
-        }
+                .setValue(token)*/
+        //}
     }
 
     override fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback) {
