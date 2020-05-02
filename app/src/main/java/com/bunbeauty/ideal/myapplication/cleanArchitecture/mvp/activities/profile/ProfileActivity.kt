@@ -93,7 +93,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         createSwitcher()
         profilePresenter.initFCM()
         profilePresenter.createProfileScreen()
-
     }
 
     private fun init() {

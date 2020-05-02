@@ -16,7 +16,7 @@ class MessageAdapter(
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MessageViewHolder {
         // в этом методе создаем ViewHolder
         val context = viewGroup.context
-        val layoutIdForListItem = R.layout.message_element
+        val layoutIdForListItem = R.layout.fragment_message
         //Класс, который позволяет создавать представления из xml файла
         val layoutInflater = LayoutInflater.from(context)
         // откуда, куда, необходимо ли помещать в родителя
@@ -38,10 +38,9 @@ class MessageAdapter(
 
     inner class MessageViewHolder(private val view: View) :
         ViewHolder(view) {
-        fun bind(message: Message?) {
+        fun bind(message: Message) {
 
         }
-
     }
 
 

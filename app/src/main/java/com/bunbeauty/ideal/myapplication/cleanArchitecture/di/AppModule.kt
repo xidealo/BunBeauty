@@ -5,6 +5,7 @@ import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.MessagesDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.MessagesMessageInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
@@ -33,7 +34,6 @@ import dagger.Provides
 class AppModule(private val app: Application, private val intent: Intent) {
 
     // FIREBASE API
-
     @Provides
     fun provideUserFirebaseApi() = UserFirebase()
 
@@ -52,8 +52,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideDialogFirebase() = DialogFirebase()
 
-    // DAO
+    @Provides
+    fun provideMessageFirebase() = MessageFirebase()
 
+    // DAO
     @Provides
     fun provideUserDao() = LocalDatabase.getDatabase(app).getUserDao()
 
@@ -96,6 +98,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideDialogRepository(dialogDao: DialogDao, dialogFirebase: DialogFirebase) =
         DialogRepository(dialogDao, dialogFirebase)
+
+    @Provides
+    fun provideMessageRepository(messageFirebase: MessageFirebase) =
+        MessageRepository(messageFirebase)
 
     // INTERACTORS
     @Provides
@@ -187,13 +193,17 @@ class AppModule(private val app: Application, private val intent: Intent) {
         DialogsUserInteractor(userRepository)
 
     @Provides
-    fun provideMessagesMessageInteractor() = MessagesMessageInteractor(intent)
+    fun provideMessagesMessageInteractor(messageRepository: MessageRepository) =
+        MessagesMessageInteractor(messageRepository)
+
+    @Provides
+    fun provideMessagesDialogInteractor(dialogRepository: DialogRepository) =
+        MessagesDialogInteractor(intent, dialogRepository)
 
     @Provides
     fun provideScheduleInteractor() = ScheduleInteractor()
 
     //APIs
-
     @Provides
     fun provideFigureServicePointsApi() = FiguringServicePoints()
 

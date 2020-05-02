@@ -30,12 +30,8 @@ class ProfileDialogInteractor(private val dialogRepository: DialogRepository) :
         val dialog = objects.find { it.user.id == ownerProfile.id }
 
         if (dialog == null) {
-            val newDialog = Dialog()
-            newDialog.user = ownerProfile
-            newDialog.ownerId = userId
-            newDialog.isChecked = true
-
-            dialogRepository.insert(newDialog, this)
+            dialogRepository.insert(createMyDialog(), this)
+            dialogRepository.insert(createCompanionDialog(), this)
             return
         }
 
@@ -48,4 +44,21 @@ class ProfileDialogInteractor(private val dialogRepository: DialogRepository) :
         profilePresenterCallback.goToDialog(obj)
     }
 
+    private fun createMyDialog(): Dialog {
+        val newDialog = Dialog()
+
+        newDialog.user = ownerProfile
+        newDialog.ownerId = userId
+        newDialog.isChecked = true
+        return newDialog
+    }
+
+    private fun createCompanionDialog(): Dialog {
+        val newDialog = Dialog()
+
+        newDialog.user = ProfileUserInteractor.cacheCurrentUser
+        newDialog.ownerId = ownerProfile.id
+        newDialog.isChecked = true
+        return newDialog
+    }
 }

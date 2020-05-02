@@ -15,20 +15,19 @@
         android:layout_height="wrap_content"
         android:indeterminateTint= "@color/panelColor"
         android:layout_gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/footerEditServiceLayout"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerEditServiceLayout"/>
+        app:layout_constraintTop_toBottomOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/resultsMessagesRecycleView"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/footerEditServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerEditServiceLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout" />
 
     <LinearLayout
         android:id="@+id/footerEditServiceLayout"
@@ -46,9 +45,11 @@
             style="@style/loginPackageInput"
             android:hint="Сообщения"/>
         <Button
+            android:id="@+id/sendMessageMessagesBtn"
             android:layout_width="match_parent"
             android:layout_weight="5"
             android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
