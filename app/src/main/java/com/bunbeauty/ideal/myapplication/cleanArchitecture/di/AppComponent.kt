@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.DialogsActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
@@ -34,4 +35,5 @@ interface AppComponent {
     fun inject(editProfileActivity: EditProfileActivity)
     fun inject(scheduleActivity: ScheduleActivity)
     fun inject(dialogsActivity: DialogsActivity)
+    fun inject(messagesActivity: MessagesActivity)
 }

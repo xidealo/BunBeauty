@@ -5,17 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/allPages"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.Messages">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity">
 
-    <LinearLayout
-        android:id="@+id/headerEditServiceLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent" />
+    <include layout="@layout/part_top_panel" />
 
     <ProgressBar
-        android:id="@+id/progressBarMessages"
+        android:id="@+id/loadingMessagesProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminateTint= "@color/panelColor"
@@ -38,8 +33,22 @@
     <LinearLayout
         android:id="@+id/footerEditServiceLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_panel_height"
+        android:layout_height="46dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:background="@color/panelColor"
+        app:layout_constraintBottom_toBottomOf="parent" >
+
+        <EditText
+            android:id="@+id/messageMessagesInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/loginPackageInput"
+            android:hint="Сообщения"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_weight="5"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

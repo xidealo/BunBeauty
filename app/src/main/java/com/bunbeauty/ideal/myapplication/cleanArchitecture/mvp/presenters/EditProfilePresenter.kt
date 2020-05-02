@@ -20,7 +20,7 @@ class EditProfilePresenter(private val editProfileInteractor: EditProfileInterac
     }
 
     fun saveData(name: String, surname: String, city: String, phone: String) {
-        val user = User()
+        val user = editProfileInteractor.cacheUser
         user.name = name
         user.surname = surname
         user.city = city

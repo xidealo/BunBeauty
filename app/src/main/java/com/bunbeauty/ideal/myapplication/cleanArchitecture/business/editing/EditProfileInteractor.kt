@@ -15,9 +15,12 @@ class EditProfileInteractor(
 ) : UpdateUsersCallback {
 
     private lateinit var editProfilePresenterCallback: EditProfilePresenterCallback
+
+    lateinit var cacheUser: User
+
     fun createEditProfileScreen(editProfilePresenterCallback: EditProfilePresenterCallback) {
-        val user = intent.getSerializableExtra(User.USER) as User
-        editProfilePresenterCallback.showEditProfile(user)
+        cacheUser = intent.getSerializableExtra(User.USER) as User
+        editProfilePresenterCallback.showEditProfile(cacheUser)
     }
 
     fun saveData(
@@ -34,7 +37,7 @@ class EditProfileInteractor(
     }
 
     override fun returnUpdatedCallback(obj: User) {
-        TODO("Not yet implemented")
+        editProfilePresenterCallback.showEditProfile(cacheUser)
     }
 
     fun getIsCityInputCorrect(city: String): Boolean {

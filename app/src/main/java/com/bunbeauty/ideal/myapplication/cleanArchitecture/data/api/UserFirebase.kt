@@ -14,8 +14,7 @@ class UserFirebase {
     private val TAG = "data_layer"
 
     fun insert(user: User) {
-        val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference(User.USERS).child(user.id)
+        val myRef =  FirebaseDatabase.getInstance().getReference(User.USERS).child(user.id)
 
         val items = HashMap<String, Any>()
         items[User.PHONE] = user.phone
@@ -35,14 +34,24 @@ class UserFirebase {
     }
 
     fun update(user: User) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val myRef =  FirebaseDatabase.getInstance().getReference(User.USERS).child(user.id)
+
+        val items = HashMap<String, Any>()
+        items[User.PHONE] = user.phone
+        items[User.NAME] = user.name
+        items[User.SURNAME] = user.surname
+        items[User.CITY] = user.city
+        items[User.AVG_RATING] = user.rating
+        items[User.COUNT_OF_RATES] = user.countOfRates
+        items[User.PHOTO_LINK] = user.photoLink
+        items[User.COUNT_OF_SUBSCRIBERS] = user.subscribersCount
+        items[User.COUNT_OF_SUBSCRIPTIONS] = user.subscriptionsCount
+        myRef.updateChildren(items)
     }
 
     fun get(): List<User> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
-
 
     fun getById(id: String, callback: UserCallback) {
         val userRef = FirebaseDatabase.getInstance()

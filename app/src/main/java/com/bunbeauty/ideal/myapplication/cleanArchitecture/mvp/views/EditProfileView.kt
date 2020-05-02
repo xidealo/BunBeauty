@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 
-import android.widget.Spinner
 import com.arellomobile.mvp.MvpView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 

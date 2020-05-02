@@ -51,7 +51,9 @@ class DialogElement(
         goToDialog()
     }
 
-    private fun goToDialog() {}
+    private fun goToDialog() {
+
+    }
 
     companion object {
         private const val TAG = "DBInf"
