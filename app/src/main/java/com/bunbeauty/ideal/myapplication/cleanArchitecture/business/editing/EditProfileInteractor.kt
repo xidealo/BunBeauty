@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.IRegistrationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.EditProfilePresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UpdateUsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule_ProvideUserRepositoryFactory
@@ -11,7 +12,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditPr
 class EditProfileInteractor(
     private val intent: Intent,
     private val userRepository: UserRepository
-) {
+) : UpdateUsersCallback {
+
     private lateinit var editProfilePresenterCallback: EditProfilePresenterCallback
     fun createEditProfileScreen(editProfilePresenterCallback: EditProfilePresenterCallback) {
         val user = intent.getSerializableExtra(User.USER) as User
@@ -27,7 +29,12 @@ class EditProfileInteractor(
             && isSurnameCorrect(user.surname, editProfilePresenterCallback)
             && isCityCorrect(user.city, editProfilePresenterCallback)
         ) {
+            userRepository.update(user, this)
         }
+    }
+
+    override fun returnUpdatedCallback(obj: User) {
+        TODO("Not yet implemented")
     }
 
     fun getIsCityInputCorrect(city: String): Boolean {
@@ -117,4 +124,5 @@ class EditProfileInteractor(
         }
         return true
     }
+
 }
