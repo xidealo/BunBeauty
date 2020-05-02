@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -30,12 +31,13 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
+import com.google.android.material.button.MaterialButton
 import javax.inject.Inject
 
 class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView,
     ITopPanel, IBottomPanel {
 
-    private var categoriesBtns: ArrayList<Button> = arrayListOf()
+    private var categoriesBtns: ArrayList<MaterialButton> = arrayListOf()
     private lateinit var categories: ArrayList<String>
     private lateinit var categoryLayout: LinearLayout
     private lateinit var tagsLayout: LinearLayout
@@ -105,8 +107,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
         noResultMainScreenText.visibility = View.GONE
 
-        val minimizeTagsBtn = findViewById<Button>(R.id.minimizeTagsMainScreenBtn)
-        val clearTagsBtn = findViewById<Button>(R.id.clearTagsMainScreenBtn)
+        val minimizeTagsBtn = findViewById<MaterialButton>(R.id.minimizeTagsMainScreenBtn)
+        val clearTagsBtn = findViewById<MaterialButton>(R.id.clearTagsMainScreenBtn)
 
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
@@ -224,11 +226,12 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         button.setTextColor(Color.BLACK)
     }
 
+    @SuppressLint("RestrictedApi")
     override fun createCategoryFeed(categories: MutableSet<String>) {
         val width = resources.getDimensionPixelSize(R.dimen.categories_width)
         val height = resources.getDimensionPixelSize(R.dimen.categories_height)
         for (i in categories.indices) {
-            categoriesBtns.add(Button(this))
+            categoriesBtns.add(MaterialButton(this))
             categoriesBtns[i].setOnClickListener(this)
             categoriesBtns[i].text = categories.toTypedArray()[i]
             categoriesBtns[i].textSize = 14f

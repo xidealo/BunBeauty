@@ -151,7 +151,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/scheduleServiceBtn"
         style="@style/mainButton"
         android:layout_width="wrap_content"

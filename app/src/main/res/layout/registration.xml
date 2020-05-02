@@ -59,7 +59,7 @@
 
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/saveRegistrationBtn"
         style="@style/loginButton"
         android:text="сохранить данные"

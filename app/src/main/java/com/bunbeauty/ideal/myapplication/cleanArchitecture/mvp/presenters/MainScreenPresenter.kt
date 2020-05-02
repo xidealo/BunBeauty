@@ -13,6 +13,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
+import com.google.android.material.button.MaterialButton
 
 @InjectViewState
 class MainScreenPresenter(
@@ -143,13 +144,13 @@ class MainScreenPresenter(
         }
     }
 
-    fun disableCategoryBtns(categoriesBtns: ArrayList<Button>) {
+    fun disableCategoryBtns(categoriesBtns: ArrayList<MaterialButton>) {
         for (categoriesBtn in categoriesBtns) {
             viewState.disableCategoryBtn(categoriesBtn)
         }
     }
 
-    fun clearCategory(categoriesBtns: ArrayList<Button>) {
+    fun clearCategory(categoriesBtns: ArrayList<MaterialButton>) {
         viewState.showLoading()
         mainScreenDataInteractor.selectedTagsArray.clear()
         for (btn in categoriesBtns) {

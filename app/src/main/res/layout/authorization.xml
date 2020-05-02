@@ -52,7 +52,7 @@
             android:indeterminateTint="@color/white" />
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/verifyAuthorizationBtn"
         style="@style/loginButton"
         android:text="Войти"

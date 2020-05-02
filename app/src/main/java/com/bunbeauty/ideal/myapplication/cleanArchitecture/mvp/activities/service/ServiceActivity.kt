@@ -26,6 +26,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.Servic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.reviews.Comments
+import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.service_activity.*
 import javax.inject.Inject
@@ -93,7 +94,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         premiumElementFragment = supportFragmentManager
             .findFragmentById(R.id.premiumBlockServiceActivity) as PremiumElementFragment
 
-        findViewById<Button>(R.id.scheduleServiceBtn).setOnClickListener(this)
+        findViewById<MaterialButton>(R.id.scheduleServiceBtn).setOnClickListener(this)
     }
 
     override fun showService(service: Service) {

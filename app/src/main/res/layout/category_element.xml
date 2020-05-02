@@ -45,7 +45,7 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/tagsBtn"
             style="@style/lightBlueButton"
             android:layout_width="match_parent"
@@ -73,7 +73,7 @@
             android:gravity="center"
             android:hint="Теги" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/minimizeTagsBtn"
             style="@style/lightBlueButton"
             android:paddingTop="8dp"

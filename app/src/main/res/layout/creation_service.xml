@@ -113,7 +113,7 @@
 
     </ScrollView>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/addServiceCreationServiceBtn"
         style="@style/mainButton"
         android:text="@string/addServices"
@@ -121,7 +121,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/continueCreationServiceBtn"
         style="@style/mainButton"
         android:text="Продолжить"

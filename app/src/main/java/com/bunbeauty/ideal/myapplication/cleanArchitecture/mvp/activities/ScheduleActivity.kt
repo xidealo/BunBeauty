@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.MotionEvent
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -66,17 +68,16 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         timeLayout.visibility = View.GONE
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "ResourceAsColor")
     private fun createDaysButtons() {
         for (weekIndex in 0 until WEEK_COUNT) {
             for (weekDayIndex in 0 until WEEK_DAY_COUNT) {
                 val button = Button(this)
-                button.setPadding(button.paddingStart, 0, button.paddingEnd, 0)
                 button.layoutParams = LinearLayout.LayoutParams(
                     getScreenWidth() / WEEK_DAY_COUNT,
-                    getScreenWidth() / (WEEK_DAY_COUNT * 1.5).toInt()
+                    resources.getDimensionPixelSize(R.dimen.schedule_button_height)
                 )
-                clearButtonSelection(button)
+                setBackground(button)
                 setButtonEnabled(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex)
                 button.text =
                     schedulePresenter.getDateString(weekIndex * WEEK_DAY_COUNT + weekDayIndex)
@@ -100,12 +101,11 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         for (i in 0 until TIME_RAW_COUNT) {
             for (j in 0 until TIME_COLUMN_COUNT) {
                 val button = Button(this)
-                button.setPadding(button.paddingStart, 0, button.paddingEnd, 0)
                 button.layoutParams = LinearLayout.LayoutParams(
                     getScreenWidth() / TIME_COLUMN_COUNT,
-                    getScreenWidth() / (TIME_COLUMN_COUNT * 1.5).toInt()
+                    resources.getDimensionPixelSize(R.dimen.schedule_button_height)
                 )
-                clearButtonSelection(button)
+                setBackground(button)
                 button.text = schedulePresenter.getTineString(i * TIME_COLUMN_COUNT + j)
                 button.setOnTouchListener(this)
 
@@ -129,6 +129,13 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
             (view.parent as ViewGroup).removeView(view)
         }
         container.addView(view)
+    }
+
+    private fun setBackground(button: Button) {
+        val gradientDrawable = GradientDrawable()
+        gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
+        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
+        button.background = gradientDrawable
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -211,12 +218,22 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
     }
 
     private fun selectButton(button: Button) {
-        button.setBackgroundResource(R.drawable.yellow_button)
+        val gradientDrawable = GradientDrawable()
+        gradientDrawable.setStroke(
+            resources.getDimensionPixelSize(R.dimen.button_stroke_width),
+            ContextCompat.getColor(this, R.color.yellow)
+        )
+        gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
+        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
+        button.background = gradientDrawable
         button.setTag(R.id.touchedTag, TOUCHED)
     }
 
     private fun clearButtonSelection(button: Button) {
-        button.setBackgroundResource(R.drawable.white_button)
+        val gradientDrawable = button.background as GradientDrawable
+        gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.yellow))
+        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
+        button.background = gradientDrawable
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
     }
 

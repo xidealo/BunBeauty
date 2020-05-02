@@ -6,7 +6,7 @@
     android:orientation="horizontal">
 
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/leftSwitcherElementBtn"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
@@ -17,7 +17,7 @@
         android:textColor="@color/white"/>
 
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/rightSwitcherElementBtn"
         android:layout_width="wrap_content"
         android:layout_height="36dp"

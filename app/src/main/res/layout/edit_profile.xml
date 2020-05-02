@@ -53,9 +53,9 @@
                     android:layout_gravity="bottom"
                     android:layout_weight="1.5">
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/logOutEditProfileBtn"
-                        style="@style/smallMainButton"
+                        style="@style/smallButton"
                         android:text="@string/logOut" />
                 </LinearLayout>
             </LinearLayout>
@@ -123,13 +123,13 @@
                 android:hint="@string/enterCode"
                 android:inputType="number" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/verifyCodeEditProfileBtn"
                 style="@style/mainButton"
                 android:text="@string/verifyCode"
                 />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/resendCodeEditProfileBtn"
                 style="@style/mainButton"
                 android:text="@string/resendCode"
@@ -137,7 +137,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/editProfileEditProfileBtn"
         style="@style/mainButton"
         android:text="@string/saveData"

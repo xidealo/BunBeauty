@@ -98,6 +98,9 @@ dependencies {
     //joda date-time
     implementation 'net.danlew:android.joda:2.10.3'
     testImplementation 'joda-time:joda-time:2.10.3'
+
+    //material
+    implementation "com.google.android.material:material:$material_design_version"
 }
 repositories {
     mavenCentral()

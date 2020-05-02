@@ -9,9 +9,9 @@
 
     <include layout="@layout/part_top_panel" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/scheduleProfileBtn"
-        style="@style/smallMainButton"
+        style="@style/smallButton"
         android:text="Расписание"
         app:layout_constraintBottom_toTopOf="@id/bottomPanelLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -124,16 +124,16 @@
                         android:text="Оценок еще нет" />
                 </LinearLayout>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/subscriptionsProfileBtn"
-                    style="@style/smallMainButton"
+                    style="@style/smallButton"
                     android:layout_width="match_parent"
                     android:layout_weight="1"
                     android:text="Подписки" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/dialogsProfileBtn"
-                    style="@style/smallMainButton"
+                    style="@style/smallButton"
                     android:layout_width="match_parent"
 
                     android:layout_weight="1"
@@ -167,12 +167,9 @@
             android:orientation="horizontal"
             android:padding="2dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/addServicesProfileBtn"
-                style="@style/smallMainButton"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/main_button_height"
-                android:layout_marginEnd="2dp"
+                style="@style/smallButton"
                 android:text="@string/addServices" />
         </LinearLayout>
 
