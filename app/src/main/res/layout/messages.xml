@@ -32,7 +32,7 @@
     <LinearLayout
         android:id="@+id/footerEditServiceLayout"
         android:layout_width="match_parent"
-        android:layout_height="46dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@color/panelColor"
         app:layout_constraintBottom_toBottomOf="parent" >
@@ -40,8 +40,10 @@
         <EditText
             android:id="@+id/messageMessagesInput"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:backgroundTint="@color/panelColor"
+            android:inputType="textMultiLine|textCapSentences"
             style="@style/loginPackageInput"
             android:hint="Сообщения"/>
         <Button

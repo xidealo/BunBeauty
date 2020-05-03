@@ -11,7 +11,6 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.DialogAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.MessageAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.MessagesDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.MessagesMessageInteractor
@@ -22,8 +21,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.MessagesView
-import java.util.*
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import javax.inject.Inject
+
 
 class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.OnClickListener {
 
@@ -66,9 +67,18 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         sendMessageMessagesBtn = findViewById(R.id.sendMessageMessagesBtn)
         sendMessageMessagesBtn.setOnClickListener(this)
 
-        resultsMessagesRecycleView.layoutManager = LinearLayoutManager(this)
+        val linearLayoutManager = LinearLayoutManager(this)
+        resultsMessagesRecycleView.layoutManager = linearLayoutManager
         messageAdapter = MessageAdapter(messagePresenter.getMessagesLink())
         resultsMessagesRecycleView.adapter = messageAdapter
+
+        setEventListener(
+            this,
+            object : KeyboardVisibilityEventListener {
+                override fun onVisibilityChanged(isOpen: Boolean) {
+                    resultsMessagesRecycleView.smoothScrollToPosition(resultsMessagesRecycleView.adapter!!.itemCount - 1)
+                }
+            })
     }
 
     private fun createPanels() {
@@ -79,12 +89,14 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         when (v.id) {
             R.id.sendMessageMessagesBtn -> {
                 messagePresenter.sendMessage(messageMessagesInput.text.toString())
+                messageMessagesInput.text.clear()
             }
         }
     }
 
     override fun showMessagesScreen(messages: List<Message>) {
         messageAdapter.notifyDataSetChanged()
+        resultsMessagesRecycleView.smoothScrollToPosition(resultsMessagesRecycleView.adapter!!.itemCount - 1)
     }
 
     override fun showSendMessage(message: Message) {

@@ -4,13 +4,32 @@
     android:id="@+id/mainLayoutMessageElementLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:orientation="horizontal"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements.MessageElement">
 
     <TextView
         android:id="@+id/messageTextMessageElementText"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        style="@style/defaultText"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:background="@color/white"
+        android:padding="5dp"
+        android:textStyle="bold"
+        android:text="@string/hello_blank_fragment" />
+
+    <TextView
+        android:id="@+id/messageTimeMessageElementText"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="10sp"
+        android:background="@color/white"
+        android:gravity="bottom"
+        android:paddingEnd="2dp"
         android:text="@string/hello_blank_fragment" />
 
 </LinearLayout>

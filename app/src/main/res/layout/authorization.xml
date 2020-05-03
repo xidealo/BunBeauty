@@ -10,7 +10,7 @@
 
     <LinearLayout
         style="@style/loginPackageMainLinearLayout"
-        app:layout_constraintBottom_toTopOf="@+id/verifyAuthorizationBtn"
+        app:layout_constraintBottom_toTopOf="@+id/bottomLayoutAuthorizationLayout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -35,7 +35,7 @@
                 android:id="@+id/codeAuthorizationSpinner"
                 style="@style/loginPackageSpinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <EditText
                 android:id="@+id/phoneAuthorizationInput"
@@ -44,20 +44,35 @@
                 android:inputType="phone" />
         </LinearLayout>
 
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/bottomLayoutAuthorizationLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
         <ProgressBar
             android:id="@+id/loadingAuthorizationProgressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminateTint="@color/white" />
-    </LinearLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/verifyAuthorizationBtn"
-        style="@style/loginButton"
-        android:text="Войти"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/verifyAuthorizationBtn"
+            style="@style/loginButton"
+            android:text="Войти"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

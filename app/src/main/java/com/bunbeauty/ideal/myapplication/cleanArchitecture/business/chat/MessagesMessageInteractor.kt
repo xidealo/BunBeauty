@@ -40,7 +40,9 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messagesPresenterCallback: MessagesPresenterCallback
     ) {
         this.messagesPresenterCallback = messagesPresenterCallback
-        messageRepository.insert(message, this)
+        if (message.message.isNotEmpty()) {
+            messageRepository.insert(message, this)
+        }
     }
 
     override fun returnList(objects: List<Message>) {
@@ -49,8 +51,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
 
         if (countOfDialogs >= 2) {
             cacheMessages.clear()
-            cacheMessages.addAll(cacheMessagesSet)
-            cacheMessages.sortedBy { it.time }
+            cacheMessages.addAll(cacheMessagesSet.sortedBy { it.time })
             messagesPresenterCallback.showMessagesScreen(cacheMessages)
         }
     }

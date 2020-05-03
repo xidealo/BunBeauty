@@ -84,19 +84,11 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener,
 
     override fun hideViewsOnScreen() {
         verifyCodeBtn.visibility = View.GONE
-        resendCodeText.visibility = View.GONE
-        codeInput.visibility = View.GONE
-        changePhoneText.visibility = View.GONE
-        alertCodeText.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
     }
 
     override fun showViewsOnScreen() {
         verifyCodeBtn.visibility = View.VISIBLE
-        resendCodeText.visibility = View.VISIBLE
-        codeInput.visibility = View.VISIBLE
-        changePhoneText.visibility = View.VISIBLE
-        alertCodeText.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
     }
 
@@ -159,7 +151,7 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener,
                 this, // Activity (for callback binding)
                 callback, // OnVerificationStateChangedCallbacks
                 token
-        )  // ForceResendingToken from callbacks
+        )
     }
 
     companion object {

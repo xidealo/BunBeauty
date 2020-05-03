@@ -9,7 +9,7 @@
 
     <LinearLayout
         style="@style/loginPackageMainLinearLayout"
-        app:layout_constraintBottom_toTopOf="@+id/verifyVerifyPhoneBtn"
+        app:layout_constraintBottom_toTopOf="@+id/bottomLayoutVerifyPhoneLayout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -44,13 +44,6 @@
                 android:text="На указанный номер,\n был отправлен код подтверждения" />
         </LinearLayout>
 
-        <ProgressBar
-            android:id="@+id/loadingVerifyPhoneProgressBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminateTint="@color/white" />
-
         <LinearLayout
             style="@style/loginPackageLinearLayout"
             android:layout_marginTop="10dp"
@@ -70,11 +63,27 @@
         </LinearLayout>
     </LinearLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/verifyVerifyPhoneBtn"
-        style="@style/loginButton"
-        android:text="Войти"
+    <LinearLayout
+        android:id="@+id/bottomLayoutVerifyPhoneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ProgressBar
+            android:id="@+id/loadingVerifyPhoneProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/white" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/verifyVerifyPhoneBtn"
+            style="@style/loginButton"
+            android:text="Войти" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

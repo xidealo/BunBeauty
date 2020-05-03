@@ -101,6 +101,9 @@ dependencies {
 
     //material
     implementation "com.google.android.material:material:$material_design_version"
+    //keyboard listener for messages
+    implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC2'
+
 }
 repositories {
     mavenCentral()
