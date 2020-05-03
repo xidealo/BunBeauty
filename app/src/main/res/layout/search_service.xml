@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_gravity="center"
-        android:background="@color/panelColor"
+        android:background="@color/mainBlue"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -35,7 +35,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark"
+                android:background="@color/darkBlue"
                 android:orientation="horizontal"
                 android:padding="5dp">
 
@@ -61,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@color/colorPrimaryDark"
+                android:background="@color/darkBlue"
                 android:padding="5dp">
 
                 <Spinner

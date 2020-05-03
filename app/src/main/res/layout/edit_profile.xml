@@ -89,9 +89,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/white"
-                    android:backgroundTint="@color/panelColor"
+                    android:backgroundTint="@color/mainBlue"
                     android:entries="@array/choice_cites"
-                    android:popupBackground="@color/panelColor" />
+                    android:popupBackground="@color/mainBlue" />
             </LinearLayout>
 
             <!-- Телефон -->

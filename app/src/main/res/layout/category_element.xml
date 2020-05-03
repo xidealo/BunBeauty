@@ -28,9 +28,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:entries="@array/choice_categories"
-            android:background="@color/panelColor"
-            android:backgroundTint="@color/panelColor"
-            android:popupBackground="@color/panelColor"/>
+            android:background="@color/mainBlue"
+            android:backgroundTint="@color/mainBlue"
+            android:popupBackground="@color/mainBlue"/>
 
     </LinearLayout>
 

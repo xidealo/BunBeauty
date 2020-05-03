@@ -126,7 +126,7 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
     private void selectWorkingDayWithTime() {
         String dayAndMonth, year;
         String dayId;
-        int dayWithTimesColor = ContextCompat.getColor(this, R.color.dayWithTimes);
+        int dayWithTimesColor = ContextCompat.getColor(this, R.color.mainBlue);
         int dayWithoutTimesColor = ContextCompat.getColor(this, R.color.black);
         for (int i = 0; i < WEEKS_COUNT; i++) {
             for (int j = 0; j < DAYS_COUNT; j++) {

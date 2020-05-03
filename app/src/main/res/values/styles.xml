@@ -3,7 +3,7 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Reg pages -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/darkBlue</item>
         <item name="colorAccent">@color/lightText</item>
         <item name="android:textColorHint">@color/black</item>
     </style>
@@ -23,7 +23,7 @@
     <!-- Style for logIn pages -->
     <style name="logInPages">
         <item name="windowActionBar">false</item>
-        <item name="android:background">@color/logInBackGround</item>
+        <item name="android:background">@color/mainBlue</item>
         <item name="windowNoTitle">true</item>
     </style>
 
@@ -142,7 +142,7 @@
     </style>
 
     <style name="foundProfileElement">
-        <item name="android:textColor">@color/panelColor</item>
+        <item name="android:textColor">@color/mainBlue</item>
         <item name="fontFamily">@font/roboto_bold</item>
         <item name="android:textSize">20sp</item>
         <item name="android:padding">5dp</item>
@@ -166,7 +166,7 @@
     <style name="ratingBarColorsPremium" parent="@android:style/Widget.RatingBar">
         <item name="android:progressBackgroundTint">@color/black</item>
         <item name="android:secondaryProgressTint">@color/black</item>
-        <item name="android:progressTint">@color/panelColor</item>
+        <item name="android:progressTint">@color/mainBlue</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -220,8 +220,8 @@
 
     <style name="loginPackageSpinner">
         <item name="android:background">@color/white</item>
-        <item name="android:backgroundTint">@color/panelColor</item>
-        <item name="android:popupBackground">@color/panelColor</item>
+        <item name="android:backgroundTint">@color/mainBlue</item>
+        <item name="android:popupBackground">@color/mainBlue</item>
     </style>
 
     <!-- Style for main buttons -->

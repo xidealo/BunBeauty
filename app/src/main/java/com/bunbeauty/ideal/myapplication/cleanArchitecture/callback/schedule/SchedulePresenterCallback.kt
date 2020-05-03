@@ -1,8 +1,6 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.schedule
 
-import com.arellomobile.mvp.MvpView
-
-interface ScheduleView: MvpView {
+interface SchedulePresenterCallback {
     fun fillDay(dayIndex: Int)
     fun clearDay(dayIndex: Int)
     fun showAccurateTime(accurateTime: Set<String>)

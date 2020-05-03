@@ -98,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:indeterminateTint="@color/panelColor" />
+                android:indeterminateTint="@color/mainBlue" />
         </LinearLayout>
     </ScrollView>
     <com.google.android.material.button.MaterialButton

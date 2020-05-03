@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Оценка и отзыв"
-            android:textColor="@color/panelColor" />
+            android:textColor="@color/mainBlue" />
 
         <RatingBar
             android:id="@+id/ratingBarReview"

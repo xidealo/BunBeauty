@@ -1,28 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#005F89</color>
+    <color name="colorPrimary">#0093B7</color>
     <color name="lightText">#7DF3F1F1</color>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="red">#FF0000</color>
     <color name="yellow">#f6db40</color>
+    <color name="light_yellow">#FDF2B0</color>
     <color name="transparentGrey">#64d1d1d1</color>
+    <color name="grey50">#888888</color>
 
+    <color name="mainBlue">#0093B7</color>
     <color name="darkBlue">#005F89</color>
-
     <color name="backgroundLightBlue">#D1E1E5</color>
 
-    <color name="logInBackGround">#0093B7</color>
-
-    <color name="grey50">#888888</color>
     <color name="disabledButton">#7fffffff</color>
-    <color name="dayWithTimes">#0091B7</color>
     <color name="hintColor">#808080</color>
-
-    <color name="panelColor">#0093B7</color>
-
 
     <!-- Style for logIn pages -->
     <color name="rightBorder">#005F89</color>
@@ -30,8 +24,5 @@
 
     <!-- transparent -->
     <color name="transparent">#8C007693</color>
-
-    <!-- Main screen -->
-    <color name="colorCategoryButton">#005F89</color>
 
 </resources>

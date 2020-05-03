@@ -13,7 +13,7 @@
         android:id="@+id/loadingMessagesProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminateTint= "@color/panelColor"
+        android:indeterminateTint= "@color/mainBlue"
         android:layout_gravity="center"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/panelColor"
+        android:background="@color/mainBlue"
         app:layout_constraintBottom_toBottomOf="parent" >
 
         <EditText

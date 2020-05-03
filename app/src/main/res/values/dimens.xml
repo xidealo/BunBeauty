@@ -18,8 +18,9 @@
     <dimen name="main_button_height">36dp</dimen>
 
     <dimen name="tags_width">700dp</dimen>
-
+ч
     <dimen name="schedule_button_height">36dp</dimen>
+    <dimen name="schedule_button_margin">2dp</dimen>
     <dimen name="button_stroke_width">3dp</dimen>
     <dimen name="button_corner_radius">5dp</dimen>
 </resources>

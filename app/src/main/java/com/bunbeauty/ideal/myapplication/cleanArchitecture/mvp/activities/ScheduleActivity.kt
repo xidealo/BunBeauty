@@ -68,20 +68,15 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         timeLayout.visibility = View.GONE
     }
 
-    @SuppressLint("ClickableViewAccessibility", "ResourceAsColor")
     private fun createDaysButtons() {
         for (weekIndex in 0 until WEEK_COUNT) {
             for (weekDayIndex in 0 until WEEK_DAY_COUNT) {
-                val button = Button(this)
-                button.layoutParams = LinearLayout.LayoutParams(
-                    getScreenWidth() / WEEK_DAY_COUNT,
-                    resources.getDimensionPixelSize(R.dimen.schedule_button_height)
-                )
-                setBackground(button)
-                setButtonEnabled(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex)
-                button.text =
+                val width = getScreenWidth() / WEEK_DAY_COUNT
+                val height = resources.getDimensionPixelSize(R.dimen.schedule_button_height)
+                val text =
                     schedulePresenter.getDateString(weekIndex * WEEK_DAY_COUNT + weekDayIndex)
-                button.setOnTouchListener(this)
+                val button = getConfiguredButton(width, height, text)
+                setButtonEnabled(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex)
 
                 daysButtons.add(button)
             }
@@ -96,18 +91,13 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         button.isEnabled = schedulePresenter.isPastDay(dayIndex)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun createTimeButtons() {
         for (i in 0 until TIME_RAW_COUNT) {
             for (j in 0 until TIME_COLUMN_COUNT) {
-                val button = Button(this)
-                button.layoutParams = LinearLayout.LayoutParams(
-                    getScreenWidth() / TIME_COLUMN_COUNT,
-                    resources.getDimensionPixelSize(R.dimen.schedule_button_height)
-                )
-                setBackground(button)
-                button.text = schedulePresenter.getTineString(i * TIME_COLUMN_COUNT + j)
-                button.setOnTouchListener(this)
+                val width = getScreenWidth() / TIME_COLUMN_COUNT
+                val height = resources.getDimensionPixelSize(R.dimen.schedule_button_height)
+                val text = schedulePresenter.getTineString(i * TIME_COLUMN_COUNT + j)
+                val button = getConfiguredButton(width, height, text)
 
                 timeButtons.add(button)
             }
@@ -116,6 +106,22 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         for (i in 0 until timeButtons.size) {
             addViewToContainer(timeButtons[i], timeGrid)
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun getConfiguredButton(width: Int, height: Int, text: String): Button {
+        val button = Button(this)
+
+        val margin = resources.getDimensionPixelSize(R.dimen.schedule_button_margin)
+        val params = LinearLayout.LayoutParams(width - 2 * margin, height)
+        params.setMargins(margin, margin, margin, margin)
+        button.layoutParams = params
+        setBackground(button)
+        button.setTag(R.id.touchedTag, NOT_TOUCHED)
+        button.text = text
+        button.setOnTouchListener(this)
+
+        return button
     }
 
     private fun getScreenWidth(): Int {
@@ -134,19 +140,24 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
     private fun setBackground(button: Button) {
         val gradientDrawable = GradientDrawable()
         gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
+        gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.yellow))
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
+
         button.background = gradientDrawable
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
-
         when (motionEvent.action) {
             MotionEvent.ACTION_DOWN -> {
-                touchId++
-                clearSelection(view)
-                select(view, motionEvent)
                 timeLayout.visibility = View.VISIBLE
+                clearPreviousSelection(view.id)
+                if (view.id == R.id.daysScheduleGrid) {
+                    schedulePresenter.forgotAllDays()
+                }
+
+                touchId++
+                select(view, motionEvent)
             }
             MotionEvent.ACTION_MOVE -> {
                 select(view, motionEvent)
@@ -156,11 +167,15 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
         return true
     }
 
-    private fun clearSelection(view: View) {
-        when (view.id) {
+    private fun clearPreviousSelection(viewId: Int) {
+        when (viewId) {
             R.id.daysScheduleGrid -> {
-                clearButtonsSelection(daysButtons)
-                clearButtonsSelection(timeButtons)
+                for (button in daysButtons) {
+                    clearButtonSelection(button)
+                }
+                for (button in timeButtons) {
+                    clearButtonFill(button)
+                }
             }
         }
     }
@@ -168,45 +183,86 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
     private fun select(view: View, motionEvent: MotionEvent) {
         when (view.id) {
             R.id.daysScheduleGrid -> {
-                selectButton(motionEvent, daysButtons)
+                selectDayButton(motionEvent)
             }
 
             R.id.timeScheduleGrid -> {
-                selectButton(motionEvent, timeButtons)
+                val buttonIndex = findTouchedButton(motionEvent, timeButtons) ?: return
+                val button = timeButtons[buttonIndex]
+                selectTimeButton(button)
             }
         }
     }
 
-    private fun selectButton(motionEvent: MotionEvent, buttons: List<Button>) {
+    private fun selectDayButton(motionEvent: MotionEvent) {
+        val buttonIndex = findTouchedButton(motionEvent, daysButtons) ?: return
+        val button = daysButtons[buttonIndex]
 
-        for (button in buttons) {
+        button.setTag(R.id.touchIdTag, touchId)
+        selectButton(button)
+        schedulePresenter.rememberDay(buttonIndex, button.text.toString())
+    }
+
+    override fun showAccurateTime(accurateTime: Set<String>) {
+        for (button in timeButtons) {
+            if (accurateTime.contains(button.text.toString())) {
+                button.setTag(R.id.touchIdTag, touchId)
+                fillButton(button)
+            }
+        }
+    }
+
+    override fun showInaccurateTime(inaccurateTime: Set<String>) {
+        for (button in timeButtons) {
+            if (inaccurateTime.contains(button.text.toString())) {
+                fillButtonInHalf(button)
+            }
+        }
+    }
+
+    private fun selectTimeButton(button: Button) {
+        button.setTag(R.id.touchIdTag, touchId)
+        if (isButtonSelected(button)) {
+            clearButtonFill(button)
+
+            val selectedDayTexts =
+                schedulePresenter.getSelectedDays().map { daysButtons[it].text.toString() }
+            schedulePresenter.removeFromSchedule(selectedDayTexts, button.text.toString())
+        } else {
+            fillButton(button)
+
+            val selectedDayTexts =
+                schedulePresenter.getSelectedDays().map { daysButtons[it].text.toString() }
+            schedulePresenter.addToSchedule(selectedDayTexts, button.text.toString())
+        }
+    }
+
+    override fun clearDay(dayIndex: Int) {
+        clearButtonFill(daysButtons[dayIndex])
+    }
+
+    override fun fillDay(dayIndex: Int) {
+        fillButton(daysButtons[dayIndex])
+    }
+
+    private fun findTouchedButton(motionEvent: MotionEvent, buttons: List<Button>): Int? {
+        for ((index, button) in buttons.withIndex()) {
             if (!isButtonTouched(button, motionEvent)) {
                 continue
             }
 
             if (!button.isEnabled) {
-                return
+                break
             }
 
             if (isAlreadyTouched(button)) {
-                return
+                break
             }
 
-            button.setTag(R.id.touchIdTag, touchId)
-            if (isButtonSelected(button)) {
-                clearButtonSelection(button)
-            } else {
-                selectButton(button)
-            }
-
-            return
+            return index
         }
-    }
 
-    private fun clearButtonsSelection(buttons: List<Button>) {
-        for (button in buttons) {
-            clearButtonSelection(button)
-        }
+        return null
     }
 
     private fun isAlreadyTouched(button: Button): Boolean {
@@ -218,22 +274,52 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, View.OnTouchListe
     }
 
     private fun selectButton(button: Button) {
-        val gradientDrawable = GradientDrawable()
+        val gradientDrawable = button.background as GradientDrawable
+
+        gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
         gradientDrawable.setStroke(
             resources.getDimensionPixelSize(R.dimen.button_stroke_width),
-            ContextCompat.getColor(this, R.color.yellow)
+            ContextCompat.getColor(this, R.color.mainBlue)
         )
-        gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
-        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
         button.background = gradientDrawable
+
         button.setTag(R.id.touchedTag, TOUCHED)
     }
 
     private fun clearButtonSelection(button: Button) {
         val gradientDrawable = button.background as GradientDrawable
-        gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.yellow))
+
+        gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.white))
+        button.background = gradientDrawable
+
+        button.setTag(R.id.touchedTag, NOT_TOUCHED)
+    }
+
+    private fun clearButtonFill(button: Button) {
+        val gradientDrawable = button.background as GradientDrawable
+
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
         button.background = gradientDrawable
+
+        button.setTag(R.id.touchedTag, NOT_TOUCHED)
+    }
+
+    private fun fillButton(button: Button) {
+        val gradientDrawable = button.background as GradientDrawable
+
+        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.yellow))
+        button.background = gradientDrawable
+
+        button.setTag(R.id.touchedTag, TOUCHED)
+    }
+
+    private fun fillButtonInHalf(button: Button) {
+        val a = button.getTag(R.id.touchedTag)
+        val gradientDrawable = button.background as GradientDrawable
+
+        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.light_yellow))
+        button.background = gradientDrawable
+
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
     }
 
