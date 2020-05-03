@@ -3,10 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 import android.app.Application
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsDialogInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.MessagesDialogInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.MessagesMessageInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
@@ -202,6 +199,9 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     @Provides
     fun provideScheduleInteractor() = ScheduleInteractor()
+
+    @Provides
+    fun provideMessagesUserInteractor() = MessagesUserInteractor(intent)
 
     //APIs
     @Provides

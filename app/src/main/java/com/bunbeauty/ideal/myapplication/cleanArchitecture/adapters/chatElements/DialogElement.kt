@@ -64,6 +64,7 @@ class DialogElement(
     private fun goToDialog() {
         val intent = Intent(context, MessagesActivity::class.java)
         intent.putExtra(Dialog.COMPANION_DIALOG, dialog)
+        intent.putExtra(User.USER, dialog.user)
 
         val myDialog = Dialog()
         myDialog.ownerId =  dialog.user.id

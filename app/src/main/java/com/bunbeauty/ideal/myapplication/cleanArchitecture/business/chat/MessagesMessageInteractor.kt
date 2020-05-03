@@ -7,7 +7,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.MessageRepository
-import java.util.*
 
 class MessagesMessageInteractor(private val messageRepository: MessageRepository) :
     IMessagesMessageInteractor, MessagesCallback, InsertMessageCallback {
@@ -45,6 +44,18 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         }
     }
 
+    override fun checkMoveToStart(
+        messages: List<Message>,
+        messagesPresenterCallback: MessagesPresenterCallback
+    ) {
+        if(messages.isEmpty()){
+            messagesPresenterCallback.showMessagesScreen(cacheMessages)
+        }else{
+            messagesPresenterCallback.showMessagesScreen(cacheMessages)
+            messagesPresenterCallback.showMoveToStart()
+        }
+    }
+
     override fun returnList(objects: List<Message>) {
         countOfDialogs++
         cacheMessagesSet.addAll(objects)
@@ -52,7 +63,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         if (countOfDialogs >= 2) {
             cacheMessages.clear()
             cacheMessages.addAll(cacheMessagesSet.sortedBy { it.time })
-            messagesPresenterCallback.showMessagesScreen(cacheMessages)
+            checkMoveToStart(cacheMessages, messagesPresenterCallback)
         }
     }
 

@@ -9,4 +9,5 @@ interface IMessagesMessageInteractor {
     fun getMyMessagesLink(): List<Message>
     fun getCompanionMessages(dialog: Dialog, messagesPresenterCallback: MessagesPresenterCallback)
     fun sendMessage(message: Message, messagesPresenterCallback: MessagesPresenterCallback)
+    fun checkMoveToStart(messages: List<Message>, messagesPresenterCallback: MessagesPresenterCallback)
 }
