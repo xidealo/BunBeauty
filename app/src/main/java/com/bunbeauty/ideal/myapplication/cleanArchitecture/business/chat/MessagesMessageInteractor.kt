@@ -7,11 +7,13 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.MessageRepository
+import java.util.*
 
 class MessagesMessageInteractor(private val messageRepository: MessageRepository) :
     IMessagesMessageInteractor, MessagesCallback, InsertMessageCallback {
-
+    //tree set and sort by time
     private var cacheMessages = mutableListOf<Message>()
+    private var cacheMessagesSet = mutableSetOf<Message>()
     private var countOfDialogs = 0
     private lateinit var messagesPresenterCallback: MessagesPresenterCallback
 
@@ -25,11 +27,11 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messageRepository.getByDialogId(dialog, this)
     }
 
-
     override fun getCompanionMessages(
         dialog: Dialog,
         messagesPresenterCallback: MessagesPresenterCallback
     ) {
+        this.messagesPresenterCallback = messagesPresenterCallback
         messageRepository.getByDialogId(dialog, this)
     }
 
@@ -43,9 +45,13 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
 
     override fun returnList(objects: List<Message>) {
         countOfDialogs++
-        cacheMessages.addAll(objects)
-        if (countOfDialogs == 1) {
-            messagesPresenterCallback.showMessagesScreen(cacheMessages.sortedBy { it.time })
+        cacheMessagesSet.addAll(objects)
+
+        if (countOfDialogs >= 2) {
+            cacheMessages.clear()
+            cacheMessages.addAll(cacheMessagesSet)
+            cacheMessages.sortedBy { it.time }
+            messagesPresenterCallback.showMessagesScreen(cacheMessages)
         }
     }
 

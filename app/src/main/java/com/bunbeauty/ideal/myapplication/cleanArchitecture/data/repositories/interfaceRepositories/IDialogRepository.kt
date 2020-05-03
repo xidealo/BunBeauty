@@ -8,6 +8,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface IDialogRepository {
     fun insert(dialog: Dialog, insertDialogCallback: InsertDialogCallback)
+    fun insert(dialogs: List<Dialog>, insertDialogCallback: InsertDialogCallback)
     fun delete(dialog: Dialog, deleteDialogCallback: DeleteDialogCallback)
     fun update(dialog: Dialog, updateDialogCallback: UpdateDialogCallback)
     fun get(dialogsCallback: DialogsCallback)

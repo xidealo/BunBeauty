@@ -37,6 +37,7 @@ class MessageFirebase {
 
         dialogRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(messagesSnapshot: DataSnapshot) {
+                //val currentDialog = dialog
                 val messages = arrayListOf<Message>()
                 if (messagesSnapshot.childrenCount > 0L) {
                     for (messageSnapshot in messagesSnapshot.children) {

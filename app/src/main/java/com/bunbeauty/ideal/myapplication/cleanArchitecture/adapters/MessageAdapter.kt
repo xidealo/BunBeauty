@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.MessageAdapter.MessageViewHolder
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements.MessageElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
+import java.util.*
 
 class MessageAdapter(
     private val messageList: List<Message>
@@ -39,7 +41,8 @@ class MessageAdapter(
     inner class MessageViewHolder(private val view: View) :
         ViewHolder(view) {
         fun bind(message: Message) {
-
+            val dialogElement = MessageElement(view)
+            dialogElement.createElement(message)
         }
     }
 

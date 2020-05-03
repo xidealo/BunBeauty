@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayoutMessageElementLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/block"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements.MessageElement">
 
     <TextView
@@ -13,4 +13,4 @@
         style="@style/defaultText"
         android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+</LinearLayout>

@@ -66,6 +66,10 @@ class DialogElement(
         intent.putExtra(Dialog.COMPANION_DIALOG, dialog)
 
         val myDialog = Dialog()
+        myDialog.ownerId =  dialog.user.id
+        myDialog.user.id =  dialog.ownerId
+        myDialog.id =  dialog.id
+
         intent.putExtra(Dialog.DIALOG, myDialog)
         context.startActivity(intent)
     }

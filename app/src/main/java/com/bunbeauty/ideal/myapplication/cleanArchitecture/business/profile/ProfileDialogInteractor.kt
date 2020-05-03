@@ -30,8 +30,7 @@ class ProfileDialogInteractor(private val dialogRepository: DialogRepository) :
         val dialog = objects.find { it.user.id == ownerProfile.id }
 
         if (dialog == null) {
-            dialogRepository.insert(createMyDialog(), this)
-            dialogRepository.insert(createCompanionDialog(), this)
+            dialogRepository.insert(listOf(createMyDialog(), createCompanionDialog()), this)
             return
         }
 

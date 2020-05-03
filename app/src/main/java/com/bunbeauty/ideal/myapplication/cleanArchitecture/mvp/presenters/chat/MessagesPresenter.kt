@@ -8,6 +8,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.chat.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.MessagesView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
+import com.google.firebase.database.core.utilities.Tree
 import java.util.*
 
 @InjectViewState
@@ -22,6 +23,10 @@ class MessagesPresenter(
     fun createMessageScreen() {
         messagesMessageInteractor.getMyMessages(
             messagesDialogInteractor.getCompanionDialog(),
+            this
+        )
+        messagesMessageInteractor.getMyMessages(
+            messagesDialogInteractor.getMyDialog(),
             this
         )
     }
