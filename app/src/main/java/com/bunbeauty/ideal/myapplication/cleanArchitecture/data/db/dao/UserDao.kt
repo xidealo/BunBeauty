@@ -10,10 +10,10 @@ interface UserDao: BaseDao<User> {
     suspend fun get() : List<User>
 
     @Query("SELECT * FROM user WHERE id = :id")
-    suspend fun getById(id: String): User
+    suspend fun getById(id: String): List<User>
 
     @Query("SELECT * FROM user WHERE phone = :phone")
-    suspend fun getByPhoneNumber(phone: String): User
+    suspend fun getByPhoneNumber(phone: String): List<User>
 
     @Query("SELECT * FROM user WHERE city = :city")
     suspend fun getByCity(city: String): List<User>

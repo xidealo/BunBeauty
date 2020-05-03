@@ -4,7 +4,7 @@ import android.content.Intent
 import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IVerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhonePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
@@ -19,7 +19,7 @@ class VerifyPhoneInteractor(
     private val userRepository: IUserRepository,
     private val intent: Intent
 ) : BaseRepository(),
-    IVerifyPhoneInteractor, UserCallback {
+    IVerifyPhoneInteractor, UsersCallback {
 
     lateinit var verifyPresenterCallback: VerifyPhonePresenterCallback
     var resendToken: PhoneAuthProvider.ForceResendingToken? = null
@@ -32,14 +32,13 @@ class VerifyPhoneInteractor(
         userRepository.getByPhoneNumber(getMyPhoneNumber(), this, true)
     }
 
-    override fun returnUser(user: User) {
-        if (user.name.isEmpty()) {
+    override fun returnUsers(users: List<User>) {
+        if (users.first().name.isEmpty()) {
             verifyPresenterCallback.goToRegistration(getMyPhoneNumber())
         } else {
             verifyPresenterCallback.goToProfile()
         }
     }
-
     override fun sendVerificationCode(
         phoneNumber: String,
         verifyPhonePresenterCallback: VerifyPhonePresenterCallback
@@ -125,4 +124,5 @@ class VerifyPhoneInteractor(
     companion object {
         const val TAG = "DBInf"
     }
+
 }

@@ -13,10 +13,9 @@ class UserRepository(
     private val userDao: UserDao,
     private val userFirebase: UserFirebase
 ) : BaseRepository(),
-    IUserRepository, UserCallback, UsersCallback {
+    IUserRepository, UsersCallback {
 
-    lateinit var userSubscriber: UserCallback
-    lateinit var usersSubscriber: UsersCallback
+    lateinit var usersCallback: UsersCallback
 
     override fun insert(user: User, insertUsersCallback: InsertUsersCallback) {
         launch {
@@ -58,8 +57,8 @@ class UserRepository(
         }
     }
 
-    override fun getById(id: String, userSubscriber: UserCallback, isFirstEnter: Boolean) {
-        this.userSubscriber = userSubscriber
+    override fun getById(id: String, usersCallback: UsersCallback, isFirstEnter: Boolean) {
+        this.usersCallback = usersCallback
 
         if (isFirstEnter) {
             userFirebase.getById(id, this)
@@ -67,7 +66,7 @@ class UserRepository(
             launch {
                 val users = userDao.getById(id)
                 withContext(Dispatchers.Main) {
-                    userSubscriber.returnUser(users)
+                    usersCallback.returnUsers(users)
                 }
             }
         }
@@ -75,10 +74,10 @@ class UserRepository(
 
     override fun getByPhoneNumber(
         phoneNumber: String,
-        userSubscriber: UserCallback,
+        usersCallback: UsersCallback,
         isFirstEnter: Boolean
     ) {
-        this.userSubscriber = userSubscriber
+        this.usersCallback = usersCallback
 
         if (isFirstEnter) {
             userFirebase.getByPhoneNumber(phoneNumber, this)
@@ -86,14 +85,14 @@ class UserRepository(
             launch {
                 val users = userDao.getByPhoneNumber(phoneNumber)
                 withContext(Dispatchers.Main) {
-                    userSubscriber.returnUser(users)
+                    usersCallback.returnUsers(users)
                 }
             }
         }
     }
 
-    override fun getByCity(city: String, usersSubscriber: UsersCallback, isFirstEnter: Boolean) {
-        this.usersSubscriber = usersSubscriber
+    override fun getByCity(city: String, usersCallback: UsersCallback, isFirstEnter: Boolean) {
+        this.usersCallback = usersCallback
 
         if (isFirstEnter) {
             userFirebase.getByCity(city, this)
@@ -101,7 +100,7 @@ class UserRepository(
             launch {
                 val users = userDao.getByCity(city)
                 withContext(Dispatchers.Main) {
-                    usersSubscriber.returnUsers(users)
+                    usersCallback.returnUsers(users)
                 }
             }
         }
@@ -110,49 +109,41 @@ class UserRepository(
     override fun getByCityAndUserName(
         city: String,
         userName: String,
-        usersSubscriber: UsersCallback,
+        usersCallback: UsersCallback,
         isFirstEnter: Boolean
     ) {
-        this.usersSubscriber = usersSubscriber
+        this.usersCallback = usersCallback
         if (isFirstEnter) {
             userFirebase.getByCityAndUserName(city, userName, this)
         } else {
             launch {
                 val users = userDao.getByCityAndUserName(city, userName)
                 withContext(Dispatchers.Main) {
-                    usersSubscriber.returnUsers(users)
+                    usersCallback.returnUsers(users)
                 }
             }
         }
     }
 
-    override fun getByName(name: String, usersSubscriber: UsersCallback, isFirstEnter: Boolean) {
-        this.usersSubscriber = usersSubscriber
+    override fun getByName(name: String, usersCallback: UsersCallback, isFirstEnter: Boolean) {
+        this.usersCallback = usersCallback
         if (isFirstEnter) {
             userFirebase.getByName(name, this)
         } else {
             launch {
                 val users = userDao.getByName(name)
                 withContext(Dispatchers.Main) {
-                    usersSubscriber.returnUsers(users)
+                    usersCallback.returnUsers(users)
                 }
             }
         }
     }
-    //Insert after get in FB
-    override fun returnUser(user: User) {
-        //убрать проверку?
-        if (user.name != "") {
-            insertInRoom(user)
-        }
-        userSubscriber.returnUser(user)
-    }
 
     override fun returnUsers(users: List<User>) {
-        for (user in users) {
+      /*  for (user in users) {
             insertInRoom(user)
-        }
-        usersSubscriber.returnUsers(users)
+        }*/
+        usersCallback.returnUsers(users)
     }
 
     override fun insertInRoom(user: User) {

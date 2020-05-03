@@ -3,18 +3,16 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.iid.FirebaseInstanceId
 
 class ProfileUserInteractor(
     private val userRepository: UserRepository,
     private val intent: Intent
 ) : BaseRepository(),
-    IProfileUserInteractor, UserCallback {
+    IProfileUserInteractor, UsersCallback {
 
     private val TAG = "DBInf"
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
@@ -29,7 +27,7 @@ class ProfileUserInteractor(
     override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
         this.profilePresenterCallback = profilePresenterCallback
         if (intent.hasExtra(User.USER)) {
-            returnUser(intent.getSerializableExtra(User.USER) as User)
+            returnUsers(listOf(intent.getSerializableExtra(User.USER) as User))
             whoseProfile((intent.getSerializableExtra(User.USER) as User), profilePresenterCallback)
         } else {
             userRepository.getById(
@@ -40,13 +38,17 @@ class ProfileUserInteractor(
         }
     }
 
-    override fun returnUser(user: User) {
-        profilePresenterCallback.setUserProfile(user)
-        setRating(user.rating, profilePresenterCallback)
-        currentUser = user
-
-        profilePresenterCallback.getProfileServiceList(user.id)
-        whoseProfile(user, profilePresenterCallback)
+    override fun returnUsers(users: List<User>) {
+        if(users.isNotEmpty()) {
+            val user = users.first()
+            profilePresenterCallback.setUserProfile(user)
+            setRating(user.rating, profilePresenterCallback)
+            currentUser = user
+            //is my profile
+            //cacheCurrentUser = user
+            profilePresenterCallback.getProfileServiceList(user.id)
+            whoseProfile(user, profilePresenterCallback)
+        }
     }
 
     private fun setRating(rating: Float, profilePresenterCallback: ProfilePresenterCallback) {
@@ -69,13 +71,13 @@ class ProfileUserInteractor(
     }
 
     override fun initFCM() {
-       // if (fromRegistartion()) {
-      /*      val token = FirebaseInstanceId.getInstance().token
-            val reference = FirebaseDatabase.getInstance().reference
-            reference.child(User.USERS)
-                .child(User.getMyId())
-                .child(TOKEN)
-                .setValue(token)*/
+        // if (fromRegistartion()) {
+        /*      val token = FirebaseInstanceId.getInstance().token
+              val reference = FirebaseDatabase.getInstance().reference
+              reference.child(User.USERS)
+                  .child(User.getMyId())
+                  .child(TOKEN)
+                  .setValue(token)*/
         //}
     }
 
@@ -110,4 +112,6 @@ class ProfileUserInteractor(
         val cachedUserIdsForServices = arrayListOf<String>()
         var cacheCurrentUser = User()
     }
+
+
 }

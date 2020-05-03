@@ -34,6 +34,7 @@ class DialogRepository(
         launch {
             val id = dialogFirebase.getIdForNew(dialogs.first().ownerId)
             //dialogDao.insert(dialog)
+
             for (dialog in dialogs) {
                 dialog.id = id
                 dialogFirebase.insert(dialog)

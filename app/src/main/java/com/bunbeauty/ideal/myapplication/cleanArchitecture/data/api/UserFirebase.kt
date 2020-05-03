@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.database.DataSnapshot
@@ -53,7 +52,7 @@ class UserFirebase {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getById(id: String, callback: UserCallback) {
+    fun getById(id: String, usersCallback: UsersCallback) {
         val userRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
             .child(id)
@@ -61,7 +60,7 @@ class UserFirebase {
         userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
                 val user = getUserFromSnapshot(usersSnapshot)
-                callback.returnUser(user)
+                usersCallback.returnUsers(listOf(user))
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -70,18 +69,18 @@ class UserFirebase {
         })
     }
 
-    fun getByPhoneNumber(phoneNumber: String, callback: UserCallback) {
+    fun getByPhoneNumber(phoneNumber: String, usersCallback: UsersCallback) {
         val userQuery = FirebaseDatabase.getInstance().getReference(User.USERS)
             .orderByChild(User.PHONE)
             .equalTo(phoneNumber)
 
         userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
-                var user = User()
+                val users = mutableListOf<User>()
                 if (usersSnapshot.childrenCount > 0L) {
-                    user = getUserFromSnapshot(usersSnapshot.children.iterator().next())
+                    users.add(getUserFromSnapshot(usersSnapshot.children.iterator().next()))
                 }
-                callback.returnUser(user)
+                usersCallback.returnUsers(users)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
