@@ -13,13 +13,13 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscriptions.SubscribersActivity
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
 @Component(dependencies = [], modules = [AppModule::class])
 interface AppComponent {
-
     fun inject(authorizationActivity: AuthorizationActivity)
     fun inject(verifyPhoneNumberActivity: VerifyPhoneNumberActivity)
     fun inject(registrationActivity: RegistrationActivity)
@@ -33,4 +33,5 @@ interface AppComponent {
     fun inject(scheduleActivity: ScheduleActivity)
     fun inject(dialogsActivity: DialogsActivity)
     fun inject(messagesActivity: MessagesActivity)
+    fun inject(subscribersActivity: SubscribersActivity)
 }

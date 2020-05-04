@@ -5,11 +5,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
 import com.google.firebase.auth.FirebaseAuth
 
 class MainScreenUserInteractor(
-    val userRepository: UserRepository
+    val userRepository: IUserRepository
 ) : IMainScreenUserInteractor,
     UsersCallback {
 

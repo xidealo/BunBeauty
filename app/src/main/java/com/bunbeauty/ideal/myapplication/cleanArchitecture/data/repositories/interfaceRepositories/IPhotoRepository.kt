@@ -7,5 +7,4 @@ interface IPhotoRepository {
     fun delete(photo: Photo)
     fun update(photo: Photo)
     fun get(): List<Photo>
-
 }

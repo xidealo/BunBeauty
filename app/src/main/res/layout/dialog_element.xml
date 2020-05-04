@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/block_text"
     android:orientation="horizontal"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements.DialogElement">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.DialogElement">
 
     <LinearLayout
         android:id="@+id/dialogElementLayoutSecond"

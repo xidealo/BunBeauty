@@ -15,9 +15,10 @@ class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase:
 
     override fun insert(photo: Photo) {
         launch {
+            photo.id = getIdForNew(photo.userId, photo.serviceId)
+            photoFirebase.insert(photo)
             photoDao.insert(photo)
         }
-        photoFirebase.insert(photo)
     }
 
     override fun delete(photo: Photo) {

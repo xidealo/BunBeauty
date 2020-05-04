@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements
 
 import android.view.Gravity
 import android.view.View

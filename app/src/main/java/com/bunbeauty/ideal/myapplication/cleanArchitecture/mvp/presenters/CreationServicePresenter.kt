@@ -2,7 +2,9 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServicePhotoInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationService.CreationServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -11,7 +13,11 @@ import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import java.util.*
 
 @InjectViewState
-class CreationServicePresenter(private val creationServiceInteractor: CreationServiceInteractor) :
+class CreationServicePresenter(
+    private val creationServiceServiceInteractor: CreationServiceServiceServiceInteractor,
+    private val creationServiceTagInteractor: ICreationServiceTagInteractor,
+    private val creationServicePhotoInteractor: ICreationServicePhotoInteractor
+) :
     MvpPresenter<AddingServiceView>(), CreationServicePresenterCallback {
 
     fun addService(
@@ -34,7 +40,7 @@ class CreationServicePresenter(private val creationServiceInteractor: CreationSe
         service.premiumDate = Service.DEFAULT_PREMIUM_DATE
         service.creationDate = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
         service.userId = User.getMyId()
-        creationServiceInteractor.addService(service, tags, fpathOfImages, this)
+        creationServiceServiceInteractor.addService(service, tags, fpathOfImages, this)
     }
 
     override fun showNameInputError(error: String) {
@@ -61,5 +67,13 @@ class CreationServicePresenter(private val creationServiceInteractor: CreationSe
         viewState.hideMainBlock()
         viewState.showPremiumBlock(service)
         viewState.showMessage("Сервис создан!")
+    }
+
+    override fun addTags(service: Service) {
+        creationServiceTagInteractor.addTags(service)
+    }
+
+    override fun addPhotos(service: Service) {
+        creationServicePhotoInteractor.addImages(service)
     }
 }

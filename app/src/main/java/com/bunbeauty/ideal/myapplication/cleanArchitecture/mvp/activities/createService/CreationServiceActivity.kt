@@ -11,7 +11,9 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
@@ -50,7 +52,13 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     lateinit var creationServicePresenter: CreationServicePresenter
 
     @Inject
-    lateinit var creationServiceInteractor: CreationServiceInteractor
+    lateinit var creationServiceServiceInteractor: CreationServiceServiceServiceInteractor
+
+    @Inject
+    lateinit var creationServiceTagInteractor: CreationServiceTagInteractor
+
+    @Inject
+    lateinit var creationServicePhotoInteractor: CreationServicePhotoInteractor
 
     @ProvidePresenter
     internal fun provideAddingServicePresenter(): CreationServicePresenter {
@@ -59,7 +67,11 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
             .appModule(AppModule(application, intent))
             .build().inject(this)
 
-        return CreationServicePresenter(creationServiceInteractor)
+        return CreationServicePresenter(
+            creationServiceServiceInteractor,
+            creationServiceTagInteractor,
+            creationServicePhotoInteractor
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -4,14 +4,16 @@ import android.app.Application
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.*
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.EditProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.EditProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
@@ -20,6 +22,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscribersInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dbInstance.LocalDatabase
@@ -132,12 +135,16 @@ class AppModule(private val app: Application, private val intent: Intent) {
         ProfileDialogInteractor(dialogRepository)
 
     @Provides
-    fun provideAddingServiceInteractor(
-        serviceRepository: ServiceRepository,
-        tagRepository: TagRepository,
-        photoRepository: PhotoRepository
-    ) =
-        CreationServiceInteractor(serviceRepository, tagRepository, photoRepository)
+    fun provideCreationServiceServiceServiceInteractor(serviceRepository: ServiceRepository) =
+        CreationServiceServiceServiceInteractor(serviceRepository)
+
+    @Provides
+    fun provideCreationServiceServiceTagInteractor(tagRepository: TagRepository) =
+        CreationServiceTagInteractor(tagRepository)
+
+    @Provides
+    fun provideCreationServiceServicePhotoInteractor(photoRepository: PhotoRepository) =
+        CreationServicePhotoInteractor(photoRepository)
 
     @Provides
     fun providePremiumElementCodeInteractor(codeRepository: CodeRepository) =
@@ -199,6 +206,9 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     @Provides
     fun provideScheduleInteractor() = ScheduleInteractor()
+
+    @Provides
+    fun provideSubscribersInteractor() = SubscribersInteractor()
 
     @Provides
     fun provideMessagesUserInteractor() = MessagesUserInteractor(intent)

@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements
 
 import android.content.Context
 import android.content.Intent
@@ -11,7 +11,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import com.squareup.picasso.Picasso
 
 class DialogElement(

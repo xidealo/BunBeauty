@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters;
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements;
 
 import android.content.Context;
 import android.content.Intent;

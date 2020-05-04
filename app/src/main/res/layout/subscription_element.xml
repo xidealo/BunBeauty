@@ -5,10 +5,9 @@
     style="@style/block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="20dp"
+    android:layout_margin="10dp"
     android:background="@drawable/block_text"
-    android:padding="10dp"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.SubscriptionElement">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.SubscriptionElement">
 
     <ImageView
         android:id="@+id/avatarSubscriptionElementImage"
@@ -20,8 +19,8 @@
     <TextView
         android:id="@+id/workerNameSubscriptionElementText"
         style="@style/mainBlockText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:gravity="center"
@@ -29,9 +28,10 @@
 
     <TextView
         android:id="@+id/subscribeSubscriptionElementText"
-        android:layout_width="60dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:layout_weight="2"
         android:fontFamily="@font/font_awesome_solid"
         android:gravity="center"
         android:text="@string/subscribe_ico"
@@ -41,14 +41,14 @@
     <TextView
         android:id="@+id/unsubscribeSubscriptionElementText"
         style="@style/iconRegular"
-        android:layout_width="60dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:layout_weight="2"
         android:fontFamily="@font/font_awesome_solid"
         android:gravity="center"
         android:text="@string/subscribe_ico"
         android:textColor="@color/red"
-        android:visibility="gone"
         android:textSize="25sp" />
 
 

@@ -9,4 +9,7 @@ interface CreationServicePresenterCallback {
     fun showCategoryInputError(error: String)
     fun showAddressInputError(error: String)
     fun showServiceCreated(service: Service)
+
+    fun addTags(service: Service)
+    fun addPhotos(service: Service)
 }

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.foundElements.FoundServiceElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.foundElements.FoundServiceElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User

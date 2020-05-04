@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createServi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationService.CreationServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
-interface ICreationServiceInteractor {
+interface ICreationServiceServiceInteractor {
     fun getIsNameInputCorrect(name: String): Boolean
     fun getIsNameLengthLessTwenty(name: String): Boolean
     fun getIsDescriptionInputCorrect(description: String): Boolean
@@ -21,5 +21,4 @@ interface ICreationServiceInteractor {
         creationServicePresenterCallback: CreationServicePresenterCallback
     )
 
-    fun addImages(fpathOfImages: List<String>, service: Service)
 }

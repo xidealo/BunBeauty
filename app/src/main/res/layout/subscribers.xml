@@ -5,59 +5,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundLightBlue"
-    tools:context="com.bunbeauty.ideal.myapplication.subscriptions.Subscribers">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscriptions.SubscribersActivity">
 
-    <LinearLayout
-        android:id="@+id/headerSubscribersLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </LinearLayout>
+    <include layout="@layout/part_top_panel" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="10dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/footerSubscribersLayout"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerSubscribersLayout">
+        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout">
 
-        <TextView
-            android:id="@+id/subsCountSubscribersText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            style="@style/mainBlockText"
-            android:text="У вас пока нет подписок" />
-
-        <ProgressBar
-            android:id="@+id/progressBarSubscribers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminateTint= "@color/mainBlue"
-            />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/resultsSubscribersRecycleView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none">
-        </androidx.recyclerview.widget.RecyclerView>
-
+            android:scrollbars="none" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/footerSubscribersLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_panel_height"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
+    <TextView
+        android:id="@+id/subsCountSubscribersText"
+        style="@style/mainBlockText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Нет подписок"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout" />
 
-    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progressBarSubscribers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/mainBlue"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout" />
+
+    <include layout="@layout/part_bottom_panel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

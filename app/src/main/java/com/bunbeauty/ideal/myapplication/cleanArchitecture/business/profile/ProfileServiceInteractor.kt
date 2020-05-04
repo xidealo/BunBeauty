@@ -5,8 +5,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.Prof
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceRepository
 
-class ProfileServiceInteractor(private val serviceRepository: ServiceRepository) :
+class ProfileServiceInteractor(private val serviceRepository: IServiceRepository) :
     IProfileServiceInteractor, IServicesCallback {
 
     private var services = mutableListOf<Service>()

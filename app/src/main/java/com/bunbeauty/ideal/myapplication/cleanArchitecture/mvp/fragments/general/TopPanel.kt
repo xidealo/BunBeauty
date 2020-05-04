@@ -115,6 +115,10 @@ class TopPanel : Panel() {
             ButtonTask.GO_TO_PROFILE -> {
                 setAvatar()
             }
+            ButtonTask.SUBSCRIBE -> {
+                setAvatar()
+            }
+
             ButtonTask.NONE -> {
                 hideIcon()
             }
@@ -122,6 +126,12 @@ class TopPanel : Panel() {
     }
 
     private fun showEditIcon() {
+        editText.visibility = View.VISIBLE
+        searchText.visibility = View.GONE
+        avatarLayout.visibility = View.GONE
+    }
+
+    private fun showSubscribeIcon() {
         editText.visibility = View.VISIBLE
         searchText.visibility = View.GONE
         avatarLayout.visibility = View.GONE
@@ -153,6 +163,7 @@ class TopPanel : Panel() {
         searchText.visibility = View.GONE
         avatarLayout.visibility = View.GONE
     }
+
 
     companion object {
         private const val TITLE = "title"

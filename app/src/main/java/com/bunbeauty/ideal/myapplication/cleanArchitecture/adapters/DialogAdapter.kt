@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements.DialogElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.DialogElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 
 class DialogAdapter(

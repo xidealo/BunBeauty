@@ -9,7 +9,7 @@
     android:layout_marginTop="5dp"
     android:layout_marginBottom="5dp"
     android:orientation="horizontal"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements.MessageElement">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.MessageElement">
 
     <TextView
         android:id="@+id/messageTextMessageElementText"

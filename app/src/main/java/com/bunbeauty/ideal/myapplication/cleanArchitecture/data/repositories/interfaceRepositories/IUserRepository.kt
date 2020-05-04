@@ -17,7 +17,7 @@ interface IUserRepository {
     fun getByCityAndUserName(
         city: String,
         userName: String,
-        usersSubscriber: UsersCallback,
+        usersCallback: UsersCallback,
         isFirstEnter: Boolean
     )
 }

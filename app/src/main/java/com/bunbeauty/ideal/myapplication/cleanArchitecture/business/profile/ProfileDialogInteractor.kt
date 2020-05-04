@@ -7,8 +7,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.DialogRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IDialogRepository
 
-class ProfileDialogInteractor(private val dialogRepository: DialogRepository) :
+class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
     IProfileDialogInteractor, InsertDialogCallback, DialogsCallback {
 
     private lateinit var profilePresenterCallback: ProfilePresenterCallback

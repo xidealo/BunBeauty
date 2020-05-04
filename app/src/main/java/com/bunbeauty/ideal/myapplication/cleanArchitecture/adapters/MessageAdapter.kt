@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.MessageAdapter.MessageViewHolder
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements.MessageElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.MessageElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 
 class MessageAdapter(

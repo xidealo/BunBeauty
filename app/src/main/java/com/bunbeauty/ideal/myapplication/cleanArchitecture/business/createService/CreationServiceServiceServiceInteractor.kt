@@ -1,25 +1,14 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService
 
-import android.net.Uri
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationService.CreationServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.InsertServiceCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.TagRepository
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceRepository
 
-class CreationServiceInteractor(
-    private val serviceRepository: ServiceRepository,
-    private val tagRepository: TagRepository,
-    private val photoRepository: PhotoRepository
-) : ICreationServiceInteractor, InsertServiceCallback {
+class CreationServiceServiceServiceInteractor(
+    private val serviceRepository: IServiceRepository
+) : ICreationServiceServiceInteractor, InsertServiceCallback {
 
     private lateinit var creationServicePresenterCallback: CreationServicePresenterCallback
 
@@ -33,53 +22,15 @@ class CreationServiceInteractor(
         if (isNameCorrect(service.name) && isAddressCorrect(service.address)
             && isCategoryCorrect(service.category) && isDescriptionCorrect(service.description)
         ) {
-            service.id = serviceRepository.getIdForNew(User.getMyId())
             serviceRepository.insert(service, this)
-            addTags(tags, service)
+            //addTags(tags, service)
             //addImages(fpathOfImages, service)
-        }
-    }
-
-    private fun addTags(tags: List<String>, service: Service) {
-        for (tagText: String in tags) {
-            val tag = Tag()
-            tag.id = tagRepository.getIdForNew(service.userId, service.id)
-            tag.tag = tagText
-            tag.serviceId = service.id
-            tag.userId = service.userId
-            tagRepository.insert(tag)
-        }
-    }
-
-    override fun addImages(fpathOfImages: List<String>, service: Service) {
-        for (path in fpathOfImages) {
-            val photo = Photo()
-            photo.userId = service.userId
-            photo.serviceId = service.id
-            addImage(photo, path)
-        }
-    }
-
-    private fun addImage(photo: Photo, path: String) {
-        photo.id = photoRepository.getIdForNew(photo.serviceId, photo.serviceId)
-
-        val storageReference = FirebaseStorage
-            .getInstance()
-            .getReference("${CreationServiceActivity.SERVICE_PHOTO}/$photo.id")
-
-        storageReference.putFile(convertToUri(path)).addOnSuccessListener {
-            storageReference.downloadUrl.addOnSuccessListener {
-                photo.link = it.toString()
-                photoRepository.insert(photo)
-            }
         }
     }
 
     override fun returnCreatedCallback(obj: Service) {
         creationServicePresenterCallback.showServiceCreated(obj)
     }
-
-    private fun convertToUri(data: String): Uri = Uri.parse(data)
 
     private fun isNameCorrect(name: String): Boolean {
         if (name.isEmpty()) {

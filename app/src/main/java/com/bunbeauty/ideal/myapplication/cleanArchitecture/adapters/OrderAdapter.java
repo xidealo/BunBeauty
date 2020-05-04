@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.foundElements.FoundOrderElement;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.foundElements.FoundOrderElement;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order;
 
 import java.util.ArrayList;

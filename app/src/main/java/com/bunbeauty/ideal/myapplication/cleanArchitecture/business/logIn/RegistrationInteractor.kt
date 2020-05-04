@@ -5,11 +5,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.IRegistrationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.InsertUsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
 import com.google.firebase.auth.FirebaseAuth
 
 class RegistrationInteractor(
-    private val userRepository: UserRepository,
+    private val userRepository: IUserRepository,
     private val intent: Intent
 ) : IRegistrationInteractor, InsertUsersCallback {
 

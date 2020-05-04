@@ -1,12 +1,19 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-@Entity
-data class Service(
+@Entity(
+    foreignKeys = [ForeignKey(
+        entity = User::class,
+        parentColumns = ["id"],
+        childColumns = ["userId"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)data class Service(
     @PrimaryKey
     var id: String = "",
     var userId: String = "",
@@ -20,7 +27,9 @@ data class Service(
     var creationDate: String = "",
     var premiumDate: String = "",
     @Ignore
-    var tags: ArrayList<Tag> = ArrayList()
+    var tags: ArrayList<Tag> = ArrayList(),
+    @Ignore
+    var photosPath: ArrayList<String> = ArrayList()
 ) : EditableEntity(), Serializable {
 
     companion object {

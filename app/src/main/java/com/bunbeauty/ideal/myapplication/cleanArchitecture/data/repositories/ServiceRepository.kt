@@ -20,6 +20,7 @@ class ServiceRepository(
 
     override fun insert(service: Service, insertServiceCallback: InsertServiceCallback) {
         launch {
+            service.id = getIdForNew(service.userId)
             serviceFirebase.insert(service)
             serviceDao.insert(service)
             withContext(Dispatchers.Main) {

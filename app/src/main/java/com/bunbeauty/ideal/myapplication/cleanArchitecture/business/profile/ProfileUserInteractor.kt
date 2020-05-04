@@ -7,9 +7,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
 
 class ProfileUserInteractor(
-    private val userRepository: UserRepository,
+    private val userRepository: IUserRepository,
     private val intent: Intent
 ) : BaseRepository(),
     IProfileUserInteractor, UsersCallback {
