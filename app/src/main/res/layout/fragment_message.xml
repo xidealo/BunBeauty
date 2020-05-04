@@ -15,10 +15,11 @@
         android:id="@+id/messageTextMessageElementText"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:maxWidth="230dp"
         android:textSize="14sp"
         android:textColor="@color/black"
         android:background="@color/white"
-        android:padding="5dp"
+        android:padding="8dp"
         android:textStyle="bold"
         android:text="@string/hello_blank_fragment" />
 

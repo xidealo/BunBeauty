@@ -95,7 +95,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     override fun onClick(v: View) {
         when (v.id) {
             R.id.sendMessageMessagesBtn -> {
-                messagePresenter.sendMessage(messageMessagesInput.text.toString())
+                messagePresenter.sendMessage(messageMessagesInput.text.toString().trim())
                 messageMessagesInput.text.clear()
             }
         }

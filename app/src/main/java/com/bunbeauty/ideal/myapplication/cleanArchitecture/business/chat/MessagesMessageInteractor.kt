@@ -48,9 +48,9 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messages: List<Message>,
         messagesPresenterCallback: MessagesPresenterCallback
     ) {
-        if(messages.isEmpty()){
+        if (messages.isEmpty()) {
             messagesPresenterCallback.showMessagesScreen(cacheMessages)
-        }else{
+        } else {
             messagesPresenterCallback.showMessagesScreen(cacheMessages)
             messagesPresenterCallback.showMoveToStart()
         }
@@ -70,4 +70,5 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     override fun returnCreatedCallback(obj: Message) {
         messagesPresenterCallback.showSendMessage(obj)
     }
+
 }

@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements
 
-import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -8,8 +7,6 @@ import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.WorkingTime
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 
 
 class MessageElement(

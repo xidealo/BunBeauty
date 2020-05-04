@@ -28,12 +28,12 @@ class ProfileUserInteractor(
         this.profilePresenterCallback = profilePresenterCallback
         if (intent.hasExtra(User.USER)) {
             returnUsers(listOf(intent.getSerializableExtra(User.USER) as User))
-            whoseProfile((intent.getSerializableExtra(User.USER) as User), profilePresenterCallback)
+            //whoseProfile((intent.getSerializableExtra(User.USER) as User), profilePresenterCallback)
         } else {
             userRepository.getById(
                 User.getMyId(),
                 this,
-                isFirstEnter(User.getMyId(), cachedUserIds)
+                true
             )
         }
     }

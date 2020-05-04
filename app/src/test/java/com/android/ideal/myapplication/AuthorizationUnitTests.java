@@ -34,7 +34,7 @@ public class AuthorizationUnitTests {
 
 
     private AuthorizationInteractor getAuthorizationInstance() {
-        return new AuthorizationInteractor(userRepository, intent);
+        return new AuthorizationInteractor(userRepository);
     }
 }
 

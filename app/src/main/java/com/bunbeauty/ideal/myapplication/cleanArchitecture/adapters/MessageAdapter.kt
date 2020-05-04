@@ -9,7 +9,6 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.MessageAdapter.MessageViewHolder
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.chatElements.MessageElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
-import java.util.*
 
 class MessageAdapter(
     private val messageList: List<Message>

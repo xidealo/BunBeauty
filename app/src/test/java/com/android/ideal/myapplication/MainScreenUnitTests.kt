@@ -22,8 +22,8 @@ class MainScreenUnitTests {
     @Mock
     internal lateinit var userRepository: UserRepository
 
-    private val mainScreenUserInteractor: MainScreenUserInteractor
-        get() = MainScreenUserInteractor(userRepository, serviceRepository)
+ /*   private val mainScreenUserInteractor: MainScreenUserInteractor
+        get() = MainScreenUserInteractor(userRepository)
 
     @Test
     fun convertCacheDataToMainScreenData() {
@@ -145,6 +145,6 @@ class MainScreenUnitTests {
         data.add(user)
         return data
     }
-
+*/
 }
 

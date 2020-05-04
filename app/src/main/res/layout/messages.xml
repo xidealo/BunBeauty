@@ -46,10 +46,12 @@
             android:inputType="textMultiLine|textCapSentences"
             style="@style/loginInput"
             android:hint="Сообщения"/>
+
         <Button
             android:id="@+id/sendMessageMessagesBtn"
             android:layout_width="match_parent"
             android:layout_weight="5"
+            android:text="se"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>

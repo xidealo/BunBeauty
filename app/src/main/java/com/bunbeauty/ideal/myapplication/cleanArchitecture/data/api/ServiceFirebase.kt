@@ -1,13 +1,15 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.util.*
 import kotlin.collections.ArrayList
 
