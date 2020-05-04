@@ -44,8 +44,6 @@ class ProfileUserInteractor(
             profilePresenterCallback.setUserProfile(user)
             setRating(user.rating, profilePresenterCallback)
             currentUser = user
-            //is my profile
-            //cacheCurrentUser = user
             profilePresenterCallback.getProfileServiceList(user.id)
             whoseProfile(user, profilePresenterCallback)
         }

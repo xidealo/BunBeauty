@@ -23,7 +23,7 @@ class BottomPanel : Panel() {
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.profileBottomPanelText -> goTo(ProfileActivity::class.java)
+            R.id.profileBottomPanelText -> goToProfile()
             R.id.mainScreenBottomPanelText -> goToMainScreen()
             R.id.chatBottomPanelText -> goTo(DialogsActivity::class.java)
         }
@@ -60,6 +60,13 @@ class BottomPanel : Panel() {
 
     private fun goTo(activityClass: Class<out Activity>) {
         val intent = Intent(context, activityClass)
+        this.startActivity(intent)
+        (context as Activity).overridePendingTransition(0,0)
+    }
+
+    private fun goToProfile() {
+        val intent = Intent(context, ProfileActivity::class.java)
+        intent.putExtra(User.USER, ProfileUserInteractor.cacheCurrentUser)
         this.startActivity(intent)
         (context as Activity).overridePendingTransition(0,0)
     }

@@ -57,7 +57,7 @@ class UserFirebase {
             .getReference(User.USERS)
             .child(id)
 
-        userRef.addValueEventListener(object : ValueEventListener {
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
                 val user = getUserFromSnapshot(usersSnapshot)
                 usersCallback.returnUsers(listOf(user))
@@ -95,7 +95,7 @@ class UserFirebase {
             .orderByChild(User.CITY)
             .equalTo(city)
 
-        userQuery.addValueEventListener(object : ValueEventListener {
+        userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
                 val users = arrayListOf<User>()
                 if (usersSnapshot.childrenCount > 0L) {
@@ -118,7 +118,7 @@ class UserFirebase {
             .orderByChild(User.CITY)
             .equalTo(city)
 
-        userQuery.addValueEventListener(object : ValueEventListener {
+        userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
                 val users = arrayListOf<User>()
                 if (usersSnapshot.childrenCount > 0L) {
@@ -142,7 +142,7 @@ class UserFirebase {
             .orderByChild(User.NAME)
             .equalTo(name)
 
-        userQuery.addValueEventListener(object : ValueEventListener {
+        userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
                 if (usersSnapshot.childrenCount > 0L) {
                     val users = arrayListOf<User>()

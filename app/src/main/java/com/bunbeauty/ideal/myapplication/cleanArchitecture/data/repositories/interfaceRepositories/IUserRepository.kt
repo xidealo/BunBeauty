@@ -12,8 +12,8 @@ interface IUserRepository {
 
     fun getById(id: String, usersCallback: UsersCallback, isFirstEnter: Boolean)
     fun getByPhoneNumber(phoneNumber: String, usersCallback: UsersCallback, isFirstEnter: Boolean)
-    fun getByCity(city: String, usersSubscriber: UsersCallback, isFirstEnter: Boolean)
-    fun getByName(name: String, usersSubscriber: UsersCallback, isFirstEnter: Boolean)
+    fun getByCity(city: String, usersCallback: UsersCallback, isFirstEnter: Boolean)
+    fun getByName(name: String, usersCallback: UsersCallback, isFirstEnter: Boolean)
     fun getByCityAndUserName(
         city: String,
         userName: String,
