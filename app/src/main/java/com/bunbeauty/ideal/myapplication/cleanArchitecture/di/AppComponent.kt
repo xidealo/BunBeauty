@@ -9,13 +9,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragme
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneNumberActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.*
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.SearchServicePresenter
 import dagger.Component
 import javax.inject.Singleton
 
@@ -24,7 +21,7 @@ import javax.inject.Singleton
 interface AppComponent {
 
     fun inject(authorizationActivity: AuthorizationActivity)
-    fun inject(verifyPhoneActivity: VerifyPhoneActivity)
+    fun inject(verifyPhoneNumberActivity: VerifyPhoneNumberActivity)
     fun inject(registrationActivity: RegistrationActivity)
     fun inject(profileActivity: ProfileActivity)
     fun inject(creationServiceActivity: CreationServiceActivity)

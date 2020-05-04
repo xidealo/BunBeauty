@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/logInPages"
+    style="@style/logInPage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneActivity">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneNumberActivity">
 
     <LinearLayout
         style="@style/loginPackageMainLinearLayout"
@@ -23,7 +23,7 @@
 
         <EditText
             android:id="@+id/codeVerifyPhoneInput"
-            style="@style/loginPackageInput"
+            style="@style/loginInput"
             android:layout_gravity="center"
             android:hint="@string/enterCode"
             android:inputType="phone" />

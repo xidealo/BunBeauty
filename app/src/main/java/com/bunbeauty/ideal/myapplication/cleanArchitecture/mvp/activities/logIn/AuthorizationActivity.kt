@@ -40,9 +40,9 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
     @ProvidePresenter
     internal fun provideAuthorizationPresenter(): AuthorizationPresenter {
         DaggerAppComponent
-                .builder()
-                .appModule(AppModule(application, intent))
-                .build().inject(this)
+            .builder()
+            .appModule(AppModule(application, intent))
+            .build().inject(this)
 
         return AuthorizationPresenter(
             authorizationInteractor
@@ -51,30 +51,33 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.authorization)
+        setContentView(R.layout.activity_authorization)
         initView()
         //FirebaseAuth.getInstance().signOut()//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         authorizationPresenter.defaultAuthorize()
     }
 
     private fun initView() {
-        verifyBtn = findViewById(R.id.verifyAuthorizationBtn)
         phoneInput = findViewById(R.id.phoneAuthorizationInput)
         titleAuthorizationText = findViewById(R.id.titleAuthorizationText)
         progressBar = findViewById(R.id.loadingAuthorizationProgressBar)
+
         codeSpinner = findViewById(R.id.codeAuthorizationSpinner)
         setAdapter(
-                arrayListOf(*resources.getStringArray(R.array.countryCode)),
-                codeSpinner,
-                this
+            arrayListOf(*resources.getStringArray(R.array.countryCode)),
+            codeSpinner,
+            this,
+            R.layout.element_login_spinner
         )
+
+        verifyBtn = findViewById(R.id.verifyAuthorizationBtn)
         verifyBtn.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
         if (v.id == R.id.verifyAuthorizationBtn) {
             authorizationPresenter.authorize(
-                    CountryCodes.codes[codeSpinner.selectedItemPosition] + phoneInput.text.toString()
+                CountryCodes.codes[codeSpinner.selectedItemPosition] + phoneInput.text.toString()
             )
         }
     }
@@ -114,7 +117,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
     }
 
     override fun goToVerifyPhone(phone: String) {
-        val intent = Intent(this, VerifyPhoneActivity::class.java)
+        val intent = Intent(this, VerifyPhoneNumberActivity::class.java)
         intent.putExtra(User.PHONE, phone)
         this.startActivity(intent)
         overridePendingTransition(0, 0)

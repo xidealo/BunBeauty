@@ -44,7 +44,7 @@
             android:layout_weight="1"
             android:backgroundTint="@color/mainBlue"
             android:inputType="textMultiLine|textCapSentences"
-            style="@style/loginPackageInput"
+            style="@style/loginInput"
             android:hint="Сообщения"/>
         <Button
             android:id="@+id/sendMessageMessagesBtn"

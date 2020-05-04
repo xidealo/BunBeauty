@@ -50,7 +50,7 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
 
 
     override fun returnUsers(users: List<User>) {
-        if (users.first().name.isEmpty()) {
+        if (users.isEmpty() || users.first().name.isEmpty()) {
             if (FirebaseAuth.getInstance().currentUser != null ) {
                 if(FirebaseAuth.getInstance().currentUser!!.phoneNumber != null)
                     authorizationPresenterCallback.goToRegistration(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!)

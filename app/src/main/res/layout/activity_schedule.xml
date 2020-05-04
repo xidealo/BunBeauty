@@ -74,7 +74,7 @@
 
     <TextView
         style="@style/wideLabel"
-        android:background="@color/transparentGrey"
+        android:background="@color/grey40"
         app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout" />
 
     <include layout="@layout/part_bottom_panel" />

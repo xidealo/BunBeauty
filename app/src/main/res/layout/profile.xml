@@ -163,14 +163,41 @@
             android:id="@+id/switcherProfileLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="2dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/addServicesProfileBtn"
-                style="@style/smallButton"
-                android:text="@string/addServices" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addServicesProfileBtn"
+                    style="@style/smallButton"
+                    android:gravity="center"
+                    android:text="@string/addServices" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/switcherProfileBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/ordersProfileBtn"
+                    style="@style/smallButton"
+                    android:text="Записи" />
+
+                <Button
+                    android:id="@+id/servicesProfileBtn"
+                    style="@style/smallButton"
+                    android:text="Услуги" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
         </LinearLayout>
 
     </LinearLayout>
@@ -179,9 +206,11 @@
         android:id="@+id/recyclerViewProfileRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/bottomPanelLayout"
-        app:layout_constraintTop_toBottomOf="@id/mainProfileLayout">
+        app:layout_constraintTop_toBottomOf="@id/mainProfileLayout"
+        tools:layout_editor_absoluteX="0dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/servicesProfileRecyclerView"

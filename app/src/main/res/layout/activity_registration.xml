@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/logInPages"
+    style="@style/logInPage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity">
@@ -25,35 +25,26 @@
 
             <EditText
                 android:id="@+id/phoneRegistrationInput"
-                style="@style/loginPackageInput"
+                style="@style/loginInput"
                 android:enabled="false"
                 android:hint="@string/phoneRegistration"
                 android:inputType="phone" />
 
             <EditText
                 android:id="@+id/nameRegistrationInput"
-                style="@style/loginPackageInput"
+                style="@style/loginInput"
                 android:hint="@string/nameRegistration"
                 android:inputType="textPersonName|textCapSentences" />
 
             <EditText
                 android:id="@+id/surnameRegistrationInput"
-                style="@style/loginPackageInput"
+                style="@style/loginInput"
                 android:hint="@string/surname"
-                android:inputType="textPersonName|textCapSentences"/>
+                android:inputType="textPersonName|textCapSentences" />
 
-            <LinearLayout
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
-
-                <Spinner
-                    android:id="@+id/citySpinnerRegistrationSpinner"
-                    style="@style/loginPackageSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/choice_cites" />
-            </LinearLayout>
+            <Spinner
+                android:id="@+id/citySpinnerRegistrationSpinner"
+                style="@style/loginSpinner" />
 
         </LinearLayout>
 
@@ -62,8 +53,8 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/saveRegistrationBtn"
         style="@style/loginButton"
-        android:text="сохранить данные"
         android:layout_marginBottom="50dp"
+        android:text="сохранить данные"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

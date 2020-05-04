@@ -33,7 +33,7 @@ class VerifyPhoneInteractor(
     }
 
     override fun returnUsers(users: List<User>) {
-        if (users.first().name.isEmpty()) {
+        if (users.isEmpty() || users.first().name.isEmpty()) {
             verifyPresenterCallback.goToRegistration(getMyPhoneNumber())
         } else {
             verifyPresenterCallback.goToProfile()

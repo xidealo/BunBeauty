@@ -21,7 +21,7 @@ import com.google.firebase.auth.PhoneAuthProvider
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener,
+class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener,
     VerifyPhoneView {
 
     private lateinit var verifyCodeBtn: Button
@@ -51,7 +51,7 @@ class VerifyPhoneActivity : MvpAppCompatActivity(), View.OnClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.verify_phone)
+        setContentView(R.layout.activity_verify_phone_number)
         initView()
         showViewsOnScreen()
         verifyPhonePresenter.sendCode()
