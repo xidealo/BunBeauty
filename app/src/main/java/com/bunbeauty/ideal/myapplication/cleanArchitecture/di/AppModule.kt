@@ -223,13 +223,11 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideMessagesUserInteractor() = MessagesUserInteractor(intent)
 
     @Provides
-    fun provideEditServiceInteractor(serviceRepository: ServiceRepository) = EditServiceInteractor(
-        intent, serviceRepository
-    )
+    fun provideEditServiceInteractor(serviceRepository: ServiceRepository) =
+        EditServiceInteractor(intent, serviceRepository)
 
     //APIs
     @Provides
     fun provideFigureServicePointsApi() = FiguringServicePoints()
-
 
 }

@@ -89,6 +89,13 @@
                         android:id="@+id/subscribersProfileText"
                         style="@style/defaultTextProfile"
                         android:text="TextView" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/subscribeProfileBtn"
+                        style="@style/smallButton"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:text="Подписаться" />
                 </LinearLayout>
             </LinearLayout>
 

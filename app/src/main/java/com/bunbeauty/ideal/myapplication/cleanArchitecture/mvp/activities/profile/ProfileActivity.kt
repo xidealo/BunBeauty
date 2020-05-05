@@ -33,7 +33,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.bunbeauty.ideal.myapplication.other.ISwitcher
-import com.bunbeauty.ideal.myapplication.reviews.Comments
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
@@ -56,6 +55,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var addServicesBtn: Button
     private lateinit var subscriptionsBtn: Button
     private lateinit var dialogsBtn: Button
+    private lateinit var subscribeProfileBtn: Button
     private lateinit var scheduleBtn: Button
 
     private lateinit var switcherFragment: SwitcherElement
@@ -109,6 +109,8 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         dialogsBtn.setOnClickListener(this)
         scheduleBtn = findViewById(R.id.scheduleProfileBtn)
         scheduleBtn.setOnClickListener(this)
+        subscribeProfileBtn = findViewById(R.id.subscribeProfileBtn)
+        subscribeProfileBtn.setOnClickListener(this)
 
         mainLayout = findViewById(R.id.mainProfileLayout)
         cityText = findViewById(R.id.cityProfileText)
@@ -179,6 +181,14 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun hideDialogs() {
         dialogsBtn.visibility = View.GONE
+    }
+
+    override fun showSubscribe() {
+        subscribeProfileBtn.visibility = View.VISIBLE
+    }
+
+    override fun hideSubscribe() {
+        subscribeProfileBtn.visibility = View.GONE
     }
 
     override fun showAddService() {
@@ -288,6 +298,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         }
 
     }
+
     override fun goToDialog(dialog: Dialog) {
         val intent = Intent(this, MessagesActivity::class.java)
     }

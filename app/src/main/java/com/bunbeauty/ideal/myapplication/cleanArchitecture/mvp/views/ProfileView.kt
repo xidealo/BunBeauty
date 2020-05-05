@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 
-import android.widget.Toast
 import com.arellomobile.mvp.MvpView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -16,6 +15,8 @@ interface ProfileView: MvpView {
     fun showMessage(message: String)
     fun showDialogs()
     fun hideDialogs()
+    fun showSubscribe()
+    fun hideSubscribe()
     fun showAddService()
     fun hideAddService()
 

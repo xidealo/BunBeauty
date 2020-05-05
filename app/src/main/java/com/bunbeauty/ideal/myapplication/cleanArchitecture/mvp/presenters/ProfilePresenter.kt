@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileUserInteractor
@@ -32,7 +31,7 @@ class ProfilePresenter(
     }
 
     fun updateUser(user: User){
-        profileUserInteractor.
+        profileUserInteractor.updateUser(user, this)
     }
 
     fun getServiceLink() = profileServiceInteractor.getServicesLink()
@@ -54,6 +53,7 @@ class ProfilePresenter(
         viewState.showSwitcher()
         viewState.createTopPanelForMyProfile("${user.name} ${user.surname}")
         viewState.hideDialogs()
+        viewState.hideSubscribe()
     }
 
     override fun showAlienProfile(user: User) {
@@ -62,6 +62,7 @@ class ProfilePresenter(
         viewState.hideSwitcher()
         viewState.createTopPanelForOtherProfile("${user.name} ${user.surname}")
         viewState.showDialogs()
+        viewState.showSubscribe()
     }
 
     override fun showRating(rating: Float) {

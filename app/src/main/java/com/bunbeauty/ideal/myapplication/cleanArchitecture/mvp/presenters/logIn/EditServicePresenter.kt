@@ -7,4 +7,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.EditS
 
 @InjectViewState
 class EditServicePresenter(private val editServiceInteractor:EditServiceInteractor)
-    :MvpPresenter<EditServiceView>(){}
+    :MvpPresenter<EditServiceView>(){
+
+}
