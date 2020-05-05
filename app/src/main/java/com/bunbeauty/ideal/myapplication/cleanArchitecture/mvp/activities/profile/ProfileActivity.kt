@@ -27,7 +27,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.create
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscriptions.SubscribersActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscriptions.SubscriptionsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement
@@ -289,7 +289,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     private fun goToSubscribers() {
-        val intent = Intent(this, SubscribersActivity::class.java)
+        val intent = Intent(this, SubscriptionsActivity::class.java)
         intent.putExtra(STATUS, SUBSCRIPTIONS)
         startActivity(intent)
         overridePendingTransition(0, 0)

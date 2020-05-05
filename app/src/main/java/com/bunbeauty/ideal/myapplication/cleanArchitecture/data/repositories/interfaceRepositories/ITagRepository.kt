@@ -10,5 +10,5 @@ interface ITagRepository {
     fun insert(tag: Tag, insertTagCallback: InsertTagCallback)
     fun delete(tag: Tag, deleteTagCallback: DeleteTagCallback)
     fun update(tag: Tag, updateTagCallback: UpdateTagCallback)
-    fun get(): List<Tag>
+    fun get()
 }

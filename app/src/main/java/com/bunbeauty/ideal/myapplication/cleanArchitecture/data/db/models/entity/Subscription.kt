@@ -12,16 +12,18 @@ import androidx.room.PrimaryKey
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class Subscriber(
+data class Subscription(
     @PrimaryKey
-    val id: String = "",
-    val userId: String = "",
-    val date: String = "",
-    val workerId: String = ""
+    var id: String = "",
+    var userId: String = "",
+    var date: String = "",
+    var subscriptionId: String = "" // on who
 ) {
     companion object {
         const val SUBSCRIBERS = "subscribers"
+        const val SUBSCRIPTIONS = "subscriptions"
+        const val SUBSCRIPTION_ID = "subscription id"
+        const val DATE = "date"
         const val USER_ID = "user id"
-        const val WORKER_ID = "worker id"
     }
 }

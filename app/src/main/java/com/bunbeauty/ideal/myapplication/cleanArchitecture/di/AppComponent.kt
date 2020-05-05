@@ -13,7 +13,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscriptions.SubscribersActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscriptions.SubscriptionsActivity
 import dagger.Component
 import javax.inject.Singleton
 
@@ -33,5 +33,5 @@ interface AppComponent {
     fun inject(scheduleActivity: ScheduleActivity)
     fun inject(dialogsActivity: DialogsActivity)
     fun inject(messagesActivity: MessagesActivity)
-    fun inject(subscribersActivity: SubscribersActivity)
+    fun inject(subscriptionsActivity: SubscriptionsActivity)
 }

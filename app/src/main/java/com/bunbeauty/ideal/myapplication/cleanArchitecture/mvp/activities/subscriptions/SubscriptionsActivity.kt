@@ -9,17 +9,17 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.SubscriptionAdapter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscribersInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SubscribersPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.SubscribersView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SubscriptionSubscriptionPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.SubscriptionsView
 import javax.inject.Inject
 
-class SubscribersActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, SubscribersView {
+class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, SubscriptionsView {
 
     private lateinit var resultsSubscribersRecycleView: RecyclerView
     private lateinit var subscriptionAdapter: SubscriptionAdapter
@@ -27,19 +27,19 @@ class SubscribersActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Sub
     private lateinit var progressBarSubscribers: ProgressBar
 
     @Inject
-    lateinit var subscribersInteractor: SubscribersInteractor
+    lateinit var subscriptionsSubscriptionInteractor: SubscriptionsSubscriptionInteractor
 
     @InjectPresenter
-    lateinit var subscribersPresenter: SubscribersPresenter
+    lateinit var subscriptionSubscriptionPresenter: SubscriptionSubscriptionPresenter
 
     @ProvidePresenter
-    internal fun provideProfilePresenter(): SubscribersPresenter {
+    internal fun provideProfilePresenter(): SubscriptionSubscriptionPresenter {
         DaggerAppComponent.builder()
             .appModule(AppModule(application, intent))
             .build()
             .inject(this)
-        return SubscribersPresenter(
-            subscribersInteractor
+        return SubscriptionSubscriptionPresenter(
+            subscriptionsSubscriptionInteractor
         )
     }
 

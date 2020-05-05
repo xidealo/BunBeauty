@@ -1,6 +1,8 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
@@ -14,19 +16,10 @@ interface ServiceDao : BaseDao<Service> {
     suspend fun get(): List<Service>
 
     @Query("SELECT * FROM service WHERE id = :id")
-    suspend fun getById(id: String): Service
-
-    @Query("SELECT * FROM service ORDER BY cost DESC LIMIT 1 ")
-    suspend fun getMaxCostService(): Service
-
-    @Query("SELECT * FROM service ORDER BY countOfRates desc LIMIT 1 ")
-    suspend fun getMaxCountOfRatesService(): Service
+    suspend fun getById(id: String): List<Service>
 
     @Query("SELECT * FROM service WHERE userId = :userId ORDER BY creationDate")
     suspend fun getAllByUserId(userId: String): List<Service>
-
-    @Query("SELECT * FROM service WHERE userId = :userId AND name = :name ORDER BY creationDate")
-    suspend fun getAllByUserIdAndServiceName(userId: String, name: String): List<Service>
 
     @Query("DELETE FROM service")
     suspend fun deleteAll()

@@ -35,9 +35,7 @@ import java.io.Serializable
     companion object {
         const val SERVICES = "services"
         const val SERVICE = "service"
-
         const val SERVICE_OWNER = "service owner"
-
         const val USER_ID = "user id"
         const val NAME = "name"
         const val ADDRESS = "address"

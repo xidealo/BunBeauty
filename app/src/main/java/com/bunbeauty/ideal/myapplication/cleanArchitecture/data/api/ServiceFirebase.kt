@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -67,7 +66,9 @@ class ServiceFirebase {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getById(userId: String, serviceId: String, serviceSubscriber: IServiceCallback) {
+    fun getById(
+        userId: String, serviceId: String, iServicesCallback: IServicesCallback
+    ) {
         val servicesRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
             .child(userId)
@@ -75,8 +76,8 @@ class ServiceFirebase {
             .child(serviceId)
 
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(serviceSnapshot: DataSnapshot) {
-                returnService(serviceSnapshot, userId, serviceSubscriber)
+            override fun onDataChange(servicesSnapshot: DataSnapshot) {
+                iServicesCallback.returnServices(returnServiceList(servicesSnapshot, userId))
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -87,7 +88,6 @@ class ServiceFirebase {
 
     fun getServicesByUserId(
         userId: String,
-        iServiceCallback: IServiceCallback,
         iServicesCallback: IServicesCallback
     ) {
         val servicesRef = FirebaseDatabase.getInstance()
@@ -130,16 +130,6 @@ class ServiceFirebase {
         })
     }*/
 
-    private fun returnService(
-        serviceSnapshot: DataSnapshot,
-        userId: String,
-        iServiceCallback: IServiceCallback
-    ) {
-        val service = getServiceFromSnapshot(serviceSnapshot, userId)
-
-        iServiceCallback.returnService(service)
-    }
-
     private fun returnServiceList(
         servicesSnapshot: DataSnapshot,
         userId: String
@@ -160,7 +150,6 @@ class ServiceFirebase {
     private fun getServiceFromSnapshot(serviceSnapshot: DataSnapshot, userId: String): Service {
 
         val service = Service()
-        //add default value
         service.id = serviceSnapshot.key!!
         service.name = serviceSnapshot.child(Service.NAME).value as? String ?: ""
         service.address = serviceSnapshot.child(Service.ADDRESS).value as? String ?: ""

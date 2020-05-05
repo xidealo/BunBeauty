@@ -30,7 +30,7 @@ class TagRepository(
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun get(): List<Tag> {
+    override fun get() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
