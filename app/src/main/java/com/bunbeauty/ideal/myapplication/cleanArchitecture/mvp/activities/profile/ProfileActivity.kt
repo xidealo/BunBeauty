@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -30,14 +31,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscriptions.SubscriptionsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
-import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
-import com.bunbeauty.ideal.myapplication.other.ISwitcher
+import com.bunbeauty.ideal.myapplication.reviews.Comments
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
 class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView,
-    ITopPanel, IBottomPanel, ISwitcher {
+    ITopPanel, IBottomPanel, MaterialButtonToggleGroup.OnButtonCheckedListener {
 
     private lateinit var cityText: TextView
     private lateinit var phoneText: TextView
@@ -57,8 +58,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var dialogsBtn: Button
     private lateinit var subscribeProfileBtn: Button
     private lateinit var scheduleBtn: Button
+    private lateinit var ordersBtn: Button
+    private lateinit var servicesBtn: Button
+    private lateinit var switcher: MaterialButtonToggleGroup
 
-    private lateinit var switcherFragment: SwitcherElement
+    override var bottomNavigationContext: Context = this
 
     @Inject
     lateinit var profileUserInteractor: ProfileUserInteractor
@@ -87,11 +91,9 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.profile)
+        setContentView(R.layout.activity_profile)
 
         init()
-        createBottomPanel(supportFragmentManager)
-        createSwitcher()
         profilePresenter.initFCM()
         profilePresenter.createProfileScreen()
     }
@@ -111,6 +113,12 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         scheduleBtn.setOnClickListener(this)
         subscribeProfileBtn = findViewById(R.id.subscribeProfileBtn)
         subscribeProfileBtn.setOnClickListener(this)
+        ordersBtn = findViewById(R.id.ordersProfileBtn)
+        servicesBtn = findViewById(R.id.servicesProfileBtn)
+        switcher = findViewById(R.id.switcherProfileToggle)
+        switcher.addOnButtonCheckedListener(this)
+
+        initBottomPanel(R.id.navigation_profile)
 
         mainLayout = findViewById(R.id.mainProfileLayout)
         cityText = findViewById(R.id.cityProfileText)
@@ -134,11 +142,24 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         }
     }
 
-    private fun createSwitcher() {
-        /*switcherFragment = SwitcherElement("Записи", "Услуги")
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.switcherProfileLayout, switcherFragment)
-        transaction.commit()*/
+    override fun onButtonChecked(
+        group: MaterialButtonToggleGroup,
+        checkedId: Int,
+        isChecked: Boolean
+    ) {
+        when (checkedId) {
+            R.id.ordersProfileBtn -> {
+                ordersBtn.isEnabled = false
+                servicesBtn.isEnabled = true
+                showOrders()
+            }
+
+            R.id.servicesProfileBtn -> {
+                ordersBtn.isEnabled = true
+                servicesBtn.isEnabled = false
+                showServices()
+            }
+        }
     }
 
     override fun showProfileInfo(user: User) {
@@ -222,20 +243,20 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             .into(avatarImage)
     }
 
+    override fun showSwitcher() {
+        switcher.visibility = View.VISIBLE
+    }
+
+    override fun hideSwitcher() {
+        switcher.visibility = View.GONE
+    }
+
     @SuppressLint("SetTextI18n")
     override fun showSubscriptions(subscriptionsCount: Long) {
         if (subscriptionsCount > 0L) {
             subscriptionsBtn.text = "Подписки: $subscriptionsCount"
             subscriptionsBtn.visibility = View.VISIBLE
         }
-    }
-
-    override fun showSwitcher() {
-        //switcherFragment.showSwitcherElement()
-    }
-
-    override fun hideSwitcher() {
-        //switcherFragment.hideSwitcherElement()
     }
 
     @SuppressLint("SetTextI18n")
@@ -256,13 +277,13 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         mainLayout.visibility = View.VISIBLE
     }
 
-    override fun firstSwitcherAct() {
+    private fun showOrders() {
         hideAddService()
         serviceRecyclerView.visibility = View.GONE
         orderRecyclerView.visibility = View.VISIBLE
     }
 
-    override fun secondSwitcherAct() {
+    private fun showServices() {
         showAddService()
         orderRecyclerView.visibility = View.GONE
         serviceRecyclerView.visibility = View.VISIBLE

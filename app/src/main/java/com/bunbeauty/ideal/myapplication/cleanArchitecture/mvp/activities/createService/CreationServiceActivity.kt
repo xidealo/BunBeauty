@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -40,6 +41,8 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     private lateinit var addressServiceInput: EditText
     private lateinit var premiumLayout: LinearLayout
     private lateinit var mainLayout: LinearLayout
+
+    override var bottomNavigationContext: Context = this
 
     //храним ссылки на картинки в хранилище
     private lateinit var fpathOfImages: ArrayList<String>
@@ -100,7 +103,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     }
 
     private fun createPanels() {
-        createBottomPanel(supportFragmentManager)
+        initBottomPanel()
         createTopPanel("Создание услуги", ButtonTask.NONE, supportFragmentManager)
     }
 

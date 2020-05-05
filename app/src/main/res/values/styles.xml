@@ -248,6 +248,13 @@
         <item name="cornerRadius">18dp</item>
     </style>
 
+    <style name="switchButton" parent="baseButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:backgroundTint">@color/switcher</item>
+        <item name="cornerRadius">18dp</item>
+    </style>
+
     <style name="mainButton" parent="baseButton">
         <item name="android:background">@drawable/main_button</item>
         <item name="android:layout_marginBottom">5dp</item>
@@ -290,6 +297,14 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="bottomNavigation">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="labelVisibilityMode">unlabeled</item>
+        <item name="android:background">@color/mainBlue</item>
+        <item name="itemIconTint">@color/navigation</item>
     </style>
 
 </resources>

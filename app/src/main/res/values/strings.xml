@@ -1,7 +1,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string name="regUser">Зарегестрироваться</string>
     <string name="logOut">Выйти</string>
-    <string name="addServices">Добавить услугу</string>
+    <string name="addServices">Добавить</string>
     <string name="findServices">Найти услугу</string>
     <string name="profileActivity">Профиль</string>
 

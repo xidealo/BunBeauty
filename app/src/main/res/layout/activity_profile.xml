@@ -189,20 +189,24 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/switcherProfileBtn"
+                android:id="@+id/switcherProfileToggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center">
+                android:gravity="center"
+                app:checkedButton="@id/ordersProfileBtn"
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/ordersProfileBtn"
-                    style="@style/smallButton"
+                    style="@style/switchButton"
+                    android:enabled="false"
                     android:text="Записи" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/servicesProfileBtn"
-                    style="@style/smallButton"
+                    style="@style/switchButton"
                     android:text="Услуги" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
         </LinearLayout>

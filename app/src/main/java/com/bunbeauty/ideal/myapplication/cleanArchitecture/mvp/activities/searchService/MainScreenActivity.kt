@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -48,6 +49,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private lateinit var serviceAdapter: ServiceAdapter
     private lateinit var noResultMainScreenText: TextView
 
+    override var bottomNavigationContext: Context = this
+
     @InjectPresenter
     lateinit var mainScreenPresenter: MainScreenPresenter
 
@@ -89,7 +92,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     private fun createPanels() {
-        createBottomPanel(supportFragmentManager)
         createTopPanel("BunBeauty", ButtonTask.SEARCH, supportFragmentManager)
     }
 
@@ -106,6 +108,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         noResultMainScreenText = findViewById(R.id.noResultMainScreenText)
 
         noResultMainScreenText.visibility = View.GONE
+
+        initBottomPanel(R.id.navigation_main)
 
         val minimizeTagsBtn = findViewById<MaterialButton>(R.id.minimizeTagsMainScreenBtn)
         val clearTagsBtn = findViewById<MaterialButton>(R.id.clearTagsMainScreenBtn)

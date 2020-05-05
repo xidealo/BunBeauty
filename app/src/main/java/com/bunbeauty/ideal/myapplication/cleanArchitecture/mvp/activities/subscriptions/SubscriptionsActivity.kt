@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscriptions
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -25,6 +26,8 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
     private lateinit var subscriptionAdapter: SubscriptionAdapter
     private lateinit var subsCountSubscribersText: TextView
     private lateinit var progressBarSubscribers: ProgressBar
+
+    override var bottomNavigationContext: Context = this
 
     @Inject
     lateinit var subscriptionsSubscriptionInteractor: SubscriptionsSubscriptionInteractor
@@ -58,7 +61,7 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
 
     private fun createPanels() {
         createTopPanel("Подписки", ButtonTask.NONE, supportFragmentManager)
-        createBottomPanel(supportFragmentManager)
+        initBottomPanel()
     }
 
 }

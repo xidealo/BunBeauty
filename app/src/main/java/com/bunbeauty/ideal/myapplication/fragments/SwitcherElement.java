@@ -2,14 +2,15 @@ package com.bunbeauty.ideal.myapplication.fragments;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.other.ISwitcher;
@@ -42,7 +43,7 @@ public class SwitcherElement extends Fragment implements View.OnClickListener {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        switcher = (ISwitcher)this.getContext();
+        switcher = (ISwitcher) this.getContext();
 
         leftBtn = view.findViewById(R.id.leftSwitcherElementBtn);
         rightBtn = view.findViewById(R.id.rightSwitcherElementBtn);
@@ -58,11 +59,11 @@ public class SwitcherElement extends Fragment implements View.OnClickListener {
         rightBtn.setText(rightBtnText);
     }
 
-    public void showSwitcherElement(){
+    public void showSwitcherElement() {
         mainLayout.setVisibility(View.VISIBLE);
     }
 
-    public void hideSwitcherElement(){
+    public void hideSwitcherElement() {
         mainLayout.setVisibility(View.GONE);
     }
 

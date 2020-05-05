@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
@@ -29,6 +30,8 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     private lateinit var recyclerView: RecyclerView
     private lateinit var noDialogsText: TextView
     private lateinit var dialogAdapter: DialogAdapter
+
+    override var bottomNavigationContext: Context = this
 
     @Inject
     lateinit var dialogsDialogInteractor: DialogsDialogInteractor
@@ -64,10 +67,11 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
         recyclerView.layoutManager = LinearLayoutManager(this)
         dialogAdapter = DialogAdapter(dialogsPresenter.getDialogsLink())
         recyclerView.adapter = dialogAdapter
+
+        initBottomPanel(R.id.navigation_chat)
     }
 
     private fun createPanels() {
-        createBottomPanel(supportFragmentManager)
         createTopPanel("Диалоги", ButtonTask.NONE, supportFragmentManager)
     }
 

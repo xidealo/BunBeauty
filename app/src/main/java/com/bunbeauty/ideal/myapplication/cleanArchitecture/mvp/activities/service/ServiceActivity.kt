@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -51,6 +52,8 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     private lateinit var premiumElementFragment: PremiumElementFragment
 
+    override var bottomNavigationContext: Context = this
+
     @Inject
     lateinit var serviceInteractor: ServiceInteractor
 
@@ -70,7 +73,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         super.onCreate(savedInstanceState)
         setContentView(R.layout.service_activity)
         init()
-        createBottomPanel(supportFragmentManager)
+        initBottomPanel()
         showLoading()
         servicePresenter.createServiceScreen()
         hidePremium()

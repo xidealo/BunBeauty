@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -40,6 +41,8 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     private lateinit var verifyCodeEditProfileBtn: Button
     private lateinit var resendCodeEditProfileBtn: Button
     private lateinit var editProfileEditProfileBtn: Button
+
+    override var bottomNavigationContext: Context = this
 
     @InjectPresenter
     lateinit var editProfilePresenter: EditProfilePresenter
@@ -89,7 +92,7 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     }
 
     private fun createPanels() {
-        createBottomPanel(supportFragmentManager)
+        initBottomPanel()
         createTopPanel("Редактирование профиля", ButtonTask.NONE, supportFragmentManager)
     }
 

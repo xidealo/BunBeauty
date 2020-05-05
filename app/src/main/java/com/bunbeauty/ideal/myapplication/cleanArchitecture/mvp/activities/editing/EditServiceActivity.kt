@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ProgressBar
@@ -29,6 +30,8 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     private lateinit var descriptionEditService: TextView
     private lateinit var saveEditServiceBtn: Button
 
+    override var bottomNavigationContext: Context = this
+
     private fun init() {
         progressEditServiceBar = findViewById(R.id.progressEditServiceBar)
         editServiceScroll = findViewById(R.id.editServiceScroll)
@@ -37,6 +40,8 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         costEditService = findViewById(R.id.costEditService)
         descriptionEditService = findViewById(R.id.descriptionEditService)
         saveEditServiceBtn = findViewById(R.id.saveEditServiceBtn)
+
+        initBottomPanel(R.id.navigation_profile)
     }
 
     @Inject
@@ -53,7 +58,6 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     }
 
     private fun createPanels() {
-        createBottomPanel(supportFragmentManager)
         createTopPanel("Редактирование услуги", ButtonTask.NONE, supportFragmentManager)
     }
 
