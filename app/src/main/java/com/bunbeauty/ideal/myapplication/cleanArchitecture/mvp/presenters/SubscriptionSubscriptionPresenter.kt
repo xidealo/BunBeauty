@@ -23,5 +23,4 @@ class SubscriptionSubscriptionPresenter(private val subscriptionInteractor: ISub
 
     }
 
-
 }
