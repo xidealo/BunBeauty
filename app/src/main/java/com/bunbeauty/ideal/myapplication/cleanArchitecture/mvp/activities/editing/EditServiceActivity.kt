@@ -36,18 +36,17 @@ class EditServiceActivity : MvpAppCompatActivity() , IBottomPanel,ITopPanel,
         saveEditServiceBtn=findViewById(R.id.saveEditServiceBtn)
 
     }
-    @Inject private var editServiceInteractor: EditServiceInteractor
 
-    @Inject private var editServicePresenter: EditServicePresenter
+    @Inject
+    lateinit  var editServiceInteractor: EditServiceInteractor
 
-
-
-
+    @Inject
+    lateinit  var editServicePresenter: EditServicePresenter
 
 
     private fun createPanels(){
         createBottomPanel(supportFragmentManager)
-        createTopPanel("Редактирование профиля", ButtonTask.NONE, supportFragmentManager)
+        createTopPanel("Редактирование услуги", ButtonTask.NONE, supportFragmentManager)
     }
 
 

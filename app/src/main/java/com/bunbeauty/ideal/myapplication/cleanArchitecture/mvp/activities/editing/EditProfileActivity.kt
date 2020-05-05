@@ -156,6 +156,13 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
             .into(avatarEditProfileImage)
     }
 
+    override fun goToProfile(user: User) {
+        val intent = Intent()
+        intent.putExtra(User.USER, user)
+        setResult(RESULT_OK, intent)
+        finish()
+    }
+
     override fun showCode() {
         codeEditProfileInput.visibility = View.VISIBLE
     }

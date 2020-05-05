@@ -7,7 +7,7 @@ interface EditProfileView: MvpView {
 
     fun showEditProfile(user: User)
     fun showAvatar(photoLink: String)
-
+    fun goToProfile(user: User)
     fun showCode()
     fun hideCode()
 

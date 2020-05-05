@@ -19,6 +19,10 @@ class EditProfilePresenter(private val editProfileInteractor: EditProfileInterac
         viewState.showEditProfile(user)
     }
 
+    override fun goToProfile(user: User) {
+        viewState.goToProfile(user)
+    }
+
     fun saveData(name: String, surname: String, city: String, phone: String) {
         val user = editProfileInteractor.cacheUser
         user.name = name

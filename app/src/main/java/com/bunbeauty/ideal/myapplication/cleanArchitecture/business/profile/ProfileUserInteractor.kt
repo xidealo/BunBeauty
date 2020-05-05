@@ -21,8 +21,10 @@ class ProfileUserInteractor(
 
     override fun getCurrentUser(): User = currentUser
 
-    override fun getMyId(): String {
-        TODO("Not yet implemented")
+    override fun updateUser(user: User,  profilePresenterCallback: ProfilePresenterCallback) {
+        currentUser = user
+        cacheCurrentUser = user
+        profilePresenterCallback.showMyProfile(user)
     }
 
     override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
@@ -95,6 +97,8 @@ class ProfileUserInteractor(
         idList.add(id)
         return true
     }
+
+
 
     override fun getCountOfRates(): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

@@ -4,6 +4,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface EditProfilePresenterCallback {
     fun showEditProfile(user: User)
+    fun goToProfile(user: User)
     fun nameEditProfileInputError()
     fun nameEditProfileInputErrorEmpty()
     fun nameEditProfileInputErrorLong()

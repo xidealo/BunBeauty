@@ -262,12 +262,32 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         profilePresenter.checkIconClick()
     }
 
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
     override fun goToEditProfile(user: User) {
         val intent = Intent(this, EditProfileActivity::class.java)
         intent.putExtra(User.USER, user)
-        this.startActivity(intent)
+        startActivityForResult(intent, REQUEST_EDIT_PROFILE)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (data == null || resultCode != RESULT_OK) {
+            return
+        }
+
+        when (requestCode) {
+            REQUEST_EDIT_PROFILE -> {
+                showMessage("Профиль изменен")
+                profilePresenter.updateUser(data.getSerializableExtra(User.USER) as User)
+            }
+
+        }
+
+    }
     override fun goToDialog(dialog: Dialog) {
         val intent = Intent(this, MessagesActivity::class.java)
     }
@@ -296,13 +316,14 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     private fun goToComments(ownerId: String?) {
-        val intent = Intent(this, Comments::class.java)
+        /*val intent = Intent(this, Comments::class.java)
         intent.putExtra(SERVICE_OWNER_ID, ownerId)
         //intent.putExtra(User.COUNT_OF_RATES, getCountOfRates())
         intent.putExtra(TYPE, REVIEW_FOR_USER)
         startActivity(intent)
-        overridePendingTransition(0, 0)
+        overridePendingTransition(0, 0)*/
     }
+
 
     companion object {
         private const val TAG = "DBInf"
@@ -311,6 +332,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         private const val SERVICE_OWNER_ID = "service owner id"
         private const val TYPE = "type"
         private const val STATUS = "status"
+        private const val REQUEST_EDIT_PROFILE = 1
     }
 
 }

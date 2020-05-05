@@ -31,6 +31,10 @@ class ProfilePresenter(
         profileUserInteractor.getProfileOwner(this)
     }
 
+    fun updateUser(user: User){
+        profileUserInteractor.
+    }
+
     fun getServiceLink() = profileServiceInteractor.getServicesLink()
 
     fun checkIconClick() {

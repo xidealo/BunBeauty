@@ -1,13 +1,10 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing
 
 import android.content.Intent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.IRegistrationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.EditProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UpdateUsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule_ProvideUserRepositoryFactory
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditProfilePresenter
 
 class EditProfileInteractor(
     private val intent: Intent,
@@ -37,7 +34,7 @@ class EditProfileInteractor(
     }
 
     override fun returnUpdatedCallback(obj: User) {
-        editProfilePresenterCallback.showEditProfile(cacheUser)
+        editProfilePresenterCallback.goToProfile(cacheUser)
     }
 
     fun getIsCityInputCorrect(city: String): Boolean {
