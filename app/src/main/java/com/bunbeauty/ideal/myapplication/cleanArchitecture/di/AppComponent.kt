@@ -5,6 +5,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.D
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity
@@ -34,4 +35,5 @@ interface AppComponent {
     fun inject(dialogsActivity: DialogsActivity)
     fun inject(messagesActivity: MessagesActivity)
     fun inject(subscriptionsActivity: SubscriptionsActivity)
+    fun inject(editServiceActivity: EditServiceActivity)
 }

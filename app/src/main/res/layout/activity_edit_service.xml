@@ -5,46 +5,93 @@
     style="@style/allPages"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditServiceActivity">
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_margin="2dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"/>
+    <include layout ="@layout/part_top_panel"/>
 
-    <LinearLayout
+    <ProgressBar
+        android:id="@+id/progressEditServiceBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"/>
-        <LineaLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/mainBlue"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout" />
+
+    <ScrollView
+        android:id="@+id/editServiceScroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/editServiceBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topPanelLayout">
+
         <LinearLayout
-            style="@style/block"
+            android:id="@+id/mainEditServiceLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/block_text"
-            android:orientation="horizontal"/>
-            <TextView
-                style="@style/mainBlockText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Имя"/>
-            <TextView
-                style="@style/mainBlockText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Адрес"/>
+            android:orientation="vertical">
+
+                <LinearLayout style="@style/block">
+
+                    <TextView
+                        android:id="@+id/nameEditService"
+                        style="@style/mainBlockText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Имя">
+                    </TextView>
+
+                </LinearLayout>
 
 
+            <LinearLayout style="@style/block">
 
+                <TextView
+                    android:id="@+id/addressEditService"
+                    style="@style/mainBlockText"
+                    android:hint="Адрес" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/block">
+
+                <TextView
+                    android:id="@+id/costEditService"
+                    style="@style/mainBlockText"
+                    android:hint="@string/cost" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/block">
+
+                <TextView
+                    style="@style/mainBlockText"
+                    android:layout_width="wrap_content"
+                    android:text="Описание:" />
+
+                <TextView
+                    android:id="@+id/descriptionEditService"
+                    style="@style/defaultText"
+                    android:layout_width="match_parent" />
+
+            </LinearLayout>
+        </LinearLayout>
 
     </ScrollView>
 
+    <Button
+        android:id="@+id/saveEditServiceBtn"
+        style="@style/mainButton"
+        android:text="Сохранить"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomPanelLayout"/>
 
+    <include layout="@layout/part_bottom_panel"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
