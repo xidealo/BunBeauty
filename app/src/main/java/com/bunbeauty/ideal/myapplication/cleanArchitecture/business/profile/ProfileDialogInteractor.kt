@@ -6,7 +6,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.InsertDialogCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.DialogRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IDialogRepository
 
 class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
@@ -15,6 +14,7 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
     private lateinit var ownerProfile: User
     private lateinit var userId: String
+
     override fun goToDialog(
         userId: String,
         ownerProfile: User,

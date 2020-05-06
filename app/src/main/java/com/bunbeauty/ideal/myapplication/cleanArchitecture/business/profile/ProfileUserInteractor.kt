@@ -6,7 +6,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.Prof
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
 
 class ProfileUserInteractor(
@@ -85,8 +84,6 @@ class ProfileUserInteractor(
     override fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback) {
         if (currentUser.id == User.getMyId()) {
             profilePresenterCallback.goToEditProfile(currentUser)
-        } else {
-            profilePresenterCallback.subscribe()
         }
     }
 
@@ -97,8 +94,6 @@ class ProfileUserInteractor(
         idList.add(id)
         return true
     }
-
-
 
     override fun getCountOfRates(): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

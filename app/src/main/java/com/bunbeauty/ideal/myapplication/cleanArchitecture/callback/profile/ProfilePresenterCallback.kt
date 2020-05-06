@@ -6,6 +6,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface ProfilePresenterCallback {
     fun setUserProfile(user: User)
+    fun showSubscribed()
+    fun showUnsubscribed()
     fun setServiceList(serviceList: List<Service>)
     fun showMyProfile(user: User)
     fun showAlienProfile(user: User)
@@ -13,7 +15,6 @@ interface ProfilePresenterCallback {
     fun showWithoutRating()
     fun goToEditProfile(user: User)
     fun goToDialog(dialog: Dialog)
-    fun subscribe()
 
     fun getProfileServiceList(userId: String)
 }

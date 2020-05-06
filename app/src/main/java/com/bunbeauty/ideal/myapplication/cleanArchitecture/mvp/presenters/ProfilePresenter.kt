@@ -4,20 +4,24 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscription
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
+import java.util.*
 
 @InjectViewState
 class ProfilePresenter(
     private val profileUserInteractor: IProfileUserInteractor,
     private val profileServiceInteractor: IProfileServiceInteractor,
-    private val profileDialogInteractor: IProfileDialogInteractor
-) :
-    MvpPresenter<ProfileView>(), ProfilePresenterCallback {
+    private val profileDialogInteractor: IProfileDialogInteractor,
+    private val profileSubscriptionInteractor: IProfileSubscriptionInteractor
+) : MvpPresenter<ProfileView>(), ProfilePresenterCallback {
 
     private val TAG = "DBInf"
 
@@ -28,9 +32,10 @@ class ProfilePresenter(
     fun createProfileScreen() {
         viewState.showProgress()
         profileUserInteractor.getProfileOwner(this)
+        profileSubscriptionInteractor.getSubscriptions(User.getMyId())
     }
 
-    fun updateUser(user: User){
+    fun updateUser(user: User) {
         profileUserInteractor.updateUser(user, this)
     }
 
@@ -39,6 +44,8 @@ class ProfilePresenter(
     fun checkIconClick() {
         profileUserInteractor.checkIconClick(this)
     }
+
+    fun getCurrentUser() = profileUserInteractor.getCurrentUser()
 
     fun goToDialog() {
         profileDialogInteractor.goToDialog(
@@ -81,8 +88,12 @@ class ProfilePresenter(
         viewState.goToDialog(dialog)
     }
 
-    override fun subscribe() {
-        viewState.subscribe()
+    fun subscribe() {
+        val subscription = Subscription()
+        subscription.date = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
+        subscription.userId = User.getMyId()
+        subscription.subscriptionId = profileUserInteractor.getCurrentUser().id
+        profileSubscriptionInteractor.addSubscription(subscription, this)
     }
 
     override fun getProfileServiceList(userId: String) {
@@ -95,6 +106,14 @@ class ProfilePresenter(
         viewState.showSubscribers(user.subscribersCount)
         viewState.showSubscriptions(user.subscriptionsCount)
         viewState.hideAddService()
+    }
+
+    override fun showSubscribed() {
+        viewState.showSubscribed()
+    }
+
+    override fun showUnsubscribed() {
+        viewState.showUnsubscribed()
     }
 
     override fun setServiceList(serviceList: List<Service>) {

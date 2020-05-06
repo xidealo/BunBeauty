@@ -17,6 +17,8 @@ interface ProfileView: MvpView {
     fun hideDialogs()
     fun showSubscribe()
     fun hideSubscribe()
+    fun showSubscribed()
+    fun showUnsubscribed()
     fun showAddService()
     fun hideAddService()
 
@@ -32,5 +34,4 @@ interface ProfileView: MvpView {
     fun hideProgress()
     fun goToEditProfile(user: User)
     fun goToDialog(dialog: Dialog)
-    fun subscribe()
 }

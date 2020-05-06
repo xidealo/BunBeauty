@@ -16,6 +16,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.Regist
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
@@ -139,8 +140,12 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideProfileDialogInteractor(
         dialogRepository: DialogRepository
-    ) =
-        ProfileDialogInteractor(dialogRepository)
+    ) = ProfileDialogInteractor(dialogRepository)
+
+    @Provides
+    fun provideProfileSubscriptionInteractor(
+        subscriptionRepository: SubscriptionRepository
+    ) = ProfileSubscriptionInteractor(subscriptionRepository)
 
     @Provides
     fun provideCreationServiceServiceServiceInteractor(serviceRepository: ServiceRepository) =
