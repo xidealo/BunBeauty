@@ -8,5 +8,5 @@ interface IProfileServiceInteractor {
         userId: String,
         profilePresenterCallback: ProfilePresenterCallback
     )
-    fun getServicesLink(): MutableList<Service>
+    fun getServices(): MutableList<Service>
 }

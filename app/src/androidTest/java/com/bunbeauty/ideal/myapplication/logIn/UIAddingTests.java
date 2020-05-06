@@ -58,7 +58,7 @@ public class UIAddingTests {
         //switcher
         onView(withId(R.id.rightSwitcherElementBtn)).perform(click());
         // button
-        onView(withId(R.id.addServicesProfileBtn)).perform(click());
+        onView(withId(R.id.createServicesProfileBtn)).perform(click());
     }
 
     void addService(String name, String cost, String address, String description) throws InterruptedException {

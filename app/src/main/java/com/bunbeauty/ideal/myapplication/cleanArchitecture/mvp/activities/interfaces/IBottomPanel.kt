@@ -20,15 +20,18 @@ interface IBottomPanel : BottomNavigationView.OnNavigationItemSelectedListener {
         val bottomPanel: BottomNavigationView =
             (bottomNavigationContext as Activity).findViewById(R.id.bottomNavigationView)
         bottomPanel.selectedItemId = selectedItemId
+        bottomPanel.menu.findItem(selectedItemId)?.isEnabled = false
         bottomPanel.setOnNavigationItemSelectedListener(this)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.navigation_profile -> {
+
                 goToProfile()
             }
             R.id.navigation_main -> {
+
                 goToMainScreen()
             }
             R.id.navigation_chat -> {

@@ -11,26 +11,17 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.int
 class ProfileUserInteractor(
     private val userRepository: IUserRepository,
     private val intent: Intent
-) : BaseRepository(),
-    IProfileUserInteractor, UsersCallback {
+) : BaseRepository(), IProfileUserInteractor, UsersCallback {
 
-    private val TAG = "DBInf"
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
     private lateinit var currentUser: User
 
     override fun getCurrentUser(): User = currentUser
 
-    override fun updateUser(user: User,  profilePresenterCallback: ProfilePresenterCallback) {
-        currentUser = user
-        cacheCurrentUser = user
-        profilePresenterCallback.showMyProfile(user)
-    }
-
     override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
         this.profilePresenterCallback = profilePresenterCallback
         if (intent.hasExtra(User.USER)) {
             returnUsers(listOf(intent.getSerializableExtra(User.USER) as User))
-            //whoseProfile((intent.getSerializableExtra(User.USER) as User), profilePresenterCallback)
         } else {
             userRepository.getById(
                 User.getMyId(),
@@ -43,23 +34,12 @@ class ProfileUserInteractor(
     override fun returnUsers(users: List<User>) {
         if(users.isNotEmpty()) {
             val user = users.first()
-            profilePresenterCallback.setUserProfile(user)
-            setRating(user.rating, profilePresenterCallback)
             currentUser = user
-            profilePresenterCallback.getProfileServiceList(user.id)
+            profilePresenterCallback.returnProfileOwner(user)
+
             whoseProfile(user, profilePresenterCallback)
         }
     }
-
-    private fun setRating(rating: Float, profilePresenterCallback: ProfilePresenterCallback) {
-        if (rating > 0) {
-            profilePresenterCallback.showRating(rating)
-        } else {
-            profilePresenterCallback.showWithoutRating()
-        }
-    }
-
-    //private fun fromRegistration() = (intent.hasExtra())
 
     private fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         if (user.id == User.getMyId()) {
@@ -68,6 +48,12 @@ class ProfileUserInteractor(
         } else {
             profilePresenterCallback.showAlienProfile(user)
         }
+    }
+
+    override fun updateUser(user: User,  profilePresenterCallback: ProfilePresenterCallback) {
+        currentUser = user
+        cacheCurrentUser = user
+        profilePresenterCallback.showMyProfile(user)
     }
 
     override fun initFCM() {

@@ -12,8 +12,7 @@ import kotlinx.coroutines.withContext
 class UserRepository(
     private val userDao: UserDao,
     private val userFirebase: UserFirebase
-) : BaseRepository(),
-    IUserRepository, UsersCallback {
+) : BaseRepository(), IUserRepository, UsersCallback {
 
     lateinit var usersCallback: UsersCallback
 

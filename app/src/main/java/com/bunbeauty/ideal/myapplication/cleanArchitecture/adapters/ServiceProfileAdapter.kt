@@ -10,8 +10,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.fou
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
-class ServiceProfileAdapter(private val serviceList: MutableList<Service>, private val user: User) :
+class ServiceProfileAdapter(private val serviceList: List<Service>, private val user: User) :
     RecyclerView.Adapter<ServiceProfileAdapter.ServiceProfileViewHolder>() {
+
     private lateinit var context: Context
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ServiceProfileViewHolder {
@@ -38,9 +39,5 @@ class ServiceProfileAdapter(private val serviceList: MutableList<Service>, priva
             val foundServiceProfileElement = FoundServiceProfileElement(service, user, context)
             foundServiceProfileElement.createElement(view)
         }
-    }
-
-    companion object {
-        private val TAG = "DBInf"
     }
 }

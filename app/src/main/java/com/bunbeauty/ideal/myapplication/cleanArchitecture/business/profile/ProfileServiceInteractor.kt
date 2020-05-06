@@ -13,7 +13,7 @@ class ProfileServiceInteractor(private val serviceRepository: IServiceRepository
     private var services = mutableListOf<Service>()
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
 
-    override fun getServicesLink() = services
+    override fun getServices() = services
 
     override fun getServicesByUserId(
         userId: String,

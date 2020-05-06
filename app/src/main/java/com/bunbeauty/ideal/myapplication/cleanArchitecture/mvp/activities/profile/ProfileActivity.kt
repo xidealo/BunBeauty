@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -30,33 +29,43 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
 class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView,
     ITopPanel, IBottomPanel, MaterialButtonToggleGroup.OnButtonCheckedListener {
 
-    private lateinit var cityText: TextView
-    private lateinit var phoneText: TextView
-    private lateinit var withoutRatingText: TextView
-    private lateinit var subscribersText: TextView
-    private lateinit var ratingBar: RatingBar
-    private lateinit var progressBar: ProgressBar
-    private lateinit var ratingLayout: LinearLayout
-    private lateinit var mainLayout: LinearLayout
     private lateinit var avatarImage: ImageView
+
+    private lateinit var fullNameText: TextView
+    private lateinit var cityText: TextView
+
+    private lateinit var subscribersText: TextView
+
+    private lateinit var ratingLayout: LinearLayout
+    private lateinit var ratingBar: RatingBar
+    private lateinit var ratingText: TextView
+
+    private lateinit var progressBar: ProgressBar
+
+    private lateinit var controlPanelLayout: LinearLayout
+    private lateinit var mainLayout: LinearLayout
     private lateinit var orderRecyclerView: RecyclerView
     private lateinit var serviceRecyclerView: RecyclerView
     private lateinit var serviceAdapter: ServiceProfileAdapter
 
-    private lateinit var addServicesBtn: Button
-    private lateinit var subscriptionsBtn: Button
-    private lateinit var dialogsBtn: Button
-    private lateinit var subscribeProfileBtn: Button
-    private lateinit var scheduleBtn: Button
-    private lateinit var ordersBtn: Button
-    private lateinit var servicesBtn: Button
+    private lateinit var dialogsBtn: FloatingActionButton
+    private lateinit var subscribeBtn: FloatingActionButton
+
+    private lateinit var subscriptionsBtn: FloatingActionButton
+    private lateinit var scheduleBtn: FloatingActionButton
+
+    private lateinit var createServicesBtn: MaterialButton
+    private lateinit var ordersBtn: MaterialButton
+    private lateinit var servicesBtn: MaterialButton
     private lateinit var switcher: MaterialButtonToggleGroup
 
     override var bottomNavigationContext: Context = this
@@ -99,143 +108,51 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         setContentView(R.layout.activity_profile)
 
         init()
+        createTopPanel(" ", ButtonTask.EDIT, supportFragmentManager)
         profilePresenter.initFCM()
-        profilePresenter.createProfileScreen()
+        profilePresenter.getProfileOwner()
     }
 
     private fun init() {
         avatarImage = findViewById(R.id.avatarProfileImage)
-        withoutRatingText = findViewById(R.id.withoutRatingProfileText)
-        ratingBar = findViewById(R.id.profileRatingBar)
-        progressBar = findViewById(R.id.loadingProfileProgressBar)
-        ratingLayout = findViewById(R.id.ratingProfileLayout)
+        fullNameText = findViewById(R.id.fullNameProfileText)
+        cityText = findViewById(R.id.cityProfileText)
+        subscribersText = findViewById(R.id.subscribersProfileText)
 
-        addServicesBtn = findViewById(R.id.addServicesProfileBtn)
-        subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn)
+        ratingBar = findViewById(R.id.profileRatingBar)
+        ratingLayout = findViewById(R.id.ratingProfileLayout)
+        ratingText = findViewById(R.id.ratingProfileText)
+
+        subscribeBtn = findViewById(R.id.subscribeProfileBtn)
+        subscribeBtn.setOnClickListener(this)
         dialogsBtn = findViewById(R.id.dialogsProfileBtn)
         dialogsBtn.setOnClickListener(this)
+        subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn)
+        subscriptionsBtn.setOnClickListener(this)
         scheduleBtn = findViewById(R.id.scheduleProfileBtn)
         scheduleBtn.setOnClickListener(this)
-        subscribeProfileBtn = findViewById(R.id.subscribeProfileBtn)
-        subscribeProfileBtn.setOnClickListener(this)
+
+        controlPanelLayout = findViewById(R.id.controlPanelProfileLayout)
+        createServicesBtn = findViewById(R.id.createServicesProfileBtn)
         ordersBtn = findViewById(R.id.ordersProfileBtn)
         servicesBtn = findViewById(R.id.servicesProfileBtn)
         switcher = findViewById(R.id.switcherProfileToggle)
         switcher.addOnButtonCheckedListener(this)
 
-        initBottomPanel(R.id.navigation_profile)
+        progressBar = findViewById(R.id.loadingProfileProgressBar)
 
         mainLayout = findViewById(R.id.mainProfileLayout)
-        cityText = findViewById(R.id.cityProfileText)
-        phoneText = findViewById(R.id.phoneProfileText)
-        subscribersText = findViewById(R.id.subscribersProfileText)
-
         orderRecyclerView = findViewById(R.id.ordersProfileRecycleView)
         serviceRecyclerView = findViewById(R.id.servicesProfileRecyclerView)
         orderRecyclerView.layoutManager = LinearLayoutManager(this)
         serviceRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        initBottomPanel(R.id.navigation_profile)
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.addServicesProfileBtn -> goToCreationService()
-            R.id.subscriptionsProfileBtn -> goToSubscribers()
-            R.id.dialogsProfileBtn -> profilePresenter.goToDialog()
-            R.id.scheduleProfileBtn -> goToSchedule()
-            R.id.subscribeProfileBtn -> profilePresenter.subscribe()
-
-            // R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
-        }
-    }
-
-    override fun onButtonChecked(
-        group: MaterialButtonToggleGroup,
-        checkedId: Int,
-        isChecked: Boolean
-    ) {
-        when (checkedId) {
-            R.id.ordersProfileBtn -> {
-                ordersBtn.isEnabled = false
-                servicesBtn.isEnabled = true
-                showOrders()
-            }
-
-            R.id.servicesProfileBtn -> {
-                ordersBtn.isEnabled = true
-                servicesBtn.isEnabled = false
-                showServices()
-            }
-        }
-    }
-
-    override fun showProfileInfo(user: User) {
-        cityText.text = user.city
-        phoneText.text = user.phone
-
-        serviceAdapter = ServiceProfileAdapter(profilePresenter.getServiceLink(), user)
-        serviceRecyclerView.adapter = serviceAdapter
-    }
-
-    override fun showMyProfileView() {
-        orderRecyclerView.visibility = View.VISIBLE
-        addServicesBtn.setOnClickListener(this)
-        subscriptionsBtn.setOnClickListener(this)
-    }
-
-    override fun showAlienProfileView() {
-        serviceRecyclerView.visibility = View.VISIBLE
-    }
-
-    override fun createTopPanelForMyProfile(userName: String) {
-        createTopPanel(userName, ButtonTask.EDIT, supportFragmentManager)
-    }
-
-    override fun createTopPanelForOtherProfile(userName: String) {
-        createTopPanel(userName, ButtonTask.NONE, supportFragmentManager)
-    }
-
-    override fun showUserServices(serviceList: List<Service>, user: User) {
-        serviceAdapter.notifyDataSetChanged()
-    }
-
-    override fun hideSubscriptions() {
-        subscriptionsBtn.visibility = View.GONE
-    }
-
-    override fun showDialogs() {
-        dialogsBtn.visibility = View.VISIBLE
-    }
-
-    override fun hideDialogs() {
-        dialogsBtn.visibility = View.GONE
-    }
-
-    override fun showSubscribe() {
-        subscribeProfileBtn.visibility = View.VISIBLE
-    }
-
-    override fun hideSubscribe() {
-        subscribeProfileBtn.visibility = View.GONE
-    }
-
-    override fun showAddService() {
-        addServicesBtn.visibility = View.VISIBLE
-    }
-
-    override fun hideAddService() {
-        addServicesBtn.visibility = View.INVISIBLE
-    }
-
-    override fun showWithoutRating() {
-        withoutRatingText.visibility = View.VISIBLE
-        ratingBar.visibility = View.GONE
-    }
-
-    override fun showRating(rating: Float) {
-        ratingBar.visibility = View.VISIBLE
-        withoutRatingText.visibility = View.GONE
-        ratingBar.rating = rating
-        ratingLayout.setOnClickListener(this)
+    override fun showProfileInfo(name: String, surname: String, city: String) {
+        fullNameText.text = "$name $surname"
+        cityText.text = city
     }
 
     override fun showAvatar(photoLink: String) {
@@ -249,28 +166,118 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             .into(avatarImage)
     }
 
-    override fun showSwitcher() {
-        switcher.visibility = View.VISIBLE
-    }
-
-    override fun hideSwitcher() {
-        switcher.visibility = View.GONE
-    }
-
-    @SuppressLint("SetTextI18n")
-    override fun showSubscriptions(subscriptionsCount: Long) {
-        if (subscriptionsCount > 0L) {
-            subscriptionsBtn.text = "Подписки: $subscriptionsCount"
-            subscriptionsBtn.visibility = View.VISIBLE
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
     override fun showSubscribers(subscribersCount: Long) {
-        if (subscribersCount > 0L) {
-            subscribersText.text = "Подписчики: $subscribersCount"
-            subscribersText.visibility = View.VISIBLE
+        subscribersText.text = "Подписчики: $subscribersCount"
+        subscribersText.visibility = View.VISIBLE
+    }
+
+    override fun showRating(rating: Float, countOfRates: Long) {
+        ratingBar.rating = rating
+        ratingLayout.setOnClickListener(this)
+        ratingText.text = "$rating ($countOfRates)"
+    }
+
+    override fun setServiceAdapter(services: List<Service>, user: User) {
+        serviceAdapter = ServiceProfileAdapter(services, user)
+        serviceRecyclerView.adapter = serviceAdapter
+    }
+
+    override fun showOrdersView() {
+        serviceRecyclerView.visibility = View.GONE
+        orderRecyclerView.visibility = View.VISIBLE
+    }
+
+    override fun showServicesView() {
+        orderRecyclerView.visibility = View.GONE
+        serviceRecyclerView.visibility = View.VISIBLE
+    }
+
+    override fun showControlPanelLayout() {
+        controlPanelLayout.visibility = View.VISIBLE
+    }
+
+    override fun hideControlPanelLayout() {
+        controlPanelLayout.visibility = View.GONE
+    }
+
+    override fun showAddServiceButton() {
+        createServicesBtn.visibility = View.VISIBLE
+    }
+
+    override fun hideAddServiceButton() {
+        createServicesBtn.visibility = View.INVISIBLE
+    }
+
+    override fun showDialogsButton() {
+        dialogsBtn.visibility = View.VISIBLE
+    }
+
+    override fun hideDialogsButton() {
+        dialogsBtn.visibility = View.GONE
+    }
+
+    override fun showSubscribeButton() {
+        subscribeBtn.visibility = View.VISIBLE
+    }
+
+    override fun hideSubscribeButton() {
+        subscribeBtn.visibility = View.GONE
+    }
+
+    override fun showSubscriptionsButton() {
+        subscriptionsBtn.visibility = View.VISIBLE
+    }
+
+    override fun hideSubscriptionsButton() {
+        subscriptionsBtn.visibility = View.GONE
+    }
+
+    override fun showScheduleButton() {
+        scheduleBtn.visibility = View.VISIBLE
+    }
+
+    override fun hideScheduleButton() {
+        scheduleBtn.visibility = View.GONE
+    }
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.subscribeProfileBtn -> profilePresenter.subscribe()
+            R.id.dialogsProfileBtn -> profilePresenter.goToDialog()
+
+            R.id.scheduleProfileBtn -> goToSchedule()
+            //R.id.subscriptionsProfileBtn
+
+            //R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
+
+            R.id.createServicesProfileBtn -> goToCreationService()
         }
+    }
+
+    override fun onButtonChecked(
+        group: MaterialButtonToggleGroup,
+        checkedId: Int,
+        isChecked: Boolean
+    ) {
+        when (checkedId) {
+            R.id.ordersProfileBtn -> {
+                ordersBtn.isEnabled = false
+                servicesBtn.isEnabled = true
+                showOrdersView()
+                hideAddServiceButton()
+            }
+
+            R.id.servicesProfileBtn -> {
+                ordersBtn.isEnabled = true
+                servicesBtn.isEnabled = false
+                showServicesView()
+                showAddServiceButton()
+            }
+        }
+    }
+
+    override fun showUserServices(serviceList: List<Service>, user: User) {
+        serviceAdapter.notifyDataSetChanged()
     }
 
     override fun showProgress() {
@@ -283,30 +290,13 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         mainLayout.visibility = View.VISIBLE
     }
 
-    private fun showOrders() {
-        hideAddService()
-        serviceRecyclerView.visibility = View.GONE
-        orderRecyclerView.visibility = View.VISIBLE
-    }
-
-    private fun showServices() {
-        showAddService()
-        orderRecyclerView.visibility = View.GONE
-        serviceRecyclerView.visibility = View.VISIBLE
-    }
-
-    override fun iconClick() {
-        profilePresenter.checkIconClick()
-    }
-
     override fun showMessage(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    override fun goToEditProfile(user: User) {
-        val intent = Intent(this, EditProfileActivity::class.java)
-        intent.putExtra(User.USER, user)
-        startActivityForResult(intent, REQUEST_EDIT_PROFILE)
+    override fun iconClick() {
+        goToEditProfile(profilePresenter.getCurrentUser())
+        //profilePresenter.checkIconClick()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -324,6 +314,12 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         }
     }
 
+    private fun goToEditProfile(user: User) {
+        val intent = Intent(this, EditProfileActivity::class.java)
+        intent.putExtra(User.USER, user)
+        startActivityForResult(intent, REQUEST_EDIT_PROFILE)
+    }
+
     override fun goToDialog(dialog: Dialog) {
         val intent = Intent(this, MessagesActivity::class.java)
         intent.putExtra(Dialog.COMPANION_DIALOG, dialog)
@@ -339,11 +335,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showSubscribed() {
-        subscribeProfileBtn.text = "Отписаться"
+        subscribeBtn.setImageResource(R.drawable.icon_unsubscribe_24dp)
     }
 
     override fun showUnsubscribed() {
-        subscribeProfileBtn.text = "Подписаться"
+        subscribeBtn.setImageResource(R.drawable.icon_subscribe_24dp)
     }
 
     private fun goToCreationService() {
@@ -373,7 +369,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         startActivity(intent)
         overridePendingTransition(0, 0)*/
     }
-
 
     companion object {
         private const val TAG = "DBInf"

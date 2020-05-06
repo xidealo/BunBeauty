@@ -6,32 +6,36 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface ProfileView: MvpView {
-    fun showMyProfileView()
-    fun showAlienProfileView()
-    fun createTopPanelForMyProfile(userName: String)
-    fun createTopPanelForOtherProfile(userName: String)
-    fun showUserServices(serviceList: List<Service>, user: User)
-    fun hideSubscriptions()
-    fun showMessage(message: String)
-    fun showDialogs()
-    fun hideDialogs()
-    fun showSubscribe()
-    fun hideSubscribe()
-    fun showSubscribed()
-    fun showUnsubscribed()
-    fun showAddService()
-    fun hideAddService()
 
-    fun showProfileInfo(user: User)
-    fun showRating(rating: Float)
-    fun showWithoutRating()
+    fun showProfileInfo(name: String, surname: String, city: String)
     fun showAvatar(photoLink: String)
     fun showSubscribers(subscribersCount: Long)
-    fun showSubscriptions(subscriptionsCount: Long)
-    fun showSwitcher()
-    fun hideSwitcher()
+    fun showRating(rating: Float, countOfRates: Long)
+    fun setServiceAdapter(services: List<Service>, user: User)
+
+    fun showOrdersView()
+    fun showServicesView()
+    fun showControlPanelLayout()
+    fun hideControlPanelLayout()
+    fun showAddServiceButton()
+    fun hideAddServiceButton()
+    fun showDialogsButton()
+    fun hideDialogsButton()
+    fun showSubscribeButton()
+    fun hideSubscribeButton()
+    fun showSubscriptionsButton()
+    fun hideSubscriptionsButton()
+    fun showScheduleButton()
+    fun hideScheduleButton()
+
+    fun showUserServices(serviceList: List<Service>, user: User)
+
+    fun showSubscribed()
+    fun showUnsubscribed()
+
+    fun showMessage(message: String)
     fun showProgress()
     fun hideProgress()
-    fun goToEditProfile(user: User)
+
     fun goToDialog(dialog: Dialog)
 }

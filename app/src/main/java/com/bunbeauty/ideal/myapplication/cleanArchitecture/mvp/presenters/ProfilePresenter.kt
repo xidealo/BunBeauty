@@ -18,22 +18,49 @@ class ProfilePresenter(
     private val profileSubscriberInteractor: IProfileSubscriberInteractor
 ) : MvpPresenter<ProfileView>(), ProfilePresenterCallback {
 
-    private val TAG = "DBInf"
-
     fun initFCM() {
         profileUserInteractor.initFCM()
     }
 
-    fun createProfileScreen() {
+    fun getProfileOwner() {
         viewState.showProgress()
         profileUserInteractor.getProfileOwner(this)
     }
 
-    fun updateUser(user: User) {
-        profileUserInteractor.updateUser(user, this)
+    override fun returnProfileOwner(user: User) {
+        viewState.showProfileInfo(user.name, user.surname, user.city)
+        viewState.showAvatar(user.photoLink)
+        viewState.showSubscribers(user.subscribersCount)
+        viewState.showRating(user.rating, user.countOfRates)
+        viewState.setServiceAdapter(profileServiceInteractor.getServices(), user)
+
+        profileServiceInteractor.getServicesByUserId(user.id, this)
     }
 
-    fun getServiceLink() = profileServiceInteractor.getServicesLink()
+    override fun showMyProfile(user: User) {
+        viewState.showOrdersView()
+        viewState.showControlPanelLayout()
+        viewState.showScheduleButton()
+
+        viewState.hideAddServiceButton()
+        viewState.hideDialogsButton()
+        viewState.hideSubscribeButton()
+    }
+
+    override fun showAlienProfile(user: User) {
+        viewState.showServicesView()
+        viewState.showDialogsButton()
+        viewState.showSubscribeButton()
+
+        viewState.hideAddServiceButton()
+        viewState.hideScheduleButton()
+        viewState.hideSubscriptionsButton()
+        viewState.hideControlPanelLayout()
+    }
+
+    fun updateUser(user: User){
+        profileUserInteractor.updateUser(user, this)
+    }
 
     fun checkIconClick() {
         profileUserInteractor.checkIconClick(this)
@@ -49,35 +76,8 @@ class ProfilePresenter(
         )
     }
 
-    override fun showMyProfile(user: User) {
-        viewState.showMyProfileView()
-        viewState.showSwitcher()
-        viewState.createTopPanelForMyProfile("${user.name} ${user.surname}")
-        viewState.hideDialogs()
-        viewState.hideSubscribe()
-    }
-
-    override fun showAlienProfile(user: User) {
-        viewState.showAlienProfileView()
-        viewState.hideSubscriptions()
-        viewState.hideSwitcher()
-        viewState.createTopPanelForOtherProfile("${user.name} ${user.surname}")
-        viewState.showDialogs()
-        viewState.showSubscribe()
-
-        profileSubscriptionInteractor.checkSubscribed(user.id, this)
-    }
-
-    override fun showRating(rating: Float) {
-        viewState.showRating(rating)
-    }
-
-    override fun showWithoutRating() {
-        viewState.showWithoutRating()
-    }
-
     override fun goToEditProfile(user: User) {
-        viewState.goToEditProfile(user)
+        //viewState.goToEditProfile(user)
     }
 
     override fun goToDialog(dialog: Dialog) {
@@ -100,14 +100,6 @@ class ProfilePresenter(
 
     override fun getProfileServiceList(userId: String) {
         profileServiceInteractor.getServicesByUserId(userId, this)
-    }
-
-    override fun setUserProfile(user: User) {
-        viewState.showProfileInfo(user)
-        viewState.showAvatar(user.photoLink)
-        viewState.showSubscribers(user.subscribersCount)
-        viewState.showSubscriptions(user.subscriptionsCount)
-        viewState.hideAddService()
     }
 
     override fun showSubscribed() {
