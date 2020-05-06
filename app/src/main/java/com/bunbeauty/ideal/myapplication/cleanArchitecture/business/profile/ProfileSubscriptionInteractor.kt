@@ -6,16 +6,20 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.subscription.InsertSubscriptionCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.subscription.SubscriptionsCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscription
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.SubscriptionRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.ISubscriptionRepository
 
-class ProfileSubscriptionInteractor(private val subscriptionRepository: SubscriptionRepository) :
+class ProfileSubscriptionInteractor(private val subscriptionRepository: ISubscriptionRepository) :
     IProfileSubscriptionInteractor, InsertSubscriptionCallback, DeleteSubscriptionCallback,
     SubscriptionsCallback {
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
-
+    private val cacheSubscriptions = mutableListOf<Subscription>()
     private var isSubscribed = false
 
-    override fun getSubscriptions(myUserId: String) {
+    override fun getSubscriptions(
+        myUserId: String,
+        profilePresenterCallback: ProfilePresenterCallback
+    ) {
+        this.profilePresenterCallback = profilePresenterCallback
         subscriptionRepository.getByUserId(myUserId, this)
     }
 
@@ -24,11 +28,12 @@ class ProfileSubscriptionInteractor(private val subscriptionRepository: Subscrip
         profilePresenterCallback: ProfilePresenterCallback
     ) {
         this.profilePresenterCallback = profilePresenterCallback
-        if (isSubscribed) {
-            subscriptionRepository.insert(subscription, this)
-        } else {
+
+       /* if (isSubscribed) {
             subscriptionRepository.delete(subscription, this)
-        }
+        } else {*/
+            subscriptionRepository.insert(subscription, this)
+        //}
     }
 
     override fun returnCreatedCallback(obj: Subscription) {
@@ -40,7 +45,18 @@ class ProfileSubscriptionInteractor(private val subscriptionRepository: Subscrip
     }
 
     override fun returnList(objects: List<Subscription>) {
-        isSubscribed = objects.isEmpty()
+        cacheSubscriptions.addAll(objects)
+    }
+
+    override fun checkSubscribed(userId: String, profilePresenterCallback: ProfilePresenterCallback){
+
+        isSubscribed = cacheSubscriptions.find { it.subscriptionId == userId } != null
+
+        if (isSubscribed) {
+            profilePresenterCallback.showSubscribed()
+        } else {
+            profilePresenterCallback.showUnsubscribed()
+        }
     }
 
 }

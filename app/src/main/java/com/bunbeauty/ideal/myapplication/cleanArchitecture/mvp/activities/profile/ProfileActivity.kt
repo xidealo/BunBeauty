@@ -13,10 +13,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ServiceProfileAdapter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileDialogInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileSubscriptionInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -76,6 +73,9 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     @Inject
     lateinit var profileSubscriptionInteractor: ProfileSubscriptionInteractor
 
+    @Inject
+    lateinit var profileSubscriberInteractor: ProfileSubscriberInteractor
+
     @InjectPresenter
     lateinit var profilePresenter: ProfilePresenter
 
@@ -89,7 +89,8 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             profileUserInteractor,
             profileServiceInteractor,
             profileDialogInteractor,
-            profileSubscriptionInteractor
+            profileSubscriptionInteractor,
+            profileSubscriberInteractor
         )
     }
 
@@ -328,8 +329,8 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         intent.putExtra(Dialog.COMPANION_DIALOG, dialog)
         //TODO(refactor)
         val myDialog = Dialog()
-        myDialog.ownerId =  dialog.user.id
-        myDialog.id =  dialog.id
+        myDialog.ownerId = dialog.user.id
+        myDialog.id = dialog.id
         intent.putExtra(Dialog.DIALOG, myDialog)
 
         intent.putExtra(User.USER, profilePresenter.getCurrentUser())

@@ -27,13 +27,12 @@ class DialogsUserInteractor(private val userRepository: UserRepository) :
         }
     }
 
-
     override fun returnUsers(users: List<User>) {
         this.users.addAll(users)
         currentDialogsCount++
 
         if (dialogsCount == currentDialogsCount) {
-            dialogsPresenterCallback.fillDialogs(users)
+            dialogsPresenterCallback.fillDialogs(this.users)
         }
     }
 

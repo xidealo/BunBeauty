@@ -61,7 +61,7 @@
                 <TextView
                     style="@style/wideLabel"
                     android:text="Время"
-                    app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout" />
+                    app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView" />
 
                 <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
                     android:id="@+id/timeScheduleGrid"
@@ -75,7 +75,7 @@
     <TextView
         style="@style/wideLabel"
         android:background="@color/grey40"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanelLayout" />
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView" />
 
     <include layout="@layout/part_bottom_panel" />
 

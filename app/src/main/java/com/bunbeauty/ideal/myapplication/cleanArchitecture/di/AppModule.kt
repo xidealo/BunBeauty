@@ -14,10 +14,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.pr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileDialogInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileSubscriptionInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
@@ -59,6 +56,9 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     @Provides
     fun provideSubscriptionFirebase() = SubscriptionFirebase()
+
+    @Provides
+    fun provideSubscriberFirebase() = SubscriberFirebase()
 
     // DAO
     @Provides
@@ -112,6 +112,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideSubscriptionRepository(subscriptionFirebase: SubscriptionFirebase) =
         SubscriptionRepository(subscriptionFirebase)
 
+    @Provides
+    fun provideSubscriberRepository(subscriberFirebase: SubscriberFirebase) =
+        SubscriberRepository(subscriberFirebase)
+
     // INTERACTORS
     @Provides
     fun provideAuthorizationInteractor(userRepository: UserRepository) =
@@ -146,6 +150,11 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideProfileSubscriptionInteractor(
         subscriptionRepository: SubscriptionRepository
     ) = ProfileSubscriptionInteractor(subscriptionRepository)
+
+    @Provides
+    fun provideProfileSubscriberInteractor(
+        subscriberRepository: SubscriberRepository
+    ) = ProfileSubscriberInteractor(subscriberRepository)
 
     @Provides
     fun provideCreationServiceServiceServiceInteractor(serviceRepository: ServiceRepository) =

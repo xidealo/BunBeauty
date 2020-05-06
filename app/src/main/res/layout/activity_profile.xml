@@ -13,7 +13,7 @@
         android:id="@+id/scheduleProfileBtn"
         style="@style/smallButton"
         android:text="Расписание"
-        app:layout_constraintBottom_toTopOf="@id/bottomPanelLayout"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -219,7 +219,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/bottomPanelLayout"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintTop_toBottomOf="@id/mainProfileLayout"
         tools:layout_editor_absoluteX="0dp">
 

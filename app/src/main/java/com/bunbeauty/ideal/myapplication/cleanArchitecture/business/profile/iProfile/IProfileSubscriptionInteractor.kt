@@ -4,9 +4,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.Prof
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscription
 
 interface IProfileSubscriptionInteractor {
-    fun getSubscriptions(myUserId: String)
+    fun getSubscriptions(
+        myUserId: String, profilePresenterCallback: ProfilePresenterCallback
+    )
+
     fun addSubscription(
         subscription: Subscription,
         profilePresenterCallback: ProfilePresenterCallback
     )
+
+    fun checkSubscribed(userId: String, profilePresenterCallback: ProfilePresenterCallback)
 }

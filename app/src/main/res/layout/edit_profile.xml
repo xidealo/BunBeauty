@@ -141,7 +141,7 @@
         android:id="@+id/editProfileEditProfileBtn"
         style="@style/mainButton"
         android:text="@string/saveData"
-        app:layout_constraintBottom_toTopOf="@id/bottomPanelLayout"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

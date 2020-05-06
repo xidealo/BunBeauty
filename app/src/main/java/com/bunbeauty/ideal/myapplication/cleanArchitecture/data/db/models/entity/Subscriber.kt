@@ -8,20 +8,21 @@ import androidx.room.PrimaryKey
     foreignKeys = [ForeignKey(
         entity = User::class,
         parentColumns = ["id"],
-        childColumns = ["userId"],
+        childColumns = ["ownerId"],
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class Subscription(
+class Subscriber(
     @PrimaryKey
     var id: String = "",
     var userId: String = "",
     var date: String = "",
-    var subscriptionId: String = "" // on who
+    var subscriberId: String = "" // who
 ) {
-    companion object {
-        const val SUBSCRIPTIONS = "subscriptions"
-        const val SUBSCRIPTION_ID = "subscription id"
+
+    companion object{
+        const val SUBSCRIBERS = "subscribers"
+        const val SUBSCRIBER_ID = "subscriber id"
         const val DATE = "date"
         const val USER_ID = "user id"
     }
