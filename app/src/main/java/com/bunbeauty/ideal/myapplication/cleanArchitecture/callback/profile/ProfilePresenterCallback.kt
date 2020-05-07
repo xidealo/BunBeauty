@@ -15,4 +15,6 @@ interface ProfilePresenterCallback {
     fun showUnsubscribed()
 
     fun getProfileServiceList(userId: String)
+
+    fun showUpdatedBottomPanel(selectedItemId: Int = -1)
 }

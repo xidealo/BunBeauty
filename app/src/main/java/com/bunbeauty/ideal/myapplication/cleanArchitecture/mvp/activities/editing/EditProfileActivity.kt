@@ -21,6 +21,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapt
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
@@ -43,6 +44,7 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     private lateinit var editProfileEditProfileBtn: Button
 
     override var bottomNavigationContext: Context = this
+    override lateinit var bottomPanel: BottomNavigationView
 
     @InjectPresenter
     lateinit var editProfilePresenter: EditProfilePresenter
@@ -70,6 +72,12 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         hideVerifyCode()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        initBottomPanel()
+    }
+
     private fun init() {
         avatarEditProfileImage = findViewById(R.id.avatarEditProfileImage)
         logOutEditProfileBtn = findViewById(R.id.logOutEditProfileBtn)
@@ -92,7 +100,6 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     }
 
     private fun createPanels() {
-        initBottomPanel()
         createTopPanel("Редактирование профиля", ButtonTask.NONE, supportFragmentManager)
     }
 

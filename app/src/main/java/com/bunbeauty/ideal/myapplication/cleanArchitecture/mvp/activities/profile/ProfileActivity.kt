@@ -6,13 +6,11 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
-import androidx.viewpager2.widget.ViewPager2
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ProfilePagerAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -20,10 +18,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.ProfilePagerAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomViewPager
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
@@ -33,6 +30,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
@@ -64,9 +62,10 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var ordersFragment: OrdersFragment
     private lateinit var servicesFragment: ServicesFragment
     private lateinit var tabLayout: TabLayout
-    private lateinit var viewPager: ViewPager
+    private lateinit var viewPager: CustomViewPager
 
     override var bottomNavigationContext: Context = this
+    override lateinit var bottomPanel: BottomNavigationView
 
     @Inject
     lateinit var profileUserInteractor: ProfileUserInteractor
@@ -111,6 +110,12 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         profilePresenter.getProfileOwner()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        profilePresenter.updateBottomPanel()
+    }
+
     private fun init() {
         avatarImage = findViewById(R.id.avatarProfileImage)
         fullNameText = findViewById(R.id.fullNameProfileText)
@@ -134,18 +139,17 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         servicesFragment = ServicesFragment()
         tabLayout = findViewById(R.id.profileTabLayout)
         viewPager = findViewById(R.id.profileViewPager)
-        viewPager.adapter = ProfilePagerAdapter(
-            supportFragmentManager,
-            FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
-            ordersFragment,
-            servicesFragment
-        )
+        viewPager.adapter =
+            ProfilePagerAdapter(
+                supportFragmentManager,
+                FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
+                ordersFragment,
+                servicesFragment
+            )
         tabLayout.addOnTabSelectedListener(this)
         viewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
 
         progressBar = findViewById(R.id.loadingProfileProgressBar)
-
-        initBottomPanel(R.id.navigation_profile)
     }
 
     override fun showProfileInfo(name: String, surname: String, city: String) {
@@ -179,6 +183,14 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         servicesFragment.setAdapter(services, user)
     }
 
+    override fun showBottomPanel(selectedItemId: Int) {
+        initBottomPanel(selectedItemId)
+    }
+
+    override fun showUpdatedBottomPanel(selectedItemId: Int) {
+        updateBottomPanel(selectedItemId)
+    }
+
     override fun showOrders() {
         viewPager.currentItem = ORDERS_INDEX
     }
@@ -188,12 +200,15 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showTabLayout() {
-        //viewPager.user
         tabLayout.visibility = View.VISIBLE
     }
 
     override fun hideTabLayout() {
         tabLayout.visibility = View.GONE
+    }
+
+    override fun disableSwipe() {
+        viewPager.isEnable = false
     }
 
     override fun showCreateServiceButton() {
@@ -245,8 +260,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             R.id.subscriptionsProfileBtn -> profilePresenter.goToSubscriptions()
 
             //R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
-
-            R.id.createServiceBtn -> goToCreationService()
         }
     }
 
@@ -322,12 +335,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun showUnsubscribed() {
         subscribeBtn.setImageResource(R.drawable.icon_subscribe_24dp)
-    }
-
-    private fun goToCreationService() {
-        val intent = Intent(this, CreationServiceActivity::class.java)
-        startActivity(intent)
-        overridePendingTransition(0, 0)
     }
 
     private fun goToSchedule() {

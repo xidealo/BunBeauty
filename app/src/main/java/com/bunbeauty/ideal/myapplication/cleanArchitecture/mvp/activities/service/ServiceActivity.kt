@@ -27,6 +27,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.Servic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.reviews.Comments
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.service_activity.*
@@ -53,6 +54,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private lateinit var premiumElementFragment: PremiumElementFragment
 
     override var bottomNavigationContext: Context = this
+    override lateinit var bottomPanel: BottomNavigationView
 
     @Inject
     lateinit var serviceInteractor: ServiceInteractor
@@ -73,10 +75,15 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         super.onCreate(savedInstanceState)
         setContentView(R.layout.service_activity)
         init()
-        initBottomPanel()
         showLoading()
         servicePresenter.createServiceScreen()
         hidePremium()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        initBottomPanel()
     }
 
     private fun init() {

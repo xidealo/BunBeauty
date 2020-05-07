@@ -13,10 +13,13 @@ interface ProfileView: MvpView {
     fun showRating(rating: Float, countOfRates: Long)
     fun setServiceAdapter(services: List<Service>, user: User)
 
+    fun showBottomPanel(selectedItemId: Int = -1)
+    fun showUpdatedBottomPanel(selectedItemId: Int)
     fun showOrders()
     fun showServices()
     fun showTabLayout()
     fun hideTabLayout()
+    fun disableSwipe()
     fun showCreateServiceButton()
     fun hideCreateServiceButton()
     fun showDialogsButton()
