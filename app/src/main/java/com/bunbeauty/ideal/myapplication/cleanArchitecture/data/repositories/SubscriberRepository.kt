@@ -19,7 +19,9 @@ class SubscriberRepository(private val subscriberFirebase: SubscriberFirebase) :
         insertSubscriberCallback: InsertSubscriberCallback
     ) {
         launch {
+            subscriber.id = subscriberFirebase.getIdForNew(subscriber.userId)
             subscriberFirebase.insert(subscriber)
+            insertSubscriberCallback.returnCreatedCallback(subscriber)
         }
     }
 

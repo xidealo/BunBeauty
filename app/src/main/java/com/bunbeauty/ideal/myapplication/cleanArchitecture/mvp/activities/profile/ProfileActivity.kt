@@ -246,7 +246,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             R.id.dialogsProfileBtn -> profilePresenter.goToDialog()
 
             R.id.scheduleProfileBtn -> goToSchedule()
-            //R.id.subscriptionsProfileBtn
+            R.id.subscriptionsProfileBtn -> profilePresenter.goToSubscriptions()
 
             //R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
 
@@ -354,9 +354,9 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         overridePendingTransition(0, 0)
     }
 
-    private fun goToSubscribers() {
+    override fun goToSubscriptions(user: User) {
         val intent = Intent(this, SubscriptionsActivity::class.java)
-        intent.putExtra(STATUS, SUBSCRIPTIONS)
+        intent.putExtra(User.USER, user)
         startActivity(intent)
         overridePendingTransition(0, 0)
     }

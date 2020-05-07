@@ -34,7 +34,7 @@ class SubscriptionFirebase {
             override fun onDataChange(subscriptionsSnapshot: DataSnapshot) {
                 val subscriptions = arrayListOf<Subscription>()
                 for (subscriptionSnapshot in subscriptionsSnapshot.children) {
-                    subscriptions.add(getSubscriptionFromSnapshot(subscriptionsSnapshot, userId))
+                    subscriptions.add(getSubscriptionFromSnapshot(subscriptionSnapshot, userId))
                 }
                 subscriptionsCallback.returnList(subscriptions)
             }

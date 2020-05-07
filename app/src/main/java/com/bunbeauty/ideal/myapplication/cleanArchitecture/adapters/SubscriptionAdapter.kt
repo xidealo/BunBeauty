@@ -9,10 +9,9 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.SubscriptionAdapter.SubscriptionViewHolder
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.SubscriptionElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import java.util.*
 
 class SubscriptionAdapter(
-    private val userList: ArrayList<User>
+    private val userList: List<User>
 ) : RecyclerView.Adapter<SubscriptionViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SubscriptionViewHolder {
@@ -37,8 +36,8 @@ class SubscriptionAdapter(
     inner class SubscriptionViewHolder(private val view: View, private val context: Context) :
         RecyclerView.ViewHolder(view) {
         fun bind(user: User) {
-            val subscriptionElement = SubscriptionElement(user, view, context)
-            subscriptionElement.createElement()
+            val subscriptionElement = SubscriptionElement(view, context)
+            subscriptionElement.createElement(user)
         }
     }
 }

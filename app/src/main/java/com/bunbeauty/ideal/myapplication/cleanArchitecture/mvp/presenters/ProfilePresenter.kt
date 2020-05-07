@@ -58,7 +58,7 @@ class ProfilePresenter(
         viewState.hideControlPanelLayout()
     }
 
-    fun updateUser(user: User){
+    fun updateUser(user: User) {
         profileUserInteractor.updateUser(user, this)
     }
 
@@ -92,10 +92,14 @@ class ProfilePresenter(
         profileSubscriptionInteractor.addSubscription(subscription, this)
 
         val subscriber = Subscriber()
-        subscription.date = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
-        subscription.userId = profileUserInteractor.getCurrentUser().id
-        subscription.subscriptionId = User.getMyId()
+        subscriber.date = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
+        subscriber.userId = profileUserInteractor.getCurrentUser().id
+        subscriber.subscriberId = User.getMyId()
         profileSubscriberInteractor.addSubscriber(subscriber, this)
+    }
+
+    fun goToSubscriptions() {
+        viewState.goToSubscriptions(profileUserInteractor.getCurrentUser())
     }
 
     override fun getProfileServiceList(userId: String) {

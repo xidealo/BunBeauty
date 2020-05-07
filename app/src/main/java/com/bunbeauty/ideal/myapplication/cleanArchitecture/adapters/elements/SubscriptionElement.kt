@@ -8,14 +8,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
-import com.bunbeauty.ideal.myapplication.helpApi.SubscriptionsApi
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi
+import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.squareup.picasso.Picasso
 
 class SubscriptionElement(
-    private val user: User,
     private val view: View,
     private val context: Context
 ) : View.OnClickListener {
@@ -24,10 +22,12 @@ class SubscriptionElement(
     private lateinit var subscribeText: TextView
     private lateinit var unsubscribeText: TextView
     private lateinit var avatarImage: ImageView
+    private lateinit var user: User
 
-    fun createElement() {
+    fun createElement(user: User) {
         onViewCreated(view)
-        setData()
+        setData(user)
+        showAvatar(user)
     }
 
     private fun onViewCreated(view: View) {
@@ -45,9 +45,21 @@ class SubscriptionElement(
         layout.layoutParams = params
     }
 
-    private fun setData() {
+    private fun setData(user: User) {
+        this.user = user
+        nameText.text = "${user.name} ${user.surname}"
+    }
+
+    private fun showAvatar(user: User) {
         val width = context.resources.getDimensionPixelSize(R.dimen.photo_avatar_width)
         val height = context.resources.getDimensionPixelSize(R.dimen.photo_avatar_height)
+
+        Picasso.get()
+            .load(user.photoLink)
+            .resize(width, height)
+            .centerCrop()
+            .transform(CircularTransformation())
+            .into(avatarImage)
     }
 
     override fun onClick(v: View) {
@@ -62,11 +74,11 @@ class SubscriptionElement(
                 subscribeText.visibility = View.VISIBLE
                 Toast.makeText(context, "Вы подписались", Toast.LENGTH_SHORT).show()
             }
-            else -> goToProfile()
+            else -> goToProfile(user)
         }
     }
 
-    private fun goToProfile() {
+    private fun goToProfile(user: User) {
         val intent = Intent(context, ProfileActivity::class.java)
         intent.putExtra(User.USER, user)
         context.startActivity(intent)
