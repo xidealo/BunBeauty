@@ -12,4 +12,5 @@ interface ISubscriberRepository {
     fun update(subscriber: Subscriber, updateSubscriberCallback: UpdateSubscriberCallback)
     fun get(subscribersCallback: SubscribersCallback)
     fun getByUserId(userId: String, subscribersCallback: SubscribersCallback)
+    fun getBySubscriberId(subscriberId: String, ownerId: String, subscribersCallback: SubscribersCallback)
 }

@@ -13,4 +13,6 @@ interface ISubscriptionsUserInteractor {
     )
 
     fun getUsersLink(): List<User>
+
+    fun deleteUser(user: User, subscriptionsPresenterCallback: SubscriptionsPresenterCallback)
 }

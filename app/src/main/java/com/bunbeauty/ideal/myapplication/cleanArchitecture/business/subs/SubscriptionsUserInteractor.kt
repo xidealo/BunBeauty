@@ -22,6 +22,14 @@ class SubscriptionsUserInteractor(
 
     override fun getUsersLink() = cacheUsers
 
+    override fun deleteUser(
+        user: User,
+        subscriptionsPresenterCallback: SubscriptionsPresenterCallback
+    ) {
+        cacheUsers.remove(user)
+        subscriptionsPresenterCallback.showSubscriptions()
+    }
+
     override fun createSubscriptionScreen(subscriptionsPresenterCallback: SubscriptionsPresenterCallback) {
         val user = intent.getSerializableExtra(User.USER) as User
         subscriptionsPresenterCallback.getSubscriptions(user)
@@ -46,7 +54,7 @@ class SubscriptionsUserInteractor(
             if (cacheUsers.isEmpty()) {
                 subscriptionsPresenterCallback.showEmptySubscriptions()
             } else {
-                subscriptionsPresenterCallback.showSubscriptions(cacheUsers)
+                subscriptionsPresenterCallback.showSubscriptions()
             }
         }
     }

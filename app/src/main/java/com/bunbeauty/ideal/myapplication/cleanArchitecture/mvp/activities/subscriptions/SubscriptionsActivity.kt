@@ -12,9 +12,9 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.SubscriptionAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriberInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
@@ -39,6 +39,9 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
     @Inject
     lateinit var subscriptionsUserInteractor: SubscriptionsUserInteractor
 
+    @Inject
+    lateinit var subscriptionsSubscriberInteractor: SubscriptionsSubscriberInteractor
+
     @InjectPresenter
     lateinit var subscriptionsPresenter: SubscriptionsPresenter
 
@@ -50,7 +53,8 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
             .inject(this)
         return SubscriptionsPresenter(
             subscriptionsSubscriptionInteractor,
-            subscriptionsUserInteractor
+            subscriptionsUserInteractor,
+            subscriptionsSubscriberInteractor
         )
     }
 
@@ -70,7 +74,12 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
 
         resultsSubscribersRecycleView.layoutManager = LinearLayoutManager(this)
 
-        subscriptionAdapter = SubscriptionAdapter(subscriptionsPresenter.getUsersLink())
+        subscriptionAdapter = SubscriptionAdapter(
+            subscriptionsPresenter,
+            subscriptionsPresenter.getSubscriptionsLink(),
+            subscriptionsPresenter.getUsersLink()
+        )
+
         resultsSubscribersRecycleView.adapter = subscriptionAdapter
     }
 
@@ -79,7 +88,7 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
         initBottomPanel()
     }
 
-    override fun showSubscriptions(users: List<User>) {
+    override fun showSubscriptions() {
         subscriptionAdapter.notifyDataSetChanged()
     }
 

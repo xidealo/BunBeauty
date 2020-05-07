@@ -31,7 +31,7 @@ class SubscriptionRepository(private val subscriptionFirebase: SubscriptionFireb
         deleteSubscriptionCallback: DeleteSubscriptionCallback
     ) {
         launch {
-
+            subscriptionFirebase.delete(subscription)
         }
     }
 

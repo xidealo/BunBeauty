@@ -10,7 +10,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.int
 import kotlinx.coroutines.launch
 
 class SubscriberRepository(private val subscriberFirebase: SubscriberFirebase) : BaseRepository(),
-    ISubscriberRepository {
+    ISubscriberRepository, SubscribersCallback {
 
     private lateinit var subscribersCallback: SubscribersCallback
 
@@ -30,7 +30,7 @@ class SubscriberRepository(private val subscriberFirebase: SubscriberFirebase) :
         deleteSubscriberCallback: DeleteSubscriberCallback
     ) {
         launch {
-
+            subscriberFirebase.delete(subscriber)
         }
     }
 
@@ -55,6 +55,21 @@ class SubscriberRepository(private val subscriberFirebase: SubscriberFirebase) :
         launch {
 
         }
+    }
+
+    override fun getBySubscriberId(
+        subscriberId: String,
+        ownerId: String,
+        subscribersCallback: SubscribersCallback
+    ) {
+        this.subscribersCallback = subscribersCallback
+        launch {
+            subscriberFirebase.getBySubscriberId(subscriberId, ownerId, subscribersCallback)
+        }
+    }
+
+    override fun returnList(objects: List<Subscriber>) {
+
     }
 
 

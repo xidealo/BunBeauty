@@ -21,6 +21,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.EditServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriberInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.*
@@ -237,6 +238,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideSubscriptionsUserInteractor(userRepository: UserRepository) =
         SubscriptionsUserInteractor(intent, userRepository)
+
+    @Provides
+    fun provideSubscriptionsSubscriberInteractor(subscriberRepository: SubscriberRepository) =
+        SubscriptionsSubscriberInteractor(subscriberRepository)
 
     @Provides
     fun provideMessagesUserInteractor() = MessagesUserInteractor(intent)

@@ -10,7 +10,7 @@
     </style>
 
     <style name="allPages" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:background">@color/backgroundLightBlue</item>
+        <item name="android:background">@color/white</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
     </style>

@@ -5,7 +5,8 @@
     style="@style/block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_margin="5dp"
+    android:padding="5dp"
     android:background="@drawable/block_text"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.SubscriptionElement">
 
@@ -18,38 +19,18 @@
 
     <TextView
         android:id="@+id/workerNameSubscriptionElementText"
-        style="@style/mainBlockText"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:textColor="@color/black"
         android:layout_weight="1"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:text="@string/name" />
 
-    <TextView
-        android:id="@+id/subscribeSubscriptionElementText"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/unsubscribeSubscriptionElementBtn"
+        style="@style/smallButton"
         android:layout_gravity="center"
-        android:layout_weight="2"
-        android:fontFamily="@font/font_awesome_solid"
-        android:gravity="center"
-        android:text="@string/subscribe_ico"
-        android:textColor="@color/red"
-        android:textSize="25sp" />
-
-    <TextView
-        android:id="@+id/unsubscribeSubscriptionElementText"
-        style="@style/iconRegular"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_weight="2"
-        android:fontFamily="@font/font_awesome_solid"
-        android:gravity="center"
-        android:text="@string/subscribe_ico"
-        android:textColor="@color/red"
-        android:textSize="25sp" />
-
+        android:text="Отписаться" />
 
 </LinearLayout>

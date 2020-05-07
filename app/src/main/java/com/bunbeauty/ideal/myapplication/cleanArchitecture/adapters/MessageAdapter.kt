@@ -15,12 +15,9 @@ class MessageAdapter(
 ) : RecyclerView.Adapter<MessageViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MessageViewHolder {
-        // в этом методе создаем ViewHolder
         val context = viewGroup.context
         val layoutIdForListItem = R.layout.fragment_message
-        //Класс, который позволяет создавать представления из xml файла
         val layoutInflater = LayoutInflater.from(context)
-        // откуда, куда, необходимо ли помещать в родителя
         val view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false)
         return MessageViewHolder(view)
     }
@@ -33,7 +30,6 @@ class MessageAdapter(
     }
 
     override fun getItemCount(): Int {
-        //общее количество элементов в нашем списке
         return messageList.size
     }
 

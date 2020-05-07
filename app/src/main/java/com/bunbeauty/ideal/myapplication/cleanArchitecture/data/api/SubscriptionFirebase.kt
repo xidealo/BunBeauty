@@ -23,6 +23,16 @@ class SubscriptionFirebase {
         subscriptionRef.updateChildren(items)
     }
 
+    fun delete(subscription: Subscription){
+        val subscriptionRef = FirebaseDatabase.getInstance()
+            .getReference(User.USERS)
+            .child(subscription.userId)
+            .child(Subscription.SUBSCRIPTIONS)
+            .child(subscription.id)
+
+        subscriptionRef.removeValue()
+    }
+
     fun getByUserId(userId: String, subscriptionsCallback: SubscriptionsCallback) {
 
         val servicesRef = FirebaseDatabase.getInstance()

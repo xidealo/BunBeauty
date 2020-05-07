@@ -20,7 +20,12 @@ class Subscriber(
     var subscriberId: String = "" // who
 ) {
 
-    companion object{
+    companion object {
+
+        fun getSubscriber(subscription: Subscription) {
+
+        }
+
         const val SUBSCRIBERS = "subscribers"
         const val SUBSCRIBER_ID = "subscriber id"
         const val DATE = "date"

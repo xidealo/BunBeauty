@@ -6,6 +6,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface SubscriptionsPresenterCallback {
     fun getSubscriptions(user: User)
     fun getUsersBySubscription(subscriptions: List<Subscription>)
-    fun showSubscriptions(users: List<User>)
+    fun showSubscriptions()
     fun showEmptySubscriptions()
 }

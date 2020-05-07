@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.SubscriptionAdapter.SubscriptionViewHolder
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.SubscriptionElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscription
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SubscriptionsPresenter
 
 class SubscriptionAdapter(
+    private val subscriptionsPresenter: SubscriptionsPresenter,
+    private val subscriptions: List<Subscription>,
     private val userList: List<User>
 ) : RecyclerView.Adapter<SubscriptionViewHolder>() {
 
@@ -26,7 +30,7 @@ class SubscriptionAdapter(
         subscriptionViewHolder: SubscriptionViewHolder,
         i: Int
     ) {
-        subscriptionViewHolder.bind(userList[i])
+        subscriptionViewHolder.bind(userList[i], subscriptions[i])
     }
 
     override fun getItemCount(): Int {
@@ -35,9 +39,9 @@ class SubscriptionAdapter(
 
     inner class SubscriptionViewHolder(private val view: View, private val context: Context) :
         RecyclerView.ViewHolder(view) {
-        fun bind(user: User) {
-            val subscriptionElement = SubscriptionElement(view, context)
-            subscriptionElement.createElement(user)
+        fun bind(user: User, subscription: Subscription) {
+            val subscriptionElement = SubscriptionElement(view, context, subscriptionsPresenter)
+            subscriptionElement.createElement(user, subscription)
         }
     }
 }
