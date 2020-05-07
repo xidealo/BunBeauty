@@ -5,13 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ServiceProfileAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -19,6 +20,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.ProfilePagerAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
@@ -26,17 +28,19 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editin
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscriptions.SubscriptionsActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile.OrdersFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile.ServicesFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
 class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView,
-    ITopPanel, IBottomPanel, MaterialButtonToggleGroup.OnButtonCheckedListener {
+    ITopPanel, IBottomPanel, TabLayout.OnTabSelectedListener {
 
     private lateinit var avatarImage: ImageView
 
@@ -51,22 +55,16 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     private lateinit var progressBar: ProgressBar
 
-    private lateinit var controlPanelLayout: LinearLayout
-    private lateinit var mainLayout: LinearLayout
-    private lateinit var orderRecyclerView: RecyclerView
-    private lateinit var serviceRecyclerView: RecyclerView
-    private lateinit var serviceAdapter: ServiceProfileAdapter
-
     private lateinit var dialogsBtn: FloatingActionButton
     private lateinit var subscribeBtn: FloatingActionButton
 
     private lateinit var subscriptionsBtn: FloatingActionButton
     private lateinit var scheduleBtn: FloatingActionButton
 
-    private lateinit var createServicesBtn: MaterialButton
-    private lateinit var ordersBtn: MaterialButton
-    private lateinit var servicesBtn: MaterialButton
-    private lateinit var switcher: MaterialButtonToggleGroup
+    private lateinit var ordersFragment: OrdersFragment
+    private lateinit var servicesFragment: ServicesFragment
+    private lateinit var tabLayout: TabLayout
+    private lateinit var viewPager: ViewPager
 
     override var bottomNavigationContext: Context = this
 
@@ -132,20 +130,20 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         scheduleBtn = findViewById(R.id.scheduleProfileBtn)
         scheduleBtn.setOnClickListener(this)
 
-        controlPanelLayout = findViewById(R.id.controlPanelProfileLayout)
-        createServicesBtn = findViewById(R.id.createServicesProfileBtn)
-        ordersBtn = findViewById(R.id.ordersProfileBtn)
-        servicesBtn = findViewById(R.id.servicesProfileBtn)
-        switcher = findViewById(R.id.switcherProfileToggle)
-        switcher.addOnButtonCheckedListener(this)
+        ordersFragment = OrdersFragment()
+        servicesFragment = ServicesFragment()
+        tabLayout = findViewById(R.id.profileTabLayout)
+        viewPager = findViewById(R.id.profileViewPager)
+        viewPager.adapter = ProfilePagerAdapter(
+            supportFragmentManager,
+            FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
+            ordersFragment,
+            servicesFragment
+        )
+        tabLayout.addOnTabSelectedListener(this)
+        viewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
 
         progressBar = findViewById(R.id.loadingProfileProgressBar)
-
-        mainLayout = findViewById(R.id.mainProfileLayout)
-        orderRecyclerView = findViewById(R.id.ordersProfileRecycleView)
-        serviceRecyclerView = findViewById(R.id.servicesProfileRecyclerView)
-        orderRecyclerView.layoutManager = LinearLayoutManager(this)
-        serviceRecyclerView.layoutManager = LinearLayoutManager(this)
 
         initBottomPanel(R.id.navigation_profile)
     }
@@ -178,34 +176,32 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun setServiceAdapter(services: List<Service>, user: User) {
-        serviceAdapter = ServiceProfileAdapter(services, user)
-        serviceRecyclerView.adapter = serviceAdapter
+        servicesFragment.setAdapter(services, user)
     }
 
-    override fun showOrdersView() {
-        serviceRecyclerView.visibility = View.GONE
-        orderRecyclerView.visibility = View.VISIBLE
+    override fun showOrders() {
+        viewPager.currentItem = ORDERS_INDEX
     }
 
-    override fun showServicesView() {
-        orderRecyclerView.visibility = View.GONE
-        serviceRecyclerView.visibility = View.VISIBLE
+    override fun showServices() {
+        viewPager.currentItem = SERVICES_INDEX
     }
 
-    override fun showControlPanelLayout() {
-        controlPanelLayout.visibility = View.VISIBLE
+    override fun showTabLayout() {
+        //viewPager.user
+        tabLayout.visibility = View.VISIBLE
     }
 
-    override fun hideControlPanelLayout() {
-        controlPanelLayout.visibility = View.GONE
+    override fun hideTabLayout() {
+        tabLayout.visibility = View.GONE
     }
 
-    override fun showAddServiceButton() {
-        createServicesBtn.visibility = View.VISIBLE
+    override fun showCreateServiceButton() {
+        servicesFragment.showCreateButton()
     }
 
-    override fun hideAddServiceButton() {
-        createServicesBtn.visibility = View.INVISIBLE
+    override fun hideCreateServiceButton() {
+        servicesFragment.hideCreateButton()
     }
 
     override fun showDialogsButton() {
@@ -250,44 +246,30 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
             //R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
 
-            R.id.createServicesProfileBtn -> goToCreationService()
+            R.id.createServiceBtn -> goToCreationService()
         }
     }
 
-    override fun onButtonChecked(
-        group: MaterialButtonToggleGroup,
-        checkedId: Int,
-        isChecked: Boolean
-    ) {
-        when (checkedId) {
-            R.id.ordersProfileBtn -> {
-                ordersBtn.isEnabled = false
-                servicesBtn.isEnabled = true
-                showOrdersView()
-                hideAddServiceButton()
-            }
-
-            R.id.servicesProfileBtn -> {
-                ordersBtn.isEnabled = true
-                servicesBtn.isEnabled = false
-                showServicesView()
-                showAddServiceButton()
-            }
-        }
+    override fun onTabSelected(tab: TabLayout.Tab) {
+        viewPager.currentItem = tab.position
     }
+
+    override fun onTabReselected(tab: TabLayout.Tab?) {}
+
+    override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
     override fun showUserServices(serviceList: List<Service>, user: User) {
-        serviceAdapter.notifyDataSetChanged()
+        servicesFragment.updateAdapter()
     }
 
     override fun showProgress() {
         progressBar.visibility = View.VISIBLE
-        mainLayout.visibility = View.INVISIBLE
+        viewPager.visibility = View.INVISIBLE
     }
 
     override fun hideProgress() {
         progressBar.visibility = View.GONE
-        mainLayout.visibility = View.VISIBLE
+        viewPager.visibility = View.VISIBLE
     }
 
     override fun showMessage(message: String) {
@@ -371,7 +353,9 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     companion object {
-        private const val TAG = "DBInf"
+        private const val ORDERS_INDEX = 0
+        private const val SERVICES_INDEX = 1
+
         private const val REVIEW_FOR_USER = "review for user"
         private const val SUBSCRIPTIONS = "подписки"
         private const val SERVICE_OWNER_ID = "service owner id"

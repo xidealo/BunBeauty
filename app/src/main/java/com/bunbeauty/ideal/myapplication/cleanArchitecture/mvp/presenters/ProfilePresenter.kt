@@ -38,24 +38,23 @@ class ProfilePresenter(
     }
 
     override fun showMyProfile(user: User) {
-        viewState.showOrdersView()
-        viewState.showControlPanelLayout()
+        viewState.showOrders()
+        viewState.showTabLayout()
         viewState.showScheduleButton()
 
-        viewState.hideAddServiceButton()
         viewState.hideDialogsButton()
         viewState.hideSubscribeButton()
     }
 
     override fun showAlienProfile(user: User) {
-        viewState.showServicesView()
+        viewState.showServices()
         viewState.showDialogsButton()
         viewState.showSubscribeButton()
 
-        viewState.hideAddServiceButton()
         viewState.hideScheduleButton()
         viewState.hideSubscriptionsButton()
-        viewState.hideControlPanelLayout()
+        viewState.hideTabLayout()
+        viewState.hideCreateServiceButton()
     }
 
     fun updateUser(user: User) {

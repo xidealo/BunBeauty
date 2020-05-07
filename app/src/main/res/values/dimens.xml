@@ -18,9 +18,14 @@
     <dimen name="main_button_height">36dp</dimen>
 
     <dimen name="tags_width">700dp</dimen>
-ч
+    ч
     <dimen name="schedule_button_height">36dp</dimen>
     <dimen name="schedule_button_margin">2dp</dimen>
     <dimen name="button_stroke_width">3dp</dimen>
     <dimen name="button_corner_radius">5dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="appbar_padding">16dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
 </resources>

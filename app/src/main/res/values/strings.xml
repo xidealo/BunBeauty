@@ -86,5 +86,8 @@
     <string name="subscribed"><![CDATA[<B]]></string>
     <string name="name">Name</string>
     <string name="change_number">Изменить номер</string>
+    <string name="title_activity_tabs">Tabs</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
 
 </resources>

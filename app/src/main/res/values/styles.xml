@@ -131,8 +131,6 @@
     <!-- ======================================================================================= -->
 
 
-
-
     <style name="buttonText" parent="@android:style/Widget.RatingBar">
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>

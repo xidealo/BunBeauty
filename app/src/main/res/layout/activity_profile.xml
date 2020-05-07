@@ -112,8 +112,30 @@
             </LinearLayout>
         </LinearLayout>
 
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/profileTabLayout"
+            style="@style/wideHorizontalBlock" >
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Записи"/>
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Услуги"/>
+
+        </com.google.android.material.tabs.TabLayout>
+
     </LinearLayout>
-    >>>>>>> Stashed changes
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/profileViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintTop_toBottomOf="@id/infoProfileLayout" />
 
     <ProgressBar
         android:id="@+id/loadingProfileProgressBar"
@@ -123,218 +145,6 @@
         android:indeterminateTint="@color/mainBlue"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintTop_toBottomOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/mainProfileLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/infoProfileLayout">
-
-        <!-- Верхняя часть-->
-        <!--<LinearLayout
-            style="@style/block"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/block_text"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:padding="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/block_text"
-                    android:orientation="vertical">
-
-                   &lt;!&ndash; <ImageView
-                        android:id="@+id/avatarProfileImage"
-                        android:layout_width="@dimen/photo_width"
-                        android:layout_height="@dimen/photo_height"
-                        android:layout_gravity="center"
-                        tools:srcCompat="@tools:sample/avatars" />&ndash;&gt;
-                </LinearLayout>
-
-                &lt;!&ndash; Rating bar &ndash;&gt;
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="1dp">
-
-                    <TextView
-                        android:id="@+id/cityProfileText"
-                        style="@style/defaultTextProfile"
-                        android:text="TextView" />
-
-                    <TextView
-                        android:id="@+id/phoneProfileText"
-                        style="@style/defaultTextProfile"
-                        android:text="TextView" />
-
-                    <TextView
-                        android:id="@+id/subscribersProfileText"
-                        style="@style/defaultTextProfile"
-                        android:text="TextView" />
-
-                   &lt;!&ndash; <com.google.android.material.button.MaterialButton
-                        android:id="@+id/subscribeProfileBtn"
-                        style="@style/smallButton"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:text="Подписаться" />&ndash;&gt;
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="2dp">
-
-                <LinearLayout
-                    android:id="@+id/ratingProfileLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/main_button"
-                    android:gravity="center">
-
-                    <RatingBar
-                        android:id="@+id/profileRatingBar"
-                        style="@android:style/Widget.Holo.RatingBar.Small"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:theme="@style/ratingBarColors" />
-
-                    <TextView
-                        android:id="@+id/withoutRatingProfileText"
-                        style="@style/buttonText"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="Оценок еще нет" />
-                </LinearLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/subscriptionsProfileBtn"
-                    style="@style/smallButton"
-                    android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:text="Подписки" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/dialogsProfileBtn"
-                    style="@style/smallButton"
-                    android:layout_width="match_parent"
-
-                    android:layout_weight="1"
-                    android:text="Диалог" />
-
-                &lt;!&ndash;<LinearLayout
-                    android:id="@+id/subscriptionsProfileLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/main_button"
-                    android:gravity="center">
-
-                    <TextView
-                        android:id="@+id/subscriptionsProfileText"
-                        style="@style/buttonText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:gravity="center"
-                        android:visibility="gone"
-                        android:text="Подписки" />
-                </LinearLayout>&ndash;&gt;
-            </LinearLayout>
-        </LinearLayout>-->
-
-        <LinearLayout
-            android:id="@+id/controlPanelProfileLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="2dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/createServicesProfileBtn"
-                    style="@style/smallButton"
-                    android:gravity="center"
-                    android:text="@string/addServices" />
-            </LinearLayout>
-
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/switcherProfileToggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                app:checkedButton="@id/ordersProfileBtn"
-                app:selectionRequired="true"
-                app:singleSelection="true">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/ordersProfileBtn"
-                    style="@style/switchButton"
-                    android:enabled="false"
-                    android:text="Записи" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/servicesProfileBtn"
-                    style="@style/switchButton"
-                    android:text="Услуги" />
-            </com.google.android.material.button.MaterialButtonToggleGroup>
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/recyclerViewProfileRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
-        app:layout_constraintTop_toBottomOf="@id/mainProfileLayout">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/servicesProfileRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/ordersProfileRecycleView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none" />
-    </LinearLayout>
-
-    <!--<com.google.android.material.button.MaterialButton
-        android:id="@+id/scheduleProfileBtn"
-        style="@style/smallButton"
-        android:text="Расписание"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />-->
 
     <include layout="@layout/part_bottom_panel" />
 
