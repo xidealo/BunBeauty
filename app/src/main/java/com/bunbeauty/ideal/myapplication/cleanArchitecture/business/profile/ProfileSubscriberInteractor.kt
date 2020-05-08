@@ -12,14 +12,17 @@ class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberR
     IProfileSubscriberInteractor, InsertSubscriberCallback, SubscribersCallback {
 
     private var isSubscribed = false
+    private var isMyProfile = false
     private val cacheSubscribers = mutableListOf<Subscriber>()
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
 
     override fun getSubscribers(
         userId: String,
+        isMyProfile: Boolean,
         profilePresenterCallback: ProfilePresenterCallback
     ) {
         this.profilePresenterCallback = profilePresenterCallback
+        this.isMyProfile = isMyProfile
         subscriberRepository.getByUserId(userId, this)
     }
 
@@ -32,13 +35,18 @@ class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberR
     }
 
     override fun returnCreatedCallback(obj: Subscriber) {
-
+        cacheSubscribers.add(obj)
+        updateCountOfSubscribers(cacheSubscribers, profilePresenterCallback)
     }
 
     override fun returnList(objects: List<Subscriber>) {
         cacheSubscribers.addAll(objects)
-        if (cacheSubscribers.isNotEmpty()) {
+
+        if (!isMyProfile) {
             checkSubscribed(User.getMyId(), cacheSubscribers, profilePresenterCallback)
+        }
+
+        if (cacheSubscribers.isNotEmpty()) {
             updateCountOfSubscribers(cacheSubscribers, profilePresenterCallback)
         }
     }

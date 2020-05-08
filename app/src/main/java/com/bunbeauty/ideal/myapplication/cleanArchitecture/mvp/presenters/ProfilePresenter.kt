@@ -36,7 +36,11 @@ class ProfilePresenter(
         viewState.setServiceAdapter(profileServiceInteractor.getServices(), user)
 
         profileServiceInteractor.getServicesByUserId(user.id, this)
-        profileSubscriberInteractor.getSubscribers(user.id, this)
+        profileSubscriberInteractor.getSubscribers(
+            user.id,
+            profileUserInteractor.isMyProfile(user.id, User.getMyId()),
+            this
+        )
     }
 
     override fun showMyProfile(user: User) {

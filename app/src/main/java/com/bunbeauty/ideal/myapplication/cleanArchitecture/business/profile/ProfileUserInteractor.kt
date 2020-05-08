@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
 import android.content.Intent
-import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
@@ -43,13 +42,15 @@ class ProfileUserInteractor(
     }
 
     private fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
-        if (user.id == User.getMyId()) {
+        if (isMyProfile(user.id, User.getMyId())) {
             profilePresenterCallback.showMyProfile(user)
             cacheCurrentUser = currentUser
         } else {
             profilePresenterCallback.showAlienProfile(user)
         }
     }
+
+    override fun isMyProfile(ownerId: String, myId: String) = ownerId == myId
 
     override fun updateUser(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         currentUser = user

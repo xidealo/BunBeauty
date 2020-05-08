@@ -7,7 +7,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.SubscriberFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscriber
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.ISubscriberRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SubscriberRepository(private val subscriberFirebase: SubscriberFirebase) : BaseRepository(),
     ISubscriberRepository, SubscribersCallback {
@@ -21,7 +23,9 @@ class SubscriberRepository(private val subscriberFirebase: SubscriberFirebase) :
         launch {
             subscriber.id = subscriberFirebase.getIdForNew(subscriber.userId)
             subscriberFirebase.insert(subscriber)
-            insertSubscriberCallback.returnCreatedCallback(subscriber)
+            withContext(Dispatchers.Main){
+                insertSubscriberCallback.returnCreatedCallback(subscriber)
+            }
         }
     }
 
@@ -31,6 +35,9 @@ class SubscriberRepository(private val subscriberFirebase: SubscriberFirebase) :
     ) {
         launch {
             subscriberFirebase.delete(subscriber)
+            withContext(Dispatchers.Main){
+                deleteSubscriberCallback.returnDeletedCallback(subscriber)
+            }
         }
     }
 

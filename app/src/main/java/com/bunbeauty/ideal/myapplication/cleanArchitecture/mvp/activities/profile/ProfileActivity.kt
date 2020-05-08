@@ -112,7 +112,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun onResume() {
         super.onResume()
-
         profilePresenter.updateBottomPanel()
     }
 
@@ -168,11 +167,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             .into(avatarImage)
     }
 
-    override fun showSubscribers(subscribersCount: Long) {
-        subscribersText.text = "Подписчики: $subscribersCount"
-        subscribersText.visibility = View.VISIBLE
-    }
-
     override fun showRating(rating: Float, countOfRates: Long) {
         ratingBar.rating = rating
         ratingLayout.setOnClickListener(this)
@@ -189,6 +183,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun showUpdatedBottomPanel(selectedItemId: Int) {
         updateBottomPanel(selectedItemId)
+    }
+
+    override fun showCountOfSubscriber(count: Long) {
+        subscribersText.text = "Подписчики: $count"
+        subscribersText.visibility = View.VISIBLE
     }
 
     override fun showOrders() {

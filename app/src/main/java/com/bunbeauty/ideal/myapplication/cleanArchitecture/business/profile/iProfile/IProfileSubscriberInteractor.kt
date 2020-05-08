@@ -7,6 +7,7 @@ interface IProfileSubscriberInteractor {
 
     fun getSubscribers(
         userId: String,
+        isMyProfile: Boolean,
         profilePresenterCallback: ProfilePresenterCallback
     )
 
@@ -15,7 +16,11 @@ interface IProfileSubscriberInteractor {
         profilePresenterCallback: ProfilePresenterCallback
     )
 
-    fun checkSubscribed(userId: String,subscribers: List<Subscriber>, profilePresenterCallback: ProfilePresenterCallback)
+    fun checkSubscribed(
+        userId: String,
+        subscribers: List<Subscriber>,
+        profilePresenterCallback: ProfilePresenterCallback
+    )
 
     fun updateCountOfSubscribers(
         subscribers: List<Subscriber>, profilePresenterCallback: ProfilePresenterCallback
