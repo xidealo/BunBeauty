@@ -27,6 +27,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.Creati
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
@@ -43,6 +44,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     private lateinit var mainLayout: LinearLayout
 
     override var bottomNavigationContext: Context = this
+    override lateinit var bottomPanel: BottomNavigationView
 
     //храним ссылки на картинки в хранилище
     private lateinit var fpathOfImages: ArrayList<String>
@@ -86,6 +88,12 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
         showMainBlock()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        initBottomPanel()
+    }
+
     private fun init() {
         fpathOfImages = ArrayList()
         nameServiceInput = findViewById(R.id.nameCreationServiceInput)
@@ -103,7 +111,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     }
 
     private fun createPanels() {
-        initBottomPanel()
         createTopPanel("Создание услуги", ButtonTask.NONE, supportFragmentManager)
     }
 

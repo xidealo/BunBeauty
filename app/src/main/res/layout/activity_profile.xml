@@ -130,7 +130,7 @@
 
     </LinearLayout>
 
-    <androidx.viewpager.widget.ViewPager
+    <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomViewPager
         android:id="@+id/profileViewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -12,4 +12,5 @@ interface IProfileUserInteractor {
     fun initFCM()
     fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback)
     fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback)
+    fun updateBottomPanel(profilePresenterCallback: ProfilePresenterCallback)
 }

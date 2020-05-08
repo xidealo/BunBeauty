@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
+import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.*
@@ -39,6 +40,7 @@ class ProfilePresenter(
     }
 
     override fun showMyProfile(user: User) {
+        viewState.showBottomPanel(R.id.navigation_profile)
         viewState.showOrders()
         viewState.showTabLayout()
         viewState.showScheduleButton()
@@ -47,11 +49,13 @@ class ProfilePresenter(
     }
 
     override fun showAlienProfile(user: User) {
+        viewState.showBottomPanel()
         viewState.showServices()
         viewState.showDialogsButton()
         viewState.hideScheduleButton()
         viewState.hideSubscriptionsButton()
         viewState.hideTabLayout()
+        viewState.disableSwipe()
         viewState.hideCreateServiceButton()
     }
 
@@ -120,5 +124,13 @@ class ProfilePresenter(
     override fun setServiceList(serviceList: List<Service>) {
         viewState.showUserServices(serviceList, profileUserInteractor.getCurrentUser())
         viewState.hideProgress()
+    }
+
+    fun updateBottomPanel() {
+        profileUserInteractor.updateBottomPanel(this)
+    }
+
+    override fun showUpdatedBottomPanel(selectedItemId: Int) {
+        viewState.showUpdatedBottomPanel(selectedItemId)
     }
 }

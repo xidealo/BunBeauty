@@ -17,6 +17,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.EditServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.EditServiceView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
 
 class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
@@ -31,6 +32,7 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     private lateinit var saveEditServiceBtn: Button
 
     override var bottomNavigationContext: Context = this
+    override lateinit var bottomPanel: BottomNavigationView
 
     private fun init() {
         progressEditServiceBar = findViewById(R.id.progressEditServiceBar)
@@ -40,14 +42,11 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         costEditService = findViewById(R.id.costEditService)
         descriptionEditService = findViewById(R.id.descriptionEditService)
         saveEditServiceBtn = findViewById(R.id.saveEditServiceBtn)
-
-        initBottomPanel(R.id.navigation_profile)
     }
 
     @Inject
     lateinit var editServiceInteractor: EditServiceInteractor
 
-    //ДОБАВИЛ!
     @ProvidePresenter
     internal fun provideEditServicePresenter(): EditServicePresenter {
         DaggerAppComponent
@@ -69,6 +68,12 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         setContentView(R.layout.activity_edit_service)
         init()
         createPanels()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        initBottomPanel()
     }
 }
 

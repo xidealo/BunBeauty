@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
 import android.content.Intent
+import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
@@ -32,7 +33,7 @@ class ProfileUserInteractor(
     }
 
     override fun returnUsers(users: List<User>) {
-        if(users.isNotEmpty()) {
+        if (users.isNotEmpty()) {
             val user = users.first()
             currentUser = user
             profilePresenterCallback.returnProfileOwner(user)
@@ -50,7 +51,7 @@ class ProfileUserInteractor(
         }
     }
 
-    override fun updateUser(user: User,  profilePresenterCallback: ProfilePresenterCallback) {
+    override fun updateUser(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         currentUser = user
         cacheCurrentUser = user
         profilePresenterCallback.showMyProfile(user)
@@ -89,6 +90,14 @@ class ProfileUserInteractor(
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun updateBottomPanel(profilePresenterCallback: ProfilePresenterCallback) {
+        /*if (currentUser.id == User.getMyId()) {
+            profilePresenterCallback.showUpdatedBottomPanel(R.id.navigation_profile)
+        } else {
+            profilePresenterCallback.showUpdatedBottomPanel()
+        }*/
+    }
+
     companion object {
         const val OWNER_ID = "owner id"
         const val TOKEN = "token"
@@ -96,6 +105,4 @@ class ProfileUserInteractor(
         val cachedUserIdsForServices = arrayListOf<String>()
         var cacheCurrentUser = User()
     }
-
-
 }

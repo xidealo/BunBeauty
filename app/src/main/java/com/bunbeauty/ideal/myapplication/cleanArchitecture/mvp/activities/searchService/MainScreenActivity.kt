@@ -32,6 +32,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import javax.inject.Inject
 
@@ -50,6 +51,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private lateinit var noResultMainScreenText: TextView
 
     override var bottomNavigationContext: Context = this
+    override lateinit var bottomPanel: BottomNavigationView
 
     @InjectPresenter
     lateinit var mainScreenPresenter: MainScreenPresenter
@@ -91,6 +93,12 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         createMainScreen()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        initBottomPanel(R.id.navigation_main)
+    }
+
     private fun createPanels() {
         createTopPanel("BunBeauty", ButtonTask.SEARCH, supportFragmentManager)
     }
@@ -108,8 +116,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         noResultMainScreenText = findViewById(R.id.noResultMainScreenText)
 
         noResultMainScreenText.visibility = View.GONE
-
-        initBottomPanel(R.id.navigation_main)
 
         val minimizeTagsBtn = findViewById<MaterialButton>(R.id.minimizeTagsMainScreenBtn)
         val clearTagsBtn = findViewById<MaterialButton>(R.id.clearTagsMainScreenBtn)

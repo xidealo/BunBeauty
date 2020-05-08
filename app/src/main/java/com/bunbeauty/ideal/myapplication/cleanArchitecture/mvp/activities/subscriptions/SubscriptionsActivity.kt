@@ -22,6 +22,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SubscriptionsPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.SubscriptionsView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
 
 class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, SubscriptionsView {
@@ -32,6 +33,7 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
     private lateinit var progressBarSubscribers: ProgressBar
 
     override var bottomNavigationContext: Context = this
+    override lateinit var bottomPanel: BottomNavigationView
 
     @Inject
     lateinit var subscriptionsSubscriptionInteractor: SubscriptionsSubscriptionInteractor
@@ -67,6 +69,12 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
         subscriptionsPresenter.createSubscriptionsScreen()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        initBottomPanel()
+    }
+
     fun init() {
         resultsSubscribersRecycleView = findViewById(R.id.resultsSubscribersRecycleView)
         emptySubscriptionsSubscriptionsText = findViewById(R.id.emptySubscriptionsSubscriptionsText)
@@ -85,7 +93,6 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
 
     private fun createPanels() {
         createTopPanel("Подписки", ButtonTask.NONE, supportFragmentManager)
-        initBottomPanel()
     }
 
     override fun showSubscriptions() {

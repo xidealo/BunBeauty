@@ -15,13 +15,20 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 interface IBottomPanel : BottomNavigationView.OnNavigationItemSelectedListener {
 
     var bottomNavigationContext: Context
+    var bottomPanel: BottomNavigationView
 
     fun initBottomPanel(selectedItemId: Int = -1) {
-        val bottomPanel: BottomNavigationView =
-            (bottomNavigationContext as Activity).findViewById(R.id.bottomNavigationView)
+        bottomPanel = (bottomNavigationContext as Activity).findViewById(R.id.bottomNavigationView)
+        updateBottomPanel(selectedItemId)
+        bottomPanel.setOnNavigationItemSelectedListener(this)
+    }
+
+    fun updateBottomPanel(selectedItemId: Int = -1) {
         bottomPanel.selectedItemId = selectedItemId
         bottomPanel.menu.findItem(selectedItemId)?.isEnabled = false
-        bottomPanel.setOnNavigationItemSelectedListener(this)
+        if (selectedItemId == -1) {
+            bottomPanel.menu.setGroupCheckable(0, false, true);
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

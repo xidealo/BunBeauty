@@ -12,7 +12,7 @@ import com.arellomobile.mvp.MvpAppCompatFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ServiceProfileAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.google.android.material.button.MaterialButton
 
 class ServicesFragment : MvpAppCompatFragment(), View.OnClickListener {
@@ -34,6 +34,7 @@ class ServicesFragment : MvpAppCompatFragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         createBtn = view.findViewById(R.id.createServiceBtn)
         createBtn!!.visibility = createBtnVisibility
+        createBtn!!.setOnClickListener(this)
 
         serviceRecyclerView = view.findViewById(R.id.servicesRecycleView)
         serviceRecyclerView!!.layoutManager = LinearLayoutManager(context)
@@ -75,10 +76,15 @@ class ServicesFragment : MvpAppCompatFragment(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view.id) {
             R.id.createServiceBtn -> {
-                val intent = Intent(context, ScheduleActivity::class.java)
-                startActivity(intent)
-                activity!!.overridePendingTransition(0, 0)
+                goToCreationService()
             }
         }
     }
+
+    private fun goToCreationService() {
+        val intent = Intent(context, CreationServiceActivity::class.java)
+        startActivity(intent)
+        activity!!.overridePendingTransition(0, 0)
+    }
+
 }
