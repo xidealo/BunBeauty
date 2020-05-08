@@ -24,24 +24,24 @@ class ProfilePresenter(
 
     fun getProfileOwner() {
         viewState.showProgress()
+        viewState.invisibleSubscribeButton()
         profileUserInteractor.getProfileOwner(this)
     }
 
     override fun returnProfileOwner(user: User) {
         viewState.showProfileInfo(user.name, user.surname, user.city)
         viewState.showAvatar(user.photoLink)
-        viewState.showSubscribers(user.subscribersCount)
         viewState.showRating(user.rating, user.countOfRates)
         viewState.setServiceAdapter(profileServiceInteractor.getServices(), user)
 
         profileServiceInteractor.getServicesByUserId(user.id, this)
+        profileSubscriberInteractor.getSubscribers(user.id, this)
     }
 
     override fun showMyProfile(user: User) {
         viewState.showOrders()
         viewState.showTabLayout()
         viewState.showScheduleButton()
-
         viewState.hideDialogsButton()
         viewState.hideSubscribeButton()
     }
@@ -49,8 +49,6 @@ class ProfilePresenter(
     override fun showAlienProfile(user: User) {
         viewState.showServices()
         viewState.showDialogsButton()
-        viewState.showSubscribeButton()
-
         viewState.hideScheduleButton()
         viewState.hideSubscriptionsButton()
         viewState.hideTabLayout()
@@ -106,11 +104,17 @@ class ProfilePresenter(
     }
 
     override fun showSubscribed() {
+        viewState.showSubscribeButton()
         viewState.showSubscribed()
     }
 
     override fun showUnsubscribed() {
+        viewState.showSubscribeButton()
         viewState.showUnsubscribed()
+    }
+
+    override fun showCountOfSubscriber(count: Long) {
+        viewState.showCountOfSubscriber(count)
     }
 
     override fun setServiceList(serviceList: List<Service>) {

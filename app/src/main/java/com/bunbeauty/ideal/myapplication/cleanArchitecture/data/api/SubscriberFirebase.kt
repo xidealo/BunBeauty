@@ -43,8 +43,8 @@ class SubscriberFirebase {
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(subscribersSnapshot: DataSnapshot) {
                 val subscribers = arrayListOf<Subscriber>()
-                for (SubscriberSnapshot in subscribersSnapshot.children) {
-                    subscribers.add(getSubscriberFromSnapshot(subscribersSnapshot, userId))
+                for (subscriberSnapshot in subscribersSnapshot.children) {
+                    subscribers.add(getSubscriberFromSnapshot(subscriberSnapshot, userId))
                 }
                 subscribersCallback.returnList(subscribers)
             }

@@ -6,7 +6,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface IProfileSubscriberInteractor {
 
     fun getSubscribers(
-        myUserId: String,
+        userId: String,
         profilePresenterCallback: ProfilePresenterCallback
     )
 
@@ -15,4 +15,9 @@ interface IProfileSubscriberInteractor {
         profilePresenterCallback: ProfilePresenterCallback
     )
 
+    fun checkSubscribed(userId: String,subscribers: List<Subscriber>, profilePresenterCallback: ProfilePresenterCallback)
+
+    fun updateCountOfSubscribers(
+        subscribers: List<Subscriber>, profilePresenterCallback: ProfilePresenterCallback
+    )
 }

@@ -12,6 +12,4 @@ interface IProfileSubscriptionInteractor {
         subscription: Subscription,
         profilePresenterCallback: ProfilePresenterCallback
     )
-
-    fun checkSubscribed(userId: String, profilePresenterCallback: ProfilePresenterCallback)
 }

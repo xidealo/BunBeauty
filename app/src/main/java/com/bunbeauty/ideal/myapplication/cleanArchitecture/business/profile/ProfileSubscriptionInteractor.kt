@@ -13,7 +13,6 @@ class ProfileSubscriptionInteractor(private val subscriptionRepository: ISubscri
     SubscriptionsCallback {
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
     private val cacheSubscriptions = mutableListOf<Subscription>()
-    private var isSubscribed = false
 
     override fun getSubscriptions(
         myUserId: String,
@@ -46,17 +45,6 @@ class ProfileSubscriptionInteractor(private val subscriptionRepository: ISubscri
 
     override fun returnList(objects: List<Subscription>) {
         cacheSubscriptions.addAll(objects)
-    }
-
-    override fun checkSubscribed(userId: String, profilePresenterCallback: ProfilePresenterCallback){
-
-        isSubscribed = cacheSubscriptions.find { it.subscriptionId == userId } != null
-
-        if (isSubscribed) {
-            profilePresenterCallback.showSubscribed()
-        } else {
-            profilePresenterCallback.showUnsubscribed()
-        }
     }
 
 }

@@ -53,7 +53,7 @@ class SubscriberRepository(private val subscriberFirebase: SubscriberFirebase) :
     override fun getByUserId(userId: String, subscribersCallback: SubscribersCallback) {
         this.subscribersCallback = subscribersCallback
         launch {
-
+            subscriberFirebase.getByUserId(userId, subscribersCallback)
         }
     }
 

@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
-import androidx.viewpager2.widget.ViewPager2
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -164,11 +162,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             .into(avatarImage)
     }
 
-    override fun showSubscribers(subscribersCount: Long) {
-        subscribersText.text = "Подписчики: $subscribersCount"
-        subscribersText.visibility = View.VISIBLE
-    }
-
     override fun showRating(rating: Float, countOfRates: Long) {
         ratingBar.rating = rating
         ratingLayout.setOnClickListener(this)
@@ -177,6 +170,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun setServiceAdapter(services: List<Service>, user: User) {
         servicesFragment.setAdapter(services, user)
+    }
+
+    override fun showCountOfSubscriber(count: Long) {
+        subscribersText.text = "Подписчики: $count"
+        subscribersText.visibility = View.VISIBLE
     }
 
     override fun showOrders() {
@@ -218,6 +216,10 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun hideSubscribeButton() {
         subscribeBtn.visibility = View.GONE
+    }
+
+    override fun invisibleSubscribeButton() {
+        subscribeBtn.visibility = View.INVISIBLE
     }
 
     override fun showSubscriptionsButton() {
@@ -305,6 +307,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     override fun goToDialog(dialog: Dialog) {
         val intent = Intent(this, MessagesActivity::class.java)
         intent.putExtra(Dialog.COMPANION_DIALOG, dialog)
+
         //TODO(refactor)
         val myDialog = Dialog()
         myDialog.ownerId = dialog.user.id

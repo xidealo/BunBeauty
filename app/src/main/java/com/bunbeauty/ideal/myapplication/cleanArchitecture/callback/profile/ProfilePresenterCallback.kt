@@ -13,6 +13,6 @@ interface ProfilePresenterCallback {
     fun goToDialog(dialog: Dialog)
     fun showSubscribed()
     fun showUnsubscribed()
-
+    fun showCountOfSubscriber(count: Long)
     fun getProfileServiceList(userId: String)
 }
