@@ -11,13 +11,12 @@ import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.google.android.material.appbar.MaterialToolbar
 import com.squareup.picasso.Picasso
 
-interface ITopPanel : IPanel, View.OnClickListener, Toolbar.OnMenuItemClickListener {
+interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
 
     var topPanel: MaterialToolbar
 
     fun initTopPanel(buttonTask: ButtonTask) {
         topPanel = (panelContext as Activity).findViewById(R.id.topPanelLayout)
-        topPanel.setNavigationOnClickListener(this)
 
         configBackIcon()
         configPanel(buttonTask)
@@ -43,7 +42,10 @@ interface ITopPanel : IPanel, View.OnClickListener, Toolbar.OnMenuItemClickListe
         if ((panelContext as Activity).isTaskRoot) {
             topPanel.navigationIcon = null
         } else {
-            topPanel.setNavigationOnClickListener(this)
+            topPanel.setNavigationOnClickListener {
+                (panelContext as Activity).onBackPressed()
+                (panelContext as Activity).overridePendingTransition(0, 0)
+            }
         }
     }
 
@@ -59,7 +61,9 @@ interface ITopPanel : IPanel, View.OnClickListener, Toolbar.OnMenuItemClickListe
             }
             ButtonTask.GO_TO_PROFILE -> {
                 topPanel.menu.close()
-                topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage).setOnClickListener(this)
+                topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage).setOnClickListener {
+                    actionClick()
+                }
             }
             ButtonTask.SEARCH -> {
 
@@ -85,18 +89,6 @@ interface ITopPanel : IPanel, View.OnClickListener, Toolbar.OnMenuItemClickListe
             .centerCrop()
             .transform(CircularTransformation())
             .into(imageView)
-    }
-
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.avatarTopPanelImage -> {
-                actionClick()
-            }
-            else -> {
-                (panelContext as Activity).onBackPressed()
-                (panelContext as Activity).overridePendingTransition(0, 0)
-            }
-        }
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
