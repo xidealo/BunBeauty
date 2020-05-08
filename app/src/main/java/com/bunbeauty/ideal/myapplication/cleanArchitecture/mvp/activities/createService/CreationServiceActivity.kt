@@ -27,6 +27,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.Creati
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.bunbeauty.ideal.myapplication.fragments.CategoryElement
 import com.bunbeauty.ideal.myapplication.fragments.ServicePhotoElement
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.IOException
 import java.util.*
@@ -43,8 +44,9 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     private lateinit var premiumLayout: LinearLayout
     private lateinit var mainLayout: LinearLayout
 
-    override var bottomNavigationContext: Context = this
+    override var panelContext: Context = this
     override lateinit var bottomPanel: BottomNavigationView
+    override lateinit var topPanel: MaterialToolbar
 
     //храним ссылки на картинки в хранилище
     private lateinit var fpathOfImages: ArrayList<String>
@@ -111,7 +113,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     }
 
     private fun createPanels() {
-        createTopPanel("Создание услуги", ButtonTask.NONE, supportFragmentManager)
+        initTopPanel("Создание услуги", ButtonTask.NONE)
     }
 
     override fun onClick(v: View) {

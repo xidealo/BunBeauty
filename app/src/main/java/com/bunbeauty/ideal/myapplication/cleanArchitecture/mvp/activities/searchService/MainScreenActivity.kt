@@ -32,6 +32,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import javax.inject.Inject
@@ -50,8 +51,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private lateinit var serviceAdapter: ServiceAdapter
     private lateinit var noResultMainScreenText: TextView
 
-    override var bottomNavigationContext: Context = this
+    override var panelContext: Context = this
     override lateinit var bottomPanel: BottomNavigationView
+    override lateinit var topPanel: MaterialToolbar
 
     @InjectPresenter
     lateinit var mainScreenPresenter: MainScreenPresenter
@@ -100,7 +102,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     private fun createPanels() {
-        createTopPanel("BunBeauty", ButtonTask.SEARCH, supportFragmentManager)
+        initTopPanel("BunBeauty", ButtonTask.SEARCH)
     }
 
     private fun init() {

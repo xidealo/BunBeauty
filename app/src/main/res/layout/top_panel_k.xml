@@ -28,14 +28,6 @@
         android:gravity="start"
         android:text="Заголовок" />
 
-    <ImageView
-        android:id="@+id/logoTopPanelImage"
-        android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:layout_weight="4"
-        android:visibility="gone"
-        app:srcCompat="@drawable/bun_beauty" />
-
     <TextView
         android:id="@+id/editTopPanelText"
         style="@style/iconSolid"

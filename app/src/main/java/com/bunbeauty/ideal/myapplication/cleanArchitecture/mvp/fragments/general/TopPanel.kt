@@ -16,14 +16,13 @@ import com.squareup.picasso.Picasso
 
 class TopPanel : Panel() {
 
-    lateinit var title: String
+    var title: String? = null
     lateinit var buttonTask: ButtonTask
     lateinit var photoLink: String
 
     private lateinit var backText: TextView
 
     private lateinit var titleText: TextView
-    private lateinit var logoImage: ImageView
 
     private lateinit var editText: TextView
     private lateinit var searchText: TextView
@@ -34,10 +33,13 @@ class TopPanel : Panel() {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            title = it.getString(TITLE)!!
             buttonTask = it.getSerializable(BUTTON_TASK)!! as ButtonTask
 
-            if (it.getSerializable(PHOTO_LINK) != null) {
+            if (it.getString(TITLE) != null) {
+                title = it.getString(TITLE)!!
+            }
+
+            if (it.getString(PHOTO_LINK) != null) {
                 photoLink = it.getString(PHOTO_LINK)!!
             }
         }
@@ -59,7 +61,7 @@ class TopPanel : Panel() {
                 activity!!.overridePendingTransition(0, 0)
             }
             else -> {
-                (activity!! as ITopPanel).iconClick()
+                //(activity!! as ITopPanel).iconClick()
             }
         }
     }
@@ -75,7 +77,6 @@ class TopPanel : Panel() {
         backText = view.findViewById(R.id.backTopPanelText)
 
         titleText = view.findViewById(R.id.titleTopPanelText)
-        logoImage = view.findViewById(R.id.logoTopPanelImage)
 
         editText = view.findViewById(R.id.editTopPanelText)
         searchText = view.findViewById(R.id.searchTopPanelText)
@@ -96,9 +97,8 @@ class TopPanel : Panel() {
     }
 
     private fun configTitle() {
-        if (title.isEmpty()) {
-            logoImage.visibility = View.VISIBLE
-            titleText.visibility = View.GONE
+        if (title == null) {
+            titleText.visibility = View.INVISIBLE
         } else {
             titleText.text = title
         }
@@ -113,9 +113,6 @@ class TopPanel : Panel() {
                 showSearchIcon()
             }
             ButtonTask.GO_TO_PROFILE -> {
-                setAvatar()
-            }
-            ButtonTask.SUBSCRIBE -> {
                 setAvatar()
             }
 
@@ -169,6 +166,14 @@ class TopPanel : Panel() {
         private const val TITLE = "title"
         private const val BUTTON_TASK = "button task"
         private const val PHOTO_LINK = "photo link"
+
+        @JvmStatic
+        fun newInstance(buttonTask: ButtonTask) =
+            TopPanel().apply {
+                arguments = Bundle().apply {
+                    putSerializable(BUTTON_TASK, buttonTask)
+                }
+            }
 
         @JvmStatic
         fun newInstance(title: String, buttonTask: ButtonTask) =

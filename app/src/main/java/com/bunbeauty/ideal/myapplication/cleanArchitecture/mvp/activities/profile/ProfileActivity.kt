@@ -30,6 +30,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
@@ -64,8 +65,9 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: CustomViewPager
 
-    override var bottomNavigationContext: Context = this
+    override var panelContext: Context = this
     override lateinit var bottomPanel: BottomNavigationView
+    override lateinit var topPanel: MaterialToolbar
 
     @Inject
     lateinit var profileUserInteractor: ProfileUserInteractor
@@ -105,7 +107,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         setContentView(R.layout.activity_profile)
 
         init()
-        createTopPanel(" ", ButtonTask.EDIT, supportFragmentManager)
         profilePresenter.initFCM()
         profilePresenter.getProfileOwner()
     }
@@ -167,6 +168,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             .into(avatarImage)
     }
 
+    override fun showCountOfSubscriber(count: Long) {
+        subscribersText.text = "Подписчики: $count"
+        subscribersText.visibility = View.VISIBLE
+    }
+
     override fun showRating(rating: Float, countOfRates: Long) {
         ratingBar.rating = rating
         ratingLayout.setOnClickListener(this)
@@ -185,9 +191,12 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         updateBottomPanel(selectedItemId)
     }
 
-    override fun showCountOfSubscriber(count: Long) {
-        subscribersText.text = "Подписчики: $count"
-        subscribersText.visibility = View.VISIBLE
+    override fun showTopPanelWithEditIcon() {
+        initTopPanel(ButtonTask.EDIT)
+    }
+
+    override fun showEmptyTopPanel() {
+        initTopPanel(ButtonTask.NONE)
     }
 
     override fun showOrders() {
@@ -232,10 +241,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun hideSubscribeButton() {
         subscribeBtn.visibility = View.GONE
-    }
-
-    override fun invisibleSubscribeButton() {
-        subscribeBtn.visibility = View.INVISIBLE
     }
 
     override fun showSubscriptionsButton() {
@@ -292,9 +297,8 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    override fun iconClick() {
+    override fun actionClick() {
         goToEditProfile(profilePresenter.getCurrentUser())
-        //profilePresenter.checkIconClick()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -25,6 +26,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.MessagesView
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import javax.inject.Inject
@@ -37,6 +40,9 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     private lateinit var messageAdapter: MessageAdapter
     private lateinit var messageMessagesInput: EditText
     private lateinit var sendMessageMessagesBtn: Button
+
+    override var panelContext: Context = this
+    override lateinit var topPanel: MaterialToolbar
 
     @Inject
     lateinit var messageInteractor: MessagesMessageInteractor
@@ -121,12 +127,8 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         loadingMessagesProgressBar.visibility = View.VISIBLE
     }
 
-    override fun showCompanionUser(user: User) {
-        createTopPanel(
-            "${user.name} ${user.surname}",
-            ButtonTask.GO_TO_PROFILE,
-            user.photoLink,
-            supportFragmentManager
+    override fun showCompanionUser(fullName: String, photoLink: String) {
+        initTopPanel(fullName, ButtonTask.GO_TO_PROFILE, photoLink
         )
     }
 
@@ -136,8 +138,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         startActivity(intent)
     }
 
-    override fun iconClick() {
-        super.iconClick()
+    override fun actionClick() {
         messagePresenter.goToProfile()
     }
 }

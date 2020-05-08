@@ -10,7 +10,6 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.EditableEntity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -19,7 +18,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IEditableActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IProfileAvailable
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
@@ -27,6 +25,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.Servic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.reviews.Comments
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
@@ -46,15 +45,15 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private lateinit var withoutRatingText: TextView
 
     private lateinit var imagesLayout: LinearLayout
-    private lateinit var topPanelLayout: LinearLayout
     private lateinit var ratingLayout: LinearLayout
     private lateinit var ratingBar: RatingBar
     private lateinit var progressBar: ProgressBar
 
     private lateinit var premiumElementFragment: PremiumElementFragment
 
-    override var bottomNavigationContext: Context = this
+    override var panelContext: Context = this
     override lateinit var bottomPanel: BottomNavigationView
+    override lateinit var topPanel: MaterialToolbar
 
     @Inject
     lateinit var serviceInteractor: ServiceInteractor
@@ -97,7 +96,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
         ratingLayout = findViewById(R.id.ratingServiceLayout)
         imagesLayout = findViewById(R.id.imagesServiceLayout)
-        topPanelLayout = findViewById(R.id.topPanelLayout)
         ratingBar = findViewById(R.id.ratingServiceBar)
         progressBar = findViewById(R.id.progressServiceBar)
 
@@ -150,20 +148,11 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     override fun createOwnServiceTopPanel(service: Service) {
-        createTopPanel(
-            service.name,
-            ButtonTask.EDIT,
-            supportFragmentManager
-        )
+        initTopPanel(service.name, ButtonTask.EDIT)
     }
 
     override fun createAlienServiceTopPanel(user: User, service: Service) {
-        createTopPanel(
-            service.name,
-            ButtonTask.GO_TO_PROFILE,
-            user.photoLink,
-            supportFragmentManager
-        )
+        initTopPanel(service.name, ButtonTask.GO_TO_PROFILE, user.photoLink)
     }
 
     override fun hidePremium() {
@@ -200,8 +189,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         }
     }
 
-    override fun iconClick() {
-        super.iconClick()
+    override fun actionClick() {
         servicePresenter.iconClick()
     }
 

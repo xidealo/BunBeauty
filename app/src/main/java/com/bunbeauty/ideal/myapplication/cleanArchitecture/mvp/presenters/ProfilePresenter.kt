@@ -25,7 +25,7 @@ class ProfilePresenter(
 
     fun getProfileOwner() {
         viewState.showProgress()
-        viewState.invisibleSubscribeButton()
+        //viewState.hideSubscribeButton()
         profileUserInteractor.getProfileOwner(this)
     }
 
@@ -48,6 +48,8 @@ class ProfilePresenter(
         viewState.showOrders()
         viewState.showTabLayout()
         viewState.showScheduleButton()
+        viewState.showTopPanelWithEditIcon()
+
         viewState.hideDialogsButton()
         viewState.hideSubscribeButton()
     }
@@ -56,6 +58,8 @@ class ProfilePresenter(
         viewState.showBottomPanel()
         viewState.showServices()
         viewState.showDialogsButton()
+        viewState.showEmptyTopPanel()
+
         viewState.hideScheduleButton()
         viewState.hideSubscriptionsButton()
         viewState.hideTabLayout()

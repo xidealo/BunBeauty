@@ -9,12 +9,14 @@ interface ProfileView: MvpView {
 
     fun showProfileInfo(name: String, surname: String, city: String)
     fun showAvatar(photoLink: String)
+    fun showCountOfSubscriber(count: Long)
     fun showRating(rating: Float, countOfRates: Long)
     fun setServiceAdapter(services: List<Service>, user: User)
 
     fun showBottomPanel(selectedItemId: Int = -1)
     fun showUpdatedBottomPanel(selectedItemId: Int)
-    fun showCountOfSubscriber(count: Long)
+    fun showTopPanelWithEditIcon()
+    fun showEmptyTopPanel()
     fun showOrders()
     fun showServices()
     fun showTabLayout()
@@ -26,7 +28,6 @@ interface ProfileView: MvpView {
     fun hideDialogsButton()
     fun showSubscribeButton()
     fun hideSubscribeButton()
-    fun invisibleSubscribeButton()
     fun showSubscriptionsButton()
     fun hideSubscriptionsButton()
     fun showScheduleButton()

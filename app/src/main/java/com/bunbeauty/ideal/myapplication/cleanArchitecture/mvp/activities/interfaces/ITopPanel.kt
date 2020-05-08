@@ -1,41 +1,115 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces
 
-import androidx.fragment.app.FragmentManager
+import android.app.Activity
+import android.view.MenuItem
+import android.view.View
+import android.widget.ImageView
+import androidx.appcompat.widget.Toolbar
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.general.TopPanel
+import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.google.android.material.appbar.MaterialToolbar
+import com.squareup.picasso.Picasso
 
-interface ITopPanel {
+interface ITopPanel : IPanel, View.OnClickListener, Toolbar.OnMenuItemClickListener {
 
-    fun createTopPanel(title: String, buttonTask: ButtonTask, fragmentManager: FragmentManager) {
-        val topPanel =
-            TopPanel.newInstance(
-                title,
-                buttonTask
-            )
+    var topPanel: MaterialToolbar
 
-        val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.topPanelLayout, topPanel)
-        transaction.commit()
+    fun initTopPanel(buttonTask: ButtonTask) {
+        topPanel = (panelContext as Activity).findViewById(R.id.topPanelLayout)
+        topPanel.setNavigationOnClickListener(this)
+
+        configBackIcon()
+        configPanel(buttonTask)
     }
 
-    fun createTopPanel(
+    fun initTopPanel(title: String, buttonTask: ButtonTask) {
+        initTopPanel(buttonTask)
+        topPanel.title = title
+    }
+
+    fun initTopPanel(
         title: String,
         buttonTask: ButtonTask,
-        photoLink: String,
-        fragmentManager: FragmentManager
+        photoLink: String
     ) {
-        val topPanel =
-            TopPanel.newInstance(
-                title,
-                buttonTask,
-                photoLink
-            )
+        initTopPanel(title, buttonTask)
 
-        val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.topPanelLayout, topPanel)
-        transaction.commit()
+        val imageView = topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage)
+        setAvatar(photoLink, imageView)
     }
 
-    fun iconClick() {}
+    private fun configBackIcon() {
+        if ((panelContext as Activity).isTaskRoot) {
+            topPanel.navigationIcon = null
+        } else {
+            topPanel.setNavigationOnClickListener(this)
+        }
+    }
+
+    private fun configPanel(buttonTask: ButtonTask) {
+        when (buttonTask) {
+            ButtonTask.NONE -> {
+                topPanel.menu.close()
+                hideImageView()
+            }
+            ButtonTask.EDIT -> {
+                configActionIcon(R.drawable.icon_edit_24dp)
+                hideImageView()
+            }
+            ButtonTask.GO_TO_PROFILE -> {
+                topPanel.menu.close()
+                topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage).setOnClickListener(this)
+            }
+            ButtonTask.SEARCH -> {
+
+            }
+        }
+    }
+
+    private fun hideImageView() {
+        topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage).visibility = View.GONE
+    }
+
+    private fun configActionIcon(iconId: Int) {
+        topPanel.menu.findItem(R.id.navigation_action).icon = panelContext.getDrawable(iconId)
+        topPanel.setOnMenuItemClickListener(this)
+    }
+
+    private fun setAvatar(photoLink: String, imageView: ImageView) {
+        val width = panelContext.resources.getDimensionPixelSize(R.dimen.photo_width)
+        val height = panelContext.resources.getDimensionPixelSize(R.dimen.photo_height)
+        Picasso.get()
+            .load(photoLink)
+            .resize(width, height)
+            .centerCrop()
+            .transform(CircularTransformation())
+            .into(imageView)
+    }
+
+    override fun onClick(view: View) {
+        when (view.id) {
+            R.id.avatarTopPanelImage -> {
+                actionClick()
+            }
+            else -> {
+                (panelContext as Activity).onBackPressed()
+                (panelContext as Activity).overridePendingTransition(0, 0)
+            }
+        }
+    }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.navigation_action -> {
+                actionClick()
+                true
+            }
+            else -> {
+                false
+            }
+        }
+    }
+
+    fun actionClick() {}
 }

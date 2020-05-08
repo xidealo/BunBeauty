@@ -68,8 +68,8 @@ class MessagesPresenter(
         viewState.moveToStart()
     }
 
-    override fun showCompanionUserInfo(user: User) {
-        viewState.showCompanionUser(user)
+    override fun showCompanionUserInfo(fullName: String, photoLink: String) {
+        viewState.showCompanionUser(fullName, photoLink)
     }
 
 }

@@ -111,7 +111,6 @@ public class TopPanel extends Fragment implements View.OnClickListener {
         settingText = view.findViewById(R.id.settingTopPanelText);
         subscribeText = view.findViewById(R.id.subscribeTopPanelText);
         unsubscribeText = view.findViewById(R.id.unsubscribeTopPanelText);
-        logoImage = view.findViewById(R.id.logoTopPanelImage);
         mainLayout = view.findViewById(R.id.topPanelMainLayout);
         avatarImage = view.findViewById(R.id.avatarTopPanelImage);
         avatarTopPanelLayout = view.findViewById(R.id.avatarTopPanelLayout);

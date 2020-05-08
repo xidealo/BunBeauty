@@ -12,6 +12,9 @@ class MessagesUserInteractor(private val intent: Intent) : IMessagesUserInteract
 
     override fun getCompanionUser(messagesPresenterCallback: MessagesPresenterCallback) {
         cacheCurrentUser = intent.getSerializableExtra(User.USER) as User
-        messagesPresenterCallback.showCompanionUserInfo(cacheCurrentUser)
+        messagesPresenterCallback.showCompanionUserInfo(
+            "${cacheCurrentUser.name} ${cacheCurrentUser.surname}",
+            cacheCurrentUser.photoLink
+        )
     }
 }

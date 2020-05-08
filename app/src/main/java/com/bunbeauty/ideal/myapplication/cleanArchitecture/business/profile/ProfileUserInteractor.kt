@@ -14,9 +14,9 @@ class ProfileUserInteractor(
 ) : BaseRepository(), IProfileUserInteractor, UsersCallback {
 
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
-    private lateinit var currentUser: User
+    private var currentUser: User? = null
 
-    override fun getCurrentUser(): User = currentUser
+    override fun getCurrentUser(): User = currentUser!!
 
     override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
         this.profilePresenterCallback = profilePresenterCallback
@@ -44,7 +44,7 @@ class ProfileUserInteractor(
     private fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         if (isMyProfile(user.id, User.getMyId())) {
             profilePresenterCallback.showMyProfile(user)
-            cacheCurrentUser = currentUser
+            cacheCurrentUser = currentUser!!
         } else {
             profilePresenterCallback.showAlienProfile(user)
         }
@@ -70,8 +70,8 @@ class ProfileUserInteractor(
     }
 
     override fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback) {
-        if (currentUser.id == User.getMyId()) {
-            profilePresenterCallback.goToEditProfile(currentUser)
+        if (currentUser!!.id == User.getMyId()) {
+            profilePresenterCallback.goToEditProfile(currentUser!!)
         }
     }
 
@@ -92,11 +92,16 @@ class ProfileUserInteractor(
     }
 
     override fun updateBottomPanel(profilePresenterCallback: ProfilePresenterCallback) {
-        /*if (currentUser.id == User.getMyId()) {
+
+        if (currentUser == null) {
+            return
+        }
+
+        if (currentUser!!.id == User.getMyId()) {
             profilePresenterCallback.showUpdatedBottomPanel(R.id.navigation_profile)
         } else {
             profilePresenterCallback.showUpdatedBottomPanel()
-        }*/
+        }
     }
 
     companion object {

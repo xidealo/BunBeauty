@@ -21,6 +21,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapt
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -43,8 +44,9 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     private lateinit var resendCodeEditProfileBtn: Button
     private lateinit var editProfileEditProfileBtn: Button
 
-    override var bottomNavigationContext: Context = this
+    override var panelContext: Context = this
     override lateinit var bottomPanel: BottomNavigationView
+    override lateinit var topPanel: MaterialToolbar
 
     @InjectPresenter
     lateinit var editProfilePresenter: EditProfilePresenter
@@ -100,7 +102,7 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     }
 
     private fun createPanels() {
-        createTopPanel("Редактирование профиля", ButtonTask.NONE, supportFragmentManager)
+        initTopPanel("Редактирование профиля", ButtonTask.NONE)
     }
 
     override fun onClick(v: View) {

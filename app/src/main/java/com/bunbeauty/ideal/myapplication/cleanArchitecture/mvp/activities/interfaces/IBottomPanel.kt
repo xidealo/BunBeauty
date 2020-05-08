@@ -12,13 +12,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-interface IBottomPanel : BottomNavigationView.OnNavigationItemSelectedListener {
+interface IBottomPanel : IPanel, BottomNavigationView.OnNavigationItemSelectedListener {
 
-    var bottomNavigationContext: Context
     var bottomPanel: BottomNavigationView
 
     fun initBottomPanel(selectedItemId: Int = -1) {
-        bottomPanel = (bottomNavigationContext as Activity).findViewById(R.id.bottomNavigationView)
+        bottomPanel = (panelContext as Activity).findViewById(R.id.bottomNavigationView)
         updateBottomPanel(selectedItemId)
         bottomPanel.setOnNavigationItemSelectedListener(this)
     }
@@ -50,22 +49,22 @@ interface IBottomPanel : BottomNavigationView.OnNavigationItemSelectedListener {
     }
 
     private fun goToProfile() {
-        val intent = Intent(bottomNavigationContext, ProfileActivity::class.java)
+        val intent = Intent(panelContext, ProfileActivity::class.java)
         intent.putExtra(User.USER, ProfileUserInteractor.cacheCurrentUser)
-        bottomNavigationContext.startActivity(intent)
-        (bottomNavigationContext as Activity).overridePendingTransition(0, 0)
+        panelContext.startActivity(intent)
+        (panelContext as Activity).overridePendingTransition(0, 0)
     }
 
     fun goToMainScreen() {
-        val intent = Intent(bottomNavigationContext, MainScreenActivity::class.java)
+        val intent = Intent(panelContext, MainScreenActivity::class.java)
         intent.putExtra(User.USER, ProfileUserInteractor.cacheCurrentUser)
-        bottomNavigationContext.startActivity(intent)
-        (bottomNavigationContext as Activity).overridePendingTransition(0, 0)
+        panelContext.startActivity(intent)
+        (panelContext as Activity).overridePendingTransition(0, 0)
     }
 
     private fun goToDialogs() {
-        val intent = Intent(bottomNavigationContext, DialogsActivity::class.java)
-        bottomNavigationContext.startActivity(intent)
-        (bottomNavigationContext as Activity).overridePendingTransition(0, 0)
+        val intent = Intent(panelContext, DialogsActivity::class.java)
+        panelContext.startActivity(intent)
+        (panelContext as Activity).overridePendingTransition(0, 0)
     }
 }

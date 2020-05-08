@@ -22,6 +22,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.DialogsPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.DialogsView
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
 
@@ -32,8 +33,9 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     private lateinit var noDialogsText: TextView
     private lateinit var dialogAdapter: DialogAdapter
 
-    override var bottomNavigationContext: Context = this
+    override var panelContext: Context = this
     override lateinit var bottomPanel: BottomNavigationView
+    override lateinit var topPanel: MaterialToolbar
 
     @Inject
     lateinit var dialogsDialogInteractor: DialogsDialogInteractor
@@ -78,7 +80,7 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     }
 
     private fun createPanels() {
-        createTopPanel("Диалоги", ButtonTask.NONE, supportFragmentManager)
+        initTopPanel("Диалоги", ButtonTask.NONE)
     }
 
     override fun showDialogs(dialogList: List<Dialog>) {

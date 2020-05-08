@@ -128,6 +128,17 @@
         <item name="android:maxHeight">25dip</item>
     </style>
 
+    <!-- TAB LAYOUT -->
+
+    <style name="tabs" parent="Widget.MaterialComponents.TabLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="tabTextColor">@color/white</item>
+        <item name="tabBackground">@color/mainBlue</item>
+        <item name="tabIndicatorColor">@color/darkBlue</item>
+        <item name="tabSelectedTextColor">@color/darkBlue</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
     <!-- ======================================================================================= -->
 
 

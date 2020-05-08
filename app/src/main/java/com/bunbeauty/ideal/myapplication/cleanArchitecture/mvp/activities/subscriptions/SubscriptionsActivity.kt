@@ -23,6 +23,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SubscriptionsPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.SubscriptionsView
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
 
@@ -33,8 +34,9 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
     private lateinit var emptySubscriptionsSubscriptionsText: TextView
     private lateinit var progressBarSubscribers: ProgressBar
 
-    override var bottomNavigationContext: Context = this
+    override var panelContext: Context = this
     override lateinit var bottomPanel: BottomNavigationView
+    override lateinit var topPanel: MaterialToolbar
 
     @Inject
     lateinit var subscriptionsSubscriptionInteractor: SubscriptionsSubscriptionInteractor
@@ -91,7 +93,7 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
     }
 
     private fun createPanels() {
-        createTopPanel("Подписки", ButtonTask.NONE, supportFragmentManager)
+        initTopPanel("Подписки", ButtonTask.NONE)
     }
 
     override fun showSubscriptions() {

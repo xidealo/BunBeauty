@@ -17,6 +17,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.EditServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.EditServiceView
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
 
@@ -31,8 +32,9 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     private lateinit var descriptionEditService: TextView
     private lateinit var saveEditServiceBtn: Button
 
-    override var bottomNavigationContext: Context = this
+    override var panelContext: Context = this
     override lateinit var bottomPanel: BottomNavigationView
+    override lateinit var topPanel: MaterialToolbar
 
     private fun init() {
         progressEditServiceBar = findViewById(R.id.progressEditServiceBar)
@@ -57,7 +59,7 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     }
 
     private fun createPanels() {
-        createTopPanel("Редактирование услуги", ButtonTask.NONE, supportFragmentManager)
+        initTopPanel("Редактирование услуги", ButtonTask.NONE)
     }
 
     /* имя, адрес, описание, цена, (категории)

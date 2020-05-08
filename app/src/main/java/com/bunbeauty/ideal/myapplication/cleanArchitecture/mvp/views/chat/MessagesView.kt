@@ -10,6 +10,6 @@ interface MessagesView : MvpView {
     fun showSendMessage(message: Message)
     fun hideLoading()
     fun showLoading()
-    fun showCompanionUser(user: User)
+    fun showCompanionUser(fullName: String, photoLink: String)
     fun goToProfile(user: User)
 }
