@@ -8,4 +8,5 @@ interface SubscriptionsView : MvpView {
     fun showLoading()
     fun showEmptySubscriptions()
     fun hideEmptySubscriptions()
+    fun showMessage(message: String)
 }

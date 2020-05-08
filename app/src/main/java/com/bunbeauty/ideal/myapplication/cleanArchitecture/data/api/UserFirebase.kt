@@ -59,8 +59,11 @@ class UserFirebase {
 
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
-                val user = getUserFromSnapshot(usersSnapshot)
-                usersCallback.returnUsers(listOf(user))
+                val users = mutableListOf<User>()
+                if (usersSnapshot.childrenCount > 0L) {
+                    users.add(getUserFromSnapshot(usersSnapshot))
+                }
+                usersCallback.returnUsers(users)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

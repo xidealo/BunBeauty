@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -17,7 +18,9 @@ data class Subscription(
     var id: String = "",
     var userId: String = "",
     var date: String = "",
-    var subscriptionId: String = "" // on who
+    var subscriptionId: String = "", // on who
+    @Embedded(prefix = "user")
+    var subscriptionUser: User = User()
 ) {
     companion object {
         const val SUBSCRIPTIONS = "subscriptions"

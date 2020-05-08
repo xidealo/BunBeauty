@@ -1,6 +1,9 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.DeleteUsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.InsertUsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UpdateUsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -64,6 +67,7 @@ class UserRepository(
         } else {
             launch {
                 val users = userDao.getById(id)
+
                 withContext(Dispatchers.Main) {
                     usersCallback.returnUsers(users)
                 }

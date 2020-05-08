@@ -18,7 +18,6 @@ class SubscriptionsPresenter(
     private val subscriptionsSubscriberInteractor: ISubscriptionsSubscriberInteractor
 ) : MvpPresenter<SubscriptionsView>(), SubscriptionsPresenterCallback {
 
-    fun getUsersLink() = subscriptionsUserInteractor.getUsersLink()
     fun getSubscriptionsLink() = subscriptionsSubscriptionInteractor.getSubscriptionsLink()
 
     fun createSubscriptionsScreen() {
@@ -33,8 +32,8 @@ class SubscriptionsPresenter(
         subscriptionsSubscriberInteractor.deleteSubscriber(subscriber)
     }
 
-    fun deleteUser(user: User) {
-        subscriptionsUserInteractor.deleteUser(user, this)
+    override fun deleteUser(subscriptionId: String) {
+        subscriptionsUserInteractor.deleteUser(subscriptionId, this)
     }
 
     override fun getSubscriptions(user: User) {
@@ -50,8 +49,19 @@ class SubscriptionsPresenter(
         viewState.hideLoading()
     }
 
+    override fun showDeletedSubscription(subscription: Subscription) {
+        viewState.showMessage("Вы отписались от ${subscription.subscriptionUser.name} ${subscription.subscriptionUser.surname} ")
+    }
+
     override fun showEmptySubscriptions() {
+        viewState.hideLoading()
         viewState.showEmptySubscriptions()
+    }
+
+    override fun fillSubscriptions(
+        users: List<User>
+    ) {
+        subscriptionsSubscriptionInteractor.fillSubscriptions(users, this)
     }
 
 }

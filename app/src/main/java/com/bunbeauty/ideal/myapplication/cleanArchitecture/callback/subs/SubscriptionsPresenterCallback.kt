@@ -7,5 +7,10 @@ interface SubscriptionsPresenterCallback {
     fun getSubscriptions(user: User)
     fun getUsersBySubscription(subscriptions: List<Subscription>)
     fun showSubscriptions()
+    fun showDeletedSubscription(subscription: Subscription)
+    fun deleteUser(subscriptionId: String)
     fun showEmptySubscriptions()
+    fun fillSubscriptions(
+        users: List<User>
+    )
 }

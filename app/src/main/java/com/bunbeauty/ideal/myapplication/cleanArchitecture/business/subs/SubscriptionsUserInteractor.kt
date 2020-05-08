@@ -23,11 +23,11 @@ class SubscriptionsUserInteractor(
     override fun getUsersLink() = cacheUsers
 
     override fun deleteUser(
-        user: User,
+        subscriptionId: String,
         subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     ) {
-        cacheUsers.remove(user)
         subscriptionsPresenterCallback.showSubscriptions()
+        cacheUsers.remove(cacheUsers.find { it.id == subscriptionId }!!)
     }
 
     override fun createSubscriptionScreen(subscriptionsPresenterCallback: SubscriptionsPresenterCallback) {
@@ -42,6 +42,11 @@ class SubscriptionsUserInteractor(
         this.subscriptionsPresenterCallback = subscriptionsPresenterCallback
         subscriptionsCount = subscriptions.size
 
+        if (subscriptions.isEmpty()) {
+            subscriptionsPresenterCallback.showEmptySubscriptions()
+            return
+        }
+
         for (subscription in subscriptions) {
             userRepository.getById(subscription.subscriptionId, this, true)
         }
@@ -50,12 +55,9 @@ class SubscriptionsUserInteractor(
     override fun returnUsers(users: List<User>) {
         currentSubscriptionsCount++
         cacheUsers.addAll(users)
+
         if (currentSubscriptionsCount == subscriptionsCount) {
-            if (cacheUsers.isEmpty()) {
-                subscriptionsPresenterCallback.showEmptySubscriptions()
-            } else {
-                subscriptionsPresenterCallback.showSubscriptions()
-            }
+            subscriptionsPresenterCallback.fillSubscriptions(cacheUsers)
         }
     }
 

@@ -30,7 +30,19 @@ class SubscriptionsSubscriptionInteractor(
         subscription: Subscription,
         subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     ) {
+        cacheSubscriptions.remove(subscription)
         subscriptionRepository.delete(subscription, this)
+    }
+
+    override fun fillSubscriptions(
+        users: List<User>,
+        subscriptionsPresenterCallback: SubscriptionsPresenterCallback
+    ) {
+        for (user in users) {
+            val subscriptionWithUserId = cacheSubscriptions.find { it.subscriptionId == user.id }
+            subscriptionWithUserId!!.subscriptionUser = user
+        }
+        subscriptionsPresenterCallback.showSubscriptions()
     }
 
     override fun returnList(objects: List<Subscription>) {
@@ -40,7 +52,8 @@ class SubscriptionsSubscriptionInteractor(
 
     override fun returnDeletedCallback(obj: Subscription) {
         cacheSubscriptions.remove(obj)
-        subscriptionsPresenterCallback.showSubscriptions()
+        subscriptionsPresenterCallback.deleteUser(obj.subscriptionId)
+        subscriptionsPresenterCallback.showDeletedSubscription(obj)
     }
 
 }

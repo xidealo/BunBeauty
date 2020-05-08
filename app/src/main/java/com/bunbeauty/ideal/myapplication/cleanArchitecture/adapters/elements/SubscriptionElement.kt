@@ -27,14 +27,12 @@ class SubscriptionElement(
     private lateinit var unsubscribeSubscriptionElementBtn: MaterialButton
     private lateinit var avatarImage: ImageView
     private lateinit var subscriptionElementLayout: LinearLayout
-    private lateinit var user: User
     private lateinit var subscription: Subscription
 
-    fun createElement(user: User, subscription: Subscription) {
-
+    fun createElement(subscription: Subscription) {
         onViewCreated(view)
-        setData(user, subscription)
-        showAvatar(user)
+        setData(subscription)
+        showAvatar(subscription.subscriptionUser)
     }
 
     private fun onViewCreated(view: View) {
@@ -48,10 +46,10 @@ class SubscriptionElement(
         subscriptionElementLayout.setOnClickListener(this)
     }
 
-    private fun setData(user: User, subscription: Subscription) {
-        this.user = user
+    private fun setData(subscription: Subscription) {
         this.subscription = subscription
-        nameText.text = "${user.name} ${user.surname}"
+        nameText.text =
+            "${subscription.subscriptionUser.name} ${subscription.subscriptionUser.surname}"
     }
 
     private fun showAvatar(user: User) {
@@ -76,13 +74,12 @@ class SubscriptionElement(
                         subscriberId = subscription.userId
                     )
                 )
-                subscriptionsPresenter.deleteUser(user)
+                //subscriptionsPresenter.deleteUser(user)
             }
 
-            R.id.subscriptionElementLayout -> goToProfile(user)
+            R.id.subscriptionElementLayout -> goToProfile(subscription.subscriptionUser)
         }
     }
-
 
     private fun goToProfile(user: User) {
         val intent = Intent(context, ProfileActivity::class.java)

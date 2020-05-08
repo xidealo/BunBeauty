@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
@@ -71,7 +72,6 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
 
     override fun onResume() {
         super.onResume()
-
         initBottomPanel()
     }
 
@@ -84,8 +84,7 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
 
         subscriptionAdapter = SubscriptionAdapter(
             subscriptionsPresenter,
-            subscriptionsPresenter.getSubscriptionsLink(),
-            subscriptionsPresenter.getUsersLink()
+            subscriptionsPresenter.getSubscriptionsLink()
         )
 
         resultsSubscribersRecycleView.adapter = subscriptionAdapter
@@ -113,6 +112,10 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
 
     override fun hideEmptySubscriptions() {
         emptySubscriptionsSubscriptionsText.visibility = View.GONE
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
 }

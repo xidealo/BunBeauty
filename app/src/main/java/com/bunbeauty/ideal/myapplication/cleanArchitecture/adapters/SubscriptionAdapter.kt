@@ -9,13 +9,11 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.SubscriptionAdapter.SubscriptionViewHolder
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.SubscriptionElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscription
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SubscriptionsPresenter
 
 class SubscriptionAdapter(
     private val subscriptionsPresenter: SubscriptionsPresenter,
-    private val subscriptions: List<Subscription>,
-    private val userList: List<User>
+    private val subscriptions: List<Subscription>
 ) : RecyclerView.Adapter<SubscriptionViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SubscriptionViewHolder {
@@ -30,18 +28,18 @@ class SubscriptionAdapter(
         subscriptionViewHolder: SubscriptionViewHolder,
         i: Int
     ) {
-        subscriptionViewHolder.bind(userList[i], subscriptions[i])
+        subscriptionViewHolder.bind(subscriptions[i])
     }
 
     override fun getItemCount(): Int {
-        return userList.size
+        return subscriptions.size
     }
 
     inner class SubscriptionViewHolder(private val view: View, private val context: Context) :
         RecyclerView.ViewHolder(view) {
-        fun bind(user: User, subscription: Subscription) {
+        fun bind(subscription: Subscription) {
             val subscriptionElement = SubscriptionElement(view, context, subscriptionsPresenter)
-            subscriptionElement.createElement(user, subscription)
+            subscriptionElement.createElement(subscription)
         }
     }
 }
