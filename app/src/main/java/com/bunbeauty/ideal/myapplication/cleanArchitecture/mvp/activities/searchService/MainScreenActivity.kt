@@ -89,7 +89,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         hideSearchPanel()
         hideTags()
 
-        createPanels()
+        initTopPanel("BunBeauty", ButtonTask.SEARCH)
         createSearchPanel()
 
         createMainScreen()
@@ -99,10 +99,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         super.onResume()
 
         initBottomPanel(R.id.navigation_main)
-    }
-
-    private fun createPanels() {
-        initTopPanel("BunBeauty", ButtonTask.SEARCH)
     }
 
     private fun init() {
@@ -169,6 +165,10 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.searchMainScreenLayout, searchServiceFragment)
         transaction.commit()
+    }
+
+    override fun actionClick() {
+        showSearchPanel()
     }
 
     override fun showSearchPanel() {

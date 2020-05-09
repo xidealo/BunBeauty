@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
@@ -24,7 +25,8 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
 
     fun initTopPanel(title: String, buttonTask: ButtonTask) {
         initTopPanel(buttonTask)
-        topPanel.title = title
+        val titleText = topPanel.findViewById<TextView>(R.id.titleTopPanelText)
+        titleText.text = title
     }
 
     fun initTopPanel(
@@ -52,7 +54,7 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
     private fun configPanel(buttonTask: ButtonTask) {
         when (buttonTask) {
             ButtonTask.NONE -> {
-                topPanel.menu.close()
+                hideActionIcon()
                 hideImageView()
             }
             ButtonTask.EDIT -> {
@@ -60,15 +62,20 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
                 hideImageView()
             }
             ButtonTask.GO_TO_PROFILE -> {
-                topPanel.menu.close()
+                hideActionIcon()
                 topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage).setOnClickListener {
                     actionClick()
                 }
             }
             ButtonTask.SEARCH -> {
-
+                configActionIcon(R.drawable.icon_search_24dp)
+                hideImageView()
             }
         }
+    }
+
+    private fun hideActionIcon() {
+        topPanel.menu.findItem(R.id.navigation_action).isVisible = false
     }
 
     private fun hideImageView() {
