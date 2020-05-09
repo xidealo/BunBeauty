@@ -67,6 +67,16 @@ class SubscriptionRepository(private val subscriptionFirebase: SubscriptionFireb
         }
     }
 
+    override fun deleteByBySubscriptionId(
+        subscription: Subscription,
+        deleteSubscriptionCallback: DeleteSubscriptionCallback
+    ) {
+        launch {
+            subscriptionFirebase.deleteByBySubscriptionId(subscription)
+            deleteSubscriptionCallback.returnDeletedCallback(subscription)
+        }
+    }
+
     override fun returnList(objects: List<Subscription>) {
         subscriptionsCallback.returnList(objects)
     }

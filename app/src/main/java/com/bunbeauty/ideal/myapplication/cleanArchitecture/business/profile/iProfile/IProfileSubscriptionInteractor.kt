@@ -12,4 +12,9 @@ interface IProfileSubscriptionInteractor {
         subscription: Subscription,
         profilePresenterCallback: ProfilePresenterCallback
     )
+
+    fun deleteSubscription(
+        subscription: Subscription,
+        profilePresenterCallback: ProfilePresenterCallback
+    )
 }

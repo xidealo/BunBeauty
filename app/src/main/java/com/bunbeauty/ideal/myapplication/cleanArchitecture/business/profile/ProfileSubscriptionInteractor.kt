@@ -27,12 +27,18 @@ class ProfileSubscriptionInteractor(private val subscriptionRepository: ISubscri
         profilePresenterCallback: ProfilePresenterCallback
     ) {
         this.profilePresenterCallback = profilePresenterCallback
+        subscriptionRepository.insert(subscription, this)
+    }
 
-       /* if (isSubscribed) {
-            subscriptionRepository.delete(subscription, this)
-        } else {*/
-            subscriptionRepository.insert(subscription, this)
-        //}
+    override fun deleteSubscription(
+        subscription: Subscription,
+        profilePresenterCallback: ProfilePresenterCallback
+    ) {
+        this.profilePresenterCallback = profilePresenterCallback
+        subscriptionRepository.deleteByBySubscriptionId(
+            subscription,
+            this
+        )
     }
 
     override fun returnCreatedCallback(obj: Subscription) {

@@ -23,7 +23,7 @@ class SubscriptionFirebase {
         subscriptionRef.updateChildren(items)
     }
 
-    fun delete(subscription: Subscription){
+    fun delete(subscription: Subscription) {
         val subscriptionRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
             .child(subscription.userId)
@@ -50,6 +50,35 @@ class SubscriptionFirebase {
             }
 
             override fun onCancelled(error: DatabaseError) {
+                // Some error
+            }
+        })
+
+    }
+
+    fun deleteByBySubscriptionId(
+       subscription: Subscription
+    ) {
+        val subscriptionsQuery = FirebaseDatabase.getInstance()
+            .getReference(User.USERS)
+            .child(subscription.userId)
+            .child(Subscription.SUBSCRIPTIONS)
+            .orderByChild(Subscription.SUBSCRIPTION_ID)
+            .equalTo(subscription.subscriptionId)
+
+        subscriptionsQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(subscriptionsSnapshot: DataSnapshot) {
+                if (subscriptionsSnapshot.childrenCount > 0L) {
+                    delete(
+                        getSubscriptionFromSnapshot(
+                            subscriptionsSnapshot.children.iterator().next(),
+                            subscription.userId
+                        )
+                    )
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
                 // Some error
             }
         })

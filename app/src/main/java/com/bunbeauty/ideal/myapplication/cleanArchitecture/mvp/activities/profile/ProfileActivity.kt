@@ -263,7 +263,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         when (v.id) {
             R.id.subscribeProfileBtn -> profilePresenter.subscribe()
             R.id.dialogsProfileBtn -> profilePresenter.goToDialog()
-
             R.id.scheduleProfileBtn -> goToSchedule()
             R.id.subscriptionsProfileBtn -> profilePresenter.goToSubscriptions()
 

@@ -94,17 +94,27 @@ class ProfilePresenter(
     }
 
     fun subscribe() {
-        val subscription = Subscription()
-        subscription.date = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
-        subscription.userId = User.getMyId()
-        subscription.subscriptionId = profileUserInteractor.getCurrentUser().id
-        profileSubscriptionInteractor.addSubscription(subscription, this)
-
         val subscriber = Subscriber()
         subscriber.date = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
         subscriber.userId = profileUserInteractor.getCurrentUser().id
         subscriber.subscriberId = User.getMyId()
-        profileSubscriberInteractor.addSubscriber(subscriber, this)
+        profileSubscriberInteractor.checkSubscriber(subscriber, this)
+    }
+
+    override fun addSubscription(subscriber: Subscriber) {
+        val subscription = Subscription()
+        subscription.date = subscriber.date
+        subscription.userId = subscriber.subscriberId
+        subscription.subscriptionId = subscriber.userId
+        profileSubscriptionInteractor.addSubscription(subscription, this)
+    }
+
+    override fun deleteSubscription(subscriber: Subscriber) {
+        val subscription = Subscription()
+        subscription.date = subscriber.date
+        subscription.userId = subscriber.subscriberId
+        subscription.subscriptionId = subscriber.userId // по не му подписку и удалить ее
+        profileSubscriptionInteractor.deleteSubscription(subscription, this)
     }
 
     fun goToSubscriptions() {
@@ -119,6 +129,7 @@ class ProfilePresenter(
         viewState.showSubscribeButton()
         viewState.showSubscribed()
     }
+
 
     override fun showUnsubscribed() {
         viewState.showSubscribeButton()

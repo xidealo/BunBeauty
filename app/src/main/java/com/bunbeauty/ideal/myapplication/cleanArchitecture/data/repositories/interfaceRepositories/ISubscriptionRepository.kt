@@ -12,4 +12,8 @@ interface ISubscriptionRepository {
     fun update(subscription: Subscription, updateSubscriptionCallback: UpdateSubscriptionCallback)
     fun get(subscriptionsCallback: SubscriptionsCallback)
     fun getByUserId(userId: String, subscriptionsCallback: SubscriptionsCallback)
+    fun deleteByBySubscriptionId(
+        subscription: Subscription,
+        deleteSubscriptionCallback: DeleteSubscriptionCallback
+    )
 }
