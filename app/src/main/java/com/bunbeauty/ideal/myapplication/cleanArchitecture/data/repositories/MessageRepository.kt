@@ -8,7 +8,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.MessageFireb
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IMessageRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepository(),
     IMessageRepository, MessagesCallback {
@@ -19,6 +21,9 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
         launch {
             message.id = messageFirebase.getIdForNew(message)
             messageFirebase.insert(message)
+            withContext(Dispatchers.Main) {
+                insertMessageCallback.returnCreatedCallback(message)
+            }
         }
     }
 

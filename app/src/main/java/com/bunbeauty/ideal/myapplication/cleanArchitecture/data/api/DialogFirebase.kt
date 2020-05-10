@@ -11,8 +11,7 @@ import com.google.firebase.database.ValueEventListener
 class DialogFirebase {
 
     fun insert(dialog: Dialog) {
-        val database = FirebaseDatabase.getInstance()
-        val dialogRef = database
+        val dialogRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
             .child(dialog.ownerId)
             .child(Dialog.DIALOGS)
@@ -25,6 +24,19 @@ class DialogFirebase {
         dialogRef.updateChildren(items)
     }
 
+    fun update(dialog: Dialog) {
+        val dialogRef = FirebaseDatabase.getInstance()
+            .getReference(User.USERS)
+            .child(dialog.ownerId)
+            .child(Dialog.DIALOGS)
+            .child(dialog.id)
+
+        val items = HashMap<String, Any>()
+        items[Dialog.IS_CHECKED] = dialog.isChecked
+        items[Dialog.COMPANION_ID] = dialog.user.id
+        items[Dialog.MESSAGE_ID] = dialog.lastMessage.id
+        dialogRef.updateChildren(items)
+    }
 
     fun getDialogsByUserId(userId: String, dialogsCallback: DialogsCallback) {
 

@@ -50,7 +50,10 @@ class DialogRepository(
     }
 
     override fun update(dialog: Dialog, updateDialogCallback: UpdateDialogCallback) {
-
+        launch {
+            dialogFirebase.update(dialog)
+            updateDialogCallback.returnUpdatedCallback(dialog)
+        }
     }
 
     override fun get(dialogsCallback: DialogsCallback) {
