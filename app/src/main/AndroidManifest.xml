@@ -15,10 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.Tabs"
-            android:label="@string/title_activity_tabs"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name="com.bunbeauty.ideal.myapplication.TestActivity" />
         <activity
             android:name="com.bunbeauty.ideal.myapplication.reviews.PickedComment"
             android:theme="@style/Theme.AppCompat.Dialog" />

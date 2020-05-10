@@ -13,7 +13,7 @@
     <dimen name="photo_small_avatar_width">35dp</dimen>
     <dimen name="photo_small_avatar_height">35dp</dimen>
 
-    <dimen name="bottom_panel_height">60dp</dimen>
+    <dimen name="bottom_panel_height">56dp</dimen>
 
     <dimen name="main_button_height">36dp</dimen>
 

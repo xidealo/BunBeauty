@@ -140,18 +140,18 @@
 
     <style name="tabs" parent="Widget.MaterialComponents.TabLayout">
         <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="tabTextColor">@color/white</item>
         <item name="tabBackground">@color/mainBlue</item>
         <item name="tabIndicatorColor">@color/darkBlue</item>
         <item name="tabSelectedTextColor">@color/darkBlue</item>
-        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <!-- NAVIGATION -->
 
     <style name="bottomNavigation">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">@dimen/bottom_panel_height</item>
         <item name="labelVisibilityMode">unlabeled</item>
         <item name="android:background">@color/mainBlue</item>
         <item name="itemIconTint">@color/navigation</item>

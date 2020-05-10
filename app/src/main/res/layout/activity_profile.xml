@@ -4,138 +4,166 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/allPages"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity">
+    android:layout_height="match_parent">
 
-    <include layout="@layout/part_top_panel" />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/collapsingProfileLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity">
 
-    <LinearLayout
-        android:id="@+id/infoProfileLayout"
-        style="@style/wideVerticalBlock"
-        android:background="@color/mainBlue"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topPanelLayout">
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            style="@style/wideHorizontalBlock"
-            app:layout_constraintTop_toBottomOf="@id/topPanelLayout">
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                app:layout_scrollFlags="scroll|enterAlways|snap">
 
-            <LinearLayout
-                style="@style/highHorizontalBlock"
-                android:layout_weight="1"
-                android:gravity="end|center">
+                <LinearLayout
+                    style="@style/wideVerticalBlock"
+                    app:layout_collapseMode="parallax"
+                    app:layout_collapseParallaxMultiplier="0.5">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/subscribeProfileBtn"
-                    style="@style/actionButton"
-                    app:srcCompat="@drawable/icon_subscribe_24dp" />
+                    <include layout="@layout/part_top_panel" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/subscriptionsProfileBtn"
-                    style="@style/actionButton"
-                    app:srcCompat="@drawable/icon_subscriptions_24dp" />
-            </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/infoProfileLayout"
+                        style="@style/wideVerticalBlock"
+                        android:background="@color/mainBlue"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/topPanelLayout">
 
-            <ImageView
-                android:id="@+id/avatarProfileImage"
-                style="@style/profileAvatar"
-                android:layout_weight="1"
-                tools:srcCompat="@tools:sample/avatars" />
+                        <LinearLayout
+                            style="@style/wideHorizontalBlock"
+                            app:layout_constraintTop_toBottomOf="@id/topPanelLayout">
 
-            <LinearLayout
-                style="@style/highHorizontalBlock"
-                android:layout_weight="1"
-                android:gravity="start|center">
+                            <LinearLayout
+                                style="@style/highHorizontalBlock"
+                                android:layout_weight="1"
+                                android:gravity="end|center">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/dialogsProfileBtn"
-                    style="@style/actionButton"
-                    app:srcCompat="@drawable/icon_chat_24dp" />
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:id="@+id/subscribeProfileBtn"
+                                    style="@style/actionButton"
+                                    app:srcCompat="@drawable/icon_subscribe_24dp" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/scheduleProfileBtn"
-                    style="@style/actionButton"
-                    app:srcCompat="@drawable/icon_schedule_24dp" />
-            </LinearLayout>
-        </LinearLayout>
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:id="@+id/subscriptionsProfileBtn"
+                                    style="@style/actionButton"
+                                    app:srcCompat="@drawable/icon_subscriptions_24dp" />
+                            </LinearLayout>
 
-        <LinearLayout
-            style="@style/wideVerticalBlock"
-            android:gravity="center"
-            android:padding="5dp">
+                            <ImageView
+                                android:id="@+id/avatarProfileImage"
+                                style="@style/profileAvatar"
+                                android:layout_weight="1"
+                                tools:srcCompat="@tools:sample/avatars" />
 
-            <TextView
-                android:id="@+id/fullNameProfileText"
-                style="@style/profileMediumText"
-                android:text="Name Surname" />
+                            <LinearLayout
+                                style="@style/highHorizontalBlock"
+                                android:layout_weight="1"
+                                android:gravity="start|center">
 
-            <TextView
-                android:id="@+id/cityProfileText"
-                style="@style/profileThinText"
-                android:text="City" />
-        </LinearLayout>
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:id="@+id/dialogsProfileBtn"
+                                    style="@style/actionButton"
+                                    app:srcCompat="@drawable/icon_chat_24dp" />
 
-        <LinearLayout
-            style="@style/wideHorizontalBlock"
-            android:baselineAligned="false"
-            android:padding="5dp">
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:id="@+id/scheduleProfileBtn"
+                                    style="@style/actionButton"
+                                    app:srcCompat="@drawable/icon_schedule_24dp" />
+                            </LinearLayout>
+                        </LinearLayout>
 
-            <LinearLayout
-                style="@style/wideHorizontalBlock"
-                android:layout_weight="1"
-                android:gravity="center">
+                        <LinearLayout
+                            style="@style/wideVerticalBlock"
+                            android:gravity="center"
+                            android:padding="5dp">
 
-                <TextView
-                    android:id="@+id/subscribersProfileText"
-                    style="@style/profileThinText"
-                    android:text="Подписчики: 0" />
-            </LinearLayout>
+                            <TextView
+                                android:id="@+id/fullNameProfileText"
+                                style="@style/profileMediumText"
+                                android:text="Name Surname" />
 
-            <LinearLayout
-                android:id="@+id/ratingProfileLayout"
-                style="@style/wideHorizontalBlock"
-                android:layout_weight="1"
-                android:gravity="center">
+                            <TextView
+                                android:id="@+id/cityProfileText"
+                                style="@style/profileThinText"
+                                android:text="City" />
+                        </LinearLayout>
 
-                <RatingBar
-                    android:id="@+id/profileRatingBar"
-                    style="@android:style/Widget.Holo.RatingBar.Small"
+                        <LinearLayout
+                            style="@style/wideHorizontalBlock"
+                            android:baselineAligned="false"
+                            android:padding="5dp">
+
+                            <LinearLayout
+                                style="@style/wideHorizontalBlock"
+                                android:layout_weight="1"
+                                android:gravity="center">
+
+                                <TextView
+                                    android:id="@+id/subscribersProfileText"
+                                    style="@style/profileThinText"
+                                    android:text="Подписчики: 0" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/ratingProfileLayout"
+                                style="@style/wideHorizontalBlock"
+                                android:layout_weight="1"
+                                android:gravity="center">
+
+                                <RatingBar
+                                    android:id="@+id/profileRatingBar"
+                                    style="@android:style/Widget.Holo.RatingBar.Small"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    android:theme="@style/ratingBarColors" />
+
+                                <TextView
+                                    android:id="@+id/ratingProfileText"
+                                    style="@style/profileThinText"
+                                    android:text="0 (0)" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/profileTabLayout"
+                style="@style/tabs">
+
+                <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:theme="@style/ratingBarColors" />
+                    android:text="Записи" />
 
-                <TextView
-                    android:id="@+id/ratingProfileText"
-                    style="@style/profileThinText"
-                    android:text="0 (0)" />
-            </LinearLayout>
-        </LinearLayout>
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Услуги" />
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/profileTabLayout"
-            style="@style/tabs">
+            </com.google.android.material.tabs.TabLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Записи" />
+        <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomViewPager
+            android:id="@+id/profileViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/bottom_panel_height"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+            app:layout_constraintTop_toBottomOf="@id/collapsingProfileLayout" />
 
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Услуги" />
-
-        </com.google.android.material.tabs.TabLayout>
-
-    </LinearLayout>
-
-    <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomViewPager
-        android:id="@+id/profileViewPager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
-        app:layout_constraintTop_toBottomOf="@id/infoProfileLayout" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <ProgressBar
         android:id="@+id/loadingProfileProgressBar"
@@ -143,9 +171,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminateTint="@color/mainBlue"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include layout="@layout/part_bottom_panel" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
