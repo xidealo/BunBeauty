@@ -24,7 +24,7 @@ class ServiceRepository(
         launch {
             service.id = getIdForNew(service.userId)
             serviceFirebase.insert(service)
-            serviceDao.insert(service)
+            //serviceDao.insert(service)
             withContext(Dispatchers.Main) {
                 insertServiceCallback.returnCreatedCallback(service)
             }
@@ -33,7 +33,7 @@ class ServiceRepository(
 
     override fun delete(service: Service, deleteServiceCallback: DeleteServiceCallback) {
         launch {
-            serviceDao.delete(service)
+            //serviceDao.delete(service)
             serviceFirebase.delete(service)
             withContext(Dispatchers.Main) {
                 deleteServiceCallback.returnDeletedCallback(service)
@@ -43,7 +43,7 @@ class ServiceRepository(
 
     override fun update(service: Service, updateServiceCallback: UpdateServiceCallback) {
         launch {
-            serviceDao.update(service)
+            //serviceDao.update(service)
             serviceFirebase.update(service)
             withContext(Dispatchers.Main) {
                 updateServiceCallback.returnUpdatedCallback(service)

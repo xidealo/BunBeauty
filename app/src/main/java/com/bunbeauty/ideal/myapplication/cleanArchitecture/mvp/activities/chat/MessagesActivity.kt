@@ -27,7 +27,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.MessagesView
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import javax.inject.Inject
@@ -128,7 +127,8 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     }
 
     override fun showCompanionUser(fullName: String, photoLink: String) {
-        initTopPanel(fullName, ButtonTask.GO_TO_PROFILE, photoLink
+        initTopPanel(
+            fullName, ButtonTask.GO_TO_PROFILE, photoLink
         )
     }
 
