@@ -73,7 +73,9 @@ class SubscriptionRepository(private val subscriptionFirebase: SubscriptionFireb
     ) {
         launch {
             subscriptionFirebase.deleteByBySubscriptionId(subscription)
-            deleteSubscriptionCallback.returnDeletedCallback(subscription)
+            withContext(Dispatchers.Main) {
+                deleteSubscriptionCallback.returnDeletedCallback(subscription)
+            }
         }
     }
 

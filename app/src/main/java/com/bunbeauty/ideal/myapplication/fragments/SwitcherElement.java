@@ -74,8 +74,7 @@ public class SwitcherElement extends Fragment implements View.OnClickListener {
                 if (!isLeft) {
                     isLeft = true;
                     switcher.firstSwitcherAct();
-                    leftBtn.setBackgroundResource(R.drawable.left_transparent_btn);
-                    rightBtn.setBackgroundResource(R.drawable.right_btn);
+
                 }
                 break;
 
@@ -83,8 +82,7 @@ public class SwitcherElement extends Fragment implements View.OnClickListener {
                 if (isLeft) {
                     isLeft = false;
                     switcher.secondSwitcherAct();
-                    leftBtn.setBackgroundResource(R.drawable.left_btn);
-                    rightBtn.setBackgroundResource(R.drawable.right_transparent_btn);
+
                 }
                 break;
 

@@ -65,7 +65,7 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.edit_profile)
+        setContentView(R.layout.activity_edit_profile)
         init()
         createPanels()
         editProfilePresenter.createEditProfileScreen()
@@ -102,7 +102,7 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     }
 
     private fun createPanels() {
-        initTopPanel("Редактирование профиля", ButtonTask.NONE)
+        initTopPanel("Редактирование профиля", ButtonTask.LOGOUT)
     }
 
     override fun onClick(v: View) {

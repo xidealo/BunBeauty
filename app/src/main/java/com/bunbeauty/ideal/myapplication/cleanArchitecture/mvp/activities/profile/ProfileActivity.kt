@@ -338,11 +338,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showSubscribed() {
-        subscribeBtn.setImageResource(R.drawable.icon_unsubscribe_24dp)
+        subscribeBtn.setImageResource(R.drawable.icon_heart)
     }
 
     override fun showUnsubscribed() {
-        subscribeBtn.setImageResource(R.drawable.icon_subscribe_24dp)
+        subscribeBtn.setImageResource(R.drawable.icon_heart_outline)
     }
 
     private fun goToSchedule() {

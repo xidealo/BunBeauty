@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/navigation_action"
-        android:icon="@drawable/icon_edit_24dp"
+        android:icon="@drawable/icon_edit"
         android:title="action"
         app:showAsAction="always" />
 

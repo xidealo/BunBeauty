@@ -25,7 +25,11 @@ class ProfilePresenter(
 
     fun getProfileOwner() {
         viewState.showProgress()
-        //viewState.hideSubscribeButton()
+        viewState.hideSubscribeButton()
+        viewState.hideSubscriptionsButton()
+        viewState.hideScheduleButton()
+        viewState.hideDialogsButton()
+
         profileUserInteractor.getProfileOwner(this)
     }
 

@@ -12,7 +12,7 @@ import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.google.android.material.appbar.MaterialToolbar
 import com.squareup.picasso.Picasso
 
-interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
+interface   ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
 
     var topPanel: MaterialToolbar
 
@@ -58,8 +58,7 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
                 hideImageView()
             }
             ButtonTask.EDIT -> {
-                configActionIcon(R.drawable.icon_edit_24dp)
-                hideImageView()
+                configActionIcon(R.drawable.icon_edit)
             }
             ButtonTask.GO_TO_PROFILE -> {
                 hideActionIcon()
@@ -68,8 +67,10 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
                 }
             }
             ButtonTask.SEARCH -> {
-                configActionIcon(R.drawable.icon_search_24dp)
-                hideImageView()
+                configActionIcon(R.drawable.icon_search)
+            }
+            ButtonTask.LOGOUT -> {
+                configActionIcon(R.drawable.icon_logout)
             }
         }
     }
@@ -85,6 +86,8 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
     private fun configActionIcon(iconId: Int) {
         topPanel.menu.findItem(R.id.navigation_action).icon = panelContext.getDrawable(iconId)
         topPanel.setOnMenuItemClickListener(this)
+
+        hideImageView()
     }
 
     private fun setAvatar(photoLink: String, imageView: ImageView) {

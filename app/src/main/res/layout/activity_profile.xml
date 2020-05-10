@@ -42,21 +42,25 @@
                             style="@style/wideHorizontalBlock"
                             app:layout_constraintTop_toBottomOf="@id/topPanelLayout">
 
-                            <LinearLayout
+                            <RelativeLayout
                                 style="@style/highHorizontalBlock"
                                 android:layout_weight="1"
                                 android:gravity="end|center">
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:visibility="invisible"
+                                    style="@style/actionButton"/>
+
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
                                     android:id="@+id/subscribeProfileBtn"
                                     style="@style/actionButton"
-                                    app:srcCompat="@drawable/icon_subscribe_24dp" />
+                                    app:srcCompat="@drawable/icon_heart_outline" />
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                                     android:id="@+id/subscriptionsProfileBtn"
                                     style="@style/actionButton"
-                                    app:srcCompat="@drawable/icon_subscriptions_24dp" />
-                            </LinearLayout>
+                                    app:srcCompat="@drawable/icon_subscriptions" />
+                            </RelativeLayout>
 
                             <ImageView
                                 android:id="@+id/avatarProfileImage"
@@ -64,21 +68,25 @@
                                 android:layout_weight="1"
                                 tools:srcCompat="@tools:sample/avatars" />
 
-                            <LinearLayout
+                            <RelativeLayout
                                 style="@style/highHorizontalBlock"
                                 android:layout_weight="1"
                                 android:gravity="start|center">
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:visibility="invisible"
+                                    style="@style/actionButton"/>
+
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
                                     android:id="@+id/dialogsProfileBtn"
                                     style="@style/actionButton"
-                                    app:srcCompat="@drawable/icon_chat_24dp" />
+                                    app:srcCompat="@drawable/icon_dialog" />
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                                     android:id="@+id/scheduleProfileBtn"
                                     style="@style/actionButton"
-                                    app:srcCompat="@drawable/icon_schedule_24dp" />
-                            </LinearLayout>
+                                    app:srcCompat="@drawable/icon_schedule" />
+                            </RelativeLayout>
                         </LinearLayout>
 
                         <LinearLayout
