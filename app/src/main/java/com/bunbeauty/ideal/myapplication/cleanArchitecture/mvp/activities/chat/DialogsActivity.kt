@@ -13,6 +13,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.DialogAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsDialogInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsMessageInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
@@ -43,6 +44,9 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     @Inject
     lateinit var dialogsUserInteractor: DialogsUserInteractor
 
+    @Inject
+    lateinit var dialogsMessageInteractor: DialogsMessageInteractor
+
     @InjectPresenter
     lateinit var dialogsPresenter: DialogsPresenter
 
@@ -52,7 +56,11 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
             .appModule(AppModule(application, intent))
             .build()
             .inject(this)
-        return DialogsPresenter(dialogsDialogInteractor, dialogsUserInteractor)
+        return DialogsPresenter(
+            dialogsDialogInteractor,
+            dialogsUserInteractor,
+            dialogsMessageInteractor
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

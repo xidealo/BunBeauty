@@ -41,7 +41,7 @@ class MessageFirebase {
                 val messages = arrayListOf<Message>()
                 if (messagesSnapshot.childrenCount > 0L) {
                     for (messageSnapshot in messagesSnapshot.children) {
-                        val message = getDialogFromSnapshot(messageSnapshot)
+                        val message = getMessageFromSnapshot(messageSnapshot)
                         message.dialogId = dialog.id
                         message.userId = dialog.ownerId
                         messages.add(message)
@@ -56,12 +56,38 @@ class MessageFirebase {
         })
     }
 
-    private fun getDialogFromSnapshot(messageSnapshot: DataSnapshot): Message {
+    fun getById(byMessage: Message, messagesCallback: MessagesCallback) {
+        val messageRef = FirebaseDatabase.getInstance()
+            .getReference(User.USERS)
+            .child(byMessage.userId)
+            .child(Dialog.DIALOGS)
+            .child(byMessage.dialogId)
+            .child(Message.MESSAGES)
+            .child(byMessage.id)
+
+        messageRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(messagesSnapshot: DataSnapshot) {
+                val messages = arrayListOf<Message>()
+                if (messagesSnapshot.childrenCount > 0L) {
+                    val message = getMessageFromSnapshot(messagesSnapshot)
+                    message.dialogId = byMessage.id
+                    message.userId = byMessage.userId
+                    messages.add(message)
+                }
+                messagesCallback.returnList(messages)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Some error
+            }
+        })
+    }
+
+    private fun getMessageFromSnapshot(messageSnapshot: DataSnapshot): Message {
         val message = Message()
         message.id = messageSnapshot.key!!
         message.message = messageSnapshot.child(Message.MESSAGE).value as? String ?: ""
         message.time = messageSnapshot.child(Message.TIME).value as? String ?: ""
-
         return message
     }
 

@@ -14,4 +14,5 @@ interface IMessageRepository {
     fun get(messagesCallback: MessagesCallback)
 
     fun getByDialogId(dialog: Dialog, messagesCallback: MessagesCallback)
+    fun getById(message: Message, messagesCallback: MessagesCallback)
 }

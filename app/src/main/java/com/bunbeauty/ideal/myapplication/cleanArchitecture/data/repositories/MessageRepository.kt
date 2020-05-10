@@ -42,7 +42,15 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
 
     override fun getByDialogId(dialog: Dialog, messagesCallback: MessagesCallback) {
         this.messagesCallback = messagesCallback
-        messageFirebase.getByDialogId(dialog, this)
+        launch {
+            messageFirebase.getByDialogId(dialog, messagesCallback)
+        }
+    }
+
+    override fun getById(message: Message, messagesCallback: MessagesCallback) {
+        launch {
+            messageFirebase.getById(message, messagesCallback)
+        }
     }
 
     fun getIdForNew(message: Message): String = messageFirebase.getIdForNew(message)

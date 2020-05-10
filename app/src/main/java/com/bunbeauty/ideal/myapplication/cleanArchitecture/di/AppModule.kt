@@ -221,6 +221,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
         DialogsUserInteractor(userRepository)
 
     @Provides
+    fun provideDialogsMessageInteractor(messageRepository: MessageRepository) =
+        DialogsMessageInteractor(messageRepository)
+
+    @Provides
     fun provideMessagesMessageInteractor(messageRepository: MessageRepository) =
         MessagesMessageInteractor(messageRepository)
 

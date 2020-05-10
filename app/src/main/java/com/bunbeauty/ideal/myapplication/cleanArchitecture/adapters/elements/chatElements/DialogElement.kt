@@ -44,7 +44,8 @@ class DialogElement(
         showAvatar(dialog.user)
         nameDialogElementText.text = "${dialog.user.name} ${dialog.user.surname}"
         lastMessageDialogElementText.text = dialog.lastMessage.message
-        messageTimeDialogElementText.text = dialog.lastMessage.time
+        if (dialog.lastMessage.time.length > 1)
+            messageTimeDialogElementText.text = dialog.lastMessage.time.substring(11, 16)
     }
 
     private fun showAvatar(user: User) {
@@ -66,9 +67,9 @@ class DialogElement(
         intent.putExtra(User.USER, dialog.user)
 
         val myDialog = Dialog()
-        myDialog.ownerId =  dialog.user.id
-        myDialog.user.id =  dialog.ownerId
-        myDialog.id =  dialog.id
+        myDialog.ownerId = dialog.user.id
+        myDialog.user.id = dialog.ownerId
+        myDialog.id = dialog.id
 
         intent.putExtra(Dialog.DIALOG, myDialog)
         context.startActivity(intent)
