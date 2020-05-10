@@ -324,10 +324,12 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     override fun goToDialog(dialog: Dialog) {
         val intent = Intent(this, MessagesActivity::class.java)
         intent.putExtra(Dialog.COMPANION_DIALOG, dialog)
+
         //TODO(refactor)
         val myDialog = Dialog()
         myDialog.ownerId = dialog.user.id
         myDialog.id = dialog.id
+        myDialog.user.id = dialog.ownerId
         intent.putExtra(Dialog.DIALOG, myDialog)
 
         intent.putExtra(User.USER, profilePresenter.getCurrentUser())

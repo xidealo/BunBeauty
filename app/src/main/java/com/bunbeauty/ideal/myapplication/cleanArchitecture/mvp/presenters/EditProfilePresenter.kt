@@ -35,7 +35,6 @@ class EditProfilePresenter(private val editProfileInteractor: EditProfileInterac
     override fun nameEditProfileInputError() {
         viewState.enableEditProfileEditButton()
         viewState.setNameEditProfileInputError("Допустимы только буквы и тире")
-
     }
 
     override fun nameEditProfileInputErrorEmpty() {

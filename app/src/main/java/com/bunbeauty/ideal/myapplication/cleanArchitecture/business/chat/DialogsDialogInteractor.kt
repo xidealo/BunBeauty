@@ -39,7 +39,8 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
     ) {
         for (user in users) {
             val dialogWithUserId = dialogs.find { it.user.id == user.id }
-            dialogWithUserId!!.user = user
+            if (dialogWithUserId != null)
+                dialogWithUserId.user = user
         }
         dialogsPresenterCallback.getMessages(dialogs)
     }
