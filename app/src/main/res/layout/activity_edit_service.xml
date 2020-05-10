@@ -36,20 +36,20 @@
 
                 <LinearLayout style="@style/block">
 
-                    <TextView
+                    <EditText
                         android:id="@+id/nameEditService"
                         style="@style/mainBlockText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Имя">
-                    </TextView>
+                    </EditText>
 
                 </LinearLayout>
 
 
             <LinearLayout style="@style/block">
 
-                <TextView
+                <EditText
                     android:id="@+id/addressEditService"
                     style="@style/mainBlockText"
                     android:hint="Адрес" />
@@ -58,7 +58,7 @@
 
             <LinearLayout style="@style/block">
 
-                <TextView
+                <EditText
                     android:id="@+id/costEditService"
                     style="@style/mainBlockText"
                     android:hint="@string/cost" />
@@ -67,12 +67,12 @@
 
             <LinearLayout style="@style/block">
 
-                <TextView
+                <EditText
                     style="@style/mainBlockText"
                     android:layout_width="wrap_content"
                     android:text="Описание:" />
 
-                <TextView
+                <EditText
                     android:id="@+id/descriptionEditService"
                     style="@style/defaultText"
                     android:layout_width="match_parent" />

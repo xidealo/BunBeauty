@@ -57,13 +57,10 @@ class ServiceInteractor(private val photoRepository: PhotoRepository, private va
 
     override fun updateService(service: Service,  servicePresenterCallback: ServicePresenterCallback) {
         currentService = service
-        cacheCurrentService = service
         servicePresenterCallback.showMyService(service)
     }
 
     private fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
-    companion object{
-        var cacheCurrentService = Service()
-    }
+
 
 }

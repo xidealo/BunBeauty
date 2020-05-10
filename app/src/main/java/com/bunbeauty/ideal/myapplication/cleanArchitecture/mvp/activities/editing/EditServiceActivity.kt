@@ -1,15 +1,10 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing
 
-
-
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.ScrollView
-import android.widget.TextView
+import android.widget.*
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -21,16 +16,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.EditServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.EditServiceView
-import kotlinx.android.synthetic.main.activity_edit_service.*
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
 
 class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
-    EditServiceView,View.OnClickListener {
+    EditServiceView, View.OnClickListener {
 
     private lateinit var progressEditServiceBar: ProgressBar
     private lateinit var editServiceScroll: ScrollView
@@ -50,15 +43,17 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         nameEditService = findViewById(R.id.nameEditService)
         addressEditService = findViewById(R.id.addressEditService)
         costEditService = findViewById(R.id.costEditService)
+
         descriptionEditService = findViewById(R.id.descriptionEditService)
         saveEditServiceBtn = findViewById(R.id.saveEditServiceBtn)
+        saveEditServiceBtn.setOnClickListener(this)
     }
 
     @Inject
     lateinit var editServiceInteractor: EditServiceInteractor
 
     @InjectPresenter
-    private lateinit var editServicePresenter: EditServicePresenter
+    lateinit var editServicePresenter: EditServicePresenter
 
     //ДОБАВИЛ!
     @ProvidePresenter
@@ -73,9 +68,6 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     private fun createPanels() {
         initTopPanel("Редактирование услуги", ButtonTask.NONE)
     }
-
-    /* имя, адрес, описание, цена, (категории)
-    дизайн,переменная,инит,панели,пресентер,интерактор,онкклик*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,11 +84,11 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         initBottomPanel()
     }
 
-    override  fun showEditService(service:Service){
-        nameEditService.text= service.name
-        addressEditService.text= service.address
+    override fun showEditService(service: Service) {
+        nameEditService.text = service.name
+        addressEditService.text = service.address
         costEditService.text = service.cost.toString()
-        descriptionEditService.text= service.description
+        descriptionEditService.text = service.description
     }
 
     override fun goToService(service: Service) {
@@ -108,20 +100,20 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     }
 
 
-    override fun showLoading (){
-        progressEditServiceBar.visibility= View.VISIBLE
+    override fun showLoading() {
+        progressEditServiceBar.visibility = View.VISIBLE
         editServiceScroll.visibility = View.VISIBLE
         saveEditServiceBtn.visibility = View.VISIBLE
     }
 
-    override fun hideLoading(){
-        progressEditServiceBar.visibility= View.GONE
+    override fun hideLoading() {
+        progressEditServiceBar.visibility = View.GONE
         editServiceScroll.visibility = View.VISIBLE
         saveEditServiceBtn.visibility = View.VISIBLE
     }
 
     override fun enableEditServiceBtn() {
-
+        TODO("Not yet implemented")
     }
 
     override fun setNameEditServiceInputError(error: String) {
@@ -131,12 +123,12 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
 
 
     override fun onClick(v: View) {
-        when(v.id){
-            R.id.saveEditServiceBtn->editServicePresenter.save(
+        when (v.id) {
+            R.id.saveEditServiceBtn -> editServicePresenter.save(
                 nameEditService.text.toString().trim(),
                 addressEditService.text.toString().trim(),
                 descriptionEditService.text.toString().trim(),
-                costEditService.text.toString().toLongOrNull() ?:0
+                costEditService.text.toString().toLongOrNull() ?: 0
             )
         }
 
