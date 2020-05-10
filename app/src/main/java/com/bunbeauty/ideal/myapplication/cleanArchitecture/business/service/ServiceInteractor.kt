@@ -16,6 +16,7 @@ class ServiceInteractor(private val photoRepository: PhotoRepository, private va
 
     private lateinit var photoCallback: IPhotoCallback
     private lateinit var user: User
+    private lateinit var currentService: Service
 
     private lateinit var service: Service
 
@@ -24,7 +25,6 @@ class ServiceInteractor(private val photoRepository: PhotoRepository, private va
         val user = intent.getSerializableExtra(User.USER) as User
         this.user = user
         this.service = service
-
         if (!isMyService()) {
             servicePresenterCallback.showPremium(service)
             servicePresenterCallback.createAlienServiceTopPanel(user, service)
@@ -32,7 +32,7 @@ class ServiceInteractor(private val photoRepository: PhotoRepository, private va
             servicePresenterCallback.createOwnServiceTopPanel(service)
         }
 
-        servicePresenterCallback.showService(service)
+        servicePresenterCallback.showMyService(service)
     }
 
     override fun iconClick(servicePresenterCallback: ServicePresenterCallback) {
@@ -55,6 +55,15 @@ class ServiceInteractor(private val photoRepository: PhotoRepository, private va
         photoCallback.returnPhotos(photos)
     }
 
+    override fun updateService(service: Service,  servicePresenterCallback: ServicePresenterCallback) {
+        currentService = service
+        cacheCurrentService = service
+        servicePresenterCallback.showMyService(service)
+    }
+
     private fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
+    companion object{
+        var cacheCurrentService = Service()
+    }
 
 }

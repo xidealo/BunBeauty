@@ -16,6 +16,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IProfileAvailable
@@ -193,11 +194,32 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         servicePresenter.iconClick()
     }
 
-    override fun goToEditService(service: Service) {
-        /* val intent = Intent(this, EditService::class.java)
-         intent.putExtra(Service.SERVICE, editableEntity as Service)
-         startActivity(intent)*/
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (data == null || resultCode != RESULT_OK) {
+            return
+        }
+
+        when (requestCode) {
+            REQUEST_EDIT_SERVICE -> {
+                showMessage("Сервис изменен")
+                servicePresenter.updateService(data.getSerializableExtra(Service.SERVICE) as Service)
+            }
+        }
+    }
+
+    override fun goToEditService(service: Service) {
+         val intent = Intent(this, EditServiceActivity::class.java)
+         intent.putExtra(Service.SERVICE, service)
+         startActivityForResult(intent, REQUEST_EDIT_SERVICE)
+    }
+
+
 
     private fun goToCalendar(status: String) {
         val intent = Intent(this, MyCalendar::class.java)
@@ -213,7 +235,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         startActivity(intent)
     }
 
-    private fun goToComments() {
+    private fun  goToComments() {
         val intent = Intent(this, Comments::class.java)
         //intent.putExtra(Service.SERVICE_ID, "")
         intent.putExtra(TYPE, REVIEW_FOR_SERVICE)
@@ -231,6 +253,8 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         private val STATUS_USER_BY_SERVICE = "status UserCreateService"
 
         private val REVIEW_FOR_SERVICE = "review for service"
+
+        private val REQUEST_EDIT_SERVICE =  1
     }
 
 }

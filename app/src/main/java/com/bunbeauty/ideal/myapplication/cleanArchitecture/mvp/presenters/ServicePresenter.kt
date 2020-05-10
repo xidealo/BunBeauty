@@ -25,10 +25,11 @@ class ServicePresenter(private val serviceInteractor: IServiceInteractor) :
         serviceInteractor.iconClick(this)
     }
 
-    override fun showService(service: Service) {
+    override fun showMyService(service: Service) {
         viewState.showService(service)
         viewState.hideLoading()
     }
+
 
     override fun showPremium(service: Service) {
         viewState.showPremium(service)
@@ -48,6 +49,10 @@ class ServicePresenter(private val serviceInteractor: IServiceInteractor) :
 
     override fun goToProfile(user: User) {
         viewState.goToProfile(user)
+    }
+
+    fun updateService(service:Service){
+        serviceInteractor.updateService(service,this)
     }
 
 

@@ -16,4 +16,5 @@ interface ServiceView: MvpView {
     fun hideLoading()
     fun goToEditService(service: Service)
     fun goToProfile(user: User)
+    fun showMessage(message: String)
 }
