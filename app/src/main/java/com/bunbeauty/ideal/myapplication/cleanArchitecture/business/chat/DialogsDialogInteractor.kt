@@ -12,10 +12,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.Dia
 class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
     IDialogsDialogInteractor, DialogsCallback, DialogCallback {
 
+    private var finalCacheDialogs = mutableListOf<Dialog>()
     private var myCacheDialogs = mutableListOf<Dialog>()
     private var companionsCacheDialogs = mutableListOf<Dialog>()
     private lateinit var dialogsPresenterCallback: DialogsPresenterCallback
-    override fun getDialogsLink() = myCacheDialogs
+    private var dialogCount = 0
+    override fun getDialogsLink() = finalCacheDialogs
 
     override fun getDialogs(dialogsPresenterCallback: DialogsPresenterCallback) {
         this.dialogsPresenterCallback = dialogsPresenterCallback
@@ -23,63 +25,69 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
     }
 
     override fun returnList(objects: List<Dialog>) {
+
         if (objects.isEmpty()) {
             dialogsPresenterCallback.showEmptyDialogs()
             dialogsPresenterCallback.hideLoading()
             return
         }
+
         myCacheDialogs.addAll(objects)
-        dialogsPresenterCallback.getUsers(myCacheDialogs)
+
+        for (dialog in objects) {
+            dialogsPresenterCallback.getUser(dialog)
+            dialogsPresenterCallback.getMessage(dialog)
+        }
     }
 
     override fun fillDialogs(
-        users: List<User>,
+        user: User,
         dialogsPresenterCallback: DialogsPresenterCallback
     ) {
-        val companionDialogs = mutableListOf<Dialog>()
-        for (user in users) {
-            val dialogWithUserId = myCacheDialogs.find { it.user.id == user.id }
-            if (dialogWithUserId != null) {
-                dialogWithUserId.user = user
+        var companionDialog = Dialog()
 
-                companionDialogs.add(
-                    Dialog(
-                        id = dialogWithUserId.id,
-                        ownerId = dialogWithUserId.user.id
-                    )
-                )
+        val dialogWithUserId = myCacheDialogs.find { it.user.id == user.id }
 
-            }
-
+        if (dialogWithUserId != null) {
+            dialogWithUserId.user = user
+            companionDialog = Dialog(
+                id = dialogWithUserId.id,
+                ownerId = dialogWithUserId.user.id
+            )
         }
-        getCompanionDialogs(companionDialogs)
+        getCompanionDialog(companionDialog)
     }
 
-    private fun getCompanionDialogs(dialogs: List<Dialog>) {
-        for (dialog in dialogs) {
-            dialogRepository.getById(dialog, this)
-        }
+    private fun getCompanionDialog(dialog: Dialog) {
+        dialogRepository.getById(dialog, this)
     }
 
     override fun returnElement(element: Dialog) {
-        companionsCacheDialogs.add(element)
-        if(companionsCacheDialogs.size == myCacheDialogs.size){
-            dialogsPresenterCallback.getMessages(myCacheDialogs, companionsCacheDialogs)
+        if (element.ownerId == User.getMyId()) {
+            myCacheDialogs.add(element)
+        } else {
+            companionsCacheDialogs.add(element)
         }
+        dialogsPresenterCallback.getMessage(element)
     }
 
     override fun fillDialogsByMessages(
-        messages: List<Message>,
+        message: Message,
         dialogsPresenterCallback: DialogsPresenterCallback
     ) {
-        for (message in messages) {
-            val dialogWithMessageId = myCacheDialogs.find { it.id== message.dialogId }
-            if (dialogWithMessageId != null) {
-                dialogWithMessageId.lastMessage = message
-            }
+        dialogCount++
+
+        val dialogWithMessageId = myCacheDialogs.find { it.id == message.dialogId }
+
+        if (dialogWithMessageId != null) {
+            dialogWithMessageId.lastMessage = message
         }
-        dialogsPresenterCallback.showDialogs(myCacheDialogs)
+
+        if (dialogCount == myCacheDialogs.size) {
+            finalCacheDialogs.clear()
+            finalCacheDialogs.addAll(myCacheDialogs.sortedByDescending { it.lastMessage.time })
+            dialogsPresenterCallback.showDialogs(finalCacheDialogs)
+        }
+
     }
-
-
 }

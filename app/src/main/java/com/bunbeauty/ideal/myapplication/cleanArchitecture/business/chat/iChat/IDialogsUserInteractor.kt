@@ -4,5 +4,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.chat.Dialogs
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 
 interface IDialogsUserInteractor {
-    fun getUsers(dialogs: List<Dialog>, dialogsPresenterCallback: DialogsPresenterCallback)
+    fun getUser(dialog: Dialog, dialogsPresenterCallback: DialogsPresenterCallback)
+    fun clearCache()
 }

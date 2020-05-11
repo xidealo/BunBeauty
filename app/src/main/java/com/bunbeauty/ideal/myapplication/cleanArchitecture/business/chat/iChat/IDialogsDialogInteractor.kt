@@ -8,9 +8,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface IDialogsDialogInteractor {
     fun getDialogs(dialogsPresenterCallback: DialogsPresenterCallback)
     fun getDialogsLink(): List<Dialog>
-    fun fillDialogs(users: List<User>, dialogsPresenterCallback: DialogsPresenterCallback)
+    fun fillDialogs(user: User, dialogsPresenterCallback: DialogsPresenterCallback)
     fun fillDialogsByMessages(
-        messages: List<Message>,
+        message: Message,
         dialogsPresenterCallback: DialogsPresenterCallback
     )
 }

@@ -11,6 +11,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -45,7 +46,7 @@ class DialogElement(
     private fun setData(dialog: Dialog) {
         showAvatar(dialog.user)
         nameDialogElementText.text = "${dialog.user.name} ${dialog.user.surname}"
-        lastMessageDialogElementText.text = dialog.lastMessage.message
+        lastMessageDialogElementText.text = WorkWithStringsApi.cutString(dialog.lastMessage.message, 23)
         messageTimeDialogElementText.text =
             WorkWithTimeApi.getDateInFormatYMDHMS(Date(dialog.lastMessage.time)).substring(11, 16)
     }

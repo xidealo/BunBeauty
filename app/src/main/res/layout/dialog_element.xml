@@ -48,8 +48,9 @@
 
             <TextView
                 android:id="@+id/lastMessageDialogElementText"
-                style="@style/textOnPages"
+                android:textColor="@color/grey"
                 android:layout_width="match_parent"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_height="match_parent"
                 android:text="Name" />
 

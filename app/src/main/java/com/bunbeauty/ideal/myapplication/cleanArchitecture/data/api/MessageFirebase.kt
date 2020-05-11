@@ -107,9 +107,9 @@ class MessageFirebase {
                 if (messagesSnapshot.childrenCount > 0) {
                     message =
                         getMessageFromSnapshot(messagesSnapshot.children.iterator().next())
-                    message.dialogId = dialog.id
-                    message.userId = dialog.ownerId
                 }
+                message.dialogId = dialog.id
+                message.userId = dialog.ownerId
                 messageCallback.returnElement(message)
             }
 

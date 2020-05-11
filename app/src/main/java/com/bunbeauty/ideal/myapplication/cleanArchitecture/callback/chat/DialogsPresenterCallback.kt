@@ -5,11 +5,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface DialogsPresenterCallback {
-    fun getUsers(dialogs: List<Dialog>)
-    fun fillDialogs(users: List<User>)
+    fun getUser(dialog: Dialog)
+    fun fillDialogs(user: User)
     fun showDialogs(dialogs: List<Dialog>)
-    fun getMessages(dialogs: List<Dialog>, companionDialogs: List<Dialog>)
-    fun fillDialogsByMessages(messages: List<Message>)
+    fun getMessage(dialog: Dialog)
+    fun fillDialogsByMessages(message: Message)
     fun showLoading()
     fun hideLoading()
     fun showEmptyDialogs()

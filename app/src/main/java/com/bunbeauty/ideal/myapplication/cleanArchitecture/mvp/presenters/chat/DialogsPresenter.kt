@@ -20,17 +20,21 @@ class DialogsPresenter(
     MvpPresenter<DialogsView>(), DialogsPresenterCallback {
 
     fun getDialogs() {
+        viewState.showLoading()
+        /*  dialogsDialogInteractor.clearCache()
+          dialogsUserInteractor.clearCache()
+          dialogsMessageInteractor.clearCache()*/
         dialogsDialogInteractor.getDialogs(this)
     }
 
     fun getDialogsLink() = dialogsDialogInteractor.getDialogsLink()
 
-    override fun getUsers(dialogs: List<Dialog>) {
-        dialogsUserInteractor.getUsers(dialogs, this)
+    override fun getUser(dialog: Dialog) {
+        dialogsUserInteractor.getUser(dialog, this)
     }
 
-    override fun fillDialogs(users: List<User>) {
-        dialogsDialogInteractor.fillDialogs(users, this)
+    override fun fillDialogs(user: User) {
+        dialogsDialogInteractor.fillDialogs(user, this)
     }
 
     override fun showDialogs(dialogs: List<Dialog>) {
@@ -39,12 +43,12 @@ class DialogsPresenter(
         viewState.showDialogs(dialogs)
     }
 
-    override fun getMessages(dialogs: List<Dialog>, companionDialogs: List<Dialog>) {
-        dialogsMessageInteractor.getMyMessages(dialogs, companionDialogs, this)
+    override fun getMessage(dialog: Dialog) {
+        dialogsMessageInteractor.getLastMessage(dialog, this)
     }
 
-    override fun fillDialogsByMessages(messages: List<Message>) {
-        dialogsDialogInteractor.fillDialogsByMessages(messages, this)
+    override fun fillDialogsByMessages(message: Message) {
+        dialogsDialogInteractor.fillDialogsByMessages(message, this)
     }
 
     override fun showLoading() {

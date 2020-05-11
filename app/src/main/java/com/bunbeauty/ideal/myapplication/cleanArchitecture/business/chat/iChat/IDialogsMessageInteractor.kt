@@ -4,9 +4,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.chat.Dialogs
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 
 interface IDialogsMessageInteractor {
-    fun getMyMessages(
-        dialogs: List<Dialog>,
-        companionDialogs: List<Dialog>,
+    fun getLastMessage(
+        dialog: Dialog,
         dialogsPresenterCallback: DialogsPresenterCallback
     )
+
+    fun clearCache()
 }

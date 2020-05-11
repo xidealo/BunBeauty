@@ -74,7 +74,6 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
 
     override fun onResume() {
         super.onResume()
-
         initBottomPanel(R.id.navigation_chat)
     }
 

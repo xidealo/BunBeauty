@@ -11,46 +11,38 @@ class DialogsMessageInteractor(private val messageRepository: MessageRepository)
     IDialogsMessageInteractor, MessageCallback {
 
     private lateinit var dialogsPresenterCallback: DialogsPresenterCallback
-    private var dialogsCount = 0
     private var currentDialogsCount = 0
     private var cacheMyMessages = mutableListOf<Message>()
 
-    override fun getMyMessages(
-        dialogs: List<Dialog>,
-        companionDialogs: List<Dialog>,
+    override fun getLastMessage(
+        dialog: Dialog,
         dialogsPresenterCallback: DialogsPresenterCallback
     ) {
-        dialogsCount = dialogs.size + companionDialogs.size
         this.dialogsPresenterCallback = dialogsPresenterCallback
-        for (dialog in dialogs) {
-            messageRepository.getByIdLastMessage(
-                dialog, this
-            )
-        }
+        messageRepository.getByIdLastMessage(dialog, this)
+    }
 
-        for (dialog in companionDialogs) {
-            messageRepository.getByIdLastMessage(
-                dialog, this
-            )
-        }
+    override fun clearCache() {
+        currentDialogsCount = 0
+        cacheMyMessages.clear()
     }
 
     override fun returnElement(element: Message) {
-        currentDialogsCount++
 
         val foundMessage = cacheMyMessages.find { it.dialogId == element.dialogId }
+
         if (foundMessage == null) {
-            if(element.id.isNotEmpty())
-            cacheMyMessages.add(element)
-        }else{
-            if(foundMessage.time < element.time){
-                cacheMyMessages.remove(foundMessage)
+            if (element.id.isNotEmpty()) {
                 cacheMyMessages.add(element)
             }
-        }
-
-        if (dialogsCount == currentDialogsCount) {
-            dialogsPresenterCallback.fillDialogsByMessages(cacheMyMessages)
+        } else {
+            if (foundMessage.time < element.time) {
+                cacheMyMessages.remove(foundMessage)
+                cacheMyMessages.add(element)
+                dialogsPresenterCallback.fillDialogsByMessages(element)
+            } else {
+                dialogsPresenterCallback.fillDialogsByMessages(foundMessage)
+            }
         }
     }
 

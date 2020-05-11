@@ -47,7 +47,15 @@ class DialogFirebase {
 
         dialogsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dialogsSnapshot: DataSnapshot) {
-                dialogsCallback.returnList(returnDialogList(dialogsSnapshot, userId))
+
+                val dialogs = arrayListOf<Dialog>()
+                for (dialogSnapshot in dialogsSnapshot.children) {
+                    dialogs.add(getDialogFromSnapshot(dialogSnapshot, userId))
+                }
+
+                dialogsCallback.returnList(dialogs)
+
+
             }
 
             override fun onCancelled(error: DatabaseError) {

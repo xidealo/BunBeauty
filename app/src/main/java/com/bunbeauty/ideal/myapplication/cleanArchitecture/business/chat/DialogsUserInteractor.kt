@@ -15,25 +15,22 @@ class DialogsUserInteractor(private val userRepository: UserRepository) :
     private var dialogsCount = 0
     private var currentDialogsCount = 0
 
-    override fun getUsers(
-        dialogs: List<Dialog>,
+    override fun getUser(
+        dialog: Dialog,
         dialogsPresenterCallback: DialogsPresenterCallback
     ) {
         this.dialogsPresenterCallback = dialogsPresenterCallback
-        dialogsCount = dialogs.size
+        userRepository.getById(dialog.user.id, this, true)
+    }
 
-        for (dialog in dialogs) {
-            userRepository.getById(dialog.user.id, this, true)
-        }
+    override fun clearCache() {
+        dialogsCount = 0
+        currentDialogsCount = 0
+        users.clear()
     }
 
     override fun returnUsers(users: List<User>) {
-        this.users.addAll(users)
-        currentDialogsCount++
-
-        if (dialogsCount == currentDialogsCount) {
-            dialogsPresenterCallback.fillDialogs(this.users)
-        }
+        dialogsPresenterCallback.fillDialogs(users.first())
     }
 
 }
