@@ -1,9 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.DeleteMessageCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.InsertMessageCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.MessagesCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.UpdateMessageCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.MessageFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
@@ -13,9 +10,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepository(),
-    IMessageRepository, MessagesCallback {
+    IMessageRepository, MessagesCallback, MessageCallback {
 
     private lateinit var messagesCallback: MessagesCallback
+    private lateinit var messageCallback: MessageCallback
 
     override fun insert(message: Message, insertMessageCallback: InsertMessageCallback) {
         launch {
@@ -45,16 +43,22 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
         }
     }
 
-    override fun getByDialogId(dialog: Dialog, messagesCallback: MessagesCallback) {
+    override fun getByDialogId(
+        dialog: Dialog,
+        messageCallback: MessageCallback,
+        messagesCallback: MessagesCallback
+    ) {
         this.messagesCallback = messagesCallback
+        this.messageCallback = messageCallback
         launch {
-            messageFirebase.getByDialogId(dialog, messagesCallback)
+            messageFirebase.getByDialogId(dialog, messageCallback, messagesCallback)
         }
     }
 
-    override fun getById(message: Message, messagesCallback: MessagesCallback) {
+    override fun getByIdLastMessage(dialog: Dialog, messageCallback: MessageCallback) {
+        this.messageCallback = messageCallback
         launch {
-            messageFirebase.getById(message, messagesCallback)
+            messageFirebase.getLastMessage(dialog, messageCallback)
         }
     }
 
@@ -62,6 +66,10 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
 
     override fun returnList(objects: List<Message>) {
         messagesCallback.returnList(objects)
+    }
+
+    override fun returnElement(element: Message) {
+        messageCallback.returnElement(element)
     }
 
 }

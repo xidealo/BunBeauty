@@ -11,7 +11,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import com.squareup.picasso.Picasso
+import java.util.*
 
 class DialogElement(
     private val view: View,
@@ -44,8 +46,8 @@ class DialogElement(
         showAvatar(dialog.user)
         nameDialogElementText.text = "${dialog.user.name} ${dialog.user.surname}"
         lastMessageDialogElementText.text = dialog.lastMessage.message
-        if (dialog.lastMessage.time.length > 1)
-            messageTimeDialogElementText.text = dialog.lastMessage.time.substring(11, 16)
+        messageTimeDialogElementText.text =
+            WorkWithTimeApi.getDateInFormatYMDHMS(Date(dialog.lastMessage.time)).substring(11, 16)
     }
 
     private fun showAvatar(user: User) {

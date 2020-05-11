@@ -7,6 +7,8 @@ import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
+import java.util.*
 
 
 class MessageElement(
@@ -31,7 +33,9 @@ class MessageElement(
 
     private fun setData(message: Message) {
         messageTextMessageElementText.text = message.message
-        messageTimeMessageElementText.text = message.time.substring(11, 16)
+        messageTimeMessageElementText.text =
+            WorkWithTimeApi.getDateInFormatYMDHMS(Date(message.time)).substring(11, 16)
+
         if (message.userId == User.getMyId()) {
             mainLayoutMessageElementLayout.gravity = Gravity.END
         } else {

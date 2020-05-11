@@ -3,18 +3,20 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.iChat.IMessagesMessageInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.chat.MessagesPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.InsertMessageCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.MessageCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.MessagesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.MessageRepository
 
 class MessagesMessageInteractor(private val messageRepository: MessageRepository) :
-    IMessagesMessageInteractor, MessagesCallback, InsertMessageCallback {
+    IMessagesMessageInteractor, MessagesCallback, InsertMessageCallback, MessageCallback {
     //tree set and sort by time
     private var cacheMessages = mutableListOf<Message>()
     private var cacheMessagesSet = mutableSetOf<Message>()
     private var countOfDialogs = 0
     private lateinit var messagesPresenterCallback: MessagesPresenterCallback
+    //брать последнее сообщение из своего и чужого и сравнивать их время
 
     override fun getMyMessagesLink() = cacheMessages
 
@@ -23,7 +25,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messagesPresenterCallback: MessagesPresenterCallback
     ) {
         this.messagesPresenterCallback = messagesPresenterCallback
-        messageRepository.getByDialogId(dialog, this)
+        messageRepository.getByDialogId(dialog, this, this)
     }
 
     override fun getCompanionMessages(
@@ -31,7 +33,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messagesPresenterCallback: MessagesPresenterCallback
     ) {
         this.messagesPresenterCallback = messagesPresenterCallback
-        messageRepository.getByDialogId(dialog, this)
+        messageRepository.getByDialogId(dialog, this, this)
     }
 
     override fun sendMessage(
@@ -59,17 +61,20 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     override fun returnList(objects: List<Message>) {
         countOfDialogs++
         cacheMessagesSet.addAll(objects)
-
-        if (countOfDialogs >= 2) {
-            cacheMessages.clear()
+        if (countOfDialogs == 2) {
             cacheMessages.addAll(cacheMessagesSet.sortedBy { it.time })
             checkMoveToStart(cacheMessages, messagesPresenterCallback)
         }
     }
 
+    override fun returnElement(element: Message) {
+        cacheMessages.add(element)
+        checkMoveToStart(cacheMessages, messagesPresenterCallback)
+    }
+
     override fun returnCreatedCallback(obj: Message) {
-        messagesPresenterCallback.updateDialogLastMessage(obj)
         messagesPresenterCallback.showSendMessage(obj)
     }
+
 
 }

@@ -8,8 +8,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.iChat.I
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.chat.MessagesPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.MessagesView
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
-import java.util.*
 
 @InjectViewState
 class MessagesPresenter(
@@ -46,7 +44,6 @@ class MessagesPresenter(
         message.message = messageText
         message.dialogId = messagesDialogInteractor.getCompanionDialog().id
         message.userId = messagesDialogInteractor.getCompanionDialog().ownerId
-        message.time = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
         messagesMessageInteractor.sendMessage(message, this)
     }
 
@@ -65,15 +62,6 @@ class MessagesPresenter(
 
     override fun showMoveToStart() {
         viewState.moveToStart()
-    }
-
-    override fun updateDialogLastMessage(message: Message) {
-        val myDialog = messagesDialogInteractor.getMyDialog()
-        myDialog.lastMessage = message
-        messagesDialogInteractor.updateDialog(myDialog)
-        val companionDialog = messagesDialogInteractor.getCompanionDialog()
-        companionDialog.lastMessage = message
-        messagesDialogInteractor.updateCompanionDialog(companionDialog)
     }
 
     override fun showCompanionUserInfo(fullName: String, photoLink: String) {

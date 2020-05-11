@@ -1,13 +1,11 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.MessageCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.MessagesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class MessageFirebase {
 
@@ -22,22 +20,25 @@ class MessageFirebase {
 
         val items = HashMap<String, Any>()
         items[Message.MESSAGE] = message.message
-        items[Message.TIME] = message.time
+        items[Message.TIME] = ServerValue.TIMESTAMP
         messageRef.updateChildren(items)
     }
 
-    fun getByDialogId(dialog: Dialog, messagesCallback: MessagesCallback) {
-
-        val dialogRef = FirebaseDatabase.getInstance()
+    fun getByDialogId(
+        dialog: Dialog,
+        messageCallback: MessageCallback,
+        messagesCallback: MessagesCallback
+    ) {
+        val messageRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
             .child(dialog.ownerId)
             .child(Dialog.DIALOGS)
             .child(dialog.id)
             .child(Message.MESSAGES)
 
-        dialogRef.addValueEventListener(object : ValueEventListener {
+        messageRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(messagesSnapshot: DataSnapshot) {
-                //val currentDialog = dialog
+
                 val messages = arrayListOf<Message>()
                 if (messagesSnapshot.childrenCount > 0L) {
                     for (messageSnapshot in messagesSnapshot.children) {
@@ -48,33 +49,68 @@ class MessageFirebase {
                     }
                 }
                 messagesCallback.returnList(messages)
+
+                messageRef.addChildEventListener(object : ChildEventListener {
+                    override fun onCancelled(p0: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+
+                    }
+
+                    override fun onChildAdded(messageSnapshot: DataSnapshot, previousId: String?) {
+                        if (messages.isNotEmpty()) {
+                            if (previousId == messages.last().id) {
+                                val addedMessage = getMessageFromSnapshot(messageSnapshot)
+                                addedMessage.dialogId = dialog.id
+                                addedMessage.userId = dialog.ownerId
+                                messages.add(addedMessage)
+                                messageCallback.returnElement(addedMessage)
+                            }
+                        } else {
+                            val addedMessage = getMessageFromSnapshot(messageSnapshot)
+                            addedMessage.dialogId = dialog.id
+                            addedMessage.userId = dialog.ownerId
+                            messages.add(addedMessage)
+                            messageCallback.returnElement(addedMessage)
+                        }
+                    }
+
+                    override fun onChildRemoved(p0: DataSnapshot) {
+                        TODO("Not yet implemented")
+                    }
+                })
             }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Some error
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
             }
         })
     }
 
-    fun getById(byMessage: Message, messagesCallback: MessagesCallback) {
+    fun getLastMessage(dialog: Dialog, messageCallback: MessageCallback) {
         val messageRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
-            .child(byMessage.userId)
+            .child(dialog.ownerId)
             .child(Dialog.DIALOGS)
-            .child(byMessage.dialogId)
-            .child(Message.MESSAGES)
-            .child(byMessage.id)
+            .child(dialog.id)
+            .child(Message.MESSAGES).orderByChild(Message.TIME).limitToLast(1)
 
-        messageRef.addValueEventListener(object : ValueEventListener {
+        messageRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(messagesSnapshot: DataSnapshot) {
-                val messages = arrayListOf<Message>()
-                if (messagesSnapshot.childrenCount > 0L) {
-                    val message = getMessageFromSnapshot(messagesSnapshot)
-                    message.dialogId = byMessage.id
-                    message.userId = byMessage.userId
-                    messages.add(message)
+                var message = Message()
+                if (messagesSnapshot.childrenCount > 0) {
+                    message =
+                        getMessageFromSnapshot(messagesSnapshot.children.iterator().next())
+                    message.dialogId = dialog.id
+                    message.userId = dialog.ownerId
                 }
-                messagesCallback.returnList(messages)
+                messageCallback.returnElement(message)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -87,7 +123,7 @@ class MessageFirebase {
         val message = Message()
         message.id = messageSnapshot.key!!
         message.message = messageSnapshot.child(Message.MESSAGE).value as? String ?: ""
-        message.time = messageSnapshot.child(Message.TIME).value as? String ?: ""
+        message.time = messageSnapshot.child(Message.TIME).value as? Long ?: 0
         return message
     }
 

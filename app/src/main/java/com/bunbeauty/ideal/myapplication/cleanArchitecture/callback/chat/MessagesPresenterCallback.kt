@@ -6,6 +6,5 @@ interface MessagesPresenterCallback {
     fun showMessagesScreen(messages: List<Message>)
     fun showSendMessage(message: Message)
     fun showMoveToStart()
-    fun updateDialogLastMessage(message: Message)
     fun showCompanionUserInfo(fullName: String, photoLink: String)
 }

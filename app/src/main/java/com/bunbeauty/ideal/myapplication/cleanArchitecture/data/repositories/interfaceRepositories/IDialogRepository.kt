@@ -1,9 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DeleteDialogCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DialogsCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.InsertDialogCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.UpdateDialogCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 
 interface IDialogRepository {
@@ -13,4 +10,5 @@ interface IDialogRepository {
     fun update(dialog: Dialog, updateDialogCallback: UpdateDialogCallback)
     fun get(dialogsCallback: DialogsCallback)
     fun getByUserId(userId: String, dialogsCallback: DialogsCallback)
+    fun getById(dialog: Dialog, dialogCallback: DialogCallback)
 }

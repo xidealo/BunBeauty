@@ -5,6 +5,4 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface IMessagesDialogInteractor {
     fun getMyDialog(): Dialog
     fun getCompanionDialog(): Dialog
-    fun updateDialog(dialog: Dialog)
-    fun updateCompanionDialog(dialog: Dialog)
 }

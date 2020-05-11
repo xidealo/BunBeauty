@@ -22,7 +22,7 @@ data class Message(
     var dialogId: String = "",
     var userId: String = "",
     var message: String = "",
-    var time: String = ""
+    var time: Long = 0L
 ) : Serializable {
 
     companion object {

@@ -1,9 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DeleteDialogCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DialogsCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.InsertDialogCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.UpdateDialogCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.DialogFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.DialogDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
@@ -15,9 +12,10 @@ import kotlinx.coroutines.withContext
 class DialogRepository(
     private val dialogDao: DialogDao,
     private val dialogFirebase: DialogFirebase
-) : BaseRepository(), IDialogRepository, DialogsCallback {
+) : BaseRepository(), IDialogRepository, DialogsCallback, DialogCallback {
 
     private lateinit var dialogsCallback: DialogsCallback
+    private lateinit var dialogCallback: DialogCallback
 
     override fun insert(dialog: Dialog, insertDialogCallback: InsertDialogCallback) {
         launch {
@@ -67,8 +65,19 @@ class DialogRepository(
         }
     }
 
+    override fun getById(dialog: Dialog, dialogCallback: DialogCallback) {
+        this.dialogCallback = dialogCallback
+        launch {
+            dialogFirebase.getById(dialog, dialogCallback)
+        }
+    }
+
     override fun returnList(objects: List<Dialog>) {
         dialogsCallback.returnList(objects)
+    }
+
+    override fun returnElement(element: Dialog) {
+        dialogCallback.returnElement(element)
     }
 
 }
