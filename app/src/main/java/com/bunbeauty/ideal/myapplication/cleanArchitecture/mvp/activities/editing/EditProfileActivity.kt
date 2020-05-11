@@ -23,6 +23,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfile
 import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
@@ -32,17 +34,17 @@ import javax.inject.Inject
 class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, View.OnClickListener,
     EditProfileView, IAdapterSpinner {
 
-    private lateinit var avatarEditProfileImage: ImageView
-    private lateinit var logOutEditProfileBtn: Button
-    private lateinit var nameEditProfileInput: TextView
-    private lateinit var surnameEditProfileInput: TextView
-    private lateinit var citySpinnerEditProfileSpinner: Spinner
-    private lateinit var codeEditProfileSpinner: Spinner
-    private lateinit var phoneEditProfileInput: TextView
-    private lateinit var codeEditProfileInput: TextView
-    private lateinit var verifyCodeEditProfileBtn: Button
-    private lateinit var resendCodeEditProfileBtn: Button
-    private lateinit var editProfileEditProfileBtn: Button
+    private lateinit var avatarImage: ImageView
+    private lateinit var nameInput: TextInputEditText
+    private lateinit var surnameInput: TextInputEditText
+    private lateinit var citySpinner: AutoCompleteTextView
+    private lateinit var codeSpinner: AutoCompleteTextView
+    private lateinit var phoneInput: TextInputEditText
+    private lateinit var codeLayout: TextInputLayout
+    private lateinit var codeInput: TextView
+    private lateinit var verifyCodeBtn: Button
+    private lateinit var resendCodeBtn: Button
+    private lateinit var saveChangesBtn: Button
 
     override var panelContext: Context = this
     override lateinit var bottomPanel: BottomNavigationView
@@ -81,24 +83,28 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     }
 
     private fun init() {
-        avatarEditProfileImage = findViewById(R.id.avatarEditProfileImage)
-        logOutEditProfileBtn = findViewById(R.id.logOutEditProfileBtn)
-        nameEditProfileInput = findViewById(R.id.nameEditProfileInput)
-        surnameEditProfileInput = findViewById(R.id.surnameEditProfileInput)
-        citySpinnerEditProfileSpinner = findViewById(R.id.citySpinnerEditProfileSpinner)
-        codeEditProfileSpinner = findViewById(R.id.codeEditProfileSpinner)
-        phoneEditProfileInput = findViewById(R.id.phoneEditProfileInput)
-        codeEditProfileInput = findViewById(R.id.codeEditProfileInput)
-        verifyCodeEditProfileBtn = findViewById(R.id.verifyCodeEditProfileBtn)
-        resendCodeEditProfileBtn = findViewById(R.id.resendCodeEditProfileBtn)
-        editProfileEditProfileBtn = findViewById(R.id.editProfileEditProfileBtn)
+        avatarImage = findViewById(R.id.avatarEditProfileImage)
+        nameInput = findViewById(R.id.nameEditProfileInput)
+        surnameInput = findViewById(R.id.surnameEditProfileInput)
+        citySpinner = findViewById(R.id.cityEditProfileSpinner)
+        codeSpinner = findViewById(R.id.codeEditProfileSpinner)
+        phoneInput = findViewById(R.id.phoneEditProfileInput)
+        codeInput = findViewById(R.id.codeEditProfileInput)
+        codeLayout = findViewById(R.id.codeEditProfileLayout)
+        verifyCodeBtn = findViewById(R.id.verifyCodeEditProfileBtn)
+        resendCodeBtn = findViewById(R.id.resendCodeEditProfileBtn)
+        saveChangesBtn = findViewById(R.id.saveChangesEditProfileBtn)
         setAdapter(
             arrayListOf(*resources.getStringArray(R.array.choice_cites)),
-            citySpinnerEditProfileSpinner,
+            citySpinner,
             this
         )
-        editProfileEditProfileBtn.setOnClickListener(this)
-        logOutEditProfileBtn.setOnClickListener(this)
+        setAdapter(
+            arrayListOf(*resources.getStringArray(R.array.countryCode)),
+            codeSpinner,
+            this
+        )
+        saveChangesBtn.setOnClickListener(this)
     }
 
     private fun createPanels() {
@@ -107,22 +113,25 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.editProfileEditProfileBtn -> editProfilePresenter.saveData(
-                nameEditProfileInput.text.toString().trim(),
-                surnameEditProfileInput.text.toString().trim(),
-                citySpinnerEditProfileSpinner.selectedItem.toString(),
-                phoneEditProfileInput.text.toString().trim()
-            )
-            R.id.logOutEditProfileBtn -> logOut()
+            R.id.saveChangesEditProfileBtn -> {
+                val phoneNumber = codeSpinner.text.toString() + phoneInput.text.toString().trim()
+
+                editProfilePresenter.saveData(
+                    nameInput.text.toString().trim(),
+                    surnameInput.text.toString().trim(),
+                    citySpinner.text.toString(),
+                    phoneNumber
+                )
+            }
         }
     }
 
     override fun disableEditProfileEditButton() {
-        editProfileEditProfileBtn.isEnabled = false
+        saveChangesBtn.isEnabled = false
     }
 
     override fun enableEditProfileEditButton() {
-        editProfileEditProfileBtn.isEnabled = true
+        saveChangesBtn.isEnabled = true
     }
 
     override fun showNoSelectedCity() {
@@ -130,31 +139,35 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     }
 
     override fun showPhoneError(error: String) {
-        phoneEditProfileInput.error = error
-        phoneEditProfileInput.requestFocus()
+        phoneInput.error = error
+        phoneInput.requestFocus()
     }
 
     override fun showEditProfile(user: User) {
-        nameEditProfileInput.text = user.name
-        surnameEditProfileInput.text = user.surname
-        phoneEditProfileInput.text = user.phone
+        nameInput.setText(user.name)
+        surnameInput.setText(user.surname)
+        phoneInput.setText(user.phone.substring(2))
         showAvatar(user.photoLink)
-        setSpinnerSelection(citySpinnerEditProfileSpinner, user.city)
+
+        citySpinner.setText(user.city)
+        (citySpinner.adapter as ArrayAdapter<String>).filter.filter("")
+        codeSpinner.setText(user.phone.substring(0, 2))
+        (codeSpinner.adapter as ArrayAdapter<String>).filter.filter("")
     }
 
     override fun setNameEditProfileInputError(error: String) {
-        nameEditProfileInput.error = error
-        nameEditProfileInput.requestFocus()
+        nameInput.error = error
+        nameInput.requestFocus()
     }
 
     override fun setSurnameEditProfileInputError(error: String) {
-        surnameEditProfileInput.error = error
-        surnameEditProfileInput.requestFocus()
+        surnameInput.error = error
+        surnameInput.requestFocus()
     }
 
     override fun setPhoneEditProfileInputError(error: String) {
-        phoneEditProfileInput.error = error
-        phoneEditProfileInput.requestFocus()
+        phoneInput.error = error
+        phoneInput.requestFocus()
     }
 
     override fun showAvatar(photoLink: String) {
@@ -165,7 +178,7 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
             .resize(width, height)
             .centerCrop()
             .transform(CircularTransformation())
-            .into(avatarEditProfileImage)
+            .into(avatarImage)
     }
 
     override fun goToProfile(user: User) {
@@ -176,40 +189,38 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     }
 
     override fun showCode() {
-        codeEditProfileInput.visibility = View.VISIBLE
+        codeLayout.visibility = View.VISIBLE
     }
 
     override fun hideCode() {
-        codeEditProfileInput.visibility = View.GONE
+        codeLayout.visibility = View.GONE
     }
 
     override fun showVerifyCode() {
-        verifyCodeEditProfileBtn.visibility = View.VISIBLE
+        verifyCodeBtn.visibility = View.VISIBLE
     }
 
     override fun hideVerifyCode() {
-        verifyCodeEditProfileBtn.visibility = View.GONE
+        verifyCodeBtn.visibility = View.GONE
     }
 
     override fun showResentCode() {
-        resendCodeEditProfileBtn.visibility = View.VISIBLE
+        resendCodeBtn.visibility = View.VISIBLE
     }
 
     override fun hideResentCode() {
-        resendCodeEditProfileBtn.visibility = View.GONE
+        resendCodeBtn.visibility = View.GONE
     }
 
-    fun setSpinnerSelection(spinner: Spinner, selectedValue: String) {
-        var position =
-            (spinner.adapter as ArrayAdapter<String>).getPosition(selectedValue)
+    private fun setSpinnerSelection(spinner: AutoCompleteTextView, selectedValue: String) {
+        var position = (spinner.adapter as ArrayAdapter<String>).getPosition(selectedValue)
         if (position == -1) {
             position = 0
         }
-        spinner.setSelection(position)
+        spinner.listSelection = position
     }
 
     fun logOut() {
-
         val tokenRef = FirebaseDatabase
             .getInstance()
             .getReference(User.USERS)

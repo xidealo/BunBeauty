@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/allPages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundLightBlue"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity">
 
     <include layout="@layout/part_top_panel" />
@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/editProfileEditProfileBtn"
+        app:layout_constraintBottom_toTopOf="@+id/saveChangesEditProfileBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topPanelLayout">
@@ -24,126 +24,111 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <!-- Топ бар -->
             <LinearLayout
-                style="@style/block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/block_text"
+                style="@style/wideHorizontalBlock"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="5dp">
+                android:padding="10dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="5dp">
-
-                    <ImageView
-                        android:id="@+id/avatarEditProfileImage"
-                        android:layout_width="@dimen/photo_width"
-                        android:layout_height="@dimen/photo_height"
-                        android:layout_gravity="center"
-                        tools:srcCompat="@tools:sample/avatars" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_weight="1.5">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/logOutEditProfileBtn"
-                        style="@style/smallButton"
-                        android:text="@string/logOut" />
-                </LinearLayout>
+                <ImageView
+                    android:id="@+id/avatarEditProfileImage"
+                    style="@style/profileAvatar"
+                    tools:srcCompat="@tools:sample/avatars" />
             </LinearLayout>
 
-            <LinearLayout style="@style/block">
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/materialInputLayout"
+                android:hint="Имя"
+                app:startIconDrawable="@drawable/icon_profile">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/nameEditProfileInput"
-                    style="@style/mainBlockText"
-                    android:hint="@string/nameAddServiceTB" />
-            </LinearLayout>
+                    style="@style/materialInput" />
 
-            <LinearLayout style="@style/block">
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <EditText
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/materialInputLayout"
+                android:hint="Фамилия"
+                app:startIconDrawable="@drawable/icon_profile">
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/surnameEditProfileInput"
-                    style="@style/mainBlockText"
-                    android:hint="@string/surname" />
-            </LinearLayout>
+                    style="@style/materialInput" />
 
-            <LinearLayout style="@style/block">
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    style="@style/mainBlockText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/materialSpinnerLayout"
+                app:startIconDrawable="@drawable/icon_city">
 
-                <Spinner
-                    android:id="@+id/citySpinnerEditProfileSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/white"
-                    android:backgroundTint="@color/mainBlue"
-                    android:entries="@array/choice_cites"
-                    android:popupBackground="@color/mainBlue" />
-            </LinearLayout>
+                <AutoCompleteTextView
+                    android:id="@+id/cityEditProfileSpinner"
+                    style="@style/materialSpinner" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Телефон -->
-            <LinearLayout style="@style/block">
+            <LinearLayout
+                style="@style/wideHorizontalBlock"
+                android:gravity="center">
 
-                <Spinner
-                    android:id="@+id/codeEditProfileSpinner"
-                    style="@style/mainBlockText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:entries="@array/countryCodeForEditService" />
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/materialSpinnerLayout"
+                    android:layout_marginEnd="3dp"
+                    android:layout_weight="1.2"
+                    app:startIconDrawable="@drawable/icon_phone_number">
 
-                <EditText
-                    android:id="@+id/phoneEditProfileInput"
-                    style="@style/mainBlockText"
-                    android:hint="@string/phone"
-                    android:inputType="phone" />
+                    <AutoCompleteTextView
+                        android:id="@+id/codeEditProfileSpinner"
+                        style="@style/materialSpinner" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/materialInputLayout"
+                    android:layout_marginStart="3dp"
+                    android:layout_weight="1"
+                    android:hint="@string/phone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/phoneEditProfileInput"
+                        style="@style/materialInput" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/codeEditProfileInput"
-                style="@style/mainBlockText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:ems="10"
-                android:hint="@string/enterCode"
-                android:inputType="number" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/codeEditProfileLayout"
+                style="@style/materialInputLayout"
+                android:hint="Код"
+                app:startIconDrawable="@drawable/icon_sms_code">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/codeEditProfileInput"
+                    style="@style/materialInput" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/verifyCodeEditProfileBtn"
-                style="@style/mainButton"
-                android:text="@string/verifyCode"
-                />
+                style="@style/smallButton"
+                android:text="@string/verifyCode" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/resendCodeEditProfileBtn"
-                style="@style/mainButton"
-                android:text="@string/resendCode"
-                />
+                style="@style/smallButton"
+                android:text="@string/resendCode" />
         </LinearLayout>
     </ScrollView>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/editProfileEditProfileBtn"
-        style="@style/mainButton"
+        android:id="@+id/saveChangesEditProfileBtn"
+        style="@style/smallButton"
         android:text="@string/saveData"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
     <include layout="@layout/part_bottom_panel" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

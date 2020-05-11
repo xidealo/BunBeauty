@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="mainBlue">#0093B7</color>
+    <color name="mainBlue40">#660093B7</color>
     <color name="darkBlue">#005F89</color>
     <color name="darkBlue40">#66005F89</color>
     <color name="backgroundLightBlue">#D1E1E5</color>
