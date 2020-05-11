@@ -11,9 +11,6 @@ class DialogsUserInteractor(private val userRepository: UserRepository) :
     IDialogsUserInteractor, UsersCallback {
 
     private lateinit var dialogsPresenterCallback: DialogsPresenterCallback
-    private var users = mutableListOf<User>()
-    private var dialogsCount = 0
-    private var currentDialogsCount = 0
 
     override fun getUser(
         dialog: Dialog,
@@ -21,12 +18,6 @@ class DialogsUserInteractor(private val userRepository: UserRepository) :
     ) {
         this.dialogsPresenterCallback = dialogsPresenterCallback
         userRepository.getById(dialog.user.id, this, true)
-    }
-
-    override fun clearCache() {
-        dialogsCount = 0
-        currentDialogsCount = 0
-        users.clear()
     }
 
     override fun returnUsers(users: List<User>) {

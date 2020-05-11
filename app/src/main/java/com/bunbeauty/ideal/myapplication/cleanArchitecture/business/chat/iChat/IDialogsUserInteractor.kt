@@ -5,5 +5,4 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface IDialogsUserInteractor {
     fun getUser(dialog: Dialog, dialogsPresenterCallback: DialogsPresenterCallback)
-    fun clearCache()
 }

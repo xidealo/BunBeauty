@@ -11,7 +11,6 @@ class DialogsMessageInteractor(private val messageRepository: MessageRepository)
     IDialogsMessageInteractor, MessageCallback {
 
     private lateinit var dialogsPresenterCallback: DialogsPresenterCallback
-    private var currentDialogsCount = 0
     private var cacheMyMessages = mutableListOf<Message>()
 
     override fun getLastMessage(
@@ -20,11 +19,6 @@ class DialogsMessageInteractor(private val messageRepository: MessageRepository)
     ) {
         this.dialogsPresenterCallback = dialogsPresenterCallback
         messageRepository.getByIdLastMessage(dialog, this)
-    }
-
-    override fun clearCache() {
-        currentDialogsCount = 0
-        cacheMyMessages.clear()
     }
 
     override fun returnElement(element: Message) {

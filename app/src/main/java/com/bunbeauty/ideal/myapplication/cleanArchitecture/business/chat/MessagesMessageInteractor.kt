@@ -73,6 +73,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     }
 
     override fun returnCreatedCallback(obj: Message) {
+        messagesPresenterCallback.updateCheckedDialog(obj)
         messagesPresenterCallback.showSendMessage(obj)
     }
 

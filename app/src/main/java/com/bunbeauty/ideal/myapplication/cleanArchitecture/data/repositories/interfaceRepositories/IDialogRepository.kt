@@ -9,6 +9,6 @@ interface IDialogRepository {
     fun delete(dialog: Dialog, deleteDialogCallback: DeleteDialogCallback)
     fun update(dialog: Dialog, updateDialogCallback: UpdateDialogCallback)
     fun get(dialogsCallback: DialogsCallback)
-    fun getByUserId(userId: String, dialogsCallback: DialogsCallback)
+    fun getByUserId(userId: String, dialogsCallback: DialogsCallback, dialogCallback: DialogCallback)
     fun getById(dialog: Dialog, dialogCallback: DialogCallback)
 }

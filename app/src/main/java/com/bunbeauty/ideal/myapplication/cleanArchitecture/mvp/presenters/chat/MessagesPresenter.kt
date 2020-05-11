@@ -64,6 +64,10 @@ class MessagesPresenter(
         viewState.moveToStart()
     }
 
+    override fun updateCheckedDialog(message: Message) {
+        messagesDialogInteractor.updateCheckedDialog(message)
+    }
+
     override fun showCompanionUserInfo(fullName: String, photoLink: String) {
         viewState.showCompanionUser(fullName, photoLink)
     }

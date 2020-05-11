@@ -4,10 +4,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DialogsCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class DialogFirebase {
 
@@ -38,7 +35,11 @@ class DialogFirebase {
         dialogRef.updateChildren(items)
     }
 
-    fun getDialogsByUserId(userId: String, dialogsCallback: DialogsCallback) {
+    fun getDialogsByUserId(
+        userId: String,
+        dialogsCallback: DialogsCallback,
+        dialogCallback: DialogCallback
+    ) {
 
         val dialogsRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
@@ -55,7 +56,40 @@ class DialogFirebase {
 
                 dialogsCallback.returnList(dialogs)
 
+                dialogsRef.addChildEventListener(object : ChildEventListener {
+                    override fun onCancelled(p0: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
+                    override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onChildAdded(dialogSnapshot: DataSnapshot, previousId: String?) {
+                        if (dialogs.isNotEmpty()) {
+                            if (previousId == dialogs.last().id) {
+                                val addedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
+                                addedDialog.user.id = userId
+                                dialogs.add(addedDialog)
+                                dialogCallback.returnElement(addedDialog)
+                            }
+                        } else {
+                            val addedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
+                            addedDialog.user.id = userId
+                            dialogs.add(addedDialog)
+                            dialogCallback.returnElement(addedDialog)
+                        }
+                    }
+
+                    override fun onChildRemoved(p0: DataSnapshot) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
             }
 
             override fun onCancelled(error: DatabaseError) {

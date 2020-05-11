@@ -8,6 +8,4 @@ interface IDialogsMessageInteractor {
         dialog: Dialog,
         dialogsPresenterCallback: DialogsPresenterCallback
     )
-
-    fun clearCache()
 }

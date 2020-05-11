@@ -21,11 +21,10 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
 
     override fun getDialogs(dialogsPresenterCallback: DialogsPresenterCallback) {
         this.dialogsPresenterCallback = dialogsPresenterCallback
-        dialogRepository.getByUserId(User.getMyId(), this)
+        dialogRepository.getByUserId(User.getMyId(), this, this)
     }
 
     override fun returnList(objects: List<Dialog>) {
-
         if (objects.isEmpty()) {
             dialogsPresenterCallback.showEmptyDialogs()
             dialogsPresenterCallback.hideLoading()
@@ -47,7 +46,6 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
         var companionDialog = Dialog()
 
         val dialogWithUserId = myCacheDialogs.find { it.user.id == user.id }
-
         if (dialogWithUserId != null) {
             dialogWithUserId.user = user
             companionDialog = Dialog(
@@ -65,6 +63,7 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
     override fun returnElement(element: Dialog) {
         if (element.ownerId == User.getMyId()) {
             myCacheDialogs.add(element)
+            dialogsPresenterCallback.getUser(element)
         } else {
             companionsCacheDialogs.add(element)
         }

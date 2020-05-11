@@ -58,10 +58,14 @@ class DialogRepository(
         this.dialogsCallback = dialogsCallback
     }
 
-    override fun getByUserId(userId: String, dialogsCallback: DialogsCallback) {
+    override fun getByUserId(
+        userId: String,
+        dialogsCallback: DialogsCallback,
+        dialogCallback: DialogCallback
+    ) {
         this.dialogsCallback = dialogsCallback
         launch {
-            dialogFirebase.getDialogsByUserId(userId, dialogsCallback)
+            dialogFirebase.getDialogsByUserId(userId, dialogsCallback, dialogCallback)
         }
     }
 
