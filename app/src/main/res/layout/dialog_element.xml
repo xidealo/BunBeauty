@@ -65,5 +65,15 @@
             android:gravity="center"
             android:text="time" />
 
+        <TextView
+            android:id="@+id/isCheckedDialogElementText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:textColor="@color/darkBlue"
+            android:text="*" />
+
     </LinearLayout>
 </LinearLayout>

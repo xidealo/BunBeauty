@@ -43,7 +43,7 @@ class MessagesPresenter(
         val message = Message()
         message.message = messageText
         message.dialogId = messagesDialogInteractor.getCompanionDialog().id
-        message.userId = messagesDialogInteractor.getCompanionDialog().ownerId
+        message.userId = messagesDialogInteractor.getMyDialog().ownerId
         messagesMessageInteractor.sendMessage(message, this)
     }
 

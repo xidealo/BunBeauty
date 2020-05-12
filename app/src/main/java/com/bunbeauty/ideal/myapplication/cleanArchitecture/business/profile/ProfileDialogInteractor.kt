@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DialogCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DialogsCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.InsertDialogCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
@@ -9,7 +10,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IDialogRepository
 
 class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
-    IProfileDialogInteractor, InsertDialogCallback, DialogsCallback {
+    IProfileDialogInteractor, InsertDialogCallback, DialogsCallback, DialogCallback {
 
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
     private lateinit var ownerProfile: User
@@ -23,7 +24,7 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
         this.profilePresenterCallback = profilePresenterCallback
         this.ownerProfile = ownerProfile
         this.userId = userId
-        dialogRepository.getByUserId(userId, this)
+        dialogRepository.getByUserId(userId, this, this)
     }
 
     override fun returnList(objects: List<Dialog>) {
@@ -60,5 +61,9 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
         newDialog.ownerId = ownerProfile.id
         newDialog.isChecked = true
         return newDialog
+    }
+
+    override fun returnElement(element: Dialog) {
+
     }
 }

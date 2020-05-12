@@ -64,10 +64,8 @@ class DialogFirebase {
                     override fun onChildMoved(p0: DataSnapshot, p1: String?) {
                         TODO("Not yet implemented")
                     }
-
-                    override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-                        TODO("Not yet implemented")
-                    }
+                    //прислать коллбэк апдейта?
+                    override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
 
                     override fun onChildAdded(dialogSnapshot: DataSnapshot, previousId: String?) {
                         if (dialogs.isNotEmpty()) {

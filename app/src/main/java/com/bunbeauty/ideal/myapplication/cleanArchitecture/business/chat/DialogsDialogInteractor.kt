@@ -54,6 +54,7 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
             )
         }
         getCompanionDialog(companionDialog)
+        dialogsPresenterCallback.showDialogs(finalCacheDialogs)
     }
 
     private fun getCompanionDialog(dialog: Dialog) {

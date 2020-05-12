@@ -17,6 +17,10 @@ class MessagesDialogInteractor(
 
     override fun getMyDialog(): Dialog {
         cacheDialog = intent.getSerializableExtra(Dialog.DIALOG) as Dialog
+        if (!cacheDialog.isChecked) {
+            dialogRepository.update(cacheDialog, this)
+        }
+        cacheDialog.isChecked = true
         return cacheDialog
     }
 

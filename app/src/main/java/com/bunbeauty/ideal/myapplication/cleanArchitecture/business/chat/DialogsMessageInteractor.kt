@@ -26,9 +26,8 @@ class DialogsMessageInteractor(private val messageRepository: MessageRepository)
         val foundMessage = cacheMyMessages.find { it.dialogId == element.dialogId }
 
         if (foundMessage == null) {
-            if (element.id.isNotEmpty()) {
-                cacheMyMessages.add(element)
-            }
+            cacheMyMessages.add(element)
+            dialogsPresenterCallback.fillDialogsByMessages(element)
         } else {
             if (foundMessage.time < element.time) {
                 cacheMyMessages.remove(foundMessage)

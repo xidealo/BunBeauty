@@ -25,6 +25,7 @@ class DialogElement(
     private lateinit var nameDialogElementText: TextView
     private lateinit var lastMessageDialogElementText: TextView
     private lateinit var messageTimeDialogElementText: TextView
+    private lateinit var isCheckedDialogElementText: TextView
     private lateinit var dialogElementLayout: LinearLayout
     private lateinit var dialog: Dialog
 
@@ -39,6 +40,7 @@ class DialogElement(
         nameDialogElementText = view.findViewById(R.id.nameDialogElementText)
         lastMessageDialogElementText = view.findViewById(R.id.lastMessageDialogElementText)
         messageTimeDialogElementText = view.findViewById(R.id.messageTimeDialogElementText)
+        isCheckedDialogElementText = view.findViewById(R.id.isCheckedDialogElementText)
         dialogElementLayout = view.findViewById(R.id.dialogElementLayout)
         dialogElementLayout.setOnClickListener(this)
     }
@@ -49,6 +51,12 @@ class DialogElement(
         lastMessageDialogElementText.text = WorkWithStringsApi.cutString(dialog.lastMessage.message, 23)
         messageTimeDialogElementText.text =
             WorkWithTimeApi.getDateInFormatYMDHMS(Date(dialog.lastMessage.time)).substring(11, 16)
+
+        if(!dialog.isChecked){
+            isCheckedDialogElementText.visibility = View.VISIBLE
+        }else{
+            isCheckedDialogElementText.visibility = View.GONE
+        }
     }
 
     private fun showAvatar(user: User) {
@@ -66,7 +74,7 @@ class DialogElement(
 
     private fun goToDialog() {
         val intent = Intent(context, MessagesActivity::class.java)
-        intent.putExtra(Dialog.COMPANION_DIALOG, dialog)
+        intent.putExtra(Dialog.DIALOG, dialog)
         intent.putExtra(User.USER, dialog.user)
 
         val myDialog = Dialog()
@@ -74,7 +82,7 @@ class DialogElement(
         myDialog.user.id = dialog.ownerId
         myDialog.id = dialog.id
 
-        intent.putExtra(Dialog.DIALOG, myDialog)
+        intent.putExtra(Dialog.COMPANION_DIALOG, myDialog)
         context.startActivity(intent)
     }
 
