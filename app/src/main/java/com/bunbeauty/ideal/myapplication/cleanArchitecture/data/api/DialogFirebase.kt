@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DialogCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DialogChangedCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.dialog.DialogsCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -31,13 +32,13 @@ class DialogFirebase {
         val items = HashMap<String, Any>()
         items[Dialog.IS_CHECKED] = dialog.isChecked
         items[Dialog.COMPANION_ID] = dialog.user.id
-        items[Dialog.MESSAGE_ID] = dialog.lastMessage.id
         dialogRef.updateChildren(items)
     }
 
     fun getDialogsByUserId(
         userId: String,
         dialogsCallback: DialogsCallback,
+        dialogChangedCallback: DialogChangedCallback,
         dialogCallback: DialogCallback
     ) {
 
@@ -58,14 +59,18 @@ class DialogFirebase {
 
                 dialogsRef.addChildEventListener(object : ChildEventListener {
                     override fun onCancelled(p0: DatabaseError) {
-                        TODO("Not yet implemented")
+
                     }
 
                     override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-                        TODO("Not yet implemented")
+
                     }
-                    //прислать коллбэк апдейта?
-                    override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
+
+                    override fun onChildChanged(dialogSnapshot: DataSnapshot, p1: String?) {
+                        val changedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
+                        changedDialog.user.id = userId
+                        dialogChangedCallback.returnChanged(changedDialog)
+                    }
 
                     override fun onChildAdded(dialogSnapshot: DataSnapshot, previousId: String?) {
                         if (dialogs.isNotEmpty()) {
@@ -84,7 +89,6 @@ class DialogFirebase {
                     }
 
                     override fun onChildRemoved(p0: DataSnapshot) {
-                        TODO("Not yet implemented")
                     }
 
                 })

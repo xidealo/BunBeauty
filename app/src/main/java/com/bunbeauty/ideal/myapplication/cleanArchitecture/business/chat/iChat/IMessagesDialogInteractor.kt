@@ -6,5 +6,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface IMessagesDialogInteractor {
     fun getMyDialog(): Dialog
     fun getCompanionDialog(): Dialog
-    fun updateCheckedDialog(message: Message)
+    fun updateUncheckedDialog(message: Message)
+    fun updateCheckedDialog()
+    fun setUnchecked()
 }

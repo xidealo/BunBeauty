@@ -64,8 +64,16 @@ class MessagesPresenter(
         viewState.moveToStart()
     }
 
-    override fun updateCheckedDialog(message: Message) {
-        messagesDialogInteractor.updateCheckedDialog(message)
+    override fun setUnchecked() {
+        messagesDialogInteractor.setUnchecked()
+    }
+
+    override fun updateUncheckedDialog(message: Message) {
+        messagesDialogInteractor.updateUncheckedDialog(message)
+    }
+
+    fun updateCheckedDialog(){
+        messagesDialogInteractor.updateCheckedDialog()
     }
 
     override fun showCompanionUserInfo(fullName: String, photoLink: String) {

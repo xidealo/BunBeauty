@@ -69,11 +69,12 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
 
     override fun returnElement(element: Message) {
         cacheMessages.add(element)
+        messagesPresenterCallback.setUnchecked()
         checkMoveToStart(cacheMessages, messagesPresenterCallback)
     }
 
     override fun returnCreatedCallback(obj: Message) {
-        messagesPresenterCallback.updateCheckedDialog(obj)
+        messagesPresenterCallback.updateUncheckedDialog(obj)
         messagesPresenterCallback.showSendMessage(obj)
     }
 

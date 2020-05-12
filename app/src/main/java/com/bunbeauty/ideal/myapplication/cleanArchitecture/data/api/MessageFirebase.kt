@@ -101,7 +101,7 @@ class MessageFirebase {
             .child(dialog.id)
             .child(Message.MESSAGES).orderByChild(Message.TIME).limitToLast(1)
 
-        messageRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        messageRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(messagesSnapshot: DataSnapshot) {
                 var message = Message()
                 if (messagesSnapshot.childrenCount > 0) {

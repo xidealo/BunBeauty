@@ -17,10 +17,6 @@ class MessagesDialogInteractor(
 
     override fun getMyDialog(): Dialog {
         cacheDialog = intent.getSerializableExtra(Dialog.DIALOG) as Dialog
-        if (!cacheDialog.isChecked) {
-            dialogRepository.update(cacheDialog, this)
-        }
-        cacheDialog.isChecked = true
         return cacheDialog
     }
 
@@ -29,9 +25,20 @@ class MessagesDialogInteractor(
         return cacheCompanionDialog
     }
 
-    override fun updateCheckedDialog(message: Message) {
+    override fun updateUncheckedDialog(message: Message) {
         cacheCompanionDialog.isChecked = false
         dialogRepository.update(cacheCompanionDialog, this)
+    }
+
+    override fun updateCheckedDialog() {
+        if (!cacheDialog.isChecked) {
+            cacheDialog.isChecked = true
+            dialogRepository.update(cacheDialog, this)
+        }
+    }
+
+    override fun setUnchecked() {
+        cacheDialog.isChecked = false
     }
 
     override fun returnUpdatedCallback(obj: Dialog) {

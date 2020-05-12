@@ -9,9 +9,11 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.MessageAdapter.MessageViewHolder
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.MessageElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
 
 class MessageAdapter(
-    private val messageList: List<Message>
+    private val messageList: List<Message>,
+    private val messagesPresenter: MessagesPresenter
 ) : RecyclerView.Adapter<MessageViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MessageViewHolder {
@@ -36,10 +38,9 @@ class MessageAdapter(
     inner class MessageViewHolder(private val view: View) :
         ViewHolder(view) {
         fun bind(message: Message) {
-            val dialogElement = MessageElement(view)
+            val dialogElement = MessageElement(view, messagesPresenter)
             dialogElement.createElement(message)
         }
     }
-
 
 }

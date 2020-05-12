@@ -21,9 +21,6 @@ class DialogsPresenter(
 
     fun getDialogs() {
         viewState.showLoading()
-        /*  dialogsDialogInteractor.clearCache()
-          dialogsUserInteractor.clearCache()
-          dialogsMessageInteractor.clearCache()*/
         dialogsDialogInteractor.getDialogs(this)
     }
 

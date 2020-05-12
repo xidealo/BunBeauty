@@ -7,12 +7,14 @@ import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
 import java.util.*
 
 
 class MessageElement(
-    private val view: View
+    private val view: View,
+    private val messagesPresenter: MessagesPresenter
 ) {
     private lateinit var message: Message
     private lateinit var messageTextMessageElementText: TextView
@@ -40,6 +42,7 @@ class MessageElement(
             mainLayoutMessageElementLayout.gravity = Gravity.END
         } else {
             mainLayoutMessageElementLayout.gravity = Gravity.START
+            messagesPresenter.updateCheckedDialog()
         }
     }
 }

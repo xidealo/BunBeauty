@@ -31,7 +31,6 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.set
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import javax.inject.Inject
 
-
 class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.OnClickListener {
 
     private lateinit var loadingMessagesProgressBar: ProgressBar
@@ -85,7 +84,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
 
         val linearLayoutManager = LinearLayoutManager(this)
         resultsMessagesRecycleView.layoutManager = linearLayoutManager
-        messageAdapter = MessageAdapter(messagePresenter.getMessagesLink())
+        messageAdapter = MessageAdapter(messagePresenter.getMessagesLink(), messagePresenter)
         resultsMessagesRecycleView.adapter = messageAdapter
 
         setEventListener(
