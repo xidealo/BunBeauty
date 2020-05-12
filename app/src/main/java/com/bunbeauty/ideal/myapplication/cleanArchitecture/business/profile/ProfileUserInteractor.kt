@@ -22,7 +22,16 @@ class ProfileUserInteractor(
     override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
         this.profilePresenterCallback = profilePresenterCallback
         if (intent.hasExtra(User.USER)) {
-            returnUsers(listOf(intent.getSerializableExtra(User.USER) as User))
+            val user = intent.getSerializableExtra(User.USER) as User
+            if (user.id.isNotEmpty()) {
+                returnUsers(listOf(user))
+            } else {
+                userRepository.getById(
+                    User.getMyId(),
+                    this,
+                    true
+                )
+            }
         } else {
             userRepository.getById(
                 User.getMyId(),
@@ -93,7 +102,6 @@ class ProfileUserInteractor(
     }
 
     override fun updateBottomPanel(profilePresenterCallback: ProfilePresenterCallback) {
-
         if (currentUser == null) {
             return
         }

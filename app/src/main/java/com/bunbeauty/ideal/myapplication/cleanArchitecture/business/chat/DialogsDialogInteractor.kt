@@ -84,7 +84,7 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
             dialogWithMessageId.lastMessage = message
         }
 
-        if (dialogCount == myCacheDialogs.size + companionsCacheDialogs.size) {
+        if (dialogCount >= myCacheDialogs.size + companionsCacheDialogs.size) {
             if(companionsCacheDialogs.size != 0){
                 finalCacheDialogs.clear()
                 finalCacheDialogs.addAll(myCacheDialogs.sortedByDescending { it.lastMessage.time })

@@ -70,10 +70,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="5"
-            android:textSize="20sp"
+            android:textSize="10sp"
             android:gravity="center"
+            android:fontFamily="@font/font_awesome_solid"
             android:textColor="@color/darkBlue"
-            android:text="*" />
+            android:text="" />
 
     </LinearLayout>
 </LinearLayout>

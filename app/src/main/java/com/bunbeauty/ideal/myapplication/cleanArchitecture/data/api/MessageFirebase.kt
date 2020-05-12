@@ -56,7 +56,7 @@ class MessageFirebase {
                     }
 
                     override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-                        TODO("Not yet implemented")
+
                     }
 
                     override fun onChildChanged(p0: DataSnapshot, p1: String?) {
@@ -82,7 +82,7 @@ class MessageFirebase {
                     }
 
                     override fun onChildRemoved(p0: DataSnapshot) {
-                        TODO("Not yet implemented")
+
                     }
                 })
             }

@@ -78,5 +78,4 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messagesPresenterCallback.showSendMessage(obj)
     }
 
-
 }
