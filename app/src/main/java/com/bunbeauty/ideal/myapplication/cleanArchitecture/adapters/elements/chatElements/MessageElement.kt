@@ -8,7 +8,7 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import java.util.*
 
 

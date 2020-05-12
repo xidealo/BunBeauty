@@ -7,7 +7,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 
 public class NotificationOrder extends NotificationConstructor {

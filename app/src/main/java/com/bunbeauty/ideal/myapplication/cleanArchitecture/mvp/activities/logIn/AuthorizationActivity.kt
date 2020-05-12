@@ -17,8 +17,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.AuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.AuthorizationView
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
-import com.bunbeauty.ideal.myapplication.logIn.CountryCodes
+import com.bunbeauty.ideal.myapplication.other.CountryCodes
 import javax.inject.Inject
 
 
@@ -139,7 +138,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
     }
 
     override fun hideKeyboard() {
-        WorkWithViewApi.hideKeyboard(this)
+        //WorkWithViewApi.hideKeyboard(this)
     }
 
     override fun disableButton() {

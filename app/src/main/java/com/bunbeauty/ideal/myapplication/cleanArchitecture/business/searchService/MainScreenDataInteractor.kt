@@ -8,7 +8,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap

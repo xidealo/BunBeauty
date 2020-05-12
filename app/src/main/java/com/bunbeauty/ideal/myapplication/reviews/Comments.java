@@ -20,12 +20,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Comment;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User;
-import com.bunbeauty.ideal.myapplication.helpApi.ListeningManager;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingCommentsData;
-import com.bunbeauty.ideal.myapplication.helpApi.LoadingUserElementData;
-import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithLocalStorageApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -203,7 +200,6 @@ public class Comments extends AppCompatActivity {
                                         }
                                     });
 
-                                    ListeningManager.addToListenerList(new FBListener(reviewRef, reviewListener));
                                 }
 
                                 @Override
@@ -225,7 +221,6 @@ public class Comments extends AppCompatActivity {
                                 }
                             });
 
-                            ListeningManager.addToListenerList(new FBListener(ordersRef, ordersListener));
                         }
 
                         @Override
@@ -247,7 +242,6 @@ public class Comments extends AppCompatActivity {
                         }
                     });
 
-                    ListeningManager.addToListenerList(new FBListener(workingTimesRef, workingTimesListener));
                 }
             }
 
@@ -268,7 +262,6 @@ public class Comments extends AppCompatActivity {
             }
         });
 
-        ListeningManager.addToListenerList(new FBListener(workingDaysRef, workingDaysListener));
     }
 
     private void getCommentsForService(String _serviceId) {
@@ -529,7 +522,6 @@ public class Comments extends AppCompatActivity {
                             }
                         });
 
-                        ListeningManager.addToListenerList(new FBListener(reviewRef, reviewListener));
                     }
 
                     @Override
@@ -556,7 +548,6 @@ public class Comments extends AppCompatActivity {
             }
         });
 
-        ListeningManager.addToListenerList(new FBListener(orderRef, orderListener));
     }
 
     private void getCommentsForUser(String _userId) {
@@ -650,7 +641,6 @@ public class Comments extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                 comment.setUserName(String.valueOf(userSnapshot.child(User.NAME).getValue()));
-                LoadingUserElementData.loadUserNameAndPhoto(userSnapshot, database);
                 commentList.add(comment);
                 if (countOfRates == currentCountOfReview) {
                   /*  commentAdapter = new CommentAdapter(commentList.size(), commentList);
@@ -674,13 +664,5 @@ public class Comments extends AppCompatActivity {
         withoutRatingText.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerCommentsLayout);
-        panelBuilder.buildHeader(manager, "Отзывы", R.id.headerCommentsLayout);
-
-    }
 
 }

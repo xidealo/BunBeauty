@@ -1,7 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business
 
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
-
 class FiguringServicePoints {
      fun figureCreationDatePoints(creationDate: String, coefficient: Float): Float {
             val creationDatePoints: Float

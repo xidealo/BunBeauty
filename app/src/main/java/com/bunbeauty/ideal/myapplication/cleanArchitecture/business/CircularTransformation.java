@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.helpApi;
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;

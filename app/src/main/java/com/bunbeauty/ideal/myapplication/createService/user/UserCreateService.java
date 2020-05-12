@@ -4,8 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithLocalStorageApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.fragments;
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -74,7 +74,7 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.tagsBtn:
                 showTags();
-                WorkWithViewApi.INSTANCE.hideKeyboard(Objects.requireNonNull(getActivity()));
+                //WorkWithViewApi.hideKeyboard(Objects.requireNonNull(getActivity()));
                 break;
             case R.id.minimizeTagsBtn:
                 hideTags();

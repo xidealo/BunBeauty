@@ -9,6 +9,7 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
@@ -16,7 +17,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.RegistrationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.RegistrationView
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import javax.inject.Inject
 

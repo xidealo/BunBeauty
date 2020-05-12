@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
 import com.google.android.material.appbar.MaterialToolbar
 import com.squareup.picasso.Picasso
 

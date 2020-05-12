@@ -4,7 +4,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.CheckPremium
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.UpdateServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import java.util.*
 
 class PremiumElementServiceInteractor(val serviceRepository: ServiceRepository) :

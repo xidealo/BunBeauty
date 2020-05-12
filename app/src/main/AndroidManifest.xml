@@ -43,9 +43,6 @@
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneNumberActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity" />
 
-        <service
-            android:name="com.bunbeauty.ideal.myapplication.other.MyService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service android:name="com.bunbeauty.ideal.myapplication.notifications.MyFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />

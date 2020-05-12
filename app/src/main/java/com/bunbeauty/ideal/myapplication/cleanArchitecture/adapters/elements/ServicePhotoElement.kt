@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.fragments
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements
 
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IPhotoEditable
 import com.squareup.picasso.Picasso
 
@@ -93,7 +92,8 @@ class ServicePhotoElement : Fragment(), View.OnClickListener {
             bitmap: Bitmap,
             filePath: String
         ) =
-            ServicePhotoElement().apply {
+            ServicePhotoElement()
+                .apply {
                 arguments = Bundle().apply {
                     putParcelable(BITMAP, bitmap)
                     putString(FILE_PATH, filePath)

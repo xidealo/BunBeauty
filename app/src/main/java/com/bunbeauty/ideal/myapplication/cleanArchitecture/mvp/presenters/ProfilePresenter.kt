@@ -7,7 +7,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iPro
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import java.util.*
 
 @InjectViewState

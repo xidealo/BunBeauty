@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Comment;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithLocalStorageApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.reviews.PickedComment;
 

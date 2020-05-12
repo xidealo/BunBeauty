@@ -20,7 +20,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
-import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.textfield.TextInputEditText

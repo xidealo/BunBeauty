@@ -10,8 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
-import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
 import com.squareup.picasso.Picasso
 
 class TopPanel : Panel() {

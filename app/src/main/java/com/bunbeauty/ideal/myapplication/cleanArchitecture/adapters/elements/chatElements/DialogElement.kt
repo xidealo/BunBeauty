@@ -10,9 +10,9 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
-import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import com.squareup.picasso.Picasso
 import java.util.*
 

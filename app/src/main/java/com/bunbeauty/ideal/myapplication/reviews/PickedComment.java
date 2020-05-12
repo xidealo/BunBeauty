@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithLocalStorageApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 import com.google.firebase.database.DataSnapshot;

@@ -55,7 +55,7 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
             )
         }
         getCompanionDialog(companionDialog)
-        dialogsPresenterCallback.showDialogs(finalCacheDialogs)
+        //dialogsPresenterCallback.showDialogs(finalCacheDialogs)
     }
 
     private fun getCompanionDialog(dialog: Dialog) {
@@ -84,7 +84,7 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
             dialogWithMessageId.lastMessage = message
         }
 
-        if (dialogCount >= myCacheDialogs.size) {
+        if (dialogCount == myCacheDialogs.size + companionsCacheDialogs.size) {
             finalCacheDialogs.clear()
             finalCacheDialogs.addAll(myCacheDialogs.sortedByDescending { it.lastMessage.time })
             dialogsPresenterCallback.showDialogs(finalCacheDialogs)

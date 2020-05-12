@@ -21,15 +21,13 @@ import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.createService.user.UserCreateService;
 import com.bunbeauty.ideal.myapplication.createService.worker.WorkerCreateService;
 import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement;
-import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
-import com.bunbeauty.ideal.myapplication.other.ISwitcher;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
-public class MyTime extends AppCompatActivity implements View.OnClickListener, ISwitcher {
+public class MyTime extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "DBInf";
     private static final String WORKING_DAYS_ID = "working day id";
     private static final String SERVICE_ID = "service id";
@@ -86,9 +84,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         Button saveBtn = findViewById(R.id.saveMyTimeBtn);
 
         FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerMyTimeLayout);
-        panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyTimeLayout);
 
         SwitcherElement switcherElement = new SwitcherElement("1-я половина", "2-я половина");
         FragmentTransaction transaction = manager.beginTransaction();
@@ -515,9 +510,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
         removedHours.clear();
 
         FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerMyTimeLayout);
-        panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyTimeLayout);
     }
 
     private String getUserId() {
@@ -561,16 +553,6 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener, I
                 mainLayout.addView(timeBtns[i][j]);
             }
         }
-    }
-
-    @Override
-    public void firstSwitcherAct() {
-        switchTime(false);
-    }
-
-    @Override
-    public void secondSwitcherAct() {
-        switchTime(true);
     }
 
     private void switchTime(boolean isPm) {

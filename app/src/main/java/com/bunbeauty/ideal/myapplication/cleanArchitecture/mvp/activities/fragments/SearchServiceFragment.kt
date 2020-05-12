@@ -9,6 +9,7 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
@@ -16,7 +17,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.search
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.SearchServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.SearchServiceFragmentView
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi
 import java.util.*
 import javax.inject.Inject
 

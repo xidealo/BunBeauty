@@ -10,7 +10,8 @@ data class Review(
     var review: String = "",
     var rating: String = "",
     var workingTimeId: String = "",
-    var type: String = ""
+    var type: String = "",
+    var time: Long = 0L
 ) {
 
     companion object {

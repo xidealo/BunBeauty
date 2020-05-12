@@ -19,9 +19,8 @@ import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.createService.worker.WorkerCreateService;
-import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithLocalStorageApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -415,9 +414,6 @@ public class MyCalendar extends AppCompatActivity implements View.OnClickListene
         super.onResume();
 
         FragmentManager manager = getSupportFragmentManager();
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerMyCalendarLayout);
-        panelBuilder.buildHeader(manager, "Расписание", R.id.headerMyCalendarLayout);
 
         // проверяем имеется ли у данного пользователя запись на данную услугу
         if (statusUser.equals(WORKER)) {

@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.NonNull;
 import android.util.Log;
 
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithLocalStorageApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

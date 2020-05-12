@@ -14,8 +14,7 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.helpApi.PanelBuilder;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithTimeApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -305,11 +304,6 @@ public class Review extends AppCompatActivity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         FragmentManager manager = getSupportFragmentManager();
-
-        PanelBuilder panelBuilder = new PanelBuilder();
-        panelBuilder.buildFooter(manager, R.id.footerReviewLayout);
-        panelBuilder.buildHeader(manager, "Оценить", R.id.headerReviewLayout);
-
     }
 
     private void updateReviewInLocalStorage(com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Review ratingReview) {

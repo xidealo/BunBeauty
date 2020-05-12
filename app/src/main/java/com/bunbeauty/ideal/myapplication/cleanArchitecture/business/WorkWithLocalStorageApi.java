@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.helpApi;
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business;
 
 import android.content.ContentValues;
 import android.database.Cursor;

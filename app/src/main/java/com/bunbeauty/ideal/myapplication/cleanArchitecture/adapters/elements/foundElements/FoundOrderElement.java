@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithStringsApi;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity;
 
 public class FoundOrderElement implements View.OnClickListener {

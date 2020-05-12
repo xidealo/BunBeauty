@@ -29,7 +29,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile.ServicesFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
-import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton

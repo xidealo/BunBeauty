@@ -13,7 +13,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SubscriptionsPresenter
-import com.bunbeauty.ideal.myapplication.helpApi.CircularTransformation
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
 import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
 
