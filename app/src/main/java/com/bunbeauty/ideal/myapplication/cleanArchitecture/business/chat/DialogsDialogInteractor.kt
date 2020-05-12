@@ -85,9 +85,11 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
         }
 
         if (dialogCount == myCacheDialogs.size + companionsCacheDialogs.size) {
-            finalCacheDialogs.clear()
-            finalCacheDialogs.addAll(myCacheDialogs.sortedByDescending { it.lastMessage.time })
-            dialogsPresenterCallback.showDialogs(finalCacheDialogs)
+            if(companionsCacheDialogs.size != 0){
+                finalCacheDialogs.clear()
+                finalCacheDialogs.addAll(myCacheDialogs.sortedByDescending { it.lastMessage.time })
+                dialogsPresenterCallback.showDialogs(finalCacheDialogs)
+            }
         }
     }
 
