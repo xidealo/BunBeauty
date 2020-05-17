@@ -28,30 +28,40 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <LinearLayout style="@style/block">
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/materialInputLayout"
+                    android:hint="Название"
+                    app:startIconDrawable="@drawable/icon_profile">
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/nameCreationServiceInput"
-                        style="@style/mainBlockText"
-                        android:hint="@string/nameAddServiceTB" />
-                </LinearLayout>
+                        style="@style/materialInput" />
 
-                <LinearLayout style="@style/block">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    <EditText
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/materialInputLayout"
+                    android:hint="Цена"
+                    app:startIconDrawable="@drawable/icon_profile">
+
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/costCreationServiceInput"
-                        style="@style/mainBlockText"
-                        android:hint="@string/cost"
-                        android:inputType="number" />
-                </LinearLayout>
+                        style="@style/materialInput" />
 
-                <LinearLayout style="@style/block">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    <EditText
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/materialInputLayout"
+                    android:hint="Адрес"
+                    app:startIconDrawable="@drawable/icon_profile">
+
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/addressCreationServiceInput"
-                        style="@style/mainBlockText"
-                        android:hint="Адрес" />
-                </LinearLayout>
+                        style="@style/materialInput" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
 
                 <LinearLayout
                     android:id="@+id/categoryCreationServiceLayout"
@@ -59,15 +69,16 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
 
-                <LinearLayout style="@style/block">
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/materialInputLayout"
+                    android:hint="Описание"
+                    app:startIconDrawable="@drawable/icon_profile">
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/descriptionCreationServiceInput"
-                        style="@style/mainBlockText"
-                        android:maxLines="1"
-                        android:hint="Описание"
-                        android:inputType="textCapSentences" />
-                </LinearLayout>
+                        style="@style/materialInput" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
@@ -104,10 +115,6 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical" />
-
-
-
-
 
         </LinearLayout>
 

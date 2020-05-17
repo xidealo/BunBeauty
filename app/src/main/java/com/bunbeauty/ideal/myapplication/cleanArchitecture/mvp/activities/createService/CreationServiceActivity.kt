@@ -13,6 +13,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.ServicePhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
@@ -26,11 +27,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.ServicePhotoElement
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.IOException
-import java.util.*
 import javax.inject.Inject
 
 class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, AddingServiceView,
@@ -47,9 +46,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     override var panelContext: Context = this
     override lateinit var bottomPanel: BottomNavigationView
     override lateinit var topPanel: MaterialToolbar
-
-    //храним ссылки на картинки в хранилище
-    private lateinit var fpathOfImages: ArrayList<String>
 
     private lateinit var categoryElement: CategoryElement
     private lateinit var continueCreationServiceBtn: Button
@@ -92,12 +88,10 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
 
     override fun onResume() {
         super.onResume()
-
         initBottomPanel()
     }
 
     private fun init() {
-        fpathOfImages = ArrayList()
         nameServiceInput = findViewById(R.id.nameCreationServiceInput)
         costAddServiceInput = findViewById(R.id.costCreationServiceInput)
         descriptionServiceInput = findViewById(R.id.descriptionCreationServiceInput)
@@ -125,8 +119,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
                     costAddServiceInput.text.toString().toLongOrNull() ?: 0,
                     categoryElement.category,
                     addressServiceInput.text.toString(),
-                    categoryElement.tagsArray,
-                    fpathOfImages
+                    categoryElement.tagsArray
                 )
             }
             R.id.photoCreationServiceBtn -> choosePhoto()
@@ -150,10 +143,9 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
             data != null && data.data != null
         ) {
             try {
-                //show image on activity
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, data.data)
                 showPhoto(bitmap, data.data!!.toString())
-                fpathOfImages.add(data.data!!.toString())
+                creationServicePresenter.addImageLink(data.data!!.toString())
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -183,7 +175,8 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
             .beginTransaction()
             .remove(servicePhotoElement)
             .commit()
-        fpathOfImages.remove(filePath)
+
+        creationServicePresenter.removeImageLink(filePath)
     }
 
     override fun showCategory() {

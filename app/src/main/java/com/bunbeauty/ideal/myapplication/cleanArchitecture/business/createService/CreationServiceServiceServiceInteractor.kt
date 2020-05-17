@@ -12,23 +12,33 @@ class CreationServiceServiceServiceInteractor(
 
     private lateinit var creationServicePresenterCallback: CreationServicePresenterCallback
 
+    private var imageLinks = mutableListOf<String>()
+
+    fun addImageLink(link: String) {
+        imageLinks.add(link)
+    }
+
+    fun removeImageLink(link: String) {
+        imageLinks.remove(link)
+    }
+
     override fun addService(
         service: Service,
         tags: List<String>,
-        fpathOfImages: List<String>,
         creationServicePresenterCallback: CreationServicePresenterCallback
     ) {
         this.creationServicePresenterCallback = creationServicePresenterCallback
         if (isNameCorrect(service.name) && isAddressCorrect(service.address)
             && isCategoryCorrect(service.category) && isDescriptionCorrect(service.description)
         ) {
+            service.photosPath = imageLinks
             serviceRepository.insert(service, this)
-            //addTags(tags, service)
             //addImages(fpathOfImages, service)
         }
     }
 
     override fun returnCreatedCallback(obj: Service) {
+        creationServicePresenterCallback.addPhotos(obj)
         creationServicePresenterCallback.showServiceCreated(obj)
     }
 

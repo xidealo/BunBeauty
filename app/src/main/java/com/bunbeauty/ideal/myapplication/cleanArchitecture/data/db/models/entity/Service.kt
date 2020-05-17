@@ -29,7 +29,7 @@ import java.io.Serializable
     @Ignore
     var tags: ArrayList<Tag> = ArrayList(),
     @Ignore
-    var photosPath: ArrayList<String> = ArrayList()
+    var photosPath: List<String> = listOf()
 ) : EditableEntity(), Serializable {
 
     companion object {

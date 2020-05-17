@@ -17,7 +17,6 @@ interface ICreationServiceServiceInteractor {
     fun addService(
         service: Service,
         tags: List<String>,
-        fpathOfImages: List<String>,
         creationServicePresenterCallback: CreationServicePresenterCallback
     )
 

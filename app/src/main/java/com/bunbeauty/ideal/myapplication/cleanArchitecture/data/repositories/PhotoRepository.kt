@@ -17,7 +17,7 @@ class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase:
         launch {
             photo.id = getIdForNew(photo.userId, photo.serviceId)
             photoFirebase.insert(photo)
-            photoDao.insert(photo)
+            //photoDao.insert(photo)
         }
     }
 
@@ -33,8 +33,6 @@ class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase:
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getIdForNew(userId: String, serviceId:String): String = photoFirebase.getIdForNew(userId,serviceId)
-
     fun getByServiceId(serviceId: String, serviceOwnerId: String, photoCallback: IPhotoCallback,
                        isFirstEnter: Boolean) {
         this.photoCallback = photoCallback
@@ -49,6 +47,8 @@ class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase:
             photoCallback.returnPhotos(photoList)
         }
     }
+
+    fun getIdForNew(userId: String, serviceId:String): String = photoFirebase.getIdForNew(userId,serviceId)
 
     override fun returnPhotos(photos: List<Photo>) {
         photoCallback.returnPhotos(photos)

@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServiceTagInteractor
@@ -9,7 +10,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationServ
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import java.util.*
 
 @InjectViewState
@@ -26,8 +26,7 @@ class CreationServicePresenter(
         cost: Long,
         category: String,
         address: String,
-        tags: List<String>,
-        fpathOfImages: List<String>
+        tags: List<String>
     ) {
         val service = Service()
         service.name = name
@@ -40,7 +39,15 @@ class CreationServicePresenter(
         service.premiumDate = Service.DEFAULT_PREMIUM_DATE
         service.creationDate = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
         service.userId = User.getMyId()
-        creationServiceServiceInteractor.addService(service, tags, fpathOfImages, this)
+        creationServiceServiceInteractor.addService(service, tags, this)
+    }
+
+    fun addImageLink(link: String) {
+        creationServiceServiceInteractor.addImageLink(link)
+    }
+
+    fun removeImageLink(link: String) {
+        creationServiceServiceInteractor.removeImageLink(link)
     }
 
     override fun showNameInputError(error: String) {
