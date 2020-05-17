@@ -43,7 +43,6 @@
                 android:hint="@string/phoneRegistration"
                 android:inputType="phone" />
         </LinearLayout>
-
     </LinearLayout>
 
 
