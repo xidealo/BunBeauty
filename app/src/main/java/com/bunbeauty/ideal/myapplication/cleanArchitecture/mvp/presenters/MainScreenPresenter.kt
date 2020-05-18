@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -154,5 +153,9 @@ class MainScreenPresenter(
                 break
             }
         }
+    }
+
+    fun getMainScreenDataByName(newText: String?) {
+        mainScreenDataInteractor.getMainScreenDataByName(newText, this)
     }
 }

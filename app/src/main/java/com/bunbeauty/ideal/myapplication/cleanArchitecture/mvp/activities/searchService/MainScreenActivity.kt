@@ -2,12 +2,13 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searc
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -28,14 +29,13 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
+import com.miguelcatalan.materialsearchview.MaterialSearchView
+import kotlinx.android.synthetic.main.part_top_panel.*
 import javax.inject.Inject
 
 class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView,
@@ -46,15 +46,13 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private lateinit var categoryLayout: LinearLayout
     private lateinit var tagsLayout: LinearLayout
     private lateinit var innerLayout: LinearLayout
-    private lateinit var searchLayout: LinearLayout
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
     private lateinit var serviceAdapter: ServiceAdapter
     private lateinit var noResultMainScreenText: TextView
+    private lateinit var searchView: MaterialSearchView
 
     override var panelContext: Activity = this
-
-
 
     @InjectPresenter
     lateinit var mainScreenPresenter: MainScreenPresenter
@@ -94,6 +92,14 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         createSearchPanel()
 
         createMainScreen()
+        setSupportActionBar(topPanel)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_item, menu)
+        val item: MenuItem = menu.findItem(R.id.action_search)
+        searchView.setMenuItem(item)
+        return true
     }
 
     override fun onResume() {
@@ -111,7 +117,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         tagsLayout = findViewById(R.id.tagsMainScreenLayout)
         innerLayout = findViewById(R.id.tagsInnerMainScreenLayout)
         progressBar = findViewById(R.id.progressBarMainScreen)
-        searchLayout = findViewById(R.id.searchMainScreenLayout)
         noResultMainScreenText = findViewById(R.id.noResultMainScreenText)
 
         noResultMainScreenText.visibility = View.GONE
@@ -124,6 +129,33 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
         serviceAdapter = ServiceAdapter(mainScreenPresenter.getMainScreenDataLink())
         recyclerView.adapter = serviceAdapter
+
+        searchView = findViewById(R.id.searchPanelMainScreenSearchView)
+
+        searchView.setOnQueryTextListener(object : MaterialSearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                //Do some magic
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                //Do some magic
+                mainScreenPresenter.getMainScreenDataByName(newText)
+                return false
+            }
+        })
+
+        searchView.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
+            override fun onSearchViewShown() {
+                //Do some magic
+                val k = 21
+            }
+
+            override fun onSearchViewClosed() {
+                //Do some magic
+                val k = 21
+            }
+        })
 
         minimizeTagsBtn.setOnClickListener(this)
         clearTagsBtn.setOnClickListener(this)
@@ -161,11 +193,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     override fun createSearchPanel() {
-        val searchServiceFragment = SearchServiceFragment()
 
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.searchMainScreenLayout, searchServiceFragment)
-        transaction.commit()
     }
 
     override fun actionClick() {
@@ -173,11 +201,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     override fun showSearchPanel() {
-        searchLayout.visibility = View.VISIBLE
     }
 
     override fun hideSearchPanel() {
-        searchLayout.visibility = View.GONE
     }
 
     override fun disableCategoryBtn(button: Button) {

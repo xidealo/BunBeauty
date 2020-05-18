@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comme
 
 import android.os.Bundle
 import com.arellomobile.mvp.MvpAppCompatActivity
-import com.arellomobile.mvp.presenter.InjectPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CommentsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CommentsPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.CommentsView
@@ -19,6 +18,5 @@ class CommentsActivity : MvpAppCompatActivity(), CommentsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
 
 }

@@ -3,12 +3,12 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServi
 import android.content.Intent
 import android.widget.TextView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -232,6 +232,15 @@ class MainScreenDataInteractor(
         }
         selectedCategory = category
         return false
+    }
+
+    fun getMainScreenDataByName(newText: String?,mainScreenPresenterCallback: MainScreenPresenterCallback ) {
+        if(newText != null){
+            this.mainScreenPresenterCallback = mainScreenPresenterCallback
+            cacheMainScreenData.clear()
+            cacheMainScreenData.addAll(constCacheMainScreenData.filter { it.service.name.contains(newText)})
+            mainScreenPresenterCallback.returnMainScreenData(constCacheMainScreenData)
+        }
     }
 
 }

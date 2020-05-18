@@ -35,7 +35,8 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/nameCreationServiceInput"
-                        style="@style/materialInput" />
+                        style="@style/materialInput"
+                        android:inputType="textCapSentences" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -46,6 +47,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/costCreationServiceInput"
+                        android:inputType="number"
                         style="@style/materialInput" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -58,6 +60,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/addressCreationServiceInput"
+                        android:inputType="textCapSentences"
                         style="@style/materialInput" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -76,6 +79,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/descriptionCreationServiceInput"
+                        android:inputType="textCapSentences"
                         style="@style/materialInput" />
 
                 </com.google.android.material.textfield.TextInputLayout>
