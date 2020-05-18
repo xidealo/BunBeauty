@@ -39,7 +39,18 @@ class ServiceFirebase {
     }
 
     fun delete(service: Service) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val serviceRef= FirebaseDatabase.getInstance()
+            .getReference(User.USER)
+            .child(service.userId)
+            .child(Service.SERVICES)
+            .child(service.id)
+
+        val items = HashMap<String, Any>()
+        items[Service.NAME] = service.name
+        items[Service.ADDRESS] = service.address
+        items[Service.DESCRIPTION] = service.description
+        items[Service.COST] = service.cost
+        serviceRef.updateChildren(items)
     }
 
     fun update(service: Service) {

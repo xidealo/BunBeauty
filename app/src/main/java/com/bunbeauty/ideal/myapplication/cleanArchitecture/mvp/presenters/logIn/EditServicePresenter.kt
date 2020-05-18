@@ -32,6 +32,14 @@ class EditServicePresenter(private val editServiceInteractor: EditServiceInterac
         editServiceInteractor.save(service, this)
     }
 
+    fun delete(){
+        val service = editServiceInteractor.cashService
+        editServiceInteractor.delete(service, this)
+    }
+    override fun goToProfile(service: Service){
+        viewState.goToProfile(service)
+    }
+
     override fun nameEditServiceInputError() {
         viewState.enableEditServiceBtn()
         viewState.setNameEditServiceInputError("Допустимы только буквы и тире")

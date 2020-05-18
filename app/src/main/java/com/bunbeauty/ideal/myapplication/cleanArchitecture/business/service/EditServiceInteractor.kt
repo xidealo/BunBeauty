@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service
 
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.service.EditServicePresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.DeleteServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.UpdateServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
@@ -10,7 +11,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.Ser
 class EditServiceInteractor(
     private val intent: Intent,
     private val serviceRepository: ServiceRepository
-) : UpdateServiceCallback {
+) : UpdateServiceCallback, DeleteServiceCallback {
     lateinit var cashService: Service
     private lateinit var editServicePresenterCallback: EditServicePresenterCallback
 
@@ -29,6 +30,17 @@ class EditServiceInteractor(
         if (isNameCorrect(service.name, editServicePresenterCallback)) {
             serviceRepository.update(service, this)
         }
+    }
+
+    fun delete(
+        service: Service,
+        editServicePresenterCallback: EditServicePresenterCallback
+    ) {
+        this.editServicePresenterCallback = editServicePresenterCallback
+        serviceRepository.delete(service, this)
+    }
+    fun returnDeleteCallback(obj: Service){
+        editServicePresenterCallback.goToProfile(cashService)
     }
 
     override fun returnUpdatedCallback(obj: Service) {
@@ -70,5 +82,7 @@ class EditServiceInteractor(
         return true
     }
 
-
+    override fun returnDeletedCallback(obj: Service) {
+        editServicePresenterCallback.goToService(cashService)
+    }
 }

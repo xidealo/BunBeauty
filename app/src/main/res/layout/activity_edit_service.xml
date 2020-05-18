@@ -5,7 +5,7 @@
     style="@style/allPages"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditServiceActivity">
 
-    <include layout ="@layout/part_top_panel"/>
+    <include layout="@layout/part_top_panel" />
 
     <ProgressBar
         android:id="@+id/progressEditServiceBar"
@@ -34,17 +34,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-                <LinearLayout style="@style/block">
+            <LinearLayout style="@style/block">
 
-                    <EditText
-                        android:id="@+id/nameEditService"
-                        style="@style/mainBlockText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Имя">
-                    </EditText>
+                <EditText
+                    android:id="@+id/nameEditService"
+                    style="@style/mainBlockText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Имя"/>
 
-                </LinearLayout>
+            </LinearLayout>
 
 
             <LinearLayout style="@style/block">
@@ -86,12 +85,19 @@
         android:id="@+id/saveEditServiceBtn"
         style="@style/mainButton"
         android:text="Сохранить"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomNavigationView"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/bottomNavigationView"/>
+        app:layout_constraintLeft_toLeftOf="parent" />
 
-    <include layout="@layout/part_bottom_panel"/>
+    <Button
+        android:id="@+id/deleteEditServiceBtn"
+        style="@style/mainButton"
+        android:text="Удалить услугу"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomNavigationView"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <include layout="@layout/part_bottom_panel" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

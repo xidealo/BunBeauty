@@ -8,6 +8,7 @@ interface EditServiceView:MvpView{
 
     fun showEditService(service: Service)
     fun goToService(service: Service)
+    fun goToProfile(service: Service)
     fun showLoading()
     fun hideLoading()
 

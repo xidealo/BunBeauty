@@ -104,11 +104,9 @@ class ServiceRepository(
         iServicesCallback.returnServices(serviceList)
     }
 
-
     fun getIdForNew(userId: String): String = serviceFirebase.getIdForNew(userId)
 
     companion object {
         const val TAG = "DBInf"
     }
-
 }

@@ -32,6 +32,7 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     private lateinit var costEditService: TextView
     private lateinit var descriptionEditService: TextView
     private lateinit var saveEditServiceBtn: Button
+    private lateinit var deleteEditServiceBtn: Button
 
     override var panelContext: Context = this
     override lateinit var bottomPanel: BottomNavigationView
@@ -46,7 +47,10 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
 
         descriptionEditService = findViewById(R.id.descriptionEditService)
         saveEditServiceBtn = findViewById(R.id.saveEditServiceBtn)
+        deleteEditServiceBtn = findViewById(R.id.deleteEditServiceBtn)
+
         saveEditServiceBtn.setOnClickListener(this)
+        deleteEditServiceBtn.setOnClickListener(this)
     }
 
     @Inject
@@ -55,7 +59,6 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     @InjectPresenter
     lateinit var editServicePresenter: EditServicePresenter
 
-    //ДОБАВИЛ!
     @ProvidePresenter
     internal fun provideEditServicePresenter(): EditServicePresenter {
         DaggerAppComponent
@@ -99,6 +102,11 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
 
     }
 
+    override fun goToProfile(service: Service) {
+        val intent = Intent()
+        setResult(RESULT_OK, intent)
+        finish()
+    }
 
     override fun showLoading() {
         progressEditServiceBar.visibility = View.VISIBLE
@@ -121,7 +129,6 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         nameEditService.requestFocus()
     }
 
-
     override fun onClick(v: View) {
         when (v.id) {
             R.id.saveEditServiceBtn -> editServicePresenter.save(
@@ -130,11 +137,8 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
                 descriptionEditService.text.toString().trim(),
                 costEditService.text.toString().toLongOrNull() ?: 0
             )
+            R.id.deleteEditServiceBtn->editServicePresenter.delete()
         }
 
     }
-
 }
-
-
-
