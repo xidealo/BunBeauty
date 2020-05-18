@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -34,9 +35,9 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     private lateinit var saveEditServiceBtn: Button
     private lateinit var deleteEditServiceBtn: Button
 
-    override var panelContext: Context = this
-    override lateinit var bottomPanel: BottomNavigationView
-    override lateinit var topPanel: MaterialToolbar
+    override var panelContext: Activity = this
+
+
 
     private fun init() {
         progressEditServiceBar = findViewById(R.id.progressEditServiceBar)

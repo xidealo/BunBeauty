@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces
 
-import android.content.Context
+import android.app.Activity
 
 interface IPanel {
-    var panelContext: Context
+    var panelContext: Activity
 }

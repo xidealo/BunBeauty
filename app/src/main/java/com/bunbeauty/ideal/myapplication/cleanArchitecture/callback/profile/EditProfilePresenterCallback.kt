@@ -11,6 +11,10 @@ interface EditProfilePresenterCallback {
     fun surnameEditProfileInputError()
     fun surnameEditProfileInputErrorEmpty()
     fun surnameEditProfileEditErrorLong()
-    fun cityEditProfileInputError()
     fun phoneEditProfileInputError()
+    fun returnCodeSent()
+    fun showTooManyRequestsError()
+    fun showTooShortCodeError()
+    fun showVerificationFailed()
+    fun showWrongCodeError()
 }

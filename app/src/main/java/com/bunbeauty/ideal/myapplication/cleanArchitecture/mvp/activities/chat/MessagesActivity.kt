@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -39,8 +40,8 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     private lateinit var messageMessagesInput: EditText
     private lateinit var sendMessageMessagesBtn: Button
 
-    override var panelContext: Context = this
-    override lateinit var topPanel: MaterialToolbar
+    override var panelContext: Activity = this
+
 
     @Inject
     lateinit var messageInteractor: MessagesMessageInteractor

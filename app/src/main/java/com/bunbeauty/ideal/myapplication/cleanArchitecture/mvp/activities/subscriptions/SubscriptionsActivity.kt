@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscriptions
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -34,9 +35,8 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
     private lateinit var emptySubscriptionsSubscriptionsText: TextView
     private lateinit var progressBarSubscribers: ProgressBar
 
-    override var panelContext: Context = this
-    override lateinit var bottomPanel: BottomNavigationView
-    override lateinit var topPanel: MaterialToolbar
+    override var panelContext: Activity = this
+
 
     @Inject
     lateinit var subscriptionsSubscriptionInteractor: SubscriptionsSubscriptionInteractor

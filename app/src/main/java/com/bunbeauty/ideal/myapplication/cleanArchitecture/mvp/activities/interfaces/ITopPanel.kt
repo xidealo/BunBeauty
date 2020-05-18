@@ -4,29 +4,25 @@ import android.app.Activity
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.google.android.material.appbar.MaterialToolbar
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.part_top_panel.*
+import kotlinx.android.synthetic.main.part_top_panel.view.*
 
-interface   ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
-
-    var topPanel: MaterialToolbar
+interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
 
     fun initTopPanel(buttonTask: ButtonTask) {
-        topPanel = (panelContext as Activity).findViewById(R.id.topPanelLayout)
-
         configBackIcon()
         configPanel(buttonTask)
     }
 
     fun initTopPanel(title: String, buttonTask: ButtonTask) {
         initTopPanel(buttonTask)
-        val titleText = topPanel.findViewById<TextView>(R.id.titleTopPanelText)
-        titleText.text = title
+
+        panelContext.topPanel.titleTopPanelText.text = title
     }
 
     fun initTopPanel(
@@ -36,17 +32,18 @@ interface   ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
     ) {
         initTopPanel(title, buttonTask)
 
-        val imageView = topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage)
+        val imageView =
+            panelContext.topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage)
         setAvatar(photoLink, imageView)
     }
 
     private fun configBackIcon() {
         if ((panelContext as Activity).isTaskRoot) {
-            topPanel.navigationIcon = null
+            panelContext.topPanel.navigationIcon = null
         } else {
-            topPanel.setNavigationOnClickListener {
-                (panelContext as Activity).onBackPressed()
-                (panelContext as Activity).overridePendingTransition(0, 0)
+            panelContext.topPanel.setNavigationOnClickListener {
+                panelContext.onBackPressed()
+                panelContext.overridePendingTransition(0, 0)
             }
         }
     }
@@ -62,7 +59,7 @@ interface   ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
             }
             ButtonTask.GO_TO_PROFILE -> {
                 hideActionIcon()
-                topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage).setOnClickListener {
+                panelContext.topPanel.avatarTopPanelImage.setOnClickListener {
                     actionClick()
                 }
             }
@@ -76,16 +73,16 @@ interface   ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
     }
 
     private fun hideActionIcon() {
-        topPanel.menu.findItem(R.id.navigation_action).isVisible = false
+        panelContext.topPanel.menu.findItem(R.id.navigation_action).isVisible = false
     }
 
     private fun hideImageView() {
-        topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage).visibility = View.GONE
+        panelContext.topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage).visibility = View.GONE
     }
 
     private fun configActionIcon(iconId: Int) {
-        topPanel.menu.findItem(R.id.navigation_action).icon = panelContext.getDrawable(iconId)
-        topPanel.setOnMenuItemClickListener(this)
+        panelContext.topPanel.menu.findItem(R.id.navigation_action).icon = panelContext.getDrawable(iconId)
+        panelContext.topPanel.setOnMenuItemClickListener(this)
 
         hideImageView()
     }

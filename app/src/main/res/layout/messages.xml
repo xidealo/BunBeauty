@@ -27,7 +27,7 @@
         app:layout_constraintBottom_toTopOf="@+id/footerEditServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/topPanel" />
 
     <LinearLayout
         android:id="@+id/footerEditServiceLayout"

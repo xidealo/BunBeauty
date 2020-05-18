@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -52,9 +53,9 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     private lateinit var premiumElementFragment: PremiumElementFragment
 
-    override var panelContext: Context = this
-    override lateinit var bottomPanel: BottomNavigationView
-    override lateinit var topPanel: MaterialToolbar
+    override var panelContext: Activity = this
+
+
 
     @Inject
     lateinit var serviceInteractor: ServiceInteractor

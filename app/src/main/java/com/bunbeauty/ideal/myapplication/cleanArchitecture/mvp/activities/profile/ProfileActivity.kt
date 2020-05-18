@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -65,9 +66,9 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: CustomViewPager
 
-    override var panelContext: Context = this
-    override lateinit var bottomPanel: BottomNavigationView
-    override lateinit var topPanel: MaterialToolbar
+    override var panelContext: Activity = this
+
+
 
     @Inject
     lateinit var profileUserInteractor: ProfileUserInteractor

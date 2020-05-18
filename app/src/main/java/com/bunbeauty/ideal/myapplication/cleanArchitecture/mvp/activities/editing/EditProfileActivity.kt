@@ -1,10 +1,11 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -21,34 +22,16 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_edit_profile.*
 import javax.inject.Inject
 
+class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, EditProfileView,
+    IAdapterSpinner {
 
-class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, View.OnClickListener,
-    EditProfileView, IAdapterSpinner {
-
-    private lateinit var avatarImage: ImageView
-    private lateinit var nameInput: TextInputEditText
-    private lateinit var surnameInput: TextInputEditText
-    private lateinit var citySpinner: AutoCompleteTextView
-    private lateinit var codeSpinner: AutoCompleteTextView
-    private lateinit var phoneInput: TextInputEditText
-    private lateinit var codeLayout: TextInputLayout
-    private lateinit var codeInput: TextView
-    private lateinit var verifyCodeBtn: Button
-    private lateinit var resendCodeBtn: Button
-    private lateinit var saveChangesBtn: Button
-
-    override var panelContext: Context = this
-    override lateinit var bottomPanel: BottomNavigationView
-    override lateinit var topPanel: MaterialToolbar
+    override var panelContext: Activity = this
 
     @InjectPresenter
     lateinit var editProfilePresenter: EditProfilePresenter
@@ -68,12 +51,12 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
-        init()
+
+        configViews()
+        hideCodeInputAndButtons()
         createPanels()
-        editProfilePresenter.createEditProfileScreen()
-        hideCode()
-        hideResentCode()
-        hideVerifyCode()
+
+        editProfilePresenter.getUser()
     }
 
     override fun onResume() {
@@ -82,92 +65,81 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         initBottomPanel()
     }
 
-    private fun init() {
-        avatarImage = findViewById(R.id.avatarEditProfileImage)
-        nameInput = findViewById(R.id.nameEditProfileInput)
-        surnameInput = findViewById(R.id.surnameEditProfileInput)
-        citySpinner = findViewById(R.id.cityEditProfileSpinner)
-        codeSpinner = findViewById(R.id.codeEditProfileSpinner)
-        phoneInput = findViewById(R.id.phoneEditProfileInput)
-        codeInput = findViewById(R.id.codeEditProfileInput)
-        codeLayout = findViewById(R.id.codeEditProfileLayout)
-        verifyCodeBtn = findViewById(R.id.verifyCodeEditProfileBtn)
-        resendCodeBtn = findViewById(R.id.resendCodeEditProfileBtn)
-        saveChangesBtn = findViewById(R.id.saveChangesEditProfileBtn)
+    private fun configViews() {
         setAdapter(
-            arrayListOf(*resources.getStringArray(R.array.choice_cites)),
-            citySpinner,
+            arrayListOf(*resources.getStringArray(R.array.cities)),
+            cityEditProfileSpinner,
             this
         )
         setAdapter(
             arrayListOf(*resources.getStringArray(R.array.countryCode)),
-            codeSpinner,
+            codeEditProfileSpinner,
             this
         )
-        saveChangesBtn.setOnClickListener(this)
+
+        saveChangesEditProfileBtn.setOnClickListener { saveChanges() }
+        verifyCodeEditProfileBtn.setOnClickListener {
+            editProfilePresenter.verifyCode(codeEditProfileInput.text.toString())
+        }
+        resendCodeEditProfileBtn.setOnClickListener {
+            editProfilePresenter.resendCode(phoneEditProfileInput.text.toString())
+        }
     }
 
     private fun createPanels() {
         initTopPanel("Редактирование профиля", ButtonTask.LOGOUT)
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.saveChangesEditProfileBtn -> {
-                val phoneNumber = codeSpinner.text.toString() + phoneInput.text.toString().trim()
+    override fun showEditProfile(user: User) {
+        nameEditProfileInput.setText(user.name)
+        surnameEditProfileInput.setText(user.surname)
+        phoneEditProfileInput.setText(user.phone.substring(2))
+        showAvatar(user.photoLink)
 
-                editProfilePresenter.saveData(
-                    nameInput.text.toString().trim(),
-                    surnameInput.text.toString().trim(),
-                    citySpinner.text.toString(),
-                    phoneNumber
-                )
-            }
-        }
+        cityEditProfileSpinner.setText(user.city)
+        (cityEditProfileSpinner.adapter as ArrayAdapter<String>).filter.filter("")
+        codeEditProfileSpinner.setText(user.phone.substring(0, 2))
+        (codeEditProfileSpinner.adapter as ArrayAdapter<String>).filter.filter("")
+    }
+
+    private fun saveChanges() {
+        val phoneNumber =
+            codeEditProfileSpinner.text.toString() + phoneEditProfileInput.text.toString().trim()
+
+        editProfilePresenter.saveData(
+            nameEditProfileInput.text.toString().trim(),
+            surnameEditProfileInput.text.toString().trim(),
+            cityEditProfileSpinner.text.toString(),
+            phoneNumber
+        )
     }
 
     override fun disableEditProfileEditButton() {
-        saveChangesBtn.isEnabled = false
+        saveChangesEditProfileBtn.isEnabled = false
     }
 
     override fun enableEditProfileEditButton() {
-        saveChangesBtn.isEnabled = true
-    }
-
-    override fun showNoSelectedCity() {
-        Toast.makeText(this, "Выберите город", Toast.LENGTH_LONG).show()
+        saveChangesEditProfileBtn.isEnabled = true
     }
 
     override fun showPhoneError(error: String) {
-        phoneInput.error = error
-        phoneInput.requestFocus()
-    }
-
-    override fun showEditProfile(user: User) {
-        nameInput.setText(user.name)
-        surnameInput.setText(user.surname)
-        phoneInput.setText(user.phone.substring(2))
-        showAvatar(user.photoLink)
-
-        citySpinner.setText(user.city)
-        (citySpinner.adapter as ArrayAdapter<String>).filter.filter("")
-        codeSpinner.setText(user.phone.substring(0, 2))
-        (codeSpinner.adapter as ArrayAdapter<String>).filter.filter("")
+        phoneEditProfileInput.error = error
+        phoneEditProfileInput.requestFocus()
     }
 
     override fun setNameEditProfileInputError(error: String) {
-        nameInput.error = error
-        nameInput.requestFocus()
+        nameEditProfileInput.error = error
+        nameEditProfileInput.requestFocus()
     }
 
     override fun setSurnameEditProfileInputError(error: String) {
-        surnameInput.error = error
-        surnameInput.requestFocus()
+        surnameEditProfileInput.error = error
+        surnameEditProfileInput.requestFocus()
     }
 
     override fun setPhoneEditProfileInputError(error: String) {
-        phoneInput.error = error
-        phoneInput.requestFocus()
+        phoneEditProfileInput.error = error
+        phoneEditProfileInput.requestFocus()
     }
 
     override fun showAvatar(photoLink: String) {
@@ -178,7 +150,21 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
             .resize(width, height)
             .centerCrop()
             .transform(CircularTransformation())
-            .into(avatarImage)
+            .into(avatarEditProfileImage)
+    }
+
+    override fun showCodeInputAndButtons() {
+        codeEditProfileLayout.visibility = View.VISIBLE
+        verifyCodeEditProfileBtn.visibility = View.VISIBLE
+        resendCodeEditProfileBtn.visibility = View.VISIBLE
+        saveChangesEditProfileBtn.visibility = View.GONE
+    }
+
+    override fun hideCodeInputAndButtons() {
+        codeEditProfileLayout.visibility = View.GONE
+        verifyCodeEditProfileBtn.visibility = View.GONE
+        resendCodeEditProfileBtn.visibility = View.GONE
+        saveChangesEditProfileBtn.visibility = View.VISIBLE
     }
 
     override fun goToProfile(user: User) {
@@ -188,43 +174,11 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         finish()
     }
 
-    override fun showCode() {
-        codeLayout.visibility = View.VISIBLE
-    }
-
-    override fun hideCode() {
-        codeLayout.visibility = View.GONE
-    }
-
-    override fun showVerifyCode() {
-        verifyCodeBtn.visibility = View.VISIBLE
-    }
-
-    override fun hideVerifyCode() {
-        verifyCodeBtn.visibility = View.GONE
-    }
-
-    override fun showResentCode() {
-        resendCodeBtn.visibility = View.VISIBLE
-    }
-
-    override fun hideResentCode() {
-        resendCodeBtn.visibility = View.GONE
-    }
-
-    private fun setSpinnerSelection(spinner: AutoCompleteTextView, selectedValue: String) {
-        var position = (spinner.adapter as ArrayAdapter<String>).getPosition(selectedValue)
-        if (position == -1) {
-            position = 0
-        }
-        spinner.listSelection = position
-    }
-
     override fun actionClick() {
         logOut()
     }
 
-    fun logOut() {
+    private fun logOut() {
         val tokenRef = FirebaseDatabase
             .getInstance()
             .getReference(User.USERS)
@@ -238,5 +192,9 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Vie
         FirebaseAuth.getInstance().signOut()
 
         finish()
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

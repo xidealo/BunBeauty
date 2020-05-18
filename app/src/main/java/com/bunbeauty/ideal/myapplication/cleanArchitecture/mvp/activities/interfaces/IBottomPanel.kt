@@ -1,7 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.view.MenuItem
 import com.android.ideal.myapplication.R
@@ -11,29 +9,26 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.D
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.part_bottom_panel.*
 
 interface IBottomPanel : IPanel, BottomNavigationView.OnNavigationItemSelectedListener {
 
-    var bottomPanel: BottomNavigationView
-
     fun initBottomPanel(selectedItemId: Int = -1) {
-        bottomPanel = (panelContext as Activity).findViewById(R.id.bottomNavigationView)
         updateBottomPanel(selectedItemId)
-        bottomPanel.setOnNavigationItemSelectedListener(this)
+        panelContext.bottomPanel.setOnNavigationItemSelectedListener(this)
     }
 
     fun updateBottomPanel(selectedItemId: Int = -1) {
-        bottomPanel.selectedItemId = selectedItemId
-        bottomPanel.menu.findItem(selectedItemId)?.isEnabled = false
+        panelContext.bottomPanel.selectedItemId = selectedItemId
+        panelContext.bottomPanel.menu.findItem(selectedItemId)?.isEnabled = false
         if (selectedItemId == -1) {
-            bottomPanel.menu.setGroupCheckable(0, false, true);
+            panelContext.bottomPanel.menu.setGroupCheckable(0, false, true);
         }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.navigation_profile -> {
-
                 goToProfile()
             }
             R.id.navigation_main -> {
@@ -51,20 +46,24 @@ interface IBottomPanel : IPanel, BottomNavigationView.OnNavigationItemSelectedLi
     private fun goToProfile() {
         val intent = Intent(panelContext, ProfileActivity::class.java)
         intent.putExtra(User.USER, ProfileUserInteractor.cacheCurrentUser)
-        panelContext.startActivity(intent)
-        (panelContext as Activity).overridePendingTransition(0, 0)
+        startActivity(intent)
     }
 
     fun goToMainScreen() {
         val intent = Intent(panelContext, MainScreenActivity::class.java)
         intent.putExtra(User.USER, ProfileUserInteractor.cacheCurrentUser)
-        panelContext.startActivity(intent)
-        (panelContext as Activity).overridePendingTransition(0, 0)
+        startActivity(intent)
     }
 
     private fun goToDialogs() {
         val intent = Intent(panelContext, DialogsActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun startActivity(intent: Intent) {
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         panelContext.startActivity(intent)
-        (panelContext as Activity).overridePendingTransition(0, 0)
+        panelContext.overridePendingTransition(0, 0)
+        panelContext.finish()
     }
 }

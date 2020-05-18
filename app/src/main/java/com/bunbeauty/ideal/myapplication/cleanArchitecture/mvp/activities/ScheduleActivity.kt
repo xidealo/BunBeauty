@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -40,9 +41,9 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
 
     private var touchId = 0
 
-    override lateinit var topPanel: MaterialToolbar
-    override lateinit var bottomPanel: BottomNavigationView
-    override var panelContext: Context = this
+
+
+    override var panelContext: Activity = this
 
     @Inject
     lateinit var scheduleInteractor: ScheduleInteractor

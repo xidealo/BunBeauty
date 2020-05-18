@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toTopOf="@+id/saveChangesEditProfileBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topPanelLayout">
+        app:layout_constraintTop_toBottomOf="@+id/topPanel">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,7 +76,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/materialSpinnerLayout"
                     android:layout_marginEnd="3dp"
-                    android:layout_weight="1.2"
+                    android:layout_weight="1.4"
                     app:startIconDrawable="@drawable/icon_phone_number">
 
                     <AutoCompleteTextView
@@ -93,7 +93,8 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/phoneEditProfileInput"
-                        style="@style/materialInput" />
+                        style="@style/materialInput"
+                        android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
@@ -105,7 +106,8 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/codeEditProfileInput"
-                    style="@style/materialInput" />
+                    style="@style/materialInput"
+                    android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -116,7 +118,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/resendCodeEditProfileBtn"
-                style="@style/smallButton"
+                style="@style/outlineButton"
                 android:text="@string/resendCode" />
         </LinearLayout>
     </ScrollView>
@@ -125,7 +127,7 @@
         android:id="@+id/saveChangesEditProfileBtn"
         style="@style/smallButton"
         android:text="@string/saveData"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintBottom_toTopOf="@id/bottomPanel"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

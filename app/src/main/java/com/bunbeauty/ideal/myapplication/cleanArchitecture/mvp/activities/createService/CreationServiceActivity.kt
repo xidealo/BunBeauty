@@ -43,9 +43,9 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     private lateinit var premiumLayout: LinearLayout
     private lateinit var mainLayout: LinearLayout
 
-    override var panelContext: Context = this
-    override lateinit var bottomPanel: BottomNavigationView
-    override lateinit var topPanel: MaterialToolbar
+    override var panelContext: Activity = this
+
+
 
     private lateinit var categoryElement: CategoryElement
     private lateinit var continueCreationServiceBtn: Button

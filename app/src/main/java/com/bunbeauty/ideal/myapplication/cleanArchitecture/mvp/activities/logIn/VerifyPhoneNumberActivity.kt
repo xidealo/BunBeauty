@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import com.android.ideal.myapplication.R
@@ -17,8 +16,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.VerifyPhonePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.VerifyPhoneView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
-import com.google.firebase.auth.PhoneAuthProvider
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener,
@@ -41,9 +38,9 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener,
     internal fun provideVerifyPhonePresenter(): VerifyPhonePresenter {
 
         DaggerAppComponent.builder()
-                .appModule(AppModule(application, intent))
-                .build()
-                .inject(this)
+            .appModule(AppModule(application, intent))
+            .build()
+            .inject(this)
         return VerifyPhonePresenter(
             verifyPhoneInteractor
         )
@@ -52,14 +49,14 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_verify_phone_number)
-        initView()
+
+        init()
         showViewsOnScreen()
+
         verifyPhonePresenter.sendCode()
     }
 
-    private fun initView() {
-        Log.d(TAG, "initView VerifyPhoneActivity: ")
-
+    private fun init() {
         verifyCodeBtn = findViewById(R.id.verifyVerifyPhoneBtn)
         resendCodeText = findViewById(R.id.resendCodeVerifyPhoneText)
         alertCodeText = findViewById(R.id.alertCodeVerifyText)
@@ -76,7 +73,7 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener,
     override fun onClick(v: View) {
         WorkWithViewApi.hideKeyboard(this)
         when (v.id) {
-            R.id.verifyVerifyPhoneBtn -> verifyPhonePresenter.verify(codeInput.text.toString())
+            R.id.verifyVerifyPhoneBtn -> verifyPhonePresenter.checkCode(codeInput.text.toString())
             R.id.resendCodeVerifyPhoneText -> verifyPhonePresenter.resendCode()
             R.id.changePhoneVerifyPhoneText -> goBackToAuthorization()
         }
@@ -87,24 +84,17 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener,
         progressBar.visibility = View.VISIBLE
     }
 
-    override fun showViewsOnScreen() {
-        verifyCodeBtn.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     override fun showSendCode() {
-        Toast.makeText(this, "Код был отправлен", Toast.LENGTH_LONG).show()
+
     }
 
-    override fun showWrongCode() {
-        Toast.makeText(this, "Вы ввели неверный код", Toast.LENGTH_LONG).show()
-    }
-
-    override fun callbackWrongCode() {
-        showViewsOnScreen()
-        showWrongCode()
-        codeInput.error = "Неправильный код"
-        codeInput.requestFocus()
+    override fun showViewsOnScreen() {
+        verifyCodeBtn.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
     }
 
     private fun goBackToAuthorization() {
@@ -124,34 +114,6 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener,
         startActivity(intent)
         overridePendingTransition(0, 0)
         finish()
-    }
-
-    override fun sendVerificationCode(
-            phoneNumber: String,
-            callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks
-    ) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNumber, // Phone number to verify
-                60, // Timeout duration
-                TimeUnit.SECONDS, // Unit of timeout
-                this, // Activity (for callback binding)
-                callback
-        )
-    }
-
-    override fun resendVerificationCode(
-            phoneNumber: String,
-            callback: PhoneAuthProvider.OnVerificationStateChangedCallbacks,
-            token: PhoneAuthProvider.ForceResendingToken
-    ) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNumber, // Phone number to verify
-                60, // Timeout duration
-                TimeUnit.SECONDS, // Unit of timeout
-                this, // Activity (for callback binding)
-                callback, // OnVerificationStateChangedCallbacks
-                token
-        )
     }
 
     companion object {

@@ -8,14 +8,6 @@ interface EditProfileView: MvpView {
     fun showEditProfile(user: User)
     fun showAvatar(photoLink: String)
     fun goToProfile(user: User)
-    fun showCode()
-    fun hideCode()
-
-    fun showVerifyCode()
-    fun hideVerifyCode()
-
-    fun showResentCode()
-    fun hideResentCode()
 
     fun setNameEditProfileInputError(error: String)
     fun setSurnameEditProfileInputError(error: String)
@@ -23,10 +15,12 @@ interface EditProfileView: MvpView {
 
     fun disableEditProfileEditButton()
     fun enableEditProfileEditButton()
-    fun showNoSelectedCity()
+
     fun showPhoneError(error:String)
 
-
+    fun showCodeInputAndButtons()
+    fun hideCodeInputAndButtons()
+    fun showMessage(message: String)
 
 
 }

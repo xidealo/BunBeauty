@@ -52,6 +52,7 @@ class ProfilePresenter(
         viewState.showOrders()
         viewState.showTabLayout()
         viewState.showScheduleButton()
+        viewState.showSubscriptionsButton()
         viewState.showTopPanelWithEditIcon()
 
         viewState.hideDialogsButton()

@@ -44,21 +44,20 @@
     <string name="channel_name">q</string>
     <string name="channel_description">qq</string>
 
+   <!-- <string name="edit_ico"></string>
+    <string name="settings_ico">\uf303</string>
+    <string name="subscribe_ico">\uf004</string>
+    <string name="premium_ico">\uf091</string>-->
+
+    <string name="back_ico">\uf104</string>
+    <string name="search_ico">\uf002</string>
+    <string name="premium">\uf091</string>
+
     //bottom panel
     <string name="chat_ico">\uf075</string>
     <string name="profile_ico">\uf007</string>
     <string name="main_screen_ico">\uf03a</string>
 
-    //top panel
-    <string name="edit_ico"></string>
-    <string name="search_ico">\uf002</string>
-    <string name="back_ico">\uf104</string>
-    <string name="settings_ico">\uf303</string>
-    <string name="subscribe_ico">\uf004</string>
-    <string name="premium_ico">\uf091</string>
-    <string name="premium">\uf091</string>
-
-    //array for spinner
     <string-array name="cities">
         <item><b>Дубна</b></item>
         <item><b>Дмитров</b></item>

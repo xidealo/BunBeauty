@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 import android.app.Application
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
@@ -124,8 +125,11 @@ class AppModule(private val app: Application, private val intent: Intent) {
         AuthorizationInteractor(userRepository)
 
     @Provides
-    fun provideVerifyPhoneInteractor(userRepository: UserRepository) =
-        VerifyPhoneInteractor(userRepository, intent)
+    fun provideVerifyPhoneInteractor(
+        userRepository: UserRepository,
+        verifyPhoneNumberApi: VerifyPhoneNumberApi
+    ) =
+        VerifyPhoneInteractor(userRepository, intent, verifyPhoneNumberApi)
 
     @Provides
     fun provideRegistrationInteractor(userRepository: UserRepository) =
@@ -207,10 +211,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
         SearchServiceInteractor(userRepository)
 
     @Provides
-    fun provideEditProfileInteractor(userRepository: UserRepository) =
-        EditProfileInteractor(
-            intent, userRepository
-        )
+    fun provideEditProfileInteractor(
+        userRepository: UserRepository,
+        verifyPhoneNumberApi: VerifyPhoneNumberApi
+    ) = EditProfileInteractor(intent, userRepository, verifyPhoneNumberApi)
 
     @Provides
     fun provideDialogsDialogInteractor(dialogRepository: DialogRepository) =
@@ -257,5 +261,8 @@ class AppModule(private val app: Application, private val intent: Intent) {
     //APIs
     @Provides
     fun provideFigureServicePointsApi() = FiguringServicePoints()
+
+    @Provides
+    fun provideVerifyPhoneNumberApi() = VerifyPhoneNumberApi()
 
 }
