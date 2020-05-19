@@ -21,6 +21,8 @@ class MessageFirebase {
         val items = HashMap<String, Any>()
         items[Message.MESSAGE] = message.message
         items[Message.TIME] = ServerValue.TIMESTAMP
+        items[Message.IS_ALERT] = message.isAlert
+        items[Message.ORDER_ID] = message.orderId
         messageRef.updateChildren(items)
     }
 
@@ -124,6 +126,7 @@ class MessageFirebase {
         message.id = messageSnapshot.key!!
         message.message = messageSnapshot.child(Message.MESSAGE).value as? String ?: ""
         message.time = messageSnapshot.child(Message.TIME).value as? Long ?: 0
+        message.isAlert = messageSnapshot.child(Message.IS_ALERT).value as? Boolean ?: false
         return message
     }
 

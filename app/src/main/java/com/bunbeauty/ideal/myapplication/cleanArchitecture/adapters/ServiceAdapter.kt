@@ -43,8 +43,4 @@ class ServiceAdapter(private val mainScreenData: ArrayList<MainScreenData>) :
             foundServiceElement.createElement()
         }
     }
-
-    companion object {
-        private val TAG = "DBInf"
-    }
 }

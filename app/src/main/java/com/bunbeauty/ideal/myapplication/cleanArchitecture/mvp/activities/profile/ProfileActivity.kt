@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -12,6 +11,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ProfilePagerAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -30,9 +30,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile.ServicesFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
@@ -68,7 +65,10 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override var panelContext: Activity = this
 
-
+    //const
+    private val REQUEST_EDIT_PROFILE = 1
+    private val ORDERS_INDEX = 0
+    private val SERVICES_INDEX = 1
 
     @Inject
     lateinit var profileUserInteractor: ProfileUserInteractor
@@ -366,18 +366,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         intent.putExtra(TYPE, REVIEW_FOR_USER)
         startActivity(intent)
         overridePendingTransition(0, 0)*/
-    }
-
-    companion object {
-        private const val ORDERS_INDEX = 0
-        private const val SERVICES_INDEX = 1
-
-        private const val REVIEW_FOR_USER = "review for user"
-        private const val SUBSCRIPTIONS = "подписки"
-        private const val SERVICE_OWNER_ID = "service owner id"
-        private const val TYPE = "type"
-        private const val STATUS = "status"
-        private const val REQUEST_EDIT_PROFILE = 1
     }
 
 }

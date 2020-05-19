@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -27,7 +26,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.MessagesView
-import com.google.android.material.appbar.MaterialToolbar
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import javax.inject.Inject
@@ -41,7 +39,6 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     private lateinit var sendMessageMessagesBtn: Button
 
     override var panelContext: Activity = this
-
 
     @Inject
     lateinit var messageInteractor: MessagesMessageInteractor

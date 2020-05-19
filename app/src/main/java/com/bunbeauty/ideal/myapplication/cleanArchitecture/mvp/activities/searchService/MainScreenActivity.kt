@@ -330,10 +330,4 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         }
 
     }
-
-    companion object {
-        // добавить, чтобы не было видно своих сервисов
-        // например номер юзера, возвращаемого сервиса не должен быть равен локальному
-        private val TAG = "DBInf"
-    }
 }

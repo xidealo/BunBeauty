@@ -44,6 +44,7 @@ class MessagesPresenter(
         message.message = messageText
         message.dialogId = messagesDialogInteractor.getCompanionDialog().id
         message.userId = messagesDialogInteractor.getMyDialog().ownerId
+        message.isAlert = false
         messagesMessageInteractor.sendMessage(message, this)
     }
 
@@ -72,7 +73,7 @@ class MessagesPresenter(
         messagesDialogInteractor.updateUncheckedDialog(message)
     }
 
-    fun updateCheckedDialog(){
+    fun updateCheckedDialog() {
         messagesDialogInteractor.updateCheckedDialog()
     }
 

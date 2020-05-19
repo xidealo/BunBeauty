@@ -79,9 +79,8 @@ class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberR
             checkSubscribed(User.getMyId(), cacheSubscribers, profilePresenterCallback)
         }
 
-        if (cacheSubscribers.isNotEmpty()) {
-            updateCountOfSubscribers(cacheSubscribers, profilePresenterCallback)
-        }
+        updateCountOfSubscribers(objects, profilePresenterCallback)
+
     }
 
     override fun checkSubscribed(
@@ -103,6 +102,4 @@ class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberR
     ) {
         profilePresenterCallback.showCountOfSubscriber(subscribers.size.toLong())
     }
-
-
 }

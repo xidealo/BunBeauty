@@ -21,13 +21,17 @@ data class Message(
     @ColumnInfo(index = true)
     var dialogId: String = "",
     var userId: String = "",
+    var isAlert: Boolean = false,
     var message: String = "",
+    var orderId: String = "",
     var time: Long = 0L
 ) : Serializable {
 
     companion object {
         const val MESSAGES = "messages"
         const val MESSAGE = "message"
+        const val IS_ALERT = "is alert"
         const val TIME = "time"
+        const val ORDER_ID = "order id"
     }
 }

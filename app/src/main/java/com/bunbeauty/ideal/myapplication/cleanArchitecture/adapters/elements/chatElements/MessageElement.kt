@@ -5,10 +5,10 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.ideal.myapplication.R
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import java.util.*
 
 
@@ -44,5 +44,8 @@ class MessageElement(
             mainLayoutMessageElementLayout.gravity = Gravity.START
             messagesPresenter.updateCheckedDialog()
         }
+
     }
+
+    // Здравсвуйте, оставьте отзыв о пользователе\услуге +id
 }
