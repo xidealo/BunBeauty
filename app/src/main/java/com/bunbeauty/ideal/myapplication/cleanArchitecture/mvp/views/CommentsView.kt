@@ -1,4 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 
-interface CommentsView {
+import com.arellomobile.mvp.MvpView
+
+interface CommentsView : MvpView {
+
 }
