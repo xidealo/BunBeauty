@@ -9,6 +9,7 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.Tag.UI_TAG
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
@@ -19,7 +20,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.AuthorizationView
 import com.bunbeauty.ideal.myapplication.other.CountryCodes
 import javax.inject.Inject
-
 
 class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
     AuthorizationView, IAdapterSpinner {
@@ -52,7 +52,6 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authorization)
         initView()
-        //FirebaseAuth.getInstance().signOut()//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         authorizationPresenter.defaultAuthorize()
     }
 
@@ -87,7 +86,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
     }
 
     override fun hideViewsOnScreen() {
-        Log.d(TAG_UI, "hideViewsOfScreen")
+        Log.d(UI_TAG, "hideViewsOfScreen")
         progressBar.visibility = View.VISIBLE
         codeSpinner.visibility = View.GONE
         phoneInput.visibility = View.GONE
@@ -96,7 +95,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
     }
 
     override fun showViewsOnScreen() {
-        Log.d(TAG_UI, "showViewsOnScreen: ")
+        Log.d(UI_TAG, "showViewsOnScreen: ")
         progressBar.visibility = View.GONE
         codeSpinner.visibility = View.VISIBLE
         titleAuthorizationText.visibility = View.VISIBLE
@@ -105,13 +104,13 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
     }
 
     override fun showPhoneError(error: String) {
-        Log.d(TAG_UI, "setPhoneError: ")
+        Log.d(UI_TAG, "setPhoneError: ")
         phoneInput.error = error
         phoneInput.requestFocus()
     }
 
     override fun enableVerifyBtn(status: Boolean) {
-        Log.d(TAG_UI, "enableVerifyBtn: $status")
+        Log.d(UI_TAG, "enableVerifyBtn: $status")
         verifyBtn.isClickable = status
     }
 
@@ -147,9 +146,5 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
 
     override fun enableButton() {
         verifyBtn.isEnabled = true
-    }
-
-    companion object {
-        private const val TAG_UI = "tag_ui"
     }
 }

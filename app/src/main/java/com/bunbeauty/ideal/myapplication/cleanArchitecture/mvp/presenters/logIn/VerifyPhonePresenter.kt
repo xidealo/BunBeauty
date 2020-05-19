@@ -10,8 +10,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.Verif
 class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneInteractor) :
     MvpPresenter<VerifyPhoneView>(), VerifyPhonePresenterCallback {
 
-    private val TAG = "DBInf"
-
     fun sendCode() {
         verifyPhoneInteractor.sendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(), this)
     }
@@ -29,19 +27,18 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneIntera
     }
 
     fun checkCode(code: String) {
+        viewState.hideViewsOnScreen()
         verifyPhoneInteractor.checkCode(code)
     }
 
     override fun showTooShortCodeError() {
+        viewState.showViewsOnScreen()
         viewState.showMessage("Слишком короткий код")
     }
 
     override fun showWrongCodeError() {
+        viewState.showViewsOnScreen()
         viewState.showMessage("Неправильный код")
-    }
-
-    override fun hideViewsOnScreen() {
-        viewState.hideViewsOnScreen()
     }
 
     override fun goToRegistration(phone: String) {

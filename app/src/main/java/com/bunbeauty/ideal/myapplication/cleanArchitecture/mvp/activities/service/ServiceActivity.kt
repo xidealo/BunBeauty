@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -27,8 +26,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.Servic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.bunbeauty.ideal.myapplication.reviews.Comments
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.service_activity.*
@@ -55,8 +52,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     override var panelContext: Activity = this
 
-
-
     @Inject
     lateinit var serviceInteractor: ServiceInteractor
 
@@ -75,6 +70,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.service_activity)
+
         init()
         showLoading()
         servicePresenter.createServiceScreen()
@@ -101,8 +97,8 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         ratingBar = findViewById(R.id.ratingServiceBar)
         progressBar = findViewById(R.id.progressServiceBar)
 
-        premiumElementFragment = supportFragmentManager
-            .findFragmentById(R.id.premiumBlockServiceActivity) as PremiumElementFragment
+        premiumElementFragment =
+            supportFragmentManager.findFragmentById(R.id.premiumBlockServiceActivity) as PremiumElementFragment
 
         findViewById<MaterialButton>(R.id.scheduleServiceBtn).setOnClickListener(this)
     }
@@ -215,11 +211,10 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     override fun goToEditService(service: Service) {
-         val intent = Intent(this, EditServiceActivity::class.java)
-         intent.putExtra(Service.SERVICE, service)
-         startActivityForResult(intent, REQUEST_EDIT_SERVICE)
+        val intent = Intent(this, EditServiceActivity::class.java)
+        intent.putExtra(Service.SERVICE, service)
+        startActivityForResult(intent, REQUEST_EDIT_SERVICE)
     }
-
 
 
     private fun goToCalendar(status: String) {
@@ -236,7 +231,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         startActivity(intent)
     }
 
-    private fun  goToComments() {
+    private fun goToComments() {
         val intent = Intent(this, Comments::class.java)
         //intent.putExtra(Service.SERVICE_ID, "")
         intent.putExtra(TYPE, REVIEW_FOR_SERVICE)
@@ -255,7 +250,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
         private val REVIEW_FOR_SERVICE = "review for service"
 
-        private val REQUEST_EDIT_SERVICE =  1
+        private val REQUEST_EDIT_SERVICE = 1
     }
 
 }

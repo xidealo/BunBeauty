@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback
 
 interface VerifyPhonePresenterCallback {
-    fun hideViewsOnScreen()
     fun goToRegistration(phone: String)
     fun goToProfile()
 

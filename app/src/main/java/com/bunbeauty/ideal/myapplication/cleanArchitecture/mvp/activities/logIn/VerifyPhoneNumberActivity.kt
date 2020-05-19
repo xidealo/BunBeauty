@@ -18,8 +18,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.Verif
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
 import javax.inject.Inject
 
-class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener,
-    VerifyPhoneView {
+class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener, VerifyPhoneView {
 
     private lateinit var verifyCodeBtn: Button
     private lateinit var resendCodeText: TextView
@@ -84,17 +83,17 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener,
         progressBar.visibility = View.VISIBLE
     }
 
+    override fun showViewsOnScreen() {
+        verifyCodeBtn.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
+    }
+
     override fun showMessage(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     override fun showSendCode() {
 
-    }
-
-    override fun showViewsOnScreen() {
-        verifyCodeBtn.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
     }
 
     private fun goBackToAuthorization() {
@@ -114,9 +113,5 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener,
         startActivity(intent)
         overridePendingTransition(0, 0)
         finish()
-    }
-
-    companion object {
-        private val TAG = "DBInf"
     }
 }

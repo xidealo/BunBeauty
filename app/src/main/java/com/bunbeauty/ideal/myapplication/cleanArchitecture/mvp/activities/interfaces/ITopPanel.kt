@@ -32,8 +32,7 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
     ) {
         initTopPanel(title, buttonTask)
 
-        val imageView =
-            panelContext.topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage)
+        val imageView = panelContext.topPanel.avatarTopPanelImage
         setAvatar(photoLink, imageView)
     }
 
@@ -77,11 +76,12 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
     }
 
     private fun hideImageView() {
-        panelContext.topPanel.findViewById<ImageView>(R.id.avatarTopPanelImage).visibility = View.GONE
+        panelContext.topPanel.avatarTopPanelImage.visibility = View.GONE
     }
 
     private fun configActionIcon(iconId: Int) {
-        panelContext.topPanel.menu.findItem(R.id.navigation_action).icon = panelContext.getDrawable(iconId)
+        panelContext.topPanel.menu.findItem(R.id.navigation_action).icon =
+            panelContext.getDrawable(iconId)
         panelContext.topPanel.setOnMenuItemClickListener(this)
 
         hideImageView()
