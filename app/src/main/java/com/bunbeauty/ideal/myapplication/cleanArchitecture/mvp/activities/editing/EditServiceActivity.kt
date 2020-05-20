@@ -1,11 +1,9 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.*
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -19,39 +17,19 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.EditServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.EditServiceView
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_edit_service.*
 import javax.inject.Inject
 
 class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     EditServiceView, View.OnClickListener {
 
-    private lateinit var progressEditServiceBar: ProgressBar
-    private lateinit var editServiceScroll: ScrollView
-    private lateinit var nameEditService: TextView
-    private lateinit var addressEditService: TextView
-    private lateinit var costEditService: TextView
-    private lateinit var descriptionEditService: TextView
-    private lateinit var saveEditServiceBtn: Button
-    private lateinit var deleteEditServiceBtn: Button
-
     override var panelContext: Activity = this
 
-
-
     private fun init() {
-        progressEditServiceBar = findViewById(R.id.progressEditServiceBar)
-        editServiceScroll = findViewById(R.id.editServiceScroll)
-        nameEditService = findViewById(R.id.nameEditService)
-        addressEditService = findViewById(R.id.addressEditService)
-        costEditService = findViewById(R.id.costEditService)
-
-        descriptionEditService = findViewById(R.id.descriptionEditService)
-        saveEditServiceBtn = findViewById(R.id.saveEditServiceBtn)
-        deleteEditServiceBtn = findViewById(R.id.deleteEditServiceBtn)
-
         saveEditServiceBtn.setOnClickListener(this)
+/*
         deleteEditServiceBtn.setOnClickListener(this)
+*/
     }
 
     @Inject
@@ -84,15 +62,14 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
 
     override fun onResume() {
         super.onResume()
-
         initBottomPanel()
     }
 
     override fun showEditService(service: Service) {
-        nameEditService.text = service.name
-        addressEditService.text = service.address
-        costEditService.text = service.cost.toString()
-        descriptionEditService.text = service.description
+        nameEditServiceInput.append(service.name)
+        addressEditServiceInput.append(service.address)
+        costEditServiceInput.append(service.cost.toString())
+        descriptionEditServiceInput.append(service.description)
     }
 
     override fun goToService(service: Service) {
@@ -100,7 +77,6 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         intent.putExtra(Service.SERVICE, service)
         setResult(RESULT_OK, intent)
         finish()
-
     }
 
     override fun goToProfile(service: Service) {
@@ -126,19 +102,21 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     }
 
     override fun setNameEditServiceInputError(error: String) {
-        nameEditService.error = error
-        nameEditService.requestFocus()
+        nameEditServiceInput.error = error
+        nameEditServiceInput.requestFocus()
     }
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.saveEditServiceBtn -> editServicePresenter.save(
-                nameEditService.text.toString().trim(),
-                addressEditService.text.toString().trim(),
-                descriptionEditService.text.toString().trim(),
-                costEditService.text.toString().toLongOrNull() ?: 0
+                nameEditServiceInput.text.toString().trim(),
+                addressEditServiceInput.text.toString().trim(),
+                descriptionEditServiceInput.text.toString().trim(),
+                costEditServiceInput.text.toString().toLongOrNull() ?: 0
             )
-            R.id.deleteEditServiceBtn->editServicePresenter.delete()
+/*
+            R.id.deleteEditServiceBtn -> editServicePresenter.delete()
+*/
         }
 
     }

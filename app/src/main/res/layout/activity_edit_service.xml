@@ -22,8 +22,8 @@
         android:id="@+id/editServiceScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/editServiceBtn"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/saveEditServiceBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topPanel">
@@ -34,49 +34,55 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout style="@style/block">
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/materialInputLayout"
+                android:hint="Название"
+                app:startIconDrawable="@drawable/icon_profile">
 
-                <EditText
-                    android:id="@+id/nameEditService"
-                    style="@style/mainBlockText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Имя"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nameEditServiceInput"
+                    style="@style/materialInput"
+                    android:inputType="textCapSentences" />
 
-            </LinearLayout>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/materialInputLayout"
+                android:hint="Адрес"
+                app:startIconDrawable="@drawable/icon_profile">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/addressEditServiceInput"
+                    android:inputType="textCapSentences"
+                    style="@style/materialInput" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/materialInputLayout"
+                android:hint="Цена"
+                app:startIconDrawable="@drawable/icon_profile">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/costEditServiceInput"
+                    android:inputType="number"
+                    style="@style/materialInput" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-            <LinearLayout style="@style/block">
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/materialInputLayout"
+                android:hint="Описание"
+                app:startIconDrawable="@drawable/icon_profile">
 
-                <EditText
-                    android:id="@+id/addressEditService"
-                    style="@style/mainBlockText"
-                    android:hint="Адрес" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/descriptionEditServiceInput"
+                    android:inputType="textCapSentences"
+                    style="@style/materialInput" />
 
-            </LinearLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout style="@style/block">
-
-                <EditText
-                    android:id="@+id/costEditService"
-                    style="@style/mainBlockText"
-                    android:hint="@string/cost" />
-
-            </LinearLayout>
-
-            <LinearLayout style="@style/block">
-
-                <EditText
-                    style="@style/mainBlockText"
-                    android:layout_width="wrap_content"
-                    android:text="Описание:" />
-
-                <EditText
-                    android:id="@+id/descriptionEditService"
-                    style="@style/defaultText"
-                    android:layout_width="match_parent" />
-
-            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>
@@ -85,16 +91,13 @@
         android:id="@+id/saveEditServiceBtn"
         style="@style/mainButton"
         android:text="Сохранить"
-        app:layout_constraintBottom_toBottomOf="@+id/bottomNavigationView"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel" />
 
     <Button
         android:id="@+id/deleteEditServiceBtn"
         style="@style/mainButton"
         android:text="Удалить услугу"
-        app:layout_constraintBottom_toBottomOf="@+id/bottomNavigationView"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
         app:layout_constraintRight_toRightOf="parent" />
 
     <include layout="@layout/part_bottom_panel" />
