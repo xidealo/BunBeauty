@@ -44,9 +44,9 @@ class MessagesPresenter(
         message.message = messageText
         message.dialogId = messagesDialogInteractor.getCompanionDialog().id
         message.userId = messagesDialogInteractor.getMyDialog().ownerId
-        //message.isText = true
-        //message.isUserReview = true
-        message.isServiceReview= true
+        message.type = Message.TEXT_MESSAGE_STATUS
+        //message.type = Message.SERVICE_REVIEW_MESSAGE_STATUS
+        //message.type = Message.USER_REVIEW_MESSAGE_STATUS
         messagesMessageInteractor.sendMessage(message, this)
     }
 

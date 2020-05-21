@@ -42,6 +42,6 @@ interface ProfileView: MvpView {
     fun showProgress()
     fun hideProgress()
 
-    fun goToDialog(dialog: Dialog)
+    fun goToMessages(dialog: Dialog)
     fun goToSubscriptions(user: User)
 }

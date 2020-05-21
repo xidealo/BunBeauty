@@ -322,16 +322,16 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         startActivityForResult(intent, REQUEST_EDIT_PROFILE)
     }
 
-    override fun goToDialog(dialog: Dialog) {
+    override fun goToMessages(dialog: Dialog) {
         val intent = Intent(this, MessagesActivity::class.java)
-        intent.putExtra(Dialog.COMPANION_DIALOG, dialog)
+        intent.putExtra(Dialog.DIALOG, dialog)
 
         //TODO(refactor)
-        val myDialog = Dialog()
-        myDialog.ownerId = dialog.user.id
-        myDialog.id = dialog.id
-        myDialog.user.id = dialog.ownerId
-        intent.putExtra(Dialog.DIALOG, myDialog)
+        val companionDialog = Dialog()
+        companionDialog.ownerId = dialog.user.id
+        companionDialog.id = dialog.id
+        companionDialog.user.id = dialog.ownerId
+        intent.putExtra(Dialog.COMPANION_DIALOG, companionDialog)
 
         intent.putExtra(User.USER, profilePresenter.getCurrentUser())
         startActivity(intent)

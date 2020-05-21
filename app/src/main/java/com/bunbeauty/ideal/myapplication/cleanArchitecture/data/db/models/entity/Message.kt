@@ -24,18 +24,18 @@ data class Message(
     var message: String = "",
     var orderId: String = "",
     var time: Long = 0L,
-    var isText: Boolean = false,
-    var isUserReview: Boolean = false,
-    var isServiceReview: Boolean = false
+    var type: Int = 0
 ) : Serializable {
 
     companion object {
         const val MESSAGES = "messages"
         const val MESSAGE = "message"
-        const val IS_TEXT = "is text"
-        const val IS_USER_REVIEW = "is user review"
-        const val IS_SERVICE_REVIEW = "is service review"
+        const val TYPE = "type"
+        const val TEXT_MESSAGE_STATUS = 0
+        const val USER_REVIEW_MESSAGE_STATUS = 1
+        const val SERVICE_REVIEW_MESSAGE_STATUS = 2
         const val TIME = "time"
         const val ORDER_ID = "order id"
     }
+
 }

@@ -41,30 +41,33 @@ class MessageAdapter(
     inner class MessageViewHolder(private val view: View, private val context: Context) :
         ViewHolder(view) {
         fun bind(message: Message) {
-            if (message.isText) {
-                val messageTextElement = MessageTextElement(messagesPresenter)
-                messageTextElement.createElement(view)
-                messageTextElement.setIsMyMessage(message)
-                messageTextElement.setData(message)
-                return
-            }
 
-            if (message.isServiceReview) {
-                val messageTextElement = MessageServiceReviewElement(messagesPresenter, context)
-                messageTextElement.createElement(view)
-                messageTextElement.setIsMyMessage(message)
-                messageTextElement.setData(message)
-                return
-            }
+            when (message.type) {
+                Message.TEXT_MESSAGE_STATUS -> {
+                    val messageTextElement = MessageTextElement(messagesPresenter)
+                    messageTextElement.createElement(view)
+                    messageTextElement.setIsMyMessage(message)
+                    messageTextElement.setData(message)
+                    return
+                }
 
-            if (message.isUserReview) {
-                val messageUserReviewElement = MessageUserReviewElement(messagesPresenter, context)
-                messageUserReviewElement.createElement(view)
-                messageUserReviewElement.setIsMyMessage(message)
-                messageUserReviewElement.setData(message)
-                return
-            }
+                Message.SERVICE_REVIEW_MESSAGE_STATUS -> {
+                    val messageTextElement = MessageServiceReviewElement(messagesPresenter, context)
+                    messageTextElement.createElement(view)
+                    messageTextElement.setIsMyMessage(message)
+                    messageTextElement.setData(message)
+                    return
+                }
 
+                Message.USER_REVIEW_MESSAGE_STATUS -> {
+                    val messageUserReviewElement =
+                        MessageUserReviewElement(messagesPresenter, context)
+                    messageUserReviewElement.createElement(view)
+                    messageUserReviewElement.setIsMyMessage(message)
+                    messageUserReviewElement.setData(message)
+                    return
+                }
+            }
         }
     }
 

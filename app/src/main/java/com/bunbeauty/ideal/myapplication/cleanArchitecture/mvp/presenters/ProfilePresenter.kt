@@ -95,7 +95,7 @@ class ProfilePresenter(
     }
 
     override fun goToDialog(dialog: Dialog) {
-        viewState.goToDialog(dialog)
+        viewState.goToMessages(dialog)
     }
 
     fun subscribe() {

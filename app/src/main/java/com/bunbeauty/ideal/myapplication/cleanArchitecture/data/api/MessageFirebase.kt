@@ -23,12 +23,9 @@ class MessageFirebase {
         items[Message.TIME] = ServerValue.TIMESTAMP
         if (message.orderId.isNotEmpty())
             items[Message.ORDER_ID] = message.orderId
-        if (message.isText)
-            items[Message.IS_TEXT] = message.isText
-        if (message.isServiceReview)
-            items[Message.IS_SERVICE_REVIEW] = message.isServiceReview
-        if (message.isUserReview)
-            items[Message.IS_USER_REVIEW] = message.isUserReview
+
+        items[Message.TYPE] = message.type
+
         messageRef.updateChildren(items)
     }
 
@@ -132,10 +129,7 @@ class MessageFirebase {
         message.id = messageSnapshot.key!!
         message.message = messageSnapshot.child(Message.MESSAGE).value as? String ?: ""
         message.time = messageSnapshot.child(Message.TIME).value as? Long ?: 0
-        message.isText = messageSnapshot.child(Message.IS_TEXT).value as? Boolean ?: false
-        message.isServiceReview =
-            messageSnapshot.child(Message.IS_SERVICE_REVIEW).value as? Boolean ?: false
-        message.isUserReview = messageSnapshot.child(Message.IS_USER_REVIEW).value as? Boolean ?: false
+        message.type = messageSnapshot.child(Message.TYPE).getValue(Int::class.java) ?: 12
         return message
     }
 
