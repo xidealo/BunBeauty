@@ -10,7 +10,8 @@ data class Comment(
     var id: String = "",
     @ColumnInfo(index = true)
     var userId: String = "",
-    var rating: Int = 0,
+    var ownerId: String = "",
+    var rating: Double = 0.0,
     var review: String = "",
     var time: Long = 0L
 ) {
@@ -20,5 +21,6 @@ data class Comment(
         const val RATING = "rating"
         const val REVIEW = "creation_comment"
         const val TIME = "time"
+        const val OWNER_ID = "owner id"
     }
 }

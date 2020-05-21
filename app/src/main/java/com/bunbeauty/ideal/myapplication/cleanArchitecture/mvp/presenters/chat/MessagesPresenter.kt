@@ -45,12 +45,15 @@ class MessagesPresenter(
         message.dialogId = messagesDialogInteractor.getCompanionDialog().id
         message.userId = messagesDialogInteractor.getMyDialog().ownerId
         //message.isText = true
-        message.isUserReview = true
+        //message.isUserReview = true
+        message.isServiceReview= true
         messagesMessageInteractor.sendMessage(message, this)
     }
 
+    fun getCacheCurrentUser() = messagesUserInteractor.getCacheCurrentUser()
+
     fun goToProfile() {
-        viewState.goToProfile(messagesUserInteractor.getCacheCurrentUser())
+        viewState.goToProfile(getCacheCurrentUser())
     }
 
     override fun showMessagesScreen(messages: List<Message>) {

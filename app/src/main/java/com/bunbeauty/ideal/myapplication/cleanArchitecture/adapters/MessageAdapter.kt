@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.MessageAdapter.MessageViewHolder
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.messageElements.MessageServiceReviewElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.messageElements.MessageTextElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.messageElements.MessageUserReviewElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
@@ -49,9 +50,10 @@ class MessageAdapter(
             }
 
             if (message.isServiceReview) {
-                /*val messageTextElement = MessageServiceReviewElement(messagesPresenter)
+                val messageTextElement = MessageServiceReviewElement(messagesPresenter, context)
                 messageTextElement.createElement(view)
-                messageTextElement.setData(message)*/
+                messageTextElement.setIsMyMessage(message)
+                messageTextElement.setData(message)
                 return
             }
 
