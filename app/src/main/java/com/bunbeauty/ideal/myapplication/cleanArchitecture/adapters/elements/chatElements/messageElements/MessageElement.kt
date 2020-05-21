@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.messageElements
 
 import android.view.Gravity
 import android.view.View
@@ -9,43 +9,41 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTime
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
+import com.google.android.material.button.MaterialButton
 import java.util.*
 
-
-class MessageElement(
-    private val view: View,
+abstract class MessageElement(
     private val messagesPresenter: MessagesPresenter
 ) {
-    private lateinit var message: Message
-    private lateinit var messageTextMessageElementText: TextView
-    private lateinit var messageTimeMessageElementText: TextView
-    private lateinit var mainLayoutMessageElementLayout: LinearLayout
+    protected lateinit var message: Message
+    protected lateinit var messageTextMessageElementText: TextView
+    protected lateinit var messageTimeMessageElementText: TextView
+    protected lateinit var messageMessageElementLayout: LinearLayout
+    protected lateinit var rateMessageElementButton: MaterialButton
 
-    fun createElement(message: Message) {
-        this.message = message
-        onViewCreated(view)
-        setData(message)
-    }
-
-    private fun onViewCreated(view: View) {
+    fun createElement(view: View) {
         messageTextMessageElementText = view.findViewById(R.id.messageTextMessageElementText)
         messageTimeMessageElementText = view.findViewById(R.id.messageTimeMessageElementText)
-        mainLayoutMessageElementLayout = view.findViewById(R.id.mainLayoutMessageElementLayout)
+        messageMessageElementLayout = view.findViewById(R.id.messageMessageElementLayout)
+        rateMessageElementButton = view.findViewById(R.id.rateMessageElementButton)
+        setVisibility()
     }
 
-    private fun setData(message: Message) {
+    open fun setVisibility() {}
+
+    fun setData(message: Message) {
+        this.message = message
         messageTextMessageElementText.text = message.message
         messageTimeMessageElementText.text =
             WorkWithTimeApi.getDateInFormatYMDHMS(Date(message.time)).substring(11, 16)
-
-        if (message.userId == User.getMyId()) {
-            mainLayoutMessageElementLayout.gravity = Gravity.END
-        } else {
-            mainLayoutMessageElementLayout.gravity = Gravity.START
-            messagesPresenter.updateCheckedDialog()
-        }
-
     }
 
-    // Здравсвуйте, оставьте отзыв о пользователе\услуге +id
+    open fun setIsMyMessage(message: Message) {
+        if (message.userId == User.getMyId()) {
+            messageMessageElementLayout.gravity = Gravity.END
+        } else {
+            messageMessageElementLayout.gravity = Gravity.START
+            messagesPresenter.updateCheckedDialog()
+        }
+    }
 }

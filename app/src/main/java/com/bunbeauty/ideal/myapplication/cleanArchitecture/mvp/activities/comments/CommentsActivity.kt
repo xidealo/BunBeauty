@@ -8,11 +8,12 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CommentsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CommentsPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.CommentsView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.comments.CommentsPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.comments.CommentsView
 import javax.inject.Inject
 
-class CommentsActivity :  MvpAppCompatActivity(), CommentsView {
+class CommentsActivity :  MvpAppCompatActivity(),
+    CommentsView {
 
     @Inject
     lateinit var commentsInteractor: CommentsInteractor
@@ -26,7 +27,9 @@ class CommentsActivity :  MvpAppCompatActivity(), CommentsView {
             .builder()
             .appModule(AppModule(application, intent))
             .build().inject(this)
-        return CommentsPresenter(commentsInteractor)
+        return CommentsPresenter(
+            commentsInteractor
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

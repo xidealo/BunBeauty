@@ -28,7 +28,7 @@ public class PickedComment extends AppCompatActivity implements View.OnClickList
 
     private static final String USER_ID = "user id";
     private static final String USER_NAME = "user name";
-    private static final String REVIEW = "review";
+    private static final String REVIEW = "creation_comment";
     private static final String RATING = "rating";
 
     private static final String OWNER_ID = "owner id";

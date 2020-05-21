@@ -31,10 +31,10 @@ public class UserCreateService implements IUser {
     private static final String WORKING_TIME_ID = "working time id";
 
     private static final String RATING = "rating";
-    private static final String REVIEW = "review";
+    private static final String REVIEW = "creation_comment";
     private static final String TYPE = "type";
-    private static final String REVIEW_FOR_SERVICE = "review for service";
-    private static final String REVIEW_FOR_USER = "review for user";
+    private static final String REVIEW_FOR_SERVICE = "creation_comment for service";
+    private static final String REVIEW_FOR_USER = "creation_comment for user";
 
     private String userId;
     private String serviceId;

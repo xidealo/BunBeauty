@@ -16,7 +16,7 @@ data class Review(
 
     companion object {
         const val REVIEWS = "reviews"
-        const val REVIEW = "review"
+        const val REVIEW = "creation_comment"
         const val RATING = "rating"
         const val WORKING_TIME_ID = "working time id"
         const val TYPE = "type"

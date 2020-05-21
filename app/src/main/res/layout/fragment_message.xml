@@ -8,28 +8,45 @@
     android:layout_marginTop="5dp"
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="5dp"
-    android:orientation="horizontal"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.MessageElement">
+    android:orientation="vertical"
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.messageElements.MessageElement">
 
-    <TextView
-        android:id="@+id/messageTextMessageElementText"
+
+    <LinearLayout
+        android:id="@+id/messageMessageElementLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/messageTextMessageElementText"
+            android:layout_width="wrap_content"
+            android:maxWidth="230dp"
+            android:layout_height="match_parent"
+            android:background="@color/backgroundLightBlue"
+            android:padding="8dp"
+            android:text="@string/hello_blank_fragment"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/messageTimeMessageElementText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/backgroundLightBlue"
+            android:gravity="bottom"
+            android:text="@string/hello_blank_fragment"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/rateMessageElementButton"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@color/backgroundLightBlue"
-        android:maxWidth="230dp"
-        android:padding="8dp"
-        android:text="@string/hello_blank_fragment"
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/messageTimeMessageElementText"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@color/backgroundLightBlue"
-        android:gravity="bottom"
-        android:text="@string/hello_blank_fragment"
-        android:textSize="10sp" />
-
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        android:text="Оценить" />
 </LinearLayout>

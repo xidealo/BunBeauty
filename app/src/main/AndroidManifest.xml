@@ -15,14 +15,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CurrentCommentActivity"></activity>
+        <activity
+            android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CreationCommentActivity"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CurrentCommentActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CommentsActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.TestActivity" />
         <activity
             android:name="com.bunbeauty.ideal.myapplication.reviews.PickedComment"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity android:name="com.bunbeauty.ideal.myapplication.reviews.Comments" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.reviews.Review" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.subscriptions.SubscriptionsActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.DialogsActivity" />

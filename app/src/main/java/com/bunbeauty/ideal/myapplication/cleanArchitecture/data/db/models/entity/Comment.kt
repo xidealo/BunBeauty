@@ -18,7 +18,7 @@ data class Comment(
         const val COMMENTS = "comments"
         const val COMMENT = "comment"
         const val RATING = "rating"
-        const val REVIEW = "review"
+        const val REVIEW = "creation_comment"
         const val TIME = "time"
     }
 }

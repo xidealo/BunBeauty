@@ -6,6 +6,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServ
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CommentsInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CreationCommentCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CurrentCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
@@ -272,6 +273,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     @Provides
     fun provideCurrentCommentInteractor() = CurrentCommentInteractor(intent)
+
+    @Provides
+    fun provideCreationCommentCommentInteractor(commentRepository: CommentRepository) =
+        CreationCommentCommentInteractor(commentRepository, intent)
 
     //APIs
     @Provides

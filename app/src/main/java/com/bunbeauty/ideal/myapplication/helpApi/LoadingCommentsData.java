@@ -13,7 +13,7 @@ public class LoadingCommentsData {
     private static final String TIME = "time";
     private static final String SORT_TIME = "sort time";
     private static final String DATE = "date";
-    private static final String REVIEW = "review";
+    private static final String REVIEW = "creation_comment";
     private static final String TYPE = "type";
     private static final String RATING = "rating";
 

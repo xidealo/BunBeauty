@@ -248,7 +248,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
         private val STATUS_USER_BY_SERVICE = "status UserCreateService"
 
-        private val REVIEW_FOR_SERVICE = "review for service"
+        private val REVIEW_FOR_SERVICE = "creation_comment for service"
 
         private val REQUEST_EDIT_SERVICE = 1
     }

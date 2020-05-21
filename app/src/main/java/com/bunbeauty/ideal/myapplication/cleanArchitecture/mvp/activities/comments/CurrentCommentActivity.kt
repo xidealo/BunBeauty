@@ -8,11 +8,12 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CurrentCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CurrentCommentPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.CurrentCommentView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.comments.CurrentCommentPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.comments.CurrentCommentView
 import javax.inject.Inject
 
-class CurrentCommentActivity : MvpAppCompatActivity(), CurrentCommentView {
+class CurrentCommentActivity : MvpAppCompatActivity(),
+    CurrentCommentView {
 
     @Inject
     lateinit var currentCommentInteractor: CurrentCommentInteractor
@@ -26,7 +27,9 @@ class CurrentCommentActivity : MvpAppCompatActivity(), CurrentCommentView {
             .builder()
             .appModule(AppModule(application, intent))
             .build().inject(this)
-        return CurrentCommentPresenter(currentCommentInteractor)
+        return CurrentCommentPresenter(
+            currentCommentInteractor
+        )
     }
 
 

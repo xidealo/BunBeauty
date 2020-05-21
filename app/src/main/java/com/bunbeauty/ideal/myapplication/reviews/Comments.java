@@ -38,8 +38,8 @@ public class Comments extends AppCompatActivity {
     private static final String TAG = "DBInf";
 
     private static final String TYPE = "type";
-    private static final String REVIEW_FOR_USER = "review for user";
-    private static final String REVIEW_FOR_SERVICE = "review for service";
+    private static final String REVIEW_FOR_USER = "creation_comment for user";
+    private static final String REVIEW_FOR_SERVICE = "creation_comment for service";
     private static final String USERS = "users";
     private static final String ORDER_ID = "order_id";
     private static final String OWNER_ID = "owner_id";
@@ -51,7 +51,7 @@ public class Comments extends AppCompatActivity {
     private static final String COUNT_OF_RATES = "count of rates";
     private static final String ORDERS = "orders";
     private static final String RATING = "rating";
-    private static final String REVIEW = "review";
+    private static final String REVIEW = "creation_comment";
 
     private static final String WORKING_DAY_ID = "working day id";
     private static final String WORKING_TIME_ID = "working time id";
@@ -484,7 +484,7 @@ public class Comments extends AppCompatActivity {
                             public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
                                 LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
                                 final Comment comment = new Comment();
-                                // no review no currentCountOfReview!
+                                // no creation_comment no currentCountOfReview!
                                 String review = reviewSnapshot.child(REVIEW).getValue(String.class);
                                 float rating = reviewSnapshot.child(RATING).getValue(Float.class);
                                 if (rating != 0) {

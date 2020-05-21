@@ -4,6 +4,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.Schedu
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.DialogsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CommentsActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CreationCommentActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CurrentCommentActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity
@@ -40,4 +41,5 @@ interface AppComponent {
     fun inject(editServiceActivity: EditServiceActivity)
     fun inject(commentsActivity: CommentsActivity)
     fun inject(currentCommentActivity: CurrentCommentActivity)
+    fun inject(creationCommentActivity: CreationCommentActivity)
 }
