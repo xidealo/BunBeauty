@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments
 
 import android.os.Bundle
+import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -11,7 +12,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.Commen
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.CommentsView
 import javax.inject.Inject
 
-class CommentsActivity : MvpAppCompatActivity(), CommentsView {
+class CommentsActivity :  MvpAppCompatActivity(), CommentsView {
 
     @Inject
     lateinit var commentsInteractor: CommentsInteractor
@@ -30,6 +31,6 @@ class CommentsActivity : MvpAppCompatActivity(), CommentsView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_comments)
     }
-
 }

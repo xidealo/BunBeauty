@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments
 
 import android.os.Bundle
+import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -28,7 +29,9 @@ class CurrentCommentActivity : MvpAppCompatActivity(), CurrentCommentView {
         return CurrentCommentPresenter(currentCommentInteractor)
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_current_comment)
     }
 }
