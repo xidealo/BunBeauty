@@ -39,10 +39,6 @@ public class CommentElement implements View.OnClickListener {
     private float rating;
 
     CommentElement(Comment comment, View view, Context context) {
-        userId = comment.getUserId();
-        userName = comment.getUserName();
-        review = comment.getReview();
-        rating = comment.getRating();
         this.context = context;
         this.view= view;
     }

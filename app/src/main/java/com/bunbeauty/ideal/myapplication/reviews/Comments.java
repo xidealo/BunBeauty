@@ -345,15 +345,11 @@ public class Comments extends AppCompatActivity {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
                 .child(ownerId);
         final Comment comment = new Comment();
-        comment.setUserId(mainCursor.getString(ownerIdIndex));
-        comment.setReview(mainCursor.getString(reviewIndex));
-        comment.setRating(mainCursor.getFloat(ratingIndex));
-        comment.setServiceName(mainCursor.getString(nameServiceIndex));
+
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                comment.setUserName(String.valueOf(userSnapshot.child(User.NAME).getValue()));
                 commentList.add(comment);
                 if (countOfRates == currentCountOfReview) {
                  /*   commentAdapter = new CommentAdapter(commentList.size(), commentList);
@@ -492,9 +488,7 @@ public class Comments extends AppCompatActivity {
                                 String review = reviewSnapshot.child(REVIEW).getValue(String.class);
                                 float rating = reviewSnapshot.child(RATING).getValue(Float.class);
                                 if (rating != 0) {
-                                    comment.setReview(review);
-                                    comment.setRating(reviewSnapshot.child(RATING).getValue(Float.class));
-                                    comment.setUserId(workerId);
+
                                     currentCountOfReview++;
                                     Log.d(TAG, "onChildAdded: " + reviewSnapshot.child(REVIEW).getValue());
                                     Log.d(TAG, "onChildAdded: " + currentCountOfReview);
@@ -605,9 +599,7 @@ public class Comments extends AppCompatActivity {
             final int ownerIdIndex = cursor.getColumnIndex(OWNER_ID);
             do {
                 final Comment comment = new Comment();
-                comment.setUserId(cursor.getString(ownerIdIndex));
-                comment.setReview(cursor.getString(reviewIndex));
-                comment.setRating(cursor.getFloat(ratingIndex));
+
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
 
                 //if (workWithLocalStorageApi.isMutualReview(orderId)) {
@@ -631,32 +623,10 @@ public class Comments extends AppCompatActivity {
 
     private void createUserComment(final Comment comment) {
 
-        comment.setServiceName(REVIEW_FOR_USER);
+
         addedReview = true;
-        DatabaseReference myRef = FirebaseDatabase
-                .getInstance()
-                .getReference(USERS)
-                .child(comment.getUserId());
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                comment.setUserName(String.valueOf(userSnapshot.child(User.NAME).getValue()));
-                commentList.add(comment);
-                if (countOfRates == currentCountOfReview) {
-                  /*  commentAdapter = new CommentAdapter(commentList.size(), commentList);
-                    recyclerView.setAdapter(commentAdapter);*/
-                    progressBar.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
 
-                }
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void setWithoutReview() {

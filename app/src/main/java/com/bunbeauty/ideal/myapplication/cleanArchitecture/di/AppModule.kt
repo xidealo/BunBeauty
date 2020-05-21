@@ -65,6 +65,9 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideSubscriberFirebase() = SubscriberFirebase()
 
+    @Provides
+    fun provideCommentFirebase() = CommentFirebase()
+
     // DAO
     @Provides
     fun provideUserDao() = LocalDatabase.getDatabase(app).getUserDao()
@@ -120,6 +123,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideSubscriberRepository(subscriberFirebase: SubscriberFirebase) =
         SubscriberRepository(subscriberFirebase)
+
+    @Provides
+    fun provideCommentRepository(commentFirebase: CommentFirebase) =
+        CommentRepository(commentFirebase)
 
     // INTERACTORS
     @Provides
@@ -261,10 +268,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
         EditServiceInteractor(intent, serviceRepository)
 
     @Provides
-    fun provideCommentsInteractor()= CommentsInteractor(intent)
+    fun provideCommentsInteractor() = CommentsInteractor(intent)
 
     @Provides
-    fun provideCurrentCommentInteractor()= CurrentCommentInteractor(intent)
+    fun provideCurrentCommentInteractor() = CurrentCommentInteractor(intent)
 
     //APIs
     @Provides
