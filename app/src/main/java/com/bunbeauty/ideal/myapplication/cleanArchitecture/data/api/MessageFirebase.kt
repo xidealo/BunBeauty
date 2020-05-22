@@ -57,7 +57,6 @@ class MessageFirebase {
 
                 messageRef.addChildEventListener(object : ChildEventListener {
                     override fun onCancelled(p0: DatabaseError) {
-                        TODO("Not yet implemented")
                     }
 
                     override fun onChildMoved(p0: DataSnapshot, p1: String?) {
@@ -93,7 +92,6 @@ class MessageFirebase {
             }
 
             override fun onCancelled(p0: DatabaseError) {
-                TODO("Not yet implemented")
             }
         })
     }

@@ -1,13 +1,12 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
-import android.widget.*
+import android.widget.Toast
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -27,29 +26,16 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.creation_service.*
 import java.io.IOException
 import javax.inject.Inject
 
 class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, AddingServiceView,
     IPhotoEditable, IBottomPanel, ITopPanel {
-
-    private lateinit var photoCreationServiceBtn: TextView
-    private lateinit var nameServiceInput: EditText
-    private lateinit var costAddServiceInput: EditText
-    private lateinit var descriptionServiceInput: EditText
-    private lateinit var addressServiceInput: EditText
-    private lateinit var premiumLayout: LinearLayout
-    private lateinit var mainLayout: LinearLayout
-
+    
     override var panelContext: Activity = this
-
-
-
+    
     private lateinit var categoryElement: CategoryElement
-    private lateinit var continueCreationServiceBtn: Button
-    private lateinit var addServiceCreationServiceBtn: Button
 
     @InjectPresenter
     lateinit var creationServicePresenter: CreationServicePresenter
@@ -92,17 +78,8 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     }
 
     private fun init() {
-        nameServiceInput = findViewById(R.id.nameCreationServiceInput)
-        costAddServiceInput = findViewById(R.id.costCreationServiceInput)
-        descriptionServiceInput = findViewById(R.id.descriptionCreationServiceInput)
-        addressServiceInput = findViewById(R.id.addressCreationServiceInput)
-        premiumLayout = findViewById(R.id.premiumCreationServiceLayout)
-        mainLayout = findViewById(R.id.mainCreationServiceLinearLayout)
-        addServiceCreationServiceBtn = findViewById(R.id.addServiceCreationServiceBtn)
         addServiceCreationServiceBtn.setOnClickListener(this)
-        photoCreationServiceBtn = findViewById(R.id.photoCreationServiceBtn)
         photoCreationServiceBtn.setOnClickListener(this)
-        continueCreationServiceBtn = findViewById(R.id.continueCreationServiceBtn)
         continueCreationServiceBtn.setOnClickListener(this)
     }
 
@@ -114,11 +91,11 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
         when (v.id) {
             R.id.addServiceCreationServiceBtn -> {
                 creationServicePresenter.addService(
-                    nameServiceInput.text.toString(),
-                    descriptionServiceInput.text.toString(),
-                    costAddServiceInput.text.toString().toLongOrNull() ?: 0,
+                    nameCreationServiceInput.text.toString(),
+                    descriptionCreationServiceInput.text.toString(),
+                    costCreationServiceInput.text.toString().toLongOrNull() ?: 0,
                     categoryElement.category,
-                    addressServiceInput.text.toString(),
+                    addressCreationServiceInput.text.toString(),
                     categoryElement.tagsArray
                 )
             }
@@ -157,7 +134,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
             .beginTransaction()
             .add(R.id.premiumCreationServiceLayout, PremiumElementFragment.newInstance(service))
             .commit()
-        premiumLayout.visibility = View.VISIBLE
+        premiumCreationServiceLayout.visibility = View.VISIBLE
     }
 
     override fun showPhoto(bitmap: Bitmap, filePath: String) {
@@ -188,13 +165,13 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     }
 
     override fun hideMainBlock() {
-        mainLayout.visibility = View.GONE
+        mainCreationServiceLinearLayout.visibility = View.GONE
         addServiceCreationServiceBtn.visibility = View.GONE
         continueCreationServiceBtn.visibility = View.VISIBLE
     }
 
     override fun showMainBlock() {
-        mainLayout.visibility = View.VISIBLE
+        mainCreationServiceLinearLayout.visibility = View.VISIBLE
         addServiceCreationServiceBtn.visibility = View.VISIBLE
         continueCreationServiceBtn.visibility = View.GONE
     }
@@ -208,18 +185,18 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     }
 
     override fun showNameInputError(error: String) {
-        nameServiceInput.error = error
-        nameServiceInput.requestFocus()
+        nameCreationServiceInput.error = error
+        nameCreationServiceInput.requestFocus()
     }
 
     override fun showDescriptionInputError(error: String) {
-        descriptionServiceInput.error = error
-        descriptionServiceInput.requestFocus()
+        descriptionCreationServiceInput.error = error
+        descriptionCreationServiceInput.requestFocus()
     }
 
     override fun showCostInputError(error: String) {
-        costAddServiceInput.error = error
-        costAddServiceInput.requestFocus()
+        costCreationServiceInput.error = error
+        costCreationServiceInput.requestFocus()
     }
 
     override fun showCategoryInputError(error: String) {
@@ -227,8 +204,8 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     }
 
     override fun showAddressInputError(error: String) {
-        addressServiceInput.error = error
-        addressServiceInput.requestFocus()
+        addressCreationServiceInput.error = error
+        addressCreationServiceInput.requestFocus()
     }
 
     fun goToSchedule(service: Service) {

@@ -4,7 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.FragmentPagerAdapter
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -34,24 +35,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_profile.*
 import javax.inject.Inject
 
 class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView,
     ITopPanel, IBottomPanel, TabLayout.OnTabSelectedListener {
-
-    private lateinit var avatarImage: ImageView
-
-    private lateinit var fullNameText: TextView
-    private lateinit var cityText: TextView
-
-    private lateinit var subscribersText: TextView
-
+    
     private lateinit var ratingLayout: LinearLayout
-    private lateinit var ratingBar: RatingBar
-    private lateinit var ratingText: TextView
-
-    private lateinit var progressBar: ProgressBar
-
+    
     private lateinit var dialogsBtn: FloatingActionButton
     private lateinit var subscribeBtn: FloatingActionButton
 
@@ -118,14 +109,8 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     private fun init() {
-        avatarImage = findViewById(R.id.avatarProfileImage)
-        fullNameText = findViewById(R.id.fullNameProfileText)
-        cityText = findViewById(R.id.cityProfileText)
-        subscribersText = findViewById(R.id.subscribersProfileText)
 
-        ratingBar = findViewById(R.id.profileRatingBar)
         ratingLayout = findViewById(R.id.ratingProfileLayout)
-        ratingText = findViewById(R.id.ratingProfileText)
 
         subscribeBtn = findViewById(R.id.subscribeProfileBtn)
         subscribeBtn.setOnClickListener(this)
@@ -150,12 +135,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         tabLayout.addOnTabSelectedListener(this)
         viewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
 
-        progressBar = findViewById(R.id.loadingProfileProgressBar)
     }
 
     override fun showProfileInfo(name: String, surname: String, city: String) {
-        fullNameText.text = "$name $surname"
-        cityText.text = city
+        fullNameProfileText.text = "$name $surname"
+        cityProfileText.text = city
     }
 
     override fun showAvatar(photoLink: String) {
@@ -166,18 +150,18 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             .resize(width, height)
             .centerCrop()
             .transform(CircularTransformation())
-            .into(avatarImage)
+            .into(avatarProfileImage)
     }
 
     override fun showCountOfSubscriber(count: Long) {
-        subscribersText.text = "Подписчики: $count"
-        subscribersText.visibility = View.VISIBLE
+        subscribersProfileText.text = "Подписчики: $count"
+        subscribersProfileText.visibility = View.VISIBLE
     }
 
     override fun showRating(rating: Float, countOfRates: Long) {
-        ratingBar.rating = rating
+        profileRatingBar.rating = rating
         ratingLayout.setOnClickListener(this)
-        ratingText.text = "$rating ($countOfRates)"
+        ratingProfileText.text = "$rating ($countOfRates)"
     }
 
     override fun setServiceAdapter(services: List<Service>, user: User) {
@@ -284,12 +268,12 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showProgress() {
-        progressBar.visibility = View.VISIBLE
+        loadingProfileProgressBar.visibility = View.VISIBLE
         viewPager.visibility = View.INVISIBLE
     }
 
     override fun hideProgress() {
-        progressBar.visibility = View.GONE
+        loadingProfileProgressBar.visibility = View.GONE
         viewPager.visibility = View.VISIBLE
     }
 
