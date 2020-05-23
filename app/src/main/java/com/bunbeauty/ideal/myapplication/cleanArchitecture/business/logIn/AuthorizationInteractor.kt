@@ -12,12 +12,11 @@ import com.google.firebase.auth.FirebaseUser
 class AuthorizationInteractor(private val userRepository: IUserRepository) : BaseRepository(),
     IAuthorizationInteractor, UsersCallback {
 
-    val TAG = "DBInf"
     private lateinit var authorizationPresenterCallback: AuthorizationPresenterCallback
 
     override fun defaultAuthorize(authorizationPresenterCallback: AuthorizationPresenterCallback) {
         this.authorizationPresenterCallback = authorizationPresenterCallback
-        authorizationPresenterCallback.hideViewsOnScreen()
+
         if (getCurrentFbUser() != null) {
             userRepository.getByPhoneNumber(
                 FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,
@@ -26,6 +25,20 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
             )
         } else {
             authorizationPresenterCallback.showViewOnScreen()
+        }
+    }
+
+    override fun returnUsers(users: List<User>) {
+        if (users.isNotEmpty() && users.first().name.isNotEmpty()) {
+            authorizationPresenterCallback.goToProfile()
+            return
+        }
+
+        if (FirebaseAuth.getInstance().currentUser == null) {
+            authorizationPresenterCallback.showViewOnScreen()
+            return
+        } else {
+            authorizationPresenterCallback.goToRegistration(getCurrentFbUser()!!.phoneNumber!!)
         }
     }
 
@@ -49,17 +62,5 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
     }
 
 
-    override fun returnUsers(users: List<User>) {
-        if (users.isEmpty() || users.first().name.isEmpty()) {
-            if (FirebaseAuth.getInstance().currentUser != null ) {
-                if(FirebaseAuth.getInstance().currentUser!!.phoneNumber != null)
-                    authorizationPresenterCallback.goToRegistration(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!)
-            } else {
-                authorizationPresenterCallback.showViewOnScreen()
-            }
-        } else {
-            authorizationPresenterCallback.goToProfile()
-        }
-    }
 
 }

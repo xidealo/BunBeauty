@@ -282,7 +282,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun actionClick() {
-        goToEditProfile(profilePresenter.getCurrentUser())
+        goToEditProfile(profilePresenter.getCacheOwner())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -317,7 +317,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         companionDialog.user.id = dialog.ownerId
         intent.putExtra(Dialog.COMPANION_DIALOG, companionDialog)
 
-        intent.putExtra(User.USER, profilePresenter.getCurrentUser())
+        intent.putExtra(User.USER, profilePresenter.getCacheOwner())
         startActivity(intent)
         overridePendingTransition(0, 0)
     }

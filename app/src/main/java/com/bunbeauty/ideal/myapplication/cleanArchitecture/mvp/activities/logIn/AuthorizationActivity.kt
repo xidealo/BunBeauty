@@ -43,15 +43,14 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
             .appModule(AppModule(application, intent))
             .build().inject(this)
 
-        return AuthorizationPresenter(
-            authorizationInteractor
-        )
+        return AuthorizationPresenter(authorizationInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authorization)
         initView()
+
         authorizationPresenter.defaultAuthorize()
     }
 

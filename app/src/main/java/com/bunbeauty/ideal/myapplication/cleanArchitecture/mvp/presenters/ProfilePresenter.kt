@@ -80,14 +80,12 @@ class ProfilePresenter(
         profileUserInteractor.checkIconClick(this)
     }
 
-    fun getCurrentUser() = profileUserInteractor.getCurrentUser()
+    fun getCacheOwner() = profileUserInteractor.getCacheOwner()
+
+    fun getCacheUser() = profileUserInteractor.getCacheUser()
 
     fun goToDialog() {
-        profileDialogInteractor.goToDialog(
-            User.getMyId(),
-            profileUserInteractor.getCurrentUser(),
-            this
-        )
+        profileDialogInteractor.goToDialog(getCacheUser(), getCacheOwner(), this)
     }
 
     override fun goToEditProfile(user: User) {
@@ -101,7 +99,7 @@ class ProfilePresenter(
     fun subscribe() {
         val subscriber = Subscriber()
         subscriber.date = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
-        subscriber.userId = profileUserInteractor.getCurrentUser().id
+        subscriber.userId = profileUserInteractor.getCacheOwner().id
         subscriber.subscriberId = User.getMyId()
         profileSubscriberInteractor.checkSubscriber(subscriber, this)
     }
@@ -123,7 +121,7 @@ class ProfilePresenter(
     }
 
     fun goToSubscriptions() {
-        viewState.goToSubscriptions(profileUserInteractor.getCurrentUser())
+        viewState.goToSubscriptions(profileUserInteractor.getCacheOwner())
     }
 
     override fun getProfileServiceList(userId: String) {
@@ -145,7 +143,7 @@ class ProfilePresenter(
     }
 
     override fun setServiceList(serviceList: List<Service>) {
-        viewState.showUserServices(serviceList, profileUserInteractor.getCurrentUser())
+        viewState.showUserServices(serviceList, profileUserInteractor.getCacheOwner())
         viewState.hideProgress()
     }
 

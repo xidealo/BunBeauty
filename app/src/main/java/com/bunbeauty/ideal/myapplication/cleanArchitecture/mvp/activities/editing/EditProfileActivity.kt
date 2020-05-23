@@ -175,21 +175,15 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
     }
 
     override fun actionClick() {
-        logOut()
+        signOut()
     }
 
-    private fun logOut() {
-        val tokenRef = FirebaseDatabase
-            .getInstance()
-            .getReference(User.USERS)
-            .child(User.getMyId())
-            .child(User.TOKEN)
-        tokenRef.setValue("-")
+    private fun signOut() {
+        editProfilePresenter.signOut()
 
         val intent = Intent(this, AuthorizationActivity::class.java)
         startActivity(intent)
         overridePendingTransition(0, 0)
-        FirebaseAuth.getInstance().signOut()
 
         finish()
     }

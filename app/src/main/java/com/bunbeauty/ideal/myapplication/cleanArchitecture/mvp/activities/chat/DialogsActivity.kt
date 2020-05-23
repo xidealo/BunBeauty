@@ -37,8 +37,6 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
 
     override var panelContext: Activity = this
 
-
-
     @Inject
     lateinit var dialogsDialogInteractor: DialogsDialogInteractor
 

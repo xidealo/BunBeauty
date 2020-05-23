@@ -11,6 +11,7 @@ class AuthorizationPresenter(private val authorizationInteractor: IAuthorization
         MvpPresenter<AuthorizationView>(), AuthorizationPresenterCallback {
     //ПЕРЕИМЕНОВАТЬ
     fun defaultAuthorize() {
+        viewState.hideViewsOnScreen()
         authorizationInteractor.defaultAuthorize(this)
     }
 
@@ -20,10 +21,6 @@ class AuthorizationPresenter(private val authorizationInteractor: IAuthorization
 
     override fun showViewOnScreen() {
         viewState.showViewsOnScreen()
-    }
-
-    override fun hideViewsOnScreen() {
-        viewState.hideViewsOnScreen()
     }
 
     override fun setPhoneError() {

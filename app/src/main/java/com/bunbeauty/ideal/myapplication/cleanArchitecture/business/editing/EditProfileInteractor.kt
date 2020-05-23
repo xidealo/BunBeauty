@@ -1,13 +1,19 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing
 
 import android.content.Intent
+import android.util.Log
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.Tag.FB_TAG
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.Tag.TEST_TAG
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhoneNumberCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.EditProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UpdateUsersCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.database.FirebaseDatabase
 
 class EditProfileInteractor(
     private val intent: Intent,
@@ -37,14 +43,16 @@ class EditProfileInteractor(
             if (cacheUser.phone == user.phone) {
                 userRepository.update(user, this)
             } else {
+                cacheUser = user
+
                 verifyPhoneNumberApi.sendVerificationCode(user.phone, this)
                 editProfilePresenterCallback.returnCodeSent()
             }
         }
     }
 
-    override fun returnUpdatedCallback(obj: User) {
-        editProfilePresenterCallback.goToProfile(cacheUser)
+    override fun returnUpdatedCallback(user: User) {
+        editProfilePresenterCallback.goToProfile(user)
     }
 
     private fun isNameCorrect(
@@ -137,11 +145,31 @@ class EditProfileInteractor(
         editProfilePresenterCallback.showVerificationFailed()
     }
 
-    override fun returnVerifySuccessful() {
+    override fun returnCredential(credential: PhoneAuthCredential) {
+        val currentUser = FirebaseAuth.getInstance().currentUser!!
 
+        currentUser.updatePhoneNumber(credential).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                userRepository.update(cacheUser, this)
+            } else {
+                if (task.exception!!.message!!.contains("The sms verification code used to create the phone auth credential is invalid")) {
+                    editProfilePresenterCallback.showWrongCodeError()
+                } else {
+                    editProfilePresenterCallback.showPhoneAlreadyUsedError()
+                }
+
+                Log.d(FB_TAG, "updatePhoneNumber() failed: " + task.exception!!.message)
+            }
+        }
     }
 
-    override fun returnWrongCodeError() {
-        editProfilePresenterCallback.showWrongCodeError()
+    fun signOut() {
+        val tokenRef = FirebaseDatabase
+            .getInstance()
+            .getReference(User.USERS)
+            .child(User.getMyId())
+            .child(User.TOKEN)
+        tokenRef.setValue("-")
+        FirebaseAuth.getInstance().signOut()
     }
 }

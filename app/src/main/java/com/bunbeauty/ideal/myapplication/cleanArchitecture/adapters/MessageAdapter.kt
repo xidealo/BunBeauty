@@ -40,6 +40,7 @@ class MessageAdapter(
 
     inner class MessageViewHolder(private val view: View, private val context: Context) :
         ViewHolder(view) {
+
         fun bind(message: Message) {
 
             when (message.type) {

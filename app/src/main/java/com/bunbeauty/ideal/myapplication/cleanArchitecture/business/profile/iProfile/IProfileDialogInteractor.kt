@@ -4,9 +4,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.Prof
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface IProfileDialogInteractor {
+
     fun goToDialog(
-        userId: String,
-        ownerProfile: User,
+        user: User,
+        profileOwner: User,
         profilePresenterCallback: ProfilePresenterCallback
     )
+
 }

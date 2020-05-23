@@ -22,7 +22,9 @@ data class User(
 
     companion object {
 
-        fun getMyId(): String = FirebaseAuth.getInstance().currentUser!!.uid
+        fun getMyId(): String {
+            return FirebaseAuth.getInstance().currentUser!!.uid
+        }
 
         const val USERS = "users"
 

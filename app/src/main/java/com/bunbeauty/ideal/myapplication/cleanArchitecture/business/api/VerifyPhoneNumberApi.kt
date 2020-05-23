@@ -1,8 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api
 
-import android.app.Activity
-import androidx.annotation.MainThread
-import androidx.core.content.ContextCompat
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhoneNumberCallback
 import com.google.android.gms.tasks.TaskExecutors
 import com.google.firebase.FirebaseException
@@ -52,22 +49,24 @@ class VerifyPhoneNumberApi {
         }
 
         val credential = PhoneAuthProvider.getCredential(phoneVerificationId, code)
+        verifyPhoneNumberCallback.returnCredential(credential)
+        //FirebaseAuth.getInstance().currentUser!!.linkWithCredential(credential).isComplete
 
-        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener { task ->
+        /*FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                verifyPhoneNumberCallback.returnVerifySuccessful()
+                verifyPhoneNumberCallback.returnVerifySuccessful(credential)
             } else {
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {
                     verifyPhoneNumberCallback.returnWrongCodeError()
                 }
             }
-        }
+        }*/
     }
 
     private val verificationCallbacks =
         object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                verifyPhoneNumberCallback.returnVerifySuccessful()
+                verifyPhoneNumberCallback.returnCredential(credential)
             }
 
             override fun onVerificationFailed(e: FirebaseException) {

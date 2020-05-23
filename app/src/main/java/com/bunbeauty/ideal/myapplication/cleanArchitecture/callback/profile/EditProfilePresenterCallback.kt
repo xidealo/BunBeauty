@@ -17,4 +17,5 @@ interface EditProfilePresenterCallback {
     fun showTooShortCodeError()
     fun showVerificationFailed()
     fun showWrongCodeError()
+    fun showPhoneAlreadyUsedError()
 }

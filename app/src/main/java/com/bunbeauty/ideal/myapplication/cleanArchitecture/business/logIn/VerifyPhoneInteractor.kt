@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
-import android.app.Activity
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IVerifyPhoneInteractor
@@ -13,7 +12,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.int
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthProvider
 
 class VerifyPhoneInteractor(
     private val userRepository: IUserRepository,
@@ -54,13 +52,24 @@ class VerifyPhoneInteractor(
         verifyPresenterCallback.showTooShortCodeError()
     }
 
-    override fun returnWrongCodeError() {
+    override fun returnCredential(credential: PhoneAuthCredential) {
+        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                userRepository.getByPhoneNumber(getMyPhoneNumber(), this, true)
+            } else {
+                if (task.exception is FirebaseAuthInvalidCredentialsException) {
+                    verifyPresenterCallback.showWrongCodeError()
+                }
+            }
+        }
+    }
+    /*override fun returnWrongCodeError() {
         verifyPresenterCallback.showWrongCodeError()
     }
 
-    override fun returnVerifySuccessful() {
+    override fun returnVerifySuccessful(credential: PhoneAuthCredential) {
         userRepository.getByPhoneNumber(getMyPhoneNumber(), this, true)
-    }
+    }*/
 
     override fun returnUsers(users: List<User>) {
         if (users.isEmpty() || users.first().name.isEmpty()) {

@@ -15,17 +15,18 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
 
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
     private lateinit var ownerProfile: User
-    private lateinit var userId: String
+    private lateinit var user: User
 
     override fun goToDialog(
-        userId: String,
-        ownerProfile: User,
+        user: User,
+        profileOwner: User,
         profilePresenterCallback: ProfilePresenterCallback
     ) {
         this.profilePresenterCallback = profilePresenterCallback
-        this.ownerProfile = ownerProfile
-        this.userId = userId
-        dialogRepository.getByUserId(userId, this, this, this)
+        this.ownerProfile = profileOwner
+        this.user = user
+
+        dialogRepository.getByUserId(user.id, this, this, this)
     }
 
     override fun returnList(objects: List<Dialog>) {
@@ -49,7 +50,7 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
     private fun createMyDialog(): Dialog {
         val newDialog = Dialog()
 
-        newDialog.user = ProfileUserInteractor.cacheCurrentUser
+        newDialog.user = user
         newDialog.ownerId = ownerProfile.id
         newDialog.isChecked = true
         return newDialog
@@ -59,7 +60,7 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
         val newDialog = Dialog()
 
         newDialog.user = ownerProfile
-        newDialog.ownerId = userId
+        newDialog.ownerId = user.id
         newDialog.isChecked = true
         return newDialog
     }

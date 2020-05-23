@@ -4,10 +4,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.Prof
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface IProfileUserInteractor {
+    fun getCacheOwner(): User
+    fun getCacheUser(): User
     fun updateUser(user: User, profilePresenterCallback: ProfilePresenterCallback)
     fun getCountOfRates(): String
     fun isMyProfile(ownerId: String, myId: String): Boolean
-    fun getCurrentUser(): User
     fun checkSubscription(): Boolean
     fun initFCM()
     fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback)

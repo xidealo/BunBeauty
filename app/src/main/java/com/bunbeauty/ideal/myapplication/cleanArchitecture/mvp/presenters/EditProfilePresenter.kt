@@ -4,7 +4,6 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.EditProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.EditProfilePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Code
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
 
@@ -95,5 +94,13 @@ class EditProfilePresenter(private val editProfileInteractor: EditProfileInterac
 
     override fun showWrongCodeError() {
         viewState.showMessage("Неверный код. Попробуйте ещё раз.")
+    }
+
+    override fun showPhoneAlreadyUsedError() {
+        viewState.showMessage("Данный номер уже используется другим пользователем.")
+    }
+
+    fun signOut() {
+        editProfileInteractor.signOut()
     }
 }

@@ -32,7 +32,6 @@ interface IBottomPanel : IPanel, BottomNavigationView.OnNavigationItemSelectedLi
                 goToProfile()
             }
             R.id.navigation_main -> {
-
                 goToMainScreen()
             }
             R.id.navigation_chat -> {
@@ -45,13 +44,13 @@ interface IBottomPanel : IPanel, BottomNavigationView.OnNavigationItemSelectedLi
 
     private fun goToProfile() {
         val intent = Intent(panelContext, ProfileActivity::class.java)
-        intent.putExtra(User.USER, ProfileUserInteractor.cacheCurrentUser)
+        intent.putExtra(User.USER, ProfileUserInteractor.cacheUser)
         startActivity(intent)
     }
 
     fun goToMainScreen() {
         val intent = Intent(panelContext, MainScreenActivity::class.java)
-        intent.putExtra(User.USER, ProfileUserInteractor.cacheCurrentUser)
+        intent.putExtra(User.USER, ProfileUserInteractor.cacheUser)
         startActivity(intent)
     }
 

@@ -16,8 +16,7 @@ class DialogsPresenter(
     private val dialogsDialogInteractor: IDialogsDialogInteractor,
     private val dialogsUserInteractor: IDialogsUserInteractor,
     private val dialogsMessageInteractor: IDialogsMessageInteractor
-) :
-    MvpPresenter<DialogsView>(), DialogsPresenterCallback {
+) : MvpPresenter<DialogsView>(), DialogsPresenterCallback {
 
     fun getDialogs() {
         viewState.showLoading()
