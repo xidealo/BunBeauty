@@ -32,9 +32,9 @@ import javax.inject.Inject
 
 class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, AddingServiceView,
     IPhotoEditable, IBottomPanel, ITopPanel {
-    
+
     override var panelContext: Activity = this
-    
+
     private lateinit var categoryElement: CategoryElement
 
     @InjectPresenter

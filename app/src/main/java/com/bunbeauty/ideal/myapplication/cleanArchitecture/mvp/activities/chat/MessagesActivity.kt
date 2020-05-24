@@ -73,6 +73,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         messagePresenter.createMessageScreen()
     }
 
+
     private fun init() {
         loadingMessagesProgressBar = findViewById(R.id.loadingMessagesProgressBar)
         resultsMessagesRecycleView = findViewById(R.id.resultsMessagesRecycleView)
@@ -92,6 +93,20 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
                     messagePresenter.checkMoveToStart()
                 }
             })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (data == null || resultCode != RESULT_OK) {
+            return
+        }
+
+        when (requestCode) {
+            REQUEST_MESSAGE_USER_REVIEW -> {
+                messagePresenter.updateMessage(data.getSerializableExtra(Message.MESSAGE) as Message)
+            }
+        }
     }
 
     override fun onClick(v: View) {
@@ -137,5 +152,10 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
 
     override fun actionClick() {
         messagePresenter.goToProfile()
+    }
+
+    companion object {
+        const val REQUEST_MESSAGE_USER_REVIEW = 1
+
     }
 }

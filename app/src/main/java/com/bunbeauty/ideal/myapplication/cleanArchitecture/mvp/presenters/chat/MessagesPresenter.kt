@@ -14,8 +14,7 @@ class MessagesPresenter(
     private val messagesMessageInteractor: IMessagesMessageInteractor,
     private val messagesDialogInteractor: IMessagesDialogInteractor,
     private val messagesUserInteractor: IMessagesUserInteractor
-) :
-    MvpPresenter<MessagesView>(), MessagesPresenterCallback {
+) : MvpPresenter<MessagesView>(), MessagesPresenterCallback {
 
     fun getMessagesLink() = messagesMessageInteractor.getMyMessagesLink()
 
@@ -39,14 +38,16 @@ class MessagesPresenter(
         )
     }
 
+    fun updateMessage(message: Message) {
+        messagesMessageInteractor.updateMessages(message, this)
+    }
+
     fun sendMessage(messageText: String) {
         val message = Message()
         message.message = messageText
         message.dialogId = messagesDialogInteractor.getCompanionDialog().id
         message.userId = messagesDialogInteractor.getMyDialog().ownerId
         message.type = Message.TEXT_MESSAGE_STATUS
-        //message.type = Message.SERVICE_REVIEW_MESSAGE_STATUS
-        //message.type = Message.USER_REVIEW_MESSAGE_STATUS
         messagesMessageInteractor.sendMessage(message, this)
     }
 

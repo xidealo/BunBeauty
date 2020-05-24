@@ -1,7 +1,7 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment
 
 import android.content.Intent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.iComments.ICreationCommentCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.iCreationComment.ICreationCommentCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.comments.CreationCommentPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.comment.InsertCommentCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Comment
@@ -15,7 +15,7 @@ class CreationCommentCommentInteractor(
 
     private lateinit var creationCommentPresenterCallback: CreationCommentPresenterCallback
 
-    fun createComment(
+    override fun createComment(
         comment: Comment,
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     ) {
@@ -25,7 +25,7 @@ class CreationCommentCommentInteractor(
     }
 
     override fun returnCreatedCallback(obj: Comment) {
-        creationCommentPresenterCallback.showCommentCreated()
+        creationCommentPresenterCallback.updateCommentMessage(obj)
     }
 
 }

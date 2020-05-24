@@ -11,12 +11,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.Mes
 
 class MessagesMessageInteractor(private val messageRepository: MessageRepository) :
     IMessagesMessageInteractor, MessagesCallback, InsertMessageCallback, MessageCallback {
-    //tree set and sort by time
+
     private var cacheMessages = mutableListOf<Message>()
     private var cacheMessagesSet = mutableSetOf<Message>()
     private var countOfDialogs = 0
     private lateinit var messagesPresenterCallback: MessagesPresenterCallback
-    //брать последнее сообщение из своего и чужого и сравнивать их время
 
     override fun getMyMessagesLink() = cacheMessages
 
@@ -34,6 +33,15 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     ) {
         this.messagesPresenterCallback = messagesPresenterCallback
         messageRepository.getByDialogId(dialog, this, this)
+    }
+
+    override fun updateMessages(
+        message: Message,
+        messagesPresenterCallback: MessagesPresenterCallback
+    ) {
+        cacheMessages.remove(cacheMessages.find { it.id == message.id }!!)
+        cacheMessages.add(message)
+        messagesPresenterCallback.showSendMessage(message)
     }
 
     override fun sendMessage(

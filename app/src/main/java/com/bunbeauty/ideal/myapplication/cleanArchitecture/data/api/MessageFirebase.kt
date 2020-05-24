@@ -29,6 +29,26 @@ class MessageFirebase {
         messageRef.updateChildren(items)
     }
 
+    fun update(message: Message){
+        val messageRef = FirebaseDatabase.getInstance()
+            .getReference(User.USERS)
+            .child(message.userId)
+            .child(Dialog.DIALOGS)
+            .child(message.dialogId)
+            .child(Message.MESSAGES)
+            .child(message.id)
+
+        val items = HashMap<String, Any>()
+        items[Message.MESSAGE] = message.message
+        items[Message.TIME] = ServerValue.TIMESTAMP
+        if (message.orderId.isNotEmpty())
+            items[Message.ORDER_ID] = message.orderId
+
+        items[Message.TYPE] = message.type
+
+        messageRef.updateChildren(items)
+    }
+
     fun getByDialogId(
         dialog: Dialog,
         messageCallback: MessageCallback,

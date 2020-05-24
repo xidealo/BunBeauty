@@ -33,7 +33,10 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
 
     override fun update(message: Message, updateMessageCallback: UpdateMessageCallback) {
         launch {
-
+            messageFirebase.update(message)
+            withContext(Dispatchers.Main) {
+                updateMessageCallback.returnUpdatedCallback(message)
+            }
         }
     }
 

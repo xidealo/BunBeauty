@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CreationCommentActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
 
@@ -26,7 +28,11 @@ class MessageUserReviewElement(
     private fun goToCreationComment() {
         val intent = Intent(context, CreationCommentActivity::class.java)
         intent.putExtra(User.USER, messagesPresenter.getCacheCurrentUser())
-        context.startActivity(intent)
-        (context as Activity).overridePendingTransition(0, 0)
+        intent.putExtra(Message.MESSAGE, message)
+        (context as Activity).startActivityForResult(
+            intent,
+            MessagesActivity.REQUEST_MESSAGE_USER_REVIEW
+        )
+        context.overridePendingTransition(0, 0)
     }
 }
