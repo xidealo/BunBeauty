@@ -21,12 +21,45 @@
             android:layout_gravity="center"
             app:srcCompat="@drawable/bun_beauty" />
 
-        <EditText
-            android:id="@+id/codeVerifyPhoneInput"
-            style="@style/loginInput"
-            android:layout_gravity="center"
-            android:hint="@string/enterCode"
-            android:inputType="phone" />
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/materialLoginInputLayout"
+            android:hint="@string/phone"
+            app:startIconDrawable="@drawable/icon_phone_number">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phoneVerifyPhoneInput"
+                style="@style/materialLoginInput"
+                android:enabled="false"
+                android:focusable="false"
+                android:inputType="number"
+                android:textColor="@color/white50" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/changePhoneVerifyPhoneText"
+            style="@style/loginPackageText"
+            android:text="@string/change_number" />
+
+        <TextView
+            android:id="@+id/alertCodeVerifyText"
+            style="@style/extraText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="На указанный номер \n был отправлен код подтверждения" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/materialLoginInputLayout"
+            android:hint="Код"
+            app:startIconDrawable="@drawable/icon_sms_code">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/codeVerifyPhoneInput"
+                style="@style/materialLoginInput"
+                android:inputType="number" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             style="@style/loginPackageLinearLayout"
@@ -35,13 +68,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="0dp">
 
-            <TextView
-                android:id="@+id/alertCodeVerifyText"
-                style="@style/extraText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="На указанный номер,\n был отправлен код подтверждения" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -50,16 +77,21 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/resendCodeVerifyPhoneText"
-                style="@style/loginPackageText"
+                style="@style/extraText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:text="@string/resendCode" />
+                android:gravity="end"
+                android:text="Не получили sms?" />
 
             <TextView
-                android:id="@+id/changePhoneVerifyPhoneText"
+                android:id="@+id/resendCodeVerifyPhoneText"
                 style="@style/loginPackageText"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:text="@string/change_number" />
+                android:gravity="start"
+                android:text="@string/resendCode" />
         </LinearLayout>
     </LinearLayout>
 

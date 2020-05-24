@@ -11,14 +11,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.Regis
 class RegistrationPresenter(private val registrationInteractor: RegistrationInteractor) :
     MvpPresenter<RegistrationView>(), IRegistrationPresenter {
 
-    fun registration(name: String, surname: String, city: String, phone: String) {
+    fun checkDataAndRegisterUser(name: String, surname: String, city: String, phone: String) {
         viewState.disableRegistrationButton()
-        val user = User()
-        user.phone = phone
-        user.city = city
-        user.name = name
-        user.surname = surname
-        registrationInteractor.registration(user, this)
+
+        val user = User(phone = phone, city = city, name = name, surname = surname)
+        registrationInteractor.checkDataAndRegisterUser(user, this)
     }
 
     fun getMyPhoneNumber() = registrationInteractor.getMyPhoneNumber()

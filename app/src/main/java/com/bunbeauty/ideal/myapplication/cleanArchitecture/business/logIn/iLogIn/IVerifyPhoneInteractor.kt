@@ -4,7 +4,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhoneP
 
 interface IVerifyPhoneInteractor {
 
-    fun getMyPhoneNumber(): String
+    fun getPhoneNumber(): String
 
     fun sendVerificationCode(
         phoneNumber: String,

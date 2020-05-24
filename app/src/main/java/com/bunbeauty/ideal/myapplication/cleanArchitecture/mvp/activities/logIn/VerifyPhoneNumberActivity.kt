@@ -16,16 +16,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.VerifyPhonePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.VerifyPhoneView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
+import kotlinx.android.synthetic.main.activity_verify_phone_number.*
 import javax.inject.Inject
 
-class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener, VerifyPhoneView {
-
-    private lateinit var verifyCodeBtn: Button
-    private lateinit var resendCodeText: TextView
-    private lateinit var codeInput: EditText
-    private lateinit var changePhoneText: TextView
-    private lateinit var alertCodeText: TextView
-    private lateinit var progressBar: ProgressBar
+class VerifyPhoneNumberActivity : MvpAppCompatActivity(), VerifyPhoneView {
 
     @Inject
     internal lateinit var verifyPhoneInteractor: VerifyPhoneInteractor
@@ -35,57 +29,49 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), View.OnClickListener, 
 
     @ProvidePresenter
     internal fun provideVerifyPhonePresenter(): VerifyPhonePresenter {
-
         DaggerAppComponent.builder()
             .appModule(AppModule(application, intent))
             .build()
             .inject(this)
-        return VerifyPhonePresenter(
-            verifyPhoneInteractor
-        )
+
+        return VerifyPhonePresenter(verifyPhoneInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_verify_phone_number)
 
-        init()
+        configViews()
         showViewsOnScreen()
 
         verifyPhonePresenter.sendCode()
     }
 
-    private fun init() {
-        verifyCodeBtn = findViewById(R.id.verifyVerifyPhoneBtn)
-        resendCodeText = findViewById(R.id.resendCodeVerifyPhoneText)
-        alertCodeText = findViewById(R.id.alertCodeVerifyText)
-        codeInput = findViewById(R.id.codeVerifyPhoneInput)
-        changePhoneText = findViewById(R.id.changePhoneVerifyPhoneText)
+    private fun configViews() {
+        phoneVerifyPhoneInput.setText(verifyPhonePresenter.getPhoneNumber())
 
-        progressBar = findViewById(R.id.loadingVerifyPhoneProgressBar)
-
-        verifyCodeBtn.setOnClickListener(this)
-        resendCodeText.setOnClickListener(this)
-        changePhoneText.setOnClickListener(this)
-    }
-
-    override fun onClick(v: View) {
-        WorkWithViewApi.hideKeyboard(this)
-        when (v.id) {
-            R.id.verifyVerifyPhoneBtn -> verifyPhonePresenter.checkCode(codeInput.text.toString())
-            R.id.resendCodeVerifyPhoneText -> verifyPhonePresenter.resendCode()
-            R.id.changePhoneVerifyPhoneText -> goBackToAuthorization()
+        verifyVerifyPhoneBtn.setOnClickListener{
+            WorkWithViewApi.hideKeyboard(this)
+            verifyPhonePresenter.checkCode(codeVerifyPhoneInput.text.toString())
+        }
+        resendCodeVerifyPhoneText.setOnClickListener{
+            WorkWithViewApi.hideKeyboard(this)
+            verifyPhonePresenter.resendCode()
+        }
+        changePhoneVerifyPhoneText.setOnClickListener{
+            WorkWithViewApi.hideKeyboard(this)
+            goBackToAuthorization()
         }
     }
 
     override fun hideViewsOnScreen() {
-        verifyCodeBtn.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        verifyVerifyPhoneBtn.visibility = View.GONE
+        loadingVerifyPhoneProgressBar.visibility = View.VISIBLE
     }
 
     override fun showViewsOnScreen() {
-        verifyCodeBtn.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        verifyVerifyPhoneBtn.visibility = View.VISIBLE
+        loadingVerifyPhoneProgressBar.visibility = View.GONE
     }
 
     override fun showMessage(message: String) {

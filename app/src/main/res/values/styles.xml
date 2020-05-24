@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/darkBlue</item>
         <item name="colorAccent">@color/white50</item>
         <item name="android:textColorHint">@color/black</item>
+        <item name="colorControlActivated">@color/darkBlue</item>
     </style>
 
     <style name="allPages" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -21,7 +22,10 @@
     </style>
 
     <style name="logInPage">
+        <item name="colorControlActivated">@color/white</item>
         <item name="android:background">@color/mainBlue</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 
     <!-- TEXT -->
@@ -44,8 +48,7 @@
 
     <style name="extraText">
         <item name="android:textColor">@color/white50</item>
-        <item name="android:textSize">14sp</item>
-        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="topTitleText">
@@ -67,10 +70,22 @@
         <item name="fontFamily">@font/roboto_medium</item>
     </style>
 
+    <style name="materialLoginInputLayout" parent="materialInputLayout">
+        <item name="boxStrokeColor">@color/selector_white</item>
+        <item name="boxBackgroundColor">@color/mainBlue</item>
+        <item name="android:textColorHint">@color/white50</item>
+        <item name="startIconTint">@color/white50</item>
+        <item name="hintTextColor">@color/white</item>
+    </style>
+
     <style name="materialInput">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="materialLoginInput" parent="materialInput">
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="materialSpinnerLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
@@ -80,7 +95,7 @@
         <item name="android:layout_marginEnd">25dp</item>
         <item name="android:layout_marginTop">3dp</item>
         <item name="android:layout_marginBottom">3dp</item>
-        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxBackgroundColor">@color/white50</item>
     </style>
 
     <style name="materialSpinner">
@@ -91,6 +106,17 @@
         <item name="android:focusable">false</item>
         <item name="boxBackgroundColor">@color/white</item>
         <item name="fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="materialLoginSpinnerLayout" parent="materialSpinnerLayout">
+        <item name="startIconTint">@color/white50</item>
+        <item name="boxBackgroundColor">@color/mainBlue</item>
+        <item name="boxStrokeColor">@color/selector_white50</item>
+        <item name="endIconTint">@color/white</item>
+    </style>
+
+    <style name="materialLoginSpinner" parent="materialSpinner">
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <!-- BUTTONS -->
@@ -201,6 +227,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/bottom_panel_height</item>
         <item name="labelVisibilityMode">unlabeled</item>
+        <item name="elevation">10dp</item>
         <item name="android:background">@color/mainBlue</item>
         <item name="itemIconTint">@color/navigation</item>
     </style>

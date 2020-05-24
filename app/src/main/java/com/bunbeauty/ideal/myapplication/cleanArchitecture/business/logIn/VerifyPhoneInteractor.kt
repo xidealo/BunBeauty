@@ -21,7 +21,7 @@ class VerifyPhoneInteractor(
 
     private lateinit var verifyPresenterCallback: VerifyPhonePresenterCallback
 
-    override fun getMyPhoneNumber(): String = intent.getStringExtra(User.PHONE)!!
+    override fun getPhoneNumber(): String = intent.getStringExtra(User.PHONE)!!
 
     override fun sendVerificationCode(
         phoneNumber: String,
@@ -55,7 +55,7 @@ class VerifyPhoneInteractor(
     override fun returnCredential(credential: PhoneAuthCredential) {
         FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                userRepository.getByPhoneNumber(getMyPhoneNumber(), this, true)
+                userRepository.getByPhoneNumber(getPhoneNumber(), this, true)
             } else {
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {
                     verifyPresenterCallback.showWrongCodeError()
@@ -73,7 +73,7 @@ class VerifyPhoneInteractor(
 
     override fun returnUsers(users: List<User>) {
         if (users.isEmpty() || users.first().name.isEmpty()) {
-            verifyPresenterCallback.goToRegistration(getMyPhoneNumber())
+            verifyPresenterCallback.goToRegistration(getPhoneNumber())
         } else {
             verifyPresenterCallback.goToProfile()
         }

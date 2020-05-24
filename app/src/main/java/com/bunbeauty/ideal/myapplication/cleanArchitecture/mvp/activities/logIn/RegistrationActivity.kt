@@ -2,9 +2,8 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -18,17 +17,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapt
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.RegistrationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.RegistrationView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
+import kotlinx.android.synthetic.main.activity_registration.*
 import javax.inject.Inject
 
-class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener,
-    RegistrationView, IAdapterSpinner {
-
-    private lateinit var nameInput: EditText
-    private lateinit var surnameInput: EditText
-    private lateinit var phoneInput: EditText
-    private lateinit var citySpinner: Spinner
-    private lateinit var registrationBtn: Button
-    private val TAG = "DBInf"
+class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterSpinner {
 
     @Inject
     lateinit var registrationInteractor: RegistrationInteractor
@@ -43,70 +35,63 @@ class RegistrationActivity : MvpAppCompatActivity(), View.OnClickListener,
             .appModule(AppModule(application, intent))
             .build().inject(this)
 
-        return RegistrationPresenter(
-            registrationInteractor
-        )
+        return RegistrationPresenter(registrationInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
-        init()
+
+        configViews()
     }
 
-    private fun init() {
-        Log.d(TAG, "initView RegistrationActivity: ")
-        registrationBtn = findViewById(R.id.saveRegistrationBtn)
+    private fun configViews() {
+        phoneRegistrationInput.setText(registrationPresenter.getMyPhoneNumber())
 
-        nameInput = findViewById(R.id.nameRegistrationInput)
-        surnameInput = findViewById(R.id.surnameRegistrationInput)
-        phoneInput = findViewById(R.id.phoneRegistrationInput)
-        phoneInput.setText(registrationPresenter.getMyPhoneNumber())
-        citySpinner = findViewById(R.id.citySpinnerRegistrationSpinner)
+        setAdapter(
+            arrayListOf(*resources.getStringArray(R.array.cities)),
+            cityRegistrationSpinner,
+            this
+        )
+        (cityRegistrationSpinner.adapter as ArrayAdapter<String>).filter.filter("")
 
-        val cityList =  arrayListOf(*resources.getStringArray(R.array.cities))
-        setAdapter(cityList, citySpinner, this, R.layout.element_login_spinner)
-
-        registrationBtn.setOnClickListener(this)
-    }
-
-    override fun onClick(v: View) {
-        WorkWithViewApi.hideKeyboard(this)
-
-        when (v.id) {
-            R.id.saveRegistrationBtn -> {
-                registrationPresenter.registration(
-                    WorkWithStringsApi.firstCapitalSymbol(nameInput.text.toString().trim()),
-                    WorkWithStringsApi.firstCapitalSymbol(surnameInput.text.toString().trim()),
-                    WorkWithStringsApi.firstCapitalSymbol(citySpinner.selectedItem.toString()),
-                    phoneInput.text.toString()
-                )
-            }
+        saveRegistrationBtn.setOnClickListener {
+            WorkWithViewApi.hideKeyboard(this)
+            saveData()
         }
     }
 
-    override fun fillPhoneInput(phone: String) = phoneInput.setText(phone)
+    private fun saveData() {
+        registrationPresenter.checkDataAndRegisterUser(
+            WorkWithStringsApi.firstCapitalSymbol(nameRegistrationInput.text.toString().trim()),
+            WorkWithStringsApi.firstCapitalSymbol(surnameRegistrationInput.text.toString().trim()),
+            WorkWithStringsApi.firstCapitalSymbol(cityRegistrationSpinner.text.toString()),
+            phoneRegistrationInput.text.toString()
+        )
+    }
+
+    override fun fillPhoneInput(phone: String) = phoneRegistrationInput.setText(phone)
 
     override fun showSuccessfulRegistration() {
         Toast.makeText(this, "Пользователь зарегестирован", Toast.LENGTH_LONG).show()
     }
 
     override fun disableRegistrationButton() {
-        registrationBtn.isEnabled = false
+        saveRegistrationBtn.isEnabled = false
     }
 
     override fun enableRegistrationButton() {
-        registrationBtn.isEnabled = true
+        saveRegistrationBtn.isEnabled = true
     }
 
     override fun setNameInputError(error: String) {
-        nameInput.error = error
-        nameInput.requestFocus()
+        nameRegistrationInput.error = error
+        nameRegistrationInput.requestFocus()
     }
 
     override fun setSurnameInputError(error: String) {
-        surnameInput.error = error
-        surnameInput.requestFocus()
+        surnameRegistrationInput.error = error
+        surnameRegistrationInput.requestFocus()
     }
 
     override fun showNoSelectedCity() {

@@ -10,12 +10,16 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.Verif
 class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneInteractor) :
     MvpPresenter<VerifyPhoneView>(), VerifyPhonePresenterCallback {
 
+    fun getPhoneNumber(): String {
+        return verifyPhoneInteractor.getPhoneNumber()
+    }
+
     fun sendCode() {
-        verifyPhoneInteractor.sendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber(), this)
+        verifyPhoneInteractor.sendVerificationCode(verifyPhoneInteractor.getPhoneNumber(), this)
     }
 
     fun resendCode() {
-        verifyPhoneInteractor.resendVerificationCode(verifyPhoneInteractor.getMyPhoneNumber())
+        verifyPhoneInteractor.resendVerificationCode(verifyPhoneInteractor.getPhoneNumber())
     }
 
     override fun showTooManyRequestsError() {

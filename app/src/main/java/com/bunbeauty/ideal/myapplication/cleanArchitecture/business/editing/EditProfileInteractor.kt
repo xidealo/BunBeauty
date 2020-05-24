@@ -3,15 +3,14 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing
 import android.content.Intent
 import android.util.Log
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.Tag.FB_TAG
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.Tag.TEST_TAG
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhoneNumberCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.EditProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UpdateUsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.database.FirebaseDatabase
 
@@ -19,7 +18,7 @@ class EditProfileInteractor(
     private val intent: Intent,
     private val userRepository: UserRepository,
     private val verifyPhoneNumberApi: VerifyPhoneNumberApi
-) : UpdateUsersCallback, VerifyPhoneNumberCallback {
+) : UpdateUsersCallback, VerifyPhoneNumberCallback, UsersCallback {
 
     private lateinit var editProfilePresenterCallback: EditProfilePresenterCallback
 
@@ -37,16 +36,15 @@ class EditProfileInteractor(
     ) {
         this.editProfilePresenterCallback = editProfilePresenterCallback
 
-        if (isNameCorrect(user.name, editProfilePresenterCallback)
-            && isSurnameCorrect(user.surname, editProfilePresenterCallback)
+        if (isNameCorrect(user.name, editProfilePresenterCallback) &&
+            isSurnameCorrect(user.surname, editProfilePresenterCallback)
         ) {
             if (cacheUser.phone == user.phone) {
                 userRepository.update(user, this)
             } else {
                 cacheUser = user
 
-                verifyPhoneNumberApi.sendVerificationCode(user.phone, this)
-                editProfilePresenterCallback.returnCodeSent()
+                checkPhoneAlreadyUsed(user.phone)
             }
         }
     }
@@ -125,6 +123,19 @@ class EditProfileInteractor(
         return true
     }
 
+    fun checkPhoneAlreadyUsed(phoneNumber: String) {
+        userRepository.getByPhoneNumber(phoneNumber, this, true)
+    }
+
+    override fun returnUsers(users: List<User>) {
+        if (users.isEmpty()) {
+            verifyPhoneNumberApi.sendVerificationCode(cacheUser.phone, this)
+            editProfilePresenterCallback.returnCodeSent()
+        } else {
+            editProfilePresenterCallback.showPhoneAlreadyUsedError()
+        }
+    }
+
     fun resendCode(phoneNumber: String) {
         verifyPhoneNumberApi.resendVerificationCode(phoneNumber)
     }
@@ -152,11 +163,7 @@ class EditProfileInteractor(
             if (task.isSuccessful) {
                 userRepository.update(cacheUser, this)
             } else {
-                if (task.exception!!.message!!.contains("The sms verification code used to create the phone auth credential is invalid")) {
-                    editProfilePresenterCallback.showWrongCodeError()
-                } else {
-                    editProfilePresenterCallback.showPhoneAlreadyUsedError()
-                }
+                editProfilePresenterCallback.showWrongCodeError()
 
                 Log.d(FB_TAG, "updatePhoneNumber() failed: " + task.exception!!.message)
             }

@@ -15,7 +15,9 @@ class RegistrationInteractor(
 
     private lateinit var iRegistrationPresenter: IRegistrationPresenter
 
-    override fun registration(
+    override fun getMyPhoneNumber(): String = intent.getStringExtra(User.PHONE) ?: ""
+
+    override fun checkDataAndRegisterUser(
         user: User,
         iRegistrationPresenter: IRegistrationPresenter
     ) {
@@ -29,42 +31,7 @@ class RegistrationInteractor(
         }
     }
 
-    override fun getIsCityInputCorrect(city: String): Boolean {
-        if (city == "Выбрать город") {
-            return false
-        }
-        return true
-    }
-
-    override fun getIsNameInputCorrect(name: String): Boolean {
-        if (!name.matches("[a-zA-ZА-Яа-я\\-]+".toRegex())) {
-            return false
-        }
-        return true
-    }
-
-    override fun getIsNameLengthLessTwenty(name: String): Boolean {
-        if (name.length > 20) {
-            return false
-        }
-        return true
-    }
-
-    override fun getIsSurnameInputCorrect(surname: String): Boolean {
-        if (!surname.matches("[a-zA-ZА-Яа-я\\-]+".toRegex())) {
-            return false
-        }
-        return true
-    }
-
-    override fun getIsSurnameLengthLessTwenty(surname: String): Boolean {
-        if (surname.length > 20) {
-            return false
-        }
-        return true
-    }
-
-
+    private fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
     //TODO UNIT TEST
     private fun isNameCorrect(
@@ -120,9 +87,25 @@ class RegistrationInteractor(
         return true
     }
 
-    override fun getMyPhoneNumber(): String = intent.getStringExtra(User.PHONE) ?: ""
+    override fun getIsCityInputCorrect(city: String): Boolean {
+        return city != "Город"
+    }
 
-    override fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
+    override fun getIsNameInputCorrect(name: String): Boolean {
+        return name.matches("[a-zA-ZА-Яа-я\\-]+".toRegex())
+    }
+
+    override fun getIsNameLengthLessTwenty(name: String): Boolean {
+        return name.length <= 20
+    }
+
+    override fun getIsSurnameInputCorrect(surname: String): Boolean {
+        return surname.matches("[a-zA-ZА-Яа-я\\-]+".toRegex())
+    }
+
+    override fun getIsSurnameLengthLessTwenty(surname: String): Boolean {
+        return surname.length <= 20
+    }
 
     override fun returnCreatedCallback(obj: User) {
         iRegistrationPresenter.showSuccessfulRegistration()

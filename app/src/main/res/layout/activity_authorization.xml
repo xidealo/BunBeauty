@@ -22,29 +22,36 @@
             android:layout_gravity="center"
             app:srcCompat="@drawable/bun_beauty" />
 
-        <TextView
-            android:id="@+id/titleAuthorizationText"
-            style="@style/loginPackageText"
-            android:text="Введите номер телефона" />
-
         <LinearLayout
-            style="@style/loginPackageLinearLayout"
-            android:orientation="horizontal">
+            style="@style/wideHorizontalBlock"
+            android:gravity="center">
 
-            <Spinner
-                android:id="@+id/codeAuthorizationSpinner"
-                style="@style/loginSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/codeAuthorizationInputLayout"
+                style="@style/materialLoginSpinnerLayout"
+                android:layout_marginEnd="3dp"
+                app:startIconDrawable="@drawable/icon_phone_number"
+                android:layout_weight="1.4">
 
-            <EditText
-                android:id="@+id/phoneAuthorizationInput"
-                style="@style/loginInput"
-                android:hint="@string/phoneRegistration"
-                android:inputType="phone" />
+                <AutoCompleteTextView
+                    android:id="@+id/codeAuthorizationSpinner"
+                    style="@style/materialLoginSpinner" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/materialLoginInputLayout"
+                android:layout_marginStart="3dp"
+                android:layout_weight="1"
+                android:hint="@string/phone">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phoneAuthorizationInput"
+                    style="@style/materialLoginInput"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/bottomLayoutAuthorizationLayout"

@@ -2,14 +2,12 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.ArrayAdapter
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.Tag.UI_TAG
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
@@ -18,17 +16,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.AuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.AuthorizationView
-import com.bunbeauty.ideal.myapplication.other.CountryCodes
+import kotlinx.android.synthetic.main.activity_authorization.*
+import kotlinx.android.synthetic.main.activity_edit_profile.*
 import javax.inject.Inject
 
-class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
-    AuthorizationView, IAdapterSpinner {
-
-    private lateinit var verifyBtn: Button
-    private lateinit var titleAuthorizationText: TextView
-    private lateinit var phoneInput: EditText
-    private lateinit var codeSpinner: Spinner
-    private lateinit var progressBar: ProgressBar
+class AuthorizationActivity : MvpAppCompatActivity(), AuthorizationView, IAdapterSpinner {
 
     @Inject
     lateinit var authorizationInteractor: AuthorizationInteractor
@@ -49,33 +41,25 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authorization)
-        initView()
+
+        configViews()
 
         authorizationPresenter.defaultAuthorize()
     }
 
-    private fun initView() {
-        phoneInput = findViewById(R.id.phoneAuthorizationInput)
-        titleAuthorizationText = findViewById(R.id.titleAuthorizationText)
-        progressBar = findViewById(R.id.loadingAuthorizationProgressBar)
+    private fun configViews() {
+        val countryCodes = arrayListOf(*resources.getStringArray(R.array.countryCode))
 
-        codeSpinner = findViewById(R.id.codeAuthorizationSpinner)
         setAdapter(
-            arrayListOf(*resources.getStringArray(R.array.countryCode)),
-            codeSpinner,
-            this,
-            R.layout.element_login_spinner
+            countryCodes,
+            codeAuthorizationSpinner,
+            this
         )
+        codeAuthorizationSpinner.setText(countryCodes.first())
+        (codeAuthorizationSpinner.adapter as ArrayAdapter<String>).filter.filter("")
 
-        verifyBtn = findViewById(R.id.verifyAuthorizationBtn)
-        verifyBtn.setOnClickListener(this)
-    }
-
-    override fun onClick(v: View) {
-        if (v.id == R.id.verifyAuthorizationBtn) {
-            authorizationPresenter.authorize(
-                CountryCodes.codes[codeSpinner.selectedItemPosition] + phoneInput.text.toString()
-            )
+        verifyAuthorizationBtn.setOnClickListener {
+            authorizationPresenter.authorize(codeAuthorizationSpinner.text.toString() + phoneAuthorizationInput.text.toString())
         }
     }
 
@@ -85,32 +69,28 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
     }
 
     override fun hideViewsOnScreen() {
-        Log.d(UI_TAG, "hideViewsOfScreen")
-        progressBar.visibility = View.VISIBLE
-        codeSpinner.visibility = View.GONE
-        phoneInput.visibility = View.GONE
-        verifyBtn.visibility = View.GONE
-        titleAuthorizationText.visibility = View.GONE
+        loadingAuthorizationProgressBar.visibility = View.VISIBLE
+
+        codeAuthorizationInputLayout.visibility = View.GONE
+        phoneAuthorizationInput.visibility = View.GONE
+        verifyAuthorizationBtn.visibility = View.GONE
     }
 
     override fun showViewsOnScreen() {
-        Log.d(UI_TAG, "showViewsOnScreen: ")
-        progressBar.visibility = View.GONE
-        codeSpinner.visibility = View.VISIBLE
-        titleAuthorizationText.visibility = View.VISIBLE
-        phoneInput.visibility = View.VISIBLE
-        verifyBtn.visibility = View.VISIBLE
+        loadingAuthorizationProgressBar.visibility = View.GONE
+
+        codeAuthorizationInputLayout.visibility = View.VISIBLE
+        phoneAuthorizationInput.visibility = View.VISIBLE
+        verifyAuthorizationBtn.visibility = View.VISIBLE
     }
 
     override fun showPhoneError(error: String) {
-        Log.d(UI_TAG, "setPhoneError: ")
-        phoneInput.error = error
-        phoneInput.requestFocus()
+        phoneAuthorizationInput.error = error
+        phoneAuthorizationInput.requestFocus()
     }
 
     override fun enableVerifyBtn(status: Boolean) {
-        Log.d(UI_TAG, "enableVerifyBtn: $status")
-        verifyBtn.isClickable = status
+        verifyAuthorizationBtn.isClickable = status
     }
 
     override fun goToVerifyPhone(phone: String) {
@@ -140,10 +120,10 @@ class AuthorizationActivity : MvpAppCompatActivity(), View.OnClickListener,
     }
 
     override fun disableButton() {
-        verifyBtn.isEnabled = false
+        verifyAuthorizationBtn.isEnabled = false
     }
 
     override fun enableButton() {
-        verifyBtn.isEnabled = true
+        verifyAuthorizationBtn.isEnabled = true
     }
 }

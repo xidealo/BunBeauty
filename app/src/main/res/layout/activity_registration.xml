@@ -3,8 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/logInPage"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity">
 
     <LinearLayout
@@ -23,29 +21,65 @@
             style="@style/loginPackageLinearLayout"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/phoneRegistrationInput"
-                style="@style/loginInput"
-                android:enabled="false"
-                android:hint="@string/phoneRegistration"
-                android:inputType="phone" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phoneRegistrationInputLayout"
+                style="@style/materialLoginInputLayout"
+                android:hint="@string/phone"
+                app:startIconDrawable="@drawable/icon_phone_number">
 
-            <EditText
-                android:id="@+id/nameRegistrationInput"
-                style="@style/loginInput"
-                android:hint="@string/nameRegistration"
-                android:inputType="textPersonName|textCapSentences" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phoneRegistrationInput"
+                    style="@style/materialLoginInput"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:inputType="number"
+                    android:textColor="@color/white50" />
 
-            <EditText
-                android:id="@+id/surnameRegistrationInput"
-                style="@style/loginInput"
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nameRegistrationInputLayout"
+                style="@style/materialLoginInputLayout"
+                android:hint="@string/name"
+                app:startIconDrawable="@drawable/icon_profile">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nameRegistrationInput"
+                    style="@style/materialLoginInput"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/surnameRegistrationInputLayout"
+                style="@style/materialLoginInputLayout"
                 android:hint="@string/surname"
-                android:inputType="textPersonName|textCapSentences" />
+                app:startIconDrawable="@drawable/icon_profile">
 
-            <Spinner
-                android:id="@+id/citySpinnerRegistrationSpinner"
-                style="@style/loginSpinner" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/surnameRegistrationInput"
+                    style="@style/materialLoginInput"
+                    android:inputType="text" />
 
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                style="@style/wideHorizontalBlock"
+                android:gravity="center">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cityRegistrationInputLayout"
+                    style="@style/materialLoginSpinnerLayout"
+                    app:startIconDrawable="@drawable/icon_city">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/cityRegistrationSpinner"
+                        style="@style/materialLoginSpinner"
+                        android:text="@string/city" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

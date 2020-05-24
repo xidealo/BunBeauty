@@ -6,10 +6,10 @@
     <string name="profileActivity">Профиль</string>
 
     //registration
-    <string name="nameRegistration">Имя</string>
+    <string name="name">Имя</string>
     <string name="surname">Фамилия</string>
-    <string name="cityRegistration">Город</string>
-    <string name="phoneRegistration">Номер телефона</string>
+    <string name="city">Город</string>
+    <string name="phone">Номер телефона</string>
     <string name="passwordRegistration">Пароль</string>
     <string name="logInRegistration">Войти</string>
 
@@ -17,7 +17,6 @@
     <string name="nameAddServiceTB">Имя</string>
     <string name="cost">Цена</string>
     <string name="main_screen">Главная страница</string>
-    <string name="phone">Телефон</string>
 
     //Edit service
     <string name="save">Сохранить</string>
@@ -78,7 +77,6 @@
     <string name="title_activity_picked_comment">PickedComment</string>
     <string name="saveData">Сохранить данные</string>
     <string name="subscribed"><![CDATA[<B]]></string>
-    <string name="name">Name</string>
     <string name="change_number">Изменить номер</string>
     <string name="title_activity_tabs">Tabs</string>
     <string name="tab_text_1">Tab 1</string>
