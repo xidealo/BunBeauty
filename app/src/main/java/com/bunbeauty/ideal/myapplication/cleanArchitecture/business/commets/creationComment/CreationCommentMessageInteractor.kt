@@ -4,7 +4,7 @@ import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.iCreationComment.ICreationCommentMessageInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.comments.CreationCommentPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.UpdateMessageCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Comment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.MessageRepository
 
@@ -16,13 +16,13 @@ class CreationCommentMessageInteractor(
     private lateinit var creationCommentPresenterCallback: CreationCommentPresenterCallback
 
     override fun updateCommentMessage(
-        comment: Comment,
+        userComment: UserComment,
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     ) {
         this.creationCommentPresenterCallback = creationCommentPresenterCallback
         val message = intent.getSerializableExtra(Message.MESSAGE) as Message
         message.type = Message.TEXT_MESSAGE_STATUS
-        message.message = "Я ставлю оценку ${comment.rating}, потому что ${comment.review}"
+        message.message = "Я ставлю оценку ${userComment.rating}, потому что ${userComment.review}"
         messageRepository.update(message, this)
     }
 

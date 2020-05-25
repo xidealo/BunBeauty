@@ -16,10 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.FBListener;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Comment;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User;
 import com.bunbeauty.ideal.myapplication.helpApi.LoadingCommentsData;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi;
@@ -62,7 +60,7 @@ public class Comments extends AppCompatActivity {
     private FragmentManager manager;
     private WorkWithLocalStorageApi workWithLocalStorageApi;
     private ProgressBar progressBar;
-    private ArrayList<Comment> commentList;
+    private ArrayList<UserComment> userCommentList;
     private RecyclerView recyclerView;
     private TextView withoutRatingText;
 //    private CommentAdapter commentAdapter;
@@ -115,7 +113,7 @@ public class Comments extends AppCompatActivity {
         recyclerView = findViewById(R.id.resultsCommentsRecycleView);
         progressBar = findViewById(R.id.progressBarComments);
         withoutRatingText = findViewById(R.id.withoutReviewsCommentsText);
-        commentList = new ArrayList<>();
+        userCommentList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
@@ -344,13 +342,13 @@ public class Comments extends AppCompatActivity {
         addedReview = true;
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(USERS)
                 .child(ownerId);
-        final Comment comment = new Comment();
+        final UserComment userComment = new UserComment();
 
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                commentList.add(comment);
+                userCommentList.add(userComment);
                 if (countOfRates == currentCountOfReview) {
                  /*   commentAdapter = new CommentAdapter(commentList.size(), commentList);
                     recyclerView.setAdapter(commentAdapter);*/
@@ -483,7 +481,7 @@ public class Comments extends AppCompatActivity {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot reviewSnapshot, @Nullable String s) {
                                 LoadingCommentsData.addReviewInLocalStorage(reviewSnapshot, orderId, database);
-                                final Comment comment = new Comment();
+                                final UserComment userComment = new UserComment();
                                 // no creation_comment no currentCountOfReview!
                                 String review = reviewSnapshot.child(REVIEW).getValue(String.class);
                                 float rating = reviewSnapshot.child(RATING).getValue(Float.class);
@@ -493,7 +491,7 @@ public class Comments extends AppCompatActivity {
                                     Log.d(TAG, "onChildAdded: " + reviewSnapshot.child(REVIEW).getValue());
                                     Log.d(TAG, "onChildAdded: " + currentCountOfReview);
                                     if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                                        createUserComment(comment);
+                                        createUserComment(userComment);
                                     }
                                 }
                             }
@@ -598,7 +596,7 @@ public class Comments extends AppCompatActivity {
             final int ratingIndex = cursor.getColumnIndex(DBHelper.KEY_RATING_REVIEWS);
             final int ownerIdIndex = cursor.getColumnIndex(OWNER_ID);
             do {
-                final Comment comment = new Comment();
+                final UserComment userComment = new UserComment();
 
                 String workingTimeId = cursor.getString(indexWorkingTimeId);
 
@@ -606,7 +604,7 @@ public class Comments extends AppCompatActivity {
                 //    createUserComment(cursor);
                 //} else {
                 if (workWithLocalStorageApi.isAfterThreeDays(workingTimeId)) {
-                    createUserComment(comment);
+                    createUserComment(userComment);
                 }
                 //}
                 currentCountOfReview++;
@@ -621,7 +619,7 @@ public class Comments extends AppCompatActivity {
         cursor.close();
     }
 
-    private void createUserComment(final Comment comment) {
+    private void createUserComment(final UserComment userComment) {
 
 
         addedReview = true;

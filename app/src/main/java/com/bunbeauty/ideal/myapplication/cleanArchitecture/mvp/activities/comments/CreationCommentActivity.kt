@@ -6,7 +6,7 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentMessageInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
 
     @Inject
-    lateinit var creationCommentCommentInteractor: CreationCommentCommentInteractor
+    lateinit var creationCommentCommentInteractor: CreationCommentUserCommentInteractor
 
     @Inject
     lateinit var creationCommentMessageInteractor: CreationCommentMessageInteractor

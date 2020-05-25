@@ -11,7 +11,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Comment;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
@@ -38,7 +38,7 @@ public class CommentElement implements View.OnClickListener {
     private View view;
     private float rating;
 
-    CommentElement(Comment comment, View view, Context context) {
+    CommentElement(UserComment userComment, View view, Context context) {
         this.context = context;
         this.view= view;
     }

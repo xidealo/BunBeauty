@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 
 @Database(
     entities = [User::class,
@@ -19,7 +20,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
         Code::class,
         Dialog::class,
         Message::class,
-        Comment::class], version = 32
+        UserComment::class], version = 32
 )
 abstract class LocalDatabase : RoomDatabase() {
 

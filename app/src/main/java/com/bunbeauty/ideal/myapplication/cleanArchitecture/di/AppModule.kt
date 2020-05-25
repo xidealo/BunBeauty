@@ -7,7 +7,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPh
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CommentsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CurrentCommentInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentMessageInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
@@ -128,7 +128,7 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     @Provides
     fun provideCommentRepository(commentFirebase: CommentFirebase) =
-        CommentRepository(commentFirebase)
+        UserCommentRepository(commentFirebase)
 
     // INTERACTORS
     @Provides
@@ -276,9 +276,9 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideCurrentCommentInteractor() = CurrentCommentInteractor(intent)
 
     @Provides
-    fun provideCreationCommentCommentInteractor(commentRepository: CommentRepository) =
-        CreationCommentCommentInteractor(
-            commentRepository,
+    fun provideCreationCommentCommentInteractor(userCommentRepository: UserCommentRepository) =
+        CreationCommentUserCommentInteractor(
+            userCommentRepository,
             intent
         )
 

@@ -1,11 +1,11 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.iCreationComment
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.comments.CreationCommentPresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Comment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 
 interface ICreationCommentCommentInteractor {
     fun createComment(
-        comment: Comment,
+        userComment: UserComment,
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     )
 }

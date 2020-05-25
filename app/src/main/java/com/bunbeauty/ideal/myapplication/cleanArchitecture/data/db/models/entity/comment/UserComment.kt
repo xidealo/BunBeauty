@@ -1,11 +1,11 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Comment(
+data class UserComment(
     @PrimaryKey
     var id: String = "",
     @ColumnInfo(index = true)
