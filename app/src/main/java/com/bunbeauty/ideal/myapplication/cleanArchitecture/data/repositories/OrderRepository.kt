@@ -20,7 +20,7 @@ class OrderRepository(
 
     override fun insert(order: Order, insertOrderCallback: InsertOrderCallback) {
         launch {
-            order.id = orderFirebase.getIdForNew(order.userId)
+            order.id = orderFirebase.getIdForNew(order.clientId)
             orderFirebase.insert(order)
             //orderDao.insert(order)
             withContext(Dispatchers.Main) {

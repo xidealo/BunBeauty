@@ -3,9 +3,9 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.cre
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.iCreationComment.ICreationCommentCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.comments.CreationCommentPresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.comment.InsertUserCommentCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.userComment.InsertUserCommentCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserCommentRepository
 
 class CreationCommentUserCommentInteractor(
@@ -15,13 +15,14 @@ class CreationCommentUserCommentInteractor(
 
     private lateinit var creationCommentPresenterCallback: CreationCommentPresenterCallback
 
-    override fun createComment(
+    override fun createUserComment(
         userComment: UserComment,
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     ) {
         this.creationCommentPresenterCallback = creationCommentPresenterCallback
+        //сюда передать сообщение из него взять айди
         userComment.userId = (intent.getSerializableExtra(User.USER) as User).id
-        userCommentRepository.insertUserComment(userComment, this)
+        userCommentRepository.insert(userComment, this)
     }
 
     override fun returnCreatedCallback(obj: UserComment) {

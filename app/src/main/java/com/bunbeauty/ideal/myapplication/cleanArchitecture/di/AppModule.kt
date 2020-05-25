@@ -7,8 +7,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPh
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CommentsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CurrentCommentInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentMessageInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentServiceCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
@@ -41,10 +42,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     // FIREBASE API
     @Provides
-    fun provideUserFirebaseApi() = UserFirebase()
+    fun provideUserFirebase() = UserFirebase()
 
     @Provides
-    fun provideServiceFirebaseApi() = ServiceFirebase()
+    fun provideServiceFirebase() = ServiceFirebase()
 
     @Provides
     fun provideTagFirebase() = TagFirebase()
@@ -68,7 +69,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideSubscriberFirebase() = SubscriberFirebase()
 
     @Provides
-    fun provideCommentFirebase() = CommentFirebase()
+    fun provideUserCommentFirebase() = UserCommentFirebase()
+
+    @Provides
+    fun provideServiceCommentFirebase() = ServiceCommentFirebase()
 
     // DAO
     @Provides
@@ -127,8 +131,12 @@ class AppModule(private val app: Application, private val intent: Intent) {
         SubscriberRepository(subscriberFirebase)
 
     @Provides
-    fun provideCommentRepository(commentFirebase: CommentFirebase) =
-        UserCommentRepository(commentFirebase)
+    fun provideUserCommentRepository(userCommentFirebase: UserCommentFirebase) =
+        UserCommentRepository(userCommentFirebase)
+
+    @Provides
+    fun provideServiceCommentRepository(serviceCommentFirebase: ServiceCommentFirebase) =
+        ServiceCommentRepository(serviceCommentFirebase)
 
     // INTERACTORS
     @Provides
@@ -276,9 +284,16 @@ class AppModule(private val app: Application, private val intent: Intent) {
     fun provideCurrentCommentInteractor() = CurrentCommentInteractor(intent)
 
     @Provides
-    fun provideCreationCommentCommentInteractor(userCommentRepository: UserCommentRepository) =
+    fun provideCreationCommentUserCommentInteractor(userCommentRepository: UserCommentRepository) =
         CreationCommentUserCommentInteractor(
             userCommentRepository,
+            intent
+        )
+
+    @Provides
+    fun provideCreationCommentServiceCommentInteractor(serviceCommentRepository: ServiceCommentRepository) =
+        CreationCommentServiceCommentInteractor(
+            serviceCommentRepository,
             intent
         )
 

@@ -30,19 +30,19 @@ public class RegistrationUnitTests {
 
     @Test
     public void whenCityNotEqualChooseCity() {
-        RegistrationInteractor registrationInteractor =getRegistrationInstance();
+        RegistrationInteractor registrationInteractor = getRegistrationInstance();
         assertFalse(registrationInteractor.getIsCityInputCorrect("Выбрать город"));
     }
 
     @Test
     public void whenNameCorrectRegistration() {
-        RegistrationInteractor registrationInteractor =getRegistrationInstance();
+        RegistrationInteractor registrationInteractor = getRegistrationInstance();
         assertTrue(registrationInteractor.getIsNameInputCorrect("ЫВАЫФЫФфываывфлфвалпуцкльвап"));
     }
 
     @Test
     public void whenNameLengthLessTwentyRegistration() {
-        RegistrationInteractor registrationInteractor =getRegistrationInstance();
+        RegistrationInteractor registrationInteractor = getRegistrationInstance();
         assertTrue(registrationInteractor.getIsNameLengthLessTwenty("qwertyuiopasdfghjklz"));
     }
 
@@ -54,7 +54,7 @@ public class RegistrationUnitTests {
 
     @Test
     public void whenSurnameLengthLessTwentyRegistration() {
-        RegistrationInteractor registrationInteractor =getRegistrationInstance();
+        RegistrationInteractor registrationInteractor = getRegistrationInstance();
         assertTrue(registrationInteractor.getIsSurnameLengthLessTwenty("qwertyuiopasdfghjklz"));
     }
 

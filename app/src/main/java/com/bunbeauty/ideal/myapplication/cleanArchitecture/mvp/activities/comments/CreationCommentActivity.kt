@@ -6,8 +6,9 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentMessageInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentServiceCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
@@ -19,10 +20,13 @@ import javax.inject.Inject
 class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
 
     @Inject
-    lateinit var creationCommentCommentInteractor: CreationCommentUserCommentInteractor
+    lateinit var creationCommentUserCommentInteractor: CreationCommentUserCommentInteractor
 
     @Inject
     lateinit var creationCommentMessageInteractor: CreationCommentMessageInteractor
+
+    @Inject
+    lateinit var creationCommentServiceCommentInteractor: CreationCommentServiceCommentInteractor
 
     @InjectPresenter
     lateinit var creationCommentPresenter: CreationCommentPresenter
@@ -34,7 +38,8 @@ class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
             .build()
             .inject(this)
         return CreationCommentPresenter(
-            creationCommentCommentInteractor,
+            creationCommentUserCommentInteractor,
+            creationCommentServiceCommentInteractor,
             creationCommentMessageInteractor
         )
     }

@@ -41,5 +41,5 @@ interface AppComponent {
     fun inject(editServiceActivity: EditServiceActivity)
     fun inject(commentsActivity: CommentsActivity)
     fun inject(currentCommentActivity: CurrentCommentActivity)
-    fun inject(creationCommentActivity: CreationCommentActivity)
+    fun inject(creationUserCommentActivity: CreationCommentActivity)
 }
