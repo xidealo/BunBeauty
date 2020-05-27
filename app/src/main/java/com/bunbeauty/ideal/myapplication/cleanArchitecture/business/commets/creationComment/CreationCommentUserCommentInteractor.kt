@@ -20,13 +20,12 @@ class CreationCommentUserCommentInteractor(
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     ) {
         this.creationCommentPresenterCallback = creationCommentPresenterCallback
-        //сюда передать сообщение из него взять айди
         userComment.userId = (intent.getSerializableExtra(User.USER) as User).id
         userCommentRepository.insert(userComment, this)
     }
 
     override fun returnCreatedCallback(obj: UserComment) {
-        creationCommentPresenterCallback.updateCommentMessage(obj)
+        creationCommentPresenterCallback.updateUserCommentMessage(obj)
     }
 
 }

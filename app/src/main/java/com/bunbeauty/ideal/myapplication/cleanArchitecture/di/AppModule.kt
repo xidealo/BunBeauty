@@ -8,6 +8,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CommentsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CurrentCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentMessageInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentOrderInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentServiceCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
@@ -55,6 +56,9 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     @Provides
     fun provideCodeFirebase() = CodeFirebase()
+
+    @Provides
+    fun provideOrderFirebase() = OrderFirebase()
 
     @Provides
     fun provideDialogFirebase() = DialogFirebase()
@@ -121,6 +125,10 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideMessageRepository(messageFirebase: MessageFirebase) =
         MessageRepository(messageFirebase)
+
+    @Provides
+    fun provideOrderRepository(orderFirebase: OrderFirebase) =
+        OrderRepository(orderFirebase)
 
     @Provides
     fun provideSubscriptionRepository(subscriptionFirebase: SubscriptionFirebase) =
@@ -293,15 +301,19 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideCreationCommentServiceCommentInteractor(serviceCommentRepository: ServiceCommentRepository) =
         CreationCommentServiceCommentInteractor(
-            serviceCommentRepository,
-            intent
-        )
+            serviceCommentRepository)
 
     @Provides
     fun provideCreationCommentMessageInteractor(messageRepository: MessageRepository) =
         CreationCommentMessageInteractor(
             messageRepository,
             intent
+        )
+
+    @Provides
+    fun provideCreationCommentOrderInteractor(orderRepository: OrderRepository) =
+        CreationCommentOrderInteractor(
+            orderRepository
         )
 
     //APIs

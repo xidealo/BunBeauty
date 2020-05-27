@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 data class Order(
     @PrimaryKey
     var id: String = "",
-    var clientId: String = "",
     var masterId: String = "",
+    var userId: String = "",
     var serviceId: String = "",
     var time: Long = 0
 ) {
@@ -16,6 +16,7 @@ data class Order(
         const val ORDERS = "orders"
         const val CLIENT_ID = "client id"
         const val MASTER_ID = "master id"
+        const val SERVICE_ID = "master id"
         const val TIME = "time"
     }
 }

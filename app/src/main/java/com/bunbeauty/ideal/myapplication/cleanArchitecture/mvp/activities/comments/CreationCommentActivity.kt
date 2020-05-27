@@ -7,6 +7,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentMessageInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentOrderInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentServiceCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
@@ -28,6 +29,9 @@ class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
     @Inject
     lateinit var creationCommentServiceCommentInteractor: CreationCommentServiceCommentInteractor
 
+    @Inject
+    lateinit var creationCommentOrderInteractor: CreationCommentOrderInteractor
+
     @InjectPresenter
     lateinit var creationCommentPresenter: CreationCommentPresenter
 
@@ -40,6 +44,7 @@ class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
         return CreationCommentPresenter(
             creationCommentUserCommentInteractor,
             creationCommentServiceCommentInteractor,
+            creationCommentOrderInteractor,
             creationCommentMessageInteractor
         )
     }
@@ -52,7 +57,7 @@ class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
 
     private fun configViews() {
         rateCreationCommentBtn.setOnClickListener {
-            creationCommentPresenter.createComment(
+            creationCommentPresenter.checkMessage(
                 ratingCreationCommentRatingBar.rating.toDouble(),
                 reviewCreationCommentInput.text.toString()
             )

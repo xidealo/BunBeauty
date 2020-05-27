@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment
 
-import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.iCreationComment.ICreationCommentServiceCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.comments.CreationCommentPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.serviceComment.InsertServiceCommentCallback
@@ -9,12 +8,21 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.Ser
 
 class CreationCommentServiceCommentInteractor
     (
-    private val serviceCommentRepository: ServiceCommentRepository,
-    private val intent: Intent
-) :
+    private val serviceCommentRepository: ServiceCommentRepository) :
     ICreationCommentServiceCommentInteractor, InsertServiceCommentCallback {
 
+    private var rating = 0.0
+    private var review = ""
+
     private lateinit var creationCommentPresenterCallback: CreationCommentPresenterCallback
+
+    override fun setRating(rating: Double) {
+        this.rating = rating
+    }
+
+    override fun setReview(review: String) {
+        this.review = review
+    }
 
     override fun createServiceComment(
         serviceComment: ServiceComment,
@@ -25,7 +33,7 @@ class CreationCommentServiceCommentInteractor
     }
 
     override fun returnCreatedCallback(obj: ServiceComment) {
-
+        creationCommentPresenterCallback.updateServiceCommentMessage(obj)
     }
 
 }

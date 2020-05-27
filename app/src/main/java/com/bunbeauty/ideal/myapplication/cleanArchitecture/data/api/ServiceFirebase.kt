@@ -34,8 +34,6 @@ class ServiceFirebase {
         items[Service.AVG_RATING] = service.rating
         items[Service.COUNT_OF_RATES] = service.countOfRates
         serviceRef.updateChildren(items)
-
-        //Log.d(TAG, "Service adding completed")
     }
 
     fun delete(service: Service) {
@@ -159,7 +157,6 @@ class ServiceFirebase {
     }
 
     private fun getServiceFromSnapshot(serviceSnapshot: DataSnapshot, userId: String): Service {
-
         val service = Service()
         service.id = serviceSnapshot.key!!
         service.name = serviceSnapshot.child(Service.NAME).value as? String ?: ""
