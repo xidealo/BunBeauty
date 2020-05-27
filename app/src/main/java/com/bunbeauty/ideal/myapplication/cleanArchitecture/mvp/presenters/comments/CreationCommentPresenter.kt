@@ -35,20 +35,18 @@ class CreationCommentPresenter(
         creationCommentCommentInteractor.createUserComment(comment, this)
     }
 
+    override fun getOrderForServiceComment(message: Message, rating: Double, review: String) {
+        creationCommentServiceCommentInteractor.setRating(rating)
+        creationCommentServiceCommentInteractor.setReview(review)
+        creationCommentOrderInteractor.getOrderById(message, this)
+    }
+
     override fun createServiceComment(order: Order) {
         val comment = ServiceComment()
         comment.userId = order.masterId
         comment.serviceId = order.serviceId
         comment.ownerId = User.getMyId()
         creationCommentServiceCommentInteractor.createServiceComment(comment, this)
-    }
-
-    override fun showCommentCreated(message: Message) {
-        viewState.showCommentCreated(message)
-    }
-
-    override fun getOrderForServiceComment(message: Message, rating: Double, review: String) {
-        creationCommentOrderInteractor.getOrderById(message, this)
     }
 
     override fun updateUserCommentMessage(userComment: UserComment) {
@@ -58,6 +56,8 @@ class CreationCommentPresenter(
     override fun updateServiceCommentMessage(serviceComment: ServiceComment) {
         creationCommentMessageInteractor.updateServiceCommentMessage(serviceComment, this)
     }
-
+    override fun showCommentCreated(message: Message) {
+        viewState.showCommentCreated(message)
+    }
 
 }
