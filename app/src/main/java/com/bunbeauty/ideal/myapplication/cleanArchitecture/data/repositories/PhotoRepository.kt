@@ -9,9 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase: PhotoFirebase): IPhotoRepository,
-        BaseRepository(), IPhotoCallback{
-
-    lateinit var photoCallback: IPhotoCallback
+        BaseRepository(){
 
     override fun insert(photo: Photo) {
         launch {
@@ -35,11 +33,10 @@ class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase:
 
     fun getByServiceId(serviceId: String, serviceOwnerId: String, photoCallback: IPhotoCallback,
                        isFirstEnter: Boolean) {
-        this.photoCallback = photoCallback
         val photoList: ArrayList<Photo> = ArrayList()
 
         if (isFirstEnter) {
-            photoFirebase.getByServiceId(serviceOwnerId, serviceId, this)
+            photoFirebase.getByServiceId(serviceOwnerId, serviceId, photoCallback)
         } else {
             runBlocking {
                 photoList.addAll(photoDao.findAllByServiceId(serviceId))
@@ -49,9 +46,5 @@ class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase:
     }
 
     fun getIdForNew(userId: String, serviceId:String): String = photoFirebase.getIdForNew(userId,serviceId)
-
-    override fun returnPhotos(photos: List<Photo>) {
-        photoCallback.returnPhotos(photos)
-    }
 
 }

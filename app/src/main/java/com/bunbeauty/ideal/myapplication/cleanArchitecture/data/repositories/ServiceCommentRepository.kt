@@ -1,6 +1,9 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.serviceComment.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.serviceComment.DeleteServiceCommentCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.serviceComment.InsertServiceCommentCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.serviceComment.ServiceCommentsCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.serviceComment.UpdateServiceCommentCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceCommentFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.ServiceComment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceCommentRepository
@@ -10,10 +13,7 @@ import kotlinx.coroutines.withContext
 
 class ServiceCommentRepository(
     private val serviceCommentFirebase: ServiceCommentFirebase
-) : BaseRepository(), IServiceCommentRepository, ServiceCommentCallback, ServiceCommentsCallback {
-
-    private lateinit var serviceCommentCallback: ServiceCommentCallback
-    private lateinit var serviceCommentsCallback: ServiceCommentsCallback
+) : BaseRepository(), IServiceCommentRepository  {
 
     override fun insert(
         serviceComment: ServiceComment,
@@ -56,19 +56,8 @@ class ServiceCommentRepository(
         serviceId: String,
         serviceCommentsCallback: ServiceCommentsCallback
     ) {
-        this.serviceCommentsCallback = serviceCommentsCallback
         launch {
 
         }
     }
-
-    override fun returnElement(element: ServiceComment) {
-        serviceCommentCallback.returnElement(element)
-    }
-
-    override fun returnList(objects: List<ServiceComment>) {
-        serviceCommentsCallback.returnList(objects)
-    }
-
-
 }

@@ -15,9 +15,7 @@ import kotlinx.coroutines.withContext
 class UserRepository(
     private val userDao: UserDao,
     private val userFirebase: UserFirebase
-) : BaseRepository(), IUserRepository, UsersCallback {
-
-    lateinit var usersCallback: UsersCallback
+) : BaseRepository(), IUserRepository {
 
     override fun insert(user: User, insertUsersCallback: InsertUsersCallback) {
         launch {
@@ -60,10 +58,8 @@ class UserRepository(
     }
 
     override fun getById(id: String, usersCallback: UsersCallback, isFirstEnter: Boolean) {
-        this.usersCallback = usersCallback
-
         if (isFirstEnter) {
-            userFirebase.getById(id, this)
+            userFirebase.getById(id, usersCallback)
         } else {
             launch {
                 val users = userDao.getById(id)
@@ -80,10 +76,8 @@ class UserRepository(
         usersCallback: UsersCallback,
         isFirstEnter: Boolean
     ) {
-        this.usersCallback = usersCallback
-
         if (isFirstEnter) {
-            userFirebase.getByPhoneNumber(phoneNumber, this)
+            userFirebase.getByPhoneNumber(phoneNumber, usersCallback)
         } else {
             launch {
                 val users = userDao.getByPhoneNumber(phoneNumber)
@@ -95,10 +89,8 @@ class UserRepository(
     }
 
     override fun getByCity(city: String, usersCallback: UsersCallback, isFirstEnter: Boolean) {
-        this.usersCallback = usersCallback
-
         if (isFirstEnter) {
-            userFirebase.getByCity(city, this)
+            userFirebase.getByCity(city, usersCallback)
         } else {
             launch {
                 val users = userDao.getByCity(city)
@@ -115,9 +107,8 @@ class UserRepository(
         usersCallback: UsersCallback,
         isFirstEnter: Boolean
     ) {
-        this.usersCallback = usersCallback
         if (isFirstEnter) {
-            userFirebase.getByCityAndUserName(city, userName, this)
+            userFirebase.getByCityAndUserName(city, userName, usersCallback)
         } else {
             launch {
                 val users = userDao.getByCityAndUserName(city, userName)
@@ -129,9 +120,8 @@ class UserRepository(
     }
 
     override fun getByName(name: String, usersCallback: UsersCallback, isFirstEnter: Boolean) {
-        this.usersCallback = usersCallback
         if (isFirstEnter) {
-            userFirebase.getByName(name, this)
+            userFirebase.getByName(name, usersCallback)
         } else {
             launch {
                 val users = userDao.getByName(name)
@@ -140,13 +130,6 @@ class UserRepository(
                 }
             }
         }
-    }
-
-    override fun returnUsers(users: List<User>) {
-      /*  for (user in users) {
-            insertInRoom(user)
-        }*/
-        usersCallback.returnUsers(users)
     }
 
     override fun insertInRoom(user: User) {

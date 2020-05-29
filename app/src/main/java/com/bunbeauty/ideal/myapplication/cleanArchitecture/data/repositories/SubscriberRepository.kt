@@ -12,9 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SubscriberRepository(private val subscriberFirebase: SubscriberFirebase) : BaseRepository(),
-    ISubscriberRepository, SubscribersCallback {
-
-    private lateinit var subscribersCallback: SubscribersCallback
+    ISubscriberRepository {
 
     override fun insert(
         subscriber: Subscriber,
@@ -51,14 +49,12 @@ class SubscriberRepository(private val subscriberFirebase: SubscriberFirebase) :
     }
 
     override fun get(subscribersCallback: SubscribersCallback) {
-        this.subscribersCallback = subscribersCallback
         launch {
 
         }
     }
 
     override fun getByUserId(userId: String, subscribersCallback: SubscribersCallback) {
-        this.subscribersCallback = subscribersCallback
         launch {
             subscriberFirebase.getByUserId(userId, subscribersCallback)
         }
@@ -69,15 +65,9 @@ class SubscriberRepository(private val subscriberFirebase: SubscriberFirebase) :
         ownerId: String,
         subscribersCallback: SubscribersCallback
     ) {
-        this.subscribersCallback = subscribersCallback
         launch {
             subscriberFirebase.getBySubscriberId(subscriberId, ownerId, subscribersCallback)
         }
     }
-
-    override fun returnList(objects: List<Subscriber>) {
-
-    }
-
 
 }

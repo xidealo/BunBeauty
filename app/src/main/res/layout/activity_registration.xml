@@ -46,7 +46,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/nameRegistrationInput"
                     style="@style/materialLoginInput"
-                    android:inputType="text" />
+                    android:inputType="textPersonName|textCapSentences" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,7 +59,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/surnameRegistrationInput"
                     style="@style/materialLoginInput"
-                    android:inputType="text" />
+                    android:inputType="textPersonName|textCapSentences" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

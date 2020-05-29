@@ -15,8 +15,7 @@ class MessageUserReviewElement(
     private val context: Context
 ) : MessageElement(messagesPresenter), View.OnClickListener {
 
-    override fun setVisibility() {
-        super.setVisibility()
+    override fun setVisibility(message: Message) {
         rateMessageElementButton.visibility = View.VISIBLE
         rateMessageElementButton.setOnClickListener(this)
     }

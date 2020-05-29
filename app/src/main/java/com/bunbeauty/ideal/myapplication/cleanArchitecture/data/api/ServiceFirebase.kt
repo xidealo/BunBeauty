@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.ServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
@@ -76,7 +76,7 @@ class ServiceFirebase {
     }
 
     fun getById(
-        userId: String, serviceId: String, iServicesCallback: IServicesCallback
+        userId: String, serviceId: String, servicesCallback: ServicesCallback
     ) {
         val servicesRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
@@ -86,7 +86,7 @@ class ServiceFirebase {
 
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(servicesSnapshot: DataSnapshot) {
-                iServicesCallback.returnServices(returnServiceList(servicesSnapshot, userId))
+                servicesCallback.returnServices(returnServiceList(servicesSnapshot, userId))
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -97,7 +97,7 @@ class ServiceFirebase {
 
     fun getServicesByUserId(
         userId: String,
-        iServicesCallback: IServicesCallback
+        servicesCallback: ServicesCallback
     ) {
         val servicesRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
@@ -106,7 +106,7 @@ class ServiceFirebase {
 
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(servicesSnapshot: DataSnapshot) {
-                iServicesCallback.returnServices(returnServiceList(servicesSnapshot, userId))
+                servicesCallback.returnServices(returnServiceList(servicesSnapshot, userId))
                 //setListener(servicesRef, userId, iServiceCallback)
             }
 

@@ -12,11 +12,7 @@ import kotlinx.coroutines.withContext
 class DialogRepository(
     private val dialogDao: DialogDao,
     private val dialogFirebase: DialogFirebase
-) : BaseRepository(), IDialogRepository, DialogsCallback, DialogCallback, DialogChangedCallback {
-
-    private lateinit var dialogsCallback: DialogsCallback
-    private lateinit var dialogCallback: DialogCallback
-    private lateinit var dialogChangedCallback: DialogChangedCallback
+) : BaseRepository(), IDialogRepository {
 
     override fun insert(dialog: Dialog, insertDialogCallback: InsertDialogCallback) {
         launch {
@@ -56,7 +52,7 @@ class DialogRepository(
     }
 
     override fun get(dialogsCallback: DialogsCallback) {
-        this.dialogsCallback = dialogsCallback
+
     }
 
     override fun getByUserId(
@@ -65,9 +61,6 @@ class DialogRepository(
         dialogChangedCallback: DialogChangedCallback,
         dialogCallback: DialogCallback
     ) {
-        this.dialogsCallback = dialogsCallback
-        this.dialogCallback = dialogCallback
-        this.dialogChangedCallback = dialogChangedCallback
         launch {
             dialogFirebase.getDialogsByUserId(
                 userId,
@@ -79,22 +72,9 @@ class DialogRepository(
     }
 
     override fun getById(dialog: Dialog, dialogCallback: DialogCallback) {
-        this.dialogCallback = dialogCallback
         launch {
             dialogFirebase.getById(dialog, dialogCallback)
         }
-    }
-
-    override fun returnList(objects: List<Dialog>) {
-        dialogsCallback.returnList(objects)
-    }
-
-    override fun returnElement(element: Dialog) {
-        dialogCallback.returnElement(element)
-    }
-
-    override fun returnChanged(element: Dialog) {
-        dialogChangedCallback.returnChanged(element)
     }
 
 }

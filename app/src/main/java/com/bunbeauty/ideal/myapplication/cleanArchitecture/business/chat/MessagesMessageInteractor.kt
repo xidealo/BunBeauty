@@ -5,12 +5,15 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.chat.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.InsertMessageCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.MessageCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.MessagesCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.message.UpdateMessageCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.MessageRepository
 
 class MessagesMessageInteractor(private val messageRepository: MessageRepository) :
-    IMessagesMessageInteractor, MessagesCallback, InsertMessageCallback, MessageCallback {
+    IMessagesMessageInteractor, MessagesCallback, InsertMessageCallback, MessageCallback,
+    UpdateMessageCallback {
 
     private var cacheMessages = mutableListOf<Message>()
     private var cacheMessagesSet = mutableSetOf<Message>()
@@ -24,7 +27,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messagesPresenterCallback: MessagesPresenterCallback
     ) {
         this.messagesPresenterCallback = messagesPresenterCallback
-        messageRepository.getByDialogId(dialog, this, this)
+        messageRepository.getByDialogId(dialog, this, this, this)
     }
 
     override fun getCompanionMessages(
@@ -32,7 +35,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messagesPresenterCallback: MessagesPresenterCallback
     ) {
         this.messagesPresenterCallback = messagesPresenterCallback
-        messageRepository.getByDialogId(dialog, this, this)
+        messageRepository.getByDialogId(dialog, this, this, this)
     }
 
     override fun updateMessages(
@@ -68,7 +71,18 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
 
     override fun returnList(objects: List<Message>) {
         countOfDialogs++
-        cacheMessagesSet.addAll(objects)
+
+        for (message in objects) {
+            if (message.type == Message.TEXT_MESSAGE_STATUS) {
+                cacheMessagesSet.add(message)
+            } else {
+                if (message.userId == User.getMyId()) {
+                    cacheMessages.add(message)
+                }
+            }
+        }
+
+        //cacheMessagesSet.addAll(objects)
         if (countOfDialogs == 2) {
             cacheMessages.addAll(cacheMessagesSet.sortedBy { it.time })
             checkMoveToStart(cacheMessages, messagesPresenterCallback)
@@ -76,7 +90,17 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     }
 
     override fun returnElement(element: Message) {
-        cacheMessages.add(element)
+        if (element.type == Message.TEXT_MESSAGE_STATUS) {
+            addMessage(element)
+        } else {
+            if (element.userId == User.getMyId()) {
+                addMessage(element)
+            }
+        }
+    }
+
+    private fun addMessage(message: Message) {
+        cacheMessages.add(message)
         messagesPresenterCallback.setUnchecked()
         checkMoveToStart(cacheMessages, messagesPresenterCallback)
     }
@@ -84,6 +108,10 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     override fun returnCreatedCallback(obj: Message) {
         messagesPresenterCallback.updateUncheckedDialog(obj)
         messagesPresenterCallback.showSendMessage(obj)
+    }
+
+    override fun returnUpdatedCallback(obj: Message) {
+        val k = 0
     }
 
 }

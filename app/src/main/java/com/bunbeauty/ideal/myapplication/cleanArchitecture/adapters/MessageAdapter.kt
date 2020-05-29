@@ -48,16 +48,17 @@ class MessageAdapter(
                     val messageTextElement = MessageTextElement(messagesPresenter)
                     messageTextElement.createElement(view)
                     messageTextElement.setIsMyMessage(message)
+                    messageTextElement.setVisibility(message)
                     messageTextElement.setData(message)
-                    return
                 }
 
                 Message.SERVICE_REVIEW_MESSAGE_STATUS -> {
-                    val messageTextElement = MessageServiceReviewElement(messagesPresenter, context)
+                    val messageTextElement =
+                        MessageServiceReviewElement(messagesPresenter, context)
                     messageTextElement.createElement(view)
                     messageTextElement.setIsMyMessage(message)
+                    messageTextElement.setVisibility(message)
                     messageTextElement.setData(message)
-                    return
                 }
 
                 Message.USER_REVIEW_MESSAGE_STATUS -> {
@@ -65,8 +66,8 @@ class MessageAdapter(
                         MessageUserReviewElement(messagesPresenter, context)
                     messageUserReviewElement.createElement(view)
                     messageUserReviewElement.setIsMyMessage(message)
+                    messageUserReviewElement.setVisibility(message)
                     messageUserReviewElement.setData(message)
-                    return
                 }
             }
         }

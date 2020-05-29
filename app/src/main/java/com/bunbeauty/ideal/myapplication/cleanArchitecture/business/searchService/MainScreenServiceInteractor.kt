@@ -2,13 +2,13 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServi
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.ServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceRepository
 
 class MainScreenServiceInteractor(private val serviceRepository: IServiceRepository) :
-    IServicesCallback, IMainScreenServiceInteractor {
+    ServicesCallback, IMainScreenServiceInteractor {
 
     var cacheServiceList = arrayListOf<Service>()
     var maxCost = 0L

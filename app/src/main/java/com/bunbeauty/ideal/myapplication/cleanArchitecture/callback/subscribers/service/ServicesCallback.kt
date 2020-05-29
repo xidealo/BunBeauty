@@ -2,6 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
-interface IServicesCallback {
+interface ServicesCallback {
     fun returnServices(serviceList: List<Service>)
 }

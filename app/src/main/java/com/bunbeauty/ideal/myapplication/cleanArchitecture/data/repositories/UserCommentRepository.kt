@@ -1,6 +1,9 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.userComment.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.userComment.DeleteUserCommentCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.userComment.InsertUserCommentCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.userComment.UpdateUserCommentCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.userComment.UserCommentsCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserCommentFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserCommentRepository
@@ -9,11 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class UserCommentRepository(private val userCommentFirebase: UserCommentFirebase) :
-    BaseRepository(),
-    IUserCommentRepository, UserCommentsCallback, UserCommentCallback {
-
-    private lateinit var userCommentsCallback: UserCommentsCallback
-    private lateinit var userCommentCallback: UserCommentCallback
+    BaseRepository(), IUserCommentRepository {
 
     override fun insert(
         userComment: UserComment,
@@ -47,18 +46,9 @@ class UserCommentRepository(private val userCommentFirebase: UserCommentFirebase
     }
 
     override fun getByUserId(userId: String, userCommentsCallback: UserCommentsCallback) {
-        this.userCommentsCallback = userCommentsCallback
         launch {
             userCommentFirebase.getByUserId(userId, userCommentsCallback)
         }
-    }
-
-    override fun returnList(objects: List<UserComment>) {
-        userCommentsCallback.returnList(objects)
-    }
-
-    override fun returnElement(element: UserComment) {
-        userCommentCallback.returnElement(element)
     }
 
 }

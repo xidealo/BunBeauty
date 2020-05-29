@@ -10,10 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepository(),
-    IMessageRepository, MessagesCallback, MessageCallback {
-
-    private lateinit var messagesCallback: MessagesCallback
-    private lateinit var messageCallback: MessageCallback
+    IMessageRepository {
 
     override fun insert(message: Message, insertMessageCallback: InsertMessageCallback) {
         launch {
@@ -49,30 +46,25 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
     override fun getByDialogId(
         dialog: Dialog,
         messageCallback: MessageCallback,
-        messagesCallback: MessagesCallback
+        messagesCallback: MessagesCallback,
+        updateMessageCallback: UpdateMessageCallback
     ) {
-        this.messagesCallback = messagesCallback
-        this.messageCallback = messageCallback
         launch {
-            messageFirebase.getByDialogId(dialog, messageCallback, messagesCallback)
+            messageFirebase.getByDialogId(
+                dialog,
+                messageCallback,
+                messagesCallback,
+                updateMessageCallback
+            )
         }
     }
 
     override fun getByIdLastMessage(dialog: Dialog, messageCallback: MessageCallback) {
-        this.messageCallback = messageCallback
         launch {
             messageFirebase.getLastMessage(dialog, messageCallback)
         }
     }
 
     fun getIdForNew(message: Message): String = messageFirebase.getIdForNew(message)
-
-    override fun returnList(objects: List<Message>) {
-        messagesCallback.returnList(objects)
-    }
-
-    override fun returnElement(element: Message) {
-        messageCallback.returnElement(element)
-    }
 
 }

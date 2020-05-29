@@ -19,17 +19,18 @@ abstract class MessageElement(
     protected lateinit var messageTextMessageElementText: TextView
     protected lateinit var messageTimeMessageElementText: TextView
     protected lateinit var messageMessageElementLayout: LinearLayout
+    protected lateinit var mainLayoutMessageElementLayout: LinearLayout
     protected lateinit var rateMessageElementButton: MaterialButton
 
     fun createElement(view: View) {
         messageTextMessageElementText = view.findViewById(R.id.messageTextMessageElementText)
         messageTimeMessageElementText = view.findViewById(R.id.messageTimeMessageElementText)
         messageMessageElementLayout = view.findViewById(R.id.messageMessageElementLayout)
+            mainLayoutMessageElementLayout = view.findViewById(R.id.mainLayoutMessageElementLayout)
         rateMessageElementButton = view.findViewById(R.id.rateMessageElementButton)
-        setVisibility()
     }
 
-    open fun setVisibility() {}
+    open fun setVisibility(message: Message) {}
 
     fun setData(message: Message) {
         this.message = message

@@ -2,13 +2,12 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.ServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceRepository
 
 class ProfileServiceInteractor(private val serviceRepository: IServiceRepository) :
-    IProfileServiceInteractor, IServicesCallback {
+    IProfileServiceInteractor, ServicesCallback {
 
     private var services = mutableListOf<Service>()
     private lateinit var profilePresenterCallback: ProfilePresenterCallback

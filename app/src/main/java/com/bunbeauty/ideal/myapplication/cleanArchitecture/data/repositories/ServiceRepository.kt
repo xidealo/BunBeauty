@@ -1,8 +1,8 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.DeleteServiceCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.IServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.InsertServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.ServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.UpdateServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
@@ -16,10 +16,7 @@ class ServiceRepository(
     private val serviceDao: ServiceDao,
     private val serviceFirebase: ServiceFirebase
 ) : BaseRepository(),
-    IServiceRepository, IServicesCallback {
-
-    private lateinit var iServicesCallback: IServicesCallback
-
+    IServiceRepository {
     override fun insert(service: Service, insertServiceCallback: InsertServiceCallback) {
         launch {
             service.id = getIdForNew(service.userId)
@@ -52,11 +49,11 @@ class ServiceRepository(
     }
 
     //Обратить внимание
-    override fun get(iServicesCallback: IServicesCallback) {
+    override fun get(servicesCallback: ServicesCallback) {
         launch {
             val services = serviceDao.get()
             withContext(Dispatchers.Main) {
-                iServicesCallback.returnServices(services)
+                servicesCallback.returnServices(services)
             }
         }
     }
@@ -64,16 +61,17 @@ class ServiceRepository(
     override fun getById(
         serviceId: String,
         userId: String,
-        isFirstEnter: Boolean
+        isFirstEnter: Boolean,
+        servicesCallback : ServicesCallback
     ) {
 
         if (isFirstEnter) {
-            serviceFirebase.getById(userId, serviceId, this)
+            serviceFirebase.getById(userId, serviceId, servicesCallback)
         } else {
             launch {
                 val services = serviceDao.getById(serviceId)
                 withContext(Dispatchers.Main) {
-                    iServicesCallback.returnServices(services)
+                    //servicesCallback.returnServices(services)
                 }
             }
         }
@@ -81,27 +79,19 @@ class ServiceRepository(
 
     override fun getServicesByUserId(
         userId: String,
-        iServicesCallback: IServicesCallback,
+        servicesCallback: ServicesCallback,
         isFirstEnter: Boolean
     ) {
-        this.iServicesCallback = iServicesCallback
         if (isFirstEnter) {
-            serviceFirebase.getServicesByUserId(userId, this)
+            serviceFirebase.getServicesByUserId(userId, servicesCallback)
         } else {
             launch {
                 val services = serviceDao.getAllByUserId(userId)
                 withContext(Dispatchers.Main) {
-                    iServicesCallback.returnServices(services)
+                    servicesCallback.returnServices(services)
                 }
             }
         }
-    }
-
-    override fun returnServices(serviceList: List<Service>) {
-        for (service in serviceList) {
-            //insertInRoom(service)
-        }
-        iServicesCallback.returnServices(serviceList)
     }
 
     fun getIdForNew(userId: String): String = serviceFirebase.getIdForNew(userId)

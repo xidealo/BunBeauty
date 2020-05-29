@@ -10,10 +10,7 @@ import kotlinx.coroutines.withContext
 
 class OrderRepository(
     private val orderFirebase: OrderFirebase
-) : BaseRepository(), IOrderRepository, OrderCallback, OrdersCallback {
-
-    lateinit var orderCallback: OrderCallback
-    lateinit var ordersCallback: OrdersCallback
+) : BaseRepository(), IOrderRepository {
 
     override fun insert(order: Order, insertOrderCallback: InsertOrderCallback) {
         launch {
@@ -56,18 +53,9 @@ class OrderRepository(
     }
 
     override fun getById(userId: String, orderId: String, orderCallback: OrderCallback) {
-        this.orderCallback = orderCallback
         launch {
             orderFirebase.getOrderById(userId, orderId, orderCallback)
         }
-    }
-
-    override fun returnElement(element: Order) {
-        orderCallback.returnElement(element)
-    }
-
-    override fun returnOrders(orderList: List<Order>) {
-        ordersCallback.returnOrders(orderList)
     }
 
 }
