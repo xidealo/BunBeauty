@@ -73,12 +73,8 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         countOfDialogs++
 
         for (message in objects) {
-            if (message.type == Message.TEXT_MESSAGE_STATUS) {
+            if (message.type == Message.TEXT_MESSAGE_STATUS || message.userId == User.getMyId()) {
                 cacheMessagesSet.add(message)
-            } else {
-                if (message.userId == User.getMyId()) {
-                    cacheMessages.add(message)
-                }
             }
         }
 
@@ -90,12 +86,8 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     }
 
     override fun returnElement(element: Message) {
-        if (element.type == Message.TEXT_MESSAGE_STATUS) {
+        if (element.type == Message.TEXT_MESSAGE_STATUS || element.userId == User.getMyId()) {
             addMessage(element)
-        } else {
-            if (element.userId == User.getMyId()) {
-                addMessage(element)
-            }
         }
     }
 
@@ -111,7 +103,9 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     }
 
     override fun returnUpdatedCallback(obj: Message) {
-        val k = 0
+        cacheMessages.remove(cacheMessages.find { it.id == obj.id })
+        cacheMessages.add(obj)
+        messagesPresenterCallback.showSendMessage(obj)
     }
 
 }

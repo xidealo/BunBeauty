@@ -26,7 +26,6 @@ class MessageFirebase {
             items[Message.ORDER_ID] = message.orderId
 
         items[Message.TYPE] = message.type
-
         messageRef.updateChildren(items)
     }
 
@@ -46,7 +45,6 @@ class MessageFirebase {
             items[Message.ORDER_ID] = message.orderId
 
         items[Message.TYPE] = message.type
-
         messageRef.updateChildren(items)
     }
 
@@ -131,17 +129,21 @@ class MessageFirebase {
             .child(dialog.ownerId)
             .child(Dialog.DIALOGS)
             .child(dialog.id)
-            .child(Message.MESSAGES).orderByChild(Message.TIME).limitToLast(1)
+            .child(Message.MESSAGES).orderByChild(Message.TIME).limitToLast(10)
 
         messageRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(messagesSnapshot: DataSnapshot) {
                 var message = Message()
                 if (messagesSnapshot.childrenCount > 0) {
-                    message =
-                        getMessageFromSnapshot(
-                            messagesSnapshot.children.iterator().next(),
-                            dialog.ownerId
-                        )
+                    for (messageSnapshot in messagesSnapshot.children.reversed()) {
+                        message =
+                            getMessageFromSnapshot(
+                                messageSnapshot,
+                                dialog.ownerId
+                            )
+                        if (message.type == Message.TEXT_MESSAGE_STATUS) break
+
+                    }
                 }
                 message.dialogId = dialog.id
                 message.userId = dialog.ownerId

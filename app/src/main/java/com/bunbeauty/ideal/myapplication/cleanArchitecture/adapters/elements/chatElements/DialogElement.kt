@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -85,6 +86,7 @@ class DialogElement(
 
         intent.putExtra(Dialog.COMPANION_DIALOG, myDialog)
         context.startActivity(intent)
+        (context as Activity).overridePendingTransition(0, 0)
     }
 
     companion object {
