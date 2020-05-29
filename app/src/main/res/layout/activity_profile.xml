@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/allPages"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/collapsingProfileLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -48,8 +48,8 @@
                                 android:gravity="end|center">
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                    android:visibility="invisible"
-                                    style="@style/actionButton"/>
+                                    style="@style/actionButton"
+                                    android:visibility="invisible" />
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                                     android:id="@+id/subscribeProfileBtn"
@@ -74,8 +74,8 @@
                                 android:gravity="start|center">
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                    android:visibility="invisible"
-                                    style="@style/actionButton"/>
+                                    style="@style/actionButton"
+                                    android:visibility="invisible" />
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                                     android:id="@+id/dialogsProfileBtn"
@@ -167,9 +167,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/bottom_panel_height"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintBottom_toTopOf="@id/bottomPanel"
-            app:layout_constraintTop_toBottomOf="@id/collapsingProfileLayout" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -177,7 +175,6 @@
         android:id="@+id/loadingProfileProgressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:indeterminateTint="@color/mainBlue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
