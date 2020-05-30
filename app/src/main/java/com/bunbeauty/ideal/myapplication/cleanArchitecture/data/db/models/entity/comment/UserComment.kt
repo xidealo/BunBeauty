@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import java.io.Serializable
 
 @Entity
 data class UserComment(
@@ -15,13 +16,13 @@ data class UserComment(
     var ownerId: String = "",
     @Ignore
     var user: User = User(), // owner
-    var rating: Double = 0.0,
+    var rating: Float = 0f,
     var review: String = "",
     var time: Long = 0L
-) {
+) : Serializable {
     companion object {
         const val COMMENTS = "comments"
-        const val COMMENT = "comment"
+        const val USER_COMMENT = "user comment"
         const val RATING = "rating"
         const val REVIEW = "creation_comment"
         const val TIME = "time"

@@ -58,7 +58,7 @@ class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
     private fun configViews() {
         rateCreationCommentBtn.setOnClickListener {
             creationCommentPresenter.checkMessage(
-                ratingCreationCommentRatingBar.rating.toDouble(),
+                ratingCreationCommentRatingBar.rating,
                 reviewCreationCommentInput.text.toString()
             )
         }

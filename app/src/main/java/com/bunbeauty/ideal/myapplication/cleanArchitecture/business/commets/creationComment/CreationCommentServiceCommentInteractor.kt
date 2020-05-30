@@ -11,12 +11,12 @@ class CreationCommentServiceCommentInteractor
     private val serviceCommentRepository: ServiceCommentRepository) :
     ICreationCommentServiceCommentInteractor, InsertServiceCommentCallback {
 
-    private var rating = 0.0
+    private var rating = 0f
     private var review = ""
 
     private lateinit var creationCommentPresenterCallback: CreationCommentPresenterCallback
 
-    override fun setRating(rating: Double) {
+    override fun setRating(rating: Float) {
         this.rating = rating
     }
 

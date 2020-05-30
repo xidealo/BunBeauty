@@ -23,11 +23,11 @@ class CreationCommentPresenter(
 ) :
     MvpPresenter<CreationCommentView>(), CreationCommentPresenterCallback {
 
-    fun checkMessage(rating: Double, review: String) {
+    fun checkMessage(rating: Float, review: String) {
         creationCommentMessageInteractor.checkMessage(rating, review, this)
     }
 
-    override fun createUserComment(rating: Double, review: String) {
+    override fun createUserComment(rating: Float, review: String) {
         val comment = UserComment()
         comment.rating = rating
         comment.review = review
@@ -35,7 +35,7 @@ class CreationCommentPresenter(
         creationCommentCommentInteractor.createUserComment(comment, this)
     }
 
-    override fun getOrderForServiceComment(message: Message, rating: Double, review: String) {
+    override fun getOrderForServiceComment(message: Message, rating: Float, review: String) {
         creationCommentServiceCommentInteractor.setRating(rating)
         creationCommentServiceCommentInteractor.setReview(review)
         creationCommentOrderInteractor.getOrderById(message, this)

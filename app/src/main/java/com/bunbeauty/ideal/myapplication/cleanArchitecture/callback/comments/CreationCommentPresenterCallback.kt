@@ -7,8 +7,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface CreationCommentPresenterCallback {
     fun createServiceComment(order: Order)
-    fun createUserComment(rating: Double, review: String)
-    fun getOrderForServiceComment(message: Message, rating: Double, review: String)
+    fun createUserComment(rating: Float, review: String)
+    fun getOrderForServiceComment(message: Message, rating: Float, review: String)
     fun updateUserCommentMessage(userComment: UserComment)
     fun updateServiceCommentMessage(serviceComment: ServiceComment)
     fun showCommentCreated(message: Message)

@@ -18,7 +18,7 @@ class CreationCommentMessageInteractor(
 
 
     override fun checkMessage(
-        rating: Double,
+        rating: Float,
         review: String,
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     ) {

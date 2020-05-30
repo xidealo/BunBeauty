@@ -1,10 +1,9 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.comments
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.comments
 
-import com.arellomobile.mvp.MvpView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.ServiceComment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 
-interface CurrentCommentView : MvpView {
+interface CurrentCommentPresenterCallback {
     fun setUserComment(userComment: UserComment)
     fun setServiceComment(serviceComment: ServiceComment)
 }

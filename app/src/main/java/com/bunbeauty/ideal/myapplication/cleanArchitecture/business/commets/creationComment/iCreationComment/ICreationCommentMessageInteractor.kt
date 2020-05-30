@@ -16,7 +16,7 @@ interface ICreationCommentMessageInteractor {
     )
 
     fun checkMessage(
-        rating: Double,
+        rating: Float,
         review: String,
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     )

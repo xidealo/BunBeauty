@@ -41,7 +41,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     /**
      * add all text messages or if it is my messages add also commentMessages
      *
-     * when we get from 2 dialogs messages we sort it and show
+     * when we get from 2 activity_dialogs messages we sort it and show
      */
     override fun returnList(objects: List<Message>) {
         countOfDialogs++

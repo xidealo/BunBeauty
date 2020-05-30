@@ -21,7 +21,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.DialogsPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.DialogsView
-import kotlinx.android.synthetic.main.dialogs.*
+import kotlinx.android.synthetic.main.activity_dialogs.*
 import javax.inject.Inject
 
 class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, DialogsView {
@@ -58,7 +58,7 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dialogs)
+        setContentView(R.layout.activity_dialogs)
         createPanels()
         init()
         hideEmptyDialogs()

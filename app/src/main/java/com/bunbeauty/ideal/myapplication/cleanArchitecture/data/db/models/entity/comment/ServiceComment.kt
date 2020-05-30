@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entit
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity
 data class ServiceComment(
@@ -15,7 +16,9 @@ data class ServiceComment(
     var rating: Double = 0.0,
     var review: String = "",
     var time: Long = 0L
-) {
-
+) : Serializable {
+    companion object {
+        const val SERVICE_COMMENT = "service comment"
+    }
 
 }

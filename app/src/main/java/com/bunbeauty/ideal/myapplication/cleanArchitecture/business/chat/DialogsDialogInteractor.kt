@@ -8,9 +8,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.DialogRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IDialogRepository
 
-class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
+class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
     IDialogsDialogInteractor, DialogsCallback, DialogCallback, DialogChangedCallback {
 
     private var finalCacheDialogs = mutableListOf<Dialog>()
@@ -18,6 +18,7 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
     private var companionsCacheDialogs = mutableListOf<Dialog>()
     private lateinit var dialogsPresenterCallback: DialogsPresenterCallback
     private var dialogCount = 0
+
     override fun getDialogsLink() = finalCacheDialogs
 
     override fun getDialogs(dialogsPresenterCallback: DialogsPresenterCallback) {
@@ -55,7 +56,6 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
             )
         }
         getCompanionDialog(companionDialog)
-        //dialogsPresenterCallback.showDialogs(finalCacheDialogs)
     }
 
     private fun getCompanionDialog(dialog: Dialog) {
@@ -85,7 +85,7 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
         }
 
         if (dialogCount >= myCacheDialogs.size + companionsCacheDialogs.size) {
-            if(companionsCacheDialogs.size != 0){
+            if (companionsCacheDialogs.size != 0) {
                 finalCacheDialogs.clear()
                 finalCacheDialogs.addAll(myCacheDialogs.sortedByDescending { it.lastMessage.time })
                 dialogsPresenterCallback.showDialogs(finalCacheDialogs)
@@ -96,7 +96,7 @@ class DialogsDialogInteractor(private val dialogRepository: DialogRepository) :
     override fun returnChanged(element: Dialog) {
         val dialog = finalCacheDialogs.find { it.id == element.id }
 
-        if (dialog != null){
+        if (dialog != null) {
             dialog.isChecked = element.isChecked
             dialogsPresenterCallback.showDialogs(finalCacheDialogs)
             dialogsPresenterCallback.getMessage(element)
