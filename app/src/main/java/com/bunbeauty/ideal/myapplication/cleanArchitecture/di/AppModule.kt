@@ -20,7 +20,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.Se
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
@@ -161,7 +161,7 @@ class AppModule(private val app: Application, private val intent: Intent) {
 
     @Provides
     fun provideRegistrationInteractor(userRepository: UserRepository) =
-        RegistrationInteractor(userRepository, intent)
+        RegistrationUserInteractor(userRepository, intent)
 
     @Provides
     fun provideProfileUserInteractor(

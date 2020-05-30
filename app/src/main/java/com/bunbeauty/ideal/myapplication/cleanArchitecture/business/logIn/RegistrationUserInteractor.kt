@@ -1,30 +1,30 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn
 
 import android.content.Intent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IRegistrationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.IRegistrationPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IRegistrationUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.RegistrationPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.InsertUsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
 import com.google.firebase.auth.FirebaseAuth
 
-class RegistrationInteractor(
+class RegistrationUserInteractor(
     private val userRepository: IUserRepository,
     private val intent: Intent
-) : IRegistrationInteractor, InsertUsersCallback {
+) : IRegistrationUserInteractor, InsertUsersCallback {
 
-    private lateinit var iRegistrationPresenter: IRegistrationPresenter
+    private lateinit var registrationPresenterCallback: RegistrationPresenterCallback
 
     override fun getMyPhoneNumber(): String = intent.getStringExtra(User.PHONE) ?: ""
 
-    override fun checkDataAndRegisterUser(
+    override fun registerUser(
         user: User,
-        iRegistrationPresenter: IRegistrationPresenter
+        registrationPresenterCallback: RegistrationPresenterCallback
     ) {
-        this.iRegistrationPresenter = iRegistrationPresenter
-        if (isNameCorrect(user.name, iRegistrationPresenter)
-            && isSurnameCorrect(user.surname, iRegistrationPresenter)
-            && isCityCorrect(user.city, iRegistrationPresenter)
+        this.registrationPresenterCallback = registrationPresenterCallback
+        if (isNameCorrect(user.name, registrationPresenterCallback)
+            && isSurnameCorrect(user.surname, registrationPresenterCallback)
+            && isCityCorrect(user.city, registrationPresenterCallback)
         ) {
             user.id = getUserId()
             userRepository.insert(user, this)
@@ -36,20 +36,20 @@ class RegistrationInteractor(
     //TODO UNIT TEST
     private fun isNameCorrect(
         name: String,
-        iRegistrationPresenter: IRegistrationPresenter
+        registrationPresenterCallback: RegistrationPresenterCallback
     ): Boolean {
         if (name.isEmpty()) {
-            iRegistrationPresenter.registrationNameInputErrorEmpty()
+            registrationPresenterCallback.registrationNameInputErrorEmpty()
             return false
         }
 
         if (!getIsNameInputCorrect(name)) {
-            iRegistrationPresenter.registrationNameInputError()
+            registrationPresenterCallback.registrationNameInputError()
             return false
         }
 
         if (!getIsNameLengthLessTwenty(name)) {
-            iRegistrationPresenter.registrationNameInputErrorLong()
+            registrationPresenterCallback.registrationNameInputErrorLong()
             return false
         }
         return true
@@ -57,20 +57,20 @@ class RegistrationInteractor(
 
     private fun isSurnameCorrect(
         surname: String,
-        iRegistrationPresenter: IRegistrationPresenter
+        registrationPresenterCallback: RegistrationPresenterCallback
     ): Boolean {
         if (surname.isEmpty()) {
-            iRegistrationPresenter.registrationSurnameInputErrorEmpty()
+            registrationPresenterCallback.registrationSurnameInputErrorEmpty()
             return false
         }
 
         if (!getIsNameInputCorrect(surname)) {
-            iRegistrationPresenter.registrationSurnameInputError()
+            registrationPresenterCallback.registrationSurnameInputError()
             return false
         }
 
         if (!getIsNameLengthLessTwenty(surname)) {
-            iRegistrationPresenter.registrationSurnameInputErrorLong()
+            registrationPresenterCallback.registrationSurnameInputErrorLong()
             return false
         }
         return true
@@ -78,10 +78,10 @@ class RegistrationInteractor(
 
     private fun isCityCorrect(
         city: String,
-        iRegistrationPresenter: IRegistrationPresenter
+        registrationPresenterCallback: RegistrationPresenterCallback
     ): Boolean {
         if (!getIsCityInputCorrect(city)) {
-            iRegistrationPresenter.registrationCityInputError()
+            registrationPresenterCallback.registrationCityInputError()
             return false
         }
         return true
@@ -108,7 +108,7 @@ class RegistrationInteractor(
     }
 
     override fun returnCreatedCallback(obj: User) {
-        iRegistrationPresenter.showSuccessfulRegistration()
+        registrationPresenterCallback.showSuccessfulRegistration()
     }
 
 }

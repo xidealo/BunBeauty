@@ -16,7 +16,6 @@ import com.squareup.picasso.Picasso
 class UserCommentElement(
     private val context: Context
 ) {
-
     private lateinit var avatarUserCommentElementImage: ImageView
     private lateinit var nameUserCommentElementText: TextView
     private lateinit var reviewUserCommentElementText: TextView

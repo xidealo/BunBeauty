@@ -15,8 +15,10 @@ class CurrentCommentPresenter(
     MvpPresenter<CurrentCommentView>(), CurrentCommentPresenterCallback {
 
     fun createCurrentCommentScreen() {
-        currentCommentCommentInteractor.getComment(this)
+        currentCommentCommentInteractor.createCurrentCommentScreen(this)
     }
+
+    fun getUserFromComment() = currentCommentCommentInteractor.getUserFromComment()
 
     override fun setUserComment(userComment: UserComment) {
         viewState.setUserComment(userComment)

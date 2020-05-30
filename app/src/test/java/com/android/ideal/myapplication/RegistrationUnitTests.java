@@ -2,7 +2,7 @@ package com.android.ideal.myapplication;
 
 import android.content.Intent;
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationUserInteractor;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository;
 
 import org.junit.Test;
@@ -30,36 +30,36 @@ public class RegistrationUnitTests {
 
     @Test
     public void whenCityNotEqualChooseCity() {
-        RegistrationInteractor registrationInteractor = getRegistrationInstance();
-        assertFalse(registrationInteractor.getIsCityInputCorrect("Выбрать город"));
+        RegistrationUserInteractor registrationUserInteractor = getRegistrationInstance();
+        assertFalse(registrationUserInteractor.getIsCityInputCorrect("Выбрать город"));
     }
 
     @Test
     public void whenNameCorrectRegistration() {
-        RegistrationInteractor registrationInteractor = getRegistrationInstance();
-        assertTrue(registrationInteractor.getIsNameInputCorrect("ЫВАЫФЫФфываывфлфвалпуцкльвап"));
+        RegistrationUserInteractor registrationUserInteractor = getRegistrationInstance();
+        assertTrue(registrationUserInteractor.getIsNameInputCorrect("ЫВАЫФЫФфываывфлфвалпуцкльвап"));
     }
 
     @Test
     public void whenNameLengthLessTwentyRegistration() {
-        RegistrationInteractor registrationInteractor = getRegistrationInstance();
-        assertTrue(registrationInteractor.getIsNameLengthLessTwenty("qwertyuiopasdfghjklz"));
+        RegistrationUserInteractor registrationUserInteractor = getRegistrationInstance();
+        assertTrue(registrationUserInteractor.getIsNameLengthLessTwenty("qwertyuiopasdfghjklz"));
     }
 
     @Test
     public void whenSurnameCorrectRegistration() {
-        RegistrationInteractor registrationInteractor = getRegistrationInstance();
-        assertTrue(registrationInteractor.getIsSurnameInputCorrect("dasfjdfgdlsлывальвыалплд"));
+        RegistrationUserInteractor registrationUserInteractor = getRegistrationInstance();
+        assertTrue(registrationUserInteractor.getIsSurnameInputCorrect("dasfjdfgdlsлывальвыалплд"));
     }
 
     @Test
     public void whenSurnameLengthLessTwentyRegistration() {
-        RegistrationInteractor registrationInteractor = getRegistrationInstance();
-        assertTrue(registrationInteractor.getIsSurnameLengthLessTwenty("qwertyuiopasdfghjklz"));
+        RegistrationUserInteractor registrationUserInteractor = getRegistrationInstance();
+        assertTrue(registrationUserInteractor.getIsSurnameLengthLessTwenty("qwertyuiopasdfghjklz"));
     }
 
-    private RegistrationInteractor getRegistrationInstance() {
-        return new RegistrationInteractor(userRepository, intent);
+    private RegistrationUserInteractor getRegistrationInstance() {
+        return new RegistrationUserInteractor(userRepository, intent);
     }
 }
 

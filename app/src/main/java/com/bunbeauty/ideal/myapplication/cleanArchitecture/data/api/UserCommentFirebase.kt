@@ -45,7 +45,6 @@ class UserCommentFirebase {
                 // Some error
             }
         })
-
     }
 
     private fun getUserCommentFromSnapshot(

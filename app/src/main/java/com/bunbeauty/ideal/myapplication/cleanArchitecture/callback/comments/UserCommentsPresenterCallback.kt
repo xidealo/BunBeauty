@@ -7,4 +7,5 @@ interface UserCommentsPresenterCallback {
     fun getUser(userComment: UserComment)
     fun setUserOnUserComment(user: User)
     fun updateUserComments()
+    fun showEmptyScreen()
 }

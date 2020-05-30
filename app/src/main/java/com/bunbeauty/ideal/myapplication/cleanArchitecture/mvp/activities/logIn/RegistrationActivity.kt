@@ -9,7 +9,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterSpinner {
 
     @Inject
-    lateinit var registrationInteractor: RegistrationInteractor
+    lateinit var registrationUserInteractor: RegistrationUserInteractor
 
     @InjectPresenter
     lateinit var registrationPresenter: RegistrationPresenter
@@ -35,7 +35,7 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterS
             .appModule(AppModule(application, intent))
             .build().inject(this)
 
-        return RegistrationPresenter(registrationInteractor)
+        return RegistrationPresenter(registrationUserInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +62,7 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterS
     }
 
     private fun saveData() {
-        registrationPresenter.checkDataAndRegisterUser(
+        registrationPresenter.registerUser(
             WorkWithStringsApi.firstCapitalSymbol(nameRegistrationInput.text.toString().trim()),
             WorkWithStringsApi.firstCapitalSymbol(surnameRegistrationInput.text.toString().trim()),
             WorkWithStringsApi.firstCapitalSymbol(cityRegistrationSpinner.text.toString()),

@@ -10,9 +10,7 @@
 
     <TextView
         android:id="@+id/noUserCommentsText"
-        style="@style/mainBlockText"
-        android:layout_height="wrap_content"
-        android:gravity="center"
+        style="@style/infoText"
         android:text="Нет комментариев"
         app:layout_constraintBottom_toTopOf="@+id/topPanel"
         app:layout_constraintEnd_toEndOf="parent"

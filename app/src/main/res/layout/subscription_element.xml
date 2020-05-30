@@ -6,8 +6,7 @@
     style="@style/block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:padding="8dp"
+    android:padding="4dp"
     android:background="@drawable/block_text"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.SubscriptionElement">
 
@@ -24,7 +23,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:textColor="@color/black"
-        android:layout_margin="8dp"
+        android:layout_marginStart="4dp"
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:text="@string/name" />

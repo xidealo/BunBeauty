@@ -25,6 +25,8 @@ class UserCommentsUserCommentInteractor(private val userCommentRepository: UserC
     }
 
     override fun returnList(objects: List<UserComment>) {
+        if(objects.isEmpty()) userCommentsPresenterCallback.showEmptyScreen()
+
         cacheUserComments.addAll(objects)
 
         for (userComment in objects) {

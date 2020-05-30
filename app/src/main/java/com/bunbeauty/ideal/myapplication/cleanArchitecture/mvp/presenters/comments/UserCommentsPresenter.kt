@@ -38,4 +38,9 @@ class UserCommentsPresenter(
         viewState.updateUserComments()
     }
 
+    override fun showEmptyScreen() {
+        viewState.hideLoading()
+        viewState.showEmptyScreen()
+    }
+
 }

@@ -2,23 +2,21 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.IRegistrationPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IRegistrationUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.RegistrationPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.RegistrationView
 
 @InjectViewState
-class RegistrationPresenter(private val registrationInteractor: RegistrationInteractor) :
-    MvpPresenter<RegistrationView>(), IRegistrationPresenter {
+class RegistrationPresenter(private val registrationUserInteractor: IRegistrationUserInteractor) :
+    MvpPresenter<RegistrationView>(), RegistrationPresenterCallback {
 
-    fun checkDataAndRegisterUser(name: String, surname: String, city: String, phone: String) {
-        viewState.disableRegistrationButton()
-
+    fun registerUser(name: String, surname: String, city: String, phone: String) {
         val user = User(phone = phone, city = city, name = name, surname = surname)
-        registrationInteractor.checkDataAndRegisterUser(user, this)
+        registrationUserInteractor.registerUser(user, this)
     }
 
-    fun getMyPhoneNumber() = registrationInteractor.getMyPhoneNumber()
+    fun getMyPhoneNumber() = registrationUserInteractor.getMyPhoneNumber()
 
     override fun showSuccessfulRegistration() {
         viewState.showSuccessfulRegistration()

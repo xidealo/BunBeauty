@@ -30,7 +30,7 @@ class UserFirebase {
     }
 
     fun delete(user: User) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     fun update(user: User) {
@@ -157,7 +157,6 @@ class UserFirebase {
 
     private fun getUserFromSnapshot(userSnapshot: DataSnapshot): User {
         val user = User()
-        // add defualt value
         user.id = userSnapshot.key!!
         user.name = userSnapshot.child(User.NAME).value as? String ?: ""
         user.surname = userSnapshot.child(User.SURNAME).value as? String ?: ""

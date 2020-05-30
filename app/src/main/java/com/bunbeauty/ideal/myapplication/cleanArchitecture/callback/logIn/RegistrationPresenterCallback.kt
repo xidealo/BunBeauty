@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn
 
-interface IRegistrationPresenter {
+interface RegistrationPresenterCallback {
     fun showSuccessfulRegistration()
     fun registrationNameInputError()
     fun registrationNameInputErrorEmpty()
