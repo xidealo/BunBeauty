@@ -24,7 +24,10 @@
                 android:fitsSystemWindows="true"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap">
 
-                <include layout="@layout/part_top_panel" />
+                <include
+                    layout="@layout/part_top_panel"
+                    app:layout_collapseMode="parallax"
+                    app:layout_collapseParallaxMultiplier="0.5" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
