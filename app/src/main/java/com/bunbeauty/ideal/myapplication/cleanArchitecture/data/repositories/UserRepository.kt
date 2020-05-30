@@ -1,9 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.DeleteUsersCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.InsertUsersCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UpdateUsersCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.UserFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.UserDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -52,20 +49,20 @@ class UserRepository(
         launch {
             val users = userDao.get()
             withContext(Dispatchers.Main) {
-                usersCallback.returnUsers(users)
+                usersCallback.returnList(users)
             }
         }
     }
 
-    override fun getById(id: String, usersCallback: UsersCallback, isFirstEnter: Boolean) {
+    override fun getById(id: String, userCallback: UserCallback, isFirstEnter: Boolean) {
         if (isFirstEnter) {
-            userFirebase.getById(id, usersCallback)
+            userFirebase.getById(id, userCallback)
         } else {
             launch {
                 val users = userDao.getById(id)
 
                 withContext(Dispatchers.Main) {
-                    usersCallback.returnUsers(users)
+                    //userCallback.returnElement(users)
                 }
             }
         }
@@ -73,16 +70,16 @@ class UserRepository(
 
     override fun getByPhoneNumber(
         phoneNumber: String,
-        usersCallback: UsersCallback,
+        userCallback: UserCallback,
         isFirstEnter: Boolean
     ) {
         if (isFirstEnter) {
-            userFirebase.getByPhoneNumber(phoneNumber, usersCallback)
+            userFirebase.getByPhoneNumber(phoneNumber, userCallback)
         } else {
             launch {
                 val users = userDao.getByPhoneNumber(phoneNumber)
                 withContext(Dispatchers.Main) {
-                    usersCallback.returnUsers(users)
+                    //isFirstEnter.returnList(users)
                 }
             }
         }
@@ -95,7 +92,7 @@ class UserRepository(
             launch {
                 val users = userDao.getByCity(city)
                 withContext(Dispatchers.Main) {
-                    usersCallback.returnUsers(users)
+                    usersCallback.returnList(users)
                 }
             }
         }
@@ -113,7 +110,7 @@ class UserRepository(
             launch {
                 val users = userDao.getByCityAndUserName(city, userName)
                 withContext(Dispatchers.Main) {
-                    usersCallback.returnUsers(users)
+                    usersCallback.returnList(users)
                 }
             }
         }
@@ -126,7 +123,7 @@ class UserRepository(
             launch {
                 val users = userDao.getByName(name)
                 withContext(Dispatchers.Main) {
-                    usersCallback.returnUsers(users)
+                    usersCallback.returnList(users)
                 }
             }
         }

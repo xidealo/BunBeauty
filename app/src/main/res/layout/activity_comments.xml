@@ -4,6 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".cleanArchitecture.commentsiActivity">
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.UserCommentsActivity">
+
+    <include layout="@layout/part_top_panel" />
+
+    <TextView
+        android:id="@+id/noUserCommentsText"
+        style="@style/mainBlockText"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Нет комментариев"
+        app:layout_constraintBottom_toTopOf="@+id/topPanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bottomPanel" />
+
+    <ProgressBar
+        android:id="@+id/progressBarUserComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/mainBlue"
+        app:layout_constraintBottom_toTopOf="@+id/topPanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bottomPanel" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/resultsUserCommentsRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="1dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topPanel" />
+
+    <include layout="@layout/part_bottom_panel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

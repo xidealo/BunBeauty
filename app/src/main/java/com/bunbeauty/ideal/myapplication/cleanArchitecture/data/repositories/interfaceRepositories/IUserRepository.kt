@@ -10,8 +10,8 @@ interface IUserRepository {
     fun update(user: User, updateUsersCallback: UpdateUsersCallback)
     fun get(usersCallback: UsersCallback)
 
-    fun getById(id: String, usersCallback: UsersCallback, isFirstEnter: Boolean)
-    fun getByPhoneNumber(phoneNumber: String, usersCallback: UsersCallback, isFirstEnter: Boolean)
+    fun getById(id: String, userCallback: UserCallback, isFirstEnter: Boolean)
+    fun getByPhoneNumber(phoneNumber: String, userCallback: UserCallback, isFirstEnter: Boolean)
     fun getByCity(city: String, usersCallback: UsersCallback, isFirstEnter: Boolean)
     fun getByName(name: String, usersCallback: UsersCallback, isFirstEnter: Boolean)
     fun getByCityAndUserName(

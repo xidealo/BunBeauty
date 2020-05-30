@@ -56,6 +56,7 @@ class CreationCommentPresenter(
     override fun updateServiceCommentMessage(serviceComment: ServiceComment) {
         creationCommentMessageInteractor.updateServiceCommentMessage(serviceComment, this)
     }
+
     override fun showCommentCreated(message: Message) {
         viewState.showCommentCreated(message)
     }

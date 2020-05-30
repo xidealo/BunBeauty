@@ -1,11 +1,8 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
@@ -24,15 +21,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.DialogsPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.DialogsView
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.dialogs.*
 import javax.inject.Inject
 
 class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, DialogsView {
 
-    private lateinit var loadingProgressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
-    private lateinit var noDialogsText: TextView
     private lateinit var dialogAdapter: DialogAdapter
 
     override var panelContext: Activity = this
@@ -78,8 +72,6 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
 
     private fun init() {
         recyclerView = findViewById(R.id.resultsDialogsRecycleView)
-        loadingProgressBar = findViewById(R.id.progressBarDialogs)
-        noDialogsText = findViewById(R.id.noDialogsDialogsText)
         recyclerView.layoutManager = LinearLayoutManager(this)
         dialogAdapter = DialogAdapter(dialogsPresenter.getDialogsLink())
         recyclerView.adapter = dialogAdapter
@@ -94,19 +86,19 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     }
 
     override fun showLoading() {
-        loadingProgressBar.visibility = View.VISIBLE
+        progressBarDialogs.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        loadingProgressBar.visibility = View.GONE
+        progressBarDialogs.visibility = View.GONE
     }
 
     override fun showEmptyDialogs() {
-        noDialogsText.visibility = View.VISIBLE
+        noDialogsDialogsText.visibility = View.VISIBLE
     }
 
     override fun hideEmptyDialogs() {
-        noDialogsText.visibility = View.GONE
+        noDialogsDialogsText.visibility = View.GONE
     }
 
 }

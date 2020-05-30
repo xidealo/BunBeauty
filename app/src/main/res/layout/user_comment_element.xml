@@ -14,8 +14,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+
         <ImageView
-            android:id="@+id/avatarCommentElementImage"
+            android:id="@+id/avatarUserCommentElementImage"
             android:layout_width="@dimen/photo_avatar_width"
             android:layout_height="@dimen/photo_avatar_height"
             android:layout_marginEnd="10dp"
@@ -29,7 +30,7 @@
             android:paddingTop="5dp">
 
             <TextView
-                android:id="@+id/nameCommentElementText"
+                android:id="@+id/nameUserCommentElementText"
                 style="@style/mainTextMainScreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,7 +38,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/reviewCommentElementText"
+                android:id="@+id/reviewUserCommentElementText"
                 style="@style/defaultTextMainScreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -52,7 +53,7 @@
             android:orientation="vertical">
 
             <RatingBar
-                android:id="@+id/ratingCommentElementBar"
+                android:id="@+id/ratingUserCommentElementBar"
                 style="@android:style/Widget.Holo.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -2,13 +2,13 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.iChat.IDialogsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.chat.DialogsPresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
 
 class DialogsUserInteractor(private val userRepository: UserRepository) :
-    IDialogsUserInteractor, UsersCallback {
+    IDialogsUserInteractor, UserCallback {
 
     private lateinit var dialogsPresenterCallback: DialogsPresenterCallback
 
@@ -20,8 +20,7 @@ class DialogsUserInteractor(private val userRepository: UserRepository) :
         userRepository.getById(dialog.user.id, this, true)
     }
 
-    override fun returnUsers(users: List<User>) {
-        dialogsPresenterCallback.fillDialogs(users.first())
+    override fun returnElement(element: User) {
+        dialogsPresenterCallback.fillDialogs(element)
     }
-
 }

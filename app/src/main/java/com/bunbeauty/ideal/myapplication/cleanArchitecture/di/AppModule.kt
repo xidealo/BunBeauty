@@ -5,12 +5,13 @@ import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.*
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CommentsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.CurrentCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentMessageInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentOrderInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentServiceCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
@@ -286,7 +287,16 @@ class AppModule(private val app: Application, private val intent: Intent) {
         EditServiceInteractor(intent, serviceRepository)
 
     @Provides
-    fun provideCommentsInteractor() = CommentsInteractor(intent)
+    fun provideUserCommentsInteractor(userCommentRepository: UserCommentRepository) =
+        UserCommentsUserCommentInteractor(
+            userCommentRepository
+        )
+
+    @Provides
+    fun provideUserCommentsUserInteractor(userRepository: UserRepository) =
+        UserCommentsUserInteractor(
+            userRepository, intent
+        )
 
     @Provides
     fun provideCurrentCommentInteractor() = CurrentCommentInteractor(intent)
@@ -301,7 +311,8 @@ class AppModule(private val app: Application, private val intent: Intent) {
     @Provides
     fun provideCreationCommentServiceCommentInteractor(serviceCommentRepository: ServiceCommentRepository) =
         CreationCommentServiceCommentInteractor(
-            serviceCommentRepository)
+            serviceCommentRepository
+        )
 
     @Provides
     fun provideCreationCommentMessageInteractor(messageRepository: MessageRepository) =

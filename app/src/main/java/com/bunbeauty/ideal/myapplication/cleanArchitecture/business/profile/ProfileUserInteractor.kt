@@ -4,6 +4,7 @@ import android.content.Intent
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
@@ -13,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 class ProfileUserInteractor(
     private val userRepository: IUserRepository,
     private val intent: Intent
-) : BaseRepository(), IProfileUserInteractor, UsersCallback {
+) : BaseRepository(), IProfileUserInteractor, UserCallback {
 
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
 
@@ -29,7 +30,7 @@ class ProfileUserInteractor(
         if (intent.hasExtra(User.USER)) {
             val user = intent.getSerializableExtra(User.USER) as User
             if (user.id.isNotEmpty()) {
-                returnUsers(listOf(user))
+                returnElement(user)
             } else {
                 userRepository.getById(
                     User.getMyId(),
@@ -46,14 +47,10 @@ class ProfileUserInteractor(
         }
     }
 
-    override fun returnUsers(users: List<User>) {
-        if (users.isNotEmpty()) {
-            val user = users.first()
-            cacheOwner = user
-            profilePresenterCallback.returnProfileOwner(user)
-
-            whoseProfile(user, profilePresenterCallback)
-        }
+    override fun returnElement(element: User) {
+        cacheOwner = element
+        profilePresenterCallback.returnProfileOwner(element)
+        whoseProfile(element, profilePresenterCallback)
     }
 
     private fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
@@ -115,4 +112,5 @@ class ProfileUserInteractor(
     companion object {
         var cacheUser = User()
     }
+
 }

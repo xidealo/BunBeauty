@@ -7,7 +7,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPh
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhoneNumberCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.EditProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UpdateUsersCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -18,7 +18,7 @@ class EditProfileInteractor(
     private val intent: Intent,
     private val userRepository: UserRepository,
     private val verifyPhoneNumberApi: VerifyPhoneNumberApi
-) : UpdateUsersCallback, VerifyPhoneNumberCallback, UsersCallback {
+) : UpdateUsersCallback, VerifyPhoneNumberCallback, UserCallback {
 
     private lateinit var editProfilePresenterCallback: EditProfilePresenterCallback
 
@@ -127,14 +127,15 @@ class EditProfileInteractor(
         userRepository.getByPhoneNumber(phoneNumber, this, true)
     }
 
-    override fun returnUsers(users: List<User>) {
-        if (users.isEmpty()) {
+    override fun returnElement(element: User) {
+        if (element.name.isEmpty()) {
             verifyPhoneNumberApi.sendVerificationCode(cacheUser.phone, this)
             editProfilePresenterCallback.returnCodeSent()
         } else {
             editProfilePresenterCallback.showPhoneAlreadyUsedError()
         }
     }
+
 
     fun resendCode(phoneNumber: String) {
         verifyPhoneNumberApi.resendVerificationCode(phoneNumber)
@@ -179,4 +180,6 @@ class EditProfileInteractor(
         tokenRef.setValue("-")
         FirebaseAuth.getInstance().signOut()
     }
+
+
 }

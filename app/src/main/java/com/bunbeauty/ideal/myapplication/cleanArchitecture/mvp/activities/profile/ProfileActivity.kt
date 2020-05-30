@@ -23,6 +23,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomViewPager
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.UserCommentsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
@@ -31,7 +32,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile.ServicesFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import com.squareup.picasso.Picasso
@@ -40,14 +40,8 @@ import javax.inject.Inject
 
 class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView,
     ITopPanel, IBottomPanel, TabLayout.OnTabSelectedListener {
-    
-    private lateinit var ratingLayout: LinearLayout
-    
-    private lateinit var dialogsBtn: FloatingActionButton
-    private lateinit var subscribeBtn: FloatingActionButton
 
-    private lateinit var subscriptionsBtn: FloatingActionButton
-    private lateinit var scheduleBtn: FloatingActionButton
+    private lateinit var ratingLayout: LinearLayout
 
     private lateinit var ordersFragment: OrdersFragment
     private lateinit var servicesFragment: ServicesFragment
@@ -111,15 +105,13 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     private fun init() {
 
         ratingLayout = findViewById(R.id.ratingProfileLayout)
-
-        subscribeBtn = findViewById(R.id.subscribeProfileBtn)
-        subscribeBtn.setOnClickListener(this)
-        dialogsBtn = findViewById(R.id.dialogsProfileBtn)
-        dialogsBtn.setOnClickListener(this)
-        subscriptionsBtn = findViewById(R.id.subscriptionsProfileBtn)
-        subscriptionsBtn.setOnClickListener(this)
-        scheduleBtn = findViewById(R.id.scheduleProfileBtn)
-        scheduleBtn.setOnClickListener(this)
+        ratingProfileLayout.setOnClickListener(this)
+        subscribeProfileBtn.setOnClickListener(this)
+        dialogsProfileBtn.setOnClickListener(this)
+        subscriptionsProfileBtn.setOnClickListener(this)
+        scheduleProfileBtn.setOnClickListener(this)
+        profileRatingBar.setOnClickListener(this)
+        ratingProfileText.setOnClickListener(this)
 
         ordersFragment = OrdersFragment()
         servicesFragment = ServicesFragment()
@@ -213,35 +205,35 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showDialogsButton() {
-        dialogsBtn.visibility = View.VISIBLE
+        dialogsProfileBtn.visibility = View.VISIBLE
     }
 
     override fun hideDialogsButton() {
-        dialogsBtn.visibility = View.GONE
+        dialogsProfileBtn.visibility = View.GONE
     }
 
     override fun showSubscribeButton() {
-        subscribeBtn.visibility = View.VISIBLE
+        subscribeProfileBtn.visibility = View.VISIBLE
     }
 
     override fun hideSubscribeButton() {
-        subscribeBtn.visibility = View.GONE
+        subscribeProfileBtn.visibility = View.GONE
     }
 
     override fun showSubscriptionsButton() {
-        subscriptionsBtn.visibility = View.VISIBLE
+        subscriptionsProfileBtn.visibility = View.VISIBLE
     }
 
     override fun hideSubscriptionsButton() {
-        subscriptionsBtn.visibility = View.GONE
+        subscriptionsProfileBtn.visibility = View.GONE
     }
 
     override fun showScheduleButton() {
-        scheduleBtn.visibility = View.VISIBLE
+        scheduleProfileBtn.visibility = View.VISIBLE
     }
 
     override fun hideScheduleButton() {
-        scheduleBtn.visibility = View.GONE
+        scheduleProfileBtn.visibility = View.GONE
     }
 
     override fun onClick(v: View) {
@@ -250,8 +242,7 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             R.id.dialogsProfileBtn -> profilePresenter.goToDialog()
             R.id.scheduleProfileBtn -> goToSchedule()
             R.id.subscriptionsProfileBtn -> profilePresenter.goToSubscriptions()
-
-            //R.id.ratingProfileLayout -> goToComments(profilePresenter.getOwnerId())
+            R.id.ratingProfileLayout -> goToComments(profilePresenter.getCacheOwner())
         }
     }
 
@@ -323,11 +314,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     override fun showSubscribed() {
-        subscribeBtn.setImageResource(R.drawable.icon_heart)
+        subscribeProfileBtn.setImageResource(R.drawable.icon_heart)
     }
 
     override fun showUnsubscribed() {
-        subscribeBtn.setImageResource(R.drawable.icon_heart_outline)
+        subscribeProfileBtn.setImageResource(R.drawable.icon_heart_outline)
     }
 
     private fun goToSchedule() {
@@ -343,13 +334,10 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         overridePendingTransition(0, 0)
     }
 
-    private fun goToComments(ownerId: String?) {
-        /*val intent = Intent(this, Comments::class.java)
-        intent.putExtra(SERVICE_OWNER_ID, ownerId)
-        //intent.putExtra(User.COUNT_OF_RATES, getCountOfRates())
-        intent.putExtra(TYPE, REVIEW_FOR_USER)
+    private fun goToComments(user: User) {
+        val intent = Intent(this, UserCommentsActivity::class.java)
+        intent.putExtra(User.USER, user)
         startActivity(intent)
-        overridePendingTransition(0, 0)*/
     }
 
 }

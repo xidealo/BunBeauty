@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.DialogsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CommentsActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.UserCommentsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CreationCommentActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CurrentCommentActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
@@ -39,7 +39,7 @@ interface AppComponent {
     fun inject(messagesActivity: MessagesActivity)
     fun inject(subscriptionsActivity: SubscriptionsActivity)
     fun inject(editServiceActivity: EditServiceActivity)
-    fun inject(commentsActivity: CommentsActivity)
+    fun inject(userCommentsActivity: UserCommentsActivity)
     fun inject(currentCommentActivity: CurrentCommentActivity)
     fun inject(creationUserCommentActivity: CreationCommentActivity)
 }

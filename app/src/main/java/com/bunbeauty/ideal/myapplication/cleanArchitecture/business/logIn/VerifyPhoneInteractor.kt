@@ -5,7 +5,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPh
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IVerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhoneNumberCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhonePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
@@ -17,7 +17,7 @@ class VerifyPhoneInteractor(
     private val userRepository: IUserRepository,
     private val intent: Intent,
     private val verifyPhoneNumberApi: VerifyPhoneNumberApi
-) : BaseRepository(), IVerifyPhoneInteractor, UsersCallback, VerifyPhoneNumberCallback {
+) : BaseRepository(), IVerifyPhoneInteractor, UserCallback, VerifyPhoneNumberCallback {
 
     private lateinit var verifyPresenterCallback: VerifyPhonePresenterCallback
 
@@ -63,6 +63,15 @@ class VerifyPhoneInteractor(
             }
         }
     }
+
+    override fun returnElement(element: User) {
+        if (element.name.isEmpty()) {
+            verifyPresenterCallback.goToRegistration(getPhoneNumber())
+        } else {
+            verifyPresenterCallback.goToProfile()
+        }
+    }
+
     /*override fun returnWrongCodeError() {
         verifyPresenterCallback.showWrongCodeError()
     }
@@ -71,16 +80,11 @@ class VerifyPhoneInteractor(
         userRepository.getByPhoneNumber(getMyPhoneNumber(), this, true)
     }*/
 
-    override fun returnUsers(users: List<User>) {
-        if (users.isEmpty() || users.first().name.isEmpty()) {
-            verifyPresenterCallback.goToRegistration(getPhoneNumber())
-        } else {
-            verifyPresenterCallback.goToProfile()
-        }
-    }
 
     companion object {
         const val TAG = "DBInf"
     }
+
+
 
 }

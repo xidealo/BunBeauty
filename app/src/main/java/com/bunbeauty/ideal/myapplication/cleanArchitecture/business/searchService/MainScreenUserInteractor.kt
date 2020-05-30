@@ -29,8 +29,7 @@ class MainScreenUserInteractor(
         userRepository.getByCity(city, this, true)
     }
 
-    override fun returnUsers(users: List<User>) {
-
+    override fun returnList(users: List<User>) {
         cacheUserList.addAll(users)
             for (user in users) {
                 mainScreenPresenterCallback.getServicesByUserId(user)

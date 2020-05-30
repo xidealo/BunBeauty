@@ -116,29 +116,6 @@ class ServiceFirebase {
         })
     }
 
-    /*private fun setListener(
-        servicesRef: DatabaseReference,
-        userId: String,
-        iServiceCallback: IServiceCallback
-    ) {
-        servicesRef.addChildEventListener(object : ChildEventListener {
-
-            override fun onChildAdded(serviceSnapshot: DataSnapshot, pChildName: String?) {
-                returnService(serviceSnapshot, userId, iServiceCallback)
-            }
-
-            override fun onChildChanged(serviceSnapshot: DataSnapshot, pChildName: String?) {
-                returnService(serviceSnapshot, userId, iServiceCallback)
-            }
-
-            override fun onChildRemoved(serviceSnapshot: DataSnapshot) {}
-
-            override fun onChildMoved(serviceSnapshot: DataSnapshot, pChildName: String?) {}
-
-            override fun onCancelled(error: DatabaseError) {}
-        })
-    }*/
-
     private fun returnServiceList(
         servicesSnapshot: DataSnapshot,
         userId: String

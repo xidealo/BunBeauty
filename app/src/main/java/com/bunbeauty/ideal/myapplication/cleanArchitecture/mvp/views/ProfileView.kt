@@ -12,7 +12,6 @@ interface ProfileView: MvpView {
     fun showCountOfSubscriber(count: Long)
     fun showRating(rating: Float, countOfRates: Long)
     fun setServiceAdapter(services: List<Service>, user: User)
-
     fun showBottomPanel(selectedItemId: Int = -1)
     fun showUpdatedBottomPanel(selectedItemId: Int)
     fun showTopPanelWithEditIcon()

@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.iSubs.ISubscriptionsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subs.SubscriptionsPresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscription
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
@@ -12,7 +12,7 @@ class SubscriptionsUserInteractor(
     private val intent: Intent,
     private val userRepository: UserRepository
 ) :
-    ISubscriptionsUserInteractor, UsersCallback {
+    ISubscriptionsUserInteractor, UserCallback {
 
     private lateinit var subscriptionsPresenterCallback: SubscriptionsPresenterCallback
 
@@ -52,9 +52,9 @@ class SubscriptionsUserInteractor(
         }
     }
 
-    override fun returnUsers(users: List<User>) {
+    override fun returnElement(element: User) {
         currentSubscriptionsCount++
-        cacheUsers.addAll(users)
+        cacheUsers.add(element)
 
         if (currentSubscriptionsCount == subscriptionsCount) {
             subscriptionsPresenterCallback.fillSubscriptions(cacheUsers)

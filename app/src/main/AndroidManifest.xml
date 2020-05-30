@@ -19,7 +19,7 @@
             android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CreationCommentActivity"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CurrentCommentActivity" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CommentsActivity" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.UserCommentsActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.TestActivity" />
         <activity
             android:name="com.bunbeauty.ideal.myapplication.reviews.PickedComment"
