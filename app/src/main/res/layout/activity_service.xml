@@ -117,7 +117,7 @@
 
                 <fragment
                     android:id="@+id/premiumBlockServiceActivity"
-                    class="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment"
+                    class="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

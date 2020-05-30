@@ -17,7 +17,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditServiceActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IProfileAvailable
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
@@ -25,10 +25,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
-import com.bunbeauty.ideal.myapplication.reviews.Comments
 import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.service_activity.*
+import kotlinx.android.synthetic.main.activity_service.*
 import javax.inject.Inject
 
 class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView,
@@ -48,7 +47,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private lateinit var ratingBar: RatingBar
     private lateinit var progressBar: ProgressBar
 
-    private lateinit var premiumElementFragment: PremiumElementFragment
+    private lateinit var premiumFragment: PremiumFragment
 
     override var panelContext: Activity = this
 
@@ -69,7 +68,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.service_activity)
+        setContentView(R.layout.activity_service)
 
         init()
         showLoading()
@@ -97,8 +96,8 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         ratingBar = findViewById(R.id.ratingServiceBar)
         progressBar = findViewById(R.id.progressServiceBar)
 
-        premiumElementFragment =
-            supportFragmentManager.findFragmentById(R.id.premiumBlockServiceActivity) as PremiumElementFragment
+        premiumFragment =
+            supportFragmentManager.findFragmentById(R.id.premiumBlockServiceActivity) as PremiumFragment
 
         findViewById<MaterialButton>(R.id.scheduleServiceBtn).setOnClickListener(this)
     }
@@ -142,7 +141,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     override fun showPremium(service: Service) {
-        premiumElementFragment.setPremium(service)
+        premiumFragment.setPremium(service)
     }
 
     override fun createOwnServiceTopPanel(service: Service) {
@@ -154,7 +153,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     override fun hidePremium() {
-        premiumElementFragment.hidePremium()
+        premiumFragment.hidePremium()
     }
 
     override fun showPhotos(photos: List<Photo>) {
@@ -232,12 +231,12 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     private fun goToComments() {
-        val intent = Intent(this, Comments::class.java)
-        //intent.putExtra(Service.SERVICE_ID, "")
+        /*val intent = Intent(this, Comments::class.java)
+        intent.putExtra(Service.SERVICE_ID, "")
         intent.putExtra(TYPE, REVIEW_FOR_SERVICE)
         intent.putExtra(Service.USER_ID, "")
         intent.putExtra(Service.COUNT_OF_RATES, "")
-        startActivity(intent)
+        startActivity(intent)*/
     }
 
     companion object {

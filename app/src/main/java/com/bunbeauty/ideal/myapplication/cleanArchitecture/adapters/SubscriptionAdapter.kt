@@ -18,7 +18,7 @@ class SubscriptionAdapter(
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SubscriptionViewHolder {
         val context = viewGroup.context
-        val layoutIdForListItem = R.layout.subscription_element
+        val layoutIdForListItem = R.layout.element_subscription
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false)
         return SubscriptionViewHolder(view, context)

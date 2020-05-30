@@ -20,15 +20,11 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 @SuppressLint("ValidFragment")
-public class CategoryElement extends Fragment implements View.OnClickListener {
-
-    private static final String TAG = "DBInf";
+public class CategoryFragment extends Fragment implements View.OnClickListener {
 
     private LinearLayout tagsMinLayout;
     private LinearLayout tagsMaxLayout;
@@ -41,14 +37,14 @@ public class CategoryElement extends Fragment implements View.OnClickListener {
     private Context context;
 
     @SuppressLint("ValidFragment")
-    public CategoryElement(Context context) {
+    public CategoryFragment(Context context) {
         this.context = context;
         selectedTagsArray = new ArrayList<>();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.category_element, null);
+        return inflater.inflate(R.layout.fragment_category, null);
     }
 
     @Override

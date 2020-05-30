@@ -16,7 +16,7 @@ class DialogAdapter(
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): DialogViewHolder {
         val context = viewGroup.context
-        val layoutIdForListItem = R.layout.dialog_element
+        val layoutIdForListItem = R.layout.element_dialog
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false)
         return DialogViewHolder(view, context)

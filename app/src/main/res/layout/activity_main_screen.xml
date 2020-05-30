@@ -115,7 +115,7 @@
 
     <TextView
         android:id="@+id/noResultMainScreenText"
-        style="@style/mainTextProfile"
+        style="@style/infoText"
         android:gravity="center"
         android:text="В вашем регионе нет услуг :("
         app:layout_constraintBottom_toTopOf="parent"

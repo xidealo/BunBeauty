@@ -67,7 +67,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.messages)
+        setContentView(R.layout.activity_messages)
         init()
         messagePresenter.getCompanionUser()
         messagePresenter.createMessageScreen()

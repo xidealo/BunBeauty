@@ -21,7 +21,7 @@ class MessageAdapter(
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MessageViewHolder {
         val context = viewGroup.context
-        val layoutIdForListItem = R.layout.fragment_message
+        val layoutIdForListItem = R.layout.element_message
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false)
         return MessageViewHolder(view, context)

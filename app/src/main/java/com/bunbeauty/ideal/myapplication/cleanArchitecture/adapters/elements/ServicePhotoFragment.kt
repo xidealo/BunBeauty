@@ -13,7 +13,7 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IPhotoEditable
 import com.squareup.picasso.Picasso
 
-class ServicePhotoElement : Fragment(), View.OnClickListener {
+class ServicePhotoFragment : Fragment(), View.OnClickListener {
     private lateinit var removePhotoBtn: Button
     private lateinit var photoImage: ImageView
 
@@ -79,7 +79,7 @@ class ServicePhotoElement : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.service_photo_element, container, false)
+        return inflater.inflate(R.layout.fragment_service_photo, container, false)
     }
 
     companion object {
@@ -92,7 +92,7 @@ class ServicePhotoElement : Fragment(), View.OnClickListener {
             bitmap: Bitmap,
             filePath: String
         ) =
-            ServicePhotoElement()
+            ServicePhotoFragment()
                 .apply {
                 arguments = Bundle().apply {
                     putParcelable(BITMAP, bitmap)

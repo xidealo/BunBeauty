@@ -22,7 +22,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.P
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import javax.inject.Inject
 
-class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
+class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
     PremiumElementFragmentView {
 
     lateinit var service: Service
@@ -68,7 +68,7 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.premium_element, container, false)
+        return inflater.inflate(R.layout.fragment_premium, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -138,7 +138,7 @@ class PremiumElementFragment : MvpAppCompatFragment(), View.OnClickListener,
         fun newInstance(
             service: Service
         ) =
-            PremiumElementFragment().apply {
+            PremiumFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(Service.SERVICE, service)
                 }

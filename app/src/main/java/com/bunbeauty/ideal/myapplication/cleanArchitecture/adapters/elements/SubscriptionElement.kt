@@ -12,7 +12,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SubscriptionsPresenter
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.subscription_element.view.*
+import kotlinx.android.synthetic.main.element_subscription.view.*
 
 class SubscriptionElement(
     private val view: View,

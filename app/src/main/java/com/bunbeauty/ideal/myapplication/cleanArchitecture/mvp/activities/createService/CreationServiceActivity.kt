@@ -11,8 +11,8 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryElement
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.ServicePhotoElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.ServicePhotoFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
@@ -20,13 +20,13 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumElementFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IPhotoEditable
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
-import kotlinx.android.synthetic.main.creation_service.*
+import kotlinx.android.synthetic.main.activity_creation_service.*
 import java.io.IOException
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
 
     override var panelContext: Activity = this
 
-    private lateinit var categoryElement: CategoryElement
+    private lateinit var categoryFragment: CategoryFragment
 
     @InjectPresenter
     lateinit var creationServicePresenter: CreationServicePresenter
@@ -65,7 +65,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.creation_service)
+        setContentView(R.layout.activity_creation_service)
         init()
         createPanels()
         showCategory()
@@ -94,9 +94,9 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
                     nameCreationServiceInput.text.toString(),
                     descriptionCreationServiceInput.text.toString(),
                     costCreationServiceInput.text.toString().toLongOrNull() ?: 0,
-                    categoryElement.category,
+                    categoryFragment.category,
                     addressCreationServiceInput.text.toString(),
-                    categoryElement.tagsArray
+                    categoryFragment.tagsArray
                 )
             }
             R.id.photoCreationServiceBtn -> choosePhoto()
@@ -132,7 +132,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
     override fun showPremiumBlock(service: Service) {
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.premiumCreationServiceLayout, PremiumElementFragment.newInstance(service))
+            .add(R.id.premiumCreationServiceLayout, PremiumFragment.newInstance(service))
             .commit()
         premiumCreationServiceLayout.visibility = View.VISIBLE
     }
@@ -142,25 +142,28 @@ class CreationServiceActivity : MvpAppCompatActivity(), View.OnClickListener, Ad
             .beginTransaction()
             .add(
                 R.id.photoCreationServiceLayout,
-                ServicePhotoElement.newInstance(bitmap, filePath)
+                ServicePhotoFragment.newInstance(bitmap, filePath)
             )
             .commit()
     }
 
-    override fun removePhoto(servicePhotoElement: ServicePhotoElement, filePath: String) {
+    override fun removePhoto(servicePhotoFragment: ServicePhotoFragment, filePath: String) {
         supportFragmentManager
             .beginTransaction()
-            .remove(servicePhotoElement)
+            .remove(servicePhotoFragment)
             .commit()
 
         creationServicePresenter.removeImageLink(filePath)
     }
 
     override fun showCategory() {
-        categoryElement = CategoryElement(this)
+        categoryFragment =
+            CategoryFragment(
+                this
+            )
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.categoryCreationServiceLayout, categoryElement)
+            .add(R.id.categoryCreationServiceLayout, categoryFragment)
             .commit()
     }
 

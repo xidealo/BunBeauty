@@ -14,7 +14,7 @@ class UserCommentAdapter(private var commentList: List<UserComment>) :
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): CommentViewHolder {
         val context = viewGroup.context
-        val layoutIdForListItem = R.layout.user_comment_element
+        val layoutIdForListItem = R.layout.element_user_comment
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false)
 

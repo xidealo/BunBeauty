@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.createService.user.UserCreateService;
 import com.bunbeauty.ideal.myapplication.createService.worker.WorkerCreateService;
-import com.bunbeauty.ideal.myapplication.fragments.SwitcherElement;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithLocalStorageApi;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.DBHelper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,10 +84,10 @@ public class MyTime extends AppCompatActivity implements View.OnClickListener {
 
         FragmentManager manager = getSupportFragmentManager();
 
-        SwitcherElement switcherElement = new SwitcherElement("1-я половина", "2-я половина");
+        /*SwitcherElement switcherElement = new SwitcherElement("1-я половина", "2-я половина");
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.swicherMyTimeLayout, switcherElement);
-        transaction.commit();
+        transaction.commit();*/
 
         //инициализация буферов
         workingHours = new ArrayList<>();
