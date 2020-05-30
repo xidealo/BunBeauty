@@ -37,9 +37,10 @@ class SubscriptionAdapter(
 
     inner class SubscriptionViewHolder(private val view: View, private val context: Context) :
         RecyclerView.ViewHolder(view) {
+
         fun bind(subscription: Subscription) {
-            val subscriptionElement = SubscriptionElement(view, context, subscriptionsPresenter)
-            subscriptionElement.createElement(subscription)
+            val subscriptionElement = SubscriptionElement(view, context, subscriptionsPresenter, subscription)
+            subscriptionElement.createElement()
         }
     }
 }
