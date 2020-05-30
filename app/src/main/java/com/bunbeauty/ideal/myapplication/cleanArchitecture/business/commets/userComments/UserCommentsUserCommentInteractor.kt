@@ -24,20 +24,27 @@ class UserCommentsUserCommentInteractor(private val userCommentRepository: UserC
         userCommentRepository.getByUserId(user.id, this)
     }
 
+    override fun returnList(objects: List<UserComment>) {
+        cacheUserComments.addAll(objects)
+
+        for (userComment in objects) {
+            userCommentsPresenterCallback.getUser(userComment)
+        }
+    }
+
+    /**
+     * set user to cache user comment
+     *
+     * when we set last user, we update screen
+     */
     override fun setUserOnUserComment(
         user: User,
         userCommentsPresenterCallback: UserCommentsPresenterCallback
     ) {
-        if (indexCacheUserComment != cacheUserComments.size - 1) {
-            cacheUserComments[indexCacheUserComment].user = user
-            indexCacheUserComment++
-        } else {
-            userCommentsPresenterCallback.updateUserComments()
-        }
-    }
+        cacheUserComments[indexCacheUserComment].user = user
+        indexCacheUserComment++
 
-    override fun returnList(objects: List<UserComment>) {
-        cacheUserComments.addAll(objects)
-        userCommentsPresenterCallback.getUsers(objects)
+        if (indexCacheUserComment == cacheUserComments.size - 1)
+            userCommentsPresenterCallback.updateUserComments()
     }
 }

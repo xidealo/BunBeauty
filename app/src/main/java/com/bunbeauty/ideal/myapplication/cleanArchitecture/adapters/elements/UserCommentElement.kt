@@ -41,10 +41,10 @@ class UserCommentElement(
     }
 
     override fun onClick(v: View) {
-        goToThisComment()
+        goToCurrentComment()
     }
 
-    private fun goToThisComment() {
+    private fun goToCurrentComment() {
 
     }
 

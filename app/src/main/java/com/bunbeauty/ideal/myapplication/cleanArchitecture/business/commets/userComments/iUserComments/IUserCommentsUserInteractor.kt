@@ -7,7 +7,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface IUserCommentsUserInteractor {
     fun getCurrentUser(): User
     fun getUsers(
-        userComments: List<UserComment>,
+        userComment: UserComment,
         userCommentsPresenterCallback: UserCommentsPresenterCallback
     )
 }

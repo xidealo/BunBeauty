@@ -11,7 +11,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IDialogRepository
 
 class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
-    IProfileDialogInteractor, InsertDialogCallback, DialogsCallback, DialogCallback, DialogChangedCallback {
+    IProfileDialogInteractor, InsertDialogCallback, DialogsCallback, DialogCallback,
+    DialogChangedCallback {
 
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
     private lateinit var ownerProfile: User
@@ -34,7 +35,7 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
         val dialog = objects.find { it.user.id == ownerProfile.id }
 
         if (dialog == null) {
-            dialogRepository.insert(listOf(createMyDialog(), createCompanionDialog()), this)
+            dialogRepository.insert(listOf(createCompanionDialog(), createMyDialog()), this)
             return
         }
 
@@ -43,7 +44,10 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
     }
 
     override fun returnCreatedCallback(obj: Dialog) {
-        obj.user = ownerProfile
+        if (obj.ownerId != User.getMyId()) {
+            obj.user = ownerProfile
+        }
+
         profilePresenterCallback.goToDialog(obj)
     }
 

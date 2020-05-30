@@ -40,6 +40,7 @@ class ProfilePresenter(
         viewState.setServiceAdapter(profileServiceInteractor.getServices(), user)
 
         profileServiceInteractor.getServicesByUserId(user.id, this)
+
         profileSubscriberInteractor.getSubscribers(
             user.id,
             profileUserInteractor.isMyProfile(user.id, User.getMyId()),
@@ -93,7 +94,12 @@ class ProfilePresenter(
     }
 
     override fun goToDialog(dialog: Dialog) {
-        viewState.goToMessages(dialog)
+        val companionDialog = Dialog()
+        companionDialog.ownerId = dialog.user.id
+        companionDialog.id = dialog.id
+        companionDialog.user.id = dialog.ownerId
+
+        viewState.goToMessages(dialog, companionDialog)
     }
 
     fun subscribe() {

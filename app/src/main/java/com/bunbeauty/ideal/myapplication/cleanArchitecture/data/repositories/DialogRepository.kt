@@ -28,12 +28,12 @@ class DialogRepository(
     override fun insert(dialogs: List<Dialog>, insertDialogCallback: InsertDialogCallback) {
         launch {
             val id = dialogFirebase.getIdForNew(dialogs.first().ownerId)
-            //dialogDao.insert(dialog)
 
             for (dialog in dialogs) {
                 dialog.id = id
                 dialogFirebase.insert(dialog)
             }
+
             withContext(Dispatchers.Main) {
                 insertDialogCallback.returnCreatedCallback(dialogs.first())
             }

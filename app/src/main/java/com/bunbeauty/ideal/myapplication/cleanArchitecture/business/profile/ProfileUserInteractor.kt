@@ -5,7 +5,6 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
@@ -87,14 +86,6 @@ class ProfileUserInteractor(
         if (isMyProfile(cacheOwner!!.id, User.getMyId())) {
             profilePresenterCallback.goToEditProfile(cacheOwner!!)
         }
-    }
-
-    override fun getCountOfRates(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun checkSubscription(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun updateBottomPanel(profilePresenterCallback: ProfilePresenterCallback) {

@@ -17,13 +17,11 @@ class UserCommentsUserInteractor(
     private lateinit var userCommentsPresenterCallback: UserCommentsPresenterCallback
 
     override fun getUsers(
-        userComments: List<UserComment>,
+        userComment: UserComment,
         userCommentsPresenterCallback: UserCommentsPresenterCallback
     ) {
         this.userCommentsPresenterCallback = userCommentsPresenterCallback
-        for (userComment in userComments) {
-            userRepository.getById(userComment.ownerId, this, true)
-        }
+        userRepository.getById(userComment.ownerId, this, true)
     }
 
     override fun returnElement(element: User) {

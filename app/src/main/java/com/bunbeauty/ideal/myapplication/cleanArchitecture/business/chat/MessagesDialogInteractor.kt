@@ -44,5 +44,4 @@ class MessagesDialogInteractor(
     override fun returnUpdatedCallback(obj: Dialog) {
 
     }
-
 }

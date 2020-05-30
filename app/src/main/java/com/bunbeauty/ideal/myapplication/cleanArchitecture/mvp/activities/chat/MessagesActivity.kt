@@ -73,7 +73,6 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         messagePresenter.createMessageScreen()
     }
 
-
     private fun init() {
         loadingMessagesProgressBar = findViewById(R.id.loadingMessagesProgressBar)
         resultsMessagesRecycleView = findViewById(R.id.resultsMessagesRecycleView)

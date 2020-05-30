@@ -38,6 +38,26 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messageRepository.getByDialogId(dialog, this, this, this)
     }
 
+    /**
+     * add all text messages or if it is my messages add also commentMessages
+     *
+     * when we get from 2 dialogs messages we sort it and show
+     */
+    override fun returnList(objects: List<Message>) {
+        countOfDialogs++
+
+        for (message in objects) {
+            if (message.type == Message.TEXT_MESSAGE_STATUS || message.userId == User.getMyId()) {
+                cacheMessagesSet.add(message)
+            }
+        }
+
+        if (countOfDialogs == 2) {
+            cacheMessages.addAll(cacheMessagesSet.sortedBy { it.time })
+            checkMoveToStart(cacheMessages, messagesPresenterCallback)
+        }
+    }
+
     override fun updateMessages(
         message: Message,
         messagesPresenterCallback: MessagesPresenterCallback
@@ -69,22 +89,9 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         }
     }
 
-    override fun returnList(objects: List<Message>) {
-        countOfDialogs++
-
-        for (message in objects) {
-            if (message.type == Message.TEXT_MESSAGE_STATUS || message.userId == User.getMyId()) {
-                cacheMessagesSet.add(message)
-            }
-        }
-
-        //cacheMessagesSet.addAll(objects)
-        if (countOfDialogs == 2) {
-            cacheMessages.addAll(cacheMessagesSet.sortedBy { it.time })
-            checkMoveToStart(cacheMessages, messagesPresenterCallback)
-        }
-    }
-
+    /**
+     * add text message or if it is my message add also commentMessage
+     */
     override fun returnElement(element: Message) {
         if (element.type == Message.TEXT_MESSAGE_STATUS || element.userId == User.getMyId()) {
             addMessage(element)
@@ -97,11 +104,19 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         checkMoveToStart(cacheMessages, messagesPresenterCallback)
     }
 
+    /**
+     * we sent message and update unchecked dialog to our companion
+     *
+     * and show this message
+     */
     override fun returnCreatedCallback(obj: Message) {
         messagesPresenterCallback.updateUncheckedDialog(obj)
         messagesPresenterCallback.showSendMessage(obj)
     }
 
+    /**
+     * we wrote comment then we update our message to [Message.TEXT_MESSAGE_STATUS] and show it
+     */
     override fun returnUpdatedCallback(obj: Message) {
         cacheMessages.remove(cacheMessages.find { it.id == obj.id })
         cacheMessages.add(obj)

@@ -25,8 +25,8 @@ class UserCommentsPresenter(
         )
     }
 
-    override fun getUsers(userComments: List<UserComment>) {
-        userCommentsUserInteractor.getUsers(userComments, this)
+    override fun getUser(userComment: UserComment) {
+        userCommentsUserInteractor.getUsers(userComment, this)
     }
 
     override fun setUserOnUserComment(user: User) {
