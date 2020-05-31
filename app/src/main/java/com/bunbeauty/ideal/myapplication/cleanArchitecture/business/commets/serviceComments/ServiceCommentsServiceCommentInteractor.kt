@@ -1,0 +1,10 @@
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments
+
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.iServiceComments.IServiceCommentsServiceCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceCommentRepository
+
+class ServiceCommentsServiceCommentInteractor(private val serviceCommentRepository: IServiceCommentRepository) :
+    IServiceCommentsServiceCommentInteractor {
+
+
+}
