@@ -10,6 +10,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.crea
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentServiceCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.currentComment.CurrentCommentCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsServiceCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
@@ -287,7 +289,7 @@ class AppModule(private val app: Application, private val intent: Intent) {
         EditServiceInteractor(intent, serviceRepository)
 
     @Provides
-    fun provideUserCommentsInteractor(userCommentRepository: UserCommentRepository) =
+    fun provideUserCommentsUserCommentInteractor(userCommentRepository: UserCommentRepository) =
         UserCommentsUserCommentInteractor(
             userCommentRepository
         )
@@ -297,6 +299,14 @@ class AppModule(private val app: Application, private val intent: Intent) {
         UserCommentsUserInteractor(
             userRepository, intent
         )
+
+    @Provides
+    fun provideServiceCommentsServiceCommentInteractor(serviceCommentRepository: ServiceCommentRepository) =
+        ServiceCommentsServiceCommentInteractor(serviceCommentRepository)
+
+    @Provides
+    fun provideServiceCommentsUserInteractor(userRepository: UserRepository) =
+        ServiceCommentsUserInteractor(userRepository)
 
     @Provides
     fun provideCurrentCommentInteractor() =
