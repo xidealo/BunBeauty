@@ -13,6 +13,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.crea
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.comments.CreationCommentPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.comments.CreationCommentView
 import kotlinx.android.synthetic.main.activity_creation_comment.*
@@ -38,7 +40,9 @@ class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
     @ProvidePresenter
     internal fun provideProfilePresenter(): CreationCommentPresenter {
         DaggerAppComponent.builder()
-            .appModule(AppModule(application, intent))
+            .appModule(AppModule(application))
+            .firebaseModule(FirebaseModule())
+            .interactorModule(InteractorModule(intent))
             .build()
             .inject(this)
         return CreationCommentPresenter(

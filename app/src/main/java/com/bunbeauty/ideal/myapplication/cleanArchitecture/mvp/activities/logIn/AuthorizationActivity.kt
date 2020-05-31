@@ -10,14 +10,12 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.AuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.AuthorizationView
 import kotlinx.android.synthetic.main.activity_authorization.*
-import kotlinx.android.synthetic.main.activity_edit_profile.*
 import javax.inject.Inject
 
 class AuthorizationActivity : MvpAppCompatActivity(), AuthorizationView, IAdapterSpinner {
@@ -32,7 +30,10 @@ class AuthorizationActivity : MvpAppCompatActivity(), AuthorizationView, IAdapte
     internal fun provideAuthorizationPresenter(): AuthorizationPresenter {
         DaggerAppComponent
             .builder()
-            .appModule(AppModule(application, intent))
+            .appModule(AppModule(application))
+            .firebaseModule(FirebaseModule())
+            .interactorModule(InteractorModule(intent))
+            .repositoryModule(RepositoryModule())
             .build().inject(this)
 
         return AuthorizationPresenter(authorizationInteractor)
@@ -108,8 +109,10 @@ class AuthorizationActivity : MvpAppCompatActivity(), AuthorizationView, IAdapte
         finish()
     }
 
-    override fun goToProfile() {
-        val intent = Intent(this, ProfileActivity::class.java)
+    override fun goToProfile(user: User) {
+        val intent = Intent(this, ProfileActivity::class.java).apply {
+            putExtra(User.USER, user) }
+
         this.startActivity(intent)
         overridePendingTransition(0, 0)
         finish()

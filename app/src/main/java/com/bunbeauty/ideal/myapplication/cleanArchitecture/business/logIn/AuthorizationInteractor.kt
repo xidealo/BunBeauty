@@ -31,7 +31,7 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
     override fun returnElement(element: User) {
 
         if (element.name.isNotEmpty()) {
-            authorizationPresenterCallback.goToProfile()
+            authorizationPresenterCallback.goToProfile(element)
             return
         }
 

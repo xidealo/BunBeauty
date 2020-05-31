@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.*
+import android.widget.Toast
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -12,6 +12,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.Verify
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.VerifyPhonePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.VerifyPhoneView
@@ -30,7 +32,9 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), VerifyPhoneView {
     @ProvidePresenter
     internal fun provideVerifyPhonePresenter(): VerifyPhonePresenter {
         DaggerAppComponent.builder()
-            .appModule(AppModule(application, intent))
+            .appModule(AppModule(application))
+            .firebaseModule(FirebaseModule())
+            .interactorModule(InteractorModule(intent))
             .build()
             .inject(this)
 

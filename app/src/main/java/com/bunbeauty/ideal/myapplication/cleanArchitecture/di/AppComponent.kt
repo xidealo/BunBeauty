@@ -23,7 +23,14 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(dependencies = [], modules = [AppModule::class])
+@Component(
+    dependencies = [],
+    modules = [
+        AppModule::class,
+        FirebaseModule::class,
+        InteractorModule::class,
+        RepositoryModule::class]
+)
 interface AppComponent {
     fun inject(authorizationActivity: AuthorizationActivity)
     fun inject(verifyPhoneNumberActivity: VerifyPhoneNumberActivity)

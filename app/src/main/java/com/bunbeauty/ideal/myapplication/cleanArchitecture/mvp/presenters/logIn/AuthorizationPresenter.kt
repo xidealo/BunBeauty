@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IAuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.logIn.AuthorizationPresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.AuthorizationView
 
 @InjectViewState
@@ -32,8 +33,8 @@ class AuthorizationPresenter(private val authorizationInteractor: IAuthorization
         viewState.goToRegistration(phone)
     }
 
-    override fun goToProfile() {
-        viewState.goToProfile()
+    override fun goToProfile(user: User) {
+        viewState.goToProfile(user)
     }
 
     override fun goToVerifyPhone(phone: String) {

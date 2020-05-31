@@ -13,8 +13,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.Serv
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment
@@ -58,11 +57,15 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     lateinit var servicePresenter: ServicePresenter
 
     @ProvidePresenter
-    internal fun provideServicePresenter(): ServicePresenter {
+    fun provideServicePresenter(): ServicePresenter {
         DaggerAppComponent.builder()
-            .appModule(AppModule(application, intent))
+            .appModule(AppModule(application))
+            .interactorModule(InteractorModule(intent))
+            .repositoryModule(RepositoryModule())
+            .firebaseModule(FirebaseModule())
             .build()
             .inject(this)
+
         return ServicePresenter(serviceInteractor)
     }
 

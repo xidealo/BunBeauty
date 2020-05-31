@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -19,14 +18,14 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SchedulePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ScheduleView
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
 
 
@@ -54,7 +53,9 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
     @ProvidePresenter
     internal fun provideSchedulePresenter(): SchedulePresenter {
         DaggerAppComponent.builder()
-            .appModule(AppModule(application, intent))
+            .appModule(AppModule(application))
+            .firebaseModule(FirebaseModule())
+            .interactorModule(InteractorModule(intent))
             .build()
             .inject(this)
 

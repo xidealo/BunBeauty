@@ -16,6 +16,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.Dialogs
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
@@ -46,7 +48,9 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     @ProvidePresenter
     internal fun provideProfilePresenter(): DialogsPresenter {
         DaggerAppComponent.builder()
-            .appModule(AppModule(application, intent))
+            .appModule(AppModule(application))
+            .firebaseModule(FirebaseModule())
+            .interactorModule(InteractorModule(intent))
             .build()
             .inject(this)
         return DialogsPresenter(

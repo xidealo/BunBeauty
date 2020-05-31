@@ -39,7 +39,7 @@ class SearchServiceFragment : MvpAppCompatFragment(), View.OnClickListener,
     internal fun provideAddingServicePresenter(): SearchServicePresenter {
         DaggerAppComponent
             .builder()
-            .appModule(AppModule(activity!!.application, activity!!.intent))
+            .appModule(AppModule(activity!!.application))
             .build().inject(this)
 
         return SearchServicePresenter(searchServiceInteractor)

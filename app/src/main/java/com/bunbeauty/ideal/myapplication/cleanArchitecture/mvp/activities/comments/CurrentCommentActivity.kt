@@ -13,6 +13,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.comments.CurrentCommentPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.comments.CurrentCommentView
@@ -31,10 +33,12 @@ class CurrentCommentActivity : MvpAppCompatActivity(),
 
     @ProvidePresenter
     internal fun currenCommentPresenter(): CurrentCommentPresenter {
-        DaggerAppComponent
-            .builder()
-            .appModule(AppModule(application, intent))
-            .build().inject(this)
+        DaggerAppComponent.builder()
+            .appModule(AppModule(application))
+            .firebaseModule(FirebaseModule())
+            .interactorModule(InteractorModule(intent))
+            .build()
+            .inject(this)
         return CurrentCommentPresenter(
             currentCommentCommentInteractor
         )

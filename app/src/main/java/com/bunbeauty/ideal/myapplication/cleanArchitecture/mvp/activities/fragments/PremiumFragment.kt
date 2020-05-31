@@ -12,16 +12,15 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.PremiumElementFragmentView
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import javax.inject.Inject
-
+//TODO переписать без логики
 class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
     PremiumElementFragmentView {
 
@@ -47,7 +46,10 @@ class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
     internal fun provideElementPresenter(): PremiumElementPresenter {
         DaggerAppComponent
             .builder()
-            .appModule(AppModule(activity!!.application, activity!!.intent))
+            .appModule(AppModule(activity!!.application))
+            .interactorModule(InteractorModule(activity!!.intent))
+            .repositoryModule(RepositoryModule())
+            .firebaseModule(FirebaseModule())
             .build().inject(this)
 
         return PremiumElementPresenter(

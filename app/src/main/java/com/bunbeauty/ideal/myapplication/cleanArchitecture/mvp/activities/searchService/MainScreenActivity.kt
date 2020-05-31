@@ -28,6 +28,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
@@ -68,10 +70,12 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     @ProvidePresenter
     internal fun provideAddingServicePresenter(): MainScreenPresenter {
-        DaggerAppComponent
-            .builder()
-            .appModule(AppModule(application, intent))
-            .build().inject(this)
+        DaggerAppComponent.builder()
+            .appModule(AppModule(application))
+            .firebaseModule(FirebaseModule())
+            .interactorModule(InteractorModule(intent))
+            .build()
+            .inject(this)
 
         return MainScreenPresenter(
             mainScreenUserInteractor,

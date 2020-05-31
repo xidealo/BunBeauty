@@ -12,6 +12,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStri
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.RegistrationPresenter
@@ -30,10 +32,12 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterS
 
     @ProvidePresenter
     internal fun provideRegistrationPresenter(): RegistrationPresenter {
-        DaggerAppComponent
-            .builder()
-            .appModule(AppModule(application, intent))
-            .build().inject(this)
+        DaggerAppComponent.builder()
+            .appModule(AppModule(application))
+            .firebaseModule(FirebaseModule())
+            .interactorModule(InteractorModule(intent))
+            .build()
+            .inject(this)
 
         return RegistrationPresenter(registrationUserInteractor)
     }

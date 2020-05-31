@@ -15,6 +15,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.Edit
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
@@ -22,8 +24,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 import javax.inject.Inject
@@ -41,10 +41,12 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
 
     @ProvidePresenter
     internal fun provideEditProfilePresenter(): EditProfilePresenter {
-        DaggerAppComponent
-            .builder()
-            .appModule(AppModule(application, intent))
-            .build().inject(this)
+        DaggerAppComponent.builder()
+            .appModule(AppModule(application))
+            .interactorModule(InteractorModule(intent))
+            .firebaseModule(FirebaseModule())
+            .build()
+            .inject(this)
         return EditProfilePresenter(editProfileInteractor)
     }
 

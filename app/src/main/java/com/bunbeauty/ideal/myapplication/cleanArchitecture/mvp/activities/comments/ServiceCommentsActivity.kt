@@ -12,6 +12,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serv
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
@@ -35,11 +37,13 @@ class ServiceCommentsActivity : MvpAppCompatActivity(), ServiceCommentsView, ITo
     lateinit var serviceCommentsPresenter: ServiceCommentsPresenter
 
     @ProvidePresenter
-    internal fun commentsPresenter(): ServiceCommentsPresenter {
-        DaggerAppComponent
-            .builder()
-            .appModule(AppModule(application, intent))
-            .build().inject(this)
+    fun commentsPresenter(): ServiceCommentsPresenter {
+        DaggerAppComponent.builder()
+            .appModule(AppModule(application))
+            .firebaseModule(FirebaseModule())
+            .interactorModule(InteractorModule(intent))
+            .build()
+            .inject(this)
         return ServiceCommentsPresenter(
             serviceCommentsServiceCommentInteractor,
             serviceCommentsUserInteractor

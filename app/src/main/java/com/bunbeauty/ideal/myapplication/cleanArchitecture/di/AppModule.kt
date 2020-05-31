@@ -1,344 +1,39 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
 import android.app.Application
-import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPhoneNumberApi
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.*
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentMessageInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentOrderInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentServiceCommentInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.currentComment.CurrentCommentCommentInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsServiceCommentInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserCommentInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.EditProfileInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.*
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.EditServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriberInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriptionInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.*
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dbInstance.LocalDatabase
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.*
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
-class AppModule(private val app: Application, private val intent: Intent) {
-
-    // FIREBASE API
-    @Provides
-    fun provideUserFirebase() = UserFirebase()
+class AppModule(private val app: Application) {
 
     @Provides
-    fun provideServiceFirebase() = ServiceFirebase()
-
-    @Provides
-    fun provideTagFirebase() = TagFirebase()
-
-    @Provides
-    fun providePhotoFirebase() = PhotoFirebase()
-
-    @Provides
-    fun provideCodeFirebase() = CodeFirebase()
-
-    @Provides
-    fun provideOrderFirebase() = OrderFirebase()
-
-    @Provides
-    fun provideDialogFirebase() = DialogFirebase()
-
-    @Provides
-    fun provideMessageFirebase() = MessageFirebase()
-
-    @Provides
-    fun provideSubscriptionFirebase() = SubscriptionFirebase()
-
-    @Provides
-    fun provideSubscriberFirebase() = SubscriberFirebase()
-
-    @Provides
-    fun provideUserCommentFirebase() = UserCommentFirebase()
-
-    @Provides
-    fun provideServiceCommentFirebase() = ServiceCommentFirebase()
-
-    // DAO
-    @Provides
+    @Singleton
     fun provideUserDao() = LocalDatabase.getDatabase(app).getUserDao()
 
     @Provides
+    @Singleton
     fun provideServiceDao() = LocalDatabase.getDatabase(app).getServiceDao()
 
     @Provides
+    @Singleton
     fun provideTagDao() = LocalDatabase.getDatabase(app).getTagDao()
 
     @Provides
+    @Singleton
     fun providePhotoDao() = LocalDatabase.getDatabase(app).getPhotoDao()
 
     @Provides
+    @Singleton
     fun provideCodeDao() = LocalDatabase.getDatabase(app).getCodeDao()
 
     @Provides
+    @Singleton
     fun provideDialogDao() = LocalDatabase.getDatabase(app).getDialogDao()
-
-    //REPOSITORIES
-    @Provides
-    fun provideUserRepository(userDao: UserDao, userFirebase: UserFirebase) =
-        UserRepository(userDao, userFirebase)
-
-    @Provides
-    fun provideServiceRepository(serviceDao: ServiceDao, serviceFirebase: ServiceFirebase) =
-        ServiceRepository(serviceDao, serviceFirebase)
-
-    @Provides
-    fun provideTagRepository(tagDao: TagDao, tagFirebase: TagFirebase) =
-        TagRepository(tagDao, tagFirebase)
-
-    @Provides
-    fun providePhotoRepository(photoDao: PhotoDao, photoFirebase: PhotoFirebase) =
-        PhotoRepository(photoDao, photoFirebase)
-
-    @Provides
-    fun provideCodeRepository(codeDao: CodeDao, codeFirebase: CodeFirebase) =
-        CodeRepository(codeDao, codeFirebase)
-
-    @Provides
-    fun provideDialogRepository(dialogDao: DialogDao, dialogFirebase: DialogFirebase) =
-        DialogRepository(dialogDao, dialogFirebase)
-
-    @Provides
-    fun provideMessageRepository(messageFirebase: MessageFirebase) =
-        MessageRepository(messageFirebase)
-
-    @Provides
-    fun provideOrderRepository(orderFirebase: OrderFirebase) =
-        OrderRepository(orderFirebase)
-
-    @Provides
-    fun provideSubscriptionRepository(subscriptionFirebase: SubscriptionFirebase) =
-        SubscriptionRepository(subscriptionFirebase)
-
-    @Provides
-    fun provideSubscriberRepository(subscriberFirebase: SubscriberFirebase) =
-        SubscriberRepository(subscriberFirebase)
-
-    @Provides
-    fun provideUserCommentRepository(userCommentFirebase: UserCommentFirebase) =
-        UserCommentRepository(userCommentFirebase)
-
-    @Provides
-    fun provideServiceCommentRepository(serviceCommentFirebase: ServiceCommentFirebase) =
-        ServiceCommentRepository(serviceCommentFirebase)
-
-    // INTERACTORS
-    @Provides
-    fun provideAuthorizationInteractor(userRepository: UserRepository) =
-        AuthorizationInteractor(userRepository)
-
-    @Provides
-    fun provideVerifyPhoneInteractor(
-        userRepository: UserRepository,
-        verifyPhoneNumberApi: VerifyPhoneNumberApi
-    ) =
-        VerifyPhoneInteractor(userRepository, intent, verifyPhoneNumberApi)
-
-    @Provides
-    fun provideRegistrationInteractor(userRepository: UserRepository) =
-        RegistrationUserInteractor(userRepository, intent)
-
-    @Provides
-    fun provideProfileUserInteractor(
-        userRepository: UserRepository
-    ) =
-        ProfileUserInteractor(userRepository, intent)
-
-    @Provides
-    fun provideProfileServiceInteractor(
-        serviceRepository: ServiceRepository
-    ) =
-        ProfileServiceInteractor(serviceRepository)
-
-    @Provides
-    fun provideProfileDialogInteractor(
-        dialogRepository: DialogRepository
-    ) = ProfileDialogInteractor(dialogRepository)
-
-    @Provides
-    fun provideProfileSubscriptionInteractor(
-        subscriptionRepository: SubscriptionRepository
-    ) = ProfileSubscriptionInteractor(subscriptionRepository)
-
-    @Provides
-    fun provideProfileSubscriberInteractor(
-        subscriberRepository: SubscriberRepository
-    ) = ProfileSubscriberInteractor(subscriberRepository)
-
-    @Provides
-    fun provideCreationServiceServiceServiceInteractor(serviceRepository: ServiceRepository) =
-        CreationServiceServiceServiceInteractor(serviceRepository)
-
-    @Provides
-    fun provideCreationServiceServiceTagInteractor(tagRepository: TagRepository) =
-        CreationServiceTagInteractor(tagRepository)
-
-    @Provides
-    fun provideCreationServiceServicePhotoInteractor(photoRepository: PhotoRepository) =
-        CreationServicePhotoInteractor(photoRepository)
-
-    @Provides
-    fun providePremiumElementCodeInteractor(codeRepository: CodeRepository) =
-        PremiumElementCodeInteractor(
-            codeRepository
-        )
-
-    @Provides
-    fun providePremiumElementServiceInteractor(serviceRepository: ServiceRepository) =
-        PremiumElementServiceInteractor(
-            serviceRepository
-        )
-
-    @Provides
-    fun provideMainScreenUserInteractor(
-        userRepository: UserRepository
-    ) =
-        MainScreenUserInteractor(userRepository)
-
-    @Provides
-    fun provideMainScreenServiceInteractor(
-        serviceRepository: ServiceRepository
-    ) =
-        MainScreenServiceInteractor(serviceRepository)
-
-    @Provides
-    fun provideMainScreenDataInteractor(figuringServicePoints: FiguringServicePoints) =
-        MainScreenDataInteractor(intent, figuringServicePoints)
-
-    @Provides
-    fun provideServiceInteractor(photoRepository: PhotoRepository) =
-        ServiceInteractor(photoRepository, intent)
-
-    @Provides
-    fun provideSearchServiceInteractor(userRepository: UserRepository) =
-        SearchServiceInteractor(userRepository)
-
-    @Provides
-    fun provideEditProfileInteractor(
-        userRepository: UserRepository,
-        verifyPhoneNumberApi: VerifyPhoneNumberApi
-    ) = EditProfileInteractor(intent, userRepository, verifyPhoneNumberApi)
-
-    @Provides
-    fun provideDialogsDialogInteractor(dialogRepository: DialogRepository) =
-        DialogsDialogInteractor(dialogRepository)
-
-    @Provides
-    fun provideDialogsUserInteractor(userRepository: UserRepository) =
-        DialogsUserInteractor(userRepository)
-
-    @Provides
-    fun provideDialogsMessageInteractor(messageRepository: MessageRepository) =
-        DialogsMessageInteractor(messageRepository)
-
-    @Provides
-    fun provideMessagesMessageInteractor(messageRepository: MessageRepository) =
-        MessagesMessageInteractor(messageRepository)
-
-    @Provides
-    fun provideMessagesDialogInteractor(dialogRepository: DialogRepository) =
-        MessagesDialogInteractor(intent, dialogRepository)
-
-    @Provides
-    fun provideScheduleInteractor() = ScheduleInteractor()
-
-    @Provides
-    fun provideSubscriptionsSubscriptionInteractor(subscriptionRepository: SubscriptionRepository) =
-        SubscriptionsSubscriptionInteractor(subscriptionRepository)
-
-    @Provides
-    fun provideSubscriptionsUserInteractor(userRepository: UserRepository) =
-        SubscriptionsUserInteractor(intent, userRepository)
-
-    @Provides
-    fun provideSubscriptionsSubscriberInteractor(subscriberRepository: SubscriberRepository) =
-        SubscriptionsSubscriberInteractor(subscriberRepository)
-
-    @Provides
-    fun provideMessagesUserInteractor() = MessagesUserInteractor(intent)
-
-    @Provides
-    fun provideEditServiceInteractor(serviceRepository: ServiceRepository) =
-        EditServiceInteractor(intent, serviceRepository)
-
-    @Provides
-    fun provideUserCommentsUserCommentInteractor(userCommentRepository: UserCommentRepository) =
-        UserCommentsUserCommentInteractor(
-            userCommentRepository
-        )
-
-    @Provides
-    fun provideUserCommentsUserInteractor(userRepository: UserRepository) =
-        UserCommentsUserInteractor(
-            userRepository, intent
-        )
-
-    @Provides
-    fun provideServiceCommentsServiceCommentInteractor(serviceCommentRepository: ServiceCommentRepository) =
-        ServiceCommentsServiceCommentInteractor(serviceCommentRepository)
-
-    @Provides
-    fun provideServiceCommentsUserInteractor(userRepository: UserRepository) =
-        ServiceCommentsUserInteractor(userRepository)
-
-    @Provides
-    fun provideCurrentCommentInteractor() =
-        CurrentCommentCommentInteractor(
-            intent
-        )
-
-    @Provides
-    fun provideCreationCommentUserCommentInteractor(userCommentRepository: UserCommentRepository) =
-        CreationCommentUserCommentInteractor(
-            userCommentRepository,
-            intent
-        )
-
-    @Provides
-    fun provideCreationCommentServiceCommentInteractor(serviceCommentRepository: ServiceCommentRepository) =
-        CreationCommentServiceCommentInteractor(
-            serviceCommentRepository
-        )
-
-    @Provides
-    fun provideCreationCommentMessageInteractor(messageRepository: MessageRepository) =
-        CreationCommentMessageInteractor(
-            messageRepository,
-            intent
-        )
-
-    @Provides
-    fun provideCreationCommentOrderInteractor(orderRepository: OrderRepository) =
-        CreationCommentOrderInteractor(
-            orderRepository
-        )
 
     //APIs
     @Provides

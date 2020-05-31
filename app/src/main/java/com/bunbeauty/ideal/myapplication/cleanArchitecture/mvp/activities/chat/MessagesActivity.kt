@@ -21,6 +21,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
@@ -55,7 +57,9 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     @ProvidePresenter
     internal fun provideProfilePresenter(): MessagesPresenter {
         DaggerAppComponent.builder()
-            .appModule(AppModule(application, intent))
+            .appModule(AppModule(application))
+            .firebaseModule(FirebaseModule())
+            .interactorModule(InteractorModule(intent))
             .build()
             .inject(this)
         return MessagesPresenter(
