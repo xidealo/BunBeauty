@@ -20,6 +20,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.PremiumElementFragmentView
 import javax.inject.Inject
+
 //TODO переписать без логики
 class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
     PremiumElementFragmentView {
@@ -104,14 +105,14 @@ class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
         Toast.makeText(context, "Премиум активирован", Toast.LENGTH_LONG).show()
     }
 
-    override fun setWithPremium(premiumDate: String) {
+    override fun setWithPremium(premiumDate: Long) {
         noPremiumText.visibility = View.GONE
         premiumText.visibility = View.VISIBLE
         premiumText.isEnabled = false
         setPremiumPremiumElementBtn.text = "Продлить премиум"
-        premiumDatePremiumElementText.text = "Премиум до ${WorkWithTimeApi.getDateInFormatMD(
-            WorkWithTimeApi.getMillisecondsStringDate(premiumDate)
-        )}"
+          premiumDatePremiumElementText.text = "Премиум до ${WorkWithTimeApi.getDateInFormatMD(
+              premiumDate
+          )}"
     }
 
     override fun hideBottom() {
@@ -124,13 +125,12 @@ class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
 
     fun setPremium(service: Service) {
         this.service = service
-        if (isPremium(service.premiumDate)) {
+        /*if (isPremium(service.premiumDate)) {
             setWithPremium(service.premiumDate)
-        }
+        }*/
     }
 
-    private fun isPremium(premiumDate: String): Boolean = WorkWithTimeApi.checkPremium(premiumDate)
-
+    private fun isPremium(premiumDate: Long): Boolean = WorkWithTimeApi.checkPremium(premiumDate)
 
 
     companion object {

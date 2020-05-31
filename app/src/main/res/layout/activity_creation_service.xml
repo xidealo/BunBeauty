@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/addServiceCreationServiceBtn"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topPanel">
@@ -120,25 +120,20 @@
                 android:gravity="center"
                 android:orientation="vertical" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/continueCreationServiceBtn"
+                style="@style/mainButton"
+                android:layout_gravity="center"
+                android:text="Продолжить" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addServiceCreationServiceBtn"
+                style="@style/smallButton"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/addServices" />
         </LinearLayout>
 
     </ScrollView>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/addServiceCreationServiceBtn"
-        style="@style/mainButton"
-        android:text="@string/addServices"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/continueCreationServiceBtn"
-        style="@style/mainButton"
-        android:text="Продолжить"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
 
     <include layout="@layout/part_bottom_panel" />
 

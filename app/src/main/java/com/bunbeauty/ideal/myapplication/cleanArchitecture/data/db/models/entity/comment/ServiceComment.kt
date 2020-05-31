@@ -9,8 +9,8 @@ import java.io.Serializable
 data class ServiceComment(
     @PrimaryKey
     var id: String = "",
-    @ColumnInfo(index = true)
     var userId: String = "",
+    @ColumnInfo(index = true)
     var serviceId: String = "",
     var ownerId: String = "",
     var rating: Double = 0.0,

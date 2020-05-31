@@ -24,7 +24,7 @@ data class UserComment(
         const val COMMENTS = "comments"
         const val USER_COMMENT = "user comment"
         const val RATING = "rating"
-        const val REVIEW = "creation_comment"
+        const val REVIEW = "comment"
         const val TIME = "time"
         const val OWNER_ID = "owner id"
     }

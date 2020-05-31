@@ -1,11 +1,10 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium
 
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.CheckPremiumPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.UpdateServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
-import java.util.*
 
 class PremiumElementServiceInteractor(val serviceRepository: ServiceRepository) :
     UpdateServiceCallback {
@@ -17,19 +16,18 @@ class PremiumElementServiceInteractor(val serviceRepository: ServiceRepository) 
         service: Service,
         checkPremiumPresenterCallback: CheckPremiumPresenterCallback
     ) {
-
         this.checkPremiumPresenterCallback = checkPremiumPresenterCallback
         service.premiumDate = addSevenDayPremium(service)
         serviceRepository.update(service, this)
     }
 
-    private fun addSevenDayPremium(service: Service): String {
+    private fun addSevenDayPremium(service: Service): Long {
         val sysdateLong: Long = if (service.premiumDate == Service.DEFAULT_PREMIUM_DATE) {
-            WorkWithTimeApi.getSysdateLong() + (86400000 * 7).toLong()
+            WorkWithTimeApi.getSysdateLong() + (86400000 * 7)
         } else {
-            WorkWithTimeApi.getMillisecondsStringDateWithSeconds(service.premiumDate) + (86400000 * 7).toLong()
+            service.premiumDate + (86400000 * 7)
         }
-        return WorkWithTimeApi.getDateInFormatYMDHMS(Date(sysdateLong))
+        return sysdateLong
     }
 
     override fun returnUpdatedCallback(obj: Service) {

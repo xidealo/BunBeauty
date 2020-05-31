@@ -16,7 +16,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
         WorkingTime::class,
         Order::class,
         Photo::class,
-        Review::class,
         Code::class,
         Dialog::class,
         Message::class,

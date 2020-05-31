@@ -11,7 +11,6 @@ data class Photo(
     var userId: String = "",
     var serviceId: String = ""
 ) {
-
     companion object {
         const val PHOTOS = "photos"
         const val LINK = "link"

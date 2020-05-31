@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServiceTagInteractor
@@ -10,7 +9,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationServ
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
-import java.util.*
 
 @InjectViewState
 class CreationServicePresenter(
@@ -36,8 +34,6 @@ class CreationServicePresenter(
         service.address = address
         service.rating = 0f
         service.countOfRates = 0
-        service.premiumDate = Service.DEFAULT_PREMIUM_DATE
-        service.creationDate = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
         service.userId = User.getMyId()
         creationServiceServiceInteractor.addService(service, tags, this)
     }

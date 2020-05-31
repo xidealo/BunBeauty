@@ -18,7 +18,9 @@ data class User(
     var photoLink: String = DEFAULT_PHOTO_LINK,
     var subscribersCount: Long = 0,
     var subscriptionsCount: Long = 0
-) : EditableEntity(), Serializable {
+//добавить время последнего захода?
+//добавить дату регистрации?
+) : Serializable {
 
     companion object {
 

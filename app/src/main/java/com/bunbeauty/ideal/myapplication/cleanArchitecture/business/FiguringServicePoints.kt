@@ -1,10 +1,10 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business
 
 class FiguringServicePoints {
-     fun figureCreationDatePoints(creationDate: String, coefficient: Float): Float {
+     fun figureCreationDatePoints(creationDate: Long, coefficient: Float): Float {
             val creationDatePoints: Float
 
-            val dateBonus = (WorkWithTimeApi.getMillisecondsStringDate(creationDate) - WorkWithTimeApi.getSysdateLong()) / (3600000 * 24) + 7
+            val dateBonus = (creationDate - WorkWithTimeApi.getSysdateLong()) / (3600000 * 24) + 7
             if (dateBonus < 0) {
                 creationDatePoints = 0f
             } else {

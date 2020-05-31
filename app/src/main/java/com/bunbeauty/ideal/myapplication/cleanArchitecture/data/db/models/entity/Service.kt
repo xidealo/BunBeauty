@@ -24,13 +24,13 @@ import java.io.Serializable
     var rating: Float = 0f,
     var countOfRates: Long = 0,
     var cost: Long = 0L,
-    var creationDate: String = "",
-    var premiumDate: String = "",
+    var creationDate: Long = 0L,
+    var premiumDate: Long = 0L,
     @Ignore
     var tags: ArrayList<Tag> = ArrayList(),
     @Ignore
     var photosPath: List<String> = listOf()
-) : EditableEntity(), Serializable {
+) : Serializable {
 
     companion object {
         const val SERVICES = "services"
@@ -46,6 +46,6 @@ import java.io.Serializable
         const val COUNT_OF_RATES = "count of rates"
         const val CREATION_DATE = "creation date"
         const val PREMIUM_DATE = "premium date"
-        const val DEFAULT_PREMIUM_DATE = "1970-01-01 00:00:00"
+        const val DEFAULT_PREMIUM_DATE = 0L
     }
 }

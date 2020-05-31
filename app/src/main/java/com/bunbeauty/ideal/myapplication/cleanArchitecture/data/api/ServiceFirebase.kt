@@ -5,10 +5,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -29,15 +26,15 @@ class ServiceFirebase {
         items[Service.DESCRIPTION] = service.description
         items[Service.COST] = service.cost
         items[Service.CATEGORY] = service.category
-        items[Service.CREATION_DATE] = service.creationDate
-        items[Service.PREMIUM_DATE] = service.premiumDate
+        items[Service.CREATION_DATE] = ServerValue.TIMESTAMP
+        items[Service.PREMIUM_DATE] = 0
         items[Service.AVG_RATING] = service.rating
         items[Service.COUNT_OF_RATES] = service.countOfRates
         serviceRef.updateChildren(items)
     }
 
     fun delete(service: Service) {
-        val serviceRef= FirebaseDatabase.getInstance()
+        val serviceRef = FirebaseDatabase.getInstance()
             .getReference(User.USER)
             .child(service.userId)
             .child(Service.SERVICES)
@@ -146,8 +143,8 @@ class ServiceFirebase {
         service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue(Float::class.java)
             ?: 0f
         service.category = serviceSnapshot.child(Service.CATEGORY).value as? String ?: ""
-        service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).value as? String ?: ""
-        service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).value as? String ?: ""
+        service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).value as? Long ?: 0
+        service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).value as? Long ?: 0
         service.userId = userId
         for (tagSnapshot in serviceSnapshot.child(Tag.TAGS).children) {
             service.tags.add(getTagFromSnapshot(tagSnapshot, service.id, userId))
@@ -164,7 +161,7 @@ class ServiceFirebase {
         for (photoSnapshot in photosSnapshot.children) {
             val photo = Photo()
             photo.id = photosSnapshot.key!!
-            photo.link = photosSnapshot.child(Photo.LINK).getValue<String>(String::class.java)!!
+            photo.link = photosSnapshot.child(Photo.LINK).getValue(String::class.java)!!
             photo.serviceId = serviceId
             photos.add(photo)
         }
