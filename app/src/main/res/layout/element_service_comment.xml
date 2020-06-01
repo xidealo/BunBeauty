@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/commentElementLayout"
+    android:id="@+id/serviceCommentElementLayout"
     style="@style/block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/avatarUserCommentElementImage"
+            android:id="@+id/avatarServiceCommentElementImage"
             android:layout_width="@dimen/photo_avatar_width"
             android:layout_height="@dimen/photo_avatar_height"
             android:layout_marginEnd="8dp"
@@ -29,7 +29,7 @@
             android:paddingTop="4dp">
 
             <TextView
-                android:id="@+id/nameUserCommentElementText"
+                android:id="@+id/nameServiceCommentElementText"
                 style="@style/mainTextMainScreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/reviewUserCommentElementText"
+                android:id="@+id/reviewServiceCommentElementText"
                 style="@style/defaultTextMainScreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
             android:orientation="vertical">
 
             <RatingBar
-                android:id="@+id/ratingUserCommentElementBar"
+                android:id="@+id/ratingServiceCommentElementBar"
                 style="@android:style/Widget.Holo.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

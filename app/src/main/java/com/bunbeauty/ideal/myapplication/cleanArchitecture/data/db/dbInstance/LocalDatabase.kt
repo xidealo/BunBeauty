@@ -9,7 +9,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 
 @Database(
-    entities = [User::class,
+    entities = [
+        User::class,
         Service::class,
         Tag::class,
         WorkingDays::class,

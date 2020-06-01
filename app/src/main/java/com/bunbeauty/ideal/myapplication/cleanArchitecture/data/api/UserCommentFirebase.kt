@@ -56,7 +56,7 @@ class UserCommentFirebase {
         userComment.rating = userCommentSnapshot.child(UserComment.RATING).value.toString().toFloat()
         userComment.review = userCommentSnapshot.child(UserComment.REVIEW).value as? String ?: ""
         userComment.ownerId = userCommentSnapshot.child(UserComment.OWNER_ID).value as? String ?: ""
-        userComment.time = userCommentSnapshot.child(UserComment.TIME).value as? Long ?: 0L
+        userComment.date = userCommentSnapshot.child(UserComment.TIME).value as? Long ?: 0L
         userComment.userId = userId
 
         return userComment

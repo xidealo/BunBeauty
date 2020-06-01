@@ -1,8 +1,8 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -19,7 +19,7 @@ class Subscriber(
     var userId: String = "",
     var date: String = "",
     var subscriberId: String = "", // who
-    @Embedded(prefix = "user")
+    @Ignore
     var subscriberUser: User = User()
 ) {
 

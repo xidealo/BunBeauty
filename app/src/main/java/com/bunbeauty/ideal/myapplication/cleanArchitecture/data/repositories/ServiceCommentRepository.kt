@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 
 class ServiceCommentRepository(
     private val serviceCommentFirebase: ServiceCommentFirebase
-) : BaseRepository(), IServiceCommentRepository  {
+) : BaseRepository(), IServiceCommentRepository {
 
     override fun insert(
         serviceComment: ServiceComment,
@@ -57,7 +57,7 @@ class ServiceCommentRepository(
         serviceCommentsCallback: ServiceCommentsCallback
     ) {
         launch {
-
+            serviceCommentFirebase.getByServiceId(userId, serviceId, serviceCommentsCallback)
         }
     }
 }

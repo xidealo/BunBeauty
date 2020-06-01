@@ -8,7 +8,9 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ServiceCommentAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsServiceCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
@@ -26,12 +28,16 @@ class ServiceCommentsActivity : MvpAppCompatActivity(), ServiceCommentsView, ITo
     IBottomPanel {
 
     override var panelContext: Activity = this
+    private lateinit var serviceCommentAdapter: ServiceCommentAdapter
 
     @Inject
     lateinit var serviceCommentsServiceCommentInteractor: ServiceCommentsServiceCommentInteractor
 
     @Inject
     lateinit var serviceCommentsUserInteractor: ServiceCommentsUserInteractor
+
+    @Inject
+    lateinit var serviceCommentsServiceInteractor: ServiceCommentsServiceInteractor
 
     @InjectPresenter
     lateinit var serviceCommentsPresenter: ServiceCommentsPresenter
@@ -46,7 +52,8 @@ class ServiceCommentsActivity : MvpAppCompatActivity(), ServiceCommentsView, ITo
             .inject(this)
         return ServiceCommentsPresenter(
             serviceCommentsServiceCommentInteractor,
-            serviceCommentsUserInteractor
+            serviceCommentsUserInteractor,
+            serviceCommentsServiceInteractor
         )
     }
 
@@ -57,15 +64,15 @@ class ServiceCommentsActivity : MvpAppCompatActivity(), ServiceCommentsView, ITo
         initTopPanel("Оценки услуги", ButtonTask.NONE)
         initBottomPanel()
         hideEmptyScreen()
-        //userCommentsPresenter.createUserCommentsScreen()
+        serviceCommentsPresenter.createServiceCommentsScreen()
     }
 
     fun init() {
         resultsServiceCommentsRecycleView.layoutManager = LinearLayoutManager(this)
-        //userCommentAdapter = UserCommentAdapter(userCommentsPresenter.getUserCommentsLink())
-        //resultsServiceCommentsRecycleView.adapter = userCommentAdapter
+        serviceCommentAdapter =
+            ServiceCommentAdapter(serviceCommentsPresenter.getServiceCommentsLink())
+        resultsServiceCommentsRecycleView.adapter = serviceCommentAdapter
     }
-
 
     override fun showLoading() {
         progressBarServiceComments.visibility = View.VISIBLE
@@ -76,7 +83,7 @@ class ServiceCommentsActivity : MvpAppCompatActivity(), ServiceCommentsView, ITo
     }
 
     override fun updateServiceComments() {
-        //ServiceCommentAdapter.notifyDataSetChanged()
+        serviceCommentAdapter.notifyDataSetChanged()
     }
 
     override fun showServiceComments() {

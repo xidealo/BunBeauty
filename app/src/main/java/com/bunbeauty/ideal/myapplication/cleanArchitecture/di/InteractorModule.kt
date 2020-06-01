@@ -10,6 +10,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.crea
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.currentComment.CurrentCommentCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsServiceCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserInteractor
@@ -269,4 +270,8 @@ class InteractorModule(private val intent: Intent) {
         CreationCommentOrderInteractor(
             orderRepository
         )
+
+    @Provides
+    @Singleton
+    fun provideServiceCommentsServiceInteractor() = ServiceCommentsServiceInteractor(intent)
 }

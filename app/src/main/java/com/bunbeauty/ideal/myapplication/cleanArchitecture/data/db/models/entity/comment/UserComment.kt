@@ -18,7 +18,7 @@ data class UserComment(
     var user: User = User(), // owner
     var rating: Float = 0f,
     var review: String = "",
-    var time: Long = 0L
+    var date: Long = 0L
 ) : Serializable {
     companion object {
         const val COMMENTS = "comments"

@@ -10,24 +10,24 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.Use
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 
 class UserCommentAdapter(private var commentList: List<UserComment>) :
-    RecyclerView.Adapter<UserCommentAdapter.CommentViewHolder>() {
+    RecyclerView.Adapter<UserCommentAdapter.UserCommentViewHolder>() {
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): CommentViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): UserCommentViewHolder {
         val context = viewGroup.context
         val layoutIdForListItem = R.layout.element_user_comment
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false)
 
-        return this.CommentViewHolder(view, context)
+        return this.UserCommentViewHolder(view, context)
     }
 
-    override fun onBindViewHolder(commentViewHolder: CommentViewHolder, i: Int) {
+    override fun onBindViewHolder(commentViewHolder: UserCommentViewHolder, i: Int) {
         commentViewHolder.bind(commentList[i])
     }
 
     override fun getItemCount() = commentList.size
 
-    inner class CommentViewHolder(private val view: View, private val context: Context) :
+    inner class UserCommentViewHolder(private val view: View, private val context: Context) :
         RecyclerView.ViewHolder(view) {
 
         fun bind(userComment: UserComment) {
