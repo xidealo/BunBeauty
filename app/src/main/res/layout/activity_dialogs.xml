@@ -1,45 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/allPages"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.DialogsActivity">
 
-    <include layout="@layout/part_top_panel" />
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap">
+
+            <include
+                layout="@layout/part_top_panel"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.5" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
         android:id="@+id/noDialogsDialogsText"
-        style="@style/mainBlockText"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:text="Нет диалогов"
-        app:layout_constraintBottom_toTopOf="@+id/topPanel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottomPanel" />
+        style="@style/infoText"
+        android:layout_gravity="center"
+        android:text="Нет диалогов" />
 
     <ProgressBar
         android:id="@+id/progressBarDialogs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:indeterminateTint="@color/mainBlue"
-        app:layout_constraintBottom_toTopOf="@+id/topPanel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottomPanel" />
+        android:indeterminateTint="@color/mainBlue" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/resultsDialogsRecycleView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:scrollbars="none"
-        android:layout_margin="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topPanel"/>
+        android:layout_marginBottom="@dimen/bottom_panel_height"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <include layout="@layout/part_bottom_panel" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

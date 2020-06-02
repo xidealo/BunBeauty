@@ -102,7 +102,7 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     }
 
     override fun enableEditServiceBtn() {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     override fun setNameEditServiceInputError(error: String) {
@@ -118,9 +118,9 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
                 descriptionEditServiceInput.text.toString().trim(),
                 costEditServiceInput.text.toString().toLongOrNull() ?: 0
             )
-/*
+            /*
             R.id.deleteEditServiceBtn -> editServicePresenter.delete()
-*/
+            */
         }
 
     }
