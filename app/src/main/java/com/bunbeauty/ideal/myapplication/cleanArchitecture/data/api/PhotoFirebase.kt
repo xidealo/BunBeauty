@@ -1,8 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import android.annotation.SuppressLint
 import android.util.Log
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IPhotoCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.photo.PhotosCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -14,7 +13,6 @@ import com.google.firebase.database.ValueEventListener
 class PhotoFirebase {
     private val TAG = "data_layer"
 
-    @SuppressLint("RestrictedApi")
     fun insert(photo: Photo) {
         val database = FirebaseDatabase.getInstance()
         val serviceRef = database
@@ -31,7 +29,7 @@ class PhotoFirebase {
         Log.d(TAG, "Service adding completed")
     }
 
-    fun getByServiceId(serviceOwnerId: String, serviceId: String,  photoCallback: IPhotoCallback) {
+    fun getByServiceId(serviceOwnerId: String, serviceId: String, photosCallback: PhotosCallback) {
         val photosRef = FirebaseDatabase.getInstance()
                 .getReference(User.USERS)
                 .child(serviceOwnerId)
@@ -47,7 +45,7 @@ class PhotoFirebase {
                     photos.add(getPhotoFromSnapshot(photoSnapshot, serviceOwnerId, serviceId))
                 }
 
-                photoCallback.returnPhotos(photos)
+                photosCallback.returnList(photos)
             }
 
             override fun onCancelled(error: DatabaseError) {

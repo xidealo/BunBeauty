@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.IPhotoCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.photo.PhotosCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.PhotoFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.PhotoDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
@@ -31,17 +31,17 @@ class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase:
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getByServiceId(serviceId: String, serviceOwnerId: String, photoCallback: IPhotoCallback,
+    fun getByServiceId(serviceId: String, serviceOwnerId: String, photosCallback: PhotosCallback,
                        isFirstEnter: Boolean) {
         val photoList: ArrayList<Photo> = ArrayList()
 
         if (isFirstEnter) {
-            photoFirebase.getByServiceId(serviceOwnerId, serviceId, photoCallback)
+            photoFirebase.getByServiceId(serviceOwnerId, serviceId, photosCallback)
         } else {
             runBlocking {
                 photoList.addAll(photoDao.findAllByServiceId(serviceId))
             }
-            photoCallback.returnPhotos(photoList)
+            photosCallback.returnList(photoList)
         }
     }
 

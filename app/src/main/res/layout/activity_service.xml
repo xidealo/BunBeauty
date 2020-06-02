@@ -5,10 +5,11 @@
     style="@style/allPages"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity">
 
+    <!--TODO (Новый дизайн ВАЛ)-->
     <include layout="@layout/part_top_panel" />
 
     <ProgressBar
-        android:id="@+id/progressServiceBar"
+        android:id="@+id/loadingServiceProgressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -19,7 +20,7 @@
         app:layout_constraintTop_toBottomOf="@+id/topPanel" />
 
     <ScrollView
-        android:id="@+id/mainServiceScroll"
+        android:id="@+id/mainViewServiceScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="2dp"
@@ -35,7 +36,6 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/mainServiceLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -49,12 +49,6 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        style="@style/mainBlockText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Рейтинг: " />
-
-                    <TextView
                         android:id="@+id/withoutRatingServiceText"
                         style="@style/mainBlockText"
                         android:layout_width="wrap_content"
@@ -62,14 +56,11 @@
                         android:text="Оценок еще нет" />
 
                     <RatingBar
-                        android:id="@+id/ratingServiceBar"
+                        android:id="@+id/ratingServiceRatingBar"
                         style="@android:style/Widget.Holo.RatingBar.Small"
-                        android:layout_width="90dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:background="@color/white"
-                        android:isIndicator="true"
-                        android:padding="5dp"
                         android:theme="@style/ratingBarColors" />
 
                     <TextView
@@ -86,37 +77,44 @@
 
                 </LinearLayout>
 
-                <LinearLayout style="@style/block">
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/materialInputLayout"
+                    android:hint="Цена"
+                    app:startIconDrawable="@drawable/icon_profile">
 
-                    <TextView
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/costServiceText"
-                        style="@style/mainBlockText"
-                        android:hint="@string/cost" />
-                </LinearLayout>
+                        style="@style/materialInput"
+                        android:inputType="textCapSentences" />
 
-                <LinearLayout style="@style/block">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    <TextView
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/materialInputLayout"
+                    android:hint="Адрес"
+                    app:startIconDrawable="@drawable/icon_profile">
+
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/addressServiceText"
-                        style="@style/mainBlockText"
-                        android:hint="Адрес" />
-                </LinearLayout>
+                        style="@style/materialInput"
+                        android:inputType="textCapSentences" />
 
-                <LinearLayout style="@style/block">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    <TextView
-                        style="@style/mainBlockText"
-                        android:layout_width="wrap_content"
-                        android:text="Описание:" />
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/materialInputLayout"
+                    android:hint="Описание:"
+                    app:startIconDrawable="@drawable/icon_profile">
 
-                    <TextView
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/descriptionServiceText"
-                        style="@style/defaultText"
-                        android:layout_width="match_parent" />
-                </LinearLayout>
+                        style="@style/materialInput"
+                        android:inputType="textCapSentences" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <fragment
-                    android:id="@+id/premiumBlockServiceActivity"
+                    android:id="@+id/premiumBlockService"
                     class="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -136,7 +134,7 @@
                     android:orientation="horizontal">
 
                     <HorizontalScrollView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2">
 

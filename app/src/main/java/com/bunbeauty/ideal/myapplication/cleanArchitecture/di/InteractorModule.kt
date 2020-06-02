@@ -30,7 +30,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.EditServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServicePhotoInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriberInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsUserInteractor
@@ -142,8 +144,18 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideServiceInteractor(photoRepository: PhotoRepository) =
-        ServiceInteractor(photoRepository, intent)
+    fun provideServiceServiceInteractor() =
+        ServiceServiceInteractor(intent)
+
+    @Provides
+    @Singleton
+    fun provideServiceUserInteractor() =
+        ServiceUserInteractor(intent)
+
+    @Provides
+    @Singleton
+    fun provideServicePhotoInteractor(photoRepository: PhotoRepository) =
+        ServicePhotoInteractor(photoRepository)
 
     @Provides
     @Singleton

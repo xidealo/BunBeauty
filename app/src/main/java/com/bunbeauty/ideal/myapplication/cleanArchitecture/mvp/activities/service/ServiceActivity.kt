@@ -4,12 +4,16 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.Toast
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServicePhotoInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -32,26 +36,18 @@ import javax.inject.Inject
 class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView,
     ITopPanel, IBottomPanel, IProfileAvailable {
 
-    private lateinit var mainScroll: ScrollView
-
-    private lateinit var costText: TextView
-    private lateinit var descriptionText: TextView
-    private lateinit var addressText: TextView
-    private lateinit var ratingText: TextView
-    private lateinit var countOfRatesText: TextView
-    private lateinit var withoutRatingText: TextView
-
-    private lateinit var imagesLayout: LinearLayout
-    private lateinit var ratingLayout: LinearLayout
-    private lateinit var ratingBar: RatingBar
-    private lateinit var progressBar: ProgressBar
-
     private lateinit var premiumFragment: PremiumFragment
 
     override var panelContext: Activity = this
 
     @Inject
-    lateinit var serviceInteractor: ServiceInteractor
+    lateinit var serviceServiceInteractor: ServiceServiceInteractor
+
+    @Inject
+    lateinit var serviceUserInteractor: ServiceUserInteractor
+
+    @Inject
+    lateinit var servicePhotoInteractor: ServicePhotoInteractor
 
     @InjectPresenter
     lateinit var servicePresenter: ServicePresenter
@@ -66,7 +62,11 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
             .build()
             .inject(this)
 
-        return ServicePresenter(serviceInteractor)
+        return ServicePresenter(
+            serviceServiceInteractor,
+            servicePhotoInteractor,
+            serviceUserInteractor
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,66 +81,52 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     override fun onResume() {
         super.onResume()
-
         initBottomPanel()
     }
 
     private fun init() {
-        mainScroll = findViewById(R.id.mainServiceScroll)
-        costText = findViewById(R.id.costServiceText)
-        descriptionText = findViewById(R.id.descriptionServiceText)
-        addressText = findViewById(R.id.addressServiceText)
-        ratingText = findViewById(R.id.ratingServiceText)
-        countOfRatesText = findViewById(R.id.countOfRatesServiceText)
-        withoutRatingText = findViewById(R.id.withoutRatingServiceText)
-
-        ratingLayout = findViewById(R.id.ratingServiceLayout)
-        imagesLayout = findViewById(R.id.imagesServiceLayout)
-        ratingBar = findViewById(R.id.ratingServiceBar)
-        progressBar = findViewById(R.id.progressServiceBar)
-
         premiumFragment =
-            supportFragmentManager.findFragmentById(R.id.premiumBlockServiceActivity) as PremiumFragment
+            supportFragmentManager.findFragmentById(R.id.premiumBlockService) as PremiumFragment
 
         findViewById<MaterialButton>(R.id.scheduleServiceBtn).setOnClickListener(this)
     }
 
     override fun showService(service: Service) {
-        costText.text = service.cost.toString()
-        addressText.text = service.address
-        descriptionText.text = service.description
+        costServiceText.setText(service.cost.toString())
+        addressServiceText.setText(service.address)
+        descriptionServiceText.setText(service.description)
     }
 
     override fun showLoading() {
-        progressBar.visibility = View.VISIBLE
-        mainScroll.visibility = View.GONE
+        loadingServiceProgressBar.visibility = View.VISIBLE
+        mainViewServiceScroll.visibility = View.GONE
         scheduleServiceBtn.visibility = View.GONE
     }
 
     override fun hideLoading() {
-        progressBar.visibility = View.GONE
-        mainScroll.visibility = View.VISIBLE
+        loadingServiceProgressBar.visibility = View.GONE
+        mainViewServiceScroll.visibility = View.VISIBLE
         scheduleServiceBtn.visibility = View.VISIBLE
     }
 
     private fun showRating(rating: Float, countOfRates: Long) {
         if (rating > 0) {
             showRatingBar(rating)
-            countOfRatesText.text = countOfRates.toString()
+            countOfRatesServiceText.text = countOfRates.toString()
         } else {
             showWithoutRating()
         }
     }
 
     private fun showWithoutRating() {
-        withoutRatingText.visibility = View.VISIBLE
-        ratingBar.visibility = View.GONE
+        withoutRatingServiceText.visibility = View.VISIBLE
+        ratingServiceRatingBar.visibility = View.GONE
     }
 
     private fun showRatingBar(rating: Float) {
-        ratingBar.visibility = View.VISIBLE
-        ratingBar.rating = rating
-        ratingLayout.setOnClickListener(this)
+        ratingServiceRatingBar.visibility = View.VISIBLE
+        ratingServiceRatingBar.rating = rating
+        ratingServiceLayout.setOnClickListener(this)
     }
 
     override fun showPremium(service: Service) {
@@ -170,7 +156,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
             params.setMargins(15, 15, 15, 15)
             serviceImage.layoutParams = params
             serviceImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            imagesLayout.addView(serviceImage)
+            imagesServiceLayout.addView(serviceImage)
 
             Picasso.get()
                 .load(photo.link)
@@ -183,6 +169,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     override fun onClick(v: View) {
         when (v.id) {
             R.id.scheduleServiceBtn -> {
+
             }
 
             R.id.ratingServiceLayout -> goToComments()
@@ -218,18 +205,17 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         startActivityForResult(intent, REQUEST_EDIT_SERVICE)
     }
 
-
     private fun goToCalendar(status: String) {
         val intent = Intent(this, MyCalendar::class.java)
         //intent.putExtra(Service.SERVICE_ID, "")
-        intent.putExtra(STATUS_USER_BY_SERVICE, status)
         startActivity(intent)
     }
 
     // go to owner profile
     override fun goToProfile(user: User) {
-        val intent = Intent(this, ProfileActivity::class.java)
-        intent.putExtra(User.USER, user)
+        val intent = Intent(this, ProfileActivity::class.java).apply {
+            putExtra(User.USER, user)
+        }
         startActivity(intent)
     }
 
@@ -243,16 +229,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     companion object {
-
-        private val TAG = "DBInf"
-
-        private val TYPE = "type"
-
-        private val STATUS_USER_BY_SERVICE = "status UserCreateService"
-
-        private val REVIEW_FOR_SERVICE = "creation_comment for service"
-
-        private val REQUEST_EDIT_SERVICE = 1
+        private const val REQUEST_EDIT_SERVICE = 1
     }
 
 }
