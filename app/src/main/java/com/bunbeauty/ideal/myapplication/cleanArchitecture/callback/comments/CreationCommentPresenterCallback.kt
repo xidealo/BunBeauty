@@ -9,6 +9,7 @@ interface CreationCommentPresenterCallback {
     fun createServiceComment(order: Order)
     fun createUserComment(rating: Float, review: String)
     fun getOrderForServiceComment(message: Message, rating: Float, review: String)
+    fun updateUserRating(userComment: UserComment)
     fun updateUserCommentMessage(userComment: UserComment)
     fun updateServiceCommentMessage(serviceComment: ServiceComment)
     fun showCommentCreated(message: Message)

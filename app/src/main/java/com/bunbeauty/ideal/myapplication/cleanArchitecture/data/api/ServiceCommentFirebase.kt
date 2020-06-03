@@ -79,5 +79,5 @@ class ServiceCommentFirebase {
             .child(userId)
             .child(Service.SERVICES)
             .child(serviceId)
-            .child(UserComment.COMMENTS).push().key!!
+            .child(ServiceComment.COMMENTS).push().key!!
 }

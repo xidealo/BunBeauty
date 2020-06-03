@@ -37,7 +37,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     ITopPanel, IBottomPanel, IProfileAvailable {
 
     private lateinit var premiumFragment: PremiumFragment
-
     override var panelContext: Activity = this
 
     @Inject
@@ -87,7 +86,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private fun init() {
         premiumFragment =
             supportFragmentManager.findFragmentById(R.id.premiumBlockService) as PremiumFragment
-
         findViewById<MaterialButton>(R.id.scheduleServiceBtn).setOnClickListener(this)
     }
 

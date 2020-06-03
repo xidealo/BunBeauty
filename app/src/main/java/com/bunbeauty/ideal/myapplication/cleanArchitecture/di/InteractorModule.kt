@@ -4,10 +4,7 @@ import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.*
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentMessageInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentOrderInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentServiceCommentInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.CreationCommentUserCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.currentComment.CurrentCommentCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsServiceCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsServiceInteractor
@@ -256,9 +253,14 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideCreationCommentUserCommentInteractor(userCommentRepository: UserCommentRepository) =
-        CreationCommentUserCommentInteractor(
-            userCommentRepository,
-            intent
+        CreationCommentUserCommentInteractor(userCommentRepository)
+
+    @Provides
+    @Singleton
+    fun provideCreationCommentUserInteractor(userRepository: UserRepository) =
+        CreationCommentUserInteractor(
+            intent,
+            userRepository
         )
 
     @Provides

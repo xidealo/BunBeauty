@@ -2,10 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.comme
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.iCreationComment.ICreationCommentCommentInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.iCreationComment.ICreationCommentMessageInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.iCreationComment.ICreationCommentOrderInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.iCreationComment.ICreationCommentServiceCommentInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.iCreationComment.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.comments.CreationCommentPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order
@@ -16,12 +13,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.comments.Cr
 
 @InjectViewState
 class CreationCommentPresenter(
-    private val creationCommentCommentInteractor: ICreationCommentCommentInteractor,
+    private val creationCommentUserCommentInteractor: ICreationCommentUserCommentInteractor,
     private val creationCommentServiceCommentInteractor: ICreationCommentServiceCommentInteractor,
     private val creationCommentOrderInteractor: ICreationCommentOrderInteractor,
-    private val creationCommentMessageInteractor: ICreationCommentMessageInteractor
-) :
-    MvpPresenter<CreationCommentView>(), CreationCommentPresenterCallback {
+    private val creationCommentMessageInteractor: ICreationCommentMessageInteractor,
+    private val creationCommentUserInteractor: ICreationCommentUserInteractor
+) : MvpPresenter<CreationCommentView>(), CreationCommentPresenterCallback {
 
     fun checkMessage(rating: Float, review: String) {
         creationCommentMessageInteractor.checkMessage(rating, review, this)
@@ -32,7 +29,11 @@ class CreationCommentPresenter(
         comment.rating = rating
         comment.review = review
         comment.ownerId = User.getMyId()
-        creationCommentCommentInteractor.createUserComment(comment, this)
+        creationCommentUserCommentInteractor.createUserComment(
+            comment,
+            creationCommentUserInteractor.getUser(),
+            this
+        )
     }
 
     override fun getOrderForServiceComment(message: Message, rating: Float, review: String) {
@@ -47,6 +48,14 @@ class CreationCommentPresenter(
         comment.serviceId = order.serviceId
         comment.ownerId = User.getMyId()
         creationCommentServiceCommentInteractor.createServiceComment(comment, this)
+    }
+
+    override fun updateUserRating(userComment: UserComment) {
+        creationCommentUserInteractor.updateUser(
+            creationCommentUserInteractor.getUser(),
+            userComment,
+            this
+        )
     }
 
     override fun updateUserCommentMessage(userComment: UserComment) {
