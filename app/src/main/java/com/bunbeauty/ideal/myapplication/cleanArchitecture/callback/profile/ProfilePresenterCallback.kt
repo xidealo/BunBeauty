@@ -19,4 +19,5 @@ interface ProfilePresenterCallback {
     fun showCountOfSubscriber(count: Long)
     fun getProfileServiceList(userId: String)
     fun showUpdatedBottomPanel(selectedItemId: Int = -1)
+    fun updateCountOfSubscribers(subscriber: Int)
 }

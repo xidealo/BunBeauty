@@ -76,7 +76,11 @@ class UserFirebase {
 
         userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
-                userCallback.returnElement(getUserFromSnapshot(usersSnapshot.children.iterator().next()))
+                if(usersSnapshot.childrenCount != 0L){
+                    userCallback.returnElement(getUserFromSnapshot(usersSnapshot.children.iterator().next()))
+                }else{
+                    userCallback.returnElement(User())
+                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

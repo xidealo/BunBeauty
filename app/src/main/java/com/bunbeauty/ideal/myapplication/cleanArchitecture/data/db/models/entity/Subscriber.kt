@@ -17,7 +17,7 @@ class Subscriber(
     @PrimaryKey
     var id: String = "",
     var userId: String = "",
-    var date: String = "",
+    var date: Long = 0,
     var subscriberId: String = "", // who
     @Ignore
     var subscriberUser: User = User()

@@ -3,12 +3,10 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
-import java.util.*
 
 @InjectViewState
 class ProfilePresenter(
@@ -40,12 +38,6 @@ class ProfilePresenter(
         viewState.setServiceAdapter(profileServiceInteractor.getServices(), user)
 
         profileServiceInteractor.getServicesByUserId(user.id, this)
-
-        profileSubscriberInteractor.getSubscribers(
-            user.id,
-            profileUserInteractor.isMyProfile(user.id, User.getMyId()),
-            this
-        )
     }
 
     override fun showMyProfile(user: User) {
@@ -55,7 +47,6 @@ class ProfilePresenter(
         viewState.showScheduleButton()
         viewState.showSubscriptionsButton()
         viewState.showTopPanelWithEditIcon()
-
         viewState.hideDialogsButton()
         viewState.hideSubscribeButton()
     }
@@ -65,12 +56,12 @@ class ProfilePresenter(
         viewState.showServices()
         viewState.showDialogsButton()
         viewState.showEmptyTopPanel()
-
         viewState.hideScheduleButton()
         viewState.hideSubscriptionsButton()
         viewState.hideTabLayout()
         viewState.disableSwipe()
         viewState.hideCreateServiceButton()
+        viewState.showSubscribeButton()
     }
 
     fun updateUser(user: User) {
@@ -98,21 +89,26 @@ class ProfilePresenter(
         companionDialog.ownerId = dialog.user.id
         companionDialog.id = dialog.id
         companionDialog.user.id = dialog.ownerId
-
         viewState.goToMessages(dialog, companionDialog)
     }
 
     fun subscribe() {
         val subscriber = Subscriber()
-        subscriber.date = WorkWithTimeApi.getDateInFormatYMDHMS(Date())
         subscriber.userId = profileUserInteractor.getCacheOwner().id
         subscriber.subscriberId = User.getMyId()
         profileSubscriberInteractor.checkSubscriber(subscriber, this)
     }
 
+    override fun updateCountOfSubscribers(subscriber: Int) {
+        profileUserInteractor.updateCountOfSubscribers(
+            profileUserInteractor.getCacheOwner(),
+            subscriber,
+            this
+        )
+    }
+
     override fun addSubscription(subscriber: Subscriber) {
         val subscription = Subscription()
-        subscription.date = subscriber.date
         subscription.userId = subscriber.subscriberId
         subscription.subscriptionId = subscriber.userId
         profileSubscriptionInteractor.addSubscription(subscription, this)
@@ -122,7 +118,7 @@ class ProfilePresenter(
         val subscription = Subscription()
         subscription.date = subscriber.date
         subscription.userId = subscriber.subscriberId
-        subscription.subscriptionId = subscriber.userId // по не му подписку и удалить ее
+        subscription.subscriptionId = subscriber.userId
         profileSubscriptionInteractor.deleteSubscription(subscription, this)
     }
 

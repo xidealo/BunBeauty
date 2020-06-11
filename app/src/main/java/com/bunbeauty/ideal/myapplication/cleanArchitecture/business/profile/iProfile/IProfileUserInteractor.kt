@@ -12,4 +12,9 @@ interface IProfileUserInteractor {
     fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback)
     fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback)
     fun updateBottomPanel(profilePresenterCallback: ProfilePresenterCallback)
+    fun updateCountOfSubscribers(
+        user: User,
+        subscriber: Int,
+        profilePresenterCallback: ProfilePresenterCallback
+    )
 }

@@ -3,10 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.subscription.SubscriptionsCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscription
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class SubscriptionFirebase {
 
@@ -19,7 +16,7 @@ class SubscriptionFirebase {
 
         val items = HashMap<String, Any>()
         items[Subscription.SUBSCRIPTION_ID] = subscription.subscriptionId
-        items[Subscription.DATE] = subscription.date
+        items[Subscription.DATE] = ServerValue.TIMESTAMP
         subscriptionRef.updateChildren(items)
     }
 
@@ -92,7 +89,7 @@ class SubscriptionFirebase {
 
         val subscription = Subscription()
         subscription.id = subscriptionSnapshot.key!!
-        subscription.date = subscriptionSnapshot.child(Subscription.DATE).value as? String ?: ""
+        subscription.date = subscriptionSnapshot.child(Subscription.DATE).value as? Long ?: 0
         subscription.subscriptionId =
             subscriptionSnapshot.child(Subscription.SUBSCRIPTION_ID).value as? String ?: ""
         subscription.userId = userId

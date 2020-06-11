@@ -30,6 +30,10 @@ class ProfileSubscriptionInteractor(private val subscriptionRepository: ISubscri
         subscriptionRepository.insert(subscription, this)
     }
 
+    override fun returnCreatedCallback(obj: Subscription) {
+        profilePresenterCallback.showSubscribed()
+    }
+
     override fun deleteSubscription(
         subscription: Subscription,
         profilePresenterCallback: ProfilePresenterCallback
@@ -39,10 +43,6 @@ class ProfileSubscriptionInteractor(private val subscriptionRepository: ISubscri
             subscription,
             this
         )
-    }
-
-    override fun returnCreatedCallback(obj: Subscription) {
-        profilePresenterCallback.showSubscribed()
     }
 
     override fun returnDeletedCallback(obj: Subscription) {

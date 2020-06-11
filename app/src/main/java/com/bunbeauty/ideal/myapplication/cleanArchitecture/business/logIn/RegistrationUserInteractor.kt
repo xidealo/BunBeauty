@@ -87,28 +87,28 @@ class RegistrationUserInteractor(
         return true
     }
 
-    override fun getIsCityInputCorrect(city: String): Boolean {
+    private fun getIsCityInputCorrect(city: String): Boolean {
         return city != "Город"
     }
 
-    override fun getIsNameInputCorrect(name: String): Boolean {
+    private fun getIsNameInputCorrect(name: String): Boolean {
         return name.matches("[a-zA-ZА-Яа-я\\-]+".toRegex())
     }
 
-    override fun getIsNameLengthLessTwenty(name: String): Boolean {
+    private fun getIsNameLengthLessTwenty(name: String): Boolean {
         return name.length <= 20
     }
 
-    override fun getIsSurnameInputCorrect(surname: String): Boolean {
+    private fun getIsSurnameInputCorrect(surname: String): Boolean {
         return surname.matches("[a-zA-ZА-Яа-я\\-]+".toRegex())
     }
 
-    override fun getIsSurnameLengthLessTwenty(surname: String): Boolean {
+    private fun getIsSurnameLengthLessTwenty(surname: String): Boolean {
         return surname.length <= 20
     }
 
     override fun returnCreatedCallback(obj: User) {
-        registrationPresenterCallback.showSuccessfulRegistration()
+        registrationPresenterCallback.showSuccessfulRegistration(obj)
     }
 
 }

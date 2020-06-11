@@ -32,14 +32,12 @@ class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberR
         }
     }
 
-    override fun getSubscribers(
-        userId: String,
-        isMyProfile: Boolean,
-        profilePresenterCallback: ProfilePresenterCallback
-    ) {
-        this.profilePresenterCallback = profilePresenterCallback
-        this.isMyProfile = isMyProfile
-        subscriberRepository.getByUserId(userId, this)
+    override fun returnList(objects: List<Subscriber>) {
+        cacheSubscribers.addAll(objects)
+
+        if (!isMyProfile) {
+            checkSubscribed(User.getMyId(), cacheSubscribers, profilePresenterCallback)
+        }
     }
 
     private fun addSubscriber(
@@ -50,6 +48,13 @@ class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberR
         subscriberRepository.insert(subscriber, this)
     }
 
+    override fun returnCreatedCallback(obj: Subscriber) {
+        isSubscribed = true
+        cacheSubscribers.add(obj)
+        profilePresenterCallback.addSubscription(obj)
+        profilePresenterCallback.updateCountOfSubscribers(1)
+    }
+
     private fun deleteSubscriber(
         subscriber: Subscriber,
         profilePresenterCallback: ProfilePresenterCallback
@@ -58,31 +63,14 @@ class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberR
         subscriberRepository.delete(subscriber, this)
     }
 
-    override fun returnCreatedCallback(obj: Subscriber) {
-        isSubscribed = true
-        cacheSubscribers.add(obj)
-        profilePresenterCallback.addSubscription(obj)
-        updateCountOfSubscribers(cacheSubscribers, profilePresenterCallback)
-    }
-
     override fun returnDeletedCallback(obj: Subscriber) {
         isSubscribed = false
         cacheSubscribers.remove(obj)
         profilePresenterCallback.deleteSubscription(obj)
-        updateCountOfSubscribers(cacheSubscribers, profilePresenterCallback)
+        profilePresenterCallback.updateCountOfSubscribers(-1)
     }
 
-    override fun returnList(objects: List<Subscriber>) {
-        cacheSubscribers.addAll(objects)
-
-        if (!isMyProfile) {
-            checkSubscribed(User.getMyId(), cacheSubscribers, profilePresenterCallback)
-        }
-
-        updateCountOfSubscribers(objects, profilePresenterCallback)
-
-    }
-
+    //проверить в моих подписках это айди
     override fun checkSubscribed(
         userId: String,
         subscribers: List<Subscriber>,
@@ -95,11 +83,5 @@ class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberR
         } else {
             profilePresenterCallback.showUnsubscribed()
         }
-    }
-
-    override fun updateCountOfSubscribers(
-        subscribers: List<Subscriber>, profilePresenterCallback: ProfilePresenterCallback
-    ) {
-        profilePresenterCallback.showCountOfSubscriber(subscribers.size.toLong())
     }
 }

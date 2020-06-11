@@ -10,6 +10,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
@@ -61,24 +62,19 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterS
 
         saveRegistrationBtn.setOnClickListener {
             WorkWithViewApi.hideKeyboard(this)
-            saveData()
+            registrationPresenter.registerUser(
+                WorkWithStringsApi.firstCapitalSymbol(nameRegistrationInput.text.toString().trim()),
+                WorkWithStringsApi.firstCapitalSymbol(
+                    surnameRegistrationInput.text.toString().trim()
+                ),
+                WorkWithStringsApi.firstCapitalSymbol(cityRegistrationSpinner.text.toString()),
+                phoneRegistrationInput.text.toString()
+            )
         }
-    }
 
-    private fun saveData() {
-        registrationPresenter.registerUser(
-            WorkWithStringsApi.firstCapitalSymbol(nameRegistrationInput.text.toString().trim()),
-            WorkWithStringsApi.firstCapitalSymbol(surnameRegistrationInput.text.toString().trim()),
-            WorkWithStringsApi.firstCapitalSymbol(cityRegistrationSpinner.text.toString()),
-            phoneRegistrationInput.text.toString()
-        )
     }
 
     override fun fillPhoneInput(phone: String) = phoneRegistrationInput.setText(phone)
-
-    override fun showSuccessfulRegistration() {
-        Toast.makeText(this, "Пользователь зарегестирован", Toast.LENGTH_LONG).show()
-    }
 
     override fun disableRegistrationButton() {
         saveRegistrationBtn.isEnabled = false
@@ -102,11 +98,17 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterS
         Toast.makeText(this, "Выберите город", Toast.LENGTH_LONG).show()
     }
 
-    override fun goToProfile() {
-        val intent = Intent(this, ProfileActivity::class.java)
+    override fun showSuccessfulRegistration() {
+        Toast.makeText(this, "Пользователь зарегестирован", Toast.LENGTH_LONG).show()
+    }
+
+    override fun goToProfile(user: User) {
+        val intent = Intent(this, ProfileActivity::class.java).apply {
+            putExtra(User.USER, user)
+        }
         startActivity(intent)
-        finish()
         overridePendingTransition(0, 0)
+        finish()
     }
 
 }

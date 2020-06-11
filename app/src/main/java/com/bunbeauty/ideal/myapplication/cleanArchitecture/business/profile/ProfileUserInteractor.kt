@@ -4,6 +4,7 @@ import android.content.Intent
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UpdateUsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
@@ -13,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 class ProfileUserInteractor(
     private val userRepository: IUserRepository,
     private val intent: Intent
-) : BaseRepository(), IProfileUserInteractor, UserCallback {
+) : BaseRepository(), IProfileUserInteractor, UserCallback, UpdateUsersCallback {
 
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
 
@@ -49,6 +50,7 @@ class ProfileUserInteractor(
     override fun returnElement(element: User) {
         cacheOwner = element
         profilePresenterCallback.returnProfileOwner(element)
+        profilePresenterCallback.showCountOfSubscriber(element.subscribersCount)
         whoseProfile(element, profilePresenterCallback)
     }
 
@@ -80,6 +82,20 @@ class ProfileUserInteractor(
                 .child(TOKEN)
                 .setValue(token)
         }*/
+    }
+
+    override fun updateCountOfSubscribers(
+        user: User,
+        subscriber: Int,
+        profilePresenterCallback: ProfilePresenterCallback
+    ) {
+        user.subscribersCount += subscriber
+        userRepository.update(user, this)
+    }
+
+    override fun returnUpdatedCallback(obj: User) {
+        cacheOwner = obj
+        profilePresenterCallback.showCountOfSubscriber(obj.subscribersCount)
     }
 
     override fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback) {

@@ -18,9 +18,9 @@ class RegistrationPresenter(private val registrationUserInteractor: IRegistratio
 
     fun getMyPhoneNumber() = registrationUserInteractor.getMyPhoneNumber()
 
-    override fun showSuccessfulRegistration() {
+    override fun showSuccessfulRegistration(user: User) {
         viewState.showSuccessfulRegistration()
-        viewState.goToProfile()
+        viewState.goToProfile(user)
     }
 
     override fun registrationNameInputError() {
