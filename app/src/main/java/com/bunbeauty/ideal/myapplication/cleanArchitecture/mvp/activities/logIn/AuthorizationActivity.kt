@@ -15,7 +15,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.AuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.AuthorizationView
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_authorization.*
 import javax.inject.Inject
 
@@ -43,7 +42,6 @@ class AuthorizationActivity : MvpAppCompatActivity(), AuthorizationView, IAdapte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authorization)
-        FirebaseAuth.getInstance().signOut()
         configViews()
 
         authorizationPresenter.defaultAuthorize()

@@ -34,7 +34,7 @@ class ServiceServiceInteractor(
         if (isMyService(user)) {
             servicePresenterCallback.goToEditService(service)
         } else {
-            //servicePresenterCallback.goToProfile(user)
+            servicePresenterCallback.goToProfile(user)
         }
     }
 

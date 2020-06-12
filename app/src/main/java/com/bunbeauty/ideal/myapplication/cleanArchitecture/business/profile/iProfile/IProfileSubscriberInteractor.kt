@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iPr
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscriber
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface IProfileSubscriberInteractor {
     fun checkSubscriber(
@@ -11,7 +12,7 @@ interface IProfileSubscriberInteractor {
 
     fun checkSubscribed(
         userId: String,
-        subscribers: List<Subscriber>,
+        user: User,
         profilePresenterCallback: ProfilePresenterCallback
     )
 }

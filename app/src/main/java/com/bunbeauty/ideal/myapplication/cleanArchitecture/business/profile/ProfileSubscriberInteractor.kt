@@ -12,9 +12,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.int
 class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberRepository) :
     IProfileSubscriberInteractor, InsertSubscriberCallback, SubscribersCallback,
     DeleteSubscriberCallback {
-
     private var isSubscribed = false
-    private var isMyProfile = false
     private val cacheSubscribers = mutableListOf<Subscriber>()
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
 
@@ -29,14 +27,6 @@ class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberR
                 cacheSubscribers.find { it.subscriberId == subscriber.subscriberId }!!,
                 profilePresenterCallback
             )
-        }
-    }
-
-    override fun returnList(objects: List<Subscriber>) {
-        cacheSubscribers.addAll(objects)
-
-        if (!isMyProfile) {
-            checkSubscribed(User.getMyId(), cacheSubscribers, profilePresenterCallback)
         }
     }
 
@@ -73,15 +63,28 @@ class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberR
     //проверить в моих подписках это айди
     override fun checkSubscribed(
         userId: String,
-        subscribers: List<Subscriber>,
+        user: User,
         profilePresenterCallback: ProfilePresenterCallback
     ) {
-        isSubscribed = subscribers.find { it.subscriberId == userId } != null
+        this.profilePresenterCallback = profilePresenterCallback
 
-        if (isSubscribed) {
-            profilePresenterCallback.showSubscribed()
+        if (cacheSubscribers.isEmpty()) {
+            subscriberRepository.getBySubscriberId(userId, user.id, this)
         } else {
-            profilePresenterCallback.showUnsubscribed()
+            isSubscribed = true
+            profilePresenterCallback.showSubscribed()
         }
     }
+
+    override fun returnList(objects: List<Subscriber>) {
+        if (objects.isEmpty()) {
+            isSubscribed = false
+            profilePresenterCallback.showUnsubscribed()
+        } else {
+            cacheSubscribers.addAll(objects)
+            isSubscribed = true
+            profilePresenterCallback.showSubscribed()
+        }
+    }
+
 }

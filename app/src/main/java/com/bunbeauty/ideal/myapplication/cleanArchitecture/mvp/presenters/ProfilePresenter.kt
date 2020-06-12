@@ -61,7 +61,8 @@ class ProfilePresenter(
         viewState.hideTabLayout()
         viewState.disableSwipe()
         viewState.hideCreateServiceButton()
-        viewState.showSubscribeButton()
+
+        profileSubscriberInteractor.checkSubscribed(User.getMyId(), user, this)
     }
 
     fun updateUser(user: User) {

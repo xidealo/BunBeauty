@@ -108,7 +108,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     }
 
     private fun init() {
-
         ratingLayout = findViewById(R.id.ratingProfileLayout)
         ratingProfileLayout.setOnClickListener(this)
         subscribeProfileBtn.setOnClickListener(this)
@@ -131,7 +130,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             )
         tabLayout.addOnTabSelectedListener(this)
         viewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
-
     }
 
     override fun showProfileInfo(name: String, surname: String, city: String) {

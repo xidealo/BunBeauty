@@ -57,7 +57,6 @@ class SubscriberFirebase {
         ownerId: String,
         subscribersCallback: SubscribersCallback
     ) {
-
         val subscribersQuery = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
             .child(ownerId)
