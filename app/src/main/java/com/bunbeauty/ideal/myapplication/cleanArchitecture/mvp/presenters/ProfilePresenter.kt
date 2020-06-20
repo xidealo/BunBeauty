@@ -65,7 +65,7 @@ class ProfilePresenter(
         profileSubscriberInteractor.checkSubscribed(User.getMyId(), user, this)
     }
 
-    fun updateUser(user: User) {
+    fun updateUserFromEditService(user: User) {
         profileUserInteractor.updateUser(user, this)
     }
 
@@ -106,6 +106,10 @@ class ProfilePresenter(
             subscriber,
             this
         )
+    }
+
+    override fun updateUser(user: User) {
+        TODO("Not yet implemented")
     }
 
     override fun addSubscription(subscriber: Subscriber) {

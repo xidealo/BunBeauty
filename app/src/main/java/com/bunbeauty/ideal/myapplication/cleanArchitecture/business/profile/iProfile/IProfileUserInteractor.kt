@@ -6,12 +6,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface IProfileUserInteractor {
     fun getCacheOwner(): User
     fun getCacheUser(): User
+    fun getCountOfRates(): String
     fun updateUser(user: User, profilePresenterCallback: ProfilePresenterCallback)
     fun isMyProfile(ownerId: String, myId: String): Boolean
     fun initFCM()
     fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback)
     fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback)
     fun updateBottomPanel(profilePresenterCallback: ProfilePresenterCallback)
+    fun updateUserFromEditService(user: User, profilePresenterCallback: ProfilePresenterCallback)
     fun updateCountOfSubscribers(
         user: User,
         subscriber: Int,

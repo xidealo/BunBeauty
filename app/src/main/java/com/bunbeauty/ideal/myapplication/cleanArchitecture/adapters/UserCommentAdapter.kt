@@ -1,3 +1,4 @@
+
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters
 
 import android.content.Context

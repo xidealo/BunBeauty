@@ -23,6 +23,13 @@ class ProfileUserInteractor(
     override fun getCacheOwner(): User = cacheOwner!!
 
     override fun getCacheUser(): User = cacheUser
+    override fun getCountOfRates(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateUser(user: User, profilePresenterCallback: ProfilePresenterCallback) {
+        TODO("Not yet implemented")
+    }
 
     override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
         this.profilePresenterCallback = profilePresenterCallback
@@ -65,13 +72,15 @@ class ProfileUserInteractor(
 
     override fun isMyProfile(ownerId: String, myId: String) = ownerId == myId
 
-    override fun updateUser(user: User, profilePresenterCallback: ProfilePresenterCallback) {
+    override fun updateUserFromEditService(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         cacheOwner = user
         cacheUser = user
 
         profilePresenterCallback.returnProfileOwner(user)
         whoseProfile(user, profilePresenterCallback)
     }
+
+
 
     override fun initFCM() {
         /*if (fromRegistartion()) {

@@ -17,10 +17,12 @@ data class User(
     var countOfRates: Long = 0,
     var photoLink: String = DEFAULT_PHOTO_LINK,
     var subscribersCount: Long = 0,
-    var subscriptionsCount: Long = 0
+    var subscriptionsCount: Long=0,
+    var registrationData: Long = 0
+) :  Serializable {
 //добавить время последнего захода?
 //добавить дату регистрации?
-) : Serializable {
+
 
     companion object {
 
@@ -49,5 +51,6 @@ data class User(
         const val MASTER = "master"
         const val CLIENT = "client"
         const val TOKEN = "token"
+        const val REGISTRATION_DATA = "registration data"
     }
 }

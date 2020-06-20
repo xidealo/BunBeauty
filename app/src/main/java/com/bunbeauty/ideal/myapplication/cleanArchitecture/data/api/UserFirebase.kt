@@ -3,10 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import java.util.*
 
 class UserFirebase {
@@ -26,6 +23,7 @@ class UserFirebase {
         items[User.PHOTO_LINK] = user.photoLink
         items[User.COUNT_OF_SUBSCRIBERS] = user.subscribersCount
         items[User.COUNT_OF_SUBSCRIPTIONS] = user.subscriptionsCount
+        items[User.REGISTRATION_DATA]=ServerValue.TIMESTAMP
         myRef.updateChildren(items)
     }
 
