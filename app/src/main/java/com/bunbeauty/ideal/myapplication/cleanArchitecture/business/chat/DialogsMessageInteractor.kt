@@ -21,7 +21,9 @@ class DialogsMessageInteractor(private val messageRepository: MessageRepository)
         messageRepository.getByIdLastMessage(dialog, this)
     }
 
-    override fun returnElement(element: Message) {
+    override fun returnElement(element: Message?) {
+
+        if (element == null) return
 
         val foundMessage = cacheMyMessages.find { it.dialogId == element.dialogId }
 

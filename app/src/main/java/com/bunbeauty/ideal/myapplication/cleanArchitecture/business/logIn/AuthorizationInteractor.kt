@@ -28,17 +28,15 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
         }
     }
 
-    override fun returnElement(element: User) {
-
-        if (element.name.isNotEmpty()) {
-            authorizationPresenterCallback.goToProfile(element)
+    override fun returnElement(element: User?) {
+        if (element == null) {
+            authorizationPresenterCallback.showViewOnScreen()
             return
         }
 
-        if (FirebaseAuth.getInstance().currentUser == null) {
-            authorizationPresenterCallback.showViewOnScreen()
-            return
-        } else {
+        if (element.name.isNotEmpty()) {
+            authorizationPresenterCallback.goToProfile(element)
+        }else {
             authorizationPresenterCallback.goToRegistration(getCurrentFbUser()!!.phoneNumber!!)
         }
     }

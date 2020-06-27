@@ -20,7 +20,8 @@ class SearchServiceInteractor(val userRepository: UserRepository) : UserCallback
     fun getUserId(): String = FirebaseAuth.getInstance().currentUser!!.uid
 
 
-    override fun returnElement(element: User) {
+    override fun returnElement(element: User?) {
+        if (element == null) return
 
     }
 }

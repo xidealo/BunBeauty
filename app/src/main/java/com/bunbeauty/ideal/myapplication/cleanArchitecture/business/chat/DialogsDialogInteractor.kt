@@ -62,7 +62,9 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
         dialogRepository.getById(dialog, this)
     }
 
-    override fun returnElement(element: Dialog) {
+    override fun returnElement(element: Dialog?) {
+        if (element == null) return
+
         if (element.ownerId == User.getMyId()) {
             myCacheDialogs.add(element)
             dialogsPresenterCallback.getUser(element)

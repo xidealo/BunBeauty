@@ -52,7 +52,9 @@ class SubscriptionsUserInteractor(
         }
     }
 
-    override fun returnElement(element: User) {
+    override fun returnElement(element: User?) {
+        if (element == null) return
+
         currentSubscriptionsCount++
         cacheUsers.add(element)
 

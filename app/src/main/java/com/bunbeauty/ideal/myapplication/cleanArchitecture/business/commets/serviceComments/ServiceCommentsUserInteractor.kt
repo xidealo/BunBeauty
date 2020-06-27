@@ -20,7 +20,9 @@ class ServiceCommentsUserInteractor(private val userRepository: IUserRepository)
         userRepository.getById(serviceComment.ownerId, this, true)
     }
 
-    override fun returnElement(element: User) {
+    override fun returnElement(element: User?) {
+        if (element == null) return
+
         serviceCommentsPresenterCallback.setUserOnServiceComment(element)
     }
 

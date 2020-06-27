@@ -20,7 +20,9 @@ class CreationCommentOrderInteractor(private val orderRepository: OrderRepositor
         orderRepository.getById(message.userId, message.orderId, this)
     }
 
-    override fun returnElement(element: Order) {
+    override fun returnElement(element: Order?) {
+        if (element == null) return
+
         creationCommentPresenterCallback.createServiceComment(element)
     }
 

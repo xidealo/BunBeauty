@@ -54,7 +54,9 @@ class ProfileUserInteractor(
         }
     }
 
-    override fun returnElement(element: User) {
+    override fun returnElement(element: User?) {
+        if (element == null) return
+
         cacheOwner = element
         profilePresenterCallback.returnProfileOwner(element)
         profilePresenterCallback.showCountOfSubscriber(element.subscribersCount)

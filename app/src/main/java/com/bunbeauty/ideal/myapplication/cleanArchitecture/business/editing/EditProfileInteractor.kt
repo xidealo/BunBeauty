@@ -127,7 +127,9 @@ class EditProfileInteractor(
         userRepository.getByPhoneNumber(phoneNumber, this, true)
     }
 
-    override fun returnElement(element: User) {
+    override fun returnElement(element: User?) {
+        if (element == null) return
+
         if (element.name.isEmpty()) {
             verifyPhoneNumberApi.sendVerificationCode(cacheUser.phone, this)
             editProfilePresenterCallback.returnCodeSent()
