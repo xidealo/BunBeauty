@@ -40,8 +40,6 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
 
     private var touchId = 0
 
-
-
     override var panelContext: Activity = this
 
     @Inject
@@ -76,6 +74,12 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         super.onResume()
 
         initBottomPanel()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        schedulePresenter.saveSchedule()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -148,6 +152,12 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         return displayMetrics.widthPixels
+    }
+
+    private fun getScreenHeight(): Int {
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics.heightPixels
     }
 
     private fun addViewToContainer(view: View, container: ViewGroup) {

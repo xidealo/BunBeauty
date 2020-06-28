@@ -34,6 +34,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.Subscri
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IScheduleRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -193,7 +194,8 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideScheduleInteractor() = ScheduleInteractor()
+    fun provideScheduleInteractor(scheduleRepository: IScheduleRepository) =
+        ScheduleInteractor(scheduleRepository)
 
     @Provides
     @Singleton

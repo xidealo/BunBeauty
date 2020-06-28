@@ -55,4 +55,8 @@ class FirebaseModule {
     @Provides
     @Singleton
     fun provideServiceCommentFirebase() = ServiceCommentFirebase()
+
+    @Provides
+    @Singleton
+    fun provideScheduleFirebase() = ScheduleFirebase()
 }

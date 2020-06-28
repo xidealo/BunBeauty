@@ -37,7 +37,7 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
     }
 
     private fun configBackIcon() {
-        if ((panelContext as Activity).isTaskRoot) {
+        if (panelContext.isTaskRoot) {
             panelContext.topPanel.navigationIcon = null
         } else {
             panelContext.topPanel.setNavigationOnClickListener {

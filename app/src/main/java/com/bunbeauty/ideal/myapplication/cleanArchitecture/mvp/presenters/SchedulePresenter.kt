@@ -60,4 +60,8 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
     override fun clearDay(dayIndex: Int) {
         viewState.clearDay(dayIndex)
     }
+
+    fun saveSchedule() {
+        scheduleInteractor.saveSchedule()
+    }
 }

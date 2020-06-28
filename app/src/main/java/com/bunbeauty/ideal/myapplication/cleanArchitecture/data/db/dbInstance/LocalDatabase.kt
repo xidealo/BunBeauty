@@ -6,21 +6,29 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.ServiceComment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Schedule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime
 
 @Database(
     entities = [
         User::class,
         Service::class,
         Tag::class,
-        WorkingDays::class,
-        WorkingTime::class,
         Order::class,
+        Schedule::class,
+        WorkingDay::class,
+        WorkingTime::class,
         Photo::class,
         Code::class,
         Dialog::class,
         Message::class,
-        UserComment::class], version = 33
+        Subscriber::class,
+        Subscription::class,
+        ServiceComment::class,
+        UserComment::class], version = 35
 )
 abstract class LocalDatabase : RoomDatabase() {
 

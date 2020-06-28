@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IScheduleRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -68,5 +69,10 @@ class RepositoryModule {
     @Singleton
     fun provideServiceCommentRepository(serviceCommentFirebase: ServiceCommentFirebase) =
         ServiceCommentRepository(serviceCommentFirebase)
+
+    @Provides
+    @Singleton
+    fun provideScheduleRepository(scheduleFirebase: ScheduleFirebase): IScheduleRepository =
+        ScheduleRepository(scheduleFirebase)
 
 }

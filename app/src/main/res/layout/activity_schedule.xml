@@ -7,11 +7,13 @@
     android:background="@color/backgroundLightBlue"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity">
 
-    <include layout="@layout/part_top_panel" />
+    <include
+        layout="@layout/part_top_panel" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
         app:layout_constraintTop_toBottomOf="@+id/topPanel">
 
         <LinearLayout
@@ -56,8 +58,9 @@
             <LinearLayout
                 android:id="@+id/timeScheduleLayout"
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
                 <TextView
                     style="@style/wideLabel"
                     android:text="Время"
@@ -72,11 +75,13 @@
         </LinearLayout>
     </ScrollView>
 
-    <TextView
+    <!--<TextView
         style="@style/wideLabel"
         android:background="@color/grey40"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel" />
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel" />-->
 
-    <include layout="@layout/part_bottom_panel" />
+    <include
+        layout="@layout/part_bottom_panel"
+        tools:layout_editor_absoluteY="675dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

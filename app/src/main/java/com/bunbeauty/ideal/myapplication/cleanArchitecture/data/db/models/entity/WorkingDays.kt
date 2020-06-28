@@ -3,7 +3,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entit
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
 data class WorkingDays(
     @PrimaryKey
     val id: String = "",
