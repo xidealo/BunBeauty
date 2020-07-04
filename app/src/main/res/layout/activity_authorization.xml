@@ -5,7 +5,6 @@
     style="@style/logInPage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity">
 
     <LinearLayout
@@ -74,10 +73,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/verifyAuthorizationBtn"
             style="@style/loginButton"
-            android:text="Войти"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            android:text="Войти"/>
 
     </LinearLayout>
 

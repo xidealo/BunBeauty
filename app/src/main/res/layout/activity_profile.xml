@@ -1,173 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/allPages"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity">
 
-    <ProgressBar
-        android:id="@+id/loadingProfileProgressBar"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:translationZ="5dp" />
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
+        <ProgressBar
+            android:id="@+id/loadingProfileProgressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            app:layout_scrollFlags="scroll|enterAlways|snap">
+            android:layout_gravity="center"
+            android:translationZ="5dp" />
 
-            <LinearLayout
-                style="@style/wideVerticalBlock"
-                app:layout_collapseMode="parallax"
-                app:layout_collapseParallaxMultiplier="0.5">
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                <include layout="@layout/part_top_panel" />
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                app:layout_scrollFlags="scroll|enterAlways|snap">
 
                 <LinearLayout
-                    android:id="@+id/infoProfileLayout"
                     style="@style/wideVerticalBlock"
-                    android:background="@color/mainBlue"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/topPanel">
+                    app:layout_collapseMode="parallax"
+                    app:layout_collapseParallaxMultiplier="0.5">
+
+                    <include layout="@layout/part_top_panel" />
 
                     <LinearLayout
-                        style="@style/wideHorizontalBlock"
-                        app:layout_constraintTop_toBottomOf="@id/topPanel">
-
-                        <RelativeLayout
-                            style="@style/highHorizontalBlock"
-                            android:layout_weight="1"
-                            android:gravity="end|center">
-
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                style="@style/actionButton"
-                                android:visibility="invisible" />
-
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                android:id="@+id/subscribeProfileBtn"
-                                style="@style/actionButton"
-                                app:srcCompat="@drawable/icon_heart_outline" />
-
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                android:id="@+id/subscriptionsProfileBtn"
-                                style="@style/actionButton"
-                                app:srcCompat="@drawable/icon_subscriptions" />
-                        </RelativeLayout>
-
-                        <ImageView
-                            android:id="@+id/avatarProfileImage"
-                            style="@style/profileAvatar"
-                            android:layout_weight="1"
-                            tools:srcCompat="@tools:sample/avatars" />
-
-                        <RelativeLayout
-                            style="@style/highHorizontalBlock"
-                            android:layout_weight="1"
-                            android:gravity="start|center">
-
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                style="@style/actionButton"
-                                android:visibility="invisible" />
-
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                android:id="@+id/dialogsProfileBtn"
-                                style="@style/actionButton"
-                                app:srcCompat="@drawable/icon_dialog" />
-
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                android:id="@+id/scheduleProfileBtn"
-                                style="@style/actionButton"
-                                app:srcCompat="@drawable/icon_schedule" />
-                        </RelativeLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
+                        android:id="@+id/infoProfileLayout"
                         style="@style/wideVerticalBlock"
-                        android:gravity="center"
-                        android:padding="5dp">
-
-                        <TextView
-                            android:id="@+id/fullNameProfileText"
-                            style="@style/profileMediumText"
-                            android:text="Name Surname" />
-
-                        <TextView
-                            android:id="@+id/cityProfileText"
-                            style="@style/profileThinText"
-                            android:text="City" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        style="@style/wideHorizontalBlock"
-                        android:baselineAligned="false"
-                        android:padding="5dp">
+                        android:background="@color/mainBlue"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/topPanel">
 
                         <LinearLayout
                             style="@style/wideHorizontalBlock"
-                            android:layout_weight="1"
-                            android:gravity="center">
+                            app:layout_constraintTop_toBottomOf="@id/topPanel">
 
-                            <TextView
-                                android:id="@+id/subscribersProfileText"
-                                style="@style/profileThinText"
-                                android:text="Подписчики:" />
+                            <RelativeLayout
+                                style="@style/highHorizontalBlock"
+                                android:layout_weight="1"
+                                android:gravity="end|center">
+
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    style="@style/actionButton"
+                                    android:visibility="invisible" />
+
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:id="@+id/subscribeProfileBtn"
+                                    style="@style/actionButton"
+                                    app:srcCompat="@drawable/icon_heart_outline" />
+
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:id="@+id/subscriptionsProfileBtn"
+                                    style="@style/actionButton"
+                                    app:srcCompat="@drawable/icon_subscriptions" />
+                            </RelativeLayout>
+
+                            <ImageView
+                                android:id="@+id/avatarProfileImage"
+                                style="@style/profileAvatar"
+                                android:layout_weight="1"
+                                tools:srcCompat="@tools:sample/avatars" />
+
+                            <RelativeLayout
+                                style="@style/highHorizontalBlock"
+                                android:layout_weight="1"
+                                android:gravity="start|center">
+
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    style="@style/actionButton"
+                                    android:visibility="invisible" />
+
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:id="@+id/dialogsProfileBtn"
+                                    style="@style/actionButton"
+                                    app:srcCompat="@drawable/icon_dialog" />
+
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:id="@+id/scheduleProfileBtn"
+                                    style="@style/actionButton"
+                                    app:srcCompat="@drawable/icon_schedule" />
+                            </RelativeLayout>
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/ratingProfileLayout"
-                            style="@style/wideHorizontalBlock"
-                            android:layout_weight="1"
-                            android:gravity="center">
-
-                            <RatingBar
-                                android:id="@+id/profileRatingBar"
-                                style="@android:style/Widget.Holo.RatingBar.Small"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="5dp"
-                                android:theme="@style/ratingBarColors" />
+                            style="@style/wideVerticalBlock"
+                            android:gravity="center"
+                            android:padding="5dp">
 
                             <TextView
-                                android:id="@+id/ratingProfileText"
+                                android:id="@+id/fullNameProfileText"
+                                style="@style/profileMediumText"
+                                android:text="Name Surname" />
+
+                            <TextView
+                                android:id="@+id/cityProfileText"
                                 style="@style/profileThinText"
-                                android:text="0 (0)" />
+                                android:text="City" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            style="@style/wideHorizontalBlock"
+                            android:baselineAligned="false"
+                            android:padding="5dp">
+
+                            <LinearLayout
+                                style="@style/wideHorizontalBlock"
+                                android:layout_weight="1"
+                                android:gravity="center">
+
+                                <TextView
+                                    android:id="@+id/subscribersProfileText"
+                                    style="@style/profileThinText"
+                                    android:text="Подписчики:" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/ratingProfileLayout"
+                                style="@style/wideHorizontalBlock"
+                                android:layout_weight="1"
+                                android:gravity="center">
+
+                                <RatingBar
+                                    android:id="@+id/profileRatingBar"
+                                    style="@android:style/Widget.Holo.RatingBar.Small"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    android:theme="@style/ratingBarColors" />
+
+                                <TextView
+                                    android:id="@+id/ratingProfileText"
+                                    style="@style/profileThinText"
+                                    android:text="0 (0)" />
+                            </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/profileTabLayout"
-            style="@style/tabs">
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/profileTabLayout"
+                style="@style/tabs">
 
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Записи" />
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Записи" />
 
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Услуги" />
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Услуги" />
 
-        </com.google.android.material.tabs.TabLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+            </com.google.android.material.tabs.TabLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-    <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomViewPager
-        android:id="@+id/profileViewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/bottom_panel_height"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomViewPager
+            android:id="@+id/profileViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <include layout="@layout/part_bottom_panel" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

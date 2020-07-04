@@ -16,7 +16,7 @@ class SubscriberFirebase {
 
         val items = HashMap<String, Any>()
         items[Subscriber.SUBSCRIBER_ID] = subscriber.subscriberId
-        items[Subscriber.DATE]  = ServerValue.TIMESTAMP
+        items[Subscriber.DATE] = ServerValue.TIMESTAMP
         subscriberRef.updateChildren(items)
     }
 
