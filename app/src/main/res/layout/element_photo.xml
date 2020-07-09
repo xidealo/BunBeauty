@@ -16,7 +16,6 @@
 
     <ImageView
         android:id="@+id/photoPhotoElementImage"
-        style="@style/photoElement"
-        tools:srcCompat="@tools:sample/avatars" />
+        style="@style/photoElement" />
 
 </LinearLayout>

@@ -1,11 +1,13 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -17,16 +19,20 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.pho
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoDialogActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.theartofdev.edmodo.cropper.CropImage
@@ -138,11 +144,26 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     }
 
     override fun deletePhoto(photo: Photo) {
-        creationServicePresenter.removePhoto(photo)
+        val dialog = AlertDialog.Builder(this).create()
+        dialog.setTitle("Внимание!")
+        dialog.setMessage("Удалить фотографию?")
+        dialog.setCancelable(false)
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Да") { _, _ ->
+            creationServicePresenter.removePhoto(photo)
+        }
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Нет") { _, _ -> }
+        dialog.setIcon(android.R.drawable.ic_dialog_alert)
+        dialog.show()
     }
 
-    override fun openPhoto(photo: Photo) {
-
+    override fun openPhoto() {
+        val intent = Intent(this, PhotoDialogActivity::class.java)
+        intent.putParcelableArrayListExtra(
+            Photo.PHOTO,
+            ArrayList(creationServicePresenter.getPhotosLink())
+        )
+        startActivity(intent)
+        overridePendingTransition(0, 0)
     }
 
     override fun updatePhotoFeed() {

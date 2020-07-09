@@ -5,7 +5,6 @@
     style="@style/allPages"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity">
 
-    <!--TODO (Новый дизайн ВАЛ)-->
     <include layout="@layout/part_top_panel" />
 
     <ProgressBar
@@ -80,7 +79,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/materialInputLayout"
                     android:hint="Цена"
-                    app:startIconDrawable="@drawable/icon_profile">
+                    app:startIconDrawable="@drawable/icon_dollar_sign_solid">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/costServiceText"
@@ -92,7 +91,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/materialInputLayout"
                     android:hint="Адрес"
-                    app:startIconDrawable="@drawable/icon_profile">
+                    app:startIconDrawable="@drawable/icon_map_marked_solid">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/addressServiceText"
@@ -104,7 +103,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/materialInputLayout"
                     android:hint="Описание:"
-                    app:startIconDrawable="@drawable/icon_profile">
+                    app:startIconDrawable="@drawable/icon_file_alt_regular">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/descriptionServiceText"

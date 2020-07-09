@@ -17,7 +17,7 @@ class PhotoElement(
     fun createPhoto(photo: Photo, view: View) {
         photoPhotoElementImage = view.findViewById(R.id.photoPhotoElementImage)
         photoPhotoElementImage.setOnClickListener {
-            iPhotoElement.openPhoto(photo)
+            iPhotoElement.openPhoto()
         }
 
         deletePhotoElementText = view.findViewById(R.id.deletePhotoElementText)
@@ -43,6 +43,5 @@ class PhotoElement(
                 .resize(125, 125)
                 .into(photoPhotoElementImage)
         }
-
     }
 }
