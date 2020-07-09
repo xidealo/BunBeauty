@@ -28,4 +28,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="appbar_padding">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+
+    <!-- Default margin -->
+    <dimen name="default_margin">8dp</dimen>
+
 </resources>

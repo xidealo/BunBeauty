@@ -28,17 +28,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.MessagesView
+import kotlinx.android.synthetic.main.activity_messages.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import javax.inject.Inject
 
 class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.OnClickListener {
 
-    private lateinit var loadingMessagesProgressBar: ProgressBar
-    private lateinit var resultsMessagesRecycleView: RecyclerView
     private lateinit var messageAdapter: MessageAdapter
-    private lateinit var messageMessagesInput: EditText
-    private lateinit var sendMessageMessagesBtn: Button
 
     override var panelContext: Activity = this
 
@@ -78,10 +75,6 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     }
 
     private fun init() {
-        loadingMessagesProgressBar = findViewById(R.id.loadingMessagesProgressBar)
-        resultsMessagesRecycleView = findViewById(R.id.resultsMessagesRecycleView)
-        messageMessagesInput = findViewById(R.id.messageMessagesInput)
-        sendMessageMessagesBtn = findViewById(R.id.sendMessageMessagesBtn)
         sendMessageMessagesBtn.setOnClickListener(this)
 
         val linearLayoutManager = LinearLayoutManager(this)

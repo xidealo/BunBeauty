@@ -8,8 +8,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.int
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase: PhotoFirebase): IPhotoRepository,
-        BaseRepository(){
+class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase: PhotoFirebase) :
+    IPhotoRepository,
+    BaseRepository() {
 
     override fun insert(photo: Photo) {
         launch {
@@ -31,8 +32,10 @@ class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase:
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getByServiceId(serviceId: String, serviceOwnerId: String, photosCallback: PhotosCallback,
-                       isFirstEnter: Boolean) {
+    fun getByServiceId(
+        serviceId: String, serviceOwnerId: String, photosCallback: PhotosCallback,
+        isFirstEnter: Boolean
+    ) {
         val photoList: ArrayList<Photo> = ArrayList()
 
         if (isFirstEnter) {
@@ -45,6 +48,7 @@ class PhotoRepository(private val photoDao: PhotoDao, private val photoFirebase:
         }
     }
 
-    fun getIdForNew(userId: String, serviceId:String): String = photoFirebase.getIdForNew(userId,serviceId)
+    override fun getIdForNew(userId: String, serviceId: String): String =
+        photoFirebase.getIdForNew(userId, serviceId)
 
 }

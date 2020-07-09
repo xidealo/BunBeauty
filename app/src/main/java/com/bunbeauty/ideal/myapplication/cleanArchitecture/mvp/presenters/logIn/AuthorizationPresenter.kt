@@ -10,7 +10,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.Autho
 @InjectViewState
 class AuthorizationPresenter(private val authorizationInteractor: IAuthorizationInteractor) :
         MvpPresenter<AuthorizationView>(), AuthorizationPresenterCallback {
-    //ПЕРЕИМЕНОВАТЬ
+
     fun defaultAuthorize() {
         viewState.hideViewsOnScreen()
         authorizationInteractor.defaultAuthorize(this)

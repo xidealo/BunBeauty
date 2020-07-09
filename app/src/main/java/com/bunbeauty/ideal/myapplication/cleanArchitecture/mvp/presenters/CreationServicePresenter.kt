@@ -1,11 +1,13 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
+import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationService.CreationServicePresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
@@ -38,13 +40,19 @@ class CreationServicePresenter(
         creationServiceServiceInteractor.addService(service, tags, this)
     }
 
-    fun addImageLink(link: String) {
-        creationServiceServiceInteractor.addImageLink(link)
+    fun createPhoto(uri: Uri) {
+        val photo = Photo()
+        photo.uri = uri.toString()
+        creationServicePhotoInteractor.addPhoto(photo)
+        viewState.updatePhotoFeed()
     }
 
-    fun removeImageLink(link: String) {
-        creationServiceServiceInteractor.removeImageLink(link)
+    fun removePhoto(photo: Photo) {
+        creationServicePhotoInteractor.removePhoto(photo)
+        viewState.updatePhotoFeed()
     }
+
+    fun getPhotosLink() = creationServicePhotoInteractor.returnPhotos()
 
     override fun showNameInputError(error: String) {
         viewState.showNameInputError(error)

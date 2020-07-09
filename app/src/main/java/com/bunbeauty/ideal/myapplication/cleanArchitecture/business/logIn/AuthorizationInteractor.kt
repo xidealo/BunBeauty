@@ -60,6 +60,4 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
         return phone.length == 12
     }
 
-
-
 }

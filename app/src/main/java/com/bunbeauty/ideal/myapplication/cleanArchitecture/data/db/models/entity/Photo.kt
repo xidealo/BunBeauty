@@ -9,6 +9,7 @@ data class Photo(
     var id: String = "",
     var link: String = "",
     var userId: String = "",
+    var uri: String = "",
     var serviceId: String = ""
 ) {
     companion object {

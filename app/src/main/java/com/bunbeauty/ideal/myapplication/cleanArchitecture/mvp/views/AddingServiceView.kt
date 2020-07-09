@@ -12,7 +12,7 @@ interface AddingServiceView: MvpView {
     fun showMessage(message: String)
     fun showMoreTenImages()
     fun showCategory()
-
+    fun updatePhotoFeed()
     fun showNameInputError(error:String)
     fun showDescriptionInputError(error:String)
     fun showCostInputError(error:String)

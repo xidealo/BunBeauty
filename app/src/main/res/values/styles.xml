@@ -211,6 +211,12 @@
     </style>
 
 
+    <style name="photoElement">
+        <item name="android:layout_width">@dimen/photo_width</item>
+        <item name="android:layout_height">@dimen/photo_height</item>
+    </style>
+
+
     <!-- RATING BAR -->
 
     <style name="ratingBar" parent="@android:style/Widget.RatingBar">
