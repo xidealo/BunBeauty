@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entit
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay.Companion.DATE_DELIMITER
 import org.joda.time.DateTime
 
 data class ScheduleWithDays(
@@ -30,14 +31,18 @@ data class ScheduleWithDays(
 
         val now = DateTime.now()
         val date = if (now.dayOfMonth <= day) {
-            "${day}-${now.monthOfYear}-${now.year}"
+            "$day$DATE_DELIMITER${now.monthOfYear}$DATE_DELIMITER${now.year}"
         } else {
             if (now.monthOfYear == 12) {
-                "${day}-1-${now.year + 1}"
+                "$day${DATE_DELIMITER}1$DATE_DELIMITER${now.year + 1}"
             } else {
-                "${day}-${now.monthOfYear + 1}-${now.year}"
+                "$day$DATE_DELIMITER${now.monthOfYear + 1}$DATE_DELIMITER${now.year}"
             }
         }
         workingDays.add(WorkingDayWithTimes(WorkingDay(date = date)))
+    }
+
+    companion object {
+        const val WORKING_DAYS = "working days"
     }
 }

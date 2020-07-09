@@ -87,23 +87,23 @@ class RegistrationUserInteractor(
         return true
     }
 
-    private fun getIsCityInputCorrect(city: String): Boolean {
+    fun getIsCityInputCorrect(city: String): Boolean {
         return city != "Город"
     }
 
-    private fun getIsNameInputCorrect(name: String): Boolean {
+    fun getIsNameInputCorrect(name: String): Boolean {
         return name.matches("[a-zA-ZА-Яа-я\\-]+".toRegex())
     }
 
-    private fun getIsNameLengthLessTwenty(name: String): Boolean {
+    fun getIsNameLengthLessTwenty(name: String): Boolean {
         return name.length <= 20
     }
 
-    private fun getIsSurnameInputCorrect(surname: String): Boolean {
+    fun getIsSurnameInputCorrect(surname: String): Boolean {
         return surname.matches("[a-zA-ZА-Яа-я\\-]+".toRegex())
     }
 
-    private fun getIsSurnameLengthLessTwenty(surname: String): Boolean {
+    fun getIsSurnameLengthLessTwenty(surname: String): Boolean {
         return surname.length <= 20
     }
 

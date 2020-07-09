@@ -4,18 +4,31 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.schedule.SchedulePresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ScheduleView
 
 @InjectViewState
 class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
     MvpPresenter<ScheduleView>(), SchedulePresenterCallback {
 
+    fun getSchedule() {
+        scheduleInteractor.getSchedule(this)
+    }
+
+    override fun setSchedule(schedule: ScheduleWithDays) {
+        viewState.setSchedule(schedule)
+    }
+
+    fun getDayIndex(date: String): Int {
+        return scheduleInteractor.getDayIndex(date)
+    }
+
     fun getDateString(dayIndex: Int): String {
         return scheduleInteractor.getDateString(dayIndex)
     }
 
-    fun getTineString(timeIndex: Int): String {
-        return scheduleInteractor.getTineString(timeIndex)
+    fun getTimeString(timeIndex: Int): String {
+        return scheduleInteractor.getTimeString(timeIndex)
     }
 
     fun isPastDay(dayIndex: Int): Boolean {

@@ -78,7 +78,7 @@ public class AddingServiceUnitTests {
     }
 
     private CreationServiceServiceServiceInteractor getAddingServiceInstance() {
-        return new CreationServiceServiceServiceInteractor(serviceRepository, tagRepository, photoRepository);
+        return new CreationServiceServiceServiceInteractor(serviceRepository);
     }
 }
 

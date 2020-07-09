@@ -85,10 +85,7 @@ class MessageFirebase {
 
                     override fun onChildChanged(messageSnapshot: DataSnapshot, p1: String?) {
                         updateMessageCallback.returnUpdatedCallback(
-                            getMessageFromSnapshot(
-                                messageSnapshot,
-                                dialog.ownerId
-                            )
+                            getMessageFromSnapshot(messageSnapshot, dialog.ownerId)
                         )
                     }
 

@@ -4,4 +4,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Schedule(@PrimaryKey val id: Long = 0) {}
+data class Schedule(
+    @PrimaryKey var id: String = "",
+    var userId: String = ""
+) {
+
+    companion object {
+        const val SCHEDULE = "schedule"
+    }
+}

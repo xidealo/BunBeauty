@@ -25,5 +25,5 @@ open class ServiceUnitTest {
         assertFalse(getServiceInstance().isPremium(dateString))
     }*/
 
-    private fun getServiceInstance() =  ServiceServiceInteractor(photoRepository, intent)
+    private fun getServiceInstance() =  ServiceServiceInteractor(intent)
 }

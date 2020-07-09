@@ -6,16 +6,17 @@ import androidx.room.Relation
 
 @Entity
 data class WorkingDay(
-    @PrimaryKey val id: Long = 0,
-    val date: String = "", // format: dd-MM-yyyy
-    val userId: Long = 0,
-    val scheduleId: Long = 0
+    @PrimaryKey var id: String = "",
+    var date: String = "", // format: dd-MM-yyyy
+    var scheduleId: String = ""
 ) {
     fun getDayOfMonth(): Int {
         return date.split(DATE_DELIMITER).first().toInt()
     }
 
     companion object {
+        const val DATE = "date"
+
         const val DATE_DELIMITER = "-"
     }
 }

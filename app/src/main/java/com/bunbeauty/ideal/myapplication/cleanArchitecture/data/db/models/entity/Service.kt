@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.io.Serializable
+import java.time.Duration
 
 @Entity(
     foreignKeys = [ForeignKey(
@@ -18,6 +19,7 @@ import java.io.Serializable
     var id: String = "",
     var userId: String = "",
     var name: String = "",
+    var duration: Float = 0.5f,
     var address: String = "",
     var description: String = "",
     var category: String = "",
@@ -38,6 +40,7 @@ import java.io.Serializable
         const val SERVICE_OWNER = "service owner"
         const val USER_ID = "user id"
         const val NAME = "name"
+        const val DURATION = "duration"
         const val ADDRESS = "address"
         const val DESCRIPTION = "description"
         const val CATEGORY = "category"

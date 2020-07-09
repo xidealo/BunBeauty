@@ -7,10 +7,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 @Entity
 data class WorkingTime(
-    @PrimaryKey val id: Long = 0,
-    val time: String = "",
+    @PrimaryKey var id: String = "",
+    var time: String = "",
     @Embedded(prefix = "order_") val order: Order = Order(),
-    val workingDayId: String = ""
+    var workingDayId: String = ""
 ) {
 
     companion object {
