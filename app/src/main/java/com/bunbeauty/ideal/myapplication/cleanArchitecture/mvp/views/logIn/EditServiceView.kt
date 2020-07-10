@@ -5,17 +5,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 
 interface EditServiceView:MvpView{
-
+    fun updatePhotoFeed()
     fun showEditService(service: Service)
     fun goToService(service: Service)
     fun goToProfile(service: Service)
     fun showLoading()
     fun hideLoading()
-
-    fun enableEditServiceBtn()
     fun setNameEditServiceInputError(error:String)
-
-
-
 
 }

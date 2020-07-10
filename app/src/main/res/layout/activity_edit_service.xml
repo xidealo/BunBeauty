@@ -49,24 +49,24 @@
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/materialInputLayout"
                 android:hint="Адрес"
-                app:startIconDrawable="@drawable/icon_profile">
+                app:startIconDrawable="@drawable/icon_map_marked_solid">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/addressEditServiceInput"
-                    android:inputType="textCapSentences"
-                    style="@style/materialInput" />
+                    style="@style/materialInput"
+                    android:inputType="textCapSentences" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/materialInputLayout"
                 android:hint="Цена"
-                app:startIconDrawable="@drawable/icon_profile">
+                app:startIconDrawable="@drawable/icon_dollar_sign_solid">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/costEditServiceInput"
-                    android:inputType="number"
-                    style="@style/materialInput" />
+                    style="@style/materialInput"
+                    android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -74,14 +74,37 @@
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/materialInputLayout"
                 android:hint="Описание"
-                app:startIconDrawable="@drawable/icon_profile">
+                app:startIconDrawable="@drawable/icon_file_alt_regular">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/descriptionEditServiceInput"
-                    android:inputType="textCapSentences"
-                    style="@style/materialInput" />
+                    style="@style/materialInput"
+                    android:inputType="textCapSentences" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/photoEditServiceBtn"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/plus_photo_bg"
+                    android:gravity="center"
+                    android:text="+"
+                    android:textColor="@color/white"
+                    android:textSize="60sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/resultsEditServiceRecycleView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:scrollbars="none" />
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -91,7 +114,8 @@
         android:id="@+id/saveEditServiceBtn"
         style="@style/mainButton"
         android:text="Сохранить"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel" />
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
         android:id="@+id/deleteEditServiceBtn"

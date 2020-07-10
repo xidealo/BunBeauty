@@ -33,14 +33,10 @@ class PhotoElement(
         if (photo.link.isEmpty()) {
             Picasso.get()
                 .load(photo.uri)
-                .centerCrop()
-                .resize(125, 125)
                 .into(photoPhotoElementImage)
         } else {
             Picasso.get()
                 .load(photo.link)
-                .centerCrop()
-                .resize(125, 125)
                 .into(photoPhotoElementImage)
         }
     }

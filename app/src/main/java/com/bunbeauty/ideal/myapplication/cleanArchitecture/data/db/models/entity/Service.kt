@@ -29,9 +29,7 @@ import java.time.Duration
     var creationDate: Long = 0L,
     var premiumDate: Long = 0L,
     @Ignore
-    var tags: ArrayList<Tag> = ArrayList(),
-    @Ignore
-    var photosPath: List<String> = listOf()
+    var tags: ArrayList<Tag> = ArrayList()
 ) : Serializable {
 
     companion object {
@@ -40,6 +38,7 @@ import java.time.Duration
         const val SERVICE_OWNER = "service owner"
         const val USER_ID = "user id"
         const val NAME = "name"
+        const val SERVICE_PHOTO = "service photo"
         const val DURATION = "duration"
         const val ADDRESS = "address"
         const val DESCRIPTION = "description"

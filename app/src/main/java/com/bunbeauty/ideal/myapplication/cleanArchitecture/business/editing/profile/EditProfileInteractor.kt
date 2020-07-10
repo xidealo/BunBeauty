@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.profile
 
 import android.content.Intent
 import android.util.Log

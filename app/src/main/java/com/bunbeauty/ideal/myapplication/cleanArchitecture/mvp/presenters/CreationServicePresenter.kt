@@ -4,7 +4,7 @@ import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServicePhotoInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.IPhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationService.CreationServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
@@ -16,7 +16,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServi
 class CreationServicePresenter(
     private val creationServiceServiceInteractor: CreationServiceServiceServiceInteractor,
     private val creationServiceTagInteractor: ICreationServiceTagInteractor,
-    private val creationServicePhotoInteractor: ICreationServicePhotoInteractor
+    private val photoInteractor: IPhotoInteractor
 ) :
     MvpPresenter<AddingServiceView>(), CreationServicePresenterCallback {
 
@@ -43,16 +43,16 @@ class CreationServicePresenter(
     fun createPhoto(uri: Uri) {
         val photo = Photo()
         photo.uri = uri.toString()
-        creationServicePhotoInteractor.addPhoto(photo)
+        photoInteractor.addPhoto(photo)
         viewState.updatePhotoFeed()
     }
 
     fun removePhoto(photo: Photo) {
-        creationServicePhotoInteractor.removePhoto(photo)
+        photoInteractor.removePhoto(photo)
         viewState.updatePhotoFeed()
     }
 
-    fun getPhotosLink() = creationServicePhotoInteractor.returnPhotos()
+    fun getPhotosLink() = photoInteractor.getPhotosLink()
 
     override fun showNameInputError(error: String) {
         viewState.showNameInputError(error)
@@ -85,6 +85,6 @@ class CreationServicePresenter(
     }
 
     override fun addPhotos(service: Service) {
-        creationServicePhotoInteractor.addImages(service)
+        photoInteractor.saveImages(service)
     }
 }

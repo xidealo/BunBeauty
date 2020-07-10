@@ -1,27 +1,29 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service
 
 
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.service.EditServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.DeleteServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.UpdateServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
 
-class EditServiceInteractor(
+class EditServiceServiceInteractor(
     private val intent: Intent,
     private val serviceRepository: ServiceRepository
-) : UpdateServiceCallback, DeleteServiceCallback {
-    lateinit var cashService: Service
+) : UpdateServiceCallback, DeleteServiceCallback, IEditServiceServiceInteractor {
+    private lateinit var cacheService: Service
     private lateinit var editServicePresenterCallback: EditServicePresenterCallback
 
+    override fun getCacheService() = cacheService
 
-    fun createEditServiceScreen(editServicePresenterCallback: EditServicePresenterCallback) {
-        cashService = intent.getSerializableExtra(Service.SERVICE) as Service
-        editServicePresenterCallback.showEditService(cashService)
+    override fun createEditServiceScreen(editServicePresenterCallback: EditServicePresenterCallback) {
+        cacheService = intent.getSerializableExtra(Service.SERVICE) as Service
+        editServicePresenterCallback.showEditService(cacheService)
     }
 
-    fun save(
+    override fun save(
         service: Service,
         editServicePresenterCallback: EditServicePresenterCallback
 
@@ -32,19 +34,20 @@ class EditServiceInteractor(
         }
     }
 
-    fun delete(
+    override fun delete(
         service: Service,
         editServicePresenterCallback: EditServicePresenterCallback
     ) {
         this.editServicePresenterCallback = editServicePresenterCallback
         serviceRepository.delete(service, this)
     }
-    fun returnDeleteCallback(obj: Service){
-        editServicePresenterCallback.goToProfile(cashService)
+
+    fun returnDeleteCallback(obj: Service) {
+        editServicePresenterCallback.goToProfile(cacheService)
     }
 
     override fun returnUpdatedCallback(obj: Service) {
-        editServicePresenterCallback.goToService(cashService)
+        editServicePresenterCallback.goToService(cacheService)
     }
 
     fun getIsNameInputCorrect(name: String): Boolean {
@@ -83,6 +86,6 @@ class EditServiceInteractor(
     }
 
     override fun returnDeletedCallback(obj: Service) {
-        editServicePresenterCallback.goToService(cashService)
+        editServicePresenterCallback.goToService(cacheService)
     }
 }

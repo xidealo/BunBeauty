@@ -16,13 +16,11 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.PhotoAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.ProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
@@ -32,7 +30,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoD
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 import com.theartofdev.edmodo.cropper.CropImage
@@ -56,7 +53,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     lateinit var creationServiceTagInteractor: CreationServiceTagInteractor
 
     @Inject
-    lateinit var creationServicePhotoInteractor: CreationServicePhotoInteractor
+    lateinit var photoInteractor: PhotoInteractor
 
     @ProvidePresenter
     internal fun provideAddingServicePresenter(): CreationServicePresenter {
@@ -70,7 +67,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
         return CreationServicePresenter(
             creationServiceServiceInteractor,
             creationServiceTagInteractor,
-            creationServicePhotoInteractor
+            photoInteractor
         )
     }
 
@@ -89,7 +86,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     }
 
     private fun init() {
-        resultsCreationServiceRecycleView
         resultsCreationServiceRecycleView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         photoAdapter = PhotoAdapter(creationServicePresenter.getPhotosLink(), this)
@@ -106,7 +102,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
             )
         }
         photoCreationServiceBtn.setOnClickListener {
-            choosePhoto()
+            CropImage.activity().start(this)
         }
         continueCreationServiceBtn.setOnClickListener {
             goToSchedule(Service())
@@ -115,10 +111,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
 
     private fun createPanels() {
         initTopPanel("Создание услуги", ButtonTask.NONE)
-    }
-
-    private fun choosePhoto() {
-        CropImage.activity().start(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -231,7 +223,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
 
     companion object {
         const val PICK_IMAGE_REQUEST = 71
-        const val SERVICE_PHOTO = "service photo"
         const val CODES = "codes"
         const val CODE = "code"
         const val COUNT = "count"

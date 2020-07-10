@@ -11,10 +11,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serv
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServicePhotoInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.profile.EditProfileInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementServiceInteractor
@@ -26,7 +26,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.Sch
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.EditServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service.EditServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceUserInteractor
@@ -105,7 +105,9 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideCreationServiceServicePhotoInteractor(photoRepository: PhotoRepository) =
-        CreationServicePhotoInteractor(photoRepository)
+        PhotoInteractor(
+            photoRepository
+        )
 
     @Provides
     @Singleton
@@ -165,7 +167,12 @@ class InteractorModule(private val intent: Intent) {
     fun provideEditProfileInteractor(
         userRepository: UserRepository,
         verifyPhoneNumberApi: VerifyPhoneNumberApi
-    ) = EditProfileInteractor(intent, userRepository, verifyPhoneNumberApi)
+    ) =
+        EditProfileInteractor(
+            intent,
+            userRepository,
+            verifyPhoneNumberApi
+        )
 
     @Provides
     @Singleton
@@ -219,7 +226,10 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideEditServiceInteractor(serviceRepository: ServiceRepository) =
-        EditServiceInteractor(intent, serviceRepository)
+        EditServiceServiceInteractor(
+            intent,
+            serviceRepository
+        )
 
     @Provides
     @Singleton

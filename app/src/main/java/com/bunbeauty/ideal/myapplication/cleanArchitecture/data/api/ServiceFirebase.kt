@@ -149,24 +149,8 @@ class ServiceFirebase {
         for (tagSnapshot in serviceSnapshot.child(Tag.TAGS).children) {
             service.tags.add(getTagFromSnapshot(tagSnapshot, service.id, userId))
         }
+
         return service
-    }
-
-    private fun getPhotosFromSnapshot(
-        photosSnapshot: DataSnapshot,
-        serviceId: String
-    ): List<Photo> {
-        val photos = ArrayList<Photo>()
-
-        for (photoSnapshot in photosSnapshot.children) {
-            val photo = Photo()
-            photo.id = photosSnapshot.key!!
-            photo.link = photosSnapshot.child(Photo.LINK).getValue(String::class.java)!!
-            photo.serviceId = serviceId
-            photos.add(photo)
-        }
-
-        return photos
     }
 
     private fun getTagFromSnapshot(

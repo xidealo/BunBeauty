@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.davemorrissey.labs.subscaleview.ImageSource
@@ -20,18 +21,25 @@ class PhotoDialogActivity : AppCompatActivity() {
         setContentView(R.layout.activity_photo_dialog)
         photosList = intent.getParcelableArrayListExtra(Photo.PHOTO) ?: ArrayList()
 
+        val target = object : Target {
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                Log.d("", "onPrepareLoad")
+            }
+
+            override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {
+                Log.d("", e?.printStackTrace().toString())
+            }
+
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                if (bitmap != null)
+                    photoPhotoDialogImage.setImage(ImageSource.bitmap(bitmap))
+            }
+
+        }
+
         if (photosList.isNotEmpty())
             Picasso.get()
                 .load(photosList.first().uri)
-                .into(object : Target {
-
-                    override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
-                        photoPhotoDialogImage.setImage(ImageSource.bitmap(bitmap))
-                    }
-
-                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-
-                    override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
-                })
+                .into(target)
     }
 }
