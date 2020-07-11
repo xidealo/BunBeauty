@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -26,23 +25,22 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:entries="@array/choice_categories"
             android:background="@color/mainBlue"
             android:backgroundTint="@color/mainBlue"
-            android:popupBackground="@color/mainBlue"/>
+            android:entries="@array/choice_categories"
+            android:popupBackground="@color/mainBlue" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/tagsMinLayout"
         style="@style/block"
-        tools:ignore="ExtraText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/block_text"
         android:minHeight="50dp"
         android:orientation="horizontal"
-        android:visibility="gone">
+        tools:ignore="ExtraText">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/tagsBtn"
@@ -53,33 +51,17 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/tagsMaxLayout"
-        style="@style/block"
-        tools:ignore="ExtraText"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/block_text"
-        android:gravity="center"
-        android:minHeight="50dp"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            style="@style/mainBlockText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/tagsMaxLayout"
+            style="@style/block"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/block_text"
             android:gravity="center"
-            android:hint="Теги" />
+            android:orientation="horizontal"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/minimizeTagsBtn"
-            style="@style/lightBlueButton"
-            android:paddingTop="8dp"
-            android:layout_width="150dp"
-            android:layout_height="36dp"
-            android:gravity="center_horizontal"
-            android:text="" />
-    </LinearLayout>
-
+    </HorizontalScrollView>
 </LinearLayout>

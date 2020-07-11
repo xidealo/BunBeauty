@@ -164,9 +164,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
 
     override fun showCategory() {
         categoryFragment =
-            CategoryFragment(
-                this
-            )
+            CategoryFragment()
         supportFragmentManager
             .beginTransaction()
             .add(R.id.categoryCreationServiceLayout, categoryFragment)
