@@ -27,15 +27,14 @@
 
     <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
         <LinearLayout
             android:id="@+id/tagsMaxLayout"
-            style="@style/block"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/block_text"
-            android:gravity="center"
-            android:orientation="horizontal"/>
+            android:orientation="horizontal" />
 
     </HorizontalScrollView>
 </LinearLayout>

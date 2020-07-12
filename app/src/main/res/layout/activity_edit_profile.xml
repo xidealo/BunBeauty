@@ -125,7 +125,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/saveChangesEditProfileBtn"
-        style="@style/smallButton"
+        style="@style/mainButton"
         android:text="@string/saveData"
         app:layout_constraintBottom_toTopOf="@id/bottomPanel"
         app:layout_constraintLeft_toLeftOf="parent"

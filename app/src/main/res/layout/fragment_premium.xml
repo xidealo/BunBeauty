@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/maimPremiumElementLayout"
     style="@style/allPages"
     android:layout_width="match_parent"
@@ -62,29 +63,24 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/block_text">
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/materialInputLayout"
+            android:hint="Код"
+            app:startIconDrawable="@drawable/icon_file_alt_regular">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/codePremiumElement"
-                style="@style/mainBlockText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Код" />
-        </LinearLayout>
+                style="@style/materialInput"
+                android:inputType="textMultiLine|textCapSentences"
+                android:maxLines="10" />
 
+        </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/setPremiumPremiumElementBtn"
-            style="@style/mainButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/loginButton"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:background="@drawable/premium_button"
-            android:text="Получить премиум"
-            android:textColor="@color/black" />
+            android:text="Получить премиум"/>
 
     </LinearLayout>
 </LinearLayout>

@@ -27,6 +27,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoDialogActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
@@ -105,7 +106,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
             CropImage.activity().start(this)
         }
         continueCreationServiceBtn.setOnClickListener {
-            goToSchedule(Service())
+            goToSchedule()
         }
     }
 
@@ -215,8 +216,11 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
         addressCreationServiceInput.requestFocus()
     }
 
-    fun goToSchedule(service: Service) {
-
+    private fun goToSchedule() {
+        val intent = Intent(this, ScheduleActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(0,0)
+        finish()
     }
 
     companion object {
