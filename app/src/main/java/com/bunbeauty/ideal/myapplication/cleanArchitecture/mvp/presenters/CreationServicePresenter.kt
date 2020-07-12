@@ -9,6 +9,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationService.CreationServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
 
@@ -26,7 +27,7 @@ class CreationServicePresenter(
         cost: Long,
         category: String,
         address: String,
-        tags: List<String>
+        tags: ArrayList<Tag>
     ) {
         val service = Service()
         service.name = name
@@ -37,7 +38,8 @@ class CreationServicePresenter(
         service.rating = 0f
         service.countOfRates = 0
         service.userId = User.getMyId()
-        creationServiceServiceInteractor.addService(service, tags, this)
+        service.tags = tags
+        creationServiceServiceInteractor.addService(service,this)
     }
 
     fun createPhoto(uri: Uri) {

@@ -98,7 +98,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
                 costCreationServiceInput.text.toString().toLongOrNull() ?: 0,
                 categoryFragment.category,
                 addressCreationServiceInput.text.toString(),
-                categoryFragment.tagsArray
+                categoryFragment.getTags()
             )
         }
         photoCreationServiceBtn.setOnClickListener {

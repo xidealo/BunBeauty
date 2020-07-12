@@ -21,11 +21,11 @@ class TagFirebase {
         tagRef.updateChildren(items)
     }
     fun delete(tag: Tag) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     fun update(tag: Tag) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     fun get(): List<Tag> {

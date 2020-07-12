@@ -16,7 +16,6 @@ interface ICreationServiceServiceInteractor {
 
     fun addService(
         service: Service,
-        tags: List<String>,
         creationServicePresenterCallback: CreationServicePresenterCallback
     )
 

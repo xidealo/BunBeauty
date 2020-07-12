@@ -14,7 +14,6 @@ class CreationServiceServiceServiceInteractor(
 
     override fun addService(
         service: Service,
-        tags: List<String>,
         creationServicePresenterCallback: CreationServicePresenterCallback
     ) {
         this.creationServicePresenterCallback = creationServicePresenterCallback
@@ -27,6 +26,7 @@ class CreationServiceServiceServiceInteractor(
 
     override fun returnCreatedCallback(obj: Service) {
         creationServicePresenterCallback.addPhotos(obj)
+        creationServicePresenterCallback.addTags(obj)
         creationServicePresenterCallback.showServiceCreated(obj)
     }
 

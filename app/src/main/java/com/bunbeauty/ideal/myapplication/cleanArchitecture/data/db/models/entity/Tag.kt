@@ -17,10 +17,9 @@ data class Tag(
     @PrimaryKey
     var id: String = "",
     var tag: String = "",
-    var serviceId: String = ""
+    var serviceId: String = "",
+    var userId: String = ""
 ) : Serializable {
-
-    lateinit var userId: String
 
     companion object {
         const val TAGS = "tags"

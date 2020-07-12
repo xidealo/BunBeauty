@@ -17,7 +17,6 @@ class TagRepository(
     override fun insert(tag: Tag, insertTagCallback: InsertTagCallback) {
         launch {
             tag.id = getIdForNew(tag.serviceId, tag.userId)
-            tagDao.insert(tag)
             tagFirebase.insert(tag)
         }
     }

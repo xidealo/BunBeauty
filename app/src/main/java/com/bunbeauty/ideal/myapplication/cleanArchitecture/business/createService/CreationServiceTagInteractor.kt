@@ -11,6 +11,7 @@ class CreationServiceTagInteractor(private val tagRepository: ITagRepository) :
 
     override fun addTags(service: Service) {
         for (tag in service.tags) {
+            tag.serviceId = service.id
             tagRepository.insert(tag, this)
         }
     }

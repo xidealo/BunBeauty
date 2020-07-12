@@ -1,30 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <LinearLayout
         style="@style/block"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
         android:background="@drawable/block_text"
         android:orientation="horizontal">
 
-        <TextView
-            style="@style/mainBlockText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="Категория" />
-
         <Spinner
             android:id="@+id/categorySpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
             android:background="@color/mainBlue"
             android:backgroundTint="@color/mainBlue"
             android:entries="@array/choice_categories"
@@ -32,24 +24,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/tagsMinLayout"
-        style="@style/block"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/block_text"
-        android:minHeight="50dp"
-        android:orientation="horizontal"
-        tools:ignore="ExtraText">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/tagsBtn"
-            style="@style/lightBlueButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="Теги" />
-
-    </LinearLayout>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
