@@ -76,25 +76,25 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <LinearLayout
+                <fragment
                     android:id="@+id/categoryCreationServiceLayout"
+                    class="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
-
+                    android:layout_height="match_parent" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/photoCreationServiceBtn"
                     style="@style/smallButton"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/font_awesome_solid"
                     android:layout_gravity="center_horizontal"
-                    android:text="" />
+                    android:fontFamily="@font/font_awesome_solid"
+                    android:text=""
+                    android:textSize="20sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/resultsCreationServiceRecycleView"
                         android:layout_width="0dp"

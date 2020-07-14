@@ -12,11 +12,14 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
+import kotlinx.android.synthetic.main.activity_authorization.*
+import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.fragment_category.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CategoryFragment : MvpAppCompatFragment() {
+class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner {
 
     private val tagsArray: ArrayList<String> = ArrayList()
     private var categoryIndex = 0
@@ -42,26 +45,26 @@ class CategoryFragment : MvpAppCompatFragment() {
         view: View,
         savedInstanceState: Bundle?
     ) {
-        categorySpinner.setSelection(categoryIndex)
+        val categories = arrayListOf(*resources.getStringArray(R.array.choice_categories))
+        setAdapter(
+            categories,
+            categorySpinner,
+            context!!
+        )
+
+        //categorySpinner.setText(categories.first())
+
         setCategorySpinnerListener()
     }
 
     private fun setCategorySpinnerListener() {
-        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
+        categorySpinner.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, view, position, id ->
                 tagsArray.clear()
                 tagsMaxLayout.removeAllViews()
                 if (position > 0)
                     showTags(position)
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
     }
 
     private fun showTags(categoryPosition: Int) {
@@ -111,6 +114,6 @@ class CategoryFragment : MvpAppCompatFragment() {
     }
 
     val category: String
-        get() = categorySpinner.selectedItem.toString()
+        get() = categorySpinner.text.toString()
 
 }

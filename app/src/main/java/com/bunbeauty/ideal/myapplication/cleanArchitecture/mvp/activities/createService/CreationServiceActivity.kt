@@ -42,7 +42,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
 
     override var panelContext: Activity = this
     private lateinit var photoAdapter: PhotoAdapter
-    private lateinit var categoryFragment: CategoryFragment
+    private lateinit var categoryCreationServiceLayout: CategoryFragment
 
     @InjectPresenter
     lateinit var creationServicePresenter: CreationServicePresenter
@@ -97,9 +97,9 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
                 nameCreationServiceInput.text.toString(),
                 descriptionCreationServiceInput.text.toString(),
                 costCreationServiceInput.text.toString().toLongOrNull() ?: 0,
-                categoryFragment.category,
+                categoryCreationServiceLayout.category,
                 addressCreationServiceInput.text.toString(),
-                categoryFragment.getTags()
+                categoryCreationServiceLayout.getTags()
             )
         }
         photoCreationServiceBtn.setOnClickListener {
@@ -164,12 +164,8 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     }
 
     override fun showCategory() {
-        categoryFragment =
-            CategoryFragment()
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.categoryCreationServiceLayout, categoryFragment)
-            .commit()
+        categoryCreationServiceLayout =
+            supportFragmentManager.findFragmentById(R.id.categoryCreationServiceLayout) as CategoryFragment
     }
 
     override fun hideMainBlock() {
@@ -219,7 +215,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     private fun goToSchedule() {
         val intent = Intent(this, ScheduleActivity::class.java)
         startActivity(intent)
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
         finish()
     }
 
