@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces
 
-import android.app.Activity
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -21,7 +20,6 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
 
     fun initTopPanel(title: String, buttonTask: ButtonTask) {
         initTopPanel(buttonTask)
-
         panelContext.topPanel.titleTopPanelText.text = title
     }
 

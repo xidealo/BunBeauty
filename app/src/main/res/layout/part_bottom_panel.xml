@@ -5,5 +5,6 @@
     style="@style/bottomNavigation"
     android:layout_gravity="bottom"
     android:scrollbars="none"
+    app:itemTextColor="@color/navigation"
     app:layout_constraintBottom_toBottomOf="parent"
     app:menu="@menu/bottom_navigation_menu" />

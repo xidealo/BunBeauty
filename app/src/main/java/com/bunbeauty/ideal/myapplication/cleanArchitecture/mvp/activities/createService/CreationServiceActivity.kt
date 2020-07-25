@@ -42,6 +42,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
 
     override var panelContext: Activity = this
     private lateinit var photoAdapter: PhotoAdapter
+
     private lateinit var categoryCreationServiceLayout: CategoryFragment
 
     @InjectPresenter
@@ -76,7 +77,8 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_creation_service)
         init()
-        createPanels()
+
+        initTopPanel("Создание услуги", ButtonTask.NONE)
         showCategory()
         showMainBlock()
     }
@@ -108,10 +110,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
         continueCreationServiceBtn.setOnClickListener {
             goToSchedule()
         }
-    }
-
-    private fun createPanels() {
-        initTopPanel("Создание услуги", ButtonTask.NONE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -220,7 +218,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     }
 
     companion object {
-        const val PICK_IMAGE_REQUEST = 71
         const val CODES = "codes"
         const val CODE = "code"
         const val COUNT = "count"

@@ -7,9 +7,9 @@
     <item
         android:id="@+id/navigation_main"
         android:icon="@drawable/icon_main"
-        android:title="Profile" />
+        android:title="Main screen" />
     <item
         android:id="@+id/navigation_chat"
         android:icon="@drawable/icon_dialogs"
-        android:title="Profile" />
+        android:title="Dialog" />
 </menu>

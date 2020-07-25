@@ -363,6 +363,7 @@
         <item name="android:textSize">20sp</item>
         <item name="android:padding">5dp</item>
     </style>
+
     <!-- Style for block style -->
     <style name="block">
         <item name="android:orientation">horizontal</item>
@@ -387,6 +388,21 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- SELECTED AND UNSELECTED STYLE -->
+    <style name="selected">
+        <item name="android:background">@drawable/selected_item</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="unselected">
+        <item name="android:background">@drawable/unselected_item</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 
     <!-- Стиль свичера -->
     <style name="MySwitch" parent="Theme.AppCompat.Light">
@@ -447,7 +463,7 @@
 
     <style name="lightBlueButton" parent="baseButton">
         <item name="fontFamily">@font/font_awesome_solid</item>
-        <item name="android:background">@drawable/tags_button</item>
+        <item name="android:background">@drawable/unselected_item</item>
         <item name="android:layout_marginTop">2dp</item>
         <item name="android:layout_marginBottom">2dp</item>
         <item name="android:textSize">20sp</item>

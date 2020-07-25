@@ -1,28 +1,23 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements
 
-import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.core.content.res.ResourcesCompat
+import android.widget.AdapterView
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.airbnb.paris.extensions.style
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
-import kotlinx.android.synthetic.main.activity_authorization.*
-import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.fragment_category.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner {
 
     private val tagsArray: ArrayList<String> = ArrayList()
-    private var categoryIndex = 0
 
     fun getTags(): ArrayList<Tag> {
         val tags: ArrayList<Tag> = ArrayList()
@@ -52,8 +47,6 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner {
             context!!
         )
 
-        //categorySpinner.setText(categories.first())
-
         setCategorySpinnerListener()
     }
 
@@ -73,20 +66,22 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner {
             .getTextArray(categoryPosition - 1)
 
         for (tag in tagsArray) {
-            val tagText = TextView(context)
+            val inflater = LayoutInflater.from(context)
+            val view: View = inflater.inflate(R.layout.fragment_tag, tagsMaxLayout, false)
+            view.layoutParams =
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+
+            val tagText = view.findViewById<TextView>(R.id.tagFragmentTagText)
             tagText.text = tag
-            tagText.typeface = ResourcesCompat.getFont(context!!, R.font.roboto_bold)
-            tagText.textSize = 18f
-            setUnpickedTag(tagText)
 
             tagText.setOnClickListener {
                 tagClick(tagText)
             }
-            /*  tagText.layoutParams = LinearLayout.LayoutParams(
-                  LinearLayout.LayoutParams.WRAP_CONTENT,
-                  LinearLayout.LayoutParams.WRAP_CONTENT
-              )*/
-            tagsMaxLayout.addView(tagText, tagsMaxLayout.childCount - 1)
+
+            tagsMaxLayout.addView(view)
         }
     }
 
@@ -102,14 +97,12 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner {
     }
 
     private fun setPickedTag(tagText: TextView): TextView {
-        tagText.setBackgroundResource(R.drawable.category_button_pressed)
-        tagText.setTextColor(Color.BLACK)
+        tagText.style(R.style.selected)
         return tagText
     }
 
     private fun setUnpickedTag(tagText: TextView): TextView {
-        tagText.setBackgroundResource(R.drawable.tags_button)
-        tagText.setTextColor(ResourcesCompat.getColor(resources, R.color.white, null))
+        tagText.style(R.style.unselected)
         return tagText
     }
 
