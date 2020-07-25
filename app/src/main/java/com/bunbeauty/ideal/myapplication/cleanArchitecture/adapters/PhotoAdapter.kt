@@ -9,7 +9,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.pho
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.PhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 
-class PhotoAdapter(private val photos: List<Photo>, private val iPhotoElement: IPhotoElement) :
+class PhotoAdapter(
+    private val photos: List<Photo>,
+    private val iPhotoElement: IPhotoElement,
+    private val width: Int,
+    private val height: Int
+) :
     RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): PhotoViewHolder {
@@ -33,7 +38,11 @@ class PhotoAdapter(private val photos: List<Photo>, private val iPhotoElement: I
         RecyclerView.ViewHolder(view) {
 
         fun bind(photo: Photo) {
-            val photoElement = PhotoElement(iPhotoElement)
+            val photoElement = PhotoElement(
+                iPhotoElement,
+                width,
+                height
+            )
             photoElement.createPhoto(photo, view)
         }
     }

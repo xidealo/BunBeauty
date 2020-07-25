@@ -8,7 +8,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.squareup.picasso.Picasso
 
 class PhotoElement(
-    private val iPhotoElement: IPhotoElement
+    private val iPhotoElement: IPhotoElement,
+    private val width: Int,
+    private val height: Int
 ) {
     private lateinit var photoPhotoElementImage: ImageView
     private lateinit var deletePhotoElementText: TextView
@@ -33,10 +35,14 @@ class PhotoElement(
         if (photo.link.isEmpty()) {
             Picasso.get()
                 .load(photo.uri)
+                .resize(width, height)
+                .centerCrop()
                 .into(photoPhotoElementImage)
         } else {
             Picasso.get()
                 .load(photo.link)
+                .resize(width, height)
+                .centerCrop()
                 .into(photoPhotoElementImage)
         }
     }

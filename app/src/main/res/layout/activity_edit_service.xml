@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/saveEditServiceBtn"
+        app:layout_constraintBottom_toTopOf="@+id/bottomControlPanelEditServiceLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topPanel">
@@ -107,22 +107,26 @@
             </LinearLayout>
 
         </LinearLayout>
-
     </ScrollView>
 
-    <Button
-        android:id="@+id/saveEditServiceBtn"
-        style="@style/mainButton"
-        android:text="Сохранить"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
-        app:layout_constraintLeft_toLeftOf="parent" />
+    <LinearLayout
+        android:id="@+id/bottomControlPanelEditServiceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel">
 
-    <Button
-        android:id="@+id/deleteEditServiceBtn"
-        style="@style/mainButton"
-        android:text="Удалить услугу"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
-        app:layout_constraintRight_toRightOf="parent" />
+        <Button
+            android:id="@+id/saveEditServiceBtn"
+            style="@style/smallButton"
+            android:text="Сохранить" />
+
+        <Button
+            android:id="@+id/deleteEditServiceBtn"
+            style="@style/smallButton"
+            android:text="Удалить" />
+    </LinearLayout>
 
     <include layout="@layout/part_bottom_panel" />
 

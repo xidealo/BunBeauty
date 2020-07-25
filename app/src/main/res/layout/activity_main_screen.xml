@@ -13,32 +13,21 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@+id/topPanelLayout" />
 
-    <LinearLayout
-        android:id="@+id/borderMainScreenLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchPanelMainScreenSearchView" />
-
     <!-- Категории -->
     <HorizontalScrollView
         android:id="@+id/categoryMainScreenScroll"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scrollbars="none"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/borderMainScreenLayout">
+        app:layout_constraintBottom_toTopOf="@+id/tagsMainScreenLayout"
+        app:layout_constraintTop_toBottomOf="@+id/topPanel">
 
         <LinearLayout
             android:id="@+id/categoryMainScreenLayout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-        </LinearLayout>
+            android:orientation="horizontal"/>
     </HorizontalScrollView>
 
     <LinearLayout
@@ -46,9 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll">
+        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll"
+        app:layout_constraintBottom_toTopOf="@+id/resultsMainScreenRecycleView">
 
         <HorizontalScrollView
             android:layout_width="match_parent"

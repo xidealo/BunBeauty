@@ -110,7 +110,7 @@ class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
         premiumText.visibility = View.VISIBLE
         premiumText.isEnabled = false
         setPremiumPremiumElementBtn.text = "Продлить премиум"
-          premiumDatePremiumElementText.text = "Премиум до ${WorkWithTimeApi.getDateInFormatMD(
+          premiumDatePremiumElementText.text = "Премиум до ${WorkWithTimeApi.getDateInFormatYMD(
               premiumDate
           )}"
     }

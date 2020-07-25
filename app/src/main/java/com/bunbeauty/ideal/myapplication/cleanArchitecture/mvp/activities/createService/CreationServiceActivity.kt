@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -33,6 +34,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_creation_service.*
 import javax.inject.Inject
@@ -91,7 +93,11 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     private fun init() {
         resultsCreationServiceRecycleView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        photoAdapter = PhotoAdapter(creationServicePresenter.getPhotosLink(), this)
+        photoAdapter = PhotoAdapter(
+            creationServicePresenter.getPhotosLink(), this,
+            resources.getDimensionPixelSize(R.dimen.photo_width),
+            resources.getDimensionPixelSize(R.dimen.photo_height)
+        )
         resultsCreationServiceRecycleView.adapter = photoAdapter
 
         addServiceCreationServiceBtn.setOnClickListener {
@@ -135,16 +141,15 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     }
 
     override fun deletePhoto(photo: Photo) {
-        val dialog = AlertDialog.Builder(this).create()
-        dialog.setTitle("Внимание!")
-        dialog.setMessage("Удалить фотографию?")
-        dialog.setCancelable(false)
-        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Да") { _, _ ->
-            creationServicePresenter.removePhoto(photo)
-        }
-        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Нет") { _, _ -> }
-        dialog.setIcon(android.R.drawable.ic_dialog_alert)
-        dialog.show()
+        MaterialAlertDialogBuilder(this, R.style.myDialogTheme)
+            .setTitle("Внимание!")
+            .setMessage(
+                "Удалить фотографию?"
+            )
+            .setPositiveButton("Да") { _, _ ->
+                creationServicePresenter.removePhoto(photo)
+            }.setNegativeButton("Нет") { _, _ ->
+            }.show()
     }
 
     override fun openPhoto() {

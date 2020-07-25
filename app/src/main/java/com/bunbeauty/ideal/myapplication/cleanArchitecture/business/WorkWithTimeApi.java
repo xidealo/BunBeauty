@@ -67,6 +67,13 @@ public class WorkWithTimeApi {
         return formatForDateNow.format(date);
     }
 
+    //возвращает время в формате yyyy-MM-dd
+    static public String getDateInFormatYMD(Long date) {
+        SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd");
+        formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
+        return formatForDateNow.format(date);
+    }
+
     public static Boolean checkPremium(Long premiumDate) {
         long premDate = premiumDate;
         long sysDate = WorkWithTimeApi.getSysdateLong();

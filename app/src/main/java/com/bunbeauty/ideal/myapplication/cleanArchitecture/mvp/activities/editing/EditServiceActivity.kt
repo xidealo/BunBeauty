@@ -87,7 +87,12 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
 
         resultsEditServiceRecycleView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        photoAdapter = PhotoAdapter(editServicePresenter.getPhotosLink(), this)
+        photoAdapter = PhotoAdapter(
+            editServicePresenter.getPhotosLink(),
+            this,
+            resources.getDimensionPixelSize(R.dimen.photo_width),
+            resources.getDimensionPixelSize(R.dimen.photo_height)
+        )
         resultsEditServiceRecycleView.adapter = photoAdapter
     }
 

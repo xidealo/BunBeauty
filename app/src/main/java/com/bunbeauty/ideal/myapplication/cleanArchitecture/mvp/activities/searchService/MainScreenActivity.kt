@@ -1,22 +1,17 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.util.TypedValue
-import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.paris.extensions.style
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -37,6 +32,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainSc
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.google.android.material.button.MaterialButton
 import com.miguelcatalan.materialsearchview.MaterialSearchView
+import kotlinx.android.synthetic.main.activity_main_screen.*
+import kotlinx.android.synthetic.main.fragment_category.*
 import kotlinx.android.synthetic.main.part_top_panel.*
 import javax.inject.Inject
 
@@ -45,14 +42,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     private var categoriesBtns: ArrayList<MaterialButton> = arrayListOf()
     private lateinit var categories: ArrayList<String>
-    private lateinit var categoryLayout: LinearLayout
-    private lateinit var tagsLayout: LinearLayout
-    private lateinit var innerLayout: LinearLayout
-    private lateinit var progressBar: ProgressBar
-    private lateinit var recyclerView: RecyclerView
     private lateinit var serviceAdapter: ServiceAdapter
-    private lateinit var noResultMainScreenText: TextView
-    private lateinit var searchView: MaterialSearchView
 
     override var panelContext: Activity = this
 
@@ -102,7 +92,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_item, menu)
         val item: MenuItem = menu.findItem(R.id.action_search)
-        searchView.setMenuItem(item)
+        searchPanelMainScreenSearchView.setMenuItem(item)
         return true
     }
 
@@ -115,28 +105,17 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private fun init() {
         categories = ArrayList(listOf(*resources.getStringArray(R.array.categories)))
 
-        categoryLayout = findViewById(R.id.categoryMainScreenLayout)
-        recyclerView = findViewById(R.id.resultsMainScreenRecycleView)
-        categoryLayout = findViewById(R.id.categoryMainScreenLayout)
-        tagsLayout = findViewById(R.id.tagsMainScreenLayout)
-        innerLayout = findViewById(R.id.tagsInnerMainScreenLayout)
-        progressBar = findViewById(R.id.progressBarMainScreen)
-        noResultMainScreenText = findViewById(R.id.noResultMainScreenText)
-
         noResultMainScreenText.visibility = View.GONE
 
         val minimizeTagsBtn = findViewById<MaterialButton>(R.id.minimizeTagsMainScreenBtn)
         val clearTagsBtn = findViewById<MaterialButton>(R.id.clearTagsMainScreenBtn)
 
-        val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
+        resultsMainScreenRecycleView.layoutManager = LinearLayoutManager(this)
 
         serviceAdapter = ServiceAdapter(mainScreenPresenter.getMainScreenDataLink())
-        recyclerView.adapter = serviceAdapter
+        resultsMainScreenRecycleView.adapter = serviceAdapter
 
-        searchView = findViewById(R.id.searchPanelMainScreenSearchView)
-
-        searchView.setOnQueryTextListener(object : MaterialSearchView.OnQueryTextListener {
+        searchPanelMainScreenSearchView.setOnQueryTextListener(object : MaterialSearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 //Do some magic
                 return false
@@ -149,7 +128,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             }
         })
 
-        searchView.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
+        searchPanelMainScreenSearchView.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
             override fun onSearchViewShown() {
                 //Do some magic
                 val k = 21
@@ -181,7 +160,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                 mainScreenPresenter.disableCategoryBtns(categoriesBtns)
                 if (mainScreenPresenter.isSelectedCategory(category)) {
                     mainScreenPresenter.showCurrentMainScreen()
-                    mainScreenPresenter.setTagsState(tagsLayout.visibility)
+                    mainScreenPresenter.setTagsState(tagsMainScreenLayout.visibility)
                 } else {
                     mainScreenPresenter.createMainScreenWithCategory(category)
                     enableCategoryButton(v)
@@ -227,13 +206,13 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     override fun showLoading() {
-        progressBar.visibility = View.VISIBLE
-        recyclerView.visibility = View.GONE
+        progressBarMainScreen.visibility = View.VISIBLE
+        resultsMainScreenRecycleView.visibility = View.GONE
     }
 
     override fun hideLoading() {
-        progressBar.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
+        progressBarMainScreen.visibility = View.GONE
+        resultsMainScreenRecycleView.visibility = View.VISIBLE
     }
 
     override fun showMainScreen(mainScreenData: ArrayList<MainScreenData>) {
@@ -249,15 +228,15 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     override fun hideTags() {
-        tagsLayout.visibility = View.GONE
+        tagsMainScreenLayout.visibility = View.GONE
     }
 
     override fun clearTags() {
-        innerLayout.removeAllViews()
+        tagsInnerMainScreenLayout.removeAllViews()
     }
 
     override fun showTags() {
-        tagsLayout.visibility = View.VISIBLE
+        tagsMainScreenLayout.visibility = View.VISIBLE
     }
 
     override fun showEmptyScreen() {
@@ -269,10 +248,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         button.setTextColor(Color.BLACK)
     }
 
-    @SuppressLint("RestrictedApi")
     override fun createCategoryFeed(categories: MutableSet<String>) {
-        val width = resources.getDimensionPixelSize(R.dimen.categories_width)
-        val height = resources.getDimensionPixelSize(R.dimen.categories_height)
         for (i in categories.indices) {
             categoriesBtns.add(MaterialButton(this))
             categoriesBtns[i].setOnClickListener(this)
@@ -280,28 +256,23 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             categoriesBtns[i].textSize = 14f
             categoriesBtns[i].setBackgroundResource(R.drawable.category_button)
             categoriesBtns[i].setTextColor(Color.WHITE)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                categoriesBtns[i].setAutoSizeTextTypeUniformWithConfiguration(
-                    8, 14, 1, TypedValue.COMPLEX_UNIT_DIP
-                )
-            }
             val params = LinearLayout.LayoutParams(
-                (width * categories.toTypedArray()[i].length / 6.6).toInt(),
-                height
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            params.setMargins(10, 10, 10, 16)
+            params.setMargins(8, 8, 8, 8)
             categoriesBtns[i].layoutParams = params
 
-            categoryLayout.addView(categoriesBtns[i])
+            categoryMainScreenLayout.addView(categoriesBtns[i])
         }
     }
 
     override fun showCategory() {
-        categoryLayout.visibility = View.VISIBLE
+        categoryMainScreenLayout.visibility = View.VISIBLE
     }
 
     override fun hideCategory() {
-        categoryLayout.visibility = View.GONE
+        categoryMainScreenLayout.visibility = View.GONE
     }
 
     override fun createTags(category: String, selectedTagsArray: ArrayList<String>) {
@@ -310,28 +281,24 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             .getTextArray(categories.indexOf(category))
 
         for (tag in tagsArray) {
-            val tagText = TextView(this)
-            tagText.text = tag.toString()
-            tagText.setTextColor(Color.GRAY)
-            tagText.gravity = Gravity.CENTER
-            tagText.setBackgroundResource(R.drawable.block_text)
-            tagText.textSize = 16f
-            tagText.typeface = ResourcesCompat.getFont(this, R.font.roboto_bold)
-            val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            params.setMargins(10, 0, 10, 0)
-            tagText.layoutParams = params
+            val inflater = LayoutInflater.from(this)
+            val view: View = inflater.inflate(R.layout.fragment_tag, tagsMaxLayout, false)
+            view.layoutParams =
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+
+            val tagText = view.findViewById<TextView>(R.id.tagFragmentTagText)
+            tagText.text = tag
             tagText.setOnClickListener(this)
-            tagText.setPadding(8, 8, 8, 8)
 
             if (selectedTagsArray.contains(tag.toString())) {
-                tagText.setBackgroundResource(R.drawable.category_button_pressed)
-                tagText.setTextColor(Color.BLACK)
+                view.style(R.style.selected)
             }
-            innerLayout.addView(tagText)
-        }
 
+            tagsInnerMainScreenLayout.addView(view)
+
+        }
     }
 }

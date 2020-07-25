@@ -43,7 +43,9 @@
         <activity
             android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity" />
+        <activity
+            android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.createService.MyTime" />
         <activity android:name="com.bunbeauty.ideal.myapplication.createService.MyCalendar" />
