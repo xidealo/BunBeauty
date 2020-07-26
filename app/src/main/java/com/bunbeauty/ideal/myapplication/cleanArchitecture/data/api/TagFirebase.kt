@@ -20,8 +20,17 @@ class TagFirebase {
         items[Tag.TAG] = tag.tag
         tagRef.updateChildren(items)
     }
-    fun delete(tag: Tag) {
 
+    fun delete(tag: Tag) {
+        val subscriberRef = FirebaseDatabase.getInstance()
+            .getReference(User.USERS)
+            .child(tag.userId)
+            .child(Service.SERVICES)
+            .child(tag.serviceId)
+            .child(Tag.TAGS)
+            .child(tag.id)
+
+        subscriberRef.removeValue()
     }
 
     fun update(tag: Tag) {

@@ -13,9 +13,11 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.PhotoAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service.EditServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service.EditServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
@@ -38,9 +40,13 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
 
     override var panelContext: Activity = this
     private lateinit var photoAdapter: PhotoAdapter
+    private lateinit var categoryFragment: CategoryFragment
 
     @Inject
     lateinit var editServiceServiceInteractor: EditServiceServiceInteractor
+
+    @Inject
+    lateinit var editServiceTagInteractor: EditServiceTagInteractor
 
     @Inject
     lateinit var photoInteractor: PhotoInteractor
@@ -56,7 +62,11 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
             .interactorModule(InteractorModule(intent))
             .build()
             .inject(this)
-        return EditServicePresenter(editServiceServiceInteractor, photoInteractor)
+        return EditServicePresenter(
+            editServiceServiceInteractor,
+            photoInteractor,
+            editServiceTagInteractor
+        )
     }
 
     private fun createPanels() {
@@ -78,7 +88,10 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
                 nameEditServiceInput.text.toString().trim(),
                 addressEditServiceInput.text.toString().trim(),
                 descriptionEditServiceInput.text.toString().trim(),
-                costEditServiceInput.text.toString().toLongOrNull() ?: 0
+                costEditServiceInput.text.toString().toLongOrNull() ?: 0,
+                categoryFragment.getCategory(),
+                categoryFragment.getSelectedTags(),
+                categoryFragment.getUnselectedTags()
             )
         }
         photoEditServiceBtn.setOnClickListener {
@@ -94,6 +107,9 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
             resources.getDimensionPixelSize(R.dimen.photo_height)
         )
         resultsEditServiceRecycleView.adapter = photoAdapter
+
+        categoryFragment =
+            supportFragmentManager.findFragmentById(R.id.categoryEditServiceLayout) as CategoryFragment
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -120,6 +136,7 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         addressEditServiceInput.append(service.address)
         costEditServiceInput.append(service.cost.toString())
         descriptionEditServiceInput.append(service.description)
+        categoryFragment.setCategoryFragment(service.category, service.tags)
     }
 
     override fun updatePhotoFeed() {

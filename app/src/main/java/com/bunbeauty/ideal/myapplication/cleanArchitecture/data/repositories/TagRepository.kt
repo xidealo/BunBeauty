@@ -22,7 +22,10 @@ class TagRepository(
     }
 
     override fun delete(tag: Tag, deleteTagCallback: DeleteTagCallback) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        launch {
+            tagFirebase.delete(tag)
+            deleteTagCallback.returnDeletedCallback(tag)
+        }
     }
 
     override fun update(tag: Tag, updateTagCallback: UpdateTagCallback) {

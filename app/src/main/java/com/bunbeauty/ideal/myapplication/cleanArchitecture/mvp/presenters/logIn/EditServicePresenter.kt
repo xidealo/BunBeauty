@@ -5,16 +5,19 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.IPhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service.IEditServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service.IEditServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.IPhotoCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.service.EditServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.EditServiceView
 
 @InjectViewState
 class EditServicePresenter(
     private val editServiceServiceInteractor: IEditServiceServiceInteractor,
-    private val photoInteractor: IPhotoInteractor
+    private val photoInteractor: IPhotoInteractor,
+    private val editServiceTagInteractor: IEditServiceTagInteractor
 ) :
     MvpPresenter<EditServiceView>(), EditServicePresenterCallback, IPhotoCallback {
 
@@ -22,13 +25,23 @@ class EditServicePresenter(
         editServiceServiceInteractor.createEditServiceScreen(this)
     }
 
-    fun save(name: String, address: String, description: String, cost: Long) {
+    fun save(
+        name: String,
+        address: String,
+        description: String,
+        cost: Long,
+        category: String,
+        tags: ArrayList<Tag>,
+        unselectedTags: ArrayList<Tag>
+    ) {
         val service = editServiceServiceInteractor.getCacheService()
         service.name = name
         service.address = address
         service.description = description
         service.cost = cost
-        editServiceServiceInteractor.save(service, this)
+        service.category = category
+        service.tags = tags
+        editServiceServiceInteractor.update(service, this)
     }
 
     fun delete() {
@@ -40,6 +53,7 @@ class EditServicePresenter(
 
     override fun showEditService(service: Service) {
         viewState.showEditService(service)
+        editServiceTagInteractor.setCachedServiceTags(service.tags)
         photoInteractor.getPhotos(service, this)
     }
 
@@ -67,6 +81,10 @@ class EditServicePresenter(
 
     override fun nameEditServiceInputErrorLong() {
         viewState.setNameEditServiceInputError("Слишком длинное имя")
+    }
+
+    override fun saveTags(service: Service) {
+        editServiceTagInteractor.saveTags(service)
     }
 
     override fun returnPhotos(photos: List<Photo>) {

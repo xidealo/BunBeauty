@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string-array name="categories">
-        <item><b>ногти</b></item>
-        <item><b>брови</b></item>
-        <item><b>ресницы</b></item>
-        <item><b>волосы</b></item>
-        <item><b>эпиляция</b></item>
-        <item><b>визаж</b></item>
-        <item><b>массаж</b></item>
-        <item><b>косметология</b></item>
+        <item>ногти</item>
+        <item>брови</item>
+        <item>ресницы</item>
+        <item>волосы</item>
+        <item>эпиляция</item>
+        <item>визаж</item>
+        <item>массаж</item>
+        <item>косметология</item>
     </string-array>
 
     <string-array name="choice_categories">
-        <item><b>Выбрать категорию</b></item>
-        <item><b>ногти</b></item>
-        <item><b>брови</b></item>
-        <item><b>ресницы</b></item>
-        <item><b>волосы</b></item>
-        <item><b>эпиляция</b></item>
-        <item><b>визаж</b></item>
-        <item><b>массаж</b></item>
-        <item><b>косметология</b></item>
+        <item>Выбрать категорию</item>
+        <item>ногти</item>
+        <item>брови</item>
+        <item>ресницы</item>
+        <item>волосы</item>
+        <item>эпиляция</item>
+        <item>визаж</item>
+        <item>массаж</item>
+        <item>косметология</item>
     </string-array>
 
     <string-array name="choice_cities">
-        <item><b>Выбрать город</b></item>
-        <item><b>Дубна</b></item>
-        <item><b>Кимры</b></item>
-        <item><b>Талдом</b></item>
+        <item>Выбрать город</item>
+        <item>Дубна</item>
+        <item>Кимры</item>
+        <item>Талдом</item>
     </string-array>
 
     <array name="tags_references">
@@ -42,156 +42,70 @@
     </array>
 
     <array name="nails">
-        <item>
-            <b>Маникюр</b>
-        </item>
-        <item>
-            <b>Педикюр</b>
-        </item>
-        <item>
-            <b>Покрытие</b>
-        </item>
+        <item>Маникюр</item>
+        <item>Педикюр</item>
+        <item>Покрытие</item>
     </array>
 
     <array name="eyebrows">
-        <item>
-            <b>Окрашивание</b>
-        </item>
-        <item>
-            <b>Долговременная укладка</b>
-        </item>
-        <item>
-            <b>Коррекция</b>
-        </item>
+        <item>Окрашивание</item>
+        <item>Долговременная укладка</item>
+        <item>Коррекция</item>
     </array>
 
     <array name="eyelashes">
-        <item>
-            <b>Окрашивание</b>
-        </item>
-        <item>
-            <b>Наращивание</b>
-        </item>
-        <item>
-            <b>Ламинирование</b>
-        </item>
-        <item>
-            <b>Ботекс</b>
-        </item>
+        <item>Окрашивание</item>
+        <item>Наращивание</item>
+        <item>Ламинирование</item>
+        <item>Ботекс</item>
     </array>
 
     <array name="hair">
-        <item>
-            <b>Кератиновое выпрямление</b>
-        </item>
-        <item>
-            <b>Ламинирование</b>
-        </item>
-        <item>
-            <b>Милирование и калорирование</b>
-        </item>
-        <item>
-            <b>Стрижка</b>
-        </item>
-        <item>
-            <b>Ботекс</b>
-        </item>
-        <item>
-            <b>Укладка</b>
-        </item>
-        <item>
-            <b>Причёски</b>
-        </item>
-        <item>
-            <b>Плетение</b>
-        </item>
-        <item>
-            <b>Наращивание</b>
-        </item>
-        <item>
-            <b>Лечение</b>
-        </item>
+        <item>Кератиновое выпрямление</item>
+        <item>Ламинирование</item>
+        <item>Милирование и калорирование</item>
+        <item>Стрижка</item>
+        <item>Ботекс</item>
+        <item>Укладка</item>
+        <item>Причёски</item>
+        <item>Плетение</item>
+        <item>Наращивание</item>
+        <item>Лечение</item>
     </array>
 
     <array name="epilation">
-        <item>
-            <b>Лазерная</b>
-        </item>
-        <item>
-            <b>Шугаринг</b>
-        </item>
-        <item>
-            <b>Восковая</b>
-        </item>
-        <item>
-            <b>Электроэпиляция</b>
-        </item>
-        <item>
-            <b>Фотоэпиляция</b>
-        </item>
-        <item>
-            <b>Элос</b>
-        </item>
+        <item>Лазерная</item>
+        <item>Шугаринг</item>
+        <item>Восковая</item>
+        <item>Электроэпиляция</item>
+        <item>Фотоэпиляция</item>
+        <item>Элос</item>
     </array>
 
     <array name="makeup">
-        <item>
-            <b>Вечерний</b>
-        </item>
-        <item>
-            <b>Свадебный</b>
-        </item>
-        <item>
-            <b>Гримм</b>
-        </item>
-        <item>
-            <b>Дневной</b>
-        </item>
+        <item>Вечерний</item>
+        <item>Свадебный</item>
+        <item>Гримм</item>
+        <item>Дневной</item>
     </array>
 
     <array name="massage">
-        <item>
-            <b>Лица</b>
-        </item>
-        <item>
-            <b>Медицинский</b>
-        </item>
-        <item>
-            <b>Тайский</b>
-        </item>
-        <item>
-            <b>Камнями</b>
-        </item>
-        <item>
-            <b>Антицелюлитный</b>
-        </item>
-        <item>
-            <b>Обёртывание</b>
-        </item>
+        <item>Лица</item>
+        <item>Медицинский</item>
+        <item>Тайский</item>
+        <item>Камнями</item>
+        <item>Антицелюлитный</item>
+        <item>Обёртывание</item>
     </array>
 
     <array name="cosmetology">
-        <item>
-            <b>Чистка лица</b>
-        </item>
-        <item>
-            <b>Контурная пластика</b>
-        </item>
-        <item>
-            <b>Мезотерапия</b>
-        </item>
-        <item>
-            <b>Лазерная шлифовка</b>
-        </item>
-        <item>
-            <b>Биоревитализация</b>
-        </item>
-        <item>
-            <b>Ботокс</b>
-        </item>
-        <item>
-            <b>Плазмоливтинг</b>
-        </item>
+        <item>Чистка лица</item>
+        <item>Контурная пластика</item>
+        <item>Мезотерапия</item>
+        <item>Лазерная шлифовка</item>
+        <item>Биоревитализация</item>
+        <item>Ботокс</item>
+        <item>Плазмоливтинг</item>
     </array>
 
 </resources>

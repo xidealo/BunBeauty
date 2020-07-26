@@ -23,10 +23,9 @@ class EditServiceServiceInteractor(
         editServicePresenterCallback.showEditService(cacheService)
     }
 
-    override fun save(
+    override fun update(
         service: Service,
         editServicePresenterCallback: EditServicePresenterCallback
-
     ) {
         this.editServicePresenterCallback = editServicePresenterCallback
         if (isNameCorrect(service.name, editServicePresenterCallback)) {
@@ -47,6 +46,7 @@ class EditServiceServiceInteractor(
     }
 
     override fun returnUpdatedCallback(obj: Service) {
+        editServicePresenterCallback.saveTags(obj)
         editServicePresenterCallback.goToService(cacheService)
     }
 

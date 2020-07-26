@@ -11,7 +11,6 @@ interface AddingServiceView: MvpView {
    /* fun goToMyCalendar(status: String, serviceId: String)*/
     fun showMessage(message: String)
     fun showMoreTenImages()
-    fun showCategory()
     fun updatePhotoFeed()
     fun showNameInputError(error:String)
     fun showDescriptionInputError(error:String)

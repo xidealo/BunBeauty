@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.airbnb.paris.extensions.style
@@ -13,20 +14,26 @@ import com.arellomobile.mvp.MvpAppCompatFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.SpinnerSelectable
 import kotlinx.android.synthetic.main.fragment_category.*
 
-class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner {
+class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelectable {
 
-    private val tagsArray: ArrayList<String> = ArrayList()
+    private val cacheSelectedTags: ArrayList<Tag> = ArrayList()
+    private val cacheUnselectedTags: ArrayList<Tag> = ArrayList()
 
-    fun getTags(): ArrayList<Tag> {
-        val tags: ArrayList<Tag> = ArrayList()
+    private var category: String = ""
 
-        for (tag in tagsArray)
-            tags.add(Tag(userId = User.getMyId(), tag = tag))
-
-        return tags
+    fun setCategoryFragment(category: String, tags: List<Tag>) {
+        cacheSelectedTags.addAll(tags)
+        this.category = category
+        categorySpinner.setText(category, false)
+        showTags((categorySpinner.adapter as ArrayAdapter<String>).getPosition(category))
     }
+
+    fun getCategory() = category
+    fun getSelectedTags() = cacheSelectedTags
+    fun getUnselectedTags() = cacheUnselectedTags
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,14 +53,14 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner {
             categorySpinner,
             context!!
         )
-
         setCategorySpinnerListener()
     }
 
     private fun setCategorySpinnerListener() {
         categorySpinner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
-                tagsArray.clear()
+                cacheSelectedTags.clear()
+                category = categorySpinner.text.toString()
                 tagsMaxLayout.removeAllViews()
                 if (position > 0)
                     showTags(position)
@@ -77,6 +84,12 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner {
             val tagText = view.findViewById<TextView>(R.id.tagFragmentTagText)
             tagText.text = tag
 
+            if (cacheSelectedTags.map { it.tag }.contains(tag)) {
+                setPickedTag(tagText)
+            } else {
+                cacheUnselectedTags.add(Tag(userId = User.getMyId(), tag = tag.toString()))
+            }
+
             tagText.setOnClickListener {
                 tagClick(tagText)
             }
@@ -87,12 +100,14 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner {
 
     private fun tagClick(tagText: TextView) {
         val text = tagText.text.toString()
-        if (tagsArray.contains(text)) {
+        if (cacheSelectedTags.map { it.tag }.contains(text)) {
             setUnpickedTag(tagText)
-            tagsArray.remove(text)
+            cacheSelectedTags.remove(cacheSelectedTags.find { it.tag == text })
+            cacheUnselectedTags.add(Tag(userId = User.getMyId(), tag = text))
         } else {
             setPickedTag(tagText)
-            tagsArray.add(text)
+            cacheSelectedTags.add(Tag(userId = User.getMyId(), tag = text))
+            cacheUnselectedTags.remove(cacheUnselectedTags.find { it.tag == text })
         }
     }
 
@@ -105,8 +120,4 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner {
         tagText.style(R.style.unselected)
         return tagText
     }
-
-    val category: String
-        get() = categorySpinner.text.toString()
-
 }

@@ -1,14 +1,11 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService
 
 import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Html
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -45,7 +42,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     override var panelContext: Activity = this
     private lateinit var photoAdapter: PhotoAdapter
 
-    private lateinit var categoryCreationServiceLayout: CategoryFragment
+    private lateinit var categoryFragment: CategoryFragment
 
     @InjectPresenter
     lateinit var creationServicePresenter: CreationServicePresenter
@@ -79,9 +76,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_creation_service)
         init()
-
-        initTopPanel("Создание услуги", ButtonTask.NONE)
-        showCategory()
         showMainBlock()
     }
 
@@ -105,9 +99,9 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
                 nameCreationServiceInput.text.toString(),
                 descriptionCreationServiceInput.text.toString(),
                 costCreationServiceInput.text.toString().toLongOrNull() ?: 0,
-                categoryCreationServiceLayout.category,
                 addressCreationServiceInput.text.toString(),
-                categoryCreationServiceLayout.getTags()
+                categoryFragment.getCategory(),
+                categoryFragment.getSelectedTags()
             )
         }
         photoCreationServiceBtn.setOnClickListener {
@@ -116,6 +110,10 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
         continueCreationServiceBtn.setOnClickListener {
             goToSchedule()
         }
+
+        initTopPanel("Создание услуги", ButtonTask.NONE)
+        categoryFragment =
+            supportFragmentManager.findFragmentById(R.id.categoryCreationServiceLayout) as CategoryFragment
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -164,11 +162,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
 
     override fun updatePhotoFeed() {
         photoAdapter.notifyDataSetChanged()
-    }
-
-    override fun showCategory() {
-        categoryCreationServiceLayout =
-            supportFragmentManager.findFragmentById(R.id.categoryCreationServiceLayout) as CategoryFragment
     }
 
     override fun hideMainBlock() {

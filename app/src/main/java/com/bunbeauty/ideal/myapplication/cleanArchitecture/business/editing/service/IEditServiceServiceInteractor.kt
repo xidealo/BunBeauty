@@ -8,7 +8,7 @@ interface IEditServiceServiceInteractor {
     fun getCacheService(): Service
 
     fun createEditServiceScreen(editServicePresenterCallback: EditServicePresenterCallback)
-    fun save(
+    fun update(
         service: Service,
         editServicePresenterCallback: EditServicePresenterCallback
     )

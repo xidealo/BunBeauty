@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/bottomControlPanelEditServiceLayout"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topPanel">
@@ -83,20 +83,24 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <fragment
+                android:id="@+id/categoryEditServiceLayout"
+                class="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/photoEditServiceBtn"
+                style="@style/smallButton"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/font_awesome_solid"
+                android:text=""
+                android:textSize="20sp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/photoEditServiceBtn"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/plus_photo_bg"
-                    android:gravity="center"
-                    android:text="+"
-                    android:textColor="@color/white"
-                    android:textSize="60sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/resultsEditServiceRecycleView"
@@ -106,27 +110,28 @@
                     android:scrollbars="none" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/bottomControlPanelEditServiceLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/bottomPanel">
+
+                <Button
+                    android:id="@+id/deleteEditServiceBtn"
+                    style="@style/smallButton"
+                    android:text="Удалить" />
+
+                <Button
+                    android:id="@+id/saveEditServiceBtn"
+                    style="@style/smallButton"
+                    android:text="Сохранить" />
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/bottomControlPanelEditServiceLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel">
-
-        <Button
-            android:id="@+id/saveEditServiceBtn"
-            style="@style/smallButton"
-            android:text="Сохранить" />
-
-        <Button
-            android:id="@+id/deleteEditServiceBtn"
-            style="@style/smallButton"
-            android:text="Удалить" />
-    </LinearLayout>
 
     <include layout="@layout/part_bottom_panel" />
 

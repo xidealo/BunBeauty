@@ -27,6 +27,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service.EditServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service.EditServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceUserInteractor
@@ -230,6 +231,11 @@ class InteractorModule(private val intent: Intent) {
             intent,
             serviceRepository
         )
+
+    @Provides
+    @Singleton
+    fun provideEditServiceTagInteractor(tagRepository: TagRepository) =
+        EditServiceTagInteractor(tagRepository)
 
     @Provides
     @Singleton

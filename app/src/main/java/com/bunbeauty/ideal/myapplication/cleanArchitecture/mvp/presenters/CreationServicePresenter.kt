@@ -25,8 +25,8 @@ class CreationServicePresenter(
         name: String,
         description: String,
         cost: Long,
-        category: String,
         address: String,
+        category: String,
         tags: ArrayList<Tag>
     ) {
         val service = Service()

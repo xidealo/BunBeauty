@@ -144,6 +144,7 @@
     </style>
 
     <style name="smallButton" parent="baseButton">
+        <item name="android:layout_width">175dp</item>
         <item name="android:layout_marginStart">2dp</item>
         <item name="android:layout_marginEnd">2dp</item>
         <item name="android:backgroundTint">@color/darkBlue</item>
