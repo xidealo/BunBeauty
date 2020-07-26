@@ -17,14 +17,16 @@ class EditServiceTagInteractor(private val tagRepository: ITagRepository) :
 
     override fun saveTags(service: Service) {
         for (cacheTag in cachedServiceTags) {
-            if (service.tags.map { it.tag }.contains(cacheTag.tag)) {
+            if (!service.tags.map { it.tag }.contains(cacheTag.tag)) {
                 tagRepository.delete(cacheTag, this)
             }
         }
 
         for (tag in service.tags) {
-            tag.serviceId = service.id
-            tagRepository.insert(tag, this)
+            if (!cachedServiceTags.map { it.tag }.contains(tag.tag)) {
+                tag.serviceId = service.id
+                tagRepository.insert(tag, this)
+            }
         }
     }
 
