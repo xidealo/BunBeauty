@@ -23,13 +23,22 @@ class ServicePresenter(
         serviceServiceInteractor.createServiceScreen(serviceUserInteractor.getUser(),this)
     }
 
+    fun updateService(service: Service) {
+        serviceServiceInteractor.updateService(service, this)
+    }
+
     fun iconClick() {
         serviceServiceInteractor.iconClick(serviceUserInteractor.getUser(), this)
     }
 
+    fun getPhotosLink() = servicePhotoInteractor.getPhotosLink()
+
     override fun showService(service: Service) {
         viewState.hideLoading()
         viewState.showService(service)
+    }
+
+    override fun getServicePhotos(service: Service) {
         servicePhotoInteractor.getServicePhotos(service, this)
     }
 
@@ -57,9 +66,6 @@ class ServicePresenter(
         viewState.goToProfile(user)
     }
 
-    fun updateService(service: Service) {
-        serviceServiceInteractor.updateService(service, this)
-    }
 
     /*
       fun getServicePhotos(serviceId: String, serviceOwnerId: String) {

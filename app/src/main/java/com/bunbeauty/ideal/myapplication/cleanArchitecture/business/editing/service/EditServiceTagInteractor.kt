@@ -5,7 +5,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.ITagRepository
-import kotlinx.coroutines.delay
 
 class EditServiceTagInteractor(private val tagRepository: ITagRepository) :
     IEditServiceTagInteractor, InsertTagCallback, DeleteTagCallback {

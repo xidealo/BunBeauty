@@ -7,27 +7,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.ChangeablePhotoElement
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.PhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 
-class PhotoAdapter(
+class ChangeablePhotoAdapter(
     private val photos: List<Photo>,
     private val iPhotoElement: IPhotoElement,
     private val width: Int,
     private val height: Int
-) :
-    RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
+) : RecyclerView.Adapter<ChangeablePhotoAdapter.ChangeablePhotoViewHolder>() {
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): PhotoViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ChangeablePhotoViewHolder {
         val context = viewGroup.context
-        val layoutIdForListItem = R.layout.element_photo
+        val layoutIdForListItem = R.layout.changeable_element_photo
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false)
 
-        return PhotoViewHolder(view)
+        return ChangeablePhotoViewHolder(view)
     }
 
-    override fun onBindViewHolder(serviceViewHolder: PhotoViewHolder, i: Int) {
+    override fun onBindViewHolder(serviceViewHolder: ChangeablePhotoViewHolder, i: Int) {
         serviceViewHolder.bind(photos[i])
     }
 
@@ -35,11 +33,11 @@ class PhotoAdapter(
         return photos.size
     }
 
-    inner class PhotoViewHolder(private val view: View) :
+    inner class ChangeablePhotoViewHolder(private val view: View) :
         RecyclerView.ViewHolder(view) {
 
         fun bind(photo: Photo) {
-            val photoElement = PhotoElement(
+            val photoElement = ChangeablePhotoElement(
                 iPhotoElement,
                 width,
                 height

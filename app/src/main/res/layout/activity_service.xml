@@ -40,40 +40,49 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/ratingServiceLayout"
-                    style="@style/block"
+                    android:id="@+id/ratingBlockServiceLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/block_text"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/withoutRatingServiceText"
                         style="@style/mainBlockText"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="Оценок еще нет" />
 
-                    <RatingBar
-                        android:id="@+id/ratingServiceRatingBar"
-                        style="@android:style/Widget.Holo.RatingBar.Small"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/ratingServiceLayout"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:theme="@style/ratingBarColors" />
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/ratingServiceText"
-                        style="@style/defaultText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                            android:id="@+id/ratingServiceRatingBar"
+                            style="@android:style/Widget.Holo.RatingBar.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:theme="@style/ratingBarColors" />
 
-                    <TextView
-                        android:id="@+id/countOfRatesServiceText"
-                        style="@style/defaultText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/ratingServiceText"
+                            style="@style/defaultText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="0" />
 
+                        <TextView
+                            android:id="@+id/countOfRatesServiceText"
+                            style="@style/defaultText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -132,17 +141,12 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <HorizontalScrollView
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/photosServiceRecycleView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2">
-
-                        <LinearLayout
-                            android:id="@+id/imagesServiceLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal" />
-                    </HorizontalScrollView>
+                        android:layout_weight="1"
+                        android:scrollbars="none" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

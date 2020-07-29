@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/foundServiceElementLayout"
-    style="@style/block"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="80dp"
+    android:layout_marginBottom="4dp"
     android:background="@drawable/block_text"
     android:orientation="horizontal"
-    android:padding="10dp">
+    android:padding="8dp">
 
     <LinearLayout
         android:layout_width="@dimen/photo_avatar_width"
@@ -43,13 +43,12 @@
             android:layout_height="wrap_content"
             android:text="Город" />
 
-        <RatingBar
+        <me.zhanghai.android.materialratingbar.MaterialRatingBar
             android:id="@+id/ratingBarFondServiceElement"
             style="@android:style/Widget.Holo.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:isIndicator="true"
+            android:layout_marginEnd="5dp"
             android:theme="@style/ratingBarColors" />
     </LinearLayout>
 
@@ -61,18 +60,16 @@
         <TextView
             android:id="@+id/userNameFoundServiceElementText"
             style="@style/defaultTextMainScreen"
-            android:layout_width="90dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
             android:gravity="center"
             android:text="Имя человека" />
 
         <TextView
             android:id="@+id/costFoundServiceElementText"
             style="@style/defaultTextMainScreen"
-            android:layout_width="90dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
             android:gravity="center"
             android:text="Цена" />
     </LinearLayout>

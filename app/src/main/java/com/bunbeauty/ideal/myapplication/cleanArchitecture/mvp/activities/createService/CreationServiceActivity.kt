@@ -11,7 +11,7 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.PhotoAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ChangeablePhotoAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
@@ -40,7 +40,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     IBottomPanel, ITopPanel, IPhotoElement {
 
     override var panelContext: Activity = this
-    private lateinit var photoAdapter: PhotoAdapter
+    private lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter
 
     private lateinit var categoryFragment: CategoryFragment
 
@@ -87,12 +87,12 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     private fun init() {
         resultsCreationServiceRecycleView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        photoAdapter = PhotoAdapter(
+        changeablePhotoAdapter = ChangeablePhotoAdapter(
             creationServicePresenter.getPhotosLink(), this,
             resources.getDimensionPixelSize(R.dimen.photo_width),
             resources.getDimensionPixelSize(R.dimen.photo_height)
         )
-        resultsCreationServiceRecycleView.adapter = photoAdapter
+        resultsCreationServiceRecycleView.adapter = changeablePhotoAdapter
 
         addServiceCreationServiceBtn.setOnClickListener {
             creationServicePresenter.addService(
@@ -161,7 +161,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     }
 
     override fun updatePhotoFeed() {
-        photoAdapter.notifyDataSetChanged()
+        changeablePhotoAdapter.notifyDataSetChanged()
     }
 
     override fun hideMainBlock() {

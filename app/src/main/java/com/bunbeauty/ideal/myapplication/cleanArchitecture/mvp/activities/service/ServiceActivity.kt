@@ -4,13 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ChangeablePhotoAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.PhotoAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceUserInteractor
@@ -29,15 +31,15 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.Servic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.google.android.material.button.MaterialButton
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_service.*
 import javax.inject.Inject
 
-class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView,
-    ITopPanel, IBottomPanel, IProfileAvailable {
+class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView, ITopPanel,
+    IBottomPanel, IProfileAvailable, IPhotoElement {
 
     private lateinit var premiumFragment: PremiumFragment
     override var panelContext: Activity = this
+    private lateinit var photoAdapter: PhotoAdapter
 
     @Inject
     lateinit var serviceServiceInteractor: ServiceServiceInteractor
@@ -87,12 +89,23 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         premiumFragment =
             supportFragmentManager.findFragmentById(R.id.premiumBlockService) as PremiumFragment
         findViewById<MaterialButton>(R.id.scheduleServiceBtn).setOnClickListener(this)
+
+        photosServiceRecycleView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        photoAdapter = PhotoAdapter(
+            servicePresenter.getPhotosLink(), this,
+            resources.getDimensionPixelSize(R.dimen.photo_width),
+            resources.getDimensionPixelSize(R.dimen.photo_height)
+        )
+        photosServiceRecycleView.adapter = photoAdapter
     }
 
     override fun showService(service: Service) {
         costServiceText.setText(service.cost.toString())
         addressServiceText.setText(service.address)
         descriptionServiceText.setText(service.description)
+        showRating(service.rating, service.countOfRates)
     }
 
     override fun showLoading() {
@@ -107,8 +120,8 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         scheduleServiceBtn.visibility = View.VISIBLE
     }
 
-    private fun showRating(rating: Float, countOfRates: Long) {
-        if (rating > 0) {
+    override fun showRating(rating: Float, countOfRates: Long) {
+        if (countOfRates > 0) {
             showRatingBar(rating)
             countOfRatesServiceText.text = countOfRates.toString()
         } else {
@@ -118,13 +131,13 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     private fun showWithoutRating() {
         withoutRatingServiceText.visibility = View.VISIBLE
-        ratingServiceRatingBar.visibility = View.GONE
+        ratingServiceLayout.visibility = View.GONE
     }
 
     private fun showRatingBar(rating: Float) {
         ratingServiceRatingBar.visibility = View.VISIBLE
         ratingServiceRatingBar.rating = rating
-        ratingServiceLayout.setOnClickListener(this)
+        ratingBlockServiceLayout.setOnClickListener(this)
     }
 
     override fun showPremium(service: Service) {
@@ -144,24 +157,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     override fun showPhotos(photos: List<Photo>) {
-        val width = resources.getDimensionPixelSize(R.dimen.photo_width)
-        val height = resources.getDimensionPixelSize(R.dimen.photo_height)
-
-        for (photo in photos) {
-            val serviceImage = ImageView(applicationContext)
-            val params = LinearLayout.LayoutParams(width, height)
-
-            params.setMargins(15, 15, 15, 15)
-            serviceImage.layoutParams = params
-            serviceImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            imagesServiceLayout.addView(serviceImage)
-
-            Picasso.get()
-                .load(photo.link)
-                .resize(width, height)
-                .centerCrop()
-                .into(serviceImage)
-        }
+        photoAdapter.notifyDataSetChanged()
     }
 
     override fun onClick(v: View) {
@@ -170,7 +166,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
             }
 
-            R.id.ratingServiceLayout -> goToComments()
+            R.id.ratingBlockServiceLayout -> goToComments()
         }
     }
 
@@ -228,6 +224,14 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     companion object {
         private const val REQUEST_EDIT_SERVICE = 1
+    }
+
+    override fun deletePhoto(photo: Photo) {
+
+    }
+
+    override fun openPhoto() {
+
     }
 
 }

@@ -8,10 +8,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoRepository
 
 class ServicePhotoInteractor(private val photoRepository: PhotoRepository) :
-    IServicePhotoInteractor,
-    PhotosCallback {
+    IServicePhotoInteractor, PhotosCallback {
 
     private lateinit var servicePresenterCallback: ServicePresenterCallback
+    private var photos = arrayListOf<Photo>()
+
+    override fun getPhotosLink() = photos
 
     override fun getServicePhotos(
         service: Service,
@@ -22,6 +24,7 @@ class ServicePhotoInteractor(private val photoRepository: PhotoRepository) :
     }
 
     override fun returnList(objects: List<Photo>) {
+        photos.addAll(objects)
         servicePresenterCallback.showPhotos(objects)
     }
 }

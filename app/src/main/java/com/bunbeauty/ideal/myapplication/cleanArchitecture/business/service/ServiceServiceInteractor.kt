@@ -28,6 +28,7 @@ class ServiceServiceInteractor(
         }
 
         servicePresenterCallback.showService(service)
+        servicePresenterCallback.getServicePhotos(service)
     }
 
     override fun iconClick(user: User, servicePresenterCallback: ServicePresenterCallback) {

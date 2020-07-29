@@ -12,7 +12,7 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.PhotoAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ChangeablePhotoAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
@@ -31,7 +31,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.EditServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.EditServiceView
 import com.theartofdev.edmodo.cropper.CropImage
-import kotlinx.android.synthetic.main.activity_creation_service.*
 import kotlinx.android.synthetic.main.activity_edit_service.*
 import javax.inject.Inject
 
@@ -39,7 +38,7 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     EditServiceView, IPhotoElement {
 
     override var panelContext: Activity = this
-    private lateinit var photoAdapter: PhotoAdapter
+    private lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter
     private lateinit var categoryFragment: CategoryFragment
 
     @Inject
@@ -100,13 +99,13 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
 
         resultsEditServiceRecycleView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        photoAdapter = PhotoAdapter(
+        changeablePhotoAdapter = ChangeablePhotoAdapter(
             editServicePresenter.getPhotosLink(),
             this,
             resources.getDimensionPixelSize(R.dimen.photo_width),
             resources.getDimensionPixelSize(R.dimen.photo_height)
         )
-        resultsEditServiceRecycleView.adapter = photoAdapter
+        resultsEditServiceRecycleView.adapter = changeablePhotoAdapter
 
         categoryFragment =
             supportFragmentManager.findFragmentById(R.id.categoryEditServiceLayout) as CategoryFragment
@@ -140,7 +139,7 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     }
 
     override fun updatePhotoFeed() {
-        photoAdapter.notifyDataSetChanged()
+        changeablePhotoAdapter.notifyDataSetChanged()
     }
 
     override fun showLoading() {

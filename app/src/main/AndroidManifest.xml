@@ -35,7 +35,6 @@
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -46,7 +45,9 @@
         <activity
             android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity" />
+        <activity
+            android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name="com.bunbeauty.ideal.myapplication.createService.MyTime" />
         <activity android:name="com.bunbeauty.ideal.myapplication.createService.MyCalendar" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity" />

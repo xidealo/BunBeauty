@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi
@@ -50,22 +51,13 @@ class FoundServiceElement(
 
         if (isPremium) {
             setPremiumBackground()
-
-            val sl = ColorStateList.valueOf(Color.parseColor("#0093B7"))
-            ratingBar.progressTintList = sl
+            ratingBar.progressTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
         } else {
             setDefaultBackground()
-            val sl = ColorStateList.valueOf(Color.parseColor("#f6db40"))
-            ratingBar.progressTintList = sl
+            ratingBar.progressTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
         }
 
         avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage)
-
-        val params = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        params.setMargins(10, 10, 10, 10)
-        layout.layoutParams = params
 
         layout.setOnClickListener(this)
         setData()

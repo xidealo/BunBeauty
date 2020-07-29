@@ -14,6 +14,7 @@ interface ServiceView: MvpView {
     fun createAlienServiceTopPanel(user: User, service: Service)
     fun showLoading()
     fun hideLoading()
+    fun showRating(rating: Float, countOfRates: Long)
     fun goToEditService(service: Service)
     fun goToProfile(user: User)
     fun showMessage(message: String)

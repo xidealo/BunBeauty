@@ -7,18 +7,24 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.squareup.picasso.Picasso
 
-class PhotoElement(
+class ChangeablePhotoElement(
     private val iPhotoElement: IPhotoElement,
     private val width: Int,
     private val height: Int
 ) {
     private lateinit var photoPhotoElementImage: ImageView
+    private lateinit var deletePhotoElementText: TextView
     private lateinit var currentPhoto: Photo
 
     fun createPhoto(photo: Photo, view: View) {
-        photoPhotoElementImage = view.findViewById(R.id.photoPhotoElementImage)
+        photoPhotoElementImage = view.findViewById(R.id.photoChangeablePhotoElementImage)
         photoPhotoElementImage.setOnClickListener {
             iPhotoElement.openPhoto()
+        }
+
+        deletePhotoElementText = view.findViewById(R.id.deleteChangeablePhotoElementText)
+        deletePhotoElementText.setOnClickListener {
+            iPhotoElement.deletePhoto(photo)
         }
 
         currentPhoto = photo
