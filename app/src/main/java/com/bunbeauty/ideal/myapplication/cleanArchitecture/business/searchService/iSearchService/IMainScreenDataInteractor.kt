@@ -5,6 +5,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.google.android.material.chip.Chip
 
 interface IMainScreenDataInteractor {
     fun createMainScreenData(
@@ -17,7 +18,7 @@ interface IMainScreenDataInteractor {
     fun showCurrentMainScreen(mainScreenPresenterCallback: MainScreenPresenterCallback)
 
     fun getMainScreenData(
-        tagText: TextView,
+        tagText: Chip,
         selectedTagsArray: ArrayList<String>,
         mainScreenPresenterCallback: MainScreenPresenterCallback
     )

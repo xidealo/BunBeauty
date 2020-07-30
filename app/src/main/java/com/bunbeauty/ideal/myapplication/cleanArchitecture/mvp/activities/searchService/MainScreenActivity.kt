@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService
 
 import android.app.Activity
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.paris.extensions.style
 import com.android.ideal.myapplication.R
@@ -31,6 +33,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.activity_main_screen.*
 import kotlinx.android.synthetic.main.fragment_category.*
@@ -79,11 +82,9 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         setContentView(R.layout.activity_main_screen)
 
         init()
-        hideSearchPanel()
         hideTags()
 
         initTopPanel("BunBeauty", ButtonTask.SEARCH)
-        createSearchPanel()
 
         createMainScreen()
         setSupportActionBar(topPanel)
@@ -115,7 +116,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         serviceAdapter = ServiceAdapter(mainScreenPresenter.getMainScreenDataLink())
         resultsMainScreenRecycleView.adapter = serviceAdapter
 
-        searchPanelMainScreenSearchView.setOnQueryTextListener(object : MaterialSearchView.OnQueryTextListener {
+        searchPanelMainScreenSearchView.setOnQueryTextListener(object :
+            MaterialSearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 mainScreenPresenter.getMainScreenDataByName(query)
                 return false
@@ -128,7 +130,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             }
         })
 
-        searchPanelMainScreenSearchView.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
+        searchPanelMainScreenSearchView.setOnSearchViewListener(object :
+            MaterialSearchView.SearchViewListener {
             override fun onSearchViewShown() {
                 //Do some magic
                 val k = 21
@@ -165,7 +168,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                     enableCategoryButton(v)
                 }
             } else {
-                mainScreenPresenter.createMainScreenWithTag(v as TextView)
+                mainScreenPresenter.createMainScreenWithTag(v as Chip)
             }
         }
     }
@@ -174,18 +177,8 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         mainScreenPresenter.createMainScreen()
     }
 
-    override fun createSearchPanel() {
-
-    }
-
     override fun actionClick() {
-        showSearchPanel()
-    }
 
-    override fun showSearchPanel() {
-    }
-
-    override fun hideSearchPanel() {
     }
 
     override fun disableCategoryBtn(button: Button) {
@@ -198,14 +191,16 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         button.style(R.style.selected_button)
     }
 
-    override fun enableTag(tagText: TextView) {
-        tagText.setBackgroundResource(R.drawable.category_button_pressed)
-        tagText.setTextColor(Color.BLACK)
+    override fun enableTag(tagText: Chip) {
+        tagText.chipBackgroundColor =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yellow))
+        tagText.setTextColor(ContextCompat.getColor(this, R.color.black))
     }
 
-    override fun disableTag(tagText: TextView) {
-        tagText.setBackgroundResource(R.drawable.block_text)
-        tagText.setTextColor(Color.GRAY)
+    override fun disableTag(tagText: Chip) {
+        tagText.chipBackgroundColor =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.mainBlue))
+        tagText.setTextColor(ContextCompat.getColor(this, R.color.white))
     }
 
     override fun showLoading() {
@@ -238,14 +233,12 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         noResultMainScreenText.visibility = View.VISIBLE
     }
 
-
     override fun createCategoryFeed(categories: MutableSet<String>) {
         for (i in categories.indices) {
             categoriesBtns.add(MaterialButton(this))
             categoriesBtns[i].setOnClickListener(this)
             categoriesBtns[i].text = categories.toTypedArray()[i]
-            categoriesBtns[i].textSize = 14f
-            categoriesBtns[i].setBackgroundResource(R.drawable.category_button)
+            categoriesBtns[i].style(R.style.unselected_button)
             categoriesBtns[i].setTextColor(Color.WHITE)
             val params = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -280,16 +273,15 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
 
-            val tagText = view.findViewById<TextView>(R.id.tagFragmentTagText)
+            val tagText = view.findViewById<Chip>(R.id.tagFragmentTagText)
             tagText.text = tag
             tagText.setOnClickListener(this)
 
             if (selectedTagsArray.contains(tag.toString())) {
-                view.style(R.style.selected)
+                view.style(R.style.choiceChip)
             }
 
             tagsInnerMainScreenLayout.addView(view)
-
         }
     }
 }

@@ -65,14 +65,6 @@ class ProfilePresenter(
         profileSubscriberInteractor.checkSubscribed(User.getMyId(), user, this)
     }
 
-    fun updateUserFromEditService(user: User) {
-        profileUserInteractor.updateUser(user, this)
-    }
-
-    fun checkIconClick() {
-        profileUserInteractor.checkIconClick(this)
-    }
-
     fun getCacheOwner() = profileUserInteractor.getCacheOwner()
 
     fun getCacheUser() = profileUserInteractor.getCacheUser()
@@ -106,10 +98,6 @@ class ProfilePresenter(
             subscriber,
             this
         )
-    }
-
-    override fun updateUser(user: User) {
-        TODO("Not yet implemented")
     }
 
     override fun addSubscription(subscriber: Subscriber) {

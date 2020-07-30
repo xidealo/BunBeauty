@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.airbnb.paris.extensions.style
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
@@ -15,6 +17,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.SpinnerSelectable
+import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_category.*
 
 class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelectable {
@@ -81,7 +84,7 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
 
-            val tagText = view.findViewById<TextView>(R.id.tagFragmentTagText)
+            val tagText = view.findViewById<Chip>(R.id.tagFragmentTagText)
             tagText.text = tag
 
             if (cacheSelectedTags.map { it.tag }.contains(tag)) {
@@ -98,7 +101,7 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
         }
     }
 
-    private fun tagClick(tagText: TextView) {
+    private fun tagClick(tagText: Chip) {
         val text = tagText.text.toString()
         if (cacheSelectedTags.map { it.tag }.contains(text)) {
             setUnpickedTag(tagText)
@@ -111,13 +114,15 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
         }
     }
 
-    private fun setPickedTag(tagText: TextView): TextView {
-        tagText.style(R.style.selected)
-        return tagText
+    private fun setPickedTag(tagText: Chip) {
+        tagText.chipBackgroundColor =
+            ColorStateList.valueOf(ContextCompat.getColor(context!!, R.color.yellow))
+        tagText.setTextColor(ContextCompat.getColor(context!!, R.color.black))
     }
 
-    private fun setUnpickedTag(tagText: TextView): TextView {
-        tagText.style(R.style.unselected)
-        return tagText
+    private fun setUnpickedTag(tagText: Chip) {
+        tagText.chipBackgroundColor =
+            ColorStateList.valueOf(ContextCompat.getColor(context!!, R.color.mainBlue))
+        tagText.setTextColor(ContextCompat.getColor(context!!, R.color.white))
     }
 }

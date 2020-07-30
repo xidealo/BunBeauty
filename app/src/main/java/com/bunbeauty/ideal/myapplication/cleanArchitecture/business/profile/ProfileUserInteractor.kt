@@ -23,13 +23,6 @@ class ProfileUserInteractor(
     override fun getCacheOwner(): User = cacheOwner!!
 
     override fun getCacheUser(): User = cacheUser
-    override fun getCountOfRates(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun updateUser(user: User, profilePresenterCallback: ProfilePresenterCallback) {
-        TODO("Not yet implemented")
-    }
 
     override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
         this.profilePresenterCallback = profilePresenterCallback

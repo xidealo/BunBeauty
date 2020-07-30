@@ -396,31 +396,28 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <!-- SELECTED AND UNSELECTED STYLE -->
-    <style name="selected">
-        <item name="android:background">@drawable/selected_item</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:padding">8dp</item>
-        <item name="android:textSize">16sp</item>
+    <!-- CHIP -->
+    <style name="choiceChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textColor">@color/white</item>
+        <item name="chipBackgroundColor">@color/mainBlue</item>
+        <item name="rippleColor">@color/darkBlue40</item>
+        <item name="android:layout_marginEnd">2dp</item>
     </style>
 
-    <style name="unselected">
-        <item name="android:background">@drawable/unselected_item</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:padding">8dp</item>
-        <item name="android:textSize">16sp</item>
-    </style>
+    <!-- SELECTED AND UNSELECTED STYLE -->
 
     <style name="selected_button">
-        <item name="android:background">@drawable/selected_item</item>
+        <item name="backgroundColor">@color/yellow</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:backgroundTint">@color/yellow</item>
+        <item name="android:textSize">10sp</item>
     </style>
 
     <style name="unselected_button">
         <item name="android:background">@drawable/unselected_item</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:backgroundTint">@color/mainBlue</item>
+        <item name="android:textSize">10sp</item>
     </style>
 
     <!-- Стиль свичера -->

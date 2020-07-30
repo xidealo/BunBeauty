@@ -19,15 +19,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scrollbars="none"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tagsMainScreenLayout"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topPanel">
 
         <LinearLayout
             android:id="@+id/categoryMainScreenLayout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"/>
+            android:orientation="horizontal" />
     </HorizontalScrollView>
 
     <LinearLayout
@@ -35,8 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll"
-        app:layout_constraintBottom_toTopOf="@+id/resultsMainScreenRecycleView">
+        app:layout_constraintBottom_toTopOf="@+id/resultsMainScreenRecycleView"
+        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll">
 
         <HorizontalScrollView
             android:layout_width="match_parent"

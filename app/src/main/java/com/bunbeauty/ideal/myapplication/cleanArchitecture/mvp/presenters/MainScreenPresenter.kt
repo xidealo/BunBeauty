@@ -13,6 +13,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.MainScreenView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
 
 @InjectViewState
 class MainScreenPresenter(
@@ -40,7 +41,7 @@ class MainScreenPresenter(
         mainScreenDataInteractor.getMainScreenData(category, this)
     }
 
-    fun createMainScreenWithTag(tagText: TextView) {
+    fun createMainScreenWithTag(tagText: Chip) {
         mainScreenDataInteractor.getMainScreenData(
             tagText, mainScreenDataInteractor.selectedTagsArray, this
         )
@@ -59,20 +60,12 @@ class MainScreenPresenter(
         )
     }
 
-    override fun enableTag(tagText: TextView) {
+    override fun enableTag(tagText: Chip) {
         viewState.enableTag(tagText)
     }
 
-    override fun disableTag(tagText: TextView) {
+    override fun disableTag(tagText: Chip) {
         viewState.disableTag(tagText)
-    }
-
-    fun createMainScreenWithSearchUserName(city: String, userName: String) {
-        mainScreenUserInteractor.getMainScreenDataByUserName(city, userName, this)
-    }
-
-    fun createMainScreenWithSearchServiceName(city: String, serviceName: String) {
-        mainScreenUserInteractor.getMainScreenDataByServiceName(city, serviceName, this)
     }
 
     override fun showMainScreenData(mainScreenData: ArrayList<MainScreenData>) {

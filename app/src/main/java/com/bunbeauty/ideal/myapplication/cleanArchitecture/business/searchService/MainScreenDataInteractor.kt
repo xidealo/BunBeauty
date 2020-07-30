@@ -9,6 +9,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.google.android.material.chip.Chip
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -57,13 +58,11 @@ class MainScreenDataInteractor(
     }
 
     override fun getMainScreenData(
-        tagText: TextView,
+        tagText: Chip,
         selectedTagsArray: ArrayList<String>,
         mainScreenPresenterCallback: MainScreenPresenterCallback
     ) {
         this.mainScreenPresenterCallback = mainScreenPresenterCallback
-        val txt = tagText.text.toString()
-
         if (selectedTagsArray.contains(tagText.text.toString())) {
             //disable
             mainScreenPresenterCallback.disableTag(tagText)
