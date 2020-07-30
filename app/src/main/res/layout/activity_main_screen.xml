@@ -5,80 +5,124 @@
     style="@style/allPages"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity">
 
-    <include layout="@layout/part_top_panel" />
-
-    <com.miguelcatalan.materialsearchview.MaterialSearchView
-        android:id="@+id/searchPanelMainScreenSearchView"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/topPanelMainScreenLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/topPanelLayout" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.DialogsActivity">
 
-    <!-- Категории -->
-    <HorizontalScrollView
-        android:id="@+id/categoryMainScreenScroll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/tagsMainScreenLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topPanel">
-
-        <LinearLayout
-            android:id="@+id/categoryMainScreenLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal" />
-    </HorizontalScrollView>
-
-    <LinearLayout
-        android:id="@+id/tagsMainScreenLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/resultsMainScreenRecycleView"
-        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll">
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:fadingEdge="vertical"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/tagsInnerMainScreenLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal" />
-
-        </HorizontalScrollView>
-
-        <LinearLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="@color/white">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/minimizeTagsMainScreenBtn"
-                style="@style/lightBlueButton"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/font_awesome_solid"
-                android:gravity="center"
-                android:text="" />
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/clearTagsMainScreenBtn"
-                style="@style/lightBlueButton"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/font_awesome_solid"
-                android:gravity="center"
-                android:text="" />
-        </LinearLayout>
-    </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <include layout="@layout/part_top_panel" />
+
+                        <com.miguelcatalan.materialsearchview.MaterialSearchView
+                            android:id="@+id/searchPanelMainScreenSearchView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toTopOf="@+id/topPanelLayout" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- Категории -->
+                    <HorizontalScrollView
+                        android:id="@+id/categoryMainScreenScroll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none"
+                        app:layout_constraintBottom_toTopOf="@+id/tagsMainScreenLayout"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/topPanel">
+
+                        <LinearLayout
+                            android:id="@+id/categoryMainScreenLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal" />
+                    </HorizontalScrollView>
+
+                    <LinearLayout
+                        android:id="@+id/tagsMainScreenLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toTopOf="@+id/resultsMainScreenRecycleView"
+                        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll">
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:fadingEdge="vertical"
+                            android:scrollbars="none">
+
+                            <LinearLayout
+                                android:id="@+id/tagsInnerMainScreenLayout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="horizontal" />
+
+                        </HorizontalScrollView>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/minimizeTagsMainScreenBtn"
+                                style="@style/lightBlueButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/font_awesome_solid"
+                                android:gravity="center"
+                                android:text="" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/clearTagsMainScreenBtn"
+                                style="@style/lightBlueButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/font_awesome_solid"
+                                android:gravity="center"
+                                android:text="" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/resultsMainScreenRecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/topPanelMainScreenLayout" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <ProgressBar
         android:id="@+id/progressBarMainScreen"
@@ -90,16 +134,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/resultsMainScreenRecycleView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tagsMainScreenLayout" />
 
     <TextView
         android:id="@+id/noResultMainScreenText"
