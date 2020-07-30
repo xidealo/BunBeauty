@@ -234,11 +234,16 @@ class MainScreenDataInteractor(
         return false
     }
 
-    fun getMainScreenDataByName(newText: String?,mainScreenPresenterCallback: MainScreenPresenterCallback ) {
-        if(newText != null){
+    fun getMainScreenDataByName(
+        newText: String?,
+        mainScreenPresenterCallback: MainScreenPresenterCallback
+    ) {
+        if (newText != null) {
             this.mainScreenPresenterCallback = mainScreenPresenterCallback
             cacheMainScreenData.clear()
-            cacheMainScreenData.addAll(constCacheMainScreenData.filter { it.service.name.contains(newText)})
+            cacheMainScreenData.addAll(constCacheMainScreenData.filter {
+                it.service.name.toLowerCase(Locale.ROOT).contains(newText)
+            })
             mainScreenPresenterCallback.returnMainScreenData(constCacheMainScreenData)
         }
     }

@@ -117,7 +117,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
         searchPanelMainScreenSearchView.setOnQueryTextListener(object : MaterialSearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                //Do some magic
+                mainScreenPresenter.getMainScreenDataByName(query)
                 return false
             }
 
@@ -135,8 +135,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             }
 
             override fun onSearchViewClosed() {
-                //Do some magic
-                val k = 21
+
             }
         })
 
@@ -190,14 +189,18 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     override fun disableCategoryBtn(button: Button) {
-        button.setBackgroundResource(R.drawable.category_button)
         button.setTextColor(Color.WHITE)
+        button.style(R.style.unselected_button)
+    }
+
+    override fun enableCategoryButton(button: Button) {
+        button.setTextColor(Color.BLACK)
+        button.style(R.style.selected_button)
     }
 
     override fun enableTag(tagText: TextView) {
         tagText.setBackgroundResource(R.drawable.category_button_pressed)
         tagText.setTextColor(Color.BLACK)
-        val txt = tagText.text.toString()
     }
 
     override fun disableTag(tagText: TextView) {
@@ -219,14 +222,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         serviceAdapter.notifyDataSetChanged()
     }
 
-    override fun showMainScreenByUserName(city: String, name: String) {
-        mainScreenPresenter.createMainScreenWithSearchUserName(city, name)
-    }
-
-    override fun showMainScreenByServiceName(city: String, serviceName: String) {
-        mainScreenPresenter.createMainScreenWithSearchServiceName(city, serviceName)
-    }
-
     override fun hideTags() {
         tagsMainScreenLayout.visibility = View.GONE
     }
@@ -243,10 +238,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         noResultMainScreenText.visibility = View.VISIBLE
     }
 
-    override fun enableCategoryButton(button: Button) {
-        button.setBackgroundResource(R.drawable.category_button_pressed)
-        button.setTextColor(Color.BLACK)
-    }
 
     override fun createCategoryFeed(categories: MutableSet<String>) {
         for (i in categories.indices) {

@@ -11,7 +11,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.create
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.SearchServiceFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneNumberActivity
@@ -40,7 +39,6 @@ interface AppComponent {
     fun inject(premiumFragment: PremiumFragment)
     fun inject(mainScreenActivity: MainScreenActivity)
     fun inject(serviceActivity: ServiceActivity)
-    fun inject(searchServiceFragment: SearchServiceFragment)
     fun inject(editProfileActivity: EditProfileActivity)
     fun inject(scheduleActivity: ScheduleActivity)
     fun inject(dialogsActivity: DialogsActivity)
