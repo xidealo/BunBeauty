@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.airbnb.paris.extensions.style
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
@@ -18,7 +16,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.SpinnerSelectable
 import com.google.android.material.chip.Chip
-import kotlinx.android.synthetic.main.fragment_category.*
+import kotlinx.android.synthetic.main.fragment_category_block.*
 
 class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelectable {
 
@@ -43,14 +41,14 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_category, null)
+        return inflater.inflate(R.layout.fragment_category_block, null)
     }
 
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?
     ) {
-        val categories = arrayListOf(*resources.getStringArray(R.array.choice_categories))
+        val categories = arrayListOf(*resources.getStringArray(R.array.categories))
         setAdapter(
             categories,
             categorySpinner,
@@ -84,7 +82,7 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
 
-            val tagText = view.findViewById<Chip>(R.id.tagFragmentTagText)
+            val tagText = view.findViewById<Chip>(R.id.tagFragmentTagChip)
             tagText.text = tag
 
             if (cacheSelectedTags.map { it.tag }.contains(tag)) {

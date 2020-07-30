@@ -65,6 +65,10 @@ class ProfilePresenter(
         profileSubscriberInteractor.checkSubscribed(User.getMyId(), user, this)
     }
 
+    fun updateUser(user: User) {
+        profileUserInteractor.updateUserFromEditUser(user, this)
+    }
+
     fun getCacheOwner() = profileUserInteractor.getCacheOwner()
 
     fun getCacheUser() = profileUserInteractor.getCacheUser()

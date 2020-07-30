@@ -121,11 +121,12 @@ class CreationServiceServiceServiceInteractor(
 
     override fun getIsCostLengthLessTen(cost: String): Boolean = cost.length < 10
 
-    override fun getIsCategoryInputCorrect(city: String): Boolean {
+    override fun getIsCategoryInputCorrect(category: String): Boolean {
 
-        if (city == "Выбрать категорию") {
+        if (category == "Выбрать категорию" || category.isEmpty()) {
             return false
         }
+
         return true
     }
 

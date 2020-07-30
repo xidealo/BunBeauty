@@ -10,7 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.paris.extensions.style
@@ -36,7 +35,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.activity_main_screen.*
-import kotlinx.android.synthetic.main.fragment_category.*
+import kotlinx.android.synthetic.main.fragment_category_block.*
 import kotlinx.android.synthetic.main.part_top_panel.*
 import javax.inject.Inject
 
@@ -273,7 +272,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
 
-            val tagText = view.findViewById<Chip>(R.id.tagFragmentTagText)
+            val tagText = view.findViewById<Chip>(R.id.tagFragmentTagChip)
             tagText.text = tag
             tagText.setOnClickListener(this)
 

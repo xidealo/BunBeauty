@@ -11,18 +11,6 @@
         <item>косметология</item>
     </string-array>
 
-    <string-array name="choice_categories">
-        <item>Выбрать категорию</item>
-        <item>ногти</item>
-        <item>брови</item>
-        <item>ресницы</item>
-        <item>волосы</item>
-        <item>эпиляция</item>
-        <item>визаж</item>
-        <item>массаж</item>
-        <item>косметология</item>
-    </string-array>
-
     <string-array name="choice_cities">
         <item>Выбрать город</item>
         <item>Дубна</item>

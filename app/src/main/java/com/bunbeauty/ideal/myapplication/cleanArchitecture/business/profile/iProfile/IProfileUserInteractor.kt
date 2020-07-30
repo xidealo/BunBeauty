@@ -11,7 +11,7 @@ interface IProfileUserInteractor {
     fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback)
     fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback)
     fun updateBottomPanel(profilePresenterCallback: ProfilePresenterCallback)
-    fun updateUserFromEditService(user: User, profilePresenterCallback: ProfilePresenterCallback)
+    fun updateUserFromEditUser(user: User, profilePresenterCallback: ProfilePresenterCallback)
     fun updateCountOfSubscribers(
         user: User,
         subscriber: Int,

@@ -67,7 +67,7 @@ class ProfileUserInteractor(
 
     override fun isMyProfile(ownerId: String, myId: String) = ownerId == myId
 
-    override fun updateUserFromEditService(user: User, profilePresenterCallback: ProfilePresenterCallback) {
+    override fun updateUserFromEditUser(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         cacheOwner = user
         cacheUser = user
 
