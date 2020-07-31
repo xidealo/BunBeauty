@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.davemorrissey.labs.subscaleview.ImageSource
@@ -20,6 +21,7 @@ class PhotoDialogActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photo_dialog)
         photosList = intent.getParcelableArrayListExtra(Photo.PHOTO) ?: ArrayList()
+        val openedPhotoLinkOrUri = intent.getStringExtra(Photo.LINK) ?: ""
 
         val target = object : Target {
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
@@ -33,13 +35,28 @@ class PhotoDialogActivity : AppCompatActivity() {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
                 if (bitmap != null)
                     photoPhotoDialogImage.setImage(ImageSource.bitmap(bitmap))
+
+                loadingPhotoDialogProgressBar.visibility = View.GONE
             }
 
         }
+        showPhoto(photosList, openedPhotoLinkOrUri, target)
+    }
 
-        if (photosList.isNotEmpty())
-            Picasso.get()
-                .load(photosList.first().uri)
-                .into(target)
+    fun showPhoto(photos: ArrayList<Photo>, openedPhotoLinkOrUri: String, target: Target) {
+        if (photos.isNotEmpty()) {
+            val openedLinkPhoto = photos.find { it.link == openedPhotoLinkOrUri }
+            if (openedLinkPhoto == null) {
+                val openedUriPhoto = photos.find { it.uri == openedPhotoLinkOrUri }
+                if (openedUriPhoto != null)
+                    Picasso.get()
+                        .load(openedUriPhoto.uri)
+                        .into(target)
+            } else {
+                Picasso.get()
+                    .load(openedLinkPhoto.link)
+                    .into(target)
+            }
+        }
     }
 }

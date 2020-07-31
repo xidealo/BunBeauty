@@ -7,16 +7,9 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
         app:layout_constraintTop_toTopOf="parent">
-
-        <ProgressBar
-            android:id="@+id/loadingProfileProgressBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:translationZ="5dp" />
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -162,17 +155,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Услуги" />
-
             </com.google.android.material.tabs.TabLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomViewPager
             android:id="@+id/profileViewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/bottom_panel_height"
+            android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <ProgressBar
+        android:id="@+id/loadingProfileProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <include layout="@layout/part_bottom_panel" />
 

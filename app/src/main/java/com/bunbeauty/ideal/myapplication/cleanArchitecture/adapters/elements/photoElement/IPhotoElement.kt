@@ -4,5 +4,5 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface IPhotoElement {
     fun deletePhoto(photo: Photo)
-    fun openPhoto()
+    fun openPhoto(openedPhotoLinkOrUri: String)
 }

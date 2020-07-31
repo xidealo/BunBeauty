@@ -172,12 +172,14 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         dialog.show()
     }
 
-    override fun openPhoto() {
-        val intent = Intent(this, PhotoDialogActivity::class.java)
-        intent.putParcelableArrayListExtra(
-            Photo.PHOTO,
-            ArrayList(provideEditServicePresenter().getPhotosLink())
-        )
+    override fun openPhoto(openedPhotoLinkOrUri: String) {
+        val intent = Intent(this, PhotoDialogActivity::class.java).apply {
+            putParcelableArrayListExtra(
+                Photo.PHOTO,
+                ArrayList(editServicePresenter.getPhotosLink())
+            )
+            putExtra(Photo.LINK, openedPhotoLinkOrUri)
+        }
         startActivity(intent)
         overridePendingTransition(0, 0)
     }

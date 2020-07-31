@@ -19,7 +19,11 @@ class ChangeablePhotoElement(
     fun createPhoto(photo: Photo, view: View) {
         photoPhotoElementImage = view.findViewById(R.id.photoChangeablePhotoElementImage)
         photoPhotoElementImage.setOnClickListener {
-            iPhotoElement.openPhoto()
+            if (photo.link.isNotEmpty()) {
+                iPhotoElement.openPhoto(photo.link)
+            } else {
+                iPhotoElement.openPhoto(photo.uri)
+            }
         }
 
         deletePhotoElementText = view.findViewById(R.id.deleteChangeablePhotoElementText)

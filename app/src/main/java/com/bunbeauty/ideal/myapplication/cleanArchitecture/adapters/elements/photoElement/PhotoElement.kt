@@ -18,7 +18,7 @@ class PhotoElement(
     fun createPhoto(photo: Photo, view: View) {
         photoPhotoElementImage = view.findViewById(R.id.photoPhotoElementImage)
         photoPhotoElementImage.setOnClickListener {
-            iPhotoElement.openPhoto()
+            //iPhotoElement.openPhoto()
         }
 
         currentPhoto = photo

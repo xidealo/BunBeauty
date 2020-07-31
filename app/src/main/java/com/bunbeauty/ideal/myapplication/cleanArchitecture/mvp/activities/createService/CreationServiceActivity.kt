@@ -150,12 +150,14 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
             }.show()
     }
 
-    override fun openPhoto() {
-        val intent = Intent(this, PhotoDialogActivity::class.java)
-        intent.putParcelableArrayListExtra(
-            Photo.PHOTO,
-            ArrayList(creationServicePresenter.getPhotosLink())
-        )
+    override fun openPhoto(openedPhotoLinkOrUri: String) {
+        val intent = Intent(this, PhotoDialogActivity::class.java).apply {
+            putParcelableArrayListExtra(
+                Photo.PHOTO,
+                ArrayList(creationServicePresenter.getPhotosLink())
+            )
+            putExtra(Photo.LINK, openedPhotoLinkOrUri)
+        }
         startActivity(intent)
         overridePendingTransition(0, 0)
     }

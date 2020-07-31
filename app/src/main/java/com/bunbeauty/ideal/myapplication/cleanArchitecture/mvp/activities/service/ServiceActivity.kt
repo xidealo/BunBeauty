@@ -230,7 +230,7 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     }
 
-    override fun openPhoto() {
+    override fun openPhoto(openedPhotoLinkOrUri: String) {
 
     }
 
