@@ -8,7 +8,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.squareup.picasso.Picasso
 
 class ChangeablePhotoElement(
-    private val iPhotoElement: IPhotoElement,
+    private val iChangeablePhotoElement: IChangeablePhotoElement,
     private val width: Int,
     private val height: Int
 ) {
@@ -20,15 +20,15 @@ class ChangeablePhotoElement(
         photoPhotoElementImage = view.findViewById(R.id.photoChangeablePhotoElementImage)
         photoPhotoElementImage.setOnClickListener {
             if (photo.link.isNotEmpty()) {
-                iPhotoElement.openPhoto(photo.link)
+                iChangeablePhotoElement.openPhoto(photo.link)
             } else {
-                iPhotoElement.openPhoto(photo.uri)
+                iChangeablePhotoElement.openPhoto(photo.uri)
             }
         }
 
         deletePhotoElementText = view.findViewById(R.id.deleteChangeablePhotoElementText)
         deletePhotoElementText.setOnClickListener {
-            iPhotoElement.deletePhoto(photo)
+            iChangeablePhotoElement.deletePhoto(photo)
         }
 
         currentPhoto = photo

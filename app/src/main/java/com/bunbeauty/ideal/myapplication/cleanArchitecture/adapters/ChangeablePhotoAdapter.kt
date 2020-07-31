@@ -5,13 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IChangeablePhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.ChangeablePhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 
 class ChangeablePhotoAdapter(
     private val photos: List<Photo>,
-    private val iPhotoElement: IPhotoElement,
+    private val iChangeablePhotoElement: IChangeablePhotoElement,
     private val width: Int,
     private val height: Int
 ) : RecyclerView.Adapter<ChangeablePhotoAdapter.ChangeablePhotoViewHolder>() {
@@ -38,7 +38,7 @@ class ChangeablePhotoAdapter(
 
         fun bind(photo: Photo) {
             val photoElement = ChangeablePhotoElement(
-                iPhotoElement,
+                iChangeablePhotoElement,
                 width,
                 height
             )

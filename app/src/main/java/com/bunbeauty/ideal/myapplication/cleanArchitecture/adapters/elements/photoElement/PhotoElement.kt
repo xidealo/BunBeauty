@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.ph
 
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.squareup.picasso.Picasso
@@ -18,7 +17,11 @@ class PhotoElement(
     fun createPhoto(photo: Photo, view: View) {
         photoPhotoElementImage = view.findViewById(R.id.photoPhotoElementImage)
         photoPhotoElementImage.setOnClickListener {
-            //iPhotoElement.openPhoto()
+            if (photo.link.isNotEmpty()) {
+                iPhotoElement.openPhoto(photo.link)
+            } else {
+                iPhotoElement.openPhoto(photo.uri)
+            }
         }
 
         currentPhoto = photo

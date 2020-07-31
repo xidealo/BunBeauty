@@ -13,7 +13,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ChangeablePhotoAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryFragment
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IChangeablePhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
@@ -37,7 +37,7 @@ import kotlinx.android.synthetic.main.activity_creation_service.*
 import javax.inject.Inject
 
 class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
-    IBottomPanel, ITopPanel, IPhotoElement {
+    IBottomPanel, ITopPanel, IChangeablePhotoElement {
 
     override var panelContext: Activity = this
     private lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter

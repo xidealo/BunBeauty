@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IChangeablePhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.ChangeablePhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.PhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 

@@ -2,18 +2,18 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.android.ideal.myapplication.R
+import com.arellomobile.mvp.MvpAppCompatActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import kotlinx.android.synthetic.main.activity_photo_dialog.*
 
-class PhotoDialogActivity : AppCompatActivity() {
+class PhotoDialogActivity : MvpAppCompatActivity() {
 
     private lateinit var photosList: ArrayList<Photo>
 
