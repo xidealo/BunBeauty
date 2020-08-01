@@ -11,12 +11,10 @@ data class Photo(
     var id: String = "",
     var link: String = "",
     var userId: String = "",
-    var uri: String = "",
     var serviceId: String = ""
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
@@ -27,7 +25,6 @@ data class Photo(
         parcel.writeString(id)
         parcel.writeString(link)
         parcel.writeString(userId)
-        parcel.writeString(uri)
         parcel.writeString(serviceId)
     }
 
@@ -49,5 +46,12 @@ data class Photo(
         override fun newArray(size: Int): Array<Photo?> {
             return arrayOfNulls(size)
         }
+
+      /*  fun getPath(photo: Photo) = if (photo.link.isNotEmpty()) {
+            photo.link
+        } else {
+            photo.uri
+        }
+*/
     }
 }

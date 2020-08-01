@@ -66,7 +66,7 @@ class PhotoInteractor(private val photoRepository: IPhotoRepository) :
             .getInstance()
             .getReference("${Service.SERVICE_PHOTO}/${photo.id}")
 
-        storageReference.putFile(Uri.parse(photo.uri)).addOnSuccessListener {
+        storageReference.putFile(Uri.parse(photo.link)).addOnSuccessListener {
             storageReference.downloadUrl.addOnSuccessListener {
                 photo.link = it.toString()
                 photoRepository.insert(photo)

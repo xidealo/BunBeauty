@@ -99,7 +99,7 @@ class EditServicePresenter(
 
     fun createPhoto(resultUri: Uri) {
         val photo = Photo()
-        photo.uri = resultUri.toString()
+        photo.link = resultUri.toString()
         photoInteractor.addPhoto(photo)
         viewState.updatePhotoFeed()
     }

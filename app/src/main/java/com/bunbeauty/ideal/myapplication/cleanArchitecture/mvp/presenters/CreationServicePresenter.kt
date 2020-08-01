@@ -44,7 +44,7 @@ class CreationServicePresenter(
 
     fun createPhoto(uri: Uri) {
         val photo = Photo()
-        photo.uri = uri.toString()
+        photo.link = uri.toString()
         photoInteractor.addPhoto(photo)
         viewState.updatePhotoFeed()
     }

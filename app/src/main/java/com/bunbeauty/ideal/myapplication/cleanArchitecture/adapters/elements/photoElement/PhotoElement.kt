@@ -19,23 +19,14 @@ class PhotoElement(
         photoPhotoElementImage.setOnClickListener {
             if (photo.link.isNotEmpty()) {
                 iPhotoElement.openPhoto(photo.link)
-            } else {
-                iPhotoElement.openPhoto(photo.uri)
             }
         }
-
         currentPhoto = photo
         setPhoto(photo)
     }
 
     private fun setPhoto(photo: Photo) {
-        if (photo.link.isEmpty()) {
-            Picasso.get()
-                .load(photo.uri)
-                .resize(width, height)
-                .centerCrop()
-                .into(photoPhotoElementImage)
-        } else {
+        if (photo.link.isNotEmpty()) {
             Picasso.get()
                 .load(photo.link)
                 .resize(width, height)

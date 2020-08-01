@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoDialogActivity" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoSliderActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.ServiceCommentsActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

@@ -25,7 +25,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoDialogActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.EditServicePresenter
@@ -173,7 +173,7 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     }
 
     override fun openPhoto(openedPhotoLinkOrUri: String) {
-        val intent = Intent(this, PhotoDialogActivity::class.java).apply {
+        val intent = Intent(this, PhotoSliderActivity::class.java).apply {
             putParcelableArrayListExtra(
                 Photo.PHOTO,
                 ArrayList(editServicePresenter.getPhotosLink())

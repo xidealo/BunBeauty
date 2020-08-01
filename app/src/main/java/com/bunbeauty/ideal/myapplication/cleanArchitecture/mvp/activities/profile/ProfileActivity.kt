@@ -53,9 +53,11 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
     override var panelContext: Activity = this
 
     //const
-    private val REQUEST_EDIT_PROFILE = 1
-    private val ORDERS_INDEX = 0
-    private val SERVICES_INDEX = 1
+    companion object {
+        private const val REQUEST_EDIT_PROFILE = 1
+        private const val ORDERS_INDEX = 0
+        private const val SERVICES_INDEX = 1
+    }
 
     @Inject
     lateinit var profileUserInteractor: ProfileUserInteractor

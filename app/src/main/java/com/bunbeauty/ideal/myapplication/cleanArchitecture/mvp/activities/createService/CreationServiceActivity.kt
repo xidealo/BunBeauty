@@ -24,7 +24,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoDialogActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
@@ -36,8 +36,8 @@ import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_creation_service.*
 import javax.inject.Inject
 
-class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
-    IBottomPanel, ITopPanel, IChangeablePhotoElement {
+class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView, IBottomPanel, ITopPanel,
+    IChangeablePhotoElement {
 
     override var panelContext: Activity = this
     private lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter
@@ -151,7 +151,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView,
     }
 
     override fun openPhoto(openedPhotoLinkOrUri: String) {
-        val intent = Intent(this, PhotoDialogActivity::class.java).apply {
+        val intent = Intent(this, PhotoSliderActivity::class.java).apply {
             putParcelableArrayListExtra(
                 Photo.PHOTO,
                 ArrayList(creationServicePresenter.getPhotosLink())

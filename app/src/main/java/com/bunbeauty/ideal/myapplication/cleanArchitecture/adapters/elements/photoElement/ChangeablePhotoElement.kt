@@ -21,8 +21,6 @@ class ChangeablePhotoElement(
         photoPhotoElementImage.setOnClickListener {
             if (photo.link.isNotEmpty()) {
                 iChangeablePhotoElement.openPhoto(photo.link)
-            } else {
-                iChangeablePhotoElement.openPhoto(photo.uri)
             }
         }
 
@@ -36,13 +34,7 @@ class ChangeablePhotoElement(
     }
 
     private fun setPhoto(photo: Photo) {
-        if (photo.link.isEmpty()) {
-            Picasso.get()
-                .load(photo.uri)
-                .resize(width, height)
-                .centerCrop()
-                .into(photoPhotoElementImage)
-        } else {
+        if (photo.link.isNotEmpty()) {
             Picasso.get()
                 .load(photo.link)
                 .resize(width, height)
