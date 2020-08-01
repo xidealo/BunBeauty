@@ -57,7 +57,6 @@ class PhotoPagerElement : Fragment() {
                 if (bitmap != null) {
                     photoPhotoPagerElementImage.setImage(ImageSource.bitmap(bitmap))
                 }
-
                 photoSlideCallback.loadedPhoto(1)
             }
         }

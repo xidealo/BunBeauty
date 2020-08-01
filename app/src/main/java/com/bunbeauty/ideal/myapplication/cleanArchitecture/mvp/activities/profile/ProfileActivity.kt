@@ -15,6 +15,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ProfilePager
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
@@ -23,6 +24,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomViewPager
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.UserCommentsActivity
@@ -40,7 +42,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_profile.*
 import javax.inject.Inject
 
-class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileView,
+class ProfileActivity : MvpAppCompatActivity(), ProfileView,
     ITopPanel, IBottomPanel, TabLayout.OnTabSelectedListener {
 
     private lateinit var ratingLayout: LinearLayout
@@ -111,13 +113,25 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     private fun init() {
         ratingLayout = findViewById(R.id.ratingProfileLayout)
-        ratingProfileLayout.setOnClickListener(this)
-        subscribeProfileBtn.setOnClickListener(this)
-        dialogsProfileBtn.setOnClickListener(this)
-        subscriptionsProfileBtn.setOnClickListener(this)
-        scheduleProfileBtn.setOnClickListener(this)
-        profileRatingBar.setOnClickListener(this)
-        ratingProfileText.setOnClickListener(this)
+        ratingProfileLayout.setOnClickListener {
+            goToComments(profilePresenter.getCacheOwner())
+        }
+        subscribeProfileBtn.setOnClickListener {
+            profilePresenter.subscribe()
+        }
+        dialogsProfileBtn.setOnClickListener {
+            profilePresenter.goToDialog()
+        }
+        subscriptionsProfileBtn.setOnClickListener {
+            profilePresenter.goToSubscriptions()
+        }
+        scheduleProfileBtn.setOnClickListener {
+            goToSchedule()
+        }
+
+        avatarProfileImage.setOnClickListener {
+            openPhoto()
+        }
 
         ordersFragment = OrdersFragment()
         servicesFragment = ServicesFragment()
@@ -132,6 +146,18 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
             )
         tabLayout.addOnTabSelectedListener(this)
         viewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
+    }
+
+    fun openPhoto() {
+        val intent = Intent(this, PhotoSliderActivity::class.java).apply {
+            putParcelableArrayListExtra(
+                Photo.PHOTO,
+                arrayListOf(Photo(link = profilePresenter.getCacheOwner().photoLink))
+            )
+            putExtra(Photo.LINK, profilePresenter.getCacheOwner().photoLink)
+        }
+        startActivity(intent)
+        overridePendingTransition(0, 0)
     }
 
     override fun showProfileInfo(name: String, surname: String, city: String) {
@@ -157,7 +183,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
 
     override fun showRating(rating: Float, countOfRates: Long) {
         profileRatingBar.rating = rating
-        ratingLayout.setOnClickListener(this)
         ratingProfileText.text = "$rating ($countOfRates)"
     }
 
@@ -241,15 +266,6 @@ class ProfileActivity : MvpAppCompatActivity(), View.OnClickListener, ProfileVie
         scheduleProfileBtn.visibility = View.GONE
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.subscribeProfileBtn -> profilePresenter.subscribe()
-            R.id.dialogsProfileBtn -> profilePresenter.goToDialog()
-            R.id.scheduleProfileBtn -> goToSchedule()
-            R.id.subscriptionsProfileBtn -> profilePresenter.goToSubscriptions()
-            R.id.ratingProfileLayout -> goToComments(profilePresenter.getCacheOwner())
-        }
-    }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
         viewPager.currentItem = tab.position
