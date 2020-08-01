@@ -37,7 +37,7 @@ data class Photo(
         const val PHOTOS = "photos"
         const val PHOTO = "photo"
         const val LINK = "link"
-        const val SERVICE_ID = "service id"
+        const val PHOTO_CALLBACK = "photo callback"
 
         override fun createFromParcel(parcel: Parcel): Photo {
             return Photo(parcel)

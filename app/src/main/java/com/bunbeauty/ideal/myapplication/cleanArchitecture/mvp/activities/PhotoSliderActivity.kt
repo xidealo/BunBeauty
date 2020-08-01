@@ -25,7 +25,7 @@ class PhotoSliderActivity : MvpAppCompatActivity(), PhotoSlideCallback {
 
         photoPagerAdapter = PhotoPagerAdapter(this)
         photosPhotoSliderPager.adapter = photoPagerAdapter
-        photoPagerAdapter.setItems(photosList)
+        photoPagerAdapter.setItems(photosList, this)
 
         photosPhotoSliderPager.setCurrentItem(
             photoPosition,
@@ -34,11 +34,10 @@ class PhotoSliderActivity : MvpAppCompatActivity(), PhotoSlideCallback {
     }
 
     override fun loadedPhoto(position: Int) {
-        //if (position == photoPosition)
-            //loadingPhotoSliderProgressBar.visibility = View.GONE
+        loadingPhotoSliderProgressBar.visibility = View.GONE
     }
 
     override fun startLoad() {
-        //loadingPhotoSliderProgressBar.visibility = View.VISIBLE
+        loadingPhotoSliderProgressBar.visibility = View.VISIBLE
     }
 }
