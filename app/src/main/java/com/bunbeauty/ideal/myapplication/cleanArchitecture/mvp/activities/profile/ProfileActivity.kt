@@ -42,8 +42,8 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_profile.*
 import javax.inject.Inject
 
-class ProfileActivity : MvpAppCompatActivity(), ProfileView,
-    ITopPanel, IBottomPanel, TabLayout.OnTabSelectedListener {
+class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomPanel,
+    TabLayout.OnTabSelectedListener {
 
     private lateinit var ratingLayout: LinearLayout
 

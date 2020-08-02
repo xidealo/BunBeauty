@@ -14,9 +14,12 @@
     <string name="logInRegistration">Войти</string>
 
     //Add service
-    <string name="nameAddServiceTB">Имя</string>
+    <string name="nameAddServiceTB">Название</string>
     <string name="cost">Цена</string>
+    <string name="address">Адрес</string>
     <string name="main_screen">Главная страница</string>
+    <string name="description">Описание</string>
+    <string name="continueCreationService">Продолжить</string>
 
     //Edit service
     <string name="save">Сохранить</string>

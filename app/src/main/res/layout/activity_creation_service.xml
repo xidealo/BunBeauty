@@ -29,7 +29,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/materialInputLayout"
-                    android:hint="Название"
+                    android:hint="@string/nameAddServiceTB"
                     app:startIconDrawable="@drawable/icon_profile">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -41,7 +41,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/materialInputLayout"
-                    android:hint="Цена"
+                    android:hint="@string/cost"
                     app:startIconDrawable="@drawable/icon_dollar_sign_solid">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -53,7 +53,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/materialInputLayout"
-                    android:hint="Адрес"
+                    android:hint="@string/address"
                     app:startIconDrawable="@drawable/icon_map_marked_solid">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -65,7 +65,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/materialInputLayout"
-                    android:hint="Описание"
+                    android:hint="@string/description"
                     app:startIconDrawable="@drawable/icon_file_alt_regular">
 
                     <com.google.android.material.textfield.TextInputEditText

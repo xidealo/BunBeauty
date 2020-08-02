@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/foundServiceProfileElementLayout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/block"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/profile_block"
-    android:orientation="horizontal"
-    android:layout_margin="5dp"
-    android:padding="10dp">
+    android:layout_margin="@dimen/default_small_margin"
+    android:background="@drawable/profile_block">
 
-    <TextView
-        android:id="@+id/serviceNameFoundServiceProfileElementText"
-        style="@style/foundProfileElement"
-        android:layout_width="0dp"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/foundServiceProfileElementLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="TextView" />
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true">
 
-    <RatingBar
-        android:id="@+id/ratingBarFondServiceProfileElement"
-        style="@android:style/Widget.Holo.RatingBar.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:theme="@style/ratingBarColors"
-        android:isIndicator="true" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/serviceNameFoundServiceProfileElementText"
+                style="@style/foundProfileElement"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/nameAddServiceTB" />
+
+            <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                android:id="@+id/ratingBarFondServiceProfileElement"
+                style="@android:style/Widget.Holo.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:theme="@style/ratingBarColors" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
 </LinearLayout>

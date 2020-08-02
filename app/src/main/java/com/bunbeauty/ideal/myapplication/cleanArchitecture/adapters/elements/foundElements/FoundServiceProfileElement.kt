@@ -11,23 +11,25 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStri
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
+import com.google.android.material.card.MaterialCardView
 
-class FoundServiceProfileElement(private val service: Service,
-                                 private val user: User,
-                                 private val context: Context) : View.OnClickListener {
+class FoundServiceProfileElement(
+    private val service: Service,
+    private val user: User,
+    private val context: Context
+) {
 
     fun createElement(view: View) {
         view.findViewById<TextView>(R.id.serviceNameFoundServiceProfileElementText).text =
-                WorkWithStringsApi.firstCapitalSymbol(WorkWithStringsApi.cutString(service.name, 26))
+            WorkWithStringsApi.firstCapitalSymbol(WorkWithStringsApi.cutString(service.name, 26))
 
-        view.findViewById<RatingBar>(R.id.ratingBarFondServiceProfileElement).rating = service.rating
+        view.findViewById<RatingBar>(R.id.ratingBarFondServiceProfileElement).rating =
+            service.rating
 
-        view.findViewById<LinearLayout>(R.id.foundServiceProfileElementLayout)
-                .setOnClickListener(this)
-    }
-
-    override fun onClick(v: View) {
-        goToService()
+        view.findViewById<MaterialCardView>(R.id.foundServiceProfileElementLayout)
+            .setOnClickListener {
+                goToService()
+            }
     }
 
     private fun goToService() {
@@ -35,9 +37,5 @@ class FoundServiceProfileElement(private val service: Service,
         intent.putExtra(Service.SERVICE, service)
         intent.putExtra(User.USER, user)
         context.startActivity(intent)
-    }
-
-    companion object {
-        private val TAG = "DBInf"
     }
 }

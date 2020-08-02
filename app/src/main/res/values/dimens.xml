@@ -31,5 +31,6 @@
 
     <!-- Default margin -->
     <dimen name="default_margin">8dp</dimen>
+    <dimen name="default_small_margin">4dp</dimen>
 
 </resources>

@@ -6,7 +6,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -18,6 +17,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
+import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
 
 class FoundServiceElement(
@@ -25,7 +25,7 @@ class FoundServiceElement(
     private val user: User,
     private val view: View,
     private val context: Context
-) : View.OnClickListener {
+) {
 
     private lateinit var nameUserText: TextView
     private lateinit var cityText: TextView
@@ -33,13 +33,13 @@ class FoundServiceElement(
     private lateinit var costText: TextView
     private lateinit var avatarImage: ImageView
     private lateinit var ratingBar: RatingBar
-    private lateinit var layout: LinearLayout
+    private lateinit var layout: MaterialCardView
 
     fun createElement() {
         onViewCreated(view)
     }
 
-    fun onViewCreated(view: View) {
+    private fun onViewCreated(view: View) {
 
         layout = view.findViewById(R.id.foundServiceElementLayout)
         nameUserText = view.findViewById(R.id.userNameFoundServiceElementText)
@@ -51,15 +51,19 @@ class FoundServiceElement(
 
         if (isPremium) {
             setPremiumBackground()
-            ratingBar.progressTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
+            ratingBar.progressTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
         } else {
             setDefaultBackground()
-            ratingBar.progressTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
+            ratingBar.progressTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
         }
 
         avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage)
 
-        layout.setOnClickListener(this)
+        layout.setOnClickListener {
+            goToService()
+        }
         setData()
     }
 
@@ -92,11 +96,7 @@ class FoundServiceElement(
             .into(avatarImage)
     }
 
-    override fun onClick(v: View) {
-        goToGuestService()
-    }
-
-    private fun goToGuestService() {
+    private fun goToService() {
         val intent = Intent(context, ServiceActivity::class.java)
         intent.putExtra(Service.SERVICE, service)
         intent.putExtra(User.USER, user)
@@ -123,7 +123,4 @@ class FoundServiceElement(
 
     private fun isMoreFiveInch() = WorkWithViewApi.getInches(context) < 5
 
-    companion object {
-        private val TAG = "DBInf"
-    }
 }
