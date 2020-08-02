@@ -63,7 +63,7 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
                 cacheSelectedTags.clear()
                 category = categorySpinner.text.toString()
                 tagsMaxLayout.removeAllViews()
-                if (position > 0)
+                if (position > -1)
                     showTags(position)
             }
     }
@@ -71,7 +71,7 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
     private fun showTags(categoryPosition: Int) {
         val tagsArray = resources
             .obtainTypedArray(R.array.tags_references)
-            .getTextArray(categoryPosition - 1)
+            .getTextArray(categoryPosition)
 
         for (tag in tagsArray) {
             val inflater = LayoutInflater.from(context)
