@@ -5,6 +5,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/dayBtn"
+        android:textColor="@color/black"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_margin="5dp"

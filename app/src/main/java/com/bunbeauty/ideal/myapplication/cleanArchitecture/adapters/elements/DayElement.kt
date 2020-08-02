@@ -17,6 +17,12 @@ class DayElement(
         view.dayBtn.text = day.getDayOfMonth().toString()
         if (day.isSelected) {
             view.dayBtn.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow))
+        } else {
+            view.dayBtn.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
         }
+    }
+
+    fun setClickListener(listener: View.OnClickListener) {
+        view.dayBtn.setOnClickListener(listener)
     }
 }

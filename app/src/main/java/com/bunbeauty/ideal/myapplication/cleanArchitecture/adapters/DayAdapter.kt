@@ -23,18 +23,7 @@ class DayAdapter(
     }
 
     override fun onBindViewHolder(holder: DayViewHolder, i: Int) {
-        holder.bind(dayList[i])
-        holder.itemView.setOnClickListener {
-            dayList.find { it.isSelected && dayList.indexOf(it) != i }?.isSelected = false
-            dayList[i].isSelected = !dayList[i].isSelected
-
-            if (dayList[i].isSelected) {
-                sessionsPresenter.getSessions(dayList[i])
-            } else {
-                sessionsPresenter.clearSessions()
-            }
-            notifyDataSetChanged()
-        }
+        holder.bind(dayList[i], i)
     }
 
     override fun getItemCount(): Int {
@@ -44,9 +33,20 @@ class DayAdapter(
     inner class DayViewHolder(private val view: View, private val context: Context) :
         RecyclerView.ViewHolder(view) {
 
-        fun bind(day: WorkingDay): DayElement {
+        fun bind(day: WorkingDay, i: Int): DayElement {
             val dayElement = DayElement(view, context, day)
             dayElement.createElement()
+            dayElement.setClickListener(View.OnClickListener {
+                dayList.find { it.isSelected && dayList.indexOf(it) != i }?.isSelected = false
+                day.isSelected = !day.isSelected
+
+                if (day.isSelected) {
+                    sessionsPresenter.getSessions(day)
+                } else {
+                    sessionsPresenter.clearSessions()
+                }
+                notifyDataSetChanged()
+            })
 
             return dayElement
         }

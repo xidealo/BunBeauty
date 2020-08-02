@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.LinearLayout.HORIZONTAL
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -69,7 +69,7 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
     }
 
     override fun showDays(days: List<WorkingDay>) {
-        daysSessionsRecyclerView.layoutManager = LinearLayoutManager(this)
+        daysSessionsRecyclerView.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
         daysSessionsRecyclerView.adapter = DayAdapter(days, sessionsPresenter)
     }
 
