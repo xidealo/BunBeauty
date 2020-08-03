@@ -119,12 +119,12 @@
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/bottomPanel">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/deleteEditServiceBtn"
                     style="@style/smallButton"
                     android:text="Удалить" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/saveEditServiceBtn"
                     style="@style/smallButton"
                     android:text="Сохранить" />

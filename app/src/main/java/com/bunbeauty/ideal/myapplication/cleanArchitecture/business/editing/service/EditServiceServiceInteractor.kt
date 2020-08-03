@@ -41,8 +41,8 @@ class EditServiceServiceInteractor(
         serviceRepository.delete(service, this)
     }
 
-    fun returnDeleteCallback(obj: Service) {
-        editServicePresenterCallback.goToProfile(cacheService)
+    override fun returnDeletedCallback(obj: Service) {
+        editServicePresenterCallback.goToService(cacheService)
     }
 
     override fun returnUpdatedCallback(obj: Service) {
@@ -85,7 +85,5 @@ class EditServiceServiceInteractor(
         return true
     }
 
-    override fun returnDeletedCallback(obj: Service) {
-        editServicePresenterCallback.goToService(cacheService)
-    }
+
 }

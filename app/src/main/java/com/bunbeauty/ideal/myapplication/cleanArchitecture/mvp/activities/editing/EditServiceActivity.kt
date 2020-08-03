@@ -90,12 +90,15 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
                 descriptionEditServiceInput.text.toString().trim(),
                 costEditServiceInput.text.toString().toLongOrNull() ?: 0,
                 categoryFragment.getCategory(),
-                categoryFragment.getSelectedTags(),
-                categoryFragment.getUnselectedTags()
+                categoryFragment.getSelectedTags()
             )
         }
         photoEditServiceBtn.setOnClickListener {
             CropImage.activity().start(this)
+        }
+
+        deleteEditServiceBtn.setOnClickListener {
+            editServicePresenter.delete()
         }
 
         resultsEditServiceRecycleView.layoutManager =

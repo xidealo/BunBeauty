@@ -15,13 +15,11 @@ import kotlinx.coroutines.withContext
 class ServiceRepository(
     private val serviceDao: ServiceDao,
     private val serviceFirebase: ServiceFirebase
-) : BaseRepository(),
-    IServiceRepository {
+) : BaseRepository(), IServiceRepository {
     override fun insert(service: Service, insertServiceCallback: InsertServiceCallback) {
         launch {
             service.id = getIdForNew(service.userId)
             serviceFirebase.insert(service)
-            //serviceDao.insert(service)
             withContext(Dispatchers.Main) {
                 insertServiceCallback.returnCreatedCallback(service)
             }
@@ -30,7 +28,6 @@ class ServiceRepository(
 
     override fun delete(service: Service, deleteServiceCallback: DeleteServiceCallback) {
         launch {
-            //serviceDao.delete(service)
             serviceFirebase.delete(service)
             withContext(Dispatchers.Main) {
                 deleteServiceCallback.returnDeletedCallback(service)
@@ -40,7 +37,6 @@ class ServiceRepository(
 
     override fun update(service: Service, updateServiceCallback: UpdateServiceCallback) {
         launch {
-            //serviceDao.update(service)
             serviceFirebase.update(service)
             withContext(Dispatchers.Main) {
                 updateServiceCallback.returnUpdatedCallback(service)

@@ -31,8 +31,7 @@ class EditServicePresenter(
         description: String,
         cost: Long,
         category: String,
-        tags: ArrayList<Tag>,
-        unselectedTags: ArrayList<Tag>
+        tags: ArrayList<Tag>
     ) {
         val service = editServiceServiceInteractor.getCacheService()
         service.name = name

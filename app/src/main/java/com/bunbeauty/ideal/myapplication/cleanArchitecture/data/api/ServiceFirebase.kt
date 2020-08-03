@@ -11,8 +11,6 @@ import kotlin.collections.ArrayList
 
 class ServiceFirebase {
 
-    private val TAG = "data_layer"
-
     fun insert(service: Service) {
         val serviceRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
@@ -40,12 +38,7 @@ class ServiceFirebase {
             .child(Service.SERVICES)
             .child(service.id)
 
-        val items = HashMap<String, Any>()
-        items[Service.NAME] = service.name
-        items[Service.ADDRESS] = service.address
-        items[Service.DESCRIPTION] = service.description
-        items[Service.COST] = service.cost
-        serviceRef.updateChildren(items)
+        serviceRef.removeValue()
     }
 
     fun update(service: Service) {
