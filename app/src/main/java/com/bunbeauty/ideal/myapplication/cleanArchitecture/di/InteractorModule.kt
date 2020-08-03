@@ -31,6 +31,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.serv
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriberInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsUserInteractor
@@ -306,4 +307,8 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideServiceCommentsServiceInteractor() = ServiceCommentsServiceInteractor(intent)
+
+    @Provides
+    @Singleton
+    fun provideSessionsInteractor() = SessionsInteractor()
 }

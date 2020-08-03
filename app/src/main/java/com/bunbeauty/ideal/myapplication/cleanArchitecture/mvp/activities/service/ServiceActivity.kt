@@ -29,10 +29,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
-import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.activity_service.*
-import kotlinx.android.synthetic.main.part_top_panel.*
 import javax.inject.Inject
 
 class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView, ITopPanel,
@@ -202,12 +200,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         val intent = Intent(this, EditServiceActivity::class.java)
         intent.putExtra(Service.SERVICE, service)
         startActivityForResult(intent, REQUEST_EDIT_SERVICE)
-    }
-
-    private fun goToCalendar(status: String) {
-        val intent = Intent(this, MyCalendar::class.java)
-        //intent.putExtra(Service.SERVICE_ID, "")
-        startActivity(intent)
     }
 
     // go to owner profile

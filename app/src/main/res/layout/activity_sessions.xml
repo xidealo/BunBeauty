@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundLightBlue"
+    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.SessionsActivity">
+
+    <include
+        layout="@layout/part_top_panel" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintTop_toBottomOf="@+id/topPanel">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
+                android:id="@+id/daysSessionsGrid"
+                style="@style/horizontalLayout"
+                android:columnCount="7">
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="ПН" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="ВТ" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="СР" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="ЧТ" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="ПТ" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="СБ" />
+
+                <TextView
+                    style="@style/weekDayText"
+                    android:text="ВС" />
+            </com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout>
+
+            <LinearLayout
+                android:id="@+id/sessionsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/wideLabel"
+                    android:text="Сеансы"
+                    app:layout_constraintBottom_toTopOf="@+id/bottomPanel" />
+
+                <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
+                    android:id="@+id/sessionsGrid"
+                    style="@style/horizontalLayout"
+                    android:columnCount="6" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!--<TextView
+        style="@style/wideLabel"
+        android:background="@color/grey40"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel" />-->
+
+    <include
+        layout="@layout/part_bottom_panel"
+        tools:layout_editor_absoluteY="675dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

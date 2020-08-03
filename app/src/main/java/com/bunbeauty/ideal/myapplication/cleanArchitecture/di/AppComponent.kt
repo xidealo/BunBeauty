@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.SessionsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.DialogsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CreationCommentActivity
@@ -49,4 +50,5 @@ interface AppComponent {
     fun inject(currentCommentActivity: CurrentCommentActivity)
     fun inject(creationUserCommentActivity: CreationCommentActivity)
     fun inject(serviceCommentsActivity: ServiceCommentsActivity)
+    fun inject(sessionsActivity: SessionsActivity)
 }

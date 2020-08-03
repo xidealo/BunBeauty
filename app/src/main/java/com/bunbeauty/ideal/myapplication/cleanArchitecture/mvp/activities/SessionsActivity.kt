@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -15,39 +14,35 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SchedulePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ScheduleView
-import kotlinx.android.synthetic.main.activity_schedule.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SessionsPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.SessionsView
+import kotlinx.android.synthetic.main.activity_sessions.*
 import javax.inject.Inject
 
-class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBottomPanel,
-    View.OnTouchListener {
+class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBottomPanel {
 
     override var panelContext: Activity = this
 
     private val daysButtons = ArrayList<Button>()
-    private val timeButtons = ArrayList<Button>()
-
-    private var touchId = 0
+    private val sessionsButtons = ArrayList<Button>()
 
     @Inject
-    lateinit var scheduleInteractor: ScheduleInteractor
+    lateinit var sessionsInteractor: SessionsInteractor
 
     @InjectPresenter
-    lateinit var schedulePresenter: SchedulePresenter
+    lateinit var sessionsPresenter: SessionsPresenter
 
     @ProvidePresenter
-    internal fun provideSchedulePresenter(): SchedulePresenter {
+    internal fun provideSessionsPresenter(): SessionsPresenter {
         DaggerAppComponent.builder()
             .appModule(AppModule(application))
             .firebaseModule(FirebaseModule())
@@ -55,37 +50,27 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
             .build()
             .inject(this)
 
-        return SchedulePresenter(scheduleInteractor)
+        return SessionsPresenter(sessionsInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_schedule)
+        setContentView(R.layout.activity_sessions)
 
         init()
         createDaysButtons()
-        createTimeButtons()
-        initTopPanel("Расписание", ButtonTask.NONE)
+        initTopPanel("Сеансы", ButtonTask.NONE)
     }
 
     override fun onResume() {
         super.onResume()
 
         initBottomPanel()
-        schedulePresenter.getSchedule()
+        sessionsPresenter.getSchedule()
     }
 
-    override fun onPause() {
-        super.onPause()
-
-        schedulePresenter.saveSchedule()
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
     private fun init() {
-        daysScheduleGrid.setOnTouchListener(this)
-        timeScheduleGrid.setOnTouchListener(this)
-        timeScheduleLayout.visibility = View.GONE
+        sessionsLayout.visibility = View.GONE
     }
 
     private fun createDaysButtons() {
@@ -94,7 +79,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
                 val width = getScreenWidth() / WEEK_DAY_COUNT
                 val height = resources.getDimensionPixelSize(R.dimen.schedule_button_height)
                 val text =
-                    schedulePresenter.getDateString(weekIndex * WEEK_DAY_COUNT + weekDayIndex)
+                    sessionsPresenter.getDateString(weekIndex * WEEK_DAY_COUNT + weekDayIndex)
                 val button = getConfiguredButton(width, height, text)
                 setButtonEnabled(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex)
 
@@ -103,47 +88,23 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         }
 
         for (i in 0 until daysButtons.size) {
-            addViewToContainer(daysButtons[i], daysScheduleGrid)
+            addViewToContainer(daysButtons[i], daysSessionsGrid)
         }
     }
 
     private fun setButtonEnabled(button: Button, dayIndex: Int) {
-        button.isEnabled = schedulePresenter.isPastDay(dayIndex)
+        button.isEnabled = sessionsPresenter.isPastDay(dayIndex)
     }
 
-    private fun createTimeButtons() {
-        for (i in 0 until TIME_RAW_COUNT) {
-            for (j in 0 until TIME_COLUMN_COUNT) {
-                val width = getScreenWidth() / TIME_COLUMN_COUNT
-                val height = resources.getDimensionPixelSize(R.dimen.schedule_button_height)
-                val text = schedulePresenter.getTimeString(i * TIME_COLUMN_COUNT + j)
-                val button = getConfiguredButton(width, height, text)
-
-                timeButtons.add(button)
-            }
-        }
-
-        for (i in 0 until timeButtons.size) {
-            addViewToContainer(timeButtons[i], timeScheduleGrid)
-        }
-    }
-
-    private fun getScreenWidth(): Int {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics.widthPixels
-    }
-
-    override fun setSchedule(schedule: ScheduleWithDays) {
+    fun setSchedule(schedule: ScheduleWithDays) {
         for (workingDay in schedule.workingDays) {
-            val dayIndex = schedulePresenter.getDayIndex(workingDay.workingDay.date)
+            val dayIndex = sessionsPresenter.getDayIndex(workingDay.workingDay.date)
             if (dayIndex > 0 && dayIndex < daysButtons.size) {
                 fillButton(daysButtons[dayIndex])
             }
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun getConfiguredButton(width: Int, height: Int, text: String): Button {
         val button = Button(this)
 
@@ -154,9 +115,31 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         setBackground(button)
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
         button.text = text
-        button.setOnTouchListener(this)
+        button.setOnClickListener {
+            val buttonIndex = daysButtons.indexOf(button)
+            if (sessionsPresenter.isDaySelected(buttonIndex)) {
+                clearButtonSelection(button)
+                sessionsPresenter.clearSelectedDay(buttonIndex)
+            } else {
+                clearButtonSelection(daysButtons[sessionsPresenter.getSelectedDay()])
+                sessionsPresenter.setSelectedDay(buttonIndex)
+                selectButton(button)
+            }
+        }
 
         return button
+    }
+
+    private fun getScreenWidth(): Int {
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics.widthPixels
+    }
+
+    private fun getScreenHeight(): Int {
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics.heightPixels
     }
 
     private fun addViewToContainer(view: View, container: ViewGroup) {
@@ -175,34 +158,13 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         button.background = gradientDrawable
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
-        when (motionEvent.action) {
-            MotionEvent.ACTION_DOWN -> {
-                timeScheduleLayout.visibility = View.VISIBLE
-                clearPreviousSelection(view.id)
-                if (view.id == R.id.daysScheduleGrid) {
-                    schedulePresenter.forgotAllDays()
-                }
-
-                touchId++
-                select(view, motionEvent)
-            }
-            MotionEvent.ACTION_MOVE -> {
-                select(view, motionEvent)
-            }
-        }
-
-        return true
-    }
-
     private fun clearPreviousSelection(viewId: Int) {
         when (viewId) {
             R.id.daysScheduleGrid -> {
                 for (button in daysButtons) {
                     clearButtonSelection(button)
                 }
-                for (button in timeButtons) {
+                for (button in sessionsButtons) {
                     clearButtonFill(button)
                 }
             }
@@ -212,65 +174,22 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
     private fun select(view: View, motionEvent: MotionEvent) {
         when (view.id) {
             R.id.daysScheduleGrid -> {
-                selectDayButton(motionEvent)
+                //selectDayButton(motionEvent)
             }
 
             R.id.timeScheduleGrid -> {
-                val buttonIndex = findTouchedButton(motionEvent, timeButtons) ?: return
-                val button = timeButtons[buttonIndex]
-                selectTimeButton(button)
+                val buttonIndex = findTouchedButton(motionEvent, sessionsButtons) ?: return
+                val button = sessionsButtons[buttonIndex]
+                //selectTimeButton(button)
             }
         }
     }
 
-    private fun selectDayButton(motionEvent: MotionEvent) {
-        val buttonIndex = findTouchedButton(motionEvent, daysButtons) ?: return
-        val button = daysButtons[buttonIndex]
-
-        button.setTag(R.id.touchIdTag, touchId)
-        selectButton(button)
-        schedulePresenter.rememberDay(buttonIndex, button.text.toString())
-    }
-
-    override fun showAccurateTime(accurateTime: Set<String>) {
-        for (button in timeButtons) {
-            if (accurateTime.contains(button.text.toString())) {
-                button.setTag(R.id.touchIdTag, touchId)
-                fillButton(button)
-            }
-        }
-    }
-
-    override fun showInaccurateTime(inaccurateTime: Set<String>) {
-        for (button in timeButtons) {
-            if (inaccurateTime.contains(button.text.toString())) {
-                fillButtonInHalf(button)
-            }
-        }
-    }
-
-    private fun selectTimeButton(button: Button) {
-        button.setTag(R.id.touchIdTag, touchId)
-        if (isButtonSelected(button)) {
-            clearButtonFill(button)
-
-            val selectedDayTexts =
-                schedulePresenter.getSelectedDays().map { daysButtons[it].text.toString() }
-            schedulePresenter.removeFromSchedule(selectedDayTexts, button.text.toString())
-        } else {
-            fillButton(button)
-
-            val selectedDayTexts =
-                schedulePresenter.getSelectedDays().map { daysButtons[it].text.toString() }
-            schedulePresenter.addToSchedule(selectedDayTexts, button.text.toString())
-        }
-    }
-
-    override fun clearDay(dayIndex: Int) {
+    fun clearDay(dayIndex: Int) {
         clearButtonFill(daysButtons[dayIndex])
     }
 
-    override fun fillDay(dayIndex: Int) {
+    fun fillDay(dayIndex: Int) {
         fillButton(daysButtons[dayIndex])
     }
 
@@ -295,7 +214,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
     }
 
     private fun isAlreadyTouched(button: Button): Boolean {
-        return button.getTag(R.id.touchIdTag) == touchId
+        return true //button.getTag(R.id.touchIdTag) == touchId
     }
 
     private fun isButtonSelected(button: Button): Boolean {
