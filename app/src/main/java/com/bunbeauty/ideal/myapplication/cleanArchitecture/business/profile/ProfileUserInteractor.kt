@@ -67,15 +67,16 @@ class ProfileUserInteractor(
 
     override fun isMyProfile(ownerId: String, myId: String) = ownerId == myId
 
-    override fun updateUserFromEditUser(user: User, profilePresenterCallback: ProfilePresenterCallback) {
+    override fun updateUserFromEditUser(
+        user: User,
+        profilePresenterCallback: ProfilePresenterCallback
+    ) {
         cacheOwner = user
         cacheUser = user
 
         profilePresenterCallback.returnProfileOwner(user)
         whoseProfile(user, profilePresenterCallback)
     }
-
-
 
     override fun initFCM() {
         /*if (fromRegistartion()) {
@@ -86,6 +87,16 @@ class ProfileUserInteractor(
                 .child(TOKEN)
                 .setValue(token)
         }*/
+    }
+
+    override fun updateMyProfileServices(
+        profilePresenterCallback: ProfilePresenterCallback
+    ) {
+        if (cacheOwner != null) {
+            if (isMyProfile(cacheOwner!!.id, User.getMyId())) {
+                profilePresenterCallback.getProfileServiceList(cacheOwner!!.id)
+            }
+        }
     }
 
     override fun updateCountOfSubscribers(

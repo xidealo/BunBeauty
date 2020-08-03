@@ -71,7 +71,6 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
 
     override fun returnElement(element: Dialog?) {
         if (element == null) return
-
     }
 
     override fun returnChanged(element: Dialog) {

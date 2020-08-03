@@ -36,6 +36,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile.ServicesFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import com.squareup.picasso.Picasso
@@ -45,7 +46,7 @@ import javax.inject.Inject
 class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomPanel,
     TabLayout.OnTabSelectedListener {
 
-    private lateinit var ratingLayout: LinearLayout
+    private lateinit var ratingLayout: MaterialCardView
 
     private lateinit var ordersFragment: OrdersFragment
     private lateinit var servicesFragment: ServicesFragment
@@ -100,10 +101,14 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-
         init()
         profilePresenter.initFCM()
         profilePresenter.getProfileOwner()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        profilePresenter.updateMyProfileServices()
     }
 
     override fun onResume() {

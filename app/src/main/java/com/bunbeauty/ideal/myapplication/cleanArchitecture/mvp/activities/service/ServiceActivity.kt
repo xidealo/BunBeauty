@@ -32,6 +32,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.bunbeauty.ideal.myapplication.createService.MyCalendar
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.activity_service.*
+import kotlinx.android.synthetic.main.part_top_panel.*
 import javax.inject.Inject
 
 class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView, ITopPanel,
@@ -102,9 +103,9 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     }
 
     override fun showService(service: Service) {
-        costServiceText.setText(service.cost.toString())
-        addressServiceText.setText(service.address)
-        descriptionServiceText.setText(service.description)
+        costServiceText.text = service.cost.toString() + "₽"
+        addressServiceText.text = service.address
+        descriptionServiceText.text = service.description
         showRating(service.rating, service.countOfRates)
     }
 
@@ -112,6 +113,10 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         loadingServiceProgressBar.visibility = View.VISIBLE
         mainViewServiceScroll.visibility = View.GONE
         scheduleServiceBtn.visibility = View.GONE
+    }
+
+    override fun setTopPanelTitle(title: String) {
+        setTitle(title)
     }
 
     override fun hideLoading() {

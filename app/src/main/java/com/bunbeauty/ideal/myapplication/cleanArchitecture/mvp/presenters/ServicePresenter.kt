@@ -20,7 +20,7 @@ class ServicePresenter(
     MvpPresenter<ServiceView>(), ServicePresenterCallback {
 
     fun createServiceScreen() {
-        serviceServiceInteractor.createServiceScreen(serviceUserInteractor.getUser(),this)
+        serviceServiceInteractor.createServiceScreen(serviceUserInteractor.getUser(), this)
     }
 
     fun updateService(service: Service) {
@@ -66,6 +66,9 @@ class ServicePresenter(
         viewState.goToProfile(user)
     }
 
+    override fun setTitle(title: String) {
+        viewState.setTopPanelTitle(title)
+    }
 
     /*
       fun getServicePhotos(serviceId: String, serviceOwnerId: String) {

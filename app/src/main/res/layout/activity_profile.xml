@@ -118,25 +118,43 @@
                                     android:text="Подписчики:" />
                             </LinearLayout>
 
+
                             <LinearLayout
-                                android:id="@+id/ratingProfileLayout"
                                 style="@style/wideHorizontalBlock"
                                 android:layout_weight="1"
                                 android:gravity="center">
 
-                                <me.zhanghai.android.materialratingbar.MaterialRatingBar
-                                    android:id="@+id/profileRatingBar"
-                                    style="@android:style/Widget.Holo.RatingBar.Small"
-                                    android:layout_width="wrap_content"
+                                <com.google.android.material.card.MaterialCardView
+                                    android:id="@+id/ratingProfileLayout"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="5dp"
-                                    android:theme="@style/ratingBarColors" />
+                                    android:checkable="true"
+                                    app:cardBackgroundColor="@color/mainBlue"
+                                    android:clickable="true"
+                                    android:focusable="true">
 
-                                <TextView
-                                    android:id="@+id/ratingProfileText"
-                                    style="@style/profileThinText"
-                                    android:text="0 (0)" />
+                                    <LinearLayout
+                                        style="@style/wideHorizontalBlock"
+                                        android:gravity="center">
+
+                                        <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                                            android:id="@+id/profileRatingBar"
+                                            style="@android:style/Widget.Holo.RatingBar.Small"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginEnd="5dp"
+                                            android:theme="@style/ratingBarColors" />
+
+                                        <TextView
+                                            android:id="@+id/ratingProfileText"
+                                            style="@style/profileThinText"
+                                            android:text="0 (0)" />
+                                    </LinearLayout>
+
+                                </com.google.android.material.card.MaterialCardView>
+
                             </LinearLayout>
+
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -165,6 +183,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
     <ProgressBar
         android:id="@+id/loadingProfileProgressBar"
         android:layout_width="match_parent"

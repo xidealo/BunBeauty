@@ -27,6 +27,7 @@ class ProfileServiceInteractor(private val serviceRepository: IServiceRepository
     }
 
     override fun returnServices(serviceList: List<Service>) {
+        services.clear()
         services.addAll(serviceList)
         profilePresenterCallback.setServiceList(serviceList)
     }

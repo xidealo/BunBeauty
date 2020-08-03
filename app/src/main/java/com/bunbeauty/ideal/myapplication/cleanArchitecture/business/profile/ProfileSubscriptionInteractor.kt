@@ -50,6 +50,7 @@ class ProfileSubscriptionInteractor(private val subscriptionRepository: ISubscri
     }
 
     override fun returnList(objects: List<Subscription>) {
+        cacheSubscriptions.clear()
         cacheSubscriptions.addAll(objects)
     }
 

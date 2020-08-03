@@ -37,6 +37,7 @@ import javax.inject.Inject
 class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     EditServiceView, IChangeablePhotoElement {
 
+    //по возвращению обновлять данные в сервисе!
     override var panelContext: Activity = this
     private lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter
     private lateinit var categoryFragment: CategoryFragment

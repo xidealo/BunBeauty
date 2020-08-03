@@ -47,6 +47,7 @@ class ServiceServiceInteractor(
     ) {
         this.service = service
         servicePresenterCallback.showService(service)
+        servicePresenterCallback.setTitle(service.name)
     }
 
 }

@@ -18,4 +18,5 @@ interface ServiceView: MvpView {
     fun goToEditService(service: Service)
     fun goToProfile(user: User)
     fun showMessage(message: String)
+    fun setTopPanelTitle(title: String)
 }

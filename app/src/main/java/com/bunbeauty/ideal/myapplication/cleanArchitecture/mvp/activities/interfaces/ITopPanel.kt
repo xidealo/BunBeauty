@@ -20,6 +20,10 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
 
     fun initTopPanel(title: String, buttonTask: ButtonTask) {
         initTopPanel(buttonTask)
+        setTitle(title)
+    }
+
+    fun setTitle(title: String){
         panelContext.topPanel.titleTopPanelText.text = title
     }
 

@@ -13,4 +13,5 @@ interface ServicePresenterCallback {
     fun goToEditService(service: Service)
     fun goToProfile(user: User)
     fun getServicePhotos(service: Service)
+    fun setTitle(title: String)
 }

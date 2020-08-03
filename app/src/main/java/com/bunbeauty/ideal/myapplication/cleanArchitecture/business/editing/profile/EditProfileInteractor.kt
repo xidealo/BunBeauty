@@ -43,7 +43,6 @@ class EditProfileInteractor(
                 userRepository.update(user, this)
             } else {
                 cacheUser = user
-
                 checkPhoneAlreadyUsed(user.phone)
             }
         }

@@ -8,6 +8,10 @@ interface IProfileUserInteractor {
     fun getCacheUser(): User
     fun isMyProfile(ownerId: String, myId: String): Boolean
     fun initFCM()
+    fun updateMyProfileServices(
+        profilePresenterCallback: ProfilePresenterCallback
+    )
+
     fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback)
     fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback)
     fun updateBottomPanel(profilePresenterCallback: ProfilePresenterCallback)

@@ -81,6 +81,7 @@ class ProfileSubscriberInteractor(private val subscriberRepository: ISubscriberR
             isSubscribed = false
             profilePresenterCallback.showUnsubscribed()
         } else {
+            cacheSubscribers.clear()
             cacheSubscribers.addAll(objects)
             isSubscribed = true
             profilePresenterCallback.showSubscribed()

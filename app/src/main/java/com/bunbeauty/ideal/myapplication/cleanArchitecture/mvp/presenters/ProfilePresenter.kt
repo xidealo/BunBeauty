@@ -31,6 +31,10 @@ class ProfilePresenter(
         profileUserInteractor.getProfileOwner(this)
     }
 
+    fun updateMyProfileServices() {
+        profileUserInteractor.updateMyProfileServices(this)
+    }
+
     override fun returnProfileOwner(user: User) {
         viewState.showProfileInfo(user.name, user.surname, user.city)
         viewState.showAvatar(user.photoLink)
