@@ -11,5 +11,6 @@ interface IPhotoInteractor {
     fun getDeletePhotosLink(): List<Photo>
     fun saveImages(service: Service)
     fun deleteImages()
+    fun deletePhotosFromStorage(photos: List<Photo>)
     fun getPhotos(service: Service, iPhotoCallback: IPhotoCallback)
 }

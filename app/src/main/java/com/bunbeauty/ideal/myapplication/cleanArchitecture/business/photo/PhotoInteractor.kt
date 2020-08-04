@@ -51,6 +51,12 @@ class PhotoInteractor(private val photoRepository: IPhotoRepository) :
         }
     }
 
+    override fun deletePhotosFromStorage(photos: List<Photo>) {
+        for (photo in photos) {
+            deletePhotoFromStorage(photo.id)
+        }
+    }
+
     override fun getPhotos(service: Service, iPhotoCallback: IPhotoCallback) {
         this.iPhotoCallback = iPhotoCallback
         photoRepository.getByServiceId(service.id, service.userId, this)
@@ -77,6 +83,7 @@ class PhotoInteractor(private val photoRepository: IPhotoRepository) :
     private fun deleteImage(photo: Photo) {
         photoRepository.delete(photo, this)
     }
+
 
     override fun returnDeletedCallback(obj: Photo) {
         deletePhotoFromStorage(photoId = obj.id)

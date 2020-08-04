@@ -69,6 +69,7 @@ class EditServicePresenter(
     }
 
     override fun goToProfile(service: Service) {
+        photoInteractor.deletePhotosFromStorage(photoInteractor.getPhotosLink())
         viewState.showMessage("Услуга успешно удалена")
         viewState.goToProfile(service)
     }
