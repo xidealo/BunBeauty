@@ -48,6 +48,8 @@ class EditServicePresenter(
         editServiceServiceInteractor.delete(service, this)
     }
 
+    fun getCacheService() = editServiceServiceInteractor.getCacheService()
+
     fun getPhotosLink() = photoInteractor.getPhotosLink()
 
     override fun showEditService(service: Service) {
@@ -67,6 +69,7 @@ class EditServicePresenter(
     }
 
     override fun goToProfile(service: Service) {
+        viewState.showMessage("Услуга успешно удалена")
         viewState.goToProfile(service)
     }
 

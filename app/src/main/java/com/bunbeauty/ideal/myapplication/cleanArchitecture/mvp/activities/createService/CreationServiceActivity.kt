@@ -30,13 +30,13 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragme
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CreationServicePresenter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.CreationServiceView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_creation_service.*
 import javax.inject.Inject
 
-class CreationServiceActivity : MvpAppCompatActivity(), AddingServiceView, IBottomPanel, ITopPanel,
+class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBottomPanel, ITopPanel,
     IChangeablePhotoElement {
 
     override var panelContext: Activity = this

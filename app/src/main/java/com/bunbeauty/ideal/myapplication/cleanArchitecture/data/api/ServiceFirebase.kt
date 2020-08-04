@@ -33,7 +33,7 @@ class ServiceFirebase {
 
     fun delete(service: Service) {
         val serviceRef = FirebaseDatabase.getInstance()
-            .getReference(User.USER)
+            .getReference(User.USERS)
             .child(service.userId)
             .child(Service.SERVICES)
             .child(service.id)

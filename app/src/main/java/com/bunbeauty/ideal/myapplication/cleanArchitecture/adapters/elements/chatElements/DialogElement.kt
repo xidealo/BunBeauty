@@ -14,20 +14,20 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTime
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
+import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
 import java.util.*
 
 class DialogElement(
     private val view: View,
     private val context: Context
-) : View.OnClickListener {
-
+) {
     private lateinit var avatarDialogElementImage: ImageView
     private lateinit var nameDialogElementText: TextView
     private lateinit var lastMessageDialogElementText: TextView
     private lateinit var messageTimeDialogElementText: TextView
     private lateinit var isCheckedDialogElementText: TextView
-    private lateinit var dialogElementLayout: LinearLayout
+    private lateinit var dialogElementLayout: MaterialCardView
     private lateinit var dialog: Dialog
 
     fun createElement(dialog: Dialog) {
@@ -43,7 +43,9 @@ class DialogElement(
         messageTimeDialogElementText = view.findViewById(R.id.messageTimeDialogElementText)
         isCheckedDialogElementText = view.findViewById(R.id.isCheckedDialogElementText)
         dialogElementLayout = view.findViewById(R.id.dialogElementLayout)
-        dialogElementLayout.setOnClickListener(this)
+        dialogElementLayout.setOnClickListener{
+            goToDialog()
+        }
     }
 
     private fun setData(dialog: Dialog) {
@@ -68,10 +70,6 @@ class DialogElement(
             .centerCrop()
             .transform(CircularTransformation())
             .into(avatarDialogElementImage)
-    }
-
-    override fun onClick(v: View) {
-        goToDialog()
     }
 
     private fun goToDialog() {

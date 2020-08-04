@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.iSubs.ISubscriptionsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subs.SubscriptionsPresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UpdateUsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscription
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -12,7 +13,7 @@ class SubscriptionsUserInteractor(
     private val intent: Intent,
     private val userRepository: UserRepository
 ) :
-    ISubscriptionsUserInteractor, UserCallback {
+    ISubscriptionsUserInteractor, UserCallback, UpdateUsersCallback {
 
     private lateinit var subscriptionsPresenterCallback: SubscriptionsPresenterCallback
 
@@ -26,8 +27,11 @@ class SubscriptionsUserInteractor(
         subscriptionId: String,
         subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     ) {
-        subscriptionsPresenterCallback.showSubscriptions()
-        cacheUsers.remove(cacheUsers.find { it.id == subscriptionId }!!)
+        this.subscriptionsPresenterCallback = subscriptionsPresenterCallback
+        val user = cacheUsers.find { it.id == subscriptionId }!!
+        cacheUsers.remove(user)
+        user.subscribersCount = user.subscribersCount - 1
+        userRepository.update(user, this)
     }
 
     override fun createSubscriptionScreen(subscriptionsPresenterCallback: SubscriptionsPresenterCallback) {
@@ -61,6 +65,10 @@ class SubscriptionsUserInteractor(
         if (currentSubscriptionsCount == subscriptionsCount) {
             subscriptionsPresenterCallback.fillSubscriptions(cacheUsers)
         }
+    }
+
+    override fun returnUpdatedCallback(obj: User) {
+        subscriptionsPresenterCallback.showSubscriptions()
     }
 
 }

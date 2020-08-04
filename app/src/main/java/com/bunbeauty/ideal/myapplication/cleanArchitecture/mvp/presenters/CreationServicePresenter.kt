@@ -11,7 +11,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.AddingServiceView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.CreationServiceView
 
 @InjectViewState
 class CreationServicePresenter(
@@ -19,7 +19,7 @@ class CreationServicePresenter(
     private val creationServiceTagInteractor: ICreationServiceTagInteractor,
     private val photoInteractor: IPhotoInteractor
 ) :
-    MvpPresenter<AddingServiceView>(), CreationServicePresenterCallback {
+    MvpPresenter<CreationServiceView>(), CreationServicePresenterCallback {
 
     fun addService(
         name: String,

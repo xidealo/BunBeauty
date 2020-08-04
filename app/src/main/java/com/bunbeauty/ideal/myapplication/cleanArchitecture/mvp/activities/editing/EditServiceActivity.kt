@@ -5,7 +5,9 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
@@ -28,8 +30,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.EditServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.EditServiceView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_edit_service.*
 import javax.inject.Inject
@@ -37,7 +41,6 @@ import javax.inject.Inject
 class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     EditServiceView, IChangeablePhotoElement {
 
-    //по возвращению обновлять данные в сервисе!
     override var panelContext: Activity = this
     private lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter
     private lateinit var categoryFragment: CategoryFragment
@@ -98,7 +101,7 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         }
 
         deleteEditServiceBtn.setOnClickListener {
-            editServicePresenter.delete()
+            confirmDelete(editServicePresenter.getCacheService())
         }
 
         resultsEditServiceRecycleView.layoutManager =
@@ -127,6 +130,18 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
                 val error = result.error
             }
         }
+    }
+
+    private fun confirmDelete(service: Service) {
+        MaterialAlertDialogBuilder(this, R.style.myDialogTheme)
+            .setTitle("Внимание!")
+            .setMessage(
+                "Удалить услугу ${service.name}?"
+            ).setPositiveButton("Удалить") { _, _ ->
+                editServicePresenter.delete()
+            }
+            .setNegativeButton("Отмена") { _, _ -> }
+            .show()
     }
 
     override fun onResume() {
@@ -176,6 +191,10 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         dialog.show()
     }
 
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
     override fun openPhoto(openedPhotoLinkOrUri: String) {
         val intent = Intent(this, PhotoSliderActivity::class.java).apply {
             putParcelableArrayListExtra(
@@ -196,8 +215,10 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     }
 
     override fun goToProfile(service: Service) {
-        val intent = Intent()
-        setResult(RESULT_OK, intent)
+        val intent = Intent(this, ProfileActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent)
         finish()
     }
 }

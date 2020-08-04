@@ -26,7 +26,9 @@ class SubscriptionElement(
             "${subscription.subscriptionUser.name} ${subscription.subscriptionUser.surname}"
         showAvatar(subscription.subscriptionUser, view)
 
-        view.subscriptionElementLayout.setOnClickListener { goToProfile(subscription.subscriptionUser) }
+        view.subscriptionElementLayout.setOnClickListener {
+            goToProfile(subscription.subscriptionUser)
+        }
 
         view.subscribeSubscriptionElementCheckBox.isChecked = true
         view.subscribeSubscriptionElementCheckBox.setOnCheckedChangeListener { _, isChecked ->
@@ -55,7 +57,6 @@ class SubscriptionElement(
                 subscriberId = subscription.userId
             )
         )
-        //subscriptionsPresenter.deleteUser(user)
     }
 
     private fun goToProfile(user: User) {
