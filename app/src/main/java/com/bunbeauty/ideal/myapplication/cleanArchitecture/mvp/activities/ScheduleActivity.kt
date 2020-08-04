@@ -17,6 +17,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
@@ -116,7 +117,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
             for (j in 0 until TIME_COLUMN_COUNT) {
                 val width = getScreenWidth() / TIME_COLUMN_COUNT
                 val height = resources.getDimensionPixelSize(R.dimen.schedule_button_height)
-                val text = schedulePresenter.getTimeString(i * TIME_COLUMN_COUNT + j)
+                val text = WorkingTime.getTimeByIndex(i * TIME_COLUMN_COUNT + j)
                 val button = getConfiguredButton(width, height, text)
 
                 timeButtons.add(button)

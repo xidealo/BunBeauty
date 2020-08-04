@@ -3,40 +3,41 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.sessions.SessionsPresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Session
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.SessionsView
 
 @InjectViewState
-class SessionsPresenter(sessionsInteractor: SessionsInteractor): MvpPresenter<SessionsView>() {
+class SessionsPresenter(private val sessionsInteractor: SessionsInteractor) :
+    MvpPresenter<SessionsView>(), SessionsPresenterCallback {
+
     fun getSchedule() {
-        TODO("Not yet implemented")
+        sessionsInteractor.getSchedule(this)
     }
 
-    fun getDateString(i: Int): String {
-        TODO("Not yet implemented")
+    override fun showDays(days: List<WorkingDay>) {
+        viewState.createDaysButtons(days)
     }
 
-    fun isPastDay(dayIndex: Int): Boolean {
-        TODO("Not yet implemented")
+    fun isDaySelected(dayIndex: Int): Boolean {
+        return sessionsInteractor.isDaySelected(dayIndex)
     }
 
-    fun getDayIndex(date: String): Int {
-        TODO("Not yet implemented")
-    }
-
-    fun isDaySelected(buttonIndex: Int): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    fun clearSelectedDay(buttonIndex: Int) {
-        TODO("Not yet implemented")
+    fun clearSelectedDay() {
+        sessionsInteractor.selectedDayIndex = -1
     }
 
     fun getSelectedDay(): Int {
-        TODO("Not yet implemented")
+        return sessionsInteractor.selectedDayIndex
     }
 
-    fun setSelectedDay(buttonIndex: Int) {
-        TODO("Not yet implemented")
+    fun setSelectedDay(dayIndex: Int) {
+        sessionsInteractor.selectedDayIndex = dayIndex
+    }
+
+    fun getSessions(day: String) : List<Session> {
+        return sessionsInteractor.getSessions(day)
     }
 
 }
