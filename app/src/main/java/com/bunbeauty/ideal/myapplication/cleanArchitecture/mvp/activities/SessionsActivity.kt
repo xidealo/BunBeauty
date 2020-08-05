@@ -16,6 +16,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
@@ -57,8 +58,8 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sessions)
 
-        init()
-        createDaysButtons()
+        sessionsPresenter.getSchedule()
+
         initTopPanel("Сеансы", ButtonTask.NONE)
     }
 
@@ -66,42 +67,17 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         super.onResume()
 
         initBottomPanel()
-        sessionsPresenter.getSchedule()
     }
 
-    private fun init() {
-        sessionsLayout.visibility = View.GONE
-    }
+    override fun createDaysButtons(days: List<WorkingDay>) {
+        for (day in days) {
+            val width= resources.getDimensionPixelSize(R.dimen.schedule_button_width)
+            val height= resources.getDimensionPixelSize(R.dimen.schedule_button_height)
+            val text = day.getDayOfMonth().toString()
+            val button = getConfiguredButton(width, height, text)
+            daysButtons.add(button)
 
-    private fun createDaysButtons() {
-        for (weekIndex in 0 until WEEK_COUNT) {
-            for (weekDayIndex in 0 until WEEK_DAY_COUNT) {
-                val width = getScreenWidth() / WEEK_DAY_COUNT
-                val height = resources.getDimensionPixelSize(R.dimen.schedule_button_height)
-                val text =
-                    sessionsPresenter.getDateString(weekIndex * WEEK_DAY_COUNT + weekDayIndex)
-                val button = getConfiguredButton(width, height, text)
-                setButtonEnabled(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex)
-
-                daysButtons.add(button)
-            }
-        }
-
-        for (i in 0 until daysButtons.size) {
-            addViewToContainer(daysButtons[i], daysSessionsGrid)
-        }
-    }
-
-    private fun setButtonEnabled(button: Button, dayIndex: Int) {
-        button.isEnabled = sessionsPresenter.isPastDay(dayIndex)
-    }
-
-    fun setSchedule(schedule: ScheduleWithDays) {
-        for (workingDay in schedule.workingDays) {
-            val dayIndex = sessionsPresenter.getDayIndex(workingDay.workingDay.date)
-            if (dayIndex > 0 && dayIndex < daysButtons.size) {
-                fillButton(daysButtons[dayIndex])
-            }
+            addViewToContainer(button, daysSessionsLayout)
         }
     }
 
@@ -118,16 +94,29 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         button.setOnClickListener {
             val buttonIndex = daysButtons.indexOf(button)
             if (sessionsPresenter.isDaySelected(buttonIndex)) {
-                clearButtonSelection(button)
-                sessionsPresenter.clearSelectedDay(buttonIndex)
+                clearButtonFill(button)
+                sessionsPresenter.clearSelectedDay()
+                hideSessionsLayout()
             } else {
-                clearButtonSelection(daysButtons[sessionsPresenter.getSelectedDay()])
+                clearButtonFill(daysButtons[sessionsPresenter.getSelectedDay()])
                 sessionsPresenter.setSelectedDay(buttonIndex)
-                selectButton(button)
+                fillButton(button)
+
+                val sessions = sessionsPresenter.getSessions(button.text.toString())
+                // TODO show sessions
             }
         }
 
         return button
+    }
+
+    private fun setBackground(button: Button) {
+        val gradientDrawable = GradientDrawable()
+        gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
+        gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.white))
+        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
+
+        button.background = gradientDrawable
     }
 
     private fun getScreenWidth(): Int {
@@ -149,79 +138,7 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         container.addView(view)
     }
 
-    private fun setBackground(button: Button) {
-        val gradientDrawable = GradientDrawable()
-        gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
-        gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.yellow))
-        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
-
-        button.background = gradientDrawable
-    }
-
-    private fun clearPreviousSelection(viewId: Int) {
-        when (viewId) {
-            R.id.daysScheduleGrid -> {
-                for (button in daysButtons) {
-                    clearButtonSelection(button)
-                }
-                for (button in sessionsButtons) {
-                    clearButtonFill(button)
-                }
-            }
-        }
-    }
-
-    private fun select(view: View, motionEvent: MotionEvent) {
-        when (view.id) {
-            R.id.daysScheduleGrid -> {
-                //selectDayButton(motionEvent)
-            }
-
-            R.id.timeScheduleGrid -> {
-                val buttonIndex = findTouchedButton(motionEvent, sessionsButtons) ?: return
-                val button = sessionsButtons[buttonIndex]
-                //selectTimeButton(button)
-            }
-        }
-    }
-
-    fun clearDay(dayIndex: Int) {
-        clearButtonFill(daysButtons[dayIndex])
-    }
-
-    fun fillDay(dayIndex: Int) {
-        fillButton(daysButtons[dayIndex])
-    }
-
-    private fun findTouchedButton(motionEvent: MotionEvent, buttons: List<Button>): Int? {
-        for ((index, button) in buttons.withIndex()) {
-            if (!isButtonTouched(button, motionEvent)) {
-                continue
-            }
-
-            if (!button.isEnabled) {
-                break
-            }
-
-            if (isAlreadyTouched(button)) {
-                break
-            }
-
-            return index
-        }
-
-        return null
-    }
-
-    private fun isAlreadyTouched(button: Button): Boolean {
-        return true //button.getTag(R.id.touchIdTag) == touchId
-    }
-
-    private fun isButtonSelected(button: Button): Boolean {
-        return button.getTag(R.id.touchedTag) == TOUCHED
-    }
-
-    private fun selectButton(button: Button) {
+    /*private fun selectButton(button: Button) {
         val gradientDrawable = button.background as GradientDrawable
 
         gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
@@ -241,7 +158,7 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         button.background = gradientDrawable
 
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
-    }
+    }*/
 
     private fun clearButtonFill(button: Button) {
         val gradientDrawable = button.background as GradientDrawable
@@ -261,28 +178,16 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         button.setTag(R.id.touchedTag, TOUCHED)
     }
 
-    private fun fillButtonInHalf(button: Button) {
-        val a = button.getTag(R.id.touchedTag)
-        val gradientDrawable = button.background as GradientDrawable
-
-        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.light_yellow))
-        button.background = gradientDrawable
-
-        button.setTag(R.id.touchedTag, NOT_TOUCHED)
+    private fun hideSessionsLayout() {
+        timeSessionGrid.visibility = View.GONE
     }
 
-    private fun isButtonTouched(button: Button, motionEvent: MotionEvent): Boolean {
-        return button.x < motionEvent.x &&
-                button.x + button.width > motionEvent.x &&
-                button.y < motionEvent.y &&
-                button.y + button.height > motionEvent.y
+    private fun showSessionsLayout() {
+        timeSessionGrid.visibility = View.VISIBLE
     }
 
     companion object {
-        private const val WEEK_DAY_COUNT = 7
-        private const val WEEK_COUNT = 4
         private const val TIME_COLUMN_COUNT = 6
-        private const val TIME_RAW_COUNT = 8
 
         private const val TOUCHED = "touched"
         private const val NOT_TOUCHED = "not touched"

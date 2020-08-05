@@ -6,6 +6,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime.Companion.TIME_DELIMITER
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IScheduleRepository
 import org.joda.time.DateTime
 import org.joda.time.Days
@@ -46,24 +47,12 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         return getDaysBetween(getLastMondayDate(), getDateFromString(date))
     }
 
-    fun getDaysBetween(startDate: DateTime, endDate:DateTime): Int {
+    fun getDaysBetween(startDate: DateTime, endDate: DateTime): Int {
         return Days.daysBetween(startDate.toLocalDate(), endDate.toLocalDate()).days
     }
 
     fun getDateFromString(date: String): DateTime {
         return DateTime.parse(date, DateTimeFormat.forPattern("dd-MM-yyyy"))
-    }
-
-    fun getTimeString(timeIndex: Int): String {
-        val hours = timeIndex / 2
-        val minutes = (timeIndex % 2) * 30
-        val minutesString = if (minutes == 0) {
-            "00"
-        } else {
-            minutes.toString()
-        }
-
-        return "$hours:$minutesString"
     }
 
     fun isPastDay(dayIndex: Int): Boolean {

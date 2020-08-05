@@ -310,5 +310,5 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideSessionsInteractor() = SessionsInteractor()
+    fun provideSessionsInteractor(scheduleRepository: IScheduleRepository) = SessionsInteractor(scheduleRepository, intent)
 }
