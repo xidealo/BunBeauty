@@ -106,9 +106,9 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideCreationServiceServicePhotoInteractor(photoRepository: PhotoRepository) =
+    fun provideCreationServiceServicePhotoInteractor(photoServiceRepository: PhotoServiceRepository) =
         PhotoInteractor(
-            photoRepository
+            photoServiceRepository
         )
 
     @Provides
@@ -156,8 +156,8 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideServicePhotoInteractor(photoRepository: PhotoRepository) =
-        ServicePhotoInteractor(photoRepository)
+    fun provideServicePhotoInteractor(photoServiceRepository: PhotoServiceRepository) =
+        ServicePhotoInteractor(photoServiceRepository)
 
     @Provides
     @Singleton

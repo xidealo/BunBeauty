@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile
 
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface EditProfilePresenterCallback {
@@ -18,4 +19,6 @@ interface EditProfilePresenterCallback {
     fun showVerificationFailed()
     fun showWrongCodeError()
     fun showPhoneAlreadyUsedError()
+    fun savePhotos(photos: List<Photo>, user: User)
+    fun deletePreviousPhoto(photos: ArrayList<Photo>)
 }

@@ -5,11 +5,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.photo.PhotosCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IPhotoRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IPhotoServiceRepository
 import com.google.firebase.storage.FirebaseStorage
 
-
-class PhotoInteractor(private val photoRepository: IPhotoRepository) :
+class PhotoInteractor(private val photoServiceRepository: IPhotoServiceRepository) :
     IPhotoInteractor, PhotosCallback, DeletePhotoCallback {
 
     private var photos = mutableListOf<Photo>()
@@ -33,33 +33,45 @@ class PhotoInteractor(private val photoRepository: IPhotoRepository) :
         deletePhotos.add(photo)
     }
 
-    override fun saveImages(service: Service) {
-
+    override fun savePhotos(
+        photos: List<Photo>,
+        service: Service,
+        iPhotoCallback: IPhotoCallback) {
+        this.iPhotoCallback = iPhotoCallback
         for (photo in photos) {
             if (photo.id.isEmpty()) {
                 photo.userId = service.userId
                 photo.serviceId = service.id
-                photo.id = photoRepository.getIdForNew(photo.userId, photo.serviceId)
-                addImage(photo)
+                photo.id = photoServiceRepository.getIdForNew(photo.userId, photo.serviceId)
+                addImage(Service.SERVICE_PHOTO, photo)
             }
         }
     }
 
-    override fun deleteImages() {
-        for (photo in deletePhotos) {
-            deleteImage(photo)
+    override fun savePhotos(photos: List<Photo>, user: User, iPhotoCallback: IPhotoCallback) {
+        this.iPhotoCallback = iPhotoCallback
+        for (photo in photos) {
+            photo.userId = user.id
+            photo.id = photoServiceRepository.getIdForNew(photo.userId, photo.serviceId)
+            addImage(User.USER_PHOTO, photo)
         }
     }
 
-    override fun deletePhotosFromStorage(photos: List<Photo>) {
+    override fun deleteImagesFromService(photos: List<Photo>) {
         for (photo in photos) {
-            deletePhotoFromStorage(photo.id)
+            deleteImageFromService(photo)
+        }
+    }
+
+    override fun deletePhotosFromStorage(location: String, photos: List<Photo>) {
+        for (photo in photos) {
+            deletePhotoFromStorage(location, photo.id)
         }
     }
 
     override fun getPhotos(service: Service, iPhotoCallback: IPhotoCallback) {
         this.iPhotoCallback = iPhotoCallback
-        photoRepository.getByServiceId(service.id, service.userId, this)
+        photoServiceRepository.getByServiceId(service.id, service.userId, this)
     }
 
     override fun returnList(objects: List<Photo>) {
@@ -67,32 +79,40 @@ class PhotoInteractor(private val photoRepository: IPhotoRepository) :
         iPhotoCallback.returnPhotos(objects)
     }
 
-    private fun addImage(photo: Photo) {
+    private fun addImage(location: String, photo: Photo) {
         val storageReference = FirebaseStorage
             .getInstance()
-            .getReference("${Service.SERVICE_PHOTO}/${photo.id}")
+            .getReference("$location/${photo.id}")
 
         storageReference.putFile(Uri.parse(photo.link)).addOnSuccessListener {
             storageReference.downloadUrl.addOnSuccessListener {
-                photo.link = it.toString()
-                photoRepository.insert(photo)
+                when (location) {
+                    Service.SERVICE_PHOTO -> {
+                        photo.link = it.toString()
+                        photoServiceRepository.insert(photo)
+                    }
+                    User.USER_PHOTO -> {
+                        //особенность очищения
+                        photos.clear()
+                        iPhotoCallback.returnCreatedPhotoLink(it)
+                    }
+                }
             }
         }
     }
 
-    private fun deleteImage(photo: Photo) {
-        photoRepository.delete(photo, this)
+    private fun deleteImageFromService(photo: Photo) {
+        photoServiceRepository.delete(photo, this)
     }
-
 
     override fun returnDeletedCallback(obj: Photo) {
-        deletePhotoFromStorage(photoId = obj.id)
+        deletePhotoFromStorage(Service.SERVICE_PHOTO, photoId = obj.id)
     }
 
-    private fun deletePhotoFromStorage(photoId: String) {
+    private fun deletePhotoFromStorage(location: String, photoId: String) {
         val firebaseStorage = FirebaseStorage.getInstance()
         val storageReference =
-            firebaseStorage.getReference(Service.SERVICE_PHOTO + "/" + photoId)
+            firebaseStorage.getReference("$location/$photoId")
         storageReference.delete()
     }
 

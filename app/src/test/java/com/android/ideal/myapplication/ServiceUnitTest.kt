@@ -2,7 +2,7 @@ package com.android.ideal.myapplication
 
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoServiceRepository
 import io.mockk.mockk
 import org.mockito.Mock
 
@@ -11,7 +11,7 @@ open class ServiceUnitTest {
     @Mock
     val intent: Intent = mockk()
     @Mock
-    val photoRepository: PhotoRepository = mockk()
+    val photoServiceRepository: PhotoServiceRepository = mockk()
 
   /*  @Test
     fun whenServiceIsPremium() {

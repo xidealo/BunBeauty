@@ -153,7 +153,7 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
         viewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
     }
 
-    fun openPhoto() {
+    private fun openPhoto() {
         val intent = Intent(this, PhotoSliderActivity::class.java).apply {
             putParcelableArrayListExtra(
                 Photo.PHOTO,

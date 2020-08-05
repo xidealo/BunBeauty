@@ -1,7 +1,7 @@
 package com.android.ideal.myapplication;
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoRepository;
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoServiceRepository;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.TagRepository;
 
@@ -26,7 +26,7 @@ public class AddingServiceUnitTests {
     @Mock
     TagRepository tagRepository;
     @Mock
-    PhotoRepository photoRepository;
+    PhotoServiceRepository photoRepository;
 
     //addService
     @Test

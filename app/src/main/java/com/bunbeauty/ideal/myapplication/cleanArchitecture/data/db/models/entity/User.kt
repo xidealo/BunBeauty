@@ -17,9 +17,9 @@ data class User(
     var countOfRates: Long = 0,
     var photoLink: String = DEFAULT_PHOTO_LINK,
     var subscribersCount: Long = 0,
-    var subscriptionsCount: Long=0,
+    var subscriptionsCount: Long = 0,
     var registrationDate: Long = 0
-) :  Serializable {
+) : Serializable {
 //добавить время последнего захода?
 //добавить дату регистрации?
 
@@ -46,11 +46,11 @@ data class User(
                 "googleapis.com/v0/b/bun-beauty.appspot.com/o/avatar%2FdefaultAva." +
                 "jpg?alt=media&token=f15dbe15-0541-46cc-8272-2578627ed311"
 
-
         const val STATUS = "status"
+        const val USER_PHOTO = "user photo"
         const val MASTER = "master"
         const val CLIENT = "client"
         const val TOKEN = "token"
-        const val REGISTRATION_DATA = "registration data"
+        const val REGISTRATION_DATE = "registration date"
     }
 }

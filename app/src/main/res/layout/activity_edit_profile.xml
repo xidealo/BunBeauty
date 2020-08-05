@@ -34,6 +34,14 @@
                     tools:srcCompat="@tools:sample/avatars" />
             </LinearLayout>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/photoEditProfileBtn"
+                style="@style/smallButton"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/font_awesome_solid"
+                android:text=""
+                android:textSize="20sp" />
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/materialInputLayout"
                 android:hint="Имя"

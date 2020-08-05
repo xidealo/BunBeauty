@@ -27,8 +27,8 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun providePhotoRepository(photoDao: PhotoDao, photoFirebase: PhotoFirebase) =
-        PhotoRepository(photoDao, photoFirebase)
+    fun providePhotoRepository(photoDao: PhotoDao, photoServiceFirebase: PhotoServiceFirebase) =
+        PhotoServiceRepository(photoDao, photoServiceFirebase)
 
     @Provides
     @Singleton

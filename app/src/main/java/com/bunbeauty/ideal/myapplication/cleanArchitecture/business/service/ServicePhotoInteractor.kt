@@ -5,9 +5,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.service.Serv
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.photo.PhotosCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.PhotoServiceRepository
 
-class ServicePhotoInteractor(private val photoRepository: PhotoRepository) :
+class ServicePhotoInteractor(private val photoServiceRepository: PhotoServiceRepository) :
     IServicePhotoInteractor, PhotosCallback {
 
     private lateinit var servicePresenterCallback: ServicePresenterCallback
@@ -20,7 +20,7 @@ class ServicePhotoInteractor(private val photoRepository: PhotoRepository) :
         servicePresenterCallback: ServicePresenterCallback
     ) {
         this.servicePresenterCallback = servicePresenterCallback
-        photoRepository.getByServiceId(service.id, service.userId, this)
+        photoServiceRepository.getByServiceId(service.id, service.userId, this)
     }
 
     override fun returnList(objects: List<Photo>) {

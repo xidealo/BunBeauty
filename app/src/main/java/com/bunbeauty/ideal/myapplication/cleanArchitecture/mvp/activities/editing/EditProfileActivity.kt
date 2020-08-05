@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editi
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -12,12 +13,15 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.profile.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity
@@ -25,6 +29,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapt
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
 import com.squareup.picasso.Picasso
+import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 import javax.inject.Inject
 
@@ -39,6 +44,9 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
     @Inject
     lateinit var editProfileInteractor: EditProfileInteractor
 
+    @Inject
+    lateinit var photoInteractor: PhotoInteractor
+
     @ProvidePresenter
     internal fun provideEditProfilePresenter(): EditProfilePresenter {
         DaggerAppComponent.builder()
@@ -47,7 +55,7 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
             .firebaseModule(FirebaseModule())
             .build()
             .inject(this)
-        return EditProfilePresenter(editProfileInteractor)
+        return EditProfilePresenter(editProfileInteractor, photoInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +71,6 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
 
     override fun onResume() {
         super.onResume()
-
         initBottomPanel()
     }
 
@@ -86,6 +93,39 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
         resendCodeEditProfileBtn.setOnClickListener {
             editProfilePresenter.resendCode(phoneEditProfileInput.text.toString())
         }
+        avatarEditProfileImage.setOnClickListener {
+            openPhoto()
+        }
+
+        photoEditProfileBtn.setOnClickListener {
+            CropImage.activity().start(this)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            if (resultCode == Activity.RESULT_OK) {
+                val resultUri: Uri = result.uri
+                editProfilePresenter.createPhoto(resultUri)
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                val error = result.error
+            }
+        }
+    }
+
+    private fun openPhoto() {
+        val intent = Intent(this, PhotoSliderActivity::class.java).apply {
+            putParcelableArrayListExtra(
+                Photo.PHOTO,
+                arrayListOf(Photo(link = editProfilePresenter.getCacheOwner().photoLink))
+            )
+            putExtra(Photo.LINK, editProfilePresenter.getCacheOwner().photoLink)
+        }
+        startActivity(intent)
+        overridePendingTransition(0, 0)
     }
 
     private fun createPanels() {

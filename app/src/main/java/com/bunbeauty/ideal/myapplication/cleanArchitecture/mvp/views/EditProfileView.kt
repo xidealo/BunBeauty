@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 
 import com.arellomobile.mvp.MvpView
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface EditProfileView: MvpView {
@@ -15,7 +16,6 @@ interface EditProfileView: MvpView {
 
     fun disableEditProfileEditButton()
     fun enableEditProfileEditButton()
-
     fun showPhoneError(error:String)
 
     fun showCodeInputAndButtons()

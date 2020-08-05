@@ -4,7 +4,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.photo.PhotosCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 
-interface IPhotoRepository {
+interface IPhotoServiceRepository {
     fun insert(photo: Photo)
     fun delete(photo: Photo, deletePhotoCallback: DeletePhotoCallback)
     fun update(photo: Photo)

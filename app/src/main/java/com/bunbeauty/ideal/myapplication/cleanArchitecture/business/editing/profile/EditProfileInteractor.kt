@@ -8,6 +8,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.VerifyPhoneN
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.EditProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UpdateUsersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.user.UserCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -23,22 +24,29 @@ class EditProfileInteractor(
     private lateinit var editProfilePresenterCallback: EditProfilePresenterCallback
 
     lateinit var cacheUser: User
+    lateinit var cacheWithChangesUser: User
 
     fun getUser(editProfilePresenterCallback: EditProfilePresenterCallback) {
         cacheUser = intent.getSerializableExtra(User.USER) as User
-
         editProfilePresenterCallback.showEditProfile(cacheUser)
     }
 
     fun saveData(
         user: User,
+        photos: List<Photo>,
         editProfilePresenterCallback: EditProfilePresenterCallback
     ) {
         this.editProfilePresenterCallback = editProfilePresenterCallback
+        cacheWithChangesUser = user
 
         if (isNameCorrect(user.name, editProfilePresenterCallback) &&
             isSurnameCorrect(user.surname, editProfilePresenterCallback)
         ) {
+            if (photos.isNotEmpty()) {
+                editProfilePresenterCallback.savePhotos(photos, user)
+                return
+            }
+
             if (cacheUser.phone == user.phone) {
                 userRepository.update(user, this)
             } else {

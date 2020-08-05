@@ -23,7 +23,7 @@ class UserFirebase {
         items[User.PHOTO_LINK] = user.photoLink
         items[User.COUNT_OF_SUBSCRIBERS] = user.subscribersCount
         items[User.COUNT_OF_SUBSCRIPTIONS] = user.subscriptionsCount
-        items[User.REGISTRATION_DATA]=ServerValue.TIMESTAMP
+        items[User.REGISTRATION_DATE]=ServerValue.TIMESTAMP
         myRef.updateChildren(items)
     }
 

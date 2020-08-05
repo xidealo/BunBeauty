@@ -6,6 +6,7 @@ import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.IPhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.iCreateService.ICreationServiceTagInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.IPhotoCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.creationService.CreationServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -19,7 +20,7 @@ class CreationServicePresenter(
     private val creationServiceTagInteractor: ICreationServiceTagInteractor,
     private val photoInteractor: IPhotoInteractor
 ) :
-    MvpPresenter<CreationServiceView>(), CreationServicePresenterCallback {
+    MvpPresenter<CreationServiceView>(), CreationServicePresenterCallback, IPhotoCallback {
 
     fun addService(
         name: String,
@@ -39,7 +40,7 @@ class CreationServicePresenter(
         service.countOfRates = 0
         service.userId = User.getMyId()
         service.tags = tags
-        creationServiceServiceInteractor.addService(service,this)
+        creationServiceServiceInteractor.addService(service, this)
     }
 
     fun createPhoto(uri: Uri) {
@@ -87,6 +88,10 @@ class CreationServicePresenter(
     }
 
     override fun addPhotos(service: Service) {
-        photoInteractor.saveImages(service)
+        photoInteractor.savePhotos(photoInteractor.getPhotosLink(), service, this)
     }
+
+    override fun returnPhotos(photos: List<Photo>) {}
+
+    override fun returnCreatedPhotoLink(uri: Uri) {}
 }

@@ -22,7 +22,7 @@ class FirebaseModule {
 
     @Provides
     @Singleton
-    fun providePhotoFirebase() = PhotoFirebase()
+    fun providePhotoFirebase() = PhotoServiceFirebase()
 
     @Provides
     @Singleton

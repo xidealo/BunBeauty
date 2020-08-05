@@ -1,20 +1,30 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 
+import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.profile.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.IPhotoCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.IPhotoInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.EditProfilePresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
 
 
 @InjectViewState
-class EditProfilePresenter(private val editProfileInteractor: EditProfileInteractor) :
-    MvpPresenter<EditProfileView>(), EditProfilePresenterCallback {
+class EditProfilePresenter(
+    private val editProfileInteractor: EditProfileInteractor,
+    private val photoInteractor: IPhotoInteractor
+) :
+    MvpPresenter<EditProfileView>(), EditProfilePresenterCallback, IPhotoCallback {
 
     fun getUser() {
         editProfileInteractor.getUser(this)
     }
+
+    fun getCacheOwner() = editProfileInteractor.cacheUser
 
     override fun showEditProfile(user: User) {
         viewState.showEditProfile(user)
@@ -30,8 +40,30 @@ class EditProfilePresenter(private val editProfileInteractor: EditProfileInterac
         user.surname = surname
         user.city = city
         user.phone = phone
-        editProfileInteractor.saveData(user, this)
+        editProfileInteractor.saveData(user, photoInteractor.getPhotosLink(), this)
     }
+
+    override fun returnCreatedPhotoLink(uri: Uri) {
+        editProfileInteractor.cacheWithChangesUser.photoLink = uri.toString()
+        editProfileInteractor.saveData(
+            editProfileInteractor.cacheWithChangesUser,
+            photoInteractor.getPhotosLink(),
+            this
+        )
+    }
+
+    fun createPhoto(uri: Uri) {
+        val photo = Photo()
+        photo.link = uri.toString()
+        photoInteractor.addPhoto(photo)
+        viewState.showAvatar(photo.link)
+    }
+
+    override fun savePhotos(photos: List<Photo>, user: User) {
+        photoInteractor.savePhotos(photos, user, this)
+    }
+
+    override fun returnPhotos(photos: List<Photo>) {}
 
     override fun nameEditProfileInputError() {
         viewState.enableEditProfileEditButton()
@@ -100,7 +132,14 @@ class EditProfilePresenter(private val editProfileInteractor: EditProfileInterac
         viewState.showMessage("Данный номер уже используется другим пользователем.")
     }
 
+    override fun deletePreviousPhoto(photos: ArrayList<Photo>) {
+        photoInteractor.deletePhotosFromStorage(User.USER_PHOTO, photos)
+    }
+
+
     fun signOut() {
         editProfileInteractor.signOut()
     }
+
+
 }

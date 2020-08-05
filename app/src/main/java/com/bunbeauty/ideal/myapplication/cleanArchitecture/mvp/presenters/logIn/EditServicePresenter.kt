@@ -63,13 +63,16 @@ class EditServicePresenter(
     }
 
     override fun goToService(service: Service) {
-        photoInteractor.saveImages(service)
-        photoInteractor.deleteImages()
+        photoInteractor.savePhotos(photoInteractor.getPhotosLink(), service, this)
+        photoInteractor.deleteImagesFromService(photoInteractor.getDeletePhotosLink())
         viewState.goToService(service)
     }
 
     override fun goToProfile(service: Service) {
-        photoInteractor.deletePhotosFromStorage(photoInteractor.getPhotosLink())
+        photoInteractor.deletePhotosFromStorage(
+            Service.SERVICE_PHOTO,
+            photoInteractor.getPhotosLink()
+        )
         viewState.showMessage("Услуга успешно удалена")
         viewState.goToProfile(service)
     }
@@ -94,6 +97,8 @@ class EditServicePresenter(
         viewState.updatePhotoFeed()
         viewState.hideLoading()
     }
+
+    override fun returnCreatedPhotoLink(uri: Uri) {}
 
     fun removePhoto(photo: Photo) {
         photoInteractor.removePhoto(photo)
