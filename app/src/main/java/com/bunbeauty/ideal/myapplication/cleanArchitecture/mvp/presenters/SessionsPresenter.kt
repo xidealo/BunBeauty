@@ -17,27 +17,16 @@ class SessionsPresenter(private val sessionsInteractor: SessionsInteractor) :
     }
 
     override fun showDays(days: List<WorkingDay>) {
-        viewState.createDaysButtons(days)
+        viewState.showDays(days)
     }
 
-    fun isDaySelected(dayIndex: Int): Boolean {
-        return sessionsInteractor.isDaySelected(dayIndex)
+    fun getSessions(day: WorkingDay) {
+        clearSessions()
+        viewState.showTime(sessionsInteractor.getSessions(day))
     }
 
-    fun clearSelectedDay() {
-        sessionsInteractor.selectedDayIndex = -1
-    }
-
-    fun getSelectedDay(): Int {
-        return sessionsInteractor.selectedDayIndex
-    }
-
-    fun setSelectedDay(dayIndex: Int) {
-        sessionsInteractor.selectedDayIndex = dayIndex
-    }
-
-    fun getSessions(day: String) : List<Session> {
-        return sessionsInteractor.getSessions(day)
+    fun clearSessions() {
+        viewState.clearSessionsLayout()
     }
 
 }

@@ -70,6 +70,10 @@ class ServicePresenter(
         viewState.setTopPanelTitle(title)
     }
 
+    fun getService(): Service {
+        return serviceServiceInteractor.getService()
+    }
+
     /*
       fun getServicePhotos(serviceId: String, serviceOwnerId: String) {
           serviceInteractor.getServicePhotos(serviceId, serviceOwnerId, this)

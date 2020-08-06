@@ -21,6 +21,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoSliderActivity
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.SessionsActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditServiceActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
@@ -29,15 +30,15 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
-import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.activity_service.*
 import javax.inject.Inject
 
-class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceView, ITopPanel,
-    IBottomPanel, IProfileAvailable, IPhotoElement {
+class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomPanel,
+    IProfileAvailable, IPhotoElement {
+
+    override var panelContext: Activity = this
 
     private lateinit var premiumFragment: PremiumFragment
-    override var panelContext: Activity = this
     private lateinit var photoAdapter: PhotoAdapter
 
     @Inject
@@ -81,19 +82,23 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     override fun onResume() {
         super.onResume()
+
         initBottomPanel()
     }
 
     private fun init() {
         premiumFragment =
             supportFragmentManager.findFragmentById(R.id.premiumBlockService) as PremiumFragment
-        findViewById<MaterialButton>(R.id.scheduleServiceBtn).setOnClickListener(this)
+
+        scheduleServiceBtn.setOnClickListener {
+            goToSession()
+        }
 
         photosServiceRecycleView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
         photoAdapter = PhotoAdapter(
-            servicePresenter.getPhotosLink(), this,
+            servicePresenter.getPhotosLink(),
+            this,
             resources.getDimensionPixelSize(R.dimen.photo_width),
             resources.getDimensionPixelSize(R.dimen.photo_height)
         )
@@ -140,7 +145,9 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
     private fun showRatingBar(rating: Float) {
         ratingServiceRatingBar.visibility = View.VISIBLE
         ratingServiceRatingBar.rating = rating
-        ratingBlockServiceLayout.setOnClickListener(this)
+        ratingBlockServiceLayout.setOnClickListener {
+            goToComments()
+        }
     }
 
     override fun showPremium(service: Service) {
@@ -161,16 +168,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
 
     override fun showPhotos(photos: List<Photo>) {
         photoAdapter.notifyDataSetChanged()
-    }
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.scheduleServiceBtn -> {
-
-            }
-
-            R.id.ratingBlockServiceLayout -> goToComments()
-        }
     }
 
     override fun actionClick() {
@@ -202,7 +199,6 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         startActivityForResult(intent, REQUEST_EDIT_SERVICE)
     }
 
-    // go to owner profile
     override fun goToProfile(user: User) {
         val intent = Intent(this, ProfileActivity::class.java).apply {
             putExtra(User.USER, user)
@@ -229,6 +225,14 @@ class ServiceActivity : MvpAppCompatActivity(), View.OnClickListener, ServiceVie
         intent.putExtra(Service.USER_ID, "")
         intent.putExtra(Service.COUNT_OF_RATES, "")
         startActivity(intent)*/
+    }
+
+    private fun goToSession() {
+        val intent = Intent(this, SessionsActivity::class.java).apply {
+            this.putExtra(User.USER_ID, servicePresenter.getService().userId)
+            this.putExtra(Service.DESCRIPTION, servicePresenter.getService().duration)
+        }
+        startActivity(intent)
     }
 
     companion object {

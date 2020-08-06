@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.sessions.SessionsPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.schedule.GetScheduleCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service.Companion.DURATION
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays
@@ -23,7 +24,11 @@ class SessionsInteractor(
     fun getSchedule(sessionsPresenterCallback: SessionsPresenterCallback) {
         this.sessionsPresenterCallback = sessionsPresenterCallback
 
-        scheduleRepository.getScheduleByUserId(User.getMyId(), this)
+        scheduleRepository.getScheduleByUserId(getMasterId(), this)
+    }
+
+    fun getMasterId(): String {
+        return intent.getStringExtra(User.USER_ID)!!
     }
 
     override fun returnGotSchedule(schedule: ScheduleWithDays) {
@@ -41,8 +46,8 @@ class SessionsInteractor(
             .map { it.workingDay }
     }
 
-    fun getSessions(day: String) : List<Session> {
-        val workingDay = schedule.workingDays.find { it.workingDay.getDayOfMonth() == day.toInt() }!!
+    fun getSessions(day: WorkingDay) : List<Session> {
+        val workingDay = schedule.workingDays.find { it.workingDay.id == day.id }!!
         return workingDay.getSessions(getServiceDuration())
     }
 

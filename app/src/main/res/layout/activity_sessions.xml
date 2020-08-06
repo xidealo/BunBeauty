@@ -17,13 +17,11 @@
 
         <LinearLayout style="@style/wideVerticalBlock">
 
-            <HorizontalScrollView
-                style="@style/wideHorizontalBlock">
-
-                <LinearLayout
-                    android:id="@+id/daysSessionsLayout"
-                    style="@style/wideHorizontalBlock" />
-            </HorizontalScrollView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/daysSessionsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
 
             <LinearLayout
                 android:id="@+id/sessionsLayout"
@@ -34,10 +32,10 @@
                     android:text="Сеансы"
                     app:layout_constraintBottom_toTopOf="@+id/bottomPanel" />
 
-                <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
+                <GridLayout
                     android:id="@+id/timeSessionGrid"
                     style="@style/horizontalLayout"
-                    android:columnCount="6" />
+                    android:columnCount="3" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

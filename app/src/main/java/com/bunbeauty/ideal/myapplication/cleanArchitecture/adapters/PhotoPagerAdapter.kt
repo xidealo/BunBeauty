@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.PhotoPagerAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.PhotoPagerAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.photo.PhotoSlideCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import kotlinx.android.synthetic.main.activity_photo_slider.*
@@ -23,7 +23,10 @@ class PhotoSliderActivity : MvpAppCompatActivity(), PhotoSlideCallback {
         val openedPhotoLink = intent.getStringExtra(Photo.LINK) ?: ""
         photoPosition = photosList.indexOf(photosList.find { it.link == openedPhotoLink })
 
-        photoPagerAdapter = PhotoPagerAdapter(this)
+        photoPagerAdapter =
+            PhotoPagerAdapter(
+                this
+            )
         photosPhotoSliderPager.adapter = photoPagerAdapter
         photoPagerAdapter.setItems(photosList, this)
 

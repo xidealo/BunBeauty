@@ -6,19 +6,20 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.service.Serv
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
-class ServiceServiceInteractor(
-    private val intent: Intent
-) : IServiceServiceInteractor {
+class ServiceServiceInteractor(private val intent: Intent) : IServiceServiceInteractor {
 
-    private lateinit var service: Service
+    lateinit var gottenService: Service
+
+    override fun getService(): Service {
+        return intent.getSerializableExtra(Service.SERVICE) as Service
+    }
 
     override fun createServiceScreen(
         user: User,
         servicePresenterCallback: ServicePresenterCallback
     ) {
-        val service = intent.getSerializableExtra(Service.SERVICE) as Service
-
-        this.service = service
+        val service = getService()
+        gottenService = service
 
         if (!isMyService(user)) {
             servicePresenterCallback.showPremium(service)
@@ -33,7 +34,7 @@ class ServiceServiceInteractor(
 
     override fun iconClick(user: User, servicePresenterCallback: ServicePresenterCallback) {
         if (isMyService(user)) {
-            servicePresenterCallback.goToEditService(service)
+            servicePresenterCallback.goToEditService(gottenService)
         } else {
             servicePresenterCallback.goToProfile(user)
         }
@@ -45,7 +46,7 @@ class ServiceServiceInteractor(
         service: Service,
         servicePresenterCallback: ServicePresenterCallback
     ) {
-        this.service = service
+        gottenService = service
         servicePresenterCallback.showService(service)
         servicePresenterCallback.setTitle(service.name)
     }
