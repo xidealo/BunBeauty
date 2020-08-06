@@ -17,7 +17,7 @@ interface EditProfileView: MvpView {
     fun disableEditProfileEditButton()
     fun enableEditProfileEditButton()
     fun showPhoneError(error:String)
-
+    fun showLoading()
     fun showCodeInputAndButtons()
     fun hideCodeInputAndButtons()
     fun showMessage(message: String)

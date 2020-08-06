@@ -42,8 +42,15 @@ class EditProfileInteractor(
         if (isNameCorrect(user.name, editProfilePresenterCallback) &&
             isSurnameCorrect(user.surname, editProfilePresenterCallback)
         ) {
+            //что будет если несколько добавить, зарузит несколько фоток?
             if (photos.isNotEmpty()) {
-                editProfilePresenterCallback.savePhotos(photos, user)
+                editProfilePresenterCallback.showLoading()
+                editProfilePresenterCallback.deletePreviousPhoto(
+                    arrayListOf(Photo(id = cacheUser.id, link = cacheUser.photoLink))
+                )
+                editProfilePresenterCallback.savePhotos(
+                    photos, user
+                )
                 return
             }
 

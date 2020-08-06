@@ -136,6 +136,9 @@ class EditProfilePresenter(
         photoInteractor.deletePhotosFromStorage(User.USER_PHOTO, photos)
     }
 
+    override fun showLoading() {
+        viewState.showLoading()
+    }
 
     fun signOut() {
         editProfileInteractor.signOut()

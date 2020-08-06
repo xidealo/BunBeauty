@@ -36,7 +36,8 @@ class PhotoInteractor(private val photoServiceRepository: IPhotoServiceRepositor
     override fun savePhotos(
         photos: List<Photo>,
         service: Service,
-        iPhotoCallback: IPhotoCallback) {
+        iPhotoCallback: IPhotoCallback
+    ) {
         this.iPhotoCallback = iPhotoCallback
         for (photo in photos) {
             if (photo.id.isEmpty()) {
@@ -49,23 +50,18 @@ class PhotoInteractor(private val photoServiceRepository: IPhotoServiceRepositor
     }
 
     override fun savePhotos(photos: List<Photo>, user: User, iPhotoCallback: IPhotoCallback) {
+        // "last" пока нет списка фоток пользователя
         this.iPhotoCallback = iPhotoCallback
-        for (photo in photos) {
-            photo.userId = user.id
-            photo.id = photoServiceRepository.getIdForNew(photo.userId, photo.serviceId)
-            addImage(User.USER_PHOTO, photo)
+        if (photos.isNotEmpty()) {
+            photos.last().userId = user.id
+            photos.last().id = user.id
+            addImage(User.USER_PHOTO, photos.last())
         }
     }
 
     override fun deleteImagesFromService(photos: List<Photo>) {
         for (photo in photos) {
             deleteImageFromService(photo)
-        }
-    }
-
-    override fun deletePhotosFromStorage(location: String, photos: List<Photo>) {
-        for (photo in photos) {
-            deletePhotoFromStorage(location, photo.id)
         }
     }
 
@@ -98,6 +94,12 @@ class PhotoInteractor(private val photoServiceRepository: IPhotoServiceRepositor
                     }
                 }
             }
+        }
+    }
+
+    override fun deletePhotosFromStorage(location: String, photos: List<Photo>) {
+        for (photo in photos) {
+            deletePhotoFromStorage(location, photo.id)
         }
     }
 

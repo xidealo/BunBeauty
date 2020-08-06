@@ -18,6 +18,7 @@ interface EditProfilePresenterCallback {
     fun showTooShortCodeError()
     fun showVerificationFailed()
     fun showWrongCodeError()
+    fun showLoading()
     fun showPhoneAlreadyUsedError()
     fun savePhotos(photos: List<Photo>, user: User)
     fun deletePreviousPhoto(photos: ArrayList<Photo>)

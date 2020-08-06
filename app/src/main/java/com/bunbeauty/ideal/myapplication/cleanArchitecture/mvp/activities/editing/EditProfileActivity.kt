@@ -85,7 +85,7 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
             codeEditProfileSpinner,
             this
         )
-
+        loadingEditProfileProgressBar.visibility = View.GONE
         saveChangesEditProfileBtn.setOnClickListener { saveChanges() }
         verifyCodeEditProfileBtn.setOnClickListener {
             editProfilePresenter.verifyCode(codeEditProfileInput.text.toString())
@@ -216,6 +216,7 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
         finish()
     }
 
+
     override fun actionClick() {
         signOut()
     }
@@ -228,6 +229,11 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
         overridePendingTransition(0, 0)
 
         finish()
+    }
+
+    override fun showLoading() {
+        loadingEditProfileProgressBar.visibility = View.VISIBLE
+        saveChangesEditProfileBtn.isEnabled = false
     }
 
     override fun showMessage(message: String) {
