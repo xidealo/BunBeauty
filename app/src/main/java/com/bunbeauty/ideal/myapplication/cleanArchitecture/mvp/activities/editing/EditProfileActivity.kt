@@ -96,7 +96,6 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
         avatarEditProfileImage.setOnClickListener {
             openPhoto()
         }
-
         photoEditProfileBtn.setOnClickListener {
             CropImage.activity().start(this)
         }
