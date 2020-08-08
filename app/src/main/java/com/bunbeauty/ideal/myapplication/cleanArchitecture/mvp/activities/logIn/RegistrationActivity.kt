@@ -105,10 +105,14 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterS
     override fun goToProfile(user: User) {
         val intent = Intent(this, ProfileActivity::class.java).apply {
             putExtra(User.USER, user)
+            putExtra(REGISTRATION_ACTIVITY, "registration")
         }
         startActivity(intent)
         overridePendingTransition(0, 0)
         finish()
     }
 
+    companion object{
+        const val REGISTRATION_ACTIVITY = "registration activity"
+    }
 }

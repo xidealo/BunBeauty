@@ -9,7 +9,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.iid.FirebaseInstanceId
+
 
 class ProfileUserInteractor(
     private val userRepository: IUserRepository,
@@ -79,15 +82,16 @@ class ProfileUserInteractor(
     }
 
     override fun initFCM() {
-        /*if (fromRegistartion()) {
-            al token = FirebaseInstanceId . getInstance ().token
-            val reference = FirebaseDatabase.getInstance().reference
-            reference.child(User.USERS)
-                .child(User.getMyId())
-                .child(TOKEN)
-                .setValue(token)
-        }*/
+        if (isFromRegistration()) {
+            FirebaseInstanceId.getInstance().instanceId
+                .addOnSuccessListener { instanceIdResult ->
+                    userRepository.setToken(instanceIdResult.token)
+                }
+        }
     }
+
+    private fun isFromRegistration() =
+        (intent.getStringExtra(RegistrationActivity.REGISTRATION_ACTIVITY) ?: "").isNotEmpty()
 
     override fun updateMyProfileServices(
         profilePresenterCallback: ProfilePresenterCallback

@@ -54,6 +54,10 @@ class UserRepository(
         }
     }
 
+    override fun setToken(token: String) {
+        userFirebase.setToken(token)
+    }
+
     override fun getById(id: String, userCallback: UserCallback, isFirstEnter: Boolean) {
         if (isFirstEnter) {
             userFirebase.getById(id, userCallback)

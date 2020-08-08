@@ -23,12 +23,20 @@ class UserFirebase {
         items[User.PHOTO_LINK] = user.photoLink
         items[User.COUNT_OF_SUBSCRIBERS] = user.subscribersCount
         items[User.COUNT_OF_SUBSCRIPTIONS] = user.subscriptionsCount
-        items[User.REGISTRATION_DATE]=ServerValue.TIMESTAMP
+        items[User.REGISTRATION_DATE] = ServerValue.TIMESTAMP
         myRef.updateChildren(items)
     }
 
     fun delete(user: User) {
 
+    }
+
+    fun setToken(token: String){
+        val reference = FirebaseDatabase.getInstance().reference
+        reference.child(User.USERS)
+            .child(User.getMyId())
+            .child(User.TOKEN)
+            .setValue(token)
     }
 
     fun update(user: User) {
@@ -74,9 +82,13 @@ class UserFirebase {
 
         userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
-                if(usersSnapshot.childrenCount != 0L){
-                    userCallback.returnElement(getUserFromSnapshot(usersSnapshot.children.iterator().next()))
-                }else{
+                if (usersSnapshot.childrenCount != 0L) {
+                    userCallback.returnElement(
+                        getUserFromSnapshot(
+                            usersSnapshot.children.iterator().next()
+                        )
+                    )
+                } else {
                     userCallback.returnElement(User())
                 }
             }
