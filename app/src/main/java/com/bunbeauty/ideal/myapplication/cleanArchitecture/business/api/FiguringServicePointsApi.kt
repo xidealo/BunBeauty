@@ -1,6 +1,8 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.business
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api
 
-class FiguringServicePoints {
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
+
+class FiguringServicePointsApi {
      fun figureCreationDatePoints(creationDate: Long, coefficient: Float): Float {
             val creationDatePoints: Float
 

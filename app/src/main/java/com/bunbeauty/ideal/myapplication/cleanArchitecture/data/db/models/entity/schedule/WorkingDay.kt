@@ -3,7 +3,6 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entit
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import androidx.room.Relation
 
 @Entity
 data class WorkingDay(
@@ -14,9 +13,24 @@ data class WorkingDay(
     var isSelected: Boolean = false
 ) {
 
-
     fun getDayOfMonth(): Int {
         return date.split(DATE_DELIMITER).first().toInt()
+    }
+
+    fun getDateForComparison(): String {
+        return arrayListOf(
+            date.split(DATE_DELIMITER)[2],
+            addFirstZero(date.split(DATE_DELIMITER)[1].toInt()),
+            addFirstZero(getDayOfMonth())
+        ).joinToString(DATE_DELIMITER)
+    }
+
+    fun addFirstZero(number: Int): String {
+        return if (number > 10) {
+            number.toString()
+        } else {
+            "0$number"
+        }
     }
 
     companion object {

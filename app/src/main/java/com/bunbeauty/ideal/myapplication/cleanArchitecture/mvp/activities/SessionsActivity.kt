@@ -16,6 +16,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.DayAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.StringApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Session
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay
@@ -34,6 +35,8 @@ import javax.inject.Inject
 class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBottomPanel {
 
     override var panelContext: Activity = this
+
+    private val timeButtonList: MutableList<Button> = ArrayList()
 
     @Inject
     lateinit var sessionsInteractor: SessionsInteractor
@@ -74,11 +77,15 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
     }
 
     override fun showTime(sessions: List<Session>) {
+        timeButtonList.clear()
+
         for (session in sessions) {
-            val width = resources.getDimensionPixelSize(R.dimen.schedule_button_width)
-            val height = resources.getDimensionPixelSize(R.dimen.schedule_button_height)
+            val width = resources.getDimensionPixelSize(R.dimen.sessions_button_width)
+            val height = resources.getDimensionPixelSize(R.dimen.sessions_button_height)
             val text = session.startTime
             val button = getConfiguredButton(width, height, text)
+
+            timeButtonList.add(button)
             addViewToContainer(button, timeSessionGrid)
         }
     }
@@ -86,12 +93,15 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
     private fun getConfiguredButton(width: Int, height: Int, text: String): Button {
         val button = Button(this)
 
-        val margin = resources.getDimensionPixelSize(R.dimen.schedule_button_margin)
+        val margin = resources.getDimensionPixelSize(R.dimen.sessions_button_margin)
         val params = LinearLayout.LayoutParams(width, height)
         params.setMargins(margin, margin, margin, margin)
         button.layoutParams = params
         setBackground(button)
         button.text = text
+        button.setOnClickListener{
+            sessionsPresenter.updateTime(text)
+        }
 
         return button
     }
@@ -99,22 +109,9 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
     private fun setBackground(button: Button) {
         val gradientDrawable = GradientDrawable()
         gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
-        gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.white))
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
 
         button.background = gradientDrawable
-    }
-
-    private fun getScreenWidth(): Int {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics.widthPixels
-    }
-
-    private fun getScreenHeight(): Int {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics.heightPixels
     }
 
     private fun addViewToContainer(view: View, container: ViewGroup) {
@@ -122,6 +119,14 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
             (view.parent as ViewGroup).removeView(view)
         }
         container.addView(view)
+    }
+
+    override fun clearTime(time: String) {
+        setBackground(timeButtonList.find { it.text == time }!!)
+    }
+
+    override fun selectTime(selectedTime: String) {
+        fillButton(timeButtonList.find { it.text == selectedTime }!!)
     }
 
     private fun fillButton(button: Button) {

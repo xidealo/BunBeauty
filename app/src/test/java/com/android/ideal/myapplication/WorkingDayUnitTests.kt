@@ -64,4 +64,27 @@ class WorkingDayUnitTests {
 
         assertEquals(expectedSessions, sessions)
     }
+
+    @Test
+    fun isDayComparisonCorrect() {
+        val workingDayList = arrayListOf(
+            WorkingDay(date = "22-8-2020"),
+            WorkingDay(date = "3-9-2020"),
+            WorkingDay(date = "23-8-2020"),
+            WorkingDay(date = "2-8-2020")
+        )
+        val expectedSortedWorkingDayList = arrayListOf(
+            WorkingDay(date = "2-8-2020"),
+            WorkingDay(date = "22-8-2020"),
+            WorkingDay(date = "23-8-2020"),
+            WorkingDay(date = "3-9-2020")
+        )
+
+        val sortedWorkingDayList = workingDayList.sortedBy {
+            it.getDateForComparison()
+        }
+
+        assertEquals(expectedSortedWorkingDayList, sortedWorkingDayList)
+    }
+
 }

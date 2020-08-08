@@ -16,9 +16,7 @@ class SessionsInteractor(
 ) : GetScheduleCallback {
 
     lateinit var schedule: ScheduleWithDays
-    lateinit var sessionsPresenterCallback: SessionsPresenterCallback
-
-    var selectedDayIndex = -1
+    private lateinit var sessionsPresenterCallback: SessionsPresenterCallback
 
     fun getSchedule(sessionsPresenterCallback: SessionsPresenterCallback) {
         this.sessionsPresenterCallback = sessionsPresenterCallback
@@ -26,7 +24,7 @@ class SessionsInteractor(
         scheduleRepository.getScheduleByUserId(getMasterId(), this)
     }
 
-    fun getMasterId(): String {
+    private fun getMasterId(): String {
         return intent.getStringExtra(User.USER_ID)!!
     }
 
@@ -50,7 +48,19 @@ class SessionsInteractor(
         return workingDay.getSessions(getServiceDuration())
     }
 
-    fun isDaySelected(dayIndex: Int): Boolean {
-        return dayIndex == selectedDayIndex
+    var selectedTime = ""
+
+    fun updateTime(time: String, sessionsPresenterCallback: SessionsPresenterCallback) {
+        if (time == selectedTime) {
+            selectedTime = ""
+            sessionsPresenterCallback.clearTime(time)
+        } else {
+            if (selectedTime.isNotEmpty()) {
+                sessionsPresenterCallback.clearTime(selectedTime)
+            }
+            sessionsPresenterCallback.selectTime(time)
+
+            selectedTime = time
+        }
     }
 }

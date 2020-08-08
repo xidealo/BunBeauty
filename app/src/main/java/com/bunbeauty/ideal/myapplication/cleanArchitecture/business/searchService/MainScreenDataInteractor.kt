@@ -1,8 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService
 
 import android.content.Intent
-import android.widget.TextView
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.FiguringServicePointsApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
@@ -16,7 +15,7 @@ import kotlin.collections.HashMap
 
 class MainScreenDataInteractor(
     private val intent: Intent,
-    private val figuringServicePoints: FiguringServicePoints
+    private val figuringServicePointsApi: FiguringServicePointsApi
 ) : IMainScreenDataInteractor {
 
     var cacheMainScreenData = ArrayList<MainScreenData>()
@@ -163,21 +162,21 @@ class MainScreenDataInteractor(
         if (isPremium) {
             cachePremiumMainScreenData.add(0, MainScreenData(1f, user, service))
         } else {
-            val creationDatePoints = figuringServicePoints.figureCreationDatePoints(
+            val creationDatePoints = figuringServicePointsApi.figureCreationDatePoints(
                 service.creationDate,
                 coefficients[Service.CREATION_DATE]!!
             )
-            val costPoints = figuringServicePoints.figureCostPoints(
+            val costPoints = figuringServicePointsApi.figureCostPoints(
                 (service.cost),
                 mainScreenPresenterCallback.getMaxCost(),
                 coefficients[Service.COST]!!
             )
 
-            val ratingPoints = figuringServicePoints.figureRatingPoints(
+            val ratingPoints = figuringServicePointsApi.figureRatingPoints(
                 service.rating,
                 coefficients[Service.AVG_RATING]!!
             )
-            val countOfRatesPoints = figuringServicePoints.figureCountOfRatesPoints(
+            val countOfRatesPoints = figuringServicePointsApi.figureCountOfRatesPoints(
                 service.countOfRates,
                 mainScreenPresenterCallback.getMaxCountOfRates(),
                 coefficients[Service.COUNT_OF_RATES]!!

@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
 import android.content.Intent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.FiguringServicePoints
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.FiguringServicePointsApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.*
@@ -141,8 +141,8 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideMainScreenDataInteractor(figuringServicePoints: FiguringServicePoints) =
-        MainScreenDataInteractor(intent, figuringServicePoints)
+    fun provideMainScreenDataInteractor(figuringServicePointsApi: FiguringServicePointsApi) =
+        MainScreenDataInteractor(intent, figuringServicePointsApi)
 
     @Provides
     @Singleton

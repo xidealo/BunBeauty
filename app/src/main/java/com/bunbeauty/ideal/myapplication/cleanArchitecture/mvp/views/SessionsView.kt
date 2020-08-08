@@ -8,4 +8,6 @@ interface SessionsView: MvpView {
     fun showDays(days: List<WorkingDay>)
     fun clearSessionsLayout()
     fun showTime(sessions: List<Session>)
+    fun clearTime(time: String)
+    fun selectTime(selectedTime: String)
 }

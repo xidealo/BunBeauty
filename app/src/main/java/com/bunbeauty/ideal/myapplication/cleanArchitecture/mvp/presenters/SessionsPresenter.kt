@@ -4,7 +4,6 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.sessions.SessionsPresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Session
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.SessionsView
 
@@ -17,16 +16,35 @@ class SessionsPresenter(private val sessionsInteractor: SessionsInteractor) :
     }
 
     override fun showDays(days: List<WorkingDay>) {
-        viewState.showDays(days)
+        val sortedDays = days.sortedBy {
+            it.getDateForComparison()
+        }
+        viewState.showDays(sortedDays)
     }
 
     fun getSessions(day: WorkingDay) {
         clearSessions()
-        viewState.showTime(sessionsInteractor.getSessions(day))
+        val sortedSessionList = sessionsInteractor.getSessions(day).sortedBy {
+            it.startTime
+        }
+        viewState.showTime(sortedSessionList)
     }
 
     fun clearSessions() {
+        sessionsInteractor.selectedTime = ""
         viewState.clearSessionsLayout()
+    }
+
+    fun updateTime(time: String) {
+        sessionsInteractor.updateTime(time, this)
+    }
+
+    override fun clearTime(time: String) {
+        viewState.clearTime(time)
+    }
+
+    override fun selectTime(selectedTime: String) {
+        viewState.selectTime(selectedTime)
     }
 
 }
