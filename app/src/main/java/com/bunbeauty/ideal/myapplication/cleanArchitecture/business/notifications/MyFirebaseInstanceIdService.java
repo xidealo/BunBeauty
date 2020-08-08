@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.notifications;
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.notifications;
 
 import androidx.annotation.NonNull;
 

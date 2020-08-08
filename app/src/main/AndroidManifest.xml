@@ -57,12 +57,12 @@
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.VerifyPhoneNumberActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity" />
 
-        <service android:name="com.bunbeauty.ideal.myapplication.notifications.MyFirebaseInstanceIdService">
+        <service android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.business.notifications.MyFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.bunbeauty.ideal.myapplication.notifications.MyFirebaseMessagingService">
+        <service android:name="com.bunbeauty.ideal.myapplication.cleanArchitecture.business.notifications.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

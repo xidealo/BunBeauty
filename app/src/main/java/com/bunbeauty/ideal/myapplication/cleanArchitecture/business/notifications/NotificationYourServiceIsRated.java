@@ -1,4 +1,5 @@
-package com.bunbeauty.ideal.myapplication.notifications;
+
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.notifications;
 
 import android.app.PendingIntent;
 import android.content.Context;
@@ -9,22 +10,24 @@ import androidx.core.app.NotificationManagerCompat;
 import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity;
 
-public class NotificationYouAreRated extends NotificationConstructor {
+public class NotificationYourServiceIsRated extends NotificationConstructor {
 
     private static final String TAG = "DBInf";
     private static final String CHANNEL_ID = "1";
 
     private Context context;
     private String name;
+    private String serviceName;
 
-    public NotificationYouAreRated(Context _context, String _name) {
+    public NotificationYourServiceIsRated(Context _context, String _name, String _serviceName) {
         context = _context;
         name = _name;
+        serviceName = _serviceName;
     }
 
     @Override
     public void createNotification() {
-        int notificationId = 4;
+        int notificationId = 5;
 
         Intent intent = new Intent(context, ProfileActivity.class);
         PendingIntent pIntent = PendingIntent.getActivity(context, 0,
@@ -35,9 +38,9 @@ public class NotificationYouAreRated extends NotificationConstructor {
                 .setSmallIcon(R.drawable.bun_beauty)
                 .setContentIntent(pIntent)
                 .setContentTitle("Новая оценка!")
-                .setContentText("Мастер " + name + " оценил вас! Оценка будет доступна через 72 часа")
+                .setContentText("Клиент " + name + " оценил ваш сервис \"" + serviceName + "\"")
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Мастер " + name + " оценил вас! Оценка будет доступна через 72 часа"))
+                      .bigText("Клиент " + name + " оценил ваш сервис \"" + serviceName + "\" Оценка будет доступна через 72 часа"))
                 .setContentIntent(pIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);
@@ -45,5 +48,4 @@ public class NotificationYouAreRated extends NotificationConstructor {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(notificationId, builder.build());
     }
-
 }

@@ -2,7 +2,7 @@
 
 public class NotificationReviewForService {
 }*/
-package com.bunbeauty.ideal.myapplication.notifications;
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.notifications;
 
 import android.content.Context;
 import androidx.core.app.NotificationCompat;
@@ -10,16 +10,16 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.android.ideal.myapplication.R;
 
-public class NotificationReviewForService extends NotificationConstructor {
+public class NotificationReviewForUser extends NotificationConstructor {
 
-    private Context context;
     private static final String CHANNEL_ID = "1";
 
-    private String serviceName;
+    private Context context;
+    private String userName;
 
-    public NotificationReviewForService(Context _context, String _serviceName) {
+    public NotificationReviewForUser(Context _context, String _userName) {
         context = _context;
-        serviceName = _serviceName;
+        userName = _userName;
     }
 
     @Override
@@ -31,9 +31,9 @@ public class NotificationReviewForService extends NotificationConstructor {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bun_beauty)
                 .setContentTitle("Возможность оценить")
-                .setContentText("У вас есть возможность оценить услугу \"" + serviceName + "\"")
+                .setContentText("У вас есть возможность оценить пользователя " + userName)
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("У вас есть возможность оценить услугу \"" + serviceName + "\""))
+                        .bigText("У вас есть возможность оценить пользователя " + userName))
                 .setPriority(NotificationCompat.PRIORITY_MAX);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.notifications;
+package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.notifications;
 
 import android.util.Log;
 
@@ -101,12 +101,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendFollowingNotification(RemoteMessage remoteMessage) {
-        String followerId = remoteMessage.getData().get("user_id");
-        String followerName = remoteMessage.getData().get("name");
-
-        NotificationSubscribers notification = new NotificationSubscribers(this,
-                followerId,
-                followerName);
+        NotificationSubscribers notification = new NotificationSubscribers(this, remoteMessage.getData().get("name"));
         notification.createNotification();
     }
 }
