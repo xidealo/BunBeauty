@@ -28,7 +28,7 @@ class SessionsInteractor(
         return intent.getStringExtra(User.USER_ID)!!
     }
 
-    override fun returnGotSchedule(schedule: ScheduleWithDays) {
+    override fun returnGottenSchedule(schedule: ScheduleWithDays) {
         this.schedule = schedule
         sessionsPresenterCallback.showDays(getAvailableDays(getServiceDuration(), schedule))
     }
@@ -44,7 +44,7 @@ class SessionsInteractor(
     }
 
     fun getSessions(day: WorkingDay): List<Session> {
-        val workingDay = schedule.workingDays.find { it.workingDay.date == day.date }!!
+        val workingDay = schedule.workingDays.find { it.workingDay == day }!!
         return workingDay.getSessions(getServiceDuration())
     }
 

@@ -27,17 +27,5 @@ class ScheduleUnitTests {
         assertEquals(expectedDaysBetween, daysBetween)
     }
 
-    @Test
-    fun isGettingDateFromStringCorrect() {
-        val expectedDate = DateTime().withDate(2020, 1, 10)
-        val dateString = "10-1-2020"
-
-        val date = scheduleInteractor.getDateFromString(dateString)
-
-        assertEquals(expectedDate.dayOfMonth, date.dayOfMonth)
-        assertEquals(expectedDate.monthOfYear, date.monthOfYear)
-        assertEquals(expectedDate.year, date.year)
-    }
-
 
 }

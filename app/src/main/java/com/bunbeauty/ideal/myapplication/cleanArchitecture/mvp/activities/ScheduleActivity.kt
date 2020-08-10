@@ -23,7 +23,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SchedulePresenter
@@ -137,7 +136,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
 
     override fun setSchedule(schedule: ScheduleWithDays) {
         for (workingDay in schedule.workingDays) {
-            val dayIndex = schedulePresenter.getDayIndex(workingDay.workingDay.date)
+            val dayIndex = schedulePresenter.getDayIndex(workingDay.workingDay.dateLong)
             if (dayIndex > 0 && dayIndex < daysButtons.size) {
                 fillButton(daysButtons[dayIndex])
             }
@@ -261,9 +260,9 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         } else {
             fillButton(button)
 
-            val selectedDayTexts =
+            val selectedDayList =
                 schedulePresenter.getSelectedDays().map { daysButtons[it].text.toString() }
-            schedulePresenter.addToSchedule(selectedDayTexts, button.text.toString())
+            schedulePresenter.addToSchedule(selectedDayList, button.text.toString())
         }
     }
 

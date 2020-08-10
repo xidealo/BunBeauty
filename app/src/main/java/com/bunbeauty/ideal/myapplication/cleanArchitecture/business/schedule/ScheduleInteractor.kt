@@ -27,12 +27,12 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         scheduleRepository.getScheduleByUserId(User.getMyId(), this)
     }
 
-    override fun returnGotSchedule(schedule: ScheduleWithDays) {
+    override fun returnGottenSchedule(schedule: ScheduleWithDays) {
         this.schedule = schedule
         schedulePresenterCallback.setSchedule(schedule)
     }
 
-    fun getDateString(dayIndex: Int): String {
+    fun getStringDayOfMonth(dayIndex: Int): String {
         val date = getLastMondayDate().plusDays(dayIndex).dayOfMonth
 
         return date.toString()
@@ -43,16 +43,12 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         return DateTime.now().minusDays(dayOfWeek)
     }
 
-    fun getDayIndex(date: String): Int {
-        return getDaysBetween(getLastMondayDate(), getDateFromString(date))
+    fun getDayIndex(date: Long): Int {
+        return getDaysBetween(getLastMondayDate(), DateTime(date))
     }
 
     fun getDaysBetween(startDate: DateTime, endDate: DateTime): Int {
         return Days.daysBetween(startDate.toLocalDate(), endDate.toLocalDate()).days
-    }
-
-    fun getDateFromString(date: String): DateTime {
-        return DateTime.parse(date, DateTimeFormat.forPattern("dd-MM-yyyy"))
     }
 
     fun isPastDay(dayIndex: Int): Boolean {
@@ -72,9 +68,9 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
 
             for (workingTime in schedule.getWorkingTimes(day)) {
                 if (isAccurate(workingTime)) {
-                    accurateTime.add(workingTime.time)
+                    accurateTime.add(workingTime.getStringTime())
                 } else {
-                    inaccurateTime.add(workingTime.time)
+                    inaccurateTime.add(workingTime.getStringTime())
                 }
             }
         }

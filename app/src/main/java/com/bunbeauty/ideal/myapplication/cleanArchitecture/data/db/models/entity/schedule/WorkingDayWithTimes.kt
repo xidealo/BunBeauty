@@ -2,6 +2,8 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entit
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime.Companion.TIME_DELIMITER
+import org.joda.time.DateTime
 
 data class WorkingDayWithTimes(
     @Embedded
@@ -18,16 +20,25 @@ data class WorkingDayWithTimes(
         return workingTimes.contains(workingTime)
     }
 
-    fun addWorkingTime(time: String) {
-        val workingTime = WorkingTime(time = time)
+    fun addWorkingTime(timeString: String) {
+        val workingTime = WorkingTime(time = getTime(timeString))
         if (containsWorkingTime(workingTime)) {
             return
         }
         workingTimes.add(workingTime)
     }
 
-    fun removeTime(time: String) {
-        workingTimes.remove(workingTimes.find { it.time == time })
+    private fun getTime(timeString: String): Long {
+        val timeParts = timeString.split(TIME_DELIMITER)
+        var time = DateTime(workingDay.dateLong)
+        time = time.plusHours(timeParts.first().toInt())
+        time = time.plusHours(timeParts[1].toInt())
+
+        return time.millis
+    }
+
+    fun removeTime(timeString: String) {
+        workingTimes.remove(workingTimes.find { it.time == getTime(timeString) })
     }
 
     fun isEmpty(): Boolean {
@@ -40,7 +51,7 @@ data class WorkingDayWithTimes(
         }
 
         var timeInRaw = 0
-        var previousTime = WorkingTime()
+        var previousTime: WorkingTime? = null
         for (time in workingTimes) {
             if (timeInRaw == 0) {
                 timeInRaw = 1
@@ -68,7 +79,7 @@ data class WorkingDayWithTimes(
 
         val sessionList = ArrayList<Session>()
         var timeInRaw = 0
-        var previousTime = WorkingTime()
+        lateinit var previousTime: WorkingTime
         for (time in workingTimes) {
             if (timeInRaw == 0) {
                 timeInRaw = 1

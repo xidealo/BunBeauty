@@ -23,7 +23,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SessionsPresenter
@@ -62,7 +61,7 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         init()
         sessionsPresenter.getSchedule()
 
-        initTopPanel("Сеансы", ButtonTask.NONE)
+        initTopPanel("Сеансы")
     }
 
     override fun onResume() {
@@ -91,7 +90,7 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         timeSessionGrid.columnCount = getColumnCount(width)
 
         for (session in sessions) {
-            val text = session.startTime
+            val text = session.getTime()
             val button = getConfiguredButton(width, height, text)
 
             timeButtonList.add(button)

@@ -16,9 +16,7 @@ class SessionsPresenter(private val sessionsInteractor: SessionsInteractor) :
     }
 
     override fun showDays(days: List<WorkingDay>) {
-        val sortedDays = days.sortedBy {
-            it.getDateForComparison()
-        }
+        val sortedDays = days.sortedBy { it.dateLong }
         viewState.showDays(sortedDays)
     }
 

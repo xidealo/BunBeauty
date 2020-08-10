@@ -13,14 +13,19 @@ import kotlinx.android.synthetic.main.part_top_panel.view.*
 
 interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
 
+    fun initTopPanel(title: String, buttonTask: ButtonTask) {
+        initTopPanel(buttonTask)
+        setTitle(title)
+    }
+
     fun initTopPanel(buttonTask: ButtonTask) {
         configBackIcon()
         configPanel(buttonTask)
     }
 
-    fun initTopPanel(title: String, buttonTask: ButtonTask) {
-        initTopPanel(buttonTask)
-        setTitle(title)
+    fun initTopPanel(title: String) {
+        configBackIcon()
+        configPanel(ButtonTask.NONE)
     }
 
     fun setTitle(title: String){

@@ -24,7 +24,7 @@ class ScheduleFirebase {
                 val workingDays = getWorkingDaysFromSnapshot(workingDaysSnapshot)
 
                 val schedule = ScheduleWithDays(Schedule(userId), workingDays.toMutableList())
-                getScheduleCallback.returnGotSchedule(schedule)
+                getScheduleCallback.returnGottenSchedule(schedule)
             }
 
             override fun onCancelled(p0: DatabaseError) {}
@@ -35,16 +35,16 @@ class ScheduleFirebase {
 
     private fun getWorkingDaysFromSnapshot(workingDaysSnapshot: DataSnapshot): List<WorkingDayWithTimes> {
         return workingDaysSnapshot.children.map { workingDaySnapshot ->
-            val date = workingDaySnapshot.child(DATE).value as String
+            val date = workingDaySnapshot.child(DATE).value as Long
             val workingTime = getWorkingTimeFromSnapshot(workingDaySnapshot)
 
-            WorkingDayWithTimes(WorkingDay(date = date), workingTime.toMutableList())
+            WorkingDayWithTimes(WorkingDay(dateLong = date), workingTime.toMutableList())
         }
     }
 
     private fun getWorkingTimeFromSnapshot(workingDaySnapshot: DataSnapshot): List<WorkingTime> {
         return workingDaySnapshot.child(WORKING_TIME).children.map { workingTimeSnapshot ->
-            val time = workingTimeSnapshot.child(TIME).value as String
+            val time = workingTimeSnapshot.child(TIME).value as Long
             WorkingTime(time = time)
         }
     }
@@ -82,7 +82,7 @@ class ScheduleFirebase {
 
     private fun buildWorkingDayMap(workingDay: WorkingDay): HashMap<String, Any> {
         val workingDayMap = HashMap<String, Any>()
-        workingDayMap[DATE] = workingDay.date
+        workingDayMap[DATE] = workingDay.dateLong
         return workingDayMap
     }
 

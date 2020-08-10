@@ -1,41 +1,49 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule
 
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order
+import org.joda.time.DateTime
 
 @Entity
 data class WorkingTime(
     @PrimaryKey var id: String = "",
-    var time: String = "",
-    @Embedded(prefix = "order_") val order: Order = Order(),
+    var time: Long,
+    var orderId: String = "",
     var workingDayId: String = ""
 ) {
 
     fun getIndex(): Int {
-        val timeParts = time.split(TIME_DELIMITER)
-        var index = (timeParts.first().toIntOrNull() ?: 0) * 2
-        if (timeParts[1] == "30") {
-            index += 1
-        }
-
-        return index
+        return DateTime(time).hourOfDay * 2 + DateTime(time).minuteOfHour / 30
     }
 
-    fun isNext(previousTime: WorkingTime): Boolean {
+    fun isNext(previousTime: WorkingTime?): Boolean {
+        if (previousTime == null) {
+            return false
+        }
+
         val index = getIndex()
         val previousIndex = previousTime.getIndex()
 
         return (index - previousIndex) == 1
     }
 
-    fun getTimeBefore(beforeCount: Int): String {
-        return getTimeByIndex(getIndex() - beforeCount + 1)
+    fun getTimeBefore(beforeCount: Int): Long {
+        return DateTime(time).minusMinutes(30 * (beforeCount + 1)).millis
     }
 
-    fun getFinishTime(): String {
-        return getTimeByIndex(getIndex() + 1)
+    fun getFinishTime(): Long {
+        return DateTime(time).plusMinutes(30).millis
+    }
+
+    fun getStringTime(): String {
+        var stringTime = DateTime(time).hourOfDay.toString() + TIME_DELIMITER
+        stringTime += if (DateTime(time).minuteOfHour == 0) {
+            "00"
+        } else {
+            DateTime(time).minuteOfHour.toString()
+        }
+
+        return stringTime
     }
 
     companion object {

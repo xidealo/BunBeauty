@@ -19,12 +19,12 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
         viewState.setSchedule(schedule)
     }
 
-    fun getDayIndex(date: String): Int {
+    fun getDayIndex(date: Long): Int {
         return scheduleInteractor.getDayIndex(date)
     }
 
     fun getDateString(dayIndex: Int): String {
-        return scheduleInteractor.getDateString(dayIndex)
+        return scheduleInteractor.getStringDayOfMonth(dayIndex)
     }
 
     fun isPastDay(dayIndex: Int): Boolean {
