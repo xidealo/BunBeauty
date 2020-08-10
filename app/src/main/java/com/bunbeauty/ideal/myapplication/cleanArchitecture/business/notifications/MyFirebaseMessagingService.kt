@@ -10,8 +10,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        val dataType = remoteMessage.data["data_type"]
-        when (dataType) {
+        when (remoteMessage.data["data_type"]) {
             FOLLOWING -> sendFollowingNotification(
                 remoteMessage
             )
@@ -23,6 +22,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             USER_RATED -> sendUserRatedNotification(
                 remoteMessage
             )
+            CHAT_MESSAGE -> sendChatMessageNotification(remoteMessage)
             else -> Log.d(
                 TAG,
                 "Invalid data type!"
@@ -90,6 +90,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notification.createNotification()
     }
 
+    private fun sendChatMessageNotification(remoteMessage: RemoteMessage) {
+        val notification =
+            NotificationSubscribers(this, remoteMessage.data["name"]!!)
+        notification.createNotification()
+    }
+
     companion object {
         private const val TAG = "DBInf"
         private const val FOLLOWING = "following"
@@ -97,5 +103,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         private const val CANCEL = "cancel"
         private const val SERVICE_RATED = "service rated"
         private const val USER_RATED = "user rated"
+        private const val CHAT_MESSAGE = "chat message"
     }
 }
