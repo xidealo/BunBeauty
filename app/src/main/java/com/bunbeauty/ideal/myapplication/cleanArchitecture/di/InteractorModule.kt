@@ -11,31 +11,33 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serv
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.profile.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service.EditServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service.EditServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.SearchServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementCodeInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.premium.PremiumElementServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service.EditServiceServiceInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.editing.service.EditServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsOrderInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriberInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IOrderRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IScheduleRepository
 import dagger.Module
 import dagger.Provides
@@ -292,17 +294,12 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideCreationCommentMessageInteractor(messageRepository: MessageRepository) =
-        CreationCommentMessageInteractor(
-            messageRepository,
-            intent
-        )
+        CreationCommentMessageInteractor(messageRepository, intent)
 
     @Provides
     @Singleton
-    fun provideCreationCommentOrderInteractor(orderRepository: OrderRepository) =
-        CreationCommentOrderInteractor(
-            orderRepository
-        )
+    fun provideCreationCommentOrderInteractor(orderRepository: IOrderRepository) =
+        CreationCommentOrderInteractor(orderRepository)
 
     @Provides
     @Singleton
@@ -310,5 +307,11 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideSessionsInteractor(scheduleRepository: IScheduleRepository) = SessionsInteractor(scheduleRepository, intent)
+    fun provideSessionsInteractor(scheduleRepository: IScheduleRepository) =
+        SessionsInteractor(scheduleRepository, intent)
+
+    @Provides
+    @Singleton
+    fun provideSessionsOrderInteractor(orderRepository: IOrderRepository) =
+        SessionsOrderInteractor(orderRepository)
 }

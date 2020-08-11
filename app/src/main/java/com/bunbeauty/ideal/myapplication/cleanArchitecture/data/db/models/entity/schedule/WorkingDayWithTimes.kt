@@ -17,7 +17,13 @@ data class WorkingDayWithTimes(
     }
 
     fun containsWorkingTime(workingTime: WorkingTime): Boolean {
-        return workingTimes.contains(workingTime)
+        val hours = DateTime(workingTime.time).hourOfDay
+        val minutes = DateTime(workingTime.time).minuteOfHour
+
+        return workingTimes.any {
+            DateTime(it.time).hourOfDay == hours &&
+            DateTime(it.time).minuteOfHour == minutes
+        }
     }
 
     fun addWorkingTime(timeString: String) {
@@ -30,9 +36,9 @@ data class WorkingDayWithTimes(
 
     private fun getTime(timeString: String): Long {
         val timeParts = timeString.split(TIME_DELIMITER)
-        var time = DateTime(workingDay.dateLong)
+        var time = DateTime(workingDay.date)
         time = time.plusHours(timeParts.first().toInt())
-        time = time.plusHours(timeParts[1].toInt())
+        time = time.plusMinutes(timeParts[1].toInt())
 
         return time.millis
     }

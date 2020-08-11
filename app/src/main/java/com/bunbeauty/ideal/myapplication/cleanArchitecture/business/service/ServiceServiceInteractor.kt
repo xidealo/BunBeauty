@@ -8,7 +8,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 class ServiceServiceInteractor(private val intent: Intent) : IServiceServiceInteractor {
 
-    lateinit var gottenService: Service
+    private lateinit var gottenService: Service
 
     override fun getService(): Service {
         return intent.getSerializableExtra(Service.SERVICE) as Service

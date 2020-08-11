@@ -9,15 +9,16 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 data class Order(
     @PrimaryKey
     var id: String = "",
-    var clientId: String = "",
-    var masterId: String = "",
-    var serviceId: String = "",
+    var clientId: String,
+    var masterId: String,
+    var serviceId: String,
+    var serviceName: String,
     @Embedded var session: Session
 ) {
     companion object {
         const val ORDERS = "orders"
-        const val CLIENT_ID = "client id"
         const val MASTER_ID = "master id"
-        const val SERVICE_ID = "master id"
+        const val SERVICE_ID = "service id"
+        const val SERVICE_NAME = "service name"
     }
 }

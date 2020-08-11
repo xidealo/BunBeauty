@@ -28,7 +28,7 @@ data class WorkingTime(
     }
 
     fun getTimeBefore(beforeCount: Int): Long {
-        return DateTime(time).minusMinutes(30 * (beforeCount + 1)).millis
+        return DateTime(time).minusMinutes(30 * (beforeCount - 1)).millis
     }
 
     fun getFinishTime(): Long {
@@ -49,6 +49,7 @@ data class WorkingTime(
     companion object {
         const val WORKING_TIME = "working time"
         const val TIME = "time"
+        const val ORDER_ID = "order id"
         const val TIME_DELIMITER = ":"
 
         fun getTimeByIndex(index: Int): String {

@@ -136,7 +136,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
 
     override fun setSchedule(schedule: ScheduleWithDays) {
         for (workingDay in schedule.workingDays) {
-            val dayIndex = schedulePresenter.getDayIndex(workingDay.workingDay.dateLong)
+            val dayIndex = schedulePresenter.getDayIndex(workingDay.workingDay.date)
             if (dayIndex > 0 && dayIndex < daysButtons.size) {
                 fillButton(daysButtons[dayIndex])
             }

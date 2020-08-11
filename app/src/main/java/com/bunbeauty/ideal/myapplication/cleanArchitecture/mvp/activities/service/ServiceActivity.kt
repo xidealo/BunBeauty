@@ -229,8 +229,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
 
     private fun goToSession() {
         val intent = Intent(this, SessionsActivity::class.java).apply {
-            this.putExtra(User.USER_ID, servicePresenter.getService().userId)
-            this.putExtra(Service.DESCRIPTION, servicePresenter.getService().duration)
+            this.putExtra(Service.SERVICE, servicePresenter.getService())
         }
         startActivity(intent)
     }

@@ -3,20 +3,24 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsOrderInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.sessions.SessionsPresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.SessionsView
 
 @InjectViewState
-class SessionsPresenter(private val sessionsInteractor: SessionsInteractor) :
-    MvpPresenter<SessionsView>(), SessionsPresenterCallback {
+class SessionsPresenter(
+    private val sessionsInteractor: SessionsInteractor,
+    private val sessionsOrderInteractor: SessionsOrderInteractor
+) : MvpPresenter<SessionsView>(), SessionsPresenterCallback {
 
     fun getSchedule() {
         sessionsInteractor.getSchedule(this)
     }
 
     override fun showDays(days: List<WorkingDay>) {
-        val sortedDays = days.sortedBy { it.dateLong }
+        val sortedDays = days.sortedBy { it.date }
         viewState.showDays(sortedDays)
     }
 
@@ -29,7 +33,8 @@ class SessionsPresenter(private val sessionsInteractor: SessionsInteractor) :
     }
 
     fun clearSessions() {
-        sessionsInteractor.clearTime(this)
+        sessionsInteractor.sessionList.clear()
+        sessionsInteractor.clearSelectedSession(this)
         viewState.clearSessionsLayout()
     }
 
@@ -54,7 +59,20 @@ class SessionsPresenter(private val sessionsInteractor: SessionsInteractor) :
     }
 
     fun makeAppointment() {
-        sessionsInteractor.makeAppointment()
+        sessionsOrderInteractor.makeAppointment(
+            this,
+            sessionsInteractor.getService(),
+            sessionsInteractor.selectedSession!!
+        )
+    }
+
+    override fun updateSchedule(order: Order) {
+        sessionsInteractor.updateSchedule(this, order)
+    }
+
+    override fun showMadeAppointment() {
+        viewState.showMessage("Вы записаны")
+        viewState.goBack()
     }
 
 }

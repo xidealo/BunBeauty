@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IOrderRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IScheduleRepository
 import dagger.Module
 import dagger.Provides
@@ -47,7 +48,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideOrderRepository(orderFirebase: OrderFirebase) =
+    fun provideOrderRepository(orderFirebase: OrderFirebase): IOrderRepository =
         OrderRepository(orderFirebase)
 
     @Provides

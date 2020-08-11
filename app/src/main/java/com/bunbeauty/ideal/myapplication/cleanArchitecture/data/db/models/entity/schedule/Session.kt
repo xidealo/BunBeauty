@@ -7,10 +7,19 @@ data class Session(
     val finishTime: Long
 ) {
 
-    fun getTime(): String {
-        return DateTime(startTime).hourOfDay().toString() +
-                WorkingTime.TIME_DELIMITER +
-                DateTime(startTime).minuteOfHour().toString()
+    constructor(stringTime: String): this(0, 0)
+
+    //private fun getStartTimeB
+
+    fun getStringStartTime(): String {
+        var stringTime = DateTime(startTime).hourOfDay.toString() + WorkingTime.TIME_DELIMITER
+        stringTime += if (DateTime(startTime).minuteOfHour == 0) {
+            "00"
+        } else {
+            DateTime(startTime).minuteOfHour.toString()
+        }
+
+        return stringTime
     }
 
     companion object {

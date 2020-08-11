@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
@@ -17,6 +18,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.DayAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsOrderInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Session
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
@@ -39,6 +41,9 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
     @Inject
     lateinit var sessionsInteractor: SessionsInteractor
 
+    @Inject
+    lateinit var sessionsOrderInteractor: SessionsOrderInteractor
+
     @InjectPresenter
     lateinit var sessionsPresenter: SessionsPresenter
 
@@ -51,7 +56,7 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
             .build()
             .inject(this)
 
-        return SessionsPresenter(sessionsInteractor)
+        return SessionsPresenter(sessionsInteractor, sessionsOrderInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +95,7 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         timeSessionGrid.columnCount = getColumnCount(width)
 
         for (session in sessions) {
-            val text = session.getTime()
+            val text = session.getStringStartTime()
             val button = getConfiguredButton(width, height, text)
 
             timeButtonList.add(button)
@@ -150,6 +155,14 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
 
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.yellow))
         button.background = gradientDrawable
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun goBack() {
+        onBackPressed()
     }
 
     override fun clearSessionsLayout() {

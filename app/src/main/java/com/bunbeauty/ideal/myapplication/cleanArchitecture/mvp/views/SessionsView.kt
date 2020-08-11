@@ -12,4 +12,6 @@ interface SessionsView: MvpView {
     fun selectTime(selectedTime: String)
     fun enableMakeAppointmentButton()
     fun disableMakeAppointmentButton()
+    fun showMessage(message: String)
+    fun goBack()
 }

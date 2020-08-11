@@ -13,11 +13,10 @@ class OrderRepository(private val orderFirebase: OrderFirebase) : BaseRepository
 
     override fun insert(order: Order, insertOrderCallback: InsertOrderCallback) {
         launch {
-            order.id = orderFirebase.getIdForNew(order.clientId)
-            orderFirebase.insert(order)
+            val insertedOrder = orderFirebase.insert(order)
             //orderDao.insert(order)
             withContext(Dispatchers.Main) {
-                insertOrderCallback.returnCreatedCallback(order)
+                insertOrderCallback.returnCreatedCallback(insertedOrder)
             }
         }
     }

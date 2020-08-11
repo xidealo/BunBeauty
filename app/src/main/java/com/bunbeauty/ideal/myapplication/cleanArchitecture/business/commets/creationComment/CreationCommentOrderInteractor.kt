@@ -6,8 +6,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.OrderRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IOrderRepository
 
-class CreationCommentOrderInteractor(private val orderRepository: OrderRepository) :
+class CreationCommentOrderInteractor(private val orderRepository: IOrderRepository) :
     ICreationCommentOrderInteractor, OrderCallback {
 
     private lateinit var creationCommentPresenterCallback: CreationCommentPresenterCallback

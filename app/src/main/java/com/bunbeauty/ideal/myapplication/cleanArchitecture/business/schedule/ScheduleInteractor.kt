@@ -99,11 +99,10 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         schedulePresenterCallback: SchedulePresenterCallback
     ) {
         for ((i, day) in days.withIndex()) {
-            if (schedule.containsWorkingDay(day)) {
-                schedule.getWorkingDay(day)!!.addWorkingTime(time)
-            } else {
+            if (!schedule.containsWorkingDay(day)) {
                 schedule.addWorkingDay(day)
             }
+            schedule.getWorkingDay(day)!!.addWorkingTime(time)
 
             if (schedule.getWorkingDay(day)!!.workingTimes.size == 1) {
                 schedulePresenterCallback.fillDay(selectedDayIndexes[i])

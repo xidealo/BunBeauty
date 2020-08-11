@@ -39,7 +39,7 @@ data class ScheduleWithDays(
             }
         }
         val dateLong = date.withTime(0, 0, 0, 0).millis
-        workingDays.add(WorkingDayWithTimes(WorkingDay(dateLong = dateLong)))
+        workingDays.add(WorkingDayWithTimes(WorkingDay(date = dateLong)))
     }
 
     companion object {

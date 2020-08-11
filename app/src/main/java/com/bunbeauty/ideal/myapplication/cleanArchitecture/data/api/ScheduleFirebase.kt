@@ -6,6 +6,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Schedule.Companion.SCHEDULE
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays.Companion.WORKING_DAYS
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay.Companion.DATE
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime.Companion.ORDER_ID
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime.Companion.TIME
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime.Companion.WORKING_TIME
 import com.google.firebase.database.*
@@ -21,9 +22,9 @@ class ScheduleFirebase {
 
         scheduleReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(workingDaysSnapshot: DataSnapshot) {
-                val workingDays = getWorkingDaysFromSnapshot(workingDaysSnapshot)
+                val workingDays = getWorkingDaysFromSnapshot(workingDaysSnapshot).toMutableList()
 
-                val schedule = ScheduleWithDays(Schedule(userId), workingDays.toMutableList())
+                val schedule = ScheduleWithDays(Schedule(userId = userId), workingDays)
                 getScheduleCallback.returnGottenSchedule(schedule)
             }
 
@@ -36,16 +37,17 @@ class ScheduleFirebase {
     private fun getWorkingDaysFromSnapshot(workingDaysSnapshot: DataSnapshot): List<WorkingDayWithTimes> {
         return workingDaysSnapshot.children.map { workingDaySnapshot ->
             val date = workingDaySnapshot.child(DATE).value as Long
-            val workingTime = getWorkingTimeFromSnapshot(workingDaySnapshot)
+            val workingTime = getWorkingTimeFromSnapshot(workingDaySnapshot).toMutableList()
 
-            WorkingDayWithTimes(WorkingDay(dateLong = date), workingTime.toMutableList())
+            WorkingDayWithTimes(WorkingDay(workingDaySnapshot.key!!, date), workingTime)
         }
     }
 
     private fun getWorkingTimeFromSnapshot(workingDaySnapshot: DataSnapshot): List<WorkingTime> {
         return workingDaySnapshot.child(WORKING_TIME).children.map { workingTimeSnapshot ->
             val time = workingTimeSnapshot.child(TIME).value as Long
-            WorkingTime(time = time)
+            val orderId = workingTimeSnapshot.child(ORDER_ID).value as? String ?: ""
+            WorkingTime(workingTimeSnapshot.key!!, time, orderId, workingDaySnapshot.key!!)
         }
     }
 
@@ -82,13 +84,14 @@ class ScheduleFirebase {
 
     private fun buildWorkingDayMap(workingDay: WorkingDay): HashMap<String, Any> {
         val workingDayMap = HashMap<String, Any>()
-        workingDayMap[DATE] = workingDay.dateLong
+        workingDayMap[DATE] = workingDay.date
         return workingDayMap
     }
 
     private fun buildWorkingTimeMap(workingTime: WorkingTime): HashMap<String, Any> {
         val workingTimeMap = HashMap<String, Any>()
         workingTimeMap[TIME] = workingTime.time
+        workingTimeMap[ORDER_ID] = workingTime.orderId
         return workingTimeMap
     }
 

@@ -8,19 +8,17 @@ import org.joda.time.DateTime
 @Entity
 data class WorkingDay(
     @PrimaryKey var id: String = "",
-    var dateLong: Long,
+    var date: Long,
     var scheduleId: String = ""
 ) {
     @Ignore
     var isSelected: Boolean = false
 
     fun getDayOfMonth(): Int {
-        return DateTime(dateLong).dayOfMonth
+        return DateTime(date).dayOfMonth
     }
 
     companion object {
         const val DATE = "date"
-
-        const val DATE_DELIMITER = "-"
     }
 }
