@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainLayoutMessageElementLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,33 +12,45 @@
     android:orientation="vertical"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.messageElements.MessageElement">
 
-
     <LinearLayout
         android:id="@+id/messageMessageElementLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/messageTextMessageElementText"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
-            android:maxWidth="230dp"
-            android:layout_height="match_parent"
-            android:background="@color/backgroundLightBlue"
-            android:padding="8dp"
-            android:text="@string/hello_blank_fragment"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            app:cardCornerRadius="@dimen/default_margin"
+            app:cardBackgroundColor="@color/backgroundLightBlue"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/messageTimeMessageElementText"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@color/backgroundLightBlue"
-            android:gravity="bottom"
-            android:text="@string/hello_blank_fragment"
-            android:textSize="10sp" />
+            <LinearLayout
+                android:id="@+id/ratingBlockServiceLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/messageTextMessageElementText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:maxWidth="230dp"
+                    android:padding="8dp"
+                    android:text="@string/hello_blank_fragment"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/messageTimeMessageElementText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="bottom"
+                    android:padding="5dp"
+                    android:text="@string/hello_blank_fragment"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 
@@ -46,7 +59,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_margin="0dp"
-        android:padding="0dp"
         android:text="Оценить" />
 </LinearLayout>

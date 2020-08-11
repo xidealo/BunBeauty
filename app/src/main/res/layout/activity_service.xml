@@ -113,12 +113,8 @@
 
                             <TextView
                                 android:id="@+id/costServiceText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="@string/cost"
-                                android:textAppearance="?attr/textAppearanceBody2"
-                                android:textColor="?android:attr/textColorSecondary" />
+                                style="@style/serviceBodyText"
+                                android:text="@string/cost" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -135,12 +131,8 @@
 
                             <TextView
                                 android:id="@+id/addressServiceText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="@string/address"
-                                android:textAppearance="?attr/textAppearanceBody2"
-                                android:textColor="?android:attr/textColorSecondary" />
+                                style="@style/serviceBodyText"
+                                android:text="@string/address" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -157,12 +149,8 @@
 
                             <TextView
                                 android:id="@+id/descriptionServiceText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="@string/description"
-                                android:textAppearance="?attr/textAppearanceBody2"
-                                android:textColor="?android:attr/textColorSecondary" />
+                                style="@style/serviceBodyText"
+                                android:text="@string/description" />
                         </LinearLayout>
 
                     </LinearLayout>
