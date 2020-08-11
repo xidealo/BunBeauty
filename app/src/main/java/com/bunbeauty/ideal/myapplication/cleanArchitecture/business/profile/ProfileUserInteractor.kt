@@ -10,7 +10,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IUserRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.RegistrationActivity
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.iid.FirebaseInstanceId
 
 
@@ -32,18 +31,19 @@ class ProfileUserInteractor(
 
         if (intent.hasExtra(User.USER)) {
             val user = intent.getSerializableExtra(User.USER) as User
+            //такое может быть?
             if (user.id.isNotEmpty()) {
                 returnElement(user)
             } else {
                 userRepository.getById(
-                    User.getMyId(),
+                    intent.getStringExtra(User.USER_ID) ?: User.getMyId(),
                     this,
                     true
                 )
             }
         } else {
-            userRepository.getByPhoneNumber(
-                FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,
+            userRepository.getById(
+                intent.getStringExtra(User.USER_ID) ?: User.getMyId(),
                 this,
                 true
             )

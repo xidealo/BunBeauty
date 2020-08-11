@@ -1,19 +1,19 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.notifications
 
 import android.util.Log
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-    override fun onDeletedMessages() {
-        super.onDeletedMessages()
-    }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         when (remoteMessage.data["data_type"]) {
             FOLLOWING -> sendFollowingNotification(
                 remoteMessage
             )
+            CHAT_MESSAGE -> sendChatMessageNotification(remoteMessage)
             ORDER -> sendOrderNotification(remoteMessage)
             CANCEL -> sendCancelNotification(remoteMessage)
             SERVICE_RATED -> sendServiceRatedNotification(
@@ -22,13 +22,37 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             USER_RATED -> sendUserRatedNotification(
                 remoteMessage
             )
-            CHAT_MESSAGE -> sendChatMessageNotification(remoteMessage)
             else -> Log.d(
                 TAG,
                 "Invalid data type!"
             )
         }
     }
+
+    private fun sendFollowingNotification(remoteMessage: RemoteMessage) {
+        val notification =
+            NotificationSubscribers(
+                this,
+                remoteMessage.data["user_id"]?: "",
+                remoteMessage.data[User.NAME] ?: "",
+                remoteMessage.data["photo_link"] ?: ""
+
+            )
+        notification.createNotification()
+    }
+
+    private fun sendChatMessageNotification(remoteMessage: RemoteMessage) {
+        val notification =
+            NotificationChatMessage(
+                this,
+                remoteMessage.data["user_id"]?: "",
+                remoteMessage.data[User.NAME] ?: "",
+                remoteMessage.data[Message.MESSAGE] ?: "",
+                remoteMessage.data["photo_link"] ?: ""
+            )
+        notification.createNotification()
+    }
+
 
     private fun sendUserRatedNotification(remoteMessage: RemoteMessage) {
         val workerName = remoteMessage.data["name"]
@@ -81,18 +105,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             date,
             time
         )
-        notification.createNotification()
-    }
-
-    private fun sendFollowingNotification(remoteMessage: RemoteMessage) {
-        val notification =
-            NotificationSubscribers(this, remoteMessage.data["name"]!!)
-        notification.createNotification()
-    }
-
-    private fun sendChatMessageNotification(remoteMessage: RemoteMessage) {
-        val notification =
-            NotificationSubscribers(this, remoteMessage.data["name"]!!)
         notification.createNotification()
     }
 
