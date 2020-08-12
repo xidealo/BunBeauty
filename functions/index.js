@@ -6,25 +6,25 @@ admin.initializeApp(functions.config().firebase);
 
 exports.sendFollowingNotification = functions.database.ref('/users/{userId}/subscribers/{subscribeId}').onCreate((snapshot, context) => {
 
-	//get the userId of the person receiving the notification because we need to get their token
-	const receiverId = context.params.userId;
-	console.log("receiverId: ", receiverId);
+    //get the userId of the person receiving the notification because we need to get their token
+    const receiverId = context.params.userId;
+    console.log("receiverId: ", receiverId);
 
-	//get the user id of the person who sent the message
-	const senderId = snapshot.child('subscriber id').val();
-	console.log("senderId: ", senderId);
+    //get the user id of the person who sent the message
+    const senderId = snapshot.child('subscriber id').val();
+    console.log("senderId: ", senderId);
 
-	//query the users node and get the name of the user who sent the message
-	return admin.database().ref("/users/" + senderId).once('value').then(snap => {
+    //query the users node and get the name of the user who sent the message
+    return admin.database().ref("/users/" + senderId).once('value').then(snap => {
         const senderName = snap.child("name").val();
         const senderPhoto = snap.child("photo link").val();
-		console.log("senderName: ", senderName);
-		console.log("senderPhoto: ", senderPhoto);
+        console.log("senderName: ", senderName);
+        console.log("senderPhoto: ", senderPhoto);
 
-		//get the token of the user receiving the message
-		return admin.database().ref("/users/" + receiverId).once('value').then(snap => {
-			const token = snap.child("token").val();
-			console.log("token: ", token);
+        //get the token of the user receiving the message
+        return admin.database().ref("/users/" + receiverId).once('value').then(snap => {
+            const token = snap.child("token").val();
+            console.log("token: ", token);
 
             if (token !== "-") {
                 //we have everything we need
@@ -35,54 +35,54 @@ exports.sendFollowingNotification = functions.database.ref('/users/{userId}/subs
                         data_type: "following",
                         user_id: senderId,
                         name: senderName,
-                        photo_link:senderPhoto
+                        photo_link: senderPhoto
                     }
                 };
 
                 return admin.messaging().sendToDevice(token, payload)
-                            .then(function(response) {
-                                console.log("Successfully sent message:", response);
-                                return;
-                              })
-                              .catch(function(error) {
-                                console.log("Error sending message:", error);
-                              });
+                    .then(function (response) {
+                        console.log("Successfully sent message:", response);
+                        return;
+                    })
+                    .catch(function (error) {
+                        console.log("Error sending message:", error);
+                    });
             } else {
                 return;
             }
-		});
-	});
+        });
+    });
 });
 
 exports.sendChatMessageNotification = functions.database.ref('/users/{userId}/dialogs/{dialogId}/messages/{messageId}').onCreate((snapshot, context) => {
 
-	//get the userId of the person receiving the notification because we need to get their token
+    //get the userId of the person receiving the notification because we need to get their token
     const senderId = context.params.userId;
     const dialogId = context.params.dialogId;
     const messageId = context.params.messageId;
     //get message
     const message = snapshot.child('message').val();
 
-	console.log("receiverId: ", senderId);
-	console.log("dialog: ", dialogId);
+    console.log("receiverId: ", senderId);
+    console.log("dialog: ", dialogId);
     console.log("messageId: ", messageId);
     console.log("message: ", message);
 
-	//query the users node and get the name of the user who sent the message
-	return admin.database().ref("/users/" + senderId).once('value').then(snap => {
+    //query the users node and get the name of the user who sent the message
+    return admin.database().ref("/users/" + senderId).once('value').then(snap => {
 
         const senderName = snap.child("name").val();
         const senderPhoto = snap.child("photo link").val();
         const companionId = snap.child("dialogs").child(dialogId).child("companion id").val();
 
-	    console.log("senderName: ", senderName);
-		console.log("companionId: ", companionId);
-		console.log("senderPhoto: ", senderPhoto);
+        console.log("senderName: ", senderName);
+        console.log("companionId: ", companionId);
+        console.log("senderPhoto: ", senderPhoto);
 
-		//get the token of the user receiving the message
-		return admin.database().ref("/users/" + companionId).once('value').then(snap => {
-			const token = snap.child("token").val();
-			console.log("token: ", token);
+        //get the token of the user receiving the message
+        return admin.database().ref("/users/" + companionId).once('value').then(snap => {
+            const token = snap.child("token").val();
+            console.log("token: ", token);
 
             if (token !== "-") {
                 //we have everything we need
@@ -93,23 +93,23 @@ exports.sendChatMessageNotification = functions.database.ref('/users/{userId}/di
                         data_type: "chat message",
                         user_id: senderId,
                         name: senderName,
-                        message:message,
-                        photo_link:senderPhoto
+                        message: message,
+                        photo_link: senderPhoto
                     }
                 };
 
                 return admin.messaging().sendToDevice(token, payload)
-                            .then(function(response) {
-                                console.log("Successfully sent message:", response);
-                                return;
-                              })
-                              .catch(function(error) {
-                                console.log("Error sending message:", error);
-                              });
+                    .then(function (response) {
+                        console.log("Successfully sent message:", response);
+                        return;
+                    })
+                    .catch(function (error) {
+                        console.log("Error sending message:", error);
+                    });
             } else {
                 return;
             }
-		});
+        });
     });
 });
 

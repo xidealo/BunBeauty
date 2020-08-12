@@ -6,19 +6,24 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.MessageRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IMessageRepository
 
-class DialogsMessageInteractor(private val messageRepository: MessageRepository) :
+class DialogsMessageInteractor(private val messageRepository: IMessageRepository) :
     IDialogsMessageInteractor, MessageCallback {
 
     private lateinit var dialogsPresenterCallback: DialogsPresenterCallback
     private var cacheMyMessages = mutableListOf<Message>()
 
     override fun getLastMessage(
-        dialog: Dialog,
+        myId: String,
+        companionId: String,
         dialogsPresenterCallback: DialogsPresenterCallback
     ) {
         this.dialogsPresenterCallback = dialogsPresenterCallback
-        messageRepository.getByIdLastMessage(dialog, this)
+        messageRepository.getByIdLastMessage(
+            myId,
+            companionId, this
+        )
     }
 
     override fun returnElement(element: Message?) {

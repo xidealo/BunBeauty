@@ -23,6 +23,7 @@ data class Message(
     var userId: String = "",
     var message: String = "",
     var orderId: String = "",
+    var ownerId: String = "",
     var time: Long = 0L,
     var type: Int = 0
 ) : Serializable {
@@ -36,6 +37,7 @@ data class Message(
         const val SERVICE_REVIEW_MESSAGE_STATUS = 2
         const val TIME = "time"
         const val ORDER_ID = "order id"
+        const val OWNER_ID = "owner id"
     }
 
 }

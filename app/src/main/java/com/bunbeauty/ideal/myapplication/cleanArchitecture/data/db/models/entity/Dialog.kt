@@ -14,7 +14,7 @@ import java.io.Serializable
 )
 data class Dialog(
     @PrimaryKey
-    var id: String = "",
+    var id: String = "", //user Id
     @ColumnInfo(index = true)
     var ownerId: String = "", // Owner
     var isChecked: Boolean = true, // Read or no

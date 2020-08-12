@@ -39,8 +39,8 @@ class DialogsPresenter(
         viewState.showDialogs(dialogs)
     }
 
-    override fun getMessage(dialog: Dialog) {
-        dialogsMessageInteractor.getLastMessage(dialog, this)
+    override fun getMessage(myId: String, companionId: String) {
+        dialogsMessageInteractor.getLastMessage(myId, companionId, this)
     }
 
     override fun fillDialogsByMessages(message: Message) {

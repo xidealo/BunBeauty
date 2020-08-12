@@ -5,7 +5,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface IDialogsMessageInteractor {
     fun getLastMessage(
-        dialog: Dialog,
+        myId: String,
+        companionId: String,
         dialogsPresenterCallback: DialogsPresenterCallback
     )
 }

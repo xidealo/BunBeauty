@@ -10,9 +10,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IDialogRepository
 
-class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
-    IProfileDialogInteractor, InsertDialogCallback, DialogsCallback, DialogCallback,
-    DialogChangedCallback {
+class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) : DialogsCallback,
+    IProfileDialogInteractor, InsertDialogCallback, DialogCallback, DialogChangedCallback {
 
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
     private lateinit var ownerProfile: User
@@ -31,40 +30,36 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
     }
 
     override fun returnList(objects: List<Dialog>) {
-
-        val dialog = objects.find { it.user.id == ownerProfile.id }
-
-        if (dialog == null) {
-            dialogRepository.insert(listOf(createCompanionDialog(), createMyDialog()), this)
-            return
-        }
-
-        dialog.user = ownerProfile
-        profilePresenterCallback.goToDialog(dialog)
+        val myDialog = createMyDialog(user, ownerProfile)
+        val companionDialog = createCompanionDialog(user, ownerProfile)
+        dialogRepository.insert(
+            listOf(
+                companionDialog,
+                myDialog
+            ), this
+        )
+        profilePresenterCallback.goToDialog(myDialog, companionDialog)
     }
 
     override fun returnCreatedCallback(obj: Dialog) {
+        //TODO (Переход сделать тут)
         if (obj.ownerId != User.getMyId()) {
             obj.user = ownerProfile
         }
-
-        profilePresenterCallback.goToDialog(obj)
     }
 
-    private fun createMyDialog(): Dialog {
+    private fun createMyDialog(user: User, companionUser: User): Dialog {
         val newDialog = Dialog()
-
-        newDialog.user = user
-        newDialog.ownerId = ownerProfile.id
+        newDialog.id = user.id
+        newDialog.user = companionUser
         newDialog.isChecked = true
         return newDialog
     }
 
-    private fun createCompanionDialog(): Dialog {
+    private fun createCompanionDialog(user: User, companionUser: User): Dialog {
         val newDialog = Dialog()
-
-        newDialog.user = ownerProfile
-        newDialog.ownerId = user.id
+        newDialog.id = companionUser.id
+        newDialog.user = user
         newDialog.isChecked = true
         return newDialog
     }

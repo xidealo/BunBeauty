@@ -89,6 +89,10 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         }
     }
 
+    override fun getId(userId: String, dialogId: String): String {
+        return messageRepository.getIdForNew(userId, dialogId)
+    }
+
     /**
      * add text message or if it is my message add also commentMessage
      */

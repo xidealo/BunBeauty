@@ -8,7 +8,7 @@ interface DialogsPresenterCallback {
     fun getUser(dialog: Dialog)
     fun fillDialogs(user: User)
     fun showDialogs(dialogs: List<Dialog>)
-    fun getMessage(dialog: Dialog)
+    fun getMessage(myId: String, companionId: String)
     fun fillDialogsByMessages(message: Message)
     fun showLoading()
     fun hideLoading()

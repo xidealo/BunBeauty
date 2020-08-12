@@ -11,11 +11,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IDialogRepository
 
 class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
-    IDialogsDialogInteractor, DialogsCallback, DialogCallback, DialogChangedCallback {
+    IDialogsDialogInteractor, DialogCallback, DialogsCallback, DialogChangedCallback {
 
     private var finalCacheDialogs = mutableListOf<Dialog>()
     private var myCacheDialogs = mutableListOf<Dialog>()
-    private var companionsCacheDialogs = mutableListOf<Dialog>()
     private lateinit var dialogsPresenterCallback: DialogsPresenterCallback
     private var dialogCount = 0
 
@@ -37,29 +36,7 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
 
         for (dialog in objects) {
             dialogsPresenterCallback.getUser(dialog)
-            dialogsPresenterCallback.getMessage(dialog)
         }
-    }
-
-    override fun fillDialogs(
-        user: User,
-        dialogsPresenterCallback: DialogsPresenterCallback
-    ) {
-        var companionDialog = Dialog()
-
-        val dialogWithUserId = myCacheDialogs.find { it.user.id == user.id }
-        if (dialogWithUserId != null) {
-            dialogWithUserId.user = user
-            companionDialog = Dialog(
-                id = dialogWithUserId.id,
-                ownerId = dialogWithUserId.user.id
-            )
-        }
-        getCompanionDialog(companionDialog)
-    }
-
-    private fun getCompanionDialog(dialog: Dialog) {
-        dialogRepository.getById(dialog, this)
     }
 
     override fun returnElement(element: Dialog?) {
@@ -68,10 +45,19 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
         if (element.ownerId == User.getMyId()) {
             myCacheDialogs.add(element)
             dialogsPresenterCallback.getUser(element)
-        } else {
-            companionsCacheDialogs.add(element)
         }
-        dialogsPresenterCallback.getMessage(element)
+    }
+
+    override fun fillDialogs(
+        user: User,
+        dialogsPresenterCallback: DialogsPresenterCallback
+    ) {
+        val dialogWithUserId = myCacheDialogs.find { it.user.id == user.id }
+        if (dialogWithUserId != null) {
+            dialogWithUserId.user = user
+            //получаю последнее сообщение из диалога
+            dialogsPresenterCallback.getMessage(User.getMyId(), user.id)
+        }
     }
 
     override fun fillDialogsByMessages(
@@ -80,18 +66,17 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
     ) {
         dialogCount++
 
-        val dialogWithMessageId = myCacheDialogs.find { it.id == message.dialogId }
+        val dialogWithMessageId =
+            myCacheDialogs.find { it.id == message.dialogId || it.id == message.userId }
 
         if (dialogWithMessageId != null) {
             dialogWithMessageId.lastMessage = message
         }
 
-        if (dialogCount >= myCacheDialogs.size + companionsCacheDialogs.size) {
-            if (companionsCacheDialogs.size != 0) {
-                finalCacheDialogs.clear()
-                finalCacheDialogs.addAll(myCacheDialogs.sortedByDescending { it.lastMessage.time })
-                dialogsPresenterCallback.showDialogs(finalCacheDialogs)
-            }
+        if (dialogCount >= myCacheDialogs.size) {
+            finalCacheDialogs.clear()
+            finalCacheDialogs.addAll(myCacheDialogs.sortedByDescending { it.lastMessage.time })
+            dialogsPresenterCallback.showDialogs(finalCacheDialogs)
         }
     }
 
@@ -101,7 +86,7 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
         if (dialog != null) {
             dialog.isChecked = element.isChecked
             dialogsPresenterCallback.showDialogs(finalCacheDialogs)
-            dialogsPresenterCallback.getMessage(element)
+            dialogsPresenterCallback.getMessage(element.id, element.user.id)
         }
 
     }

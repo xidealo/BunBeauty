@@ -11,7 +11,7 @@ interface ProfilePresenterCallback {
     fun showMyProfile(user: User)
     fun showAlienProfile(user: User)
     fun goToEditProfile(user: User)
-    fun goToDialog(dialog: Dialog)
+    fun goToDialog(myDialog: Dialog, companionDialog: Dialog)
     fun showSubscribed()
     fun addSubscription(subscriber: Subscriber)
     fun deleteSubscription(subscriber: Subscriber)

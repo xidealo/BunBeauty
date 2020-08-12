@@ -14,4 +14,5 @@ interface IMessagesMessageInteractor {
         messages: List<Message>,
         messagesPresenterCallback: MessagesPresenterCallback
     )
+    fun getId(userId: String, dialogId: String): String
 }

@@ -14,7 +14,6 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
 
     override fun insert(message: Message, insertMessageCallback: InsertMessageCallback) {
         launch {
-            message.id = messageFirebase.getIdForNew(message)
             messageFirebase.insert(message)
             withContext(Dispatchers.Main) {
                 insertMessageCallback.returnCreatedCallback(message)
@@ -59,12 +58,24 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
         }
     }
 
-    override fun getByIdLastMessage(dialog: Dialog, messageCallback: MessageCallback) {
+    override fun getByIdLastMessage(
+        myId: String,
+        companionId: String,
+        messageCallback: MessageCallback
+    ) {
         launch {
-            messageFirebase.getLastMessage(dialog, messageCallback)
-        }
+        messageFirebase.getLastMessage(
+            myId,
+            companionId,
+            messageCallback
+        )
+    }
     }
 
-    fun getIdForNew(message: Message): String = messageFirebase.getIdForNew(message)
+
+    fun getIdForNew(userId: String, dialogId: String): String = messageFirebase.getIdForNew(
+        userId,
+        dialogId
+    )
 
 }

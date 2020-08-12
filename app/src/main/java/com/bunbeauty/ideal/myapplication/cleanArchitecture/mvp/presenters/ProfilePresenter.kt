@@ -85,12 +85,8 @@ class ProfilePresenter(
         //viewState.goToEditProfile(user)
     }
 
-    override fun goToDialog(dialog: Dialog) {
-        val companionDialog = Dialog()
-        companionDialog.ownerId = dialog.user.id
-        companionDialog.id = dialog.id
-        companionDialog.user.id = dialog.ownerId
-        viewState.goToMessages(dialog, companionDialog)
+    override fun goToDialog(myDialog: Dialog, companionDialog: Dialog) {
+        viewState.goToMessages(myDialog, companionDialog)
     }
 
     fun subscribe() {

@@ -11,27 +11,27 @@ class DialogFirebase {
 
     fun insert(dialog: Dialog) {
         val dialogRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
-            .child(dialog.ownerId)
-            .child(Dialog.DIALOGS)
+            .getReference(Dialog.DIALOGS)
             .child(dialog.id)
+            .child(dialog.user.id)
+
+        val dialogItems = HashMap<String, Any>()
+        dialogItems[Dialog.IS_CHECKED] = dialog.isChecked
+        dialogRef.updateChildren(dialogItems)
 
         val items = HashMap<String, Any>()
         items[Dialog.IS_CHECKED] = dialog.isChecked
-        items[Dialog.COMPANION_ID] = dialog.user.id
         dialogRef.updateChildren(items)
     }
 
     fun update(dialog: Dialog) {
         val dialogRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
-            .child(dialog.ownerId)
-            .child(Dialog.DIALOGS)
-            .child(dialog.id)
+            .getReference(Dialog.DIALOGS)
+            .child(dialog.id) // user id
+            .child(dialog.user.id)
 
         val items = HashMap<String, Any>()
         items[Dialog.IS_CHECKED] = dialog.isChecked
-        items[Dialog.COMPANION_ID] = dialog.user.id
         dialogRef.updateChildren(items)
     }
 
@@ -43,9 +43,8 @@ class DialogFirebase {
     ) {
 
         val dialogsRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Dialog.DIALOGS)
             .child(userId)
-            .child(Dialog.DIALOGS)
 
         dialogsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dialogsSnapshot: DataSnapshot) {
@@ -134,8 +133,7 @@ class DialogFirebase {
         dialog.id = dialogSnapshot.key!!
         dialog.ownerId = userId
         dialog.isChecked = dialogSnapshot.child(Dialog.IS_CHECKED).value as? Boolean ?: true
-        dialog.user.id = dialogSnapshot.child(Dialog.COMPANION_ID).value as? String ?: ""
-        dialog.lastMessage.id = dialogSnapshot.child(Dialog.MESSAGE_ID).value as? String ?: ""
+        dialog.user.id = dialogSnapshot.key!!
 
         return dialog
     }

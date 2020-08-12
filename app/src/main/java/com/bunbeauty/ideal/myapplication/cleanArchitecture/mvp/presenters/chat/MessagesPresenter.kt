@@ -7,6 +7,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.iChat.I
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.iChat.IMessagesUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.chat.MessagesPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.chat.MessagesView
 
 @InjectViewState
@@ -43,15 +44,32 @@ class MessagesPresenter(
     }
 
     fun sendMessage(messageText: String) {
-        val message = Message()
-        message.message = messageText
-        message.dialogId = messagesDialogInteractor.getCompanionDialog().id
-        message.userId = messagesDialogInteractor.getMyDialog().ownerId
-        message.type = Message.TEXT_MESSAGE_STATUS
-        messagesMessageInteractor.sendMessage(message, this)
+        val messageId = messagesMessageInteractor.getId(
+            messagesDialogInteractor.getMyDialog().ownerId,
+            messagesDialogInteractor.getMyDialog().id
+        )
+        //добавление в мой диалог
+        val myMessage = Message()
+        myMessage.id = messageId
+        myMessage.ownerId = User.getMyId()
+        myMessage.message = messageText
+        myMessage.dialogId = messagesDialogInteractor.getMyDialog().id
+        myMessage.userId = messagesDialogInteractor.getMyDialog().user.id
+        myMessage.type = Message.TEXT_MESSAGE_STATUS
+        messagesMessageInteractor.sendMessage(myMessage, this)
+
+        //добавление в диалог копманиона
+        val companionMessage = Message()
+        companionMessage.id = messageId
+        companionMessage.ownerId = User.getMyId()
+        companionMessage.message = messageText
+        companionMessage.dialogId = messagesDialogInteractor.getCompanionDialog().id
+        companionMessage.userId = messagesDialogInteractor.getCompanionDialog().user.id
+        companionMessage.type = Message.TEXT_MESSAGE_STATUS
+        messagesMessageInteractor.sendMessage(companionMessage, this)
     }
 
-    fun getCacheCurrentUser() = messagesUserInteractor.getCacheCurrentUser()
+    fun getCacheCurrentUser() = messagesUserInteractor.getCacheCompanionUser()
 
     fun goToProfile() {
         viewState.goToProfile(getCacheCurrentUser())

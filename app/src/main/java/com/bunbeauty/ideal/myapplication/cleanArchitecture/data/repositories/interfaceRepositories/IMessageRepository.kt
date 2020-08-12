@@ -17,5 +17,5 @@ interface IMessageRepository {
         updateMessageCallback: UpdateMessageCallback
     )
 
-    fun getByIdLastMessage(dialog: Dialog, messageCallback: MessageCallback)
+    fun getByIdLastMessage(myId: String, companionId: String, messageCallback: MessageCallback)
 }

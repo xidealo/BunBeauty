@@ -12,16 +12,15 @@ class MessageFirebase {
 
     fun insert(message: Message) {
         val messageRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
-            .child(message.userId)
-            .child(Dialog.DIALOGS)
+            .getReference(Dialog.DIALOGS)
             .child(message.dialogId)
-            .child(Message.MESSAGES)
+            .child(message.userId)
             .child(message.id)
 
         val items = HashMap<String, Any>()
         items[Message.MESSAGE] = message.message
         items[Message.TIME] = ServerValue.TIMESTAMP
+        items[Message.OWNER_ID] = message.ownerId
         if (message.orderId.isNotEmpty())
             items[Message.ORDER_ID] = message.orderId
 
@@ -120,13 +119,16 @@ class MessageFirebase {
         })
     }
 
-    fun getLastMessage(dialog: Dialog, messageCallback: MessageCallback) {
+    fun getLastMessage(
+        myId: String,
+        companionId: String,
+        messageCallback: MessageCallback
+    ) {
         val messageRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
-            .child(dialog.ownerId)
-            .child(Dialog.DIALOGS)
-            .child(dialog.id)
-            .child(Message.MESSAGES).orderByChild(Message.TIME).limitToLast(10)
+            .getReference(Dialog.DIALOGS)
+            .child(myId)
+            .child(companionId)
+            .orderByChild(Message.TIME).limitToLast(10)
 
         messageRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(messagesSnapshot: DataSnapshot) {
@@ -136,14 +138,13 @@ class MessageFirebase {
                         message =
                             getMessageFromSnapshot(
                                 messageSnapshot,
-                                dialog.ownerId
+                                myId
                             )
                         if (message.type == Message.TEXT_MESSAGE_STATUS) break
-
                     }
                 }
-                message.dialogId = dialog.id
-                message.userId = dialog.ownerId
+                message.dialogId = myId
+                message.userId = companionId
                 messageCallback.returnElement(message)
             }
 
@@ -163,9 +164,10 @@ class MessageFirebase {
         return message
     }
 
-    fun getIdForNew(message: Message) = FirebaseDatabase.getInstance().getReference(User.USERS)
-        .child(message.userId)
-        .child(Dialog.DIALOGS)
-        .child(message.dialogId)
-        .child(Message.MESSAGES).push().key!!
+    fun getIdForNew(userId: String, dialogId: String) =
+        FirebaseDatabase.getInstance().getReference(User.USERS)
+            .child(userId)
+            .child(Dialog.DIALOGS)
+            .child(dialogId)
+            .child(Message.MESSAGES).push().key!!
 }
