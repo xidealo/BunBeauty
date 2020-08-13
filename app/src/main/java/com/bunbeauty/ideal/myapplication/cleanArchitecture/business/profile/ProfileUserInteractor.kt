@@ -82,12 +82,12 @@ class ProfileUserInteractor(
     }
 
     override fun initFCM() {
-        if (isFromRegistration()) {
+        //if (isFromRegistration()) {
             FirebaseInstanceId.getInstance().instanceId
                 .addOnSuccessListener { instanceIdResult ->
                     userRepository.setToken(instanceIdResult.token)
                 }
-        }
+        //}
     }
 
     private fun isFromRegistration() =
