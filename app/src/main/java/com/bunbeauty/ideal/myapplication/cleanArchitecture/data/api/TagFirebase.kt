@@ -9,12 +9,11 @@ class TagFirebase {
     fun insert(tag: Tag) {
         val database = FirebaseDatabase.getInstance()
         val tagRef = database
-                .getReference(User.USERS)
-                .child(tag.userId)
-                .child(Service.SERVICES)
-                .child(tag.serviceId)
-                .child(Tag.TAGS)
-                .child(tag.id)
+            .getReference(Service.SERVICES)
+            .child(tag.userId)
+            .child(tag.serviceId)
+            .child(Tag.TAGS)
+            .child(tag.id)
 
         val items = HashMap<String, Any>()
         items[Tag.TAG] = tag.tag
@@ -23,9 +22,8 @@ class TagFirebase {
 
     fun delete(tag: Tag) {
         val subscriberRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Service.SERVICES)
             .child(tag.userId)
-            .child(Service.SERVICES)
             .child(tag.serviceId)
             .child(Tag.TAGS)
             .child(tag.id)
@@ -41,11 +39,11 @@ class TagFirebase {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getIdForNew(userId: String, serviceId:String): String {
-        return FirebaseDatabase.getInstance().getReference(User.USERS)
-                .child(userId)
-                .child(Service.SERVICES)
-                .child(serviceId)
-                .child(Tag.TAGS).push().key!!
+    fun getIdForNew(userId: String, serviceId: String): String {
+        return FirebaseDatabase.getInstance()
+            .getReference(Service.SERVICES)
+            .child(userId)
+            .child(serviceId)
+            .child(Tag.TAGS).push().key!!
     }
 }

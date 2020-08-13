@@ -13,9 +13,8 @@ class ServiceFirebase {
 
     fun insert(service: Service) {
         val serviceRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Service.SERVICES)
             .child(service.userId)
-            .child(Service.SERVICES)
             .child(service.id)
 
         val items = HashMap<String, Any>()
@@ -33,9 +32,8 @@ class ServiceFirebase {
 
     fun delete(service: Service) {
         val serviceRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Service.SERVICES)
             .child(service.userId)
-            .child(Service.SERVICES)
             .child(service.id)
 
         serviceRef.removeValue()
@@ -43,9 +41,8 @@ class ServiceFirebase {
 
     fun update(service: Service) {
         val serviceRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Service.SERVICES)
             .child(service.userId)
-            .child(Service.SERVICES)
             .child(service.id)
 
         val items = HashMap<String, Any>()
@@ -69,9 +66,8 @@ class ServiceFirebase {
         userId: String, serviceId: String, servicesCallback: ServicesCallback
     ) {
         val servicesRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Service.SERVICES)
             .child(userId)
-            .child(Service.SERVICES)
             .child(serviceId)
 
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -90,9 +86,8 @@ class ServiceFirebase {
         servicesCallback: ServicesCallback
     ) {
         val servicesRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Service.SERVICES)
             .child(userId)
-            .child(Service.SERVICES)
 
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(servicesSnapshot: DataSnapshot) {
@@ -118,9 +113,10 @@ class ServiceFirebase {
     }
 
     fun getIdForNew(userId: String): String {
-        return FirebaseDatabase.getInstance().getReference(User.USERS)
+        return FirebaseDatabase.getInstance()
+            .getReference(Service.SERVICES)
             .child(userId)
-            .child(Service.SERVICES).push().key!!
+            .push().key!!
     }
 
     private fun getServiceFromSnapshot(serviceSnapshot: DataSnapshot, userId: String): Service {
