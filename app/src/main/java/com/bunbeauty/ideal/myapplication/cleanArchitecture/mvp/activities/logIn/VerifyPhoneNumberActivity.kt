@@ -54,15 +54,15 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), VerifyPhoneView {
     private fun configViews() {
         phoneVerifyPhoneInput.setText(verifyPhonePresenter.getPhoneNumber())
 
-        verifyVerifyPhoneBtn.setOnClickListener{
+        verifyVerifyPhoneBtn.setOnClickListener {
             WorkWithViewApi.hideKeyboard(this)
             verifyPhonePresenter.checkCode(codeVerifyPhoneInput.text.toString())
         }
-        resendCodeVerifyPhoneText.setOnClickListener{
+        resendCodeVerifyPhoneText.setOnClickListener {
             WorkWithViewApi.hideKeyboard(this)
             verifyPhonePresenter.resendCode()
         }
-        changePhoneVerifyPhoneText.setOnClickListener{
+        changePhoneVerifyPhoneText.setOnClickListener {
             WorkWithViewApi.hideKeyboard(this)
             goBackToAuthorization()
         }
@@ -82,10 +82,6 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), VerifyPhoneView {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    override fun showSendCode() {
-
-    }
-
     private fun goBackToAuthorization() {
         super.onBackPressed()
     }
@@ -100,6 +96,7 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), VerifyPhoneView {
 
     override fun goToProfile() {
         val intent = Intent(this, ProfileActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
         overridePendingTransition(0, 0)
         finish()
