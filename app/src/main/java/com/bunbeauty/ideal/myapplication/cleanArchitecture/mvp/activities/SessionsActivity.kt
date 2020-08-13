@@ -1,9 +1,9 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities
 
 import android.app.Activity
+import android.graphics.Point
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -16,7 +16,6 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.DayAdapter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.StringApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Session
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay
@@ -60,6 +59,7 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sessions)
 
+        init()
         sessionsPresenter.getSchedule()
 
         initTopPanel("Сеансы", ButtonTask.NONE)
@@ -71,6 +71,12 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         initBottomPanel()
     }
 
+    private fun init() {
+        makeAppointmentSessionBtn.setOnClickListener {
+            sessionsPresenter.makeAppointment()
+        }
+    }
+
     override fun showDays(days: List<WorkingDay>) {
         daysSessionsRecyclerView.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
         daysSessionsRecyclerView.adapter = DayAdapter(days, sessionsPresenter)
@@ -79,9 +85,12 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
     override fun showTime(sessions: List<Session>) {
         timeButtonList.clear()
 
+        val width = resources.getDimensionPixelSize(R.dimen.sessions_button_width)
+        val height = resources.getDimensionPixelSize(R.dimen.sessions_button_height)
+
+        timeSessionGrid.columnCount = getColumnCount(width)
+
         for (session in sessions) {
-            val width = resources.getDimensionPixelSize(R.dimen.sessions_button_width)
-            val height = resources.getDimensionPixelSize(R.dimen.sessions_button_height)
             val text = session.startTime
             val button = getConfiguredButton(width, height, text)
 
@@ -90,16 +99,21 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
         }
     }
 
+    private fun getColumnCount(buttonWidth: Int): Int {
+        val size = Point()
+        windowManager.defaultDisplay.getRealSize(size)
+        return size.x / (buttonWidth + 2 * BUTTON_MARGIN)
+    }
+
     private fun getConfiguredButton(width: Int, height: Int, text: String): Button {
         val button = Button(this)
 
-        val margin = resources.getDimensionPixelSize(R.dimen.sessions_button_margin)
         val params = LinearLayout.LayoutParams(width, height)
-        params.setMargins(margin, margin, margin, margin)
+        params.setMargins(BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_MARGIN)
         button.layoutParams = params
         setBackground(button)
         button.text = text
-        button.setOnClickListener{
+        button.setOnClickListener {
             sessionsPresenter.updateTime(text)
         }
 
@@ -122,7 +136,10 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
     }
 
     override fun clearTime(time: String) {
-        setBackground(timeButtonList.find { it.text == time }!!)
+        val unselectedTimeButton = timeButtonList.find { it.text == time }
+        if (unselectedTimeButton != null) {
+            setBackground(unselectedTimeButton)
+        }
     }
 
     override fun selectTime(selectedTime: String) {
@@ -138,5 +155,17 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
 
     override fun clearSessionsLayout() {
         timeSessionGrid.removeAllViews()
+    }
+
+    override fun enableMakeAppointmentButton() {
+        makeAppointmentSessionBtn.isEnabled = true
+    }
+
+    override fun disableMakeAppointmentButton() {
+        makeAppointmentSessionBtn.isEnabled = false
+    }
+
+    companion object {
+        const val BUTTON_MARGIN = 8
     }
 }

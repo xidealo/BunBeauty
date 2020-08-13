@@ -10,9 +10,10 @@
     <include layout="@layout/part_top_panel" />
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintBottom_toTopOf="@+id/makeAppointmentSessionBtn"
         app:layout_constraintTop_toBottomOf="@+id/topPanel">
 
         <LinearLayout style="@style/wideVerticalBlock">
@@ -40,10 +41,16 @@
         </LinearLayout>
     </ScrollView>
 
-    <!--<TextView
-        style="@style/wideLabel"
-        android:background="@color/grey40"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel" />-->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/makeAppointmentSessionBtn"
+        android:text="Записаться"
+        android:enabled="false"
+        style="@style/mainButton"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <include
         layout="@layout/part_bottom_panel"
