@@ -67,7 +67,7 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
         dialogCount++
 
         val dialogWithMessageId =
-            myCacheDialogs.find { it.id == message.dialogId || it.id == message.userId }
+            myCacheDialogs.find { it.user.id == message.userId }
 
         if (dialogWithMessageId != null) {
             dialogWithMessageId.lastMessage = message

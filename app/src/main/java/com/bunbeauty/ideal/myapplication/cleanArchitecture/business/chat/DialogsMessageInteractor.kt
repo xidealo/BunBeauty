@@ -22,7 +22,8 @@ class DialogsMessageInteractor(private val messageRepository: IMessageRepository
         this.dialogsPresenterCallback = dialogsPresenterCallback
         messageRepository.getByIdLastMessage(
             myId,
-            companionId, this
+            companionId,
+            this
         )
     }
 
@@ -30,7 +31,7 @@ class DialogsMessageInteractor(private val messageRepository: IMessageRepository
 
         if (element == null) return
 
-        val foundMessage = cacheMyMessages.find { it.dialogId == element.dialogId }
+        val foundMessage = cacheMyMessages.find { it.userId == element.userId }
 
         if (foundMessage == null) {
             cacheMyMessages.add(element)

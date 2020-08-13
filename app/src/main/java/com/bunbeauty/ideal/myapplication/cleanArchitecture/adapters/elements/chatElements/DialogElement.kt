@@ -80,7 +80,7 @@ class DialogElement(
         val myDialog = Dialog()
         myDialog.ownerId = dialog.user.id
         myDialog.user.id = dialog.ownerId
-        myDialog.id = dialog.id
+        myDialog.id = dialog.user.id
 
         intent.putExtra(Dialog.COMPANION_DIALOG, myDialog)
         context.startActivity(intent)

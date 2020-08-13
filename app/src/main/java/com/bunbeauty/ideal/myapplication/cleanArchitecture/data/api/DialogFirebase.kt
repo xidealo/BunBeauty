@@ -130,7 +130,7 @@ class DialogFirebase {
 
     private fun getDialogFromSnapshot(dialogSnapshot: DataSnapshot, userId: String): Dialog {
         val dialog = Dialog()
-        dialog.id = dialogSnapshot.key!!
+        dialog.id = userId
         dialog.ownerId = userId
         dialog.isChecked = dialogSnapshot.child(Dialog.IS_CHECKED).value as? Boolean ?: true
         dialog.user.id = dialogSnapshot.key!!
