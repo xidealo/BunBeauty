@@ -9,9 +9,8 @@ class SubscriptionFirebase {
 
     fun insert(subscription: Subscription) {
         val subscriptionRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Subscription.SUBSCRIPTIONS)
             .child(subscription.userId)
-            .child(Subscription.SUBSCRIPTIONS)
             .child(subscription.id)
 
         val items = HashMap<String, Any>()
@@ -22,22 +21,19 @@ class SubscriptionFirebase {
 
     fun delete(subscription: Subscription) {
         val subscriptionRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Subscription.SUBSCRIPTIONS)
             .child(subscription.userId)
-            .child(Subscription.SUBSCRIPTIONS)
             .child(subscription.id)
 
         subscriptionRef.removeValue()
     }
 
     fun getByUserId(userId: String, subscriptionsCallback: SubscriptionsCallback) {
-
-        val servicesRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+        val subscriptionRef = FirebaseDatabase.getInstance()
+            .getReference(Subscription.SUBSCRIPTIONS)
             .child(userId)
-            .child(Subscription.SUBSCRIPTIONS)
 
-        servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        subscriptionRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(subscriptionsSnapshot: DataSnapshot) {
                 val subscriptions = arrayListOf<Subscription>()
                 for (subscriptionSnapshot in subscriptionsSnapshot.children) {
@@ -54,12 +50,11 @@ class SubscriptionFirebase {
     }
 
     fun deleteByBySubscriptionId(
-       subscription: Subscription
+        subscription: Subscription
     ) {
         val subscriptionsQuery = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Subscription.SUBSCRIPTIONS)
             .child(subscription.userId)
-            .child(Subscription.SUBSCRIPTIONS)
             .orderByChild(Subscription.SUBSCRIPTION_ID)
             .equalTo(subscription.subscriptionId)
 
