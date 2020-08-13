@@ -54,11 +54,9 @@ class MessageFirebase {
         updateMessageCallback: UpdateMessageCallback
     ) {
         val messageRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
-            .child(dialog.ownerId)
-            .child(Dialog.DIALOGS)
+            .getReference(Dialog.DIALOGS)
             .child(dialog.id)
-            .child(Message.MESSAGES)
+            .child(dialog.user.id)
 
         messageRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(messagesSnapshot: DataSnapshot) {
@@ -66,7 +64,8 @@ class MessageFirebase {
                 val messages = arrayListOf<Message>()
                 if (messagesSnapshot.childrenCount > 0L) {
                     for (messageSnapshot in messagesSnapshot.children) {
-                        val message = getMessageFromSnapshot(messageSnapshot, dialog.ownerId)
+                        if (!messageSnapshot.hasChildren()) continue
+                        val message = getMessageFromSnapshot(messageSnapshot)
                         message.dialogId = dialog.id
                         message.userId = dialog.ownerId
                         messages.add(message)
@@ -83,28 +82,32 @@ class MessageFirebase {
                     }
 
                     override fun onChildChanged(messageSnapshot: DataSnapshot, p1: String?) {
+                        if (!messageSnapshot.hasChildren()) return
                         updateMessageCallback.returnUpdatedCallback(
-                            getMessageFromSnapshot(messageSnapshot, dialog.ownerId)
+                            getMessageFromSnapshot(messageSnapshot)
                         )
                     }
 
                     override fun onChildAdded(messageSnapshot: DataSnapshot, previousId: String?) {
+                        if (!messageSnapshot.hasChildren()) return
                         if (messages.isNotEmpty()) {
                             if (previousId == messages.last().id) {
                                 val addedMessage =
-                                    getMessageFromSnapshot(messageSnapshot, dialog.ownerId)
+                                    getMessageFromSnapshot(messageSnapshot)
                                 addedMessage.dialogId = dialog.id
                                 addedMessage.userId = dialog.ownerId
                                 messages.add(addedMessage)
                                 messageCallback.returnElement(addedMessage)
+
                             }
                         } else {
                             val addedMessage =
-                                getMessageFromSnapshot(messageSnapshot, dialog.ownerId)
+                                getMessageFromSnapshot(messageSnapshot)
                             addedMessage.dialogId = dialog.id
                             addedMessage.userId = dialog.ownerId
                             messages.add(addedMessage)
                             messageCallback.returnElement(addedMessage)
+
                         }
                     }
 
@@ -137,14 +140,13 @@ class MessageFirebase {
                     for (messageSnapshot in messagesSnapshot.children.reversed()) {
                         message =
                             getMessageFromSnapshot(
-                                messageSnapshot,
-                                myId
+                                messageSnapshot
                             )
                         if (message.type == Message.TEXT_MESSAGE_STATUS) break
                     }
                 }
                 message.dialogId = myId
-                message.userId = companionId
+                message.userId = companionId //проверить
                 messageCallback.returnElement(message)
             }
 
@@ -154,13 +156,13 @@ class MessageFirebase {
         })
     }
 
-    private fun getMessageFromSnapshot(messageSnapshot: DataSnapshot, userId: String): Message {
+    private fun getMessageFromSnapshot(messageSnapshot: DataSnapshot): Message {
         val message = Message()
         message.id = messageSnapshot.key!!
         message.message = messageSnapshot.child(Message.MESSAGE).value as? String ?: ""
         message.time = messageSnapshot.child(Message.TIME).value as? Long ?: 0
-        message.type = messageSnapshot.child(Message.TYPE).getValue(Int::class.java) ?: 0
-        message.userId = userId
+        message.type = messageSnapshot.child(Message.TYPE).value as? Int ?: 0
+        message.ownerId = messageSnapshot.child(Message.OWNER_ID).value as? String ?: ""
         return message
     }
 

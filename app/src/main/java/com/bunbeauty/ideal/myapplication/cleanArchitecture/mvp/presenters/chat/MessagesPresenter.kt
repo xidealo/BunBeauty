@@ -23,10 +23,6 @@ class MessagesPresenter(
 
     fun createMessageScreen() {
         messagesMessageInteractor.getMyMessages(
-            messagesDialogInteractor.getCompanionDialog(),
-            this
-        )
-        messagesMessageInteractor.getMyMessages(
             messagesDialogInteractor.getMyDialog(),
             this
         )

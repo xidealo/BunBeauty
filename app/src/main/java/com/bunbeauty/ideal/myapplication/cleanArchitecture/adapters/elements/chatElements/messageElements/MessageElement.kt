@@ -26,7 +26,7 @@ abstract class MessageElement(
         messageTextMessageElementText = view.findViewById(R.id.messageTextMessageElementText)
         messageTimeMessageElementText = view.findViewById(R.id.messageTimeMessageElementText)
         messageMessageElementLayout = view.findViewById(R.id.messageMessageElementLayout)
-            mainLayoutMessageElementLayout = view.findViewById(R.id.mainLayoutMessageElementLayout)
+        mainLayoutMessageElementLayout = view.findViewById(R.id.mainLayoutMessageElementLayout)
         rateMessageElementButton = view.findViewById(R.id.rateMessageElementButton)
     }
 
@@ -40,7 +40,7 @@ abstract class MessageElement(
     }
 
     open fun setIsMyMessage(message: Message) {
-        if (message.userId == User.getMyId()) {
+        if (message.ownerId == User.getMyId()) {
             messageMessageElementLayout.gravity = Gravity.END
         } else {
             messageMessageElementLayout.gravity = Gravity.START

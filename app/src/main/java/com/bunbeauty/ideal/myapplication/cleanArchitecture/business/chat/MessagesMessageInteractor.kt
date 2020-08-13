@@ -17,7 +17,6 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
 
     private var cacheMessages = mutableListOf<Message>()
     private var cacheMessagesSet = mutableSetOf<Message>()
-    private var countOfDialogs = 0
     private lateinit var messagesPresenterCallback: MessagesPresenterCallback
 
     override fun getMyMessagesLink() = cacheMessages
@@ -44,18 +43,14 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
      * when we get from 2 activity_dialogs messages we sort it and show
      */
     override fun returnList(objects: List<Message>) {
-        countOfDialogs++
 
         for (message in objects) {
-            if (message.type == Message.TEXT_MESSAGE_STATUS || message.userId == User.getMyId()) {
+            if (message.type == Message.TEXT_MESSAGE_STATUS || message.ownerId == User.getMyId()) {
                 cacheMessagesSet.add(message)
             }
         }
-
-        if (countOfDialogs == 2) {
-            cacheMessages.addAll(cacheMessagesSet.sortedBy { it.time })
-            checkMoveToStart(cacheMessages, messagesPresenterCallback)
-        }
+        cacheMessages.addAll(cacheMessagesSet.sortedBy { it.time })
+        checkMoveToStart(cacheMessages, messagesPresenterCallback)
     }
 
     override fun updateMessages(
