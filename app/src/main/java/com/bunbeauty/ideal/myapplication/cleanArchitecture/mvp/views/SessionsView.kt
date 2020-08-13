@@ -10,4 +10,6 @@ interface SessionsView: MvpView {
     fun showTime(sessions: List<Session>)
     fun clearTime(time: String)
     fun selectTime(selectedTime: String)
+    fun enableMakeAppointmentButton()
+    fun disableMakeAppointmentButton()
 }

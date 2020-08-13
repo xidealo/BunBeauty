@@ -52,15 +52,25 @@ class SessionsInteractor(
 
     fun updateTime(time: String, sessionsPresenterCallback: SessionsPresenterCallback) {
         if (time == selectedTime) {
-            selectedTime = ""
-            sessionsPresenterCallback.clearTime(time)
+            clearTime(sessionsPresenterCallback)
         } else {
             if (selectedTime.isNotEmpty()) {
-                sessionsPresenterCallback.clearTime(selectedTime)
+                clearTime(sessionsPresenterCallback)
             }
             sessionsPresenterCallback.selectTime(time)
+            sessionsPresenterCallback.enableMakeAppointmentButton()
 
             selectedTime = time
         }
+    }
+
+    fun clearTime(sessionsPresenterCallback: SessionsPresenterCallback) {
+        sessionsPresenterCallback.disableMakeAppointmentButton()
+        sessionsPresenterCallback.clearTime(selectedTime)
+        selectedTime = ""
+    }
+
+    fun makeAppointment() {
+
     }
 }

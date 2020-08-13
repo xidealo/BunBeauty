@@ -31,7 +31,7 @@ class SessionsPresenter(private val sessionsInteractor: SessionsInteractor) :
     }
 
     fun clearSessions() {
-        sessionsInteractor.selectedTime = ""
+        sessionsInteractor.clearTime(this)
         viewState.clearSessionsLayout()
     }
 
@@ -45,6 +45,18 @@ class SessionsPresenter(private val sessionsInteractor: SessionsInteractor) :
 
     override fun selectTime(selectedTime: String) {
         viewState.selectTime(selectedTime)
+    }
+
+    override fun enableMakeAppointmentButton() {
+        viewState.enableMakeAppointmentButton()
+    }
+
+    override fun disableMakeAppointmentButton() {
+        viewState.disableMakeAppointmentButton()
+    }
+
+    fun makeAppointment() {
+        sessionsInteractor.makeAppointment()
     }
 
 }

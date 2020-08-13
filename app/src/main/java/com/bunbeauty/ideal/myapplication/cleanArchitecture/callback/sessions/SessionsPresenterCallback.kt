@@ -6,4 +6,6 @@ interface SessionsPresenterCallback {
     fun showDays(days: List<WorkingDay>)
     fun clearTime(time: String)
     fun selectTime(selectedTime: String)
+    fun disableMakeAppointmentButton()
+    fun enableMakeAppointmentButton()
 }
