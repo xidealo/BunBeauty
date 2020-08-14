@@ -13,7 +13,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintBottom_toTopOf="@+id/saveScheduleButton"
         app:layout_constraintTop_toBottomOf="@+id/topPanel">
 
         <LinearLayout
@@ -64,7 +64,7 @@
                 <TextView
                     style="@style/wideLabel"
                     android:text="Время"
-                    app:layout_constraintBottom_toTopOf="@+id/bottomPanel" />
+                    app:layout_constraintBottom_toTopOf="@+id/saveScheduleButton" />
 
                 <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
                     android:id="@+id/timeScheduleGrid"
@@ -75,13 +75,20 @@
         </LinearLayout>
     </ScrollView>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/saveScheduleButton"
+        style="@style/mainButton"
+        android:text="Сохранить"
+        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <!--<TextView
         style="@style/wideLabel"
         android:background="@color/grey40"
         app:layout_constraintBottom_toTopOf="@+id/bottomPanel" />-->
 
     <include
-        layout="@layout/part_bottom_panel"
-        tools:layout_editor_absoluteY="675dp" />
+        layout="@layout/part_bottom_panel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -124,12 +124,15 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         }
     }
 
-    fun saveSchedule() {
+    fun saveSchedule(schedulePresenterCallback: SchedulePresenterCallback) {
+        this.schedulePresenterCallback = schedulePresenterCallback
+
         schedule.schedule.userId = User.getMyId()
         schedule.workingDays.removeAll(schedule.workingDays.filter { it.workingTimes.isEmpty() })
         scheduleRepository.updateSchedule(schedule, this)
     }
 
     override fun returnUpdatedCallback(schedule: ScheduleWithDays) {
+        schedulePresenterCallback.showScheduleSaved()
     }
 }

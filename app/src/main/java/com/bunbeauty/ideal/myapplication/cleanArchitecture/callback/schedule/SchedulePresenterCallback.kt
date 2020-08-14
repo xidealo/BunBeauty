@@ -8,4 +8,5 @@ interface SchedulePresenterCallback {
     fun showAccurateTime(accurateTime: Set<String>)
     fun showInaccurateTime(inaccurateTime: Set<String>)
     fun setSchedule(schedule: ScheduleWithDays)
+    fun showScheduleSaved()
 }

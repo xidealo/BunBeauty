@@ -15,10 +15,8 @@ class ScheduleFirebase {
 
     fun getByUserId(userId: String, getScheduleCallback: GetScheduleCallback): ScheduleWithDays {
         val scheduleReference = FirebaseDatabase.getInstance()
-            .getReference(USERS)
+            .getReference(SCHEDULE)
             .child(userId)
-            .child(SCHEDULE)
-            .child(WORKING_DAYS)
 
         scheduleReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(workingDaysSnapshot: DataSnapshot) {
@@ -53,9 +51,8 @@ class ScheduleFirebase {
 
     fun update(scheduleWithDays: ScheduleWithDays) {
         val scheduleReference = FirebaseDatabase.getInstance()
-            .getReference(USERS)
+            .getReference(SCHEDULE)
             .child(scheduleWithDays.schedule.userId)
-            .child(SCHEDULE)
 
         scheduleReference.removeValue { _, _ ->
             insert(scheduleWithDays)
@@ -64,10 +61,8 @@ class ScheduleFirebase {
 
     private fun insert(scheduleWithDays: ScheduleWithDays) {
         val daysReference = FirebaseDatabase.getInstance()
-            .getReference(USERS)
+            .getReference(SCHEDULE)
             .child(scheduleWithDays.schedule.userId)
-            .child(SCHEDULE)
-            .child(WORKING_DAYS)
 
         for (workingDayWithTimes in scheduleWithDays.workingDays) {
             val dayId = getIdForNew(daysReference)

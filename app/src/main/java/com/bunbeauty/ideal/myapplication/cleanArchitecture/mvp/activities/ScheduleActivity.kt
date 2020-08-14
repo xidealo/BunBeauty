@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -65,20 +66,15 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         init()
         createDaysButtons()
         createTimeButtons()
-        initTopPanel("Расписание", ButtonTask.NONE)
+
+        initTopPanel("Расписание")
+        schedulePresenter.getSchedule()
     }
 
     override fun onResume() {
         super.onResume()
 
         initBottomPanel()
-        schedulePresenter.getSchedule()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        schedulePresenter.saveSchedule()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -86,6 +82,9 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         daysScheduleGrid.setOnTouchListener(this)
         timeScheduleGrid.setOnTouchListener(this)
         timeScheduleLayout.visibility = View.GONE
+        saveScheduleButton.setOnClickListener {
+            schedulePresenter.saveSchedule()
+        }
     }
 
     private fun createDaysButtons() {
@@ -357,6 +356,14 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
                 button.x + button.width > motionEvent.x &&
                 button.y < motionEvent.y &&
                 button.y + button.height > motionEvent.y
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun goBack() {
+        onBackPressed()
     }
 
     companion object {

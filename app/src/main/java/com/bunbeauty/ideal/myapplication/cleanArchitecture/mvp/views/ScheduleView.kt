@@ -9,4 +9,6 @@ interface ScheduleView: MvpView {
     fun showAccurateTime(accurateTime: Set<String>)
     fun showInaccurateTime(inaccurateTime: Set<String>)
     fun setSchedule(schedule: ScheduleWithDays)
+    fun showMessage(message: String)
+    fun goBack()
 }

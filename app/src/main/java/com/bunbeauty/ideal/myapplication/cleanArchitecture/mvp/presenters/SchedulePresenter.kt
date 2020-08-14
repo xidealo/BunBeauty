@@ -71,6 +71,11 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
     }
 
     fun saveSchedule() {
-        scheduleInteractor.saveSchedule()
+        scheduleInteractor.saveSchedule(this)
+    }
+
+    override fun showScheduleSaved() {
+        viewState.showMessage("Расписание сохранено")
+        viewState.goBack()
     }
 }
