@@ -9,9 +9,8 @@ class SubscriberFirebase {
 
     fun insert(subscriber: Subscriber) {
         val subscriberRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Subscriber.SUBSCRIBERS)
             .child(subscriber.userId)
-            .child(Subscriber.SUBSCRIBERS)
             .child(subscriber.id)
 
         val items = HashMap<String, Any>()
@@ -22,9 +21,8 @@ class SubscriberFirebase {
 
     fun delete(subscriber: Subscriber) {
         val subscriberRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Subscriber.SUBSCRIBERS)
             .child(subscriber.userId)
-            .child(Subscriber.SUBSCRIBERS)
             .child(subscriber.id)
 
         subscriberRef.removeValue()
@@ -33,9 +31,8 @@ class SubscriberFirebase {
     fun getByUserId(userId: String, subscribersCallback: SubscribersCallback) {
 
         val servicesRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Subscriber.SUBSCRIBERS)
             .child(userId)
-            .child(Subscriber.SUBSCRIBERS)
 
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(subscribersSnapshot: DataSnapshot) {
@@ -58,9 +55,8 @@ class SubscriberFirebase {
         subscribersCallback: SubscribersCallback
     ) {
         val subscribersQuery = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Subscriber.SUBSCRIBERS)
             .child(ownerId)
-            .child(Subscriber.SUBSCRIBERS)
             .orderByChild(Subscriber.SUBSCRIBER_ID)
             .equalTo(subscriberId)
 
