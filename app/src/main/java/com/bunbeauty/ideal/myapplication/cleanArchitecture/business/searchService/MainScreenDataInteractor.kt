@@ -23,7 +23,6 @@ class MainScreenDataInteractor(
     private var cachePremiumMainScreenData = ArrayList<MainScreenData>()
     private var createMainScreenWithCategory = true
     private var cacheServiceList = ArrayList<Service>()
-
     var selectedCategory = ""
 
     var selectedTagsArray: ArrayList<String> = arrayListOf()
@@ -240,9 +239,10 @@ class MainScreenDataInteractor(
             this.mainScreenPresenterCallback = mainScreenPresenterCallback
             cacheMainScreenData.clear()
             cacheMainScreenData.addAll(constCacheMainScreenData.filter {
-                it.service.name.toLowerCase(Locale.ROOT).contains(newText)
+                it.service.name.toLowerCase(Locale.ROOT).contains(newText) ||
+                        it.user.name.toLowerCase(Locale.ROOT).contains(newText)
             })
-            mainScreenPresenterCallback.returnMainScreenData(constCacheMainScreenData)
+            mainScreenPresenterCallback.returnMainScreenData(cacheMainScreenData)
         }
     }
 

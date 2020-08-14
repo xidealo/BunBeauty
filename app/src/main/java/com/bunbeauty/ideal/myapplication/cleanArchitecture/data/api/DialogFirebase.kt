@@ -67,7 +67,6 @@ class DialogFirebase {
 
                     override fun onChildChanged(dialogSnapshot: DataSnapshot, p1: String?) {
                         val changedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
-                        changedDialog.user.id = userId
                         dialogChangedCallback.returnChanged(changedDialog)
                     }
 
@@ -75,16 +74,15 @@ class DialogFirebase {
                         if (dialogs.isNotEmpty()) {
                             if (previousId == dialogs.last().id) {
                                 val addedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
-                                addedDialog.user.id = userId
                                 dialogs.add(addedDialog)
                                 dialogCallback.returnElement(addedDialog)
                             }
                         } else {
                             val addedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
-                            addedDialog.user.id = userId
                             dialogs.add(addedDialog)
                             dialogCallback.returnElement(addedDialog)
                         }
+
                     }
 
                     override fun onChildRemoved(p0: DataSnapshot) {

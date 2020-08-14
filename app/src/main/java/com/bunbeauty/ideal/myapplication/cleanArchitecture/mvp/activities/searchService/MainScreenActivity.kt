@@ -37,7 +37,9 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.activity_main_screen.*
 import kotlinx.android.synthetic.main.fragment_category_block.*
 import kotlinx.android.synthetic.main.part_top_panel.*
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView,
     ITopPanel, IBottomPanel {
@@ -118,13 +120,13 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         searchPanelMainScreenSearchView.setOnQueryTextListener(object :
             MaterialSearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                mainScreenPresenter.getMainScreenDataByName(query)
+                mainScreenPresenter.getMainScreenDataByName(query?.toLowerCase(Locale.ROOT))
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 //Do some magic
-                mainScreenPresenter.getMainScreenDataByName(newText)
+                mainScreenPresenter.getMainScreenDataByName(newText?.toLowerCase(Locale.ROOT))
                 return false
             }
         })

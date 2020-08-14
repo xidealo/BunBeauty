@@ -56,7 +56,7 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
         if (dialogWithUserId != null) {
             dialogWithUserId.user = user
             //получаю последнее сообщение из диалога
-            dialogsPresenterCallback.getMessage(User.getMyId(), user.id)
+            dialogsPresenterCallback.getLastMessage(User.getMyId(), user.id)
         }
     }
 
@@ -81,13 +81,10 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
     }
 
     override fun returnChanged(element: Dialog) {
-        val dialog = finalCacheDialogs.find { it.id == element.id }
-
+        val dialog = myCacheDialogs.find { it.id == element.id }
         if (dialog != null) {
             dialog.isChecked = element.isChecked
-            dialogsPresenterCallback.showDialogs(finalCacheDialogs)
-            dialogsPresenterCallback.getMessage(element.id, element.user.id)
+            dialogsPresenterCallback.getLastMessage(element.id, element.user.id)
         }
-
     }
 }

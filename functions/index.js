@@ -57,23 +57,23 @@ exports.sendFollowingNotification = functions.database.ref('/users/{userId}/subs
 exports.sendChatMessageNotification = functions.database.ref('dialogs/{userId}/{companionId}/{messageId}').onCreate((snapshot, context) => {
 
     //get the userId of the person receiving the notification because we need to get their token
-    const senderId = context.params.userId;
+    const ownerId = context.params.userId;
     const companionId = context.params.companionId;
     const messageId = context.params.messageId;
     //get message
     const message = snapshot.child('message').val();
     const ownerMessageId = snapshot.child('owner id').val();
 
-    console.log("senderId: ", senderId);
+    console.log("senderId: ", ownerId);
     console.log("companionId: ", companionId);
     console.log("messageId: ", messageId);
     console.log("message: ", message);
     console.log("ownerMessageId: ", ownerMessageId);
 
-    if (String(senderId) === String(ownerMessageId)) {
+    if (String(ownerId) === String(ownerMessageId)) {
         return;
     }
-        return admin.database().ref("/users/" + senderId).once('value').then(snap => {
+        return admin.database().ref("/users/" + companionId).once('value').then(snap => {
 
             const senderName = snap.child("name").val();
             const senderPhoto = snap.child("photo link").val();
@@ -82,7 +82,7 @@ exports.sendChatMessageNotification = functions.database.ref('dialogs/{userId}/{
             console.log("senderPhoto: ", senderPhoto);
 
             //get the token of the user receiving the message
-            return admin.database().ref("/users/" + senderId).once('value').then(snap => {
+            return admin.database().ref("/users/" + ownerId).once('value').then(snap => {
                 const token = snap.child("token").val();
                 console.log("token: ", token);
 
