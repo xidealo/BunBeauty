@@ -18,9 +18,8 @@ class PhotoServiceFirebase {
     fun insert(photo: Photo) {
         val database = FirebaseDatabase.getInstance()
         val serviceRef = database
-            .getReference(User.USERS)
+            .getReference(Service.SERVICES)
             .child(photo.userId)
-            .child(Service.SERVICES)
             .child(photo.serviceId)
             .child(Photo.PHOTOS)
             .child(photo.id)
@@ -33,9 +32,8 @@ class PhotoServiceFirebase {
 
     fun delete(photo: Photo, deletePhotoCallback: DeletePhotoCallback) {
         val subscriberRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Service.SERVICES)
             .child(photo.userId)
-            .child(Service.SERVICES)
             .child(photo.serviceId)
             .child(Photo.PHOTOS)
             .child(photo.id)
@@ -46,9 +44,8 @@ class PhotoServiceFirebase {
 
     fun getByServiceId(serviceOwnerId: String, serviceId: String, photosCallback: PhotosCallback) {
         val photosRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(Service.SERVICES)
             .child(serviceOwnerId)
-            .child(Service.SERVICES)
             .child(serviceId)
             .child(Photo.PHOTOS)
 
@@ -84,9 +81,9 @@ class PhotoServiceFirebase {
     }
 
     fun getIdForNew(userId: String, serviceId: String): String {
-        return FirebaseDatabase.getInstance().getReference(User.USERS)
+        return FirebaseDatabase.getInstance()
+            .getReference(Service.SERVICES)
             .child(userId)
-            .child(Service.SERVICES)
             .child(serviceId)
             .child(Photo.PHOTOS).push().key!!
     }
