@@ -7,6 +7,7 @@ import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -18,7 +19,7 @@ import com.google.android.material.chip.Chip
 @InjectViewState
 class MainScreenPresenter(
     private val mainScreenUserInteractor: MainScreenUserInteractor,
-    private val mainScreenServiceInteractor: MainScreenServiceInteractor,
+    private val mainScreenServiceInteractor: IMainScreenServiceInteractor,
     private val mainScreenDataInteractor: MainScreenDataInteractor
 ) : MvpPresenter<MainScreenView>(),
     MainScreenPresenterCallback {
@@ -49,14 +50,16 @@ class MainScreenPresenter(
 
     override fun getUsersSize(): Int = mainScreenUserInteractor.cacheUserList.size
 
-    override fun getMaxCost(): Long = mainScreenServiceInteractor.maxCost
-
-    override fun getMaxCountOfRates(): Long = mainScreenServiceInteractor.maxCountOfRates
-
-    override fun createMainScreenData() {
+    override fun createMainScreenData(
+        services: ArrayList<Service>,
+        maxCost: Long,
+        maxCountOfRates: Long
+    ) {
         mainScreenDataInteractor.createMainScreenData(
             mainScreenUserInteractor.cacheUserList,
-            mainScreenServiceInteractor.cacheServiceList
+            services,
+            maxCost,
+            maxCountOfRates
         )
     }
 
@@ -83,7 +86,6 @@ class MainScreenPresenter(
     }
 
     override fun returnMainScreenData(mainScreenData: ArrayList<MainScreenData>) {
-        //если 0, то выводим, что ничего не нашел
         viewState.hideLoading()
         viewState.showMainScreen(mainScreenData)
     }

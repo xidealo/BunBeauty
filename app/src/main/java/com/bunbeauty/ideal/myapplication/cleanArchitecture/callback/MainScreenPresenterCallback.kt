@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback
 
-import android.widget.TextView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
@@ -15,13 +14,16 @@ interface MainScreenPresenterCallback {
     fun showTags()
     fun hideTags()
     fun clearTags()
-    fun createTags(category:String,selectedTagsArray:ArrayList<String>)
+    fun createTags(category: String, selectedTagsArray: ArrayList<String>)
     fun getServicesByUserId(user: User)
     fun getUsersByCity(city: String)
     fun getUsersSize(): Int
-    fun getMaxCost(): Long
-    fun getMaxCountOfRates(): Long
-    fun createMainScreenData()
+    fun createMainScreenData(
+        services: ArrayList<Service>,
+        maxCost: Long,
+        maxCountOfRates: Long
+    )
+
     fun enableTag(tagText: Chip)
     fun disableTag(tagText: Chip)
 }

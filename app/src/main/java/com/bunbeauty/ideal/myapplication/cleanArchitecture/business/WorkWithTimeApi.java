@@ -78,12 +78,8 @@ public class WorkWithTimeApi {
         long premDate = premiumDate;
         long sysDate = WorkWithTimeApi.getSysdateLong();
 
-        if (sysDate > premDate) {
-            // время вышло
-            return false;
-        } else {
-            // премиумный период
-            return true;
-        }
+        // время вышло
+        // премиумный период
+        return sysDate <= premDate;
     }
 }

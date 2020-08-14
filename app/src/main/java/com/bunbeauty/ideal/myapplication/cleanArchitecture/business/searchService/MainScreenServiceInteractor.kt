@@ -11,9 +11,6 @@ class MainScreenServiceInteractor(private val serviceRepository: IServiceReposit
     ServicesCallback, IMainScreenServiceInteractor {
 
     var cacheServiceList = arrayListOf<Service>()
-    var maxCost = 0L
-    var maxCountOfRates = 0L
-
     private var currentCountOfUsers = 0
     private lateinit var mainScreenPresenterCallback: MainScreenPresenterCallback
 
@@ -35,11 +32,11 @@ class MainScreenServiceInteractor(private val serviceRepository: IServiceReposit
                 return
             }
 
-            if (cacheServiceList.isNotEmpty()) {
-                maxCost = cacheServiceList.maxBy { it.cost }!!.cost
-                maxCountOfRates = cacheServiceList.maxBy { it.countOfRates }!!.countOfRates
-            }
-            mainScreenPresenterCallback.createMainScreenData()
+            mainScreenPresenterCallback.createMainScreenData(
+                cacheServiceList,
+                cacheServiceList.maxBy { it.cost }!!.cost,
+                cacheServiceList.maxBy { it.countOfRates }!!.countOfRates
+            )
         }
     }
 

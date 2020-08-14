@@ -81,47 +81,30 @@ class MainScreenDataInteractor(
                 )
             )
         }
-
     }
 
     override fun showCurrentMainScreen(mainScreenPresenterCallback: MainScreenPresenterCallback) {
         this.mainScreenPresenterCallback = mainScreenPresenterCallback
         cacheMainScreenData.clear()
         cacheMainScreenData.addAll(constCacheMainScreenData)
-        mainScreenPresenterCallback.returnMainScreenData(constCacheMainScreenData)
-    }
-
-    private fun sortDataWithCategory(
-        category: String,
-        constCacheMainScreenData: ArrayList<MainScreenData>
-    ): ArrayList<MainScreenData> {
-        cacheMainScreenData.clear()
-        cacheMainScreenData.addAll(constCacheMainScreenData.filter { it.service.category == category })
-        return cacheMainScreenData
-    }
-
-    private fun sortDataWithTags(
-        tags: ArrayList<String>,
-        constCacheMainScreenData: ArrayList<MainScreenData>
-    ): ArrayList<MainScreenData> {
-        val foundData = mutableSetOf<MainScreenData>()
-        cacheMainScreenData.clear()
-
-        for (tag in tags) {
-            foundData.addAll(constCacheMainScreenData.filter { it -> it.service.tags.any { it.tag == tag } })
-        }
-        cacheMainScreenData.addAll(foundData)
-        return cacheMainScreenData
+        mainScreenPresenterCallback.returnMainScreenData(cacheMainScreenData)
     }
 
     override fun createMainScreenData(
         cacheUserList: ArrayList<User>,
-        cacheServiceList: ArrayList<Service>
+        cacheServiceList: ArrayList<Service>,
+        maxCost: Long,
+        maxCountOfRates: Long
     ) {
         this.cacheServiceList.addAll(cacheServiceList)
 
         for (service in cacheServiceList) {
-            addToServiceList(service, getUserByService(cacheUserList, service))
+            addToServiceList(
+                service,
+                getUserByService(cacheUserList, service),
+                maxCost,
+                maxCountOfRates
+            )
         }
 
         cacheMainScreenData = choosePremiumServices(cachePremiumMainScreenData, cacheMainScreenData)
@@ -148,8 +131,36 @@ class MainScreenDataInteractor(
         return User()
     }
 
+    private fun sortDataWithCategory(
+        category: String,
+        constCacheMainScreenData: ArrayList<MainScreenData>
+    ): ArrayList<MainScreenData> {
+        cacheMainScreenData.clear()
+        cacheMainScreenData.addAll(constCacheMainScreenData.filter { it.service.category == category })
+        return cacheMainScreenData
+    }
+
+    private fun sortDataWithTags(
+        tags: ArrayList<String>,
+        constCacheMainScreenData: ArrayList<MainScreenData>
+    ): ArrayList<MainScreenData> {
+        val foundData = mutableSetOf<MainScreenData>()
+        cacheMainScreenData.clear()
+
+        for (tag in tags) {
+            foundData.addAll(constCacheMainScreenData.filter { it -> it.service.tags.any { it.tag == tag } })
+        }
+        cacheMainScreenData.addAll(foundData)
+        return cacheMainScreenData
+    }
+
     // Добавляем конкретную услугу в список в соответствии с её коэфициентом
-    private fun addToServiceList(service: Service, user: User) {
+    private fun addToServiceList(
+        service: Service,
+        user: User,
+        maxCost: Long,
+        maxCountOfRates: Long
+    ) {
         val coefficients = HashMap<String, Float>()
         coefficients[Service.CREATION_DATE] = 0.25f
         coefficients[Service.COST] = 0.07f
@@ -167,17 +178,16 @@ class MainScreenDataInteractor(
             )
             val costPoints = figuringServicePointsApi.figureCostPoints(
                 (service.cost),
-                mainScreenPresenterCallback.getMaxCost(),
+                maxCost,
                 coefficients[Service.COST]!!
             )
-
             val ratingPoints = figuringServicePointsApi.figureRatingPoints(
                 service.rating,
                 coefficients[Service.AVG_RATING]!!
             )
             val countOfRatesPoints = figuringServicePointsApi.figureCountOfRatesPoints(
                 service.countOfRates,
-                mainScreenPresenterCallback.getMaxCountOfRates(),
+                maxCountOfRates,
                 coefficients[Service.COUNT_OF_RATES]!!
             )
 

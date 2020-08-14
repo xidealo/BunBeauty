@@ -14,8 +14,6 @@ class MainScreenUserInteractor(
     UsersCallback {
 
     private lateinit var mainScreenPresenterCallback: MainScreenPresenterCallback
-
-    //cache
     var cacheUserList = arrayListOf<User>()
 
     private var searchByServiceName = false

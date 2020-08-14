@@ -128,6 +128,17 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+
+    <style name="serviceBodyText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/default_margin</item>
+        <item name="android:textAppearance">?attr/textAppearanceBody1</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
+
+
     <!-- BUTTONS -->
 
     <style name="baseButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
