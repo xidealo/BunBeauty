@@ -10,17 +10,15 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.fou
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import java.util.*
 
-class ServiceAdapter(private val mainScreenData: ArrayList<MainScreenData>) :
-    RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() {
+class ServiceAdapter : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() {
+
+    private val mainScreenData: ArrayList<MainScreenData> = arrayListOf()
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ServiceViewHolder {
         val context = viewGroup.context
         val layoutIdForListItem = R.layout.found_service_element
-        //Класс, который позволяет создавать представления из xml файла
         val layoutInflater = LayoutInflater.from(context)
-        // откуда, куда, необходимо ли помещать в родителя
         val view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false)
 
         return ServiceViewHolder(view, context)
@@ -41,5 +39,11 @@ class ServiceAdapter(private val mainScreenData: ArrayList<MainScreenData>) :
             val foundServiceElement = FoundServiceElement(service, user, view, context)
             foundServiceElement.createElement()
         }
+    }
+
+    fun setData(mainScreenData: ArrayList<MainScreenData>) {
+        this.mainScreenData.clear()
+        this.mainScreenData.addAll(mainScreenData)
+        notifyDataSetChanged()
     }
 }

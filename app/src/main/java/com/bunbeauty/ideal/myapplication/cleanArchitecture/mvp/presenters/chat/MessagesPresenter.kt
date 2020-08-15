@@ -17,8 +17,6 @@ class MessagesPresenter(
     private val messagesUserInteractor: IMessagesUserInteractor
 ) : MvpPresenter<MessagesView>(), MessagesPresenterCallback {
 
-    fun getMessagesLink() = messagesMessageInteractor.getMyMessagesLink()
-
     fun getCompanionUser() = messagesUserInteractor.getCompanionUser(this)
 
     fun createMessageScreen() {
@@ -74,10 +72,6 @@ class MessagesPresenter(
     override fun showMessagesScreen(messages: List<Message>) {
         viewState.hideLoading()
         viewState.showMessagesScreen(messages)
-    }
-
-    override fun showSendMessage(message: Message) {
-        viewState.showSendMessage(message)
     }
 
     override fun showMoveToStart() {

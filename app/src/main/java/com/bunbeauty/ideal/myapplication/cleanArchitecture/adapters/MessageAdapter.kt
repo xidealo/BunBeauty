@@ -14,10 +14,17 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.cha
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
 
-class MessageAdapter(
-    private val messageList: List<Message>,
-    private val messagesPresenter: MessagesPresenter
-) : RecyclerView.Adapter<MessageViewHolder>() {
+class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
+
+    private val messageList: ArrayList<Message> = arrayListOf()
+    private lateinit var messagesPresenter: MessagesPresenter
+
+    fun setData(messageList: List<Message>, messagesPresenter: MessagesPresenter) {
+        this.messageList.clear()
+        this.messageList.addAll(messageList)
+        this.messagesPresenter = messagesPresenter
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MessageViewHolder {
         val context = viewGroup.context

@@ -29,7 +29,9 @@ import javax.inject.Singleton
         AppModule::class,
         FirebaseModule::class,
         InteractorModule::class,
-        RepositoryModule::class]
+        RepositoryModule::class,
+        AdapterModule::class
+    ]
 )
 interface AppComponent {
     fun inject(authorizationActivity: AuthorizationActivity)

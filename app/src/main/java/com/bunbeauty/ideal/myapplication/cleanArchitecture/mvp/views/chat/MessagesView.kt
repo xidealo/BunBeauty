@@ -7,7 +7,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface MessagesView : MvpView {
     fun showMessagesScreen(messages: List<Message>)
     fun moveToStart()
-    fun showSendMessage(message: Message)
     fun hideLoading()
     fun showLoading()
     fun showCompanionUser(fullName: String, photoLink: String)

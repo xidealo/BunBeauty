@@ -59,7 +59,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     ) {
         cacheMessages.remove(cacheMessages.find { it.id == message.id }!!)
         cacheMessages.add(message)
-        messagesPresenterCallback.showSendMessage(message)
+        messagesPresenterCallback.showMessagesScreen(cacheMessages)
     }
 
     override fun sendMessage(
@@ -112,7 +112,6 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
      */
     override fun returnCreatedCallback(obj: Message) {
         messagesPresenterCallback.updateUncheckedDialog(obj)
-        messagesPresenterCallback.showSendMessage(obj)
     }
 
     /**
@@ -121,7 +120,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     override fun returnUpdatedCallback(obj: Message) {
         cacheMessages.remove(cacheMessages.find { it.id == obj.id })
         cacheMessages.add(obj)
-        messagesPresenterCallback.showSendMessage(obj)
+        messagesPresenterCallback.showMessagesScreen(cacheMessages)
     }
 
 }

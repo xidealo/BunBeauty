@@ -22,10 +22,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServic
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
@@ -46,7 +43,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     private var categoriesBtns: ArrayList<MaterialButton> = arrayListOf()
     private lateinit var categories: ArrayList<String>
-    private lateinit var serviceAdapter: ServiceAdapter
 
     override var panelContext: Activity = this
 
@@ -62,12 +58,16 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     @Inject
     lateinit var mainScreenDataInteractor: MainScreenDataInteractor
 
+    @Inject
+    lateinit var serviceAdapter: ServiceAdapter
+
     @ProvidePresenter
     internal fun provideAddingServicePresenter(): MainScreenPresenter {
         DaggerAppComponent.builder()
             .appModule(AppModule(application))
             .firebaseModule(FirebaseModule())
             .interactorModule(InteractorModule(intent))
+            .adapterModule(AdapterModule())
             .build()
             .inject(this)
 
@@ -114,7 +114,6 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
         resultsMainScreenRecycleView.layoutManager = LinearLayoutManager(this)
 
-        serviceAdapter = ServiceAdapter(mainScreenPresenter.getMainScreenDataLink())
         resultsMainScreenRecycleView.adapter = serviceAdapter
 
         searchPanelMainScreenSearchView.setOnQueryTextListener(object :
@@ -215,7 +214,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     override fun showMainScreen(mainScreenData: ArrayList<MainScreenData>) {
-        serviceAdapter.notifyDataSetChanged()
+        serviceAdapter.setData(mainScreenData)
     }
 
     override fun hideTags() {

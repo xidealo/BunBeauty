@@ -18,6 +18,9 @@ class PhotoAdapter(
 ) :
     RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
 
+
+
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): PhotoViewHolder {
         val context = viewGroup.context
         val layoutIdForListItem = R.layout.element_photo

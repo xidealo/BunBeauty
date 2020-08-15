@@ -23,8 +23,6 @@ class DialogsPresenter(
         dialogsDialogInteractor.getDialogs(this)
     }
 
-    fun getDialogsLink() = dialogsDialogInteractor.getDialogsLink()
-
     override fun getUser(dialog: Dialog) {
         dialogsUserInteractor.getUser(dialog, this)
     }

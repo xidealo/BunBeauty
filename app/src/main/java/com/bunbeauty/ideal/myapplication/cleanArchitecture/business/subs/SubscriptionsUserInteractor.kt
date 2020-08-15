@@ -12,8 +12,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.Use
 class SubscriptionsUserInteractor(
     private val intent: Intent,
     private val userRepository: UserRepository
-) :
-    ISubscriptionsUserInteractor, UserCallback, UpdateUsersCallback {
+) : ISubscriptionsUserInteractor, UserCallback, UpdateUsersCallback {
 
     private lateinit var subscriptionsPresenterCallback: SubscriptionsPresenterCallback
 
@@ -68,7 +67,7 @@ class SubscriptionsUserInteractor(
     }
 
     override fun returnUpdatedCallback(obj: User) {
-        subscriptionsPresenterCallback.showSubscriptions()
+        //subscriptionsPresenterCallback.showSubscriptions()
     }
 
 }

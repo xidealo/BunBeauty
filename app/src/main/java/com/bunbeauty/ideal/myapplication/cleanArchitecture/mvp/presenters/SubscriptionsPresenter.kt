@@ -18,8 +18,6 @@ class SubscriptionsPresenter(
     private val subscriptionsSubscriberInteractor: ISubscriptionsSubscriberInteractor
 ) : MvpPresenter<SubscriptionsView>(), SubscriptionsPresenterCallback {
 
-    fun getSubscriptionsLink() = subscriptionsSubscriptionInteractor.getSubscriptionsLink()
-
     fun createSubscriptionsScreen() {
         subscriptionsUserInteractor.createSubscriptionScreen(this)
     }
@@ -44,8 +42,8 @@ class SubscriptionsPresenter(
         subscriptionsUserInteractor.getUsersBySubscription(subscriptions, this)
     }
 
-    override fun showSubscriptions() {
-        viewState.showSubscriptions()
+    override fun showSubscriptions(subscriptions: List<Subscription>) {
+        viewState.showSubscriptions(subscriptions)
         viewState.hideLoading()
     }
 

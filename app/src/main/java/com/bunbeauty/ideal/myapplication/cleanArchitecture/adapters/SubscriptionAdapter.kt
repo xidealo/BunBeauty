@@ -8,13 +8,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.SubscriptionAdapter.SubscriptionViewHolder
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.SubscriptionElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscription
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SubscriptionsPresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
 
-class SubscriptionAdapter(
-    private val subscriptionsPresenter: SubscriptionsPresenter,
-    private val subscriptions: List<Subscription>
-) : RecyclerView.Adapter<SubscriptionViewHolder>() {
+class SubscriptionAdapter : RecyclerView.Adapter<SubscriptionViewHolder>() {
+
+    private val subscriptions: ArrayList<Subscription> = arrayListOf()
+    private lateinit var subscriptionsPresenter: SubscriptionsPresenter
+
+    fun setData(subscriptions: List<Subscription>, subscriptionsPresenter: SubscriptionsPresenter) {
+        this.subscriptions.clear()
+        this.subscriptions.addAll(subscriptions)
+        this.subscriptionsPresenter = subscriptionsPresenter
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SubscriptionViewHolder {
         val context = viewGroup.context

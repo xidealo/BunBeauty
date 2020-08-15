@@ -42,7 +42,7 @@ class SubscriptionsSubscriptionInteractor(
             val subscriptionWithUserId = cacheSubscriptions.find { it.subscriptionId == user.id }
             subscriptionWithUserId!!.subscriptionUser = user
         }
-        subscriptionsPresenterCallback.showSubscriptions()
+        subscriptionsPresenterCallback.showSubscriptions(cacheSubscriptions)
     }
 
     override fun returnList(objects: List<Subscription>) {
@@ -54,6 +54,7 @@ class SubscriptionsSubscriptionInteractor(
         cacheSubscriptions.remove(obj)
         subscriptionsPresenterCallback.deleteUser(obj.subscriptionId)
         subscriptionsPresenterCallback.showDeletedSubscription(obj)
+        subscriptionsPresenterCallback.showSubscriptions(cacheSubscriptions)
     }
 
 }

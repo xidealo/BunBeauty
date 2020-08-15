@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.DialogElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 
-class DialogAdapter(
-    private val dialogList: List<Dialog>
-) : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
+class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
+
+    private val dialogList:ArrayList<Dialog> = arrayListOf()
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): DialogViewHolder {
         val context = viewGroup.context
@@ -37,4 +38,11 @@ class DialogAdapter(
             dialogElement.createElement(dialog)
         }
     }
+
+    fun setData(dialogList: List<Dialog>) {
+        this.dialogList.clear()
+        this.dialogList.addAll(dialogList)
+        notifyDataSetChanged()
+    }
+
 }

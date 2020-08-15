@@ -4,7 +4,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface MessagesPresenterCallback {
     fun showMessagesScreen(messages: List<Message>)
-    fun showSendMessage(message: Message)
     fun showMoveToStart()
     fun setUnchecked()
     fun updateUncheckedDialog(message: Message)

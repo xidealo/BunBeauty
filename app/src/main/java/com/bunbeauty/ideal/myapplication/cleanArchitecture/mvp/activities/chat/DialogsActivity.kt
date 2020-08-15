@@ -14,10 +14,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.Dialogs
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsMessageInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.DialogsUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
@@ -27,9 +24,6 @@ import kotlinx.android.synthetic.main.activity_dialogs.*
 import javax.inject.Inject
 
 class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, DialogsView {
-
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var dialogAdapter: DialogAdapter
 
     override var panelContext: Activity = this
 
@@ -42,6 +36,9 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     @Inject
     lateinit var dialogsMessageInteractor: DialogsMessageInteractor
 
+    @Inject
+    lateinit var dialogAdapter: DialogAdapter
+
     @InjectPresenter
     lateinit var dialogsPresenter: DialogsPresenter
 
@@ -51,6 +48,7 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
             .appModule(AppModule(application))
             .firebaseModule(FirebaseModule())
             .interactorModule(InteractorModule(intent))
+            .adapterModule(AdapterModule())
             .build()
             .inject(this)
         return DialogsPresenter(
@@ -75,10 +73,8 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     }
 
     private fun init() {
-        recyclerView = findViewById(R.id.resultsDialogsRecycleView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        dialogAdapter = DialogAdapter(dialogsPresenter.getDialogsLink())
-        recyclerView.adapter = dialogAdapter
+        resultsDialogsRecycleView.layoutManager = LinearLayoutManager(this)
+        resultsDialogsRecycleView.adapter = dialogAdapter
     }
 
     private fun createPanels() {
@@ -86,7 +82,7 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     }
 
     override fun showDialogs(dialogList: List<Dialog>) {
-        dialogAdapter.notifyDataSetChanged()
+        dialogAdapter.setData(dialogList)
     }
 
     override fun showLoading() {

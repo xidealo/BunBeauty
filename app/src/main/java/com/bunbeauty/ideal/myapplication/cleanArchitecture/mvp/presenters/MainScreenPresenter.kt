@@ -21,10 +21,7 @@ class MainScreenPresenter(
     private val mainScreenUserInteractor: MainScreenUserInteractor,
     private val mainScreenServiceInteractor: IMainScreenServiceInteractor,
     private val mainScreenDataInteractor: MainScreenDataInteractor
-) : MvpPresenter<MainScreenView>(),
-    MainScreenPresenterCallback {
-
-    fun getMainScreenDataLink() = mainScreenDataInteractor.cacheMainScreenData
+) : MvpPresenter<MainScreenView>(), MainScreenPresenterCallback {
 
     fun createMainScreen() {
         mainScreenDataInteractor.getMainScreenData(this)

@@ -16,6 +16,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.Subscription
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriberInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.SubscriptionsUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Subscription
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
@@ -30,7 +31,6 @@ import javax.inject.Inject
 class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, SubscriptionsView {
 
     private lateinit var resultsSubscribersRecycleView: RecyclerView
-    private lateinit var subscriptionAdapter: SubscriptionAdapter
     private lateinit var emptySubscriptionsSubscriptionsText: TextView
     private lateinit var progressBarSubscribers: ProgressBar
 
@@ -44,6 +44,9 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
 
     @Inject
     lateinit var subscriptionsSubscriberInteractor: SubscriptionsSubscriberInteractor
+
+    @Inject
+    lateinit var subscriptionAdapter: SubscriptionAdapter
 
     @InjectPresenter
     lateinit var subscriptionsPresenter: SubscriptionsPresenter
@@ -84,11 +87,6 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
 
         resultsSubscribersRecycleView.layoutManager = LinearLayoutManager(this)
 
-        subscriptionAdapter = SubscriptionAdapter(
-            subscriptionsPresenter,
-            subscriptionsPresenter.getSubscriptionsLink()
-        )
-
         resultsSubscribersRecycleView.adapter = subscriptionAdapter
     }
 
@@ -96,8 +94,8 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
         initTopPanel("Подписки", ButtonTask.NONE)
     }
 
-    override fun showSubscriptions() {
-        subscriptionAdapter.notifyDataSetChanged()
+    override fun showSubscriptions(subscriptions: List<Subscription>) {
+        subscriptionAdapter.setData(subscriptions, subscriptionsPresenter)
     }
 
     override fun hideLoading() {

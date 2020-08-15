@@ -15,10 +15,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.MessagesUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
@@ -31,7 +28,6 @@ import javax.inject.Inject
 
 class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.OnClickListener {
 
-    private lateinit var messageAdapter: MessageAdapter
 
     override var panelContext: Activity = this
 
@@ -44,6 +40,9 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     @Inject
     lateinit var messagesUserInteractor: MessagesUserInteractor
 
+    @Inject
+    lateinit var messageAdapter: MessageAdapter
+
     @InjectPresenter
     lateinit var messagePresenter: MessagesPresenter
 
@@ -53,6 +52,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
             .appModule(AppModule(application))
             .firebaseModule(FirebaseModule())
             .interactorModule(InteractorModule(intent))
+            .adapterModule(AdapterModule())
             .build()
             .inject(this)
         return MessagesPresenter(
@@ -75,7 +75,6 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
 
         val linearLayoutManager = LinearLayoutManager(this)
         resultsMessagesRecycleView.layoutManager = linearLayoutManager
-        messageAdapter = MessageAdapter(messagePresenter.getMessagesLink(), messagePresenter)
         resultsMessagesRecycleView.adapter = messageAdapter
 
         setEventListener(
@@ -111,15 +110,11 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     }
 
     override fun showMessagesScreen(messages: List<Message>) {
-        messageAdapter.notifyDataSetChanged()
+        messageAdapter.setData(messages, messagePresenter)
     }
 
     override fun moveToStart() {
         resultsMessagesRecycleView.smoothScrollToPosition(resultsMessagesRecycleView.adapter!!.itemCount - 1)
-    }
-
-    override fun showSendMessage(message: Message) {
-        messageAdapter.notifyDataSetChanged()
     }
 
     override fun hideLoading() {
