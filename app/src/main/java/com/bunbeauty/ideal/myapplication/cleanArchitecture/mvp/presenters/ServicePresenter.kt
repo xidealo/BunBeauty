@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.iService.IServicePhotoInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.iService.IServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.iService.IServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.iService.IServiceUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.service.ServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
@@ -13,22 +13,22 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 
 @InjectViewState
 class ServicePresenter(
-    private val serviceServiceInteractor: IServiceServiceInteractor,
+    private val serviceInteractor: IServiceInteractor,
     private val servicePhotoInteractor: IServicePhotoInteractor,
     private val serviceUserInteractor: IServiceUserInteractor
-) :
-    MvpPresenter<ServiceView>(), ServicePresenterCallback {
+) : MvpPresenter<ServiceView>(), ServicePresenterCallback {
 
     fun createServiceScreen() {
-        serviceServiceInteractor.createServiceScreen(serviceUserInteractor.getUser(), this)
+        serviceInteractor.createServiceScreen(this)
+        serviceUserInteractor.getUser(serviceInteractor.getService().userId, this)
     }
 
     fun updateService(service: Service) {
-        serviceServiceInteractor.updateService(service, this)
+        serviceInteractor.updateService(service, this)
     }
 
     fun iconClick() {
-        serviceServiceInteractor.iconClick(serviceUserInteractor.getUser(), this)
+        serviceInteractor.iconClick(serviceUserInteractor.getUser(), this)
     }
 
     fun getPhotosLink() = servicePhotoInteractor.getPhotosLink()
@@ -42,16 +42,16 @@ class ServicePresenter(
         servicePhotoInteractor.getServicePhotos(service, this)
     }
 
-    override fun showPremium(service: Service) {
-        viewState.showPremium(service)
+    override fun showPremium() {
+        viewState.showPremium(serviceInteractor.getService())
     }
 
-    override fun createOwnServiceTopPanel(service: Service) {
-        viewState.createOwnServiceTopPanel(service)
+    override fun createOwnServiceTopPanel() {
+        viewState.createOwnServiceTopPanel(serviceInteractor.getService())
     }
 
-    override fun createAlienServiceTopPanel(user: User, service: Service) {
-        viewState.createAlienServiceTopPanel(user, service)
+    override fun createAlienServiceTopPanel(user: User) {
+        viewState.createAlienServiceTopPanel(user, serviceInteractor.getService())
     }
 
     override fun showPhotos(photos: List<Photo>) {
@@ -71,12 +71,6 @@ class ServicePresenter(
     }
 
     fun getService(): Service {
-        return serviceServiceInteractor.getService()
+        return serviceInteractor.getService()
     }
-
-    /*
-      fun getServicePhotos(serviceId: String, serviceOwnerId: String) {
-          serviceInteractor.getServicePhotos(serviceId, serviceOwnerId, this)
-      }*/
-
 }

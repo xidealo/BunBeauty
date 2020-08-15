@@ -1,5 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule
 
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.api.StringApi
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime.Companion.TIME_DELIMITER
 import org.joda.time.DateTime
 
 data class Session(
@@ -7,16 +9,28 @@ data class Session(
     val finishTime: Long
 ) {
 
-    constructor(stringTime: String): this(0, 0)
-
-    //private fun getStartTimeB
+    override fun toString(): String {
+        val dateTime = DateTime(startTime)
+        return dateTime.dayOfMonth.toString() + "." +
+                StringApi.addFirstZero(dateTime.monthOfYear.toString(), 2) + " " +
+                getStringStartTime() + " - " +
+                getStringFinishTime()
+    }
 
     fun getStringStartTime(): String {
-        var stringTime = DateTime(startTime).hourOfDay.toString() + WorkingTime.TIME_DELIMITER
-        stringTime += if (DateTime(startTime).minuteOfHour == 0) {
+        return getStringTime(startTime)
+    }
+
+    fun getStringFinishTime(): String {
+        return getStringTime(finishTime)
+    }
+
+    fun getStringTime(time: Long): String {
+        var stringTime = DateTime(time).hourOfDay.toString() + TIME_DELIMITER
+        stringTime += if (DateTime(time).minuteOfHour == 0) {
             "00"
         } else {
-            DateTime(startTime).minuteOfHour.toString()
+            DateTime(time).minuteOfHour.toString()
         }
 
         return stringTime

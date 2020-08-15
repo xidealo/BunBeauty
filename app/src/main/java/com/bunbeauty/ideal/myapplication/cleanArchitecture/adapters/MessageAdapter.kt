@@ -16,7 +16,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.M
 
 class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
 
-    private val messageList: ArrayList<Message> = arrayListOf()
+    private val messageList: MutableList<Message> = ArrayList()
     private lateinit var messagesPresenter: MessagesPresenter
 
     fun setData(messageList: List<Message>, messagesPresenter: MessagesPresenter) {

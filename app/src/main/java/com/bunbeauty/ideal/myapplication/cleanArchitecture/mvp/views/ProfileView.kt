@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views
 
 import com.arellomobile.mvp.MvpView
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
@@ -11,7 +12,8 @@ interface ProfileView: MvpView {
     fun showAvatar(photoLink: String)
     fun showCountOfSubscriber(count: Long)
     fun showRating(rating: Float, countOfRates: Long)
-    fun setServiceAdapter(services: List<Service>, user: User)
+    fun showServiceList(serviceList: List<Service>)
+    fun showOrderList(orderList: List<Order>)
     fun showBottomPanel(selectedItemId: Int = -1)
     fun showUpdatedBottomPanel(selectedItemId: Int)
     fun showTopPanelWithEditIcon()
@@ -31,8 +33,6 @@ interface ProfileView: MvpView {
     fun hideSubscriptionsButton()
     fun showScheduleButton()
     fun hideScheduleButton()
-
-    fun showUserServices(serviceList: List<Service>, user: User)
 
     fun showSubscribed()
     fun showUnsubscribed()

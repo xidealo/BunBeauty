@@ -4,7 +4,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order
 
 interface IOrderRepository {
+
     fun insert(order: Order, insertOrderCallback: InsertOrderCallback)
+    fun getByUserId(userId: String, ordersCallback: OrdersCallback)
 
    /* fun delete(order: Order, deleteOrderCallback: DeleteOrderCallback)
     fun update(order: Order, updateOrderCallback: UpdateOrderCallback)

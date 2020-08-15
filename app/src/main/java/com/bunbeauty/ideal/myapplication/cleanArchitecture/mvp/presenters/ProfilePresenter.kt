@@ -12,6 +12,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
 class ProfilePresenter(
     private val profileUserInteractor: IProfileUserInteractor,
     private val profileServiceInteractor: IProfileServiceInteractor,
+    private val profileOrderInteractor: IProfileOrderInteractor,
     private val profileDialogInteractor: IProfileDialogInteractor,
     private val profileSubscriptionInteractor: IProfileSubscriptionInteractor,
     private val profileSubscriberInteractor: IProfileSubscriberInteractor
@@ -39,7 +40,6 @@ class ProfilePresenter(
         viewState.showProfileInfo(user.name, user.surname, user.city)
         viewState.showAvatar(user.photoLink)
         viewState.showRating(user.rating, user.countOfRates)
-        viewState.setServiceAdapter(profileServiceInteractor.getServices(), user)
 
         profileServiceInteractor.getServicesByUserId(user.id, this)
     }
@@ -123,8 +123,17 @@ class ProfilePresenter(
         viewState.goToSubscriptions(profileUserInteractor.getCacheOwner())
     }
 
-    override fun getProfileServiceList(userId: String) {
+    override fun getServiceList(userId: String) {
         profileServiceInteractor.getServicesByUserId(userId, this)
+    }
+
+    override fun showServiceList(serviceList: List<Service>) {
+        viewState.showServiceList(serviceList)
+        viewState.hideProgress()
+    }
+
+    override fun getOrderList(userId: String) {
+        profileOrderInteractor.getOrderListByUserId(userId, this)
     }
 
     override fun showSubscribed() {
@@ -141,8 +150,8 @@ class ProfilePresenter(
         viewState.showCountOfSubscriber(count)
     }
 
-    override fun setServiceList(serviceList: List<Service>) {
-        viewState.showUserServices(serviceList, profileUserInteractor.getCacheOwner())
+    override fun showOrderList(orderList: List<Order>) {
+        viewState.showOrderList(orderList)
         viewState.hideProgress()
     }
 

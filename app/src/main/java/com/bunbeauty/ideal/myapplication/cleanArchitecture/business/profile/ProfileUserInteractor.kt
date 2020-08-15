@@ -29,18 +29,13 @@ class ProfileUserInteractor(
     override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
         this.profilePresenterCallback = profilePresenterCallback
 
-        if (intent.hasExtra(User.USER)) {
-            val user = intent.getSerializableExtra(User.USER) as User
-            //такое может быть?
-            if (user.id.isNotEmpty()) {
-                returnElement(user)
-            } else {
-                userRepository.getById(
-                    intent.getStringExtra(User.USER_ID) ?: User.getMyId(),
-                    this,
-                    true
-                )
-            }
+        val user: User? = if (intent.hasExtra(User.USER)) {
+            intent.getSerializableExtra(User.USER) as User
+        } else {
+            null
+        }
+        if (user != null && user.id.isNotEmpty()) {
+            returnElement(user)
         } else {
             userRepository.getById(
                 intent.getStringExtra(User.USER_ID) ?: User.getMyId(),
@@ -63,6 +58,7 @@ class ProfileUserInteractor(
         if (isMyProfile(user.id, User.getMyId())) {
             profilePresenterCallback.showMyProfile(user)
             cacheUser = cacheOwner!!
+            profilePresenterCallback.getOrderList(user.id)
         } else {
             profilePresenterCallback.showAlienProfile(user)
         }
@@ -82,12 +78,9 @@ class ProfileUserInteractor(
     }
 
     override fun initFCM() {
-        //if (isFromRegistration()) {
-            FirebaseInstanceId.getInstance().instanceId
-                .addOnSuccessListener { instanceIdResult ->
-                    userRepository.setToken(instanceIdResult.token)
-                }
-        //}
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { instanceIdResult ->
+            userRepository.setToken(instanceIdResult.token)
+        }
     }
 
     private fun isFromRegistration() =
@@ -98,7 +91,7 @@ class ProfileUserInteractor(
     ) {
         if (cacheOwner != null) {
             if (isMyProfile(cacheOwner!!.id, User.getMyId())) {
-                profilePresenterCallback.getProfileServiceList(cacheOwner!!.id)
+                profilePresenterCallback.getServiceList(cacheOwner!!.id)
             }
         }
     }

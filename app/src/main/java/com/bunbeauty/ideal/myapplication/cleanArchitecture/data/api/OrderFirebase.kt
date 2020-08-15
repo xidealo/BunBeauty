@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.order.OrderCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.order.OrdersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Session
@@ -55,6 +56,10 @@ class OrderFirebase {
                 // Some error
             }
         })
+
+    }
+
+    fun getByUserId(userId: String, ordersCallback: OrdersCallback) {
 
     }
 

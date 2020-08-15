@@ -6,21 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ServiceProfileAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ProfileServiceAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
-import com.google.android.material.button.MaterialButton
+import kotlinx.android.synthetic.main.fragment_services.*
 
-class ServicesFragment : MvpAppCompatFragment(), View.OnClickListener {
-
-    private var createBtn: MaterialButton? = null
-    private var serviceRecyclerView: RecyclerView? = null
-    private var serviceAdapter: ServiceProfileAdapter? = null
-    private var createBtnVisibility: Int = View.VISIBLE
+class ServicesFragment(private val profileServiceAdapter: ProfileServiceAdapter) : MvpAppCompatFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,53 +24,25 @@ class ServicesFragment : MvpAppCompatFragment(), View.OnClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        createBtn = view.findViewById(R.id.createServiceBtn)
-        createBtn!!.visibility = createBtnVisibility
-        createBtn!!.setOnClickListener(this)
-
-        serviceRecyclerView = view.findViewById(R.id.servicesRecycleView)
-        serviceRecyclerView!!.layoutManager = LinearLayoutManager(context)
-        if (serviceAdapter != null) {
-            serviceRecyclerView!!.adapter = serviceAdapter
+        createServiceBtn.visibility = View.GONE
+        createServiceBtn.setOnClickListener {
+            goToCreationService()
         }
+
+        servicesRecycleView.layoutManager = LinearLayoutManager(context)
+        servicesRecycleView.adapter = profileServiceAdapter
     }
 
     fun showCreateButton() {
-        if (createBtn != null) {
-            createBtn!!.visibility = View.VISIBLE
-            createBtn!!.setOnClickListener(this)
-        } else {
-            createBtnVisibility = View.VISIBLE
-        }
+        createServiceBtn?.visibility = View.VISIBLE
     }
 
     fun hideCreateButton() {
-        if (createBtn != null) {
-            createBtn!!.visibility = View.GONE
-        } else {
-            createBtnVisibility = View.GONE
-        }
+        createServiceBtn?.visibility = View.GONE
     }
 
-    fun setAdapter(services: List<Service>, user: User) {
-        if (serviceRecyclerView != null) {
-            serviceAdapter = ServiceProfileAdapter(services, user)
-            serviceRecyclerView!!.adapter = serviceAdapter
-        } else {
-            serviceAdapter = ServiceProfileAdapter(services, user)
-        }
-    }
-
-    fun updateAdapter() {
-        serviceAdapter!!.notifyDataSetChanged()
-    }
-
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.createServiceBtn -> {
-                goToCreationService()
-            }
-        }
+    fun updateServiceList(serviceList: List<Service>) {
+        profileServiceAdapter.updateAdapter(serviceList)
     }
 
     private fun goToCreationService() {
@@ -85,5 +50,4 @@ class ServicesFragment : MvpAppCompatFragment(), View.OnClickListener {
         startActivity(intent)
         activity!!.overridePendingTransition(0, 0)
     }
-
 }

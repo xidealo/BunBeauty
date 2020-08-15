@@ -55,6 +55,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
             .adapterModule(AdapterModule())
             .build()
             .inject(this)
+
         return MessagesPresenter(
             messageInteractor,
             messagesDialogInteractor,

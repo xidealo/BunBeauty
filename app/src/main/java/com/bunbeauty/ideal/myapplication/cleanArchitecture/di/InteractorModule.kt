@@ -22,14 +22,16 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.fragments.pr
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.VerifyPhoneInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IRegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServicePhotoInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.sessions.SessionsOrderInteractor
@@ -61,40 +63,38 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideRegistrationInteractor(userRepository: UserRepository) =
+    fun provideRegistrationInteractor(userRepository: UserRepository): IRegistrationUserInteractor =
         RegistrationUserInteractor(userRepository, intent)
 
     @Provides
     @Singleton
-    fun provideProfileUserInteractor(
-        userRepository: UserRepository
-    ) =
+    fun provideProfileUserInteractor(userRepository: UserRepository): IProfileUserInteractor =
         ProfileUserInteractor(userRepository, intent)
 
     @Provides
     @Singleton
-    fun provideProfileServiceInteractor(
-        serviceRepository: ServiceRepository
-    ) =
+    fun provideProfileServiceInteractor(serviceRepository: ServiceRepository): IProfileServiceInteractor =
         ProfileServiceInteractor(serviceRepository)
 
     @Provides
     @Singleton
-    fun provideProfileDialogInteractor(
-        dialogRepository: DialogRepository
-    ) = ProfileDialogInteractor(dialogRepository)
+    fun provideProfileOrderInteractor(orderRepository: IOrderRepository): IProfileOrderInteractor =
+        ProfileOrderInteractor(orderRepository)
 
     @Provides
     @Singleton
-    fun provideProfileSubscriptionInteractor(
-        subscriptionRepository: SubscriptionRepository
-    ) = ProfileSubscriptionInteractor(subscriptionRepository)
+    fun provideProfileDialogInteractor(dialogRepository: DialogRepository): IProfileDialogInteractor =
+        ProfileDialogInteractor(dialogRepository)
 
     @Provides
     @Singleton
-    fun provideProfileSubscriberInteractor(
-        subscriberRepository: SubscriberRepository
-    ) = ProfileSubscriberInteractor(subscriberRepository)
+    fun provideProfileSubscriptionInteractor(subscriptionRepository: SubscriptionRepository): IProfileSubscriptionInteractor =
+        ProfileSubscriptionInteractor(subscriptionRepository)
+
+    @Provides
+    @Singleton
+    fun provideProfileSubscriberInteractor(subscriberRepository: SubscriberRepository): IProfileSubscriberInteractor =
+        ProfileSubscriberInteractor(subscriberRepository)
 
     @Provides
     @Singleton
@@ -148,13 +148,12 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideServiceServiceInteractor() =
-        ServiceServiceInteractor(intent)
+    fun provideServiceServiceInteractor() = ServiceInteractor(intent)
 
     @Provides
     @Singleton
-    fun provideServiceUserInteractor() =
-        ServiceUserInteractor(intent)
+    fun provideServiceUserInteractor(userRepository: UserRepository) =
+        ServiceUserInteractor(userRepository, intent)
 
     @Provides
     @Singleton
@@ -171,12 +170,7 @@ class InteractorModule(private val intent: Intent) {
     fun provideEditProfileInteractor(
         userRepository: UserRepository,
         verifyPhoneNumberApi: VerifyPhoneNumberApi
-    ) =
-        EditProfileInteractor(
-            intent,
-            userRepository,
-            verifyPhoneNumberApi
-        )
+    ) = EditProfileInteractor(intent, userRepository, verifyPhoneNumberApi)
 
     @Provides
     @Singleton

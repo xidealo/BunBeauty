@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.order.InsertOrderCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.order.OrdersCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.OrderFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IOrderRepository
@@ -18,6 +19,12 @@ class OrderRepository(private val orderFirebase: OrderFirebase) : BaseRepository
             withContext(Dispatchers.Main) {
                 insertOrderCallback.returnCreatedCallback(insertedOrder)
             }
+        }
+    }
+
+    override fun getByUserId(userId: String, ordersCallback: OrdersCallback) {
+        launch {
+            orderFirebase.getByUserId(userId, ordersCallback)
         }
     }
 

@@ -5,7 +5,7 @@
     android:background="@drawable/profile_block">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/foundServiceProfileElementLayout"
+        android:id="@+id/profileServiceElementLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checkable="true"
@@ -13,13 +13,11 @@
         android:focusable="true">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            style="@style/wideHorizontalBlock"
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/serviceNameFoundServiceProfileElementText"
+                android:id="@+id/serviceNameProfileServiceElementText"
                 style="@style/foundProfileElement"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -27,7 +25,7 @@
                 android:text="@string/nameAddServiceTB" />
 
             <me.zhanghai.android.materialratingbar.MaterialRatingBar
-                android:id="@+id/ratingBarFondServiceProfileElement"
+                android:id="@+id/profileServiceElementRatingBar"
                 style="@android:style/Widget.Holo.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

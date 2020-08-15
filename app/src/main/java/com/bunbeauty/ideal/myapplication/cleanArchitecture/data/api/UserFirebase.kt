@@ -59,10 +59,10 @@ class UserFirebase {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getById(id: String, userCallback: UserCallback) {
+    fun getById(userId: String, userCallback: UserCallback) {
         val userRef = FirebaseDatabase.getInstance()
             .getReference(User.USERS)
-            .child(id)
+            .child(userId)
 
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {

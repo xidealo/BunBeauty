@@ -4,26 +4,22 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.FragmentPagerAdapter
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ProfileOrderAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ProfilePagerAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ProfileServiceAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.CircularTransformation
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.*
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomViewPager
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.MessagesActivity
@@ -36,7 +32,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile.ServicesFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import com.squareup.picasso.Picasso
@@ -46,36 +41,34 @@ import javax.inject.Inject
 class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomPanel,
     TabLayout.OnTabSelectedListener {
 
-    private lateinit var ratingLayout: MaterialCardView
+    override var panelContext: Activity = this
 
     private lateinit var ordersFragment: OrdersFragment
     private lateinit var servicesFragment: ServicesFragment
-    private lateinit var tabLayout: TabLayout
-    private lateinit var viewPager: CustomViewPager
-
-    override var panelContext: Activity = this
-
-    //const
-    companion object {
-        private const val REQUEST_EDIT_PROFILE = 1
-        private const val ORDERS_INDEX = 0
-        private const val SERVICES_INDEX = 1
-    }
 
     @Inject
-    lateinit var profileUserInteractor: ProfileUserInteractor
+    lateinit var profileServiceAdapter: ProfileServiceAdapter
 
     @Inject
-    lateinit var profileServiceInteractor: ProfileServiceInteractor
+    lateinit var profileOrderAdapter: ProfileOrderAdapter
 
     @Inject
-    lateinit var profileDialogInteractor: ProfileDialogInteractor
+    lateinit var profileUserInteractor: IProfileUserInteractor
 
     @Inject
-    lateinit var profileSubscriptionInteractor: ProfileSubscriptionInteractor
+    lateinit var profileServiceInteractor: IProfileServiceInteractor
 
     @Inject
-    lateinit var profileSubscriberInteractor: ProfileSubscriberInteractor
+    lateinit var profileOrderInteractor: IProfileOrderInteractor
+
+    @Inject
+    lateinit var profileDialogInteractor: IProfileDialogInteractor
+
+    @Inject
+    lateinit var profileSubscriptionInteractor: IProfileSubscriptionInteractor
+
+    @Inject
+    lateinit var profileSubscriberInteractor: IProfileSubscriberInteractor
 
     @InjectPresenter
     lateinit var profilePresenter: ProfilePresenter
@@ -84,7 +77,6 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
     internal fun provideProfilePresenter(): ProfilePresenter {
         DaggerAppComponent.builder()
             .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
             .interactorModule(InteractorModule(intent))
             .build()
             .inject(this)
@@ -92,6 +84,7 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
         return ProfilePresenter(
             profileUserInteractor,
             profileServiceInteractor,
+            profileOrderInteractor,
             profileDialogInteractor,
             profileSubscriptionInteractor,
             profileSubscriberInteractor
@@ -101,6 +94,7 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+
         init()
         profilePresenter.initFCM()
         profilePresenter.getProfileOwner()
@@ -117,7 +111,6 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
     }
 
     private fun init() {
-        ratingLayout = findViewById(R.id.ratingProfileLayout)
         ratingProfileLayout.setOnClickListener {
             goToComments(profilePresenter.getCacheOwner())
         }
@@ -138,19 +131,17 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
             openPhoto()
         }
 
-        ordersFragment = OrdersFragment()
-        servicesFragment = ServicesFragment()
-        tabLayout = findViewById(R.id.profileTabLayout)
-        viewPager = findViewById(R.id.profileViewPager)
-        viewPager.adapter =
+        ordersFragment = OrdersFragment(profileOrderAdapter)
+        servicesFragment = ServicesFragment(profileServiceAdapter)
+        profileViewPager.adapter =
             ProfilePagerAdapter(
                 supportFragmentManager,
                 FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
                 ordersFragment,
                 servicesFragment
             )
-        tabLayout.addOnTabSelectedListener(this)
-        viewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
+        profileTabLayout.addOnTabSelectedListener(this)
+        profileViewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(profileTabLayout))
     }
 
     private fun openPhoto() {
@@ -191,8 +182,12 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
         ratingProfileText.text = "$rating ($countOfRates)"
     }
 
-    override fun setServiceAdapter(services: List<Service>, user: User) {
-        servicesFragment.setAdapter(services, user)
+    override fun showServiceList(serviceList: List<Service>) {
+        servicesFragment.updateServiceList(serviceList)
+    }
+
+    override fun showOrderList(orderList: List<Order>) {
+        ordersFragment.updateOrderList(orderList)
     }
 
     override fun showBottomPanel(selectedItemId: Int) {
@@ -212,23 +207,23 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
     }
 
     override fun showOrders() {
-        viewPager.currentItem = ORDERS_INDEX
+        profileViewPager.currentItem = ORDERS_INDEX
     }
 
     override fun showServices() {
-        viewPager.currentItem = SERVICES_INDEX
+        profileViewPager.currentItem = SERVICES_INDEX
     }
 
     override fun showTabLayout() {
-        tabLayout.visibility = View.VISIBLE
+        profileTabLayout.visibility = View.VISIBLE
     }
 
     override fun hideTabLayout() {
-        tabLayout.visibility = View.GONE
+        profileTabLayout.visibility = View.GONE
     }
 
     override fun disableSwipe() {
-        viewPager.isEnable = false
+        profileViewPager.isEnable = false
     }
 
     override fun showCreateServiceButton() {
@@ -273,25 +268,21 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
 
 
     override fun onTabSelected(tab: TabLayout.Tab) {
-        viewPager.currentItem = tab.position
+        profileViewPager.currentItem = tab.position
     }
 
     override fun onTabReselected(tab: TabLayout.Tab?) {}
 
     override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
-    override fun showUserServices(serviceList: List<Service>, user: User) {
-        servicesFragment.updateAdapter()
-    }
-
     override fun showProgress() {
         loadingProfileProgressBar.visibility = View.VISIBLE
-        viewPager.visibility = View.INVISIBLE
+        profileViewPager.visibility = View.INVISIBLE
     }
 
     override fun hideProgress() {
         loadingProfileProgressBar.visibility = View.GONE
-        viewPager.visibility = View.VISIBLE
+        profileViewPager.visibility = View.VISIBLE
     }
 
     override fun showMessage(message: String) {
@@ -359,4 +350,9 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
         startActivity(intent)
     }
 
+    companion object {
+        private const val REQUEST_EDIT_PROFILE = 1
+        private const val ORDERS_INDEX = 0
+        private const val SERVICES_INDEX = 1
+    }
 }

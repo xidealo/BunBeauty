@@ -13,7 +13,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.PhotoAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServicePhotoInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -44,7 +44,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
     lateinit var photoAdapter: PhotoAdapter
 
     @Inject
-    lateinit var serviceServiceInteractor: ServiceServiceInteractor
+    lateinit var serviceInteractor: ServiceInteractor
 
     @Inject
     lateinit var serviceUserInteractor: ServiceUserInteractor
@@ -65,11 +65,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
             .build()
             .inject(this)
 
-        return ServicePresenter(
-            serviceServiceInteractor,
-            servicePhotoInteractor,
-            serviceUserInteractor
-        )
+        return ServicePresenter(serviceInteractor, servicePhotoInteractor, serviceUserInteractor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

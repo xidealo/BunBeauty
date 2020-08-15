@@ -40,4 +40,11 @@ class AdapterModule {
     @Singleton
     fun provideServiceCommentAdapter() = ServiceCommentAdapter()
 
+    @Provides
+    @Singleton
+    fun provideProfileServiceAdapter() = ProfileServiceAdapter()
+
+    @Provides
+    @Singleton
+    fun provideProfileOrderAdapter() = ProfileOrderAdapter()
 }

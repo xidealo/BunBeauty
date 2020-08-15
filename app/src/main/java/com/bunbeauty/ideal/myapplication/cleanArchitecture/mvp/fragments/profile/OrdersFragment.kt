@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ProfileOrderAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order
+import kotlinx.android.synthetic.main.fragment_orders.*
 
-class OrdersFragment : MvpAppCompatFragment() {
+class OrdersFragment(private val profileOrderAdapter: ProfileOrderAdapter) : MvpAppCompatFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,11 +22,11 @@ class OrdersFragment : MvpAppCompatFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val orderRecyclerView: RecyclerView = view.findViewById(R.id.ordersRecycleView)
-        orderRecyclerView.layoutManager = LinearLayoutManager(context)
+        ordersRecyclerView.layoutManager = LinearLayoutManager(context)
+        ordersRecyclerView.adapter = profileOrderAdapter
     }
 
-    fun setAdapter() {
-
+    fun updateOrderList(orderList: List<Order>) {
+        profileOrderAdapter.updateAdapter(orderList)
     }
 }

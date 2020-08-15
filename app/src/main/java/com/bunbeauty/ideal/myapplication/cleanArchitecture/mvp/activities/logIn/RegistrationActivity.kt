@@ -10,6 +10,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.iLogIn.IRegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
@@ -26,7 +27,7 @@ import javax.inject.Inject
 class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterSpinner {
 
     @Inject
-    lateinit var registrationUserInteractor: RegistrationUserInteractor
+    lateinit var registrationUserInteractor: IRegistrationUserInteractor
 
     @InjectPresenter
     lateinit var registrationPresenter: RegistrationPresenter

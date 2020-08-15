@@ -4,9 +4,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.service.Serv
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
-interface IServiceServiceInteractor {
+interface IServiceInteractor {
     fun getService(): Service
     fun updateService(service: Service,  servicePresenterCallback: ServicePresenterCallback)
-    fun createServiceScreen(user: User, servicePresenterCallback: ServicePresenterCallback)
+    fun createServiceScreen(servicePresenterCallback: ServicePresenterCallback)
     fun iconClick(user: User, servicePresenterCallback: ServicePresenterCallback)
 }

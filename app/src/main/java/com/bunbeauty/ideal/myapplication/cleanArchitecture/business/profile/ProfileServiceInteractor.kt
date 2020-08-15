@@ -9,10 +9,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.int
 class ProfileServiceInteractor(private val serviceRepository: IServiceRepository) :
     IProfileServiceInteractor, ServicesCallback {
 
-    private var services = mutableListOf<Service>()
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
-
-    override fun getServices() = services
 
     override fun getServicesByUserId(
         userId: String,
@@ -27,9 +24,7 @@ class ProfileServiceInteractor(private val serviceRepository: IServiceRepository
     }
 
     override fun returnServices(serviceList: List<Service>) {
-        services.clear()
-        services.addAll(serviceList)
-        profilePresenterCallback.setServiceList(serviceList)
+        profilePresenterCallback.showServiceList(serviceList)
     }
 
 }
