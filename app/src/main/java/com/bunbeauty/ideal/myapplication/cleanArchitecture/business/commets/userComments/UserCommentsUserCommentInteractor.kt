@@ -25,7 +25,7 @@ class UserCommentsUserCommentInteractor(private val userCommentRepository: UserC
     }
 
     override fun returnList(objects: List<UserComment>) {
-        if(objects.isEmpty()) userCommentsPresenterCallback.showEmptyScreen()
+        if (objects.isEmpty()) userCommentsPresenterCallback.showEmptyScreen()
 
         cacheUserComments.addAll(objects)
 
@@ -47,6 +47,6 @@ class UserCommentsUserCommentInteractor(private val userCommentRepository: UserC
         indexCacheUserComment++
 
         if (indexCacheUserComment == cacheUserComments.size - 1)
-            userCommentsPresenterCallback.updateUserComments()
+            userCommentsPresenterCallback.updateUserComments(cacheUserComments)
     }
 }

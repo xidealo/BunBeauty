@@ -1,4 +1,3 @@
-
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters
 
 import android.content.Context
@@ -8,10 +7,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.UserCommentElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 
-class UserCommentAdapter(private var commentList: List<UserComment>) :
-    RecyclerView.Adapter<UserCommentAdapter.UserCommentViewHolder>() {
+class UserCommentAdapter : RecyclerView.Adapter<UserCommentAdapter.UserCommentViewHolder>() {
+
+    private val commentList: ArrayList<UserComment> = arrayListOf()
+
+    fun setData(commentList: List<UserComment>) {
+        this.commentList.clear()
+        this.commentList.addAll(commentList)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): UserCommentViewHolder {
         val context = viewGroup.context

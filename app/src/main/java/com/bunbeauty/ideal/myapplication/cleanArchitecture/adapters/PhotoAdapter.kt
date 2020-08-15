@@ -8,18 +8,24 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IChangeablePhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.PhotoElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 
-class PhotoAdapter(
-    private val photos: List<Photo>,
-    private val iPhotoElement: IPhotoElement,
-    private val width: Int,
-    private val height: Int
-) :
-    RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
+class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
 
+    private val photos: ArrayList<Photo> = arrayListOf()
+    private lateinit var iPhotoElement: IPhotoElement
+    private var width = 0
+    private var height = 0
 
-
+    fun setData(photos: List<Photo>, iPhotoElement: IPhotoElement, width: Int, height: Int) {
+        this.photos.clear()
+        this.width = width
+        this.height = height
+        this.iPhotoElement = iPhotoElement
+        this.photos.addAll(photos)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): PhotoViewHolder {
         val context = viewGroup.context

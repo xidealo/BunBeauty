@@ -36,13 +36,14 @@ import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_creation_service.*
 import javax.inject.Inject
 
-class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBottomPanel, ITopPanel,
-    IChangeablePhotoElement {
+class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBottomPanel,
+    ITopPanel, IChangeablePhotoElement {
 
     override var panelContext: Activity = this
-    private lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter
-
     private lateinit var categoryFragment: CategoryFragment
+
+    @Inject
+    lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter
 
     @InjectPresenter
     lateinit var creationServicePresenter: CreationServicePresenter
@@ -87,11 +88,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
     private fun init() {
         resultsCreationServiceRecycleView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        changeablePhotoAdapter = ChangeablePhotoAdapter(
-            creationServicePresenter.getPhotosLink(), this,
-            resources.getDimensionPixelSize(R.dimen.photo_width),
-            resources.getDimensionPixelSize(R.dimen.photo_height)
-        )
         resultsCreationServiceRecycleView.adapter = changeablePhotoAdapter
 
         addServiceCreationServiceBtn.setOnClickListener {
@@ -162,8 +158,13 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
         overridePendingTransition(0, 0)
     }
 
-    override fun updatePhotoFeed() {
-        changeablePhotoAdapter.notifyDataSetChanged()
+    override fun updatePhotoFeed(photos: List<Photo>) {
+        changeablePhotoAdapter.setData(
+            creationServicePresenter.getPhotosLink(),
+            this,
+            resources.getDimensionPixelSize(R.dimen.photo_width),
+            resources.getDimensionPixelSize(R.dimen.photo_height)
+        )
     }
 
     override fun hideMainBlock() {

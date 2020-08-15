@@ -7,14 +7,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IChangeablePhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.ChangeablePhotoElement
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 
-class ChangeablePhotoAdapter(
-    private val photos: List<Photo>,
-    private val iChangeablePhotoElement: IChangeablePhotoElement,
-    private val width: Int,
-    private val height: Int
-) : RecyclerView.Adapter<ChangeablePhotoAdapter.ChangeablePhotoViewHolder>() {
+class ChangeablePhotoAdapter: RecyclerView.Adapter<ChangeablePhotoAdapter.ChangeablePhotoViewHolder>() {
+
+    private val photos: ArrayList<Photo> = arrayListOf()
+    private lateinit var iChangeablePhotoElement: IChangeablePhotoElement
+    private var width = 0
+    private var height = 0
+
+    fun setData(
+        photos: List<Photo>,
+        iChangeablePhotoElement: IChangeablePhotoElement,
+        width: Int,
+        height: Int
+    ) {
+        this.photos.clear()
+        this.width = width
+        this.height = height
+        this.iChangeablePhotoElement = iChangeablePhotoElement
+        this.photos.addAll(photos)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ChangeablePhotoViewHolder {
         val context = viewGroup.context

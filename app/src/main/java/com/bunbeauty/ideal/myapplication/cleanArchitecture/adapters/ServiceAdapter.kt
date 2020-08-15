@@ -15,6 +15,12 @@ class ServiceAdapter : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() 
 
     private val mainScreenData: ArrayList<MainScreenData> = arrayListOf()
 
+    fun setData(mainScreenData: ArrayList<MainScreenData>) {
+        this.mainScreenData.clear()
+        this.mainScreenData.addAll(mainScreenData)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ServiceViewHolder {
         val context = viewGroup.context
         val layoutIdForListItem = R.layout.found_service_element
@@ -41,9 +47,5 @@ class ServiceAdapter : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() 
         }
     }
 
-    fun setData(mainScreenData: ArrayList<MainScreenData>) {
-        this.mainScreenData.clear()
-        this.mainScreenData.addAll(mainScreenData)
-        notifyDataSetChanged()
-    }
+
 }

@@ -6,6 +6,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 interface UserCommentsPresenterCallback {
     fun getUser(userComment: UserComment)
     fun setUserOnUserComment(user: User)
-    fun updateUserComments()
+    fun updateUserComments(userComments: List<UserComment>)
     fun showEmptyScreen()
 }

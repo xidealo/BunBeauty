@@ -11,6 +11,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.UserCommentAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.userComments.UserCommentsUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
@@ -27,7 +28,8 @@ class UserCommentsActivity : MvpAppCompatActivity(), UserCommentsView, ITopPanel
 
     override var panelContext: Activity = this
 
-    private lateinit var userCommentAdapter: UserCommentAdapter
+    @Inject
+    lateinit var userCommentAdapter: UserCommentAdapter
 
     @Inject
     lateinit var userCommentsCommentInteractor: UserCommentsUserCommentInteractor
@@ -65,7 +67,6 @@ class UserCommentsActivity : MvpAppCompatActivity(), UserCommentsView, ITopPanel
 
     fun init() {
         resultsUserCommentsRecycleView.layoutManager = LinearLayoutManager(this)
-        userCommentAdapter = UserCommentAdapter(userCommentsPresenter.getUserCommentsLink())
         resultsUserCommentsRecycleView.adapter = userCommentAdapter
     }
 
@@ -77,8 +78,8 @@ class UserCommentsActivity : MvpAppCompatActivity(), UserCommentsView, ITopPanel
         progressBarUserComments.visibility = View.GONE
     }
 
-    override fun updateUserComments() {
-        userCommentAdapter.notifyDataSetChanged()
+    override fun updateUserComments(userComments: List<UserComment>) {
+        userCommentAdapter.setData(userComments)
     }
 
     override fun showUserComments() {

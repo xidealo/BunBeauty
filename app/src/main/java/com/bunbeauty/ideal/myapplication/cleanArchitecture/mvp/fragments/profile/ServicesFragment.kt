@@ -19,7 +19,6 @@ class ServicesFragment : MvpAppCompatFragment(), View.OnClickListener {
 
     private var createBtn: MaterialButton? = null
     private var serviceRecyclerView: RecyclerView? = null
-
     private var serviceAdapter: ServiceProfileAdapter? = null
     private var createBtnVisibility: Int = View.VISIBLE
 

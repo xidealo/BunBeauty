@@ -39,7 +39,9 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
     override var panelContext: Activity = this
 
     private lateinit var premiumFragment: PremiumFragment
-    private lateinit var photoAdapter: PhotoAdapter
+
+    @Inject
+    lateinit var photoAdapter: PhotoAdapter
 
     @Inject
     lateinit var serviceServiceInteractor: ServiceServiceInteractor
@@ -96,12 +98,6 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
 
         photosServiceRecycleView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        photoAdapter = PhotoAdapter(
-            servicePresenter.getPhotosLink(),
-            this,
-            resources.getDimensionPixelSize(R.dimen.photo_width),
-            resources.getDimensionPixelSize(R.dimen.photo_height)
-        )
         photosServiceRecycleView.adapter = photoAdapter
     }
 
@@ -167,7 +163,12 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
     }
 
     override fun showPhotos(photos: List<Photo>) {
-        photoAdapter.notifyDataSetChanged()
+        photoAdapter.setData(
+            photos,
+            this,
+            resources.getDimensionPixelSize(R.dimen.photo_width),
+            resources.getDimensionPixelSize(R.dimen.photo_height)
+        )
     }
 
     override fun actionClick() {

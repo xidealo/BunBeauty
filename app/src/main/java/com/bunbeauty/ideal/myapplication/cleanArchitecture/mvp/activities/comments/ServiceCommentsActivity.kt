@@ -12,10 +12,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ServiceComme
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsServiceCommentInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serviceComments.ServiceCommentsUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.ServiceComment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
@@ -28,7 +27,9 @@ class ServiceCommentsActivity : MvpAppCompatActivity(), ServiceCommentsView, ITo
     IBottomPanel {
 
     override var panelContext: Activity = this
-    private lateinit var serviceCommentAdapter: ServiceCommentAdapter
+
+    @Inject
+    lateinit var serviceCommentAdapter: ServiceCommentAdapter
 
     @Inject
     lateinit var serviceCommentsServiceCommentInteractor: ServiceCommentsServiceCommentInteractor
@@ -48,6 +49,7 @@ class ServiceCommentsActivity : MvpAppCompatActivity(), ServiceCommentsView, ITo
             .appModule(AppModule(application))
             .firebaseModule(FirebaseModule())
             .interactorModule(InteractorModule(intent))
+            .adapterModule(AdapterModule())
             .build()
             .inject(this)
         return ServiceCommentsPresenter(
@@ -69,8 +71,6 @@ class ServiceCommentsActivity : MvpAppCompatActivity(), ServiceCommentsView, ITo
 
     fun init() {
         resultsServiceCommentsRecycleView.layoutManager = LinearLayoutManager(this)
-        serviceCommentAdapter =
-            ServiceCommentAdapter(serviceCommentsPresenter.getServiceCommentsLink())
         resultsServiceCommentsRecycleView.adapter = serviceCommentAdapter
     }
 
@@ -82,8 +82,8 @@ class ServiceCommentsActivity : MvpAppCompatActivity(), ServiceCommentsView, ITo
         progressBarServiceComments.visibility = View.GONE
     }
 
-    override fun updateServiceComments() {
-        serviceCommentAdapter.notifyDataSetChanged()
+    override fun updateServiceComments(serviceComments: List<ServiceComment>) {
+        serviceCommentAdapter.setData(serviceComments)
     }
 
     override fun showServiceComments() {

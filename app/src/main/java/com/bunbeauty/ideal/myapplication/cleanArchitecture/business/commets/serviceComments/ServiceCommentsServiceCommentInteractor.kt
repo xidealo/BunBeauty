@@ -48,7 +48,7 @@ class ServiceCommentsServiceCommentInteractor(private val serviceCommentReposito
         indexCacheServiceComment++
 
         if (indexCacheServiceComment == cacheServiceComments.size - 1)
-            serviceCommentsPresenterCallback.updateServiceComments()
+            serviceCommentsPresenterCallback.updateServiceComments(cacheServiceComments)
     }
 
 }

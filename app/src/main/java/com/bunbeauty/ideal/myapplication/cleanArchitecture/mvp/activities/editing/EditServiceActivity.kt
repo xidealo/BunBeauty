@@ -42,7 +42,10 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     EditServiceView, IChangeablePhotoElement {
 
     override var panelContext: Activity = this
-    private lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter
+
+    @Inject
+    lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter
+
     private lateinit var categoryFragment: CategoryFragment
 
     @Inject
@@ -106,12 +109,6 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
 
         resultsEditServiceRecycleView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        changeablePhotoAdapter = ChangeablePhotoAdapter(
-            editServicePresenter.getPhotosLink(),
-            this,
-            resources.getDimensionPixelSize(R.dimen.photo_width),
-            resources.getDimensionPixelSize(R.dimen.photo_height)
-        )
         resultsEditServiceRecycleView.adapter = changeablePhotoAdapter
 
         categoryFragment =
@@ -158,7 +155,12 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     }
 
     override fun updatePhotoFeed() {
-        changeablePhotoAdapter.notifyDataSetChanged()
+        changeablePhotoAdapter.setData(
+            editServicePresenter.getPhotosLink(),
+            this,
+            resources.getDimensionPixelSize(R.dimen.photo_width),
+            resources.getDimensionPixelSize(R.dimen.photo_height)
+        )
     }
 
     override fun showLoading() {

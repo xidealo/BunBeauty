@@ -8,6 +8,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.serv
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.comments.ServiceCommentsPresenterCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.ServiceComment
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.comments.ServiceCommentsView
 
 @InjectViewState
@@ -16,8 +17,6 @@ class ServiceCommentsPresenter(
     private val serviceCommentsUserInteractor: IServiceCommentsUserInteractor,
     private val serviceCommentsServiceInteractor: IServiceCommentsServiceInteractor
 ) : MvpPresenter<ServiceCommentsView>(), ServiceCommentsPresenterCallback {
-
-    fun getServiceCommentsLink() = serviceCommentsServiceCommentInteractor.getServiceCommentsLink()
 
     fun createServiceCommentsScreen() {
         serviceCommentsServiceCommentInteractor.createServiceCommentsScreen(
@@ -34,8 +33,8 @@ class ServiceCommentsPresenter(
         serviceCommentsServiceCommentInteractor.setUserOnServiceComment(user, this)
     }
 
-    override fun updateServiceComments() {
-        viewState.updateServiceComments()
+    override fun updateServiceComments(serviceComments: List<ServiceComment>) {
+        viewState.updateServiceComments(serviceComments)
     }
 
     override fun showEmptyScreen() {

@@ -10,8 +10,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.Sub
 
 class SubscriptionsSubscriptionInteractor(
     private val subscriptionRepository: SubscriptionRepository
-) :
-    ISubscriptionsSubscriptionInteractor, SubscriptionsCallback, DeleteSubscriptionCallback {
+) : ISubscriptionsSubscriptionInteractor, SubscriptionsCallback, DeleteSubscriptionCallback {
 
     private lateinit var subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     private var cacheSubscriptions = mutableListOf<Subscription>()

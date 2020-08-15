@@ -6,10 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.ServiceComment
 
-class ServiceCommentAdapter(private var serviceCommentList: List<ServiceComment>) :
+class ServiceCommentAdapter :
     RecyclerView.Adapter<ServiceCommentAdapter.ServiceCommentViewHolder>() {
+
+    private val serviceCommentList: ArrayList<ServiceComment> = arrayListOf()
+
+    fun setData(serviceCommentList: List<ServiceComment>) {
+        this.serviceCommentList.clear()
+        this.serviceCommentList.addAll(serviceCommentList)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ServiceCommentViewHolder {
         val context = viewGroup.context

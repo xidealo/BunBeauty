@@ -47,12 +47,12 @@ class CreationServicePresenter(
         val photo = Photo()
         photo.link = uri.toString()
         photoInteractor.addPhoto(photo)
-        viewState.updatePhotoFeed()
+        viewState.updatePhotoFeed(photoInteractor.getPhotosLink())
     }
 
     fun removePhoto(photo: Photo) {
         photoInteractor.removePhoto(photo)
-        viewState.updatePhotoFeed()
+        viewState.updatePhotoFeed(photoInteractor.getPhotosLink())
     }
 
     fun getPhotosLink() = photoInteractor.getPhotosLink()

@@ -1,9 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.di
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.DialogAdapter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.MessageAdapter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ServiceAdapter
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.SubscriptionAdapter
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -26,5 +23,21 @@ class AdapterModule {
     @Provides
     @Singleton
     fun provideSubscriptionAdapter() = SubscriptionAdapter()
+
+    @Provides
+    @Singleton
+    fun providePhotoAdapter() = PhotoAdapter()
+
+    @Provides
+    @Singleton
+    fun provideChangeablePhotoAdapter() = ChangeablePhotoAdapter()
+
+    @Provides
+    @Singleton
+    fun provideUserCommentAdapter() = UserCommentAdapter()
+
+    @Provides
+    @Singleton
+    fun provideServiceCommentAdapter() = ServiceCommentAdapter()
 
 }
