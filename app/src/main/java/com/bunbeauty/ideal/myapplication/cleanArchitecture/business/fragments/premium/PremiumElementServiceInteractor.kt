@@ -5,8 +5,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.CheckPremium
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.UpdateServiceCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceRepository
 
-class PremiumElementServiceInteractor(val serviceRepository: ServiceRepository) :
+class PremiumElementServiceInteractor(val serviceRepository: IServiceRepository) :
     UpdateServiceCallback {
 
     lateinit var service: Service

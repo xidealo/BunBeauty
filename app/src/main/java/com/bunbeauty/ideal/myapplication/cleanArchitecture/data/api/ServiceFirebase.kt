@@ -1,13 +1,11 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.ServicesCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.GetServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.GetServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.google.firebase.database.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ServiceFirebase {
 
@@ -62,36 +60,29 @@ class ServiceFirebase {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getById(
-        userId: String, serviceId: String, servicesCallback: ServicesCallback
-    ) {
-        val servicesRef = FirebaseDatabase.getInstance()
+    fun getById(userId: String, serviceId: String, getServiceCallback: GetServiceCallback) {
+        val serviceReference = FirebaseDatabase.getInstance()
             .getReference(Service.SERVICES)
             .child(userId)
             .child(serviceId)
 
-        servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(servicesSnapshot: DataSnapshot) {
-                servicesCallback.returnServices(returnServiceList(servicesSnapshot, userId))
+        serviceReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(serviceSnapshot: DataSnapshot) {
+                getServiceCallback.returnGottenObject(getServiceFromSnapshot(serviceSnapshot, userId))
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Some error
-            }
+            override fun onCancelled(error: DatabaseError) {}
         })
     }
 
-    fun getServicesByUserId(
-        userId: String,
-        servicesCallback: ServicesCallback
-    ) {
-        val servicesRef = FirebaseDatabase.getInstance()
+    fun getByUserId(userId: String, getServicesCallback: GetServicesCallback) {
+        val servicesReference = FirebaseDatabase.getInstance()
             .getReference(Service.SERVICES)
             .child(userId)
 
-        servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        servicesReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(servicesSnapshot: DataSnapshot) {
-                servicesCallback.returnServices(returnServiceList(servicesSnapshot, userId))
+                getServicesCallback.returnList(returnServiceList(servicesSnapshot, userId))
                 //setListener(servicesRef, userId, iServiceCallback)
             }
 
@@ -127,10 +118,8 @@ class ServiceFirebase {
         service.description = serviceSnapshot.child(Service.DESCRIPTION).value as? String ?: ""
         service.cost = serviceSnapshot.child(Service.COST).getValue(Long::class.java) ?: 0
         service.countOfRates =
-            serviceSnapshot.child(Service.COUNT_OF_RATES).getValue(Long::class.java)
-                ?: 0L
-        service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue(Float::class.java)
-            ?: 0f
+            serviceSnapshot.child(Service.COUNT_OF_RATES).getValue(Long::class.java) ?: 0L
+        service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue(Float::class.java) ?: 0f
         service.category = serviceSnapshot.child(Service.CATEGORY).value as? String ?: ""
         service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).value as? Long ?: 0
         service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).value as? Long ?: 0

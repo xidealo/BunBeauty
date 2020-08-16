@@ -28,39 +28,4 @@ class OrderRepository(private val orderFirebase: OrderFirebase) : BaseRepository
         }
     }
 
-    /*override fun delete(order: Order, deleteOrderCallback: DeleteOrderCallback) {
-        launch {
-            //orderDao.delete(order)
-            orderFirebase.delete(order)
-            withContext(Dispatchers.Main) {
-                deleteOrderCallback.returnDeletedCallback(order)
-            }
-        }
-    }
-
-    override fun update(order: Order, updateOrderCallback: UpdateOrderCallback) {
-        launch {
-            //orderDao.update(order)
-            orderFirebase.update(order)
-            withContext(Dispatchers.Main) {
-                updateOrderCallback.returnUpdatedCallback(order)
-            }
-        }
-    }
-
-    override fun get(ordersCallback: OrdersCallback) {
-        launch {
-            //val orders = orderDao.get()
-            withContext(Dispatchers.Main) {
-                //ordersCallback.returnOrders()
-            }
-        }
-    }
-
-    override fun getById(userId: String, orderId: String, orderCallback: OrderCallback) {
-        launch {
-            orderFirebase.getOrderById(userId, orderId, orderCallback)
-        }
-    }*/
-
 }

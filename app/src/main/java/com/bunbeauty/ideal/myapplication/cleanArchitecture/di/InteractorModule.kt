@@ -41,6 +41,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.subs.Subscri
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IOrderRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IScheduleRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -73,7 +74,7 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideProfileServiceInteractor(serviceRepository: ServiceRepository): IProfileServiceInteractor =
+    fun provideProfileServiceInteractor(serviceRepository: IServiceRepository): IProfileServiceInteractor =
         ProfileServiceInteractor(serviceRepository)
 
     @Provides
@@ -98,7 +99,7 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideCreationServiceServiceServiceInteractor(serviceRepository: ServiceRepository) =
+    fun provideCreationServiceServiceServiceInteractor(serviceRepository: IServiceRepository) =
         CreationServiceServiceServiceInteractor(serviceRepository)
 
     @Provides
@@ -122,10 +123,8 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun providePremiumElementServiceInteractor(serviceRepository: ServiceRepository) =
-        PremiumElementServiceInteractor(
-            serviceRepository
-        )
+    fun providePremiumElementServiceInteractor(serviceRepository: IServiceRepository) =
+        PremiumElementServiceInteractor(serviceRepository)
 
     @Provides
     @Singleton
@@ -136,9 +135,7 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideMainScreenServiceInteractor(
-        serviceRepository: ServiceRepository
-    ) =
+    fun provideMainScreenServiceInteractor(serviceRepository: IServiceRepository) =
         MainScreenServiceInteractor(serviceRepository)
 
     @Provides
@@ -148,7 +145,8 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideServiceServiceInteractor() = ServiceInteractor(intent)
+    fun provideServiceServiceInteractor(serviceRepository: IServiceRepository) =
+        ServiceInteractor(serviceRepository, intent)
 
     @Provides
     @Singleton
@@ -223,11 +221,8 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideEditServiceInteractor(serviceRepository: ServiceRepository) =
-        EditServiceServiceInteractor(
-            intent,
-            serviceRepository
-        )
+    fun provideEditServiceInteractor(serviceRepository: IServiceRepository) =
+        EditServiceServiceInteractor(intent, serviceRepository)
 
     @Provides
     @Singleton

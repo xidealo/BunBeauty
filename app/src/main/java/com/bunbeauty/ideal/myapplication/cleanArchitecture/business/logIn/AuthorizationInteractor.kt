@@ -28,7 +28,7 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
         }
     }
 
-    override fun returnElement(element: User?) {
+    override fun returnGottenObject(element: User?) {
         if (element == null) {
             authorizationPresenterCallback.showViewOnScreen()
             return

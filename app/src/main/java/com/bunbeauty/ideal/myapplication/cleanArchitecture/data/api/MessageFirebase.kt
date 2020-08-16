@@ -97,7 +97,7 @@ class MessageFirebase {
                                 addedMessage.dialogId = dialog.id
                                 addedMessage.userId = dialog.ownerId
                                 messages.add(addedMessage)
-                                messageCallback.returnElement(addedMessage)
+                                messageCallback.returnGottenObject(addedMessage)
 
                             }
                         } else {
@@ -106,7 +106,7 @@ class MessageFirebase {
                             addedMessage.dialogId = dialog.id
                             addedMessage.userId = dialog.ownerId
                             messages.add(addedMessage)
-                            messageCallback.returnElement(addedMessage)
+                            messageCallback.returnGottenObject(addedMessage)
 
                         }
                     }
@@ -147,7 +147,7 @@ class MessageFirebase {
                 }
                 message.dialogId = myId
                 message.userId = companionId //проверить
-                messageCallback.returnElement(message)
+                messageCallback.returnGottenObject(message)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

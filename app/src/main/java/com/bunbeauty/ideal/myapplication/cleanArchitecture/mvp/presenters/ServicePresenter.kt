@@ -18,20 +18,9 @@ class ServicePresenter(
     private val serviceUserInteractor: IServiceUserInteractor
 ) : MvpPresenter<ServiceView>(), ServicePresenterCallback {
 
-    fun createServiceScreen() {
-        serviceInteractor.createServiceScreen(this)
-        serviceUserInteractor.getUser(serviceInteractor.getService().userId, this)
+    fun getService() {
+        serviceInteractor.getService(this)
     }
-
-    fun updateService(service: Service) {
-        serviceInteractor.updateService(service, this)
-    }
-
-    fun iconClick() {
-        serviceInteractor.iconClick(serviceUserInteractor.getUser(), this)
-    }
-
-    fun getPhotosLink() = servicePhotoInteractor.getPhotosLink()
 
     override fun showService(service: Service) {
         viewState.hideLoading()
@@ -42,20 +31,36 @@ class ServicePresenter(
         servicePhotoInteractor.getServicePhotos(service, this)
     }
 
-    override fun showPremium() {
-        viewState.showPremium(serviceInteractor.getService())
+    override fun showPhotos(photoList: List<Photo>) {
+        viewState.showPhotos(photoList)
+    }
+
+    override fun getUser(userId: String) {
+        serviceUserInteractor.getUser(userId, this)
     }
 
     override fun createOwnServiceTopPanel() {
-        viewState.createOwnServiceTopPanel(serviceInteractor.getService())
+        viewState.createOwnServiceTopPanel(serviceInteractor.gottenService)
     }
 
     override fun createAlienServiceTopPanel(user: User) {
-        viewState.createAlienServiceTopPanel(user, serviceInteractor.getService())
+        viewState.createAlienServiceTopPanel(user, serviceInteractor.gottenService)
     }
 
-    override fun showPhotos(photos: List<Photo>) {
-        viewState.showPhotos(photos)
+    override fun showPremium() {
+        viewState.showPremium(serviceInteractor.gottenService)
+    }
+
+    fun updateService(service: Service) {
+        serviceInteractor.updateService(service, this)
+    }
+
+    override fun setTitle(title: String) {
+        viewState.setTopPanelTitle(title)
+    }
+
+    fun iconClick() {
+        serviceInteractor.iconClick(serviceUserInteractor.getUser(), this)
     }
 
     override fun goToEditService(service: Service) {
@@ -66,11 +71,9 @@ class ServicePresenter(
         viewState.goToProfile(user)
     }
 
-    override fun setTitle(title: String) {
-        viewState.setTopPanelTitle(title)
-    }
+    fun getPhotosLink() = servicePhotoInteractor.getPhotoLinkList()
 
-    fun getService(): Service {
-        return serviceInteractor.getService()
+    fun getGottenService(): Service {
+        return serviceInteractor.gottenService
     }
 }

@@ -9,9 +9,10 @@ interface ServicePresenterCallback {
     fun showPremium()
     fun createOwnServiceTopPanel()
     fun createAlienServiceTopPanel(user: User)
-    fun showPhotos(photo: List<Photo>)
+    fun showPhotos(photoList: List<Photo>)
     fun goToEditService(service: Service)
     fun goToProfile(user: User)
     fun getServicePhotos(service: Service)
     fun setTitle(title: String)
+    fun getUser(userId: String)
 }

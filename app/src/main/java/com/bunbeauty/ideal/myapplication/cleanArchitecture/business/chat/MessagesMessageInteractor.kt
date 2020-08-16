@@ -91,7 +91,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     /**
      * add text message or if it is my message add also commentMessage
      */
-    override fun returnElement(element: Message?) {
+    override fun returnGottenObject(element: Message?) {
         if (element == null) return
 
         if (element.type == Message.TEXT_MESSAGE_STATUS || element.userId == User.getMyId()) {

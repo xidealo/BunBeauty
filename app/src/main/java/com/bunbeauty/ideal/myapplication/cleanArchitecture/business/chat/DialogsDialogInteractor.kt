@@ -39,7 +39,7 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
         }
     }
 
-    override fun returnElement(element: Dialog?) {
+    override fun returnGottenObject(element: Dialog?) {
         if (element == null) return
 
         if (element.ownerId == User.getMyId()) {

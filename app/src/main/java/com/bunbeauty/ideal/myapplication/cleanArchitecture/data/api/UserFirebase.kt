@@ -66,7 +66,7 @@ class UserFirebase {
 
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
-                userCallback.returnElement(getUserFromSnapshot(usersSnapshot))
+                userCallback.returnGottenObject(getUserFromSnapshot(usersSnapshot))
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -83,13 +83,13 @@ class UserFirebase {
         userQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(usersSnapshot: DataSnapshot) {
                 if (usersSnapshot.childrenCount != 0L) {
-                    userCallback.returnElement(
+                    userCallback.returnGottenObject(
                         getUserFromSnapshot(
                             usersSnapshot.children.iterator().next()
                         )
                     )
                 } else {
-                    userCallback.returnElement(User())
+                    userCallback.returnGottenObject(User())
                 }
             }
 

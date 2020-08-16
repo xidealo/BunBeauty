@@ -8,10 +8,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceRepository
 
 class EditServiceServiceInteractor(
     private val intent: Intent,
-    private val serviceRepository: ServiceRepository
+    private val serviceRepository: IServiceRepository
 ) : UpdateServiceCallback, DeleteServiceCallback, IEditServiceServiceInteractor {
     private lateinit var cacheService: Service
     private lateinit var editServicePresenterCallback: EditServicePresenterCallback

@@ -75,12 +75,12 @@ class DialogFirebase {
                             if (previousId == dialogs.last().id) {
                                 val addedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
                                 dialogs.add(addedDialog)
-                                dialogCallback.returnElement(addedDialog)
+                                dialogCallback.returnGottenObject(addedDialog)
                             }
                         } else {
                             val addedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
                             dialogs.add(addedDialog)
-                            dialogCallback.returnElement(addedDialog)
+                            dialogCallback.returnGottenObject(addedDialog)
                         }
 
                     }
@@ -106,7 +106,7 @@ class DialogFirebase {
 
         dialogsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dialogSnapshot: DataSnapshot) {
-                dialogCallback.returnElement(getDialogFromSnapshot(dialogSnapshot, dialog.ownerId))
+                dialogCallback.returnGottenObject(getDialogFromSnapshot(dialogSnapshot, dialog.ownerId))
             }
 
             override fun onCancelled(error: DatabaseError) {

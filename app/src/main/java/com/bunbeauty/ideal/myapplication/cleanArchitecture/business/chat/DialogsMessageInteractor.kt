@@ -27,7 +27,7 @@ class DialogsMessageInteractor(private val messageRepository: IMessageRepository
         )
     }
 
-    override fun returnElement(element: Message?) {
+    override fun returnGottenObject(element: Message?) {
 
         if (element == null) return
 

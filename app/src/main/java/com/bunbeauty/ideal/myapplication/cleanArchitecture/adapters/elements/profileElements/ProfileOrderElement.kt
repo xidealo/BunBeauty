@@ -23,7 +23,8 @@ class ProfileOrderElement(private val order: Order, private val context: Context
 
     private fun goToService() {
         val intent = Intent(context, ServiceActivity::class.java).apply {
-            this.putExtra(Service.SERVICE_ID, order.serviceId)
+            this.putExtra(Order.SERVICE_ID, order.serviceId)
+            this.putExtra(Order.MASTER_ID, order.masterId)
         }
         context.startActivity(intent)
     }

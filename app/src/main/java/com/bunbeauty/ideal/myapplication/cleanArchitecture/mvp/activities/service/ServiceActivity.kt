@@ -74,7 +74,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
 
         init()
         showLoading()
-        servicePresenter.createServiceScreen()
+        servicePresenter.getService()
         hidePremium()
     }
 
@@ -89,7 +89,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
             supportFragmentManager.findFragmentById(R.id.premiumBlockService) as PremiumFragment
 
         scheduleServiceBtn.setOnClickListener {
-            goToSession()
+            goToSessions()
         }
 
         photosServiceRecycleView.layoutManager =
@@ -205,10 +205,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
 
     override fun openPhoto(openedPhotoLinkOrUri: String) {
         val intent = Intent(this, PhotoSliderActivity::class.java).apply {
-            putParcelableArrayListExtra(
-                Photo.PHOTO,
-                ArrayList(servicePresenter.getPhotosLink())
-            )
+            putParcelableArrayListExtra(Photo.PHOTO, ArrayList(servicePresenter.getPhotosLink()))
             putExtra(Photo.LINK, openedPhotoLinkOrUri)
         }
         startActivity(intent)
@@ -224,9 +221,9 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
         startActivity(intent)*/
     }
 
-    private fun goToSession() {
+    private fun goToSessions() {
         val intent = Intent(this, SessionsActivity::class.java).apply {
-            this.putExtra(Service.SERVICE, servicePresenter.getService())
+            this.putExtra(Service.SERVICE, servicePresenter.getGottenService())
         }
         startActivity(intent)
     }

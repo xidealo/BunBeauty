@@ -2,12 +2,12 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.profile.iProfile.IProfileServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.ProfilePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.ServicesCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.GetServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceRepository
 
 class ProfileServiceInteractor(private val serviceRepository: IServiceRepository) :
-    IProfileServiceInteractor, ServicesCallback {
+    IProfileServiceInteractor, GetServicesCallback {
 
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
 
@@ -23,7 +23,7 @@ class ProfileServiceInteractor(private val serviceRepository: IServiceRepository
         )
     }
 
-    override fun returnServices(serviceList: List<Service>) {
+    override fun returnList(serviceList: List<Service>) {
         profilePresenterCallback.showServiceList(serviceList)
     }
 

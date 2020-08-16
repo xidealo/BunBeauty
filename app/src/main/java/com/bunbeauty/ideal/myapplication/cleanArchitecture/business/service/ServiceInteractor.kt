@@ -3,23 +3,39 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.iService.IServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.service.ServicePresenterCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.GetServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.GetServicesCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceRepository
 
-class ServiceInteractor(private val intent: Intent) : IServiceInteractor {
+class ServiceInteractor(
+    private val serviceRepository: IServiceRepository,
+    private val intent: Intent
+) : IServiceInteractor, GetServiceCallback {
 
-    private lateinit var gottenService: Service
+    override lateinit var gottenService: Service
+    private lateinit var servicePresenterCallback: ServicePresenterCallback
 
-    override fun getService(): Service {
-        return intent.getSerializableExtra(Service.SERVICE) as Service
+    override fun getService(servicePresenterCallback: ServicePresenterCallback) {
+        this.servicePresenterCallback = servicePresenterCallback
+
+        if (intent.hasExtra(Service.SERVICE)) {
+            returnGottenObject(intent.getSerializableExtra(Service.SERVICE) as Service)
+        } else {
+            val masterId = intent.getSerializableExtra(Order.MASTER_ID) as String
+            val serviceId = intent.getSerializableExtra(Order.SERVICE_ID) as String
+            serviceRepository.getById(serviceId, masterId, true, this)
+        }
     }
 
-    override fun createServiceScreen(servicePresenterCallback: ServicePresenterCallback) {
-        val service = getService()
-        gottenService = service
+    override fun returnGottenObject(service: Service?) {
+        gottenService = service!!
 
         servicePresenterCallback.showService(service)
         servicePresenterCallback.getServicePhotos(service)
+        servicePresenterCallback.getUser(service.userId)
     }
 
     override fun updateService(

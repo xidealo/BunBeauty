@@ -35,7 +35,7 @@ class ProfileUserInteractor(
             null
         }
         if (user != null && user.id.isNotEmpty()) {
-            returnElement(user)
+            returnGottenObject(user)
         } else {
             userRepository.getById(
                 intent.getStringExtra(User.USER_ID) ?: User.getMyId(),
@@ -45,7 +45,7 @@ class ProfileUserInteractor(
         }
     }
 
-    override fun returnElement(element: User?) {
+    override fun returnGottenObject(element: User?) {
         if (element == null) return
 
         cacheOwner = element

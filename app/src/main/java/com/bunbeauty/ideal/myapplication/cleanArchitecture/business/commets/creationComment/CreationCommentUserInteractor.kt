@@ -35,7 +35,7 @@ class CreationCommentUserInteractor(
     /**
      * for actual data
      */
-    override fun returnElement(element: User?) {
+    override fun returnGottenObject(element: User?) {
         if (element == null) return
 
         element.rating = calculateAvgRating(element, cacheUserComment)

@@ -19,13 +19,13 @@ class ServiceUserInteractor(
         this.servicePresenterCallback = servicePresenterCallback
 
         if (intent.hasExtra(User.USER)) {
-            returnElement(intent.getSerializableExtra(User.USER) as User)
+            returnGottenObject(intent.getSerializableExtra(User.USER) as User)
         } else {
             userRepository.getById(userId, this, true)
         }
     }
 
-    override fun returnElement(user: User?) {
+    override fun returnGottenObject(user: User?) {
         gottenUser = user!!
 
         if (isMyService(user)) {

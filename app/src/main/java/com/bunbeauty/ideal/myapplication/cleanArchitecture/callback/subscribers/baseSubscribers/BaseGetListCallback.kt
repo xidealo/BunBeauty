@@ -1,5 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.baseSubscribers
 
-interface BaseReturnList<T> {
+interface BaseGetListCallback<T> {
     fun returnList(objects: List<T>)
 }

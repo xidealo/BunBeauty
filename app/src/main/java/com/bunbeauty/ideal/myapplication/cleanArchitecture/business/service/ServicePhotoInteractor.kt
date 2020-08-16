@@ -11,9 +11,9 @@ class ServicePhotoInteractor(private val photoServiceRepository: PhotoServiceRep
     IServicePhotoInteractor, PhotosCallback {
 
     private lateinit var servicePresenterCallback: ServicePresenterCallback
-    private var photos = arrayListOf<Photo>()
+    private var photoList: MutableList<Photo> = ArrayList()
 
-    override fun getPhotosLink() = photos
+    override fun getPhotoLinkList() = photoList
 
     override fun getServicePhotos(
         service: Service,
@@ -23,8 +23,9 @@ class ServicePhotoInteractor(private val photoServiceRepository: PhotoServiceRep
         photoServiceRepository.getByServiceId(service.id, service.userId, this)
     }
 
-    override fun returnList(objects: List<Photo>) {
-        photos.addAll(objects)
-        servicePresenterCallback.showPhotos(objects)
+    override fun returnList(photos: List<Photo>) {
+        photoList.clear()
+        photoList.addAll(photos)
+        servicePresenterCallback.showPhotos(photos)
     }
 }

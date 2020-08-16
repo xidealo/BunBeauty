@@ -55,7 +55,7 @@ class SubscriptionsUserInteractor(
         }
     }
 
-    override fun returnElement(element: User?) {
+    override fun returnGottenObject(element: User?) {
         if (element == null) return
 
         currentSubscriptionsCount++

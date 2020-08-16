@@ -5,8 +5,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 
 interface IServiceInteractor {
-    fun getService(): Service
+
+    var gottenService: Service
+
+    fun getService(servicePresenterCallback: ServicePresenterCallback)
     fun updateService(service: Service,  servicePresenterCallback: ServicePresenterCallback)
-    fun createServiceScreen(servicePresenterCallback: ServicePresenterCallback)
     fun iconClick(user: User, servicePresenterCallback: ServicePresenterCallback)
 }

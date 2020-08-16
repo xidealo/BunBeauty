@@ -2,13 +2,13 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchServi
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.iSearchService.IMainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.MainScreenPresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.ServicesCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.GetServicesCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceRepository
 
 class MainScreenServiceInteractor(private val serviceRepository: IServiceRepository) :
-    ServicesCallback, IMainScreenServiceInteractor {
+    GetServicesCallback, IMainScreenServiceInteractor {
 
     var cacheServiceList = arrayListOf<Service>()
     private var currentCountOfUsers = 0
@@ -22,7 +22,7 @@ class MainScreenServiceInteractor(private val serviceRepository: IServiceReposit
         serviceRepository.getServicesByUserId(user.id, this, true)
     }
 
-    override fun returnServices(serviceList: List<Service>) {
+    override fun returnList(serviceList: List<Service>) {
         currentCountOfUsers++
         cacheServiceList.addAll(serviceList)
 

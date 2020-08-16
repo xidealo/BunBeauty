@@ -35,7 +35,7 @@ import java.time.Duration
     companion object {
         const val SERVICES = "services"
         const val SERVICE = "service"
-        const val SERVICE_ID = "service id"
+
         const val NAME = "name"
         const val SERVICE_PHOTO = "service photo"
         const val DURATION = "duration"

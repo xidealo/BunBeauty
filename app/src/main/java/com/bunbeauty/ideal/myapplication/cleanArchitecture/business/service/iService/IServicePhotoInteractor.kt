@@ -6,5 +6,5 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface IServicePhotoInteractor {
     fun getServicePhotos(service: Service, servicePresenterCallback: ServicePresenterCallback)
-    fun getPhotosLink(): ArrayList<Photo>
+    fun getPhotoLinkList(): List<Photo>
 }

@@ -1,5 +1,5 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.baseSubscribers
 
-interface BaseReturnElement<T> {
-    fun returnElement(element: T?)
+interface BaseGetCallback<T> {
+    fun returnGottenObject(obj: T?)
 }

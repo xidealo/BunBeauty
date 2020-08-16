@@ -5,6 +5,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IOrderRepository
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IScheduleRepository
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IServiceRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -18,8 +19,10 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideServiceRepository(serviceDao: ServiceDao, serviceFirebase: ServiceFirebase) =
-        ServiceRepository(serviceDao, serviceFirebase)
+    fun provideServiceRepository(
+        serviceDao: ServiceDao,
+        serviceFirebase: ServiceFirebase
+    ): IServiceRepository = ServiceRepository(serviceDao, serviceFirebase)
 
     @Provides
     @Singleton

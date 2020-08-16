@@ -1,9 +1,6 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.DeleteServiceCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.InsertServiceCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.ServicesCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.UpdateServiceCallback
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.service.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api.ServiceFirebase
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.dao.ServiceDao
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -45,11 +42,11 @@ class ServiceRepository(
     }
 
     //Обратить внимание
-    override fun get(servicesCallback: ServicesCallback) {
+    override fun get(getServicesCallback: GetServicesCallback) {
         launch {
             val services = serviceDao.get()
             withContext(Dispatchers.Main) {
-                servicesCallback.returnServices(services)
+                getServicesCallback.returnList(services)
             }
         }
     }
@@ -58,11 +55,11 @@ class ServiceRepository(
         serviceId: String,
         userId: String,
         isFirstEnter: Boolean,
-        servicesCallback : ServicesCallback
+        getServiceCallback : GetServiceCallback
     ) {
 
         if (isFirstEnter) {
-            serviceFirebase.getById(userId, serviceId, servicesCallback)
+            serviceFirebase.getById(userId, serviceId, getServiceCallback)
         } else {
             launch {
                 val services = serviceDao.getById(serviceId)
@@ -75,16 +72,16 @@ class ServiceRepository(
 
     override fun getServicesByUserId(
         userId: String,
-        servicesCallback: ServicesCallback,
+        getServicesCallback: GetServicesCallback,
         isFirstEnter: Boolean
     ) {
         if (isFirstEnter) {
-            serviceFirebase.getServicesByUserId(userId, servicesCallback)
+            serviceFirebase.getByUserId(userId, getServicesCallback)
         } else {
             launch {
                 val services = serviceDao.getAllByUserId(userId)
                 withContext(Dispatchers.Main) {
-                    servicesCallback.returnServices(services)
+                    getServicesCallback.returnList(services)
                 }
             }
         }
