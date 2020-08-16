@@ -28,6 +28,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SchedulePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ScheduleView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_creation_service.*
 import kotlinx.android.synthetic.main.activity_schedule.*
 import javax.inject.Inject
 
@@ -359,7 +361,9 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
     }
 
     override fun showMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Snackbar.make(scheduleLayout, message, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
     override fun goBack() {

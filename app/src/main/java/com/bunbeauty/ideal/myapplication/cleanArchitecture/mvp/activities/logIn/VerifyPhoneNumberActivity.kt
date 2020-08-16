@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -18,6 +19,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.VerifyPhonePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.VerifyPhoneView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_creation_service.*
 import kotlinx.android.synthetic.main.activity_verify_phone_number.*
 import javax.inject.Inject
 
@@ -79,7 +82,9 @@ class VerifyPhoneNumberActivity : MvpAppCompatActivity(), VerifyPhoneView {
     }
 
     override fun showMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Snackbar.make(verifyPhoneNumberLayout, message, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
     private fun goBackToAuthorization() {

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentPagerAdapter
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -32,10 +33,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.fragments.profile.ServicesFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ProfileView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.activity_service.*
 import javax.inject.Inject
 
 class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomPanel,
@@ -286,7 +289,9 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
     }
 
     override fun showMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Snackbar.make(profileMainLayout, message, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
     override fun actionClick() {

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -30,6 +31,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_creation_service.*
 import kotlinx.android.synthetic.main.activity_service.*
 import javax.inject.Inject
 
@@ -172,7 +175,9 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
     }
 
     override fun showMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Snackbar.make(serviceMainLayout, message, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -184,7 +189,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
 
         when (requestCode) {
             REQUEST_EDIT_SERVICE -> {
-                showMessage("Сервис изменен")
+                showMessage("Услуга изменена")
                 servicePresenter.updateService(data.getSerializableExtra(Service.SERVICE) as Service)
             }
         }

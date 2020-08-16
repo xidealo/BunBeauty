@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -28,8 +29,10 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.EditProfilePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.EditProfileView
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
+import kotlinx.android.synthetic.main.activity_creation_service.*
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 import javax.inject.Inject
 
@@ -236,6 +239,8 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
     }
 
     override fun showMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Snackbar.make(editServiceLayout, message, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 }

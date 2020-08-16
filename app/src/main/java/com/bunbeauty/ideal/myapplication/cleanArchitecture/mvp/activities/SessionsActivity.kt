@@ -29,6 +29,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SessionsPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.SessionsView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_creation_service.*
 import kotlinx.android.synthetic.main.activity_sessions.*
 import javax.inject.Inject
 
@@ -158,7 +160,9 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
     }
 
     override fun showMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Snackbar.make(sessionsMainLayout, message, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
     override fun goBack() {

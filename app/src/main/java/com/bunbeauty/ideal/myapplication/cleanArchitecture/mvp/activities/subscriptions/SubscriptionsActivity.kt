@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
@@ -26,13 +27,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SubscriptionsPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.SubscriptionsView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_creation_service.*
+import kotlinx.android.synthetic.main.activity_subscriptions.*
 import javax.inject.Inject
 
 class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, SubscriptionsView {
-
-    private lateinit var resultsSubscribersRecycleView: RecyclerView
-    private lateinit var emptySubscriptionsSubscriptionsText: TextView
-    private lateinit var progressBarSubscribers: ProgressBar
 
     override var panelContext: Activity = this
 
@@ -81,12 +81,7 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
     }
 
     fun init() {
-        resultsSubscribersRecycleView = findViewById(R.id.resultsSubscribersRecycleView)
-        emptySubscriptionsSubscriptionsText = findViewById(R.id.emptySubscriptionsSubscriptionsText)
-        progressBarSubscribers = findViewById(R.id.progressBarSubscribers)
-
         resultsSubscribersRecycleView.layoutManager = LinearLayoutManager(this)
-
         resultsSubscribersRecycleView.adapter = subscriptionAdapter
     }
 
@@ -115,7 +110,9 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
     }
 
     override fun showMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Snackbar.make(subscriptionsMainLayout, message, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
 }

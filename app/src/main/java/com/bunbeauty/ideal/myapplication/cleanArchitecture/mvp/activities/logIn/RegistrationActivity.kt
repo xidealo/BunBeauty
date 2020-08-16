@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -21,6 +22,8 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.intarfaces.IAdapt
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.logIn.RegistrationPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.logIn.RegistrationView
 import com.bunbeauty.ideal.myapplication.helpApi.WorkWithViewApi
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_creation_service.*
 import kotlinx.android.synthetic.main.activity_registration.*
 import javax.inject.Inject
 
@@ -96,11 +99,15 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterS
     }
 
     override fun showNoSelectedCity() {
-        Toast.makeText(this, "Выберите город", Toast.LENGTH_LONG).show()
+        Snackbar.make(registrationLinearLayout, "Выберите город", Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.red))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
     override fun showSuccessfulRegistration() {
-        Toast.makeText(this, "Пользователь зарегестирован", Toast.LENGTH_LONG).show()
+        Snackbar.make(registrationLinearLayout, "Пользователь зарегестирован", Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
     override fun goToProfile(user: User) {

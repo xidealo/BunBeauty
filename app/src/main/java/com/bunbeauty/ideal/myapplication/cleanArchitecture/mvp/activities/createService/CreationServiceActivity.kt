@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -14,9 +16,9 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.ChangeablePhotoAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryFragment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IChangeablePhotoElement
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.createService.CreationServiceTagInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
@@ -32,9 +34,11 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interf
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.CreationServiceView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_creation_service.*
 import javax.inject.Inject
+
 
 class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBottomPanel,
     ITopPanel, IChangeablePhotoElement {
@@ -180,7 +184,9 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
     }
 
     override fun showMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Snackbar.make(mainCreationServiceLinearLayout, message, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
     override fun showMoreTenImages() {
@@ -203,7 +209,9 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
     }
 
     override fun showCategoryInputError(error: String) {
-        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+        Snackbar.make(mainCreationServiceLinearLayout, error, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.red))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
     override fun showAddressInputError(error: String) {

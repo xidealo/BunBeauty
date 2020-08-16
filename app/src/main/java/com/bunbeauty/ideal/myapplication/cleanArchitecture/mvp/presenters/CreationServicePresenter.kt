@@ -80,7 +80,7 @@ class CreationServicePresenter(
     override fun showServiceCreated(service: Service) {
         viewState.hideMainBlock()
         viewState.showPremiumBlock(service)
-        viewState.showMessage("Сервис создан!")
+        viewState.showMessage("Услуга успешно создана!")
     }
 
     override fun addTags(service: Service) {

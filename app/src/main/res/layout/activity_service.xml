@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/allPages"
+    android:id="@+id/serviceMainLayout"
     tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity">
 
     <include layout="@layout/part_top_panel" />

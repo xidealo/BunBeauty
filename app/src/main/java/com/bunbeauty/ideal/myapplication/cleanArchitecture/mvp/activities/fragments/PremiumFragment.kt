@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -19,6 +20,9 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.fragments.PremiumElementPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.fragments.PremiumElementFragmentView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_creation_service.*
+import kotlinx.android.synthetic.main.fragment_premium.*
 import javax.inject.Inject
 
 //TODO переписать без логики
@@ -102,7 +106,9 @@ class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
     }
 
     override fun showPremiumActivated() {
-        Toast.makeText(context, "Премиум активирован", Toast.LENGTH_LONG).show()
+        Snackbar.make(premiumAddServiceHeaderLayout, "Премиум активирован", Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(context!!, R.color.mainBlue))
+            .setActionTextColor(ContextCompat.getColor(context!!, R.color.white)).show()
     }
 
     override fun setWithPremium(premiumDate: Long) {
@@ -110,9 +116,9 @@ class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
         premiumText.visibility = View.VISIBLE
         premiumText.isEnabled = false
         setPremiumPremiumElementBtn.text = "Продлить премиум"
-          premiumDatePremiumElementText.text = "Премиум до ${WorkWithTimeApi.getDateInFormatYMD(
-              premiumDate
-          )}"
+        premiumDatePremiumElementText.text = "Премиум до ${WorkWithTimeApi.getDateInFormatYMD(
+            premiumDate
+        )}"
     }
 
     override fun hideBottom() {
