@@ -4,7 +4,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay
 
 interface SessionsPresenterCallback {
-    fun showDays(days: List<WorkingDay>)
+    fun showDays(days: Set<WorkingDay>)
     fun clearTime(time: String)
     fun selectTime(selectedTime: String)
     fun disableMakeAppointmentButton()

@@ -32,12 +32,7 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
     override fun returnList(objects: List<Dialog>) {
         val myDialog = createMyDialog(user, ownerProfile)
         val companionDialog = createCompanionDialog(user, ownerProfile)
-        dialogRepository.insert(
-            listOf(
-                companionDialog,
-                myDialog
-            ), this
-        )
+        dialogRepository.insert(listOf(companionDialog, myDialog), this)
         profilePresenterCallback.goToDialog(myDialog, companionDialog)
     }
 

@@ -7,18 +7,17 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service.Companion.SERVICE
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Session
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IScheduleRepository
-import org.joda.time.DateTime
 
 class SessionsInteractor(
     private val scheduleRepository: IScheduleRepository,
     private val intent: Intent
 ) : GetScheduleCallback, UpdateScheduleCallback {
 
-    private lateinit var schedule: ScheduleWithDays
+    private lateinit var schedule: ScheduleWithWorkingTime
     private lateinit var sessionsPresenterCallback: SessionsPresenterCallback
 
     var selectedSession: Session? = null
@@ -30,22 +29,13 @@ class SessionsInteractor(
         scheduleRepository.getScheduleByUserId(getService().userId, this)
     }
 
-    override fun returnGottenSchedule(schedule: ScheduleWithDays) {
-        this.schedule = schedule
-        sessionsPresenterCallback.showDays(getAvailableDays(getService().duration, schedule))
+    override fun returnGottenObject(schedule: ScheduleWithWorkingTime?) {
+        this.schedule = schedule!!
+        sessionsPresenterCallback.showDays(schedule.getAvailableDays(getService().duration))
     }
 
-    fun getAvailableDays(serviceDuration: Float, schedule: ScheduleWithDays): List<WorkingDay> {
-        return schedule.workingDays
-            .filter { it.isAvailable(serviceDuration) }
-            .map { it.workingDay }
-    }
-
-    fun getSessions(day: WorkingDay): List<Session> {
-        val workingDay = schedule.workingDays.find { it.workingDay == day }!!
-        sessionList.addAll(workingDay.getSessions(getService().duration))
-
-        return sessionList
+    fun getSessions(workingDay: WorkingDay): List<Session> {
+        return schedule.getSessions(getService().duration, workingDay.dayOfMonth)
     }
 
     fun updateTime(time: String, sessionsPresenterCallback: SessionsPresenterCallback) {
@@ -74,18 +64,16 @@ class SessionsInteractor(
         return intent.getSerializableExtra(SERVICE) as Service
     }
 
-    fun updateSchedule(sessionsPresenterCallback: SessionsPresenterCallback, order: Order) {
-        val day = DateTime(order.session.startTime).dayOfMonth
-        val timeList = schedule.getWorkingDay(day)!!.workingTimes.filter {
+    fun updateSchedule(order: Order, sessionsPresenterCallback: SessionsPresenterCallback) {
+        val timeList = schedule.workingTimeList.filter {
             it.time in order.session.startTime until order.session.finishTime
         }
         for (time in timeList) {
             time.orderId = order.id
+            time.clientId = order.clientId
         }
         scheduleRepository.updateSchedule(schedule, this)
     }
 
-    override fun returnUpdatedCallback(obj: ScheduleWithDays) {
-
-    }
+    override fun returnUpdatedCallback(obj: ScheduleWithWorkingTime) {}
 }

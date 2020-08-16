@@ -4,22 +4,22 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.schedule.Sch
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.schedule.GetScheduleCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.schedule.UpdateScheduleCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime.Companion.TIME_DELIMITER
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.interfaceRepositories.IScheduleRepository
 import org.joda.time.DateTime
 import org.joda.time.Days
-import org.joda.time.format.DateTimeFormat
 
 class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
     GetScheduleCallback, UpdateScheduleCallback {
 
     private lateinit var schedulePresenterCallback: SchedulePresenterCallback
 
+    private val now = DateTime.now()
     var selectedDayIndexes = ArrayList<Int>()
     var selectedDays = ArrayList<Int>()
-    private var schedule = ScheduleWithDays()
+
+    private lateinit var schedule: ScheduleWithWorkingTime
 
     fun getSchedule(schedulePresenterCallback: SchedulePresenterCallback) {
         this.schedulePresenterCallback = schedulePresenterCallback
@@ -27,24 +27,25 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         scheduleRepository.getScheduleByUserId(User.getMyId(), this)
     }
 
-    override fun returnGottenSchedule(schedule: ScheduleWithDays) {
-        this.schedule = schedule
-        schedulePresenterCallback.setSchedule(schedule)
+    override fun returnGottenObject(schedule: ScheduleWithWorkingTime?) {
+        this.schedule = schedule!!
+
+        schedulePresenterCallback.showSchedule(getDayIndexes(schedule.workingTimeList))
+    }
+
+    fun getDayIndexes(workingTimeList: List<WorkingTime>): Set<Int> {
+        return workingTimeList.map {
+            getDaysBetween(getLastMondayDate(), DateTime(it.time))
+        }.toSet()
     }
 
     fun getStringDayOfMonth(dayIndex: Int): String {
-        val date = getLastMondayDate().plusDays(dayIndex).dayOfMonth
-
-        return date.toString()
+        return getLastMondayDate().plusDays(dayIndex).dayOfMonth.toString()
     }
 
-    private fun getLastMondayDate(): DateTime {
+    fun getLastMondayDate(): DateTime {
         val dayOfWeek = DateTime.now().dayOfWeek - 1
-        return DateTime.now().minusDays(dayOfWeek)
-    }
-
-    fun getDayIndex(date: Long): Int {
-        return getDaysBetween(getLastMondayDate(), DateTime(date))
+        return now.minusDays(dayOfWeek)
     }
 
     fun getDaysBetween(startDate: DateTime, endDate: DateTime): Int {
@@ -85,7 +86,7 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
                 return false
             }
 
-            if (!schedule.getWorkingDay(day)!!.containsWorkingTime(time)) {
+            if (!schedule.containsWorkingTime(day, time)) {
                 return false
             }
         }
@@ -95,30 +96,24 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
 
     fun addToSchedule(
         days: List<Int>,
-        time: String,
+        timeString: String,
         schedulePresenterCallback: SchedulePresenterCallback
     ) {
         for ((i, day) in days.withIndex()) {
-            if (!schedule.containsWorkingDay(day)) {
-                schedule.addWorkingDay(day)
-            }
-            schedule.getWorkingDay(day)!!.addWorkingTime(time)
-
-            if (schedule.getWorkingDay(day)!!.workingTimes.size == 1) {
-                schedulePresenterCallback.fillDay(selectedDayIndexes[i])
-            }
+            schedule.addWorkingTime(day, timeString)
+            schedulePresenterCallback.fillDay(selectedDayIndexes[i])
         }
     }
 
     fun removeFromSchedule(
         days: List<Int>,
-        time: String,
+        timeString: String,
         schedulePresenterCallback: SchedulePresenterCallback
     ) {
         for ((i, day) in days.withIndex()) {
-            schedule.getWorkingDay(day)!!.removeTime(time)
+            schedule.removeTime(day, timeString)
 
-            if (schedule.getWorkingDay(day)!!.isEmpty()) {
+            if (schedule.getWorkingTimes(day).isEmpty()) {
                 schedulePresenterCallback.clearDay(selectedDayIndexes[i])
             }
         }
@@ -127,12 +122,11 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
     fun saveSchedule(schedulePresenterCallback: SchedulePresenterCallback) {
         this.schedulePresenterCallback = schedulePresenterCallback
 
-        schedule.schedule.userId = User.getMyId()
-        schedule.workingDays.removeAll(schedule.workingDays.filter { it.workingTimes.isEmpty() })
+        schedule.schedule.masterId = User.getMyId()
         scheduleRepository.updateSchedule(schedule, this)
     }
 
-    override fun returnUpdatedCallback(schedule: ScheduleWithDays) {
+    override fun returnUpdatedCallback(schedule: ScheduleWithWorkingTime) {
         schedulePresenterCallback.showScheduleSaved()
     }
 }

@@ -34,6 +34,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_creation_service.*
 import kotlinx.android.synthetic.main.activity_service.*
+import kotlinx.android.synthetic.main.edit_service.*
 import javax.inject.Inject
 
 class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomPanel,

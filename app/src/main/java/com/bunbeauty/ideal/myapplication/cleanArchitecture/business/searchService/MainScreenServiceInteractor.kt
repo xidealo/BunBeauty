@@ -19,7 +19,7 @@ class MainScreenServiceInteractor(private val serviceRepository: IServiceReposit
         mainScreenPresenterCallback: MainScreenPresenterCallback
     ) {
         this.mainScreenPresenterCallback = mainScreenPresenterCallback
-        serviceRepository.getServicesByUserId(user.id, this, true)
+        serviceRepository.getByUserId(user.id, this, true)
     }
 
     override fun returnList(serviceList: List<Service>) {

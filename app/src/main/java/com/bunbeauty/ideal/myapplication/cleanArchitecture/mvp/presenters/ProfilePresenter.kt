@@ -136,6 +136,11 @@ class ProfilePresenter(
         profileOrderInteractor.getOrderListByUserId(userId, this)
     }
 
+    override fun showOrderList(orderList: List<Order>) {
+        viewState.showOrderList(orderList)
+        viewState.hideProgress()
+    }
+
     override fun showSubscribed() {
         viewState.showSubscribeButton()
         viewState.showSubscribed()
@@ -148,11 +153,6 @@ class ProfilePresenter(
 
     override fun showCountOfSubscriber(count: Long) {
         viewState.showCountOfSubscriber(count)
-    }
-
-    override fun showOrderList(orderList: List<Order>) {
-        viewState.showOrderList(orderList)
-        viewState.hideProgress()
     }
 
     fun updateBottomPanel() {

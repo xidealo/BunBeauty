@@ -19,7 +19,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
         Tag::class,
         Order::class,
         Schedule::class,
-        WorkingDay::class,
         WorkingTime::class,
         Photo::class,
         Code::class,
@@ -28,7 +27,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
         Subscriber::class,
         Subscription::class,
         ServiceComment::class,
-        UserComment::class], version = 38
+        UserComment::class], version = 39
 )
 abstract class LocalDatabase : RoomDatabase() {
 

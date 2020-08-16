@@ -4,7 +4,6 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.schedule.SchedulePresenterCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ScheduleView
 
 @InjectViewState
@@ -15,12 +14,8 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
         scheduleInteractor.getSchedule(this)
     }
 
-    override fun setSchedule(schedule: ScheduleWithDays) {
-        viewState.setSchedule(schedule)
-    }
-
-    fun getDayIndex(date: Long): Int {
-        return scheduleInteractor.getDayIndex(date)
+    override fun showSchedule(dayIndexes: Set<Int>) {
+        viewState.showSchedule(dayIndexes)
     }
 
     fun getDateString(dayIndex: Int): String {

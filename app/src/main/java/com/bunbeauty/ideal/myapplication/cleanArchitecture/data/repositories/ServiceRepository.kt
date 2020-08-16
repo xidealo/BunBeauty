@@ -70,7 +70,7 @@ class ServiceRepository(
         }
     }
 
-    override fun getServicesByUserId(
+    override fun getByUserId(
         userId: String,
         getServicesCallback: GetServicesCallback,
         isFirstEnter: Boolean

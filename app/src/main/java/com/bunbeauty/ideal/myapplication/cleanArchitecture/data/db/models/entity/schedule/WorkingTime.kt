@@ -9,8 +9,21 @@ data class WorkingTime(
     @PrimaryKey var id: String = "",
     var time: Long,
     var orderId: String = "",
-    var workingDayId: String = ""
+    var clientId: String = "",
+    var scheduleId: String = ""
 ) {
+
+    fun getDayOfMonth(): Int {
+        return DateTime(time).dayOfMonth
+    }
+
+    fun getHour(): Int {
+        return DateTime(time).hourOfDay
+    }
+
+    fun getMinutes(): Int {
+        return DateTime(time).minuteOfHour
+    }
 
     fun getIndex(): Int {
         return DateTime(time).hourOfDay * 2 + DateTime(time).minuteOfHour / 30
@@ -50,6 +63,7 @@ data class WorkingTime(
         const val WORKING_TIME = "working time"
         const val TIME = "time"
         const val ORDER_ID = "order id"
+        const val CLIENT_ID = "client id"
         const val TIME_DELIMITER = ":"
 
         fun getTimeByIndex(index: Int): String {

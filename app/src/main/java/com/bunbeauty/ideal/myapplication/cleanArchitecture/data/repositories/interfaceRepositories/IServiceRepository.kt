@@ -9,7 +9,7 @@ interface IServiceRepository {
     fun update(service: Service, updateServiceCallback: UpdateServiceCallback)
     fun get(getServicesCallback: GetServicesCallback)
 
-    fun getServicesByUserId(
+    fun getByUserId(
         userId: String,
         getServicesCallback: GetServicesCallback,
         isFirstEnter: Boolean

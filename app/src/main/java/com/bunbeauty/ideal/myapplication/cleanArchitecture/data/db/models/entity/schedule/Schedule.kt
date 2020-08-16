@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class Schedule(
     @PrimaryKey var id: String = "",
-    var userId: String = ""
+    var masterId: String = ""
 ) {
 
     companion object {

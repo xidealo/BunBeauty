@@ -12,44 +12,6 @@ data class WorkingDayWithTimes(
     @Relation(parentColumn = "id", entityColumn = "workingDayId")
     val workingTimes: MutableList<WorkingTime> = ArrayList()
 ) {
-    fun getDayOfMonth(): Int {
-        return workingDay.getDayOfMonth()
-    }
-
-    fun containsWorkingTime(workingTime: WorkingTime): Boolean {
-        val hours = DateTime(workingTime.time).hourOfDay
-        val minutes = DateTime(workingTime.time).minuteOfHour
-
-        return workingTimes.any {
-            DateTime(it.time).hourOfDay == hours &&
-            DateTime(it.time).minuteOfHour == minutes
-        }
-    }
-
-    fun addWorkingTime(timeString: String) {
-        val workingTime = WorkingTime(time = getTime(timeString))
-        if (containsWorkingTime(workingTime)) {
-            return
-        }
-        workingTimes.add(workingTime)
-    }
-
-    private fun getTime(timeString: String): Long {
-        val timeParts = timeString.split(TIME_DELIMITER)
-        var time = DateTime(workingDay.date)
-        time = time.plusHours(timeParts.first().toInt())
-        time = time.plusMinutes(timeParts[1].toInt())
-
-        return time.millis
-    }
-
-    fun removeTime(timeString: String) {
-        workingTimes.remove(workingTimes.find { it.time == getTime(timeString) })
-    }
-
-    fun isEmpty(): Boolean {
-        return workingTimes.isEmpty()
-    }
 
     fun isAvailable(serviceDuration: Float): Boolean {
         if (isEmpty()) {
@@ -106,5 +68,9 @@ data class WorkingDayWithTimes(
         }
 
         return sessionList
+    }
+
+    fun isEmpty(): Boolean {
+        return workingTimes.isEmpty()
     }
 }

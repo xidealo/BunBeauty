@@ -2,9 +2,9 @@ package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.in
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.schedule.GetScheduleCallback
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.schedule.UpdateScheduleCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
 
 interface IScheduleRepository {
     fun getScheduleByUserId(userId: String, getScheduleCallback: GetScheduleCallback)
-    fun updateSchedule(scheduleWithDays: ScheduleWithDays, updateScheduleCallback: UpdateScheduleCallback)
+    fun updateSchedule(scheduleWithWorkingTime: ScheduleWithWorkingTime, updateScheduleCallback: UpdateScheduleCallback)
 }

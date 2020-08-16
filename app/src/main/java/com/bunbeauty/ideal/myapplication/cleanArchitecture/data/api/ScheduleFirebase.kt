@@ -1,92 +1,80 @@
 package com.bunbeauty.ideal.myapplication.cleanArchitecture.data.api
 
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.schedule.GetScheduleCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User.Companion.USERS
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.*
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Schedule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Schedule.Companion.SCHEDULE
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays.Companion.WORKING_DAYS
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay.Companion.DATE
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime.Companion.CLIENT_ID
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime.Companion.ORDER_ID
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime.Companion.TIME
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime.Companion.WORKING_TIME
 import com.google.firebase.database.*
 
 class ScheduleFirebase {
 
-    fun getByUserId(userId: String, getScheduleCallback: GetScheduleCallback): ScheduleWithDays {
-        val scheduleReference = FirebaseDatabase.getInstance()
+    fun getByMasterId(masterId: String, getScheduleCallback: GetScheduleCallback) {
+        val workingTimeReference = FirebaseDatabase.getInstance()
             .getReference(SCHEDULE)
-            .child(userId)
+            .child(masterId)
 
-        scheduleReference.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(workingDaysSnapshot: DataSnapshot) {
-                val workingDays = getWorkingDaysFromSnapshot(workingDaysSnapshot).toMutableList()
+        workingTimeReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(workingTimeSnapshot: DataSnapshot) {
+                val workingTimeList = getWorkingTimeFromSnapshot(workingTimeSnapshot)
 
-                val schedule = ScheduleWithDays(Schedule(userId = userId), workingDays)
-                getScheduleCallback.returnGottenSchedule(schedule)
+                getScheduleCallback.returnGottenObject(
+                    ScheduleWithWorkingTime(
+                        schedule = Schedule(masterId = masterId),
+                        workingTimeList = ArrayList(workingTimeList)
+                    )
+                )
             }
 
             override fun onCancelled(p0: DatabaseError) {}
         })
-
-        return ScheduleWithDays()
     }
 
-    private fun getWorkingDaysFromSnapshot(workingDaysSnapshot: DataSnapshot): List<WorkingDayWithTimes> {
-        return workingDaysSnapshot.children.map { workingDaySnapshot ->
-            val date = workingDaySnapshot.child(DATE).value as Long
-            val workingTime = getWorkingTimeFromSnapshot(workingDaySnapshot).toMutableList()
+    private fun getWorkingTimeFromSnapshot(workingTimeSnapshot: DataSnapshot): List<WorkingTime> {
+        return workingTimeSnapshot.children.map { snapshot ->
+            val time = snapshot.child(TIME).value as Long
+            val orderId = snapshot.child(ORDER_ID).value as? String ?: ""
+            val clientId = snapshot.child(CLIENT_ID).value as? String ?: ""
 
-            WorkingDayWithTimes(WorkingDay(workingDaySnapshot.key!!, date), workingTime)
+            WorkingTime(
+                id = snapshot.key!!,
+                time = time,
+                orderId = orderId,
+                clientId = clientId
+            )
         }
     }
 
-    private fun getWorkingTimeFromSnapshot(workingDaySnapshot: DataSnapshot): List<WorkingTime> {
-        return workingDaySnapshot.child(WORKING_TIME).children.map { workingTimeSnapshot ->
-            val time = workingTimeSnapshot.child(TIME).value as Long
-            val orderId = workingTimeSnapshot.child(ORDER_ID).value as? String ?: ""
-            WorkingTime(workingTimeSnapshot.key!!, time, orderId, workingDaySnapshot.key!!)
-        }
-    }
-
-    fun update(scheduleWithDays: ScheduleWithDays) {
+    fun update(scheduleWithWorkingTime: ScheduleWithWorkingTime) {
         val scheduleReference = FirebaseDatabase.getInstance()
             .getReference(SCHEDULE)
-            .child(scheduleWithDays.schedule.userId)
+            .child(scheduleWithWorkingTime.schedule.masterId)
 
         scheduleReference.removeValue { _, _ ->
-            insert(scheduleWithDays)
+            insert(scheduleWithWorkingTime)
         }
     }
 
-    private fun insert(scheduleWithDays: ScheduleWithDays) {
-        val daysReference = FirebaseDatabase.getInstance()
+    private fun insert(scheduleWithWorkingTime: ScheduleWithWorkingTime) {
+        val workingTimeReference = FirebaseDatabase.getInstance()
             .getReference(SCHEDULE)
-            .child(scheduleWithDays.schedule.userId)
+            .child(scheduleWithWorkingTime.schedule.masterId)
 
-        for (workingDayWithTimes in scheduleWithDays.workingDays) {
-            val dayId = getIdForNew(daysReference)
-            val newDayReference = daysReference.child(dayId)
-            newDayReference.setValue(buildWorkingDayMap(workingDayWithTimes.workingDay))
-
-            for (workingTime in workingDayWithTimes.workingTimes) {
-                val timeId = getIdForNew(newDayReference.child(WORKING_TIME))
-                val newTimeReference = newDayReference.child(WORKING_TIME).child(timeId)
-                newTimeReference.setValue(buildWorkingTimeMap(workingTime))
-            }
+        for (workingTime in scheduleWithWorkingTime.workingTimeList) {
+            val timeId = getIdForNew(workingTimeReference)
+            val newTimeReference = workingTimeReference.child(timeId)
+            newTimeReference.setValue(buildWorkingTimeMap(workingTime))
         }
-    }
-
-    private fun buildWorkingDayMap(workingDay: WorkingDay): HashMap<String, Any> {
-        val workingDayMap = HashMap<String, Any>()
-        workingDayMap[DATE] = workingDay.date
-        return workingDayMap
     }
 
     private fun buildWorkingTimeMap(workingTime: WorkingTime): HashMap<String, Any> {
         val workingTimeMap = HashMap<String, Any>()
         workingTimeMap[TIME] = workingTime.time
         workingTimeMap[ORDER_ID] = workingTime.orderId
+        workingTimeMap[CLIENT_ID] = workingTime.clientId
         return workingTimeMap
     }
 

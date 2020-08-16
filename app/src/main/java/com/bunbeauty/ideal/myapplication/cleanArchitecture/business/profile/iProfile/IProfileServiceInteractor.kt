@@ -4,8 +4,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.profile.Prof
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
 
 interface IProfileServiceInteractor {
-    fun getServicesByUserId(
-        userId: String,
-        profilePresenterCallback: ProfilePresenterCallback
-    )
+
+    fun getServicesByUserId(userId: String, profilePresenterCallback: ProfilePresenterCallback)
 }

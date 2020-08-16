@@ -45,13 +45,13 @@ class ProfileUserInteractor(
         }
     }
 
-    override fun returnGottenObject(element: User?) {
-        if (element == null) return
+    override fun returnGottenObject(user: User?) {
+        if (user == null) return
 
-        cacheOwner = element
-        profilePresenterCallback.returnProfileOwner(element)
-        profilePresenterCallback.showCountOfSubscriber(element.subscribersCount)
-        whoseProfile(element, profilePresenterCallback)
+        cacheOwner = user
+        profilePresenterCallback.returnProfileOwner(user)
+        profilePresenterCallback.showCountOfSubscriber(user.subscribersCount)
+        whoseProfile(user, profilePresenterCallback)
     }
 
     private fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {

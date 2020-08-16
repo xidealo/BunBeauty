@@ -136,13 +136,12 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
 
         ordersFragment = OrdersFragment(profileOrderAdapter)
         servicesFragment = ServicesFragment(profileServiceAdapter)
-        profileViewPager.adapter =
-            ProfilePagerAdapter(
-                supportFragmentManager,
-                FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
-                ordersFragment,
-                servicesFragment
-            )
+        profileViewPager.adapter = ProfilePagerAdapter(
+            supportFragmentManager,
+            FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
+            ordersFragment,
+            servicesFragment
+        )
         profileTabLayout.addOnTabSelectedListener(this)
         profileViewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(profileTabLayout))
     }

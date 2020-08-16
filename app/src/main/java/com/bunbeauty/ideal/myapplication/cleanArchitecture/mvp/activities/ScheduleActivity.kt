@@ -17,13 +17,11 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.ScheduleWithDays
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.InteractorModule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.SchedulePresenter
@@ -135,11 +133,10 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         return displayMetrics.widthPixels
     }
 
-    override fun setSchedule(schedule: ScheduleWithDays) {
-        for (workingDay in schedule.workingDays) {
-            val dayIndex = schedulePresenter.getDayIndex(workingDay.workingDay.date)
-            if (dayIndex > 0 && dayIndex < daysButtons.size) {
-                fillButton(daysButtons[dayIndex])
+    override fun showSchedule(dayIndexes: Set<Int>) {
+        for (buttonIndex in dayIndexes) {
+            if (buttonIndex in 0 until daysButtons.size) {
+                fillButton(daysButtons[buttonIndex])
             }
         }
     }

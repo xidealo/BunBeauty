@@ -21,7 +21,7 @@ class WorkingDayUnitTests {
             getWorkingTimeByHourAndMinute(10, 30),
             getWorkingTimeByHourAndMinute(12, 30)
         )
-        val workingDayWithTimes = WorkingDayWithTimes(WorkingDay1(date = 0L), timeList)
+        val workingDayWithTimes = WorkingDayWithTimes(WorkingDay1(dayOfMonth = 0L), timeList)
 
         assertTrue(workingDayWithTimes.isAvailable(duration))
     }
@@ -37,7 +37,7 @@ class WorkingDayUnitTests {
             getWorkingTimeByHourAndMinute(10, 30),
             getWorkingTimeByHourAndMinute(11, 0)
         )
-        val workingDayWithTimes = WorkingDayWithTimes(WorkingDay1(date = 0L), timeList)
+        val workingDayWithTimes = WorkingDayWithTimes(WorkingDay1(dayOfMonth = 0L), timeList)
 
         assertFalse(workingDayWithTimes.isAvailable(duration))
     }
@@ -54,7 +54,7 @@ class WorkingDayUnitTests {
             getWorkingTimeByHourAndMinute(10, 30),
             getWorkingTimeByHourAndMinute(11, 0)
         )
-        val workingDayWithTimes = WorkingDayWithTimes(WorkingDay1(date = 0L), timeList)
+        val workingDayWithTimes = WorkingDayWithTimes(WorkingDay1(dayOfMonth = 0L), timeList)
         val expectedSessions = arrayListOf(
             getSessionByHourAndMinute(7, 30, 8, 30),
             getSessionByHourAndMinute(8, 30, 9, 30),
@@ -81,7 +81,7 @@ class WorkingDayUnitTests {
             getWorkingDayByDayMonthAndYear(3, 9, 2020)
         )
 
-        val sortedWorkingDayList = workingDayList.sortedBy { it.date }
+        val sortedWorkingDayList = workingDayList.sortedBy { it.dayOfMonth }
 
         assertEquals(expectedSortedWorkingDayList, sortedWorkingDayList)
     }
@@ -116,7 +116,7 @@ class WorkingDayUnitTests {
 
     private fun getWorkingDayByDayMonthAndYear(day: Int, month: Int, year: Int): WorkingDay1 {
         return WorkingDay1(
-            date = DateTime()
+            dayOfMonth = DateTime()
                 .withDate(year, month, day)
                 .withTime(0, 0, 0, 0)
                 .millis

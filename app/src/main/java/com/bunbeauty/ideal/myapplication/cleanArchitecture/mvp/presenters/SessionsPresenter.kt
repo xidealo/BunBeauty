@@ -19,8 +19,8 @@ class SessionsPresenter(
         sessionsInteractor.getSchedule(this)
     }
 
-    override fun showDays(days: List<WorkingDay>) {
-        val sortedDays = days.sortedBy { it.date }
+    override fun showDays(days: Set<WorkingDay>) {
+        val sortedDays = days.sortedBy { it.dayOfMonth }
         viewState.showDays(sortedDays)
     }
 
@@ -67,7 +67,7 @@ class SessionsPresenter(
     }
 
     override fun updateSchedule(order: Order) {
-        sessionsInteractor.updateSchedule(this, order)
+        sessionsInteractor.updateSchedule(order, this)
     }
 
     override fun showMadeAppointment() {
