@@ -133,28 +133,24 @@ class MessageFirebase {
 
         messageRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(messagesSnapshot: DataSnapshot) {
-                var message = Message()
+
+                var lastMessage = Message()
                 if (messagesSnapshot.childrenCount > 0) {
                     for (messageSnapshot in messagesSnapshot.children.reversed()) {
-                        if (!messageSnapshot.hasChildren()) continue
-                        message =
-                            getMessageFromSnapshot(
-                                messageSnapshot
-                            )
-                        if (message.type == Message.TEXT_MESSAGE_STATUS) break
+                        val message = getMessageFromSnapshot(messageSnapshot)
+                        if (message.type == Message.TEXT_MESSAGE_STATUS || message.ownerId == User.getMyId()) {
+                            lastMessage = message
+                            break
+                        }
                     }
                 }
-                //показывать только текстовые сообщения
-                if (message.type == Message.TEXT_MESSAGE_STATUS) {
-                    message.dialogId = myId
-                    message.userId = companionId
-                    messageCallback.returnGottenObject(message)
-                }
+
+                lastMessage.dialogId = myId
+                lastMessage.userId = companionId
+                messageCallback.returnGottenObject(lastMessage)
             }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Some error
-            }
+            override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
 
