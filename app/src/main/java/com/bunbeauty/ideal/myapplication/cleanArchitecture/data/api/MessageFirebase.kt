@@ -144,9 +144,12 @@ class MessageFirebase {
                         if (message.type == Message.TEXT_MESSAGE_STATUS) break
                     }
                 }
-                message.dialogId = myId
-                message.userId = companionId //проверить
-                messageCallback.returnGottenObject(message)
+                //показывать только текстовые сообщения
+                if (message.type == Message.TEXT_MESSAGE_STATUS) {
+                    message.dialogId = myId
+                    message.userId = companionId
+                    messageCallback.returnGottenObject(message)
+                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
