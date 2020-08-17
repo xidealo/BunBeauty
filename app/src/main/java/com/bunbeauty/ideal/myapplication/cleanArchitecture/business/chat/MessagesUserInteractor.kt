@@ -10,6 +10,10 @@ class MessagesUserInteractor(private val intent: Intent) : IMessagesUserInteract
 
     override fun getCacheCompanionUser() = cacheCompanionUser
 
+    override fun updateUser(user: User) {
+        cacheCompanionUser = user
+    }
+
     override fun getCompanionUser(messagesPresenterCallback: MessagesPresenterCallback) {
         cacheCompanionUser = intent.getSerializableExtra(User.USER) as User
         messagesPresenterCallback.showCompanionUserInfo(

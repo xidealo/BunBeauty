@@ -16,8 +16,6 @@ class UserCommentsPresenter(
 ) :
     MvpPresenter<UserCommentsView>(), UserCommentsPresenterCallback {
 
-    fun getUserCommentsLink() = userCommentsUserCommentInteractor.getUserCommentsLink()
-
     fun createUserCommentsScreen() {
         userCommentsUserCommentInteractor.getUserComments(
             userCommentsUserInteractor.getCurrentUser(),

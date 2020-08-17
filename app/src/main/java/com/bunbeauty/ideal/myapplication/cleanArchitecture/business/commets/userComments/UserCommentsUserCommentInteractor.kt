@@ -46,7 +46,7 @@ class UserCommentsUserCommentInteractor(private val userCommentRepository: UserC
         cacheUserComments[indexCacheUserComment].user = user
         indexCacheUserComment++
 
-        if (indexCacheUserComment == cacheUserComments.size - 1)
+        if (indexCacheUserComment >= cacheUserComments.size - 1)
             userCommentsPresenterCallback.updateUserComments(cacheUserComments)
     }
 }

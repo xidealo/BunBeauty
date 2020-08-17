@@ -8,6 +8,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.UserComment
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
+
 /**
  * Can happen situation when we get old user data
  * So next update it will set listener on User!
@@ -15,12 +16,19 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.Use
 class CreationCommentUserInteractor(
     private val intent: Intent,
     private val userRepository: UserRepository
-) : ICreationCommentUserInteractor, UserCallback,  UpdateUsersCallback {
+) : ICreationCommentUserInteractor, UserCallback, UpdateUsersCallback {
 
     private lateinit var creationCommentPresenterCallback: CreationCommentPresenterCallback
     private lateinit var cacheUserComment: UserComment
+    private var user: User? = null
 
-    override fun getUser() = intent.getSerializableExtra(User.USER) as User
+    override fun getUser(): User {
+        if (user == null) {
+            user = intent.getSerializableExtra(User.USER) as User
+        }
+
+        return user ?: User()
+    }
 
     override fun updateUser(
         user: User,
@@ -40,6 +48,7 @@ class CreationCommentUserInteractor(
 
         element.rating = calculateAvgRating(element, cacheUserComment)
         element.countOfRates++
+        user = element
         userRepository.update(element, this)
     }
 

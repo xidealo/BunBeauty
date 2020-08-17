@@ -61,7 +61,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
 
                 Message.SERVICE_REVIEW_MESSAGE_STATUS -> {
                     val messageTextElement =
-                        MessageServiceReviewElement(messagesPresenter, context)
+                        MessageServiceReviewElement(messagesPresenter)
                     messageTextElement.createElement(view)
                     messageTextElement.setIsMyMessage(message)
                     messageTextElement.setVisibility(message)
@@ -70,7 +70,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
 
                 Message.USER_REVIEW_MESSAGE_STATUS -> {
                     val messageUserReviewElement =
-                        MessageUserReviewElement(messagesPresenter, context)
+                        MessageUserReviewElement(messagesPresenter)
                     messageUserReviewElement.createElement(view)
                     messageUserReviewElement.setIsMyMessage(message)
                     messageUserReviewElement.setVisibility(message)

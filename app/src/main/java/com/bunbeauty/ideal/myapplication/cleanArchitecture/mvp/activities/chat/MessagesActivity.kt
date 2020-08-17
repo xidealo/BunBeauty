@@ -13,10 +13,12 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.MessageAdapt
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.MessagesDialogInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.MessagesMessageInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.chat.MessagesUserInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.enums.ButtonTask
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CreationCommentActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.chat.MessagesPresenter
@@ -27,7 +29,6 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventList
 import javax.inject.Inject
 
 class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.OnClickListener {
-
 
     override var panelContext: Activity = this
 
@@ -97,6 +98,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         when (requestCode) {
             REQUEST_MESSAGE_USER_REVIEW -> {
                 messagePresenter.updateMessage(data.getSerializableExtra(Message.MESSAGE) as Message)
+                messagePresenter.updateUser(data.getSerializableExtra(User.USER) as User)
             }
         }
     }
@@ -142,8 +144,21 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         messagePresenter.goToProfile()
     }
 
+    override fun goToCreationComment(user: User, message: Message, dialog: Dialog) {
+        val intent = Intent(this, CreationCommentActivity::class.java).apply {
+            putExtra(User.USER, user)
+            putExtra(Message.MESSAGE, message)
+            putExtra(Dialog.DIALOG, dialog)
+        }
+
+        startActivityForResult(
+            intent,
+            REQUEST_MESSAGE_USER_REVIEW
+        )
+        overridePendingTransition(0, 0)
+    }
+
     companion object {
         const val REQUEST_MESSAGE_USER_REVIEW = 1
-
     }
 }

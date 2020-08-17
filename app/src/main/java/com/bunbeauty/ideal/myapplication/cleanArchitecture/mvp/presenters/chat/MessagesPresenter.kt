@@ -37,6 +37,10 @@ class MessagesPresenter(
         messagesMessageInteractor.updateMessages(message, this)
     }
 
+    fun updateUser(user: User) {
+        messagesUserInteractor.updateUser(user)
+    }
+
     fun sendMessage(messageText: String) {
         val messageId = messagesMessageInteractor.getId(
             messagesDialogInteractor.getMyDialog().ownerId,
@@ -94,4 +98,11 @@ class MessagesPresenter(
         viewState.showCompanionUser(fullName, photoLink)
     }
 
+    fun goToCreationComment(message: Message) {
+        viewState.goToCreationComment(
+            getCacheCurrentUser(),
+            message,
+            messagesDialogInteractor.getMyDialog()
+        )
+    }
 }

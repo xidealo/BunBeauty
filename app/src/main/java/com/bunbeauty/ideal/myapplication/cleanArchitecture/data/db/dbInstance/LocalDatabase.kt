@@ -27,7 +27,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
         Subscriber::class,
         Subscription::class,
         ServiceComment::class,
-        UserComment::class], version = 39
+        UserComment::class], version = 40
 )
 abstract class LocalDatabase : RoomDatabase() {
 

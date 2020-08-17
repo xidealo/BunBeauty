@@ -30,11 +30,9 @@ class MessageFirebase {
 
     fun update(message: Message) {
         val messageRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
-            .child(message.userId)
-            .child(Dialog.DIALOGS)
+            .getReference(Dialog.DIALOGS)
             .child(message.dialogId)
-            .child(Message.MESSAGES)
+            .child(message.userId)
             .child(message.id)
 
         val items = HashMap<String, Any>()
@@ -138,6 +136,7 @@ class MessageFirebase {
                 var message = Message()
                 if (messagesSnapshot.childrenCount > 0) {
                     for (messageSnapshot in messagesSnapshot.children.reversed()) {
+                        if (!messageSnapshot.hasChildren()) continue
                         message =
                             getMessageFromSnapshot(
                                 messageSnapshot
@@ -161,7 +160,7 @@ class MessageFirebase {
         message.id = messageSnapshot.key!!
         message.message = messageSnapshot.child(Message.MESSAGE).value as? String ?: ""
         message.time = messageSnapshot.child(Message.TIME).value as? Long ?: 0
-        message.type = messageSnapshot.child(Message.TYPE).value as? Int ?: 0
+        message.type = messageSnapshot.child(Message.TYPE).getValue(Int::class.java) ?: 0
         message.ownerId = messageSnapshot.child(Message.OWNER_ID).value as? String ?: ""
         return message
     }

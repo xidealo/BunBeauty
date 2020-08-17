@@ -9,9 +9,8 @@ class UserCommentFirebase {
 
     fun insert(userComment: UserComment) {
         val myRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(UserComment.COMMENTS)
             .child(userComment.userId)
-            .child(UserComment.COMMENTS)
             .child(userComment.id)
 
         val items = HashMap<String, Any>()
@@ -26,9 +25,8 @@ class UserCommentFirebase {
     fun getByUserId(userId: String, userCommentsCallback: UserCommentsCallback) {
 
         val servicesRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(UserComment.COMMENTS)
             .child(userId)
-            .child(UserComment.COMMENTS)
 
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(userCommentsSnapshot: DataSnapshot) {

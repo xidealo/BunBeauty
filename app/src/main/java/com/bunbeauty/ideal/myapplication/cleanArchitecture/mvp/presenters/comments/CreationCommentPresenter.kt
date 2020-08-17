@@ -67,7 +67,7 @@ class CreationCommentPresenter(
     }
 
     override fun showCommentCreated(message: Message) {
-        viewState.showCommentCreated(message)
+        viewState.showCommentCreated(message, creationCommentUserInteractor.getUser())
     }
 
 }

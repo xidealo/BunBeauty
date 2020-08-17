@@ -8,6 +8,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.commets.creationComment.*
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Message
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.di.FirebaseModule
@@ -69,9 +70,10 @@ class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
         }
     }
 
-    override fun showCommentCreated(message: Message) {
+    override fun showCommentCreated(message: Message, user: User) {
         val intent = Intent()
         intent.putExtra(Message.MESSAGE, message)
+        intent.putExtra(User.USER, user)
         setResult(RESULT_OK, intent)
         finish()
     }

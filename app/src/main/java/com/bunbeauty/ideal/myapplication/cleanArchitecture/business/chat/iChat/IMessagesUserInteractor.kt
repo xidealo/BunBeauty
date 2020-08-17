@@ -5,5 +5,6 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 
 interface IMessagesUserInteractor {
     fun getCompanionUser(messagesPresenterCallback: MessagesPresenterCallback)
+    fun updateUser(user: User)
     fun getCacheCompanionUser(): User
 }
