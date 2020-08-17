@@ -35,7 +35,9 @@ class SessionsInteractor(
     }
 
     fun getSessions(workingDay: WorkingDay): List<Session> {
-        return schedule.getSessions(getService().duration, workingDay.dayOfMonth)
+        sessionList.clear()
+        sessionList.addAll(schedule.getSessions(getService().duration, workingDay.dayOfMonth))
+        return sessionList
     }
 
     fun updateTime(time: String, sessionsPresenterCallback: SessionsPresenterCallback) {

@@ -229,11 +229,11 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
     }
 
     override fun showCreateServiceButton() {
-        servicesFragment.showCreateButton()
+        servicesFragment.createServiceButtonVisibility = View.VISIBLE
     }
 
     override fun hideCreateServiceButton() {
-        servicesFragment.hideCreateButton()
+        servicesFragment.createServiceButtonVisibility = View.GONE
     }
 
     override fun showDialogsButton() {

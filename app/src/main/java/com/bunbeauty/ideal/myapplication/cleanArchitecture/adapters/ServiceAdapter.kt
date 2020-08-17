@@ -23,7 +23,7 @@ class ServiceAdapter : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() 
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ServiceViewHolder {
         val context = viewGroup.context
-        val layoutIdForListItem = R.layout.found_service_element
+        val layoutIdForListItem = R.layout.element_service
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false)
 

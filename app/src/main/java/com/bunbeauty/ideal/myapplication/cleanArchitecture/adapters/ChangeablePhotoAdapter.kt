@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IChangeablePhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.ChangeablePhotoElement
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 
 class ChangeablePhotoAdapter: RecyclerView.Adapter<ChangeablePhotoAdapter.ChangeablePhotoViewHolder>() {
@@ -33,7 +32,7 @@ class ChangeablePhotoAdapter: RecyclerView.Adapter<ChangeablePhotoAdapter.Change
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ChangeablePhotoViewHolder {
         val context = viewGroup.context
-        val layoutIdForListItem = R.layout.changeable_element_photo
+        val layoutIdForListItem = R.layout.element_changeable_photo
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(layoutIdForListItem, viewGroup, false)
 

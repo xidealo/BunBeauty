@@ -13,7 +13,14 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.createService.CreationServiceActivity
 import kotlinx.android.synthetic.main.fragment_services.*
 
-class ServicesFragment(private val profileServiceAdapter: ProfileServiceAdapter) : MvpAppCompatFragment() {
+class ServicesFragment(private val profileServiceAdapter: ProfileServiceAdapter) :
+    MvpAppCompatFragment() {
+
+    var createServiceButtonVisibility = View.GONE
+        set(value) {
+            field = value
+            createServiceBtn?.visibility = value
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,21 +31,13 @@ class ServicesFragment(private val profileServiceAdapter: ProfileServiceAdapter)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        createServiceBtn.visibility = View.GONE
+        createServiceBtn.visibility = createServiceButtonVisibility
         createServiceBtn.setOnClickListener {
             goToCreationService()
         }
 
         servicesRecycleView.layoutManager = LinearLayoutManager(context)
         servicesRecycleView.adapter = profileServiceAdapter
-    }
-
-    fun showCreateButton() {
-        createServiceBtn?.visibility = View.VISIBLE
-    }
-
-    fun hideCreateButton() {
-        createServiceBtn?.visibility = View.GONE
     }
 
     fun updateServiceList(serviceList: List<Service>) {

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
@@ -13,8 +12,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.PhotoAdapter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.IPhotoElement
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceInteractor
+import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.service.ServiceUserInteractor
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
@@ -32,9 +31,7 @@ import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.profil
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.views.ServiceView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_creation_service.*
 import kotlinx.android.synthetic.main.activity_service.*
-import kotlinx.android.synthetic.main.edit_service.*
 import javax.inject.Inject
 
 class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomPanel,

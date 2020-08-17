@@ -51,6 +51,8 @@ class ProfilePresenter(
         viewState.showScheduleButton()
         viewState.showSubscriptionsButton()
         viewState.showTopPanelWithEditIcon()
+        viewState.showCreateServiceButton()
+
         viewState.hideDialogsButton()
         viewState.hideSubscribeButton()
     }
@@ -60,6 +62,7 @@ class ProfilePresenter(
         viewState.showServices()
         viewState.showDialogsButton()
         viewState.showEmptyTopPanel()
+
         viewState.hideScheduleButton()
         viewState.hideSubscriptionsButton()
         viewState.hideTabLayout()
