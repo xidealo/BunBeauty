@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.logIn;
 import androidx.test.rule.ActivityTestRule;
 
 import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.logIn.AuthorizationActivity;
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.AuthorizationActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.junit.After;

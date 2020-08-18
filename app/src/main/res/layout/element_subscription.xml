@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/block"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.SubscriptionElement">
+    tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.SubscriptionElement">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/subscriptionElementLayout"

@@ -1,12 +1,12 @@
 package com.android.ideal.myapplication
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.Session
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDayWithTimes
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingTime
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Session
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingDayWithTimes
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime
 import org.joda.time.DateTime
 import org.junit.Assert.*
 import org.junit.Test
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.schedule.WorkingDay as WorkingDay1
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingDay as WorkingDay1
 
 class WorkingDayUnitTests {
 

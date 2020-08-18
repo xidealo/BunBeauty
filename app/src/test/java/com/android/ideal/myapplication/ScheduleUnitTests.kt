@@ -1,7 +1,7 @@
 package com.android.ideal.myapplication
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.schedule.ScheduleInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ScheduleRepository
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.schedule.ScheduleInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.ScheduleRepository
 import io.mockk.mockk
 import org.joda.time.DateTime
 import org.junit.Assert.assertEquals

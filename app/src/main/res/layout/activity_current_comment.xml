@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="100dp"
     android:orientation="horizontal"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.comments.CurrentCommentActivity">
+    tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CurrentCommentActivity">
 
 
     <ImageView

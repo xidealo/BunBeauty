@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/allPages"
     android:id="@+id/editServiceLayout"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditProfileActivity">
+    tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.editing.EditProfileActivity">
 
     <include layout="@layout/part_top_panel" />
 

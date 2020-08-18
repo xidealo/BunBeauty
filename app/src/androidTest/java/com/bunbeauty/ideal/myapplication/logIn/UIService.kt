@@ -1,9 +1,8 @@
 package com.bunbeauty.ideal.myapplication.logIn
 
-import androidx.test.espresso.Espresso
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity
 import com.google.firebase.auth.FirebaseAuth
 import org.junit.Before
 import org.junit.Rule

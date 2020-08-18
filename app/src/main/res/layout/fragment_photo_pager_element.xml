@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.photoElement.PhotoPagerElement">
+    tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.photoElement.PhotoPagerElement">
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
         android:id="@+id/photoPhotoPagerElementImage"

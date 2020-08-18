@@ -2,8 +2,8 @@ package com.android.ideal.myapplication;
 
 import android.content.Intent;
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.logIn.RegistrationUserInteractor;
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository;
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.RegistrationUserInteractor;
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.UserRepository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

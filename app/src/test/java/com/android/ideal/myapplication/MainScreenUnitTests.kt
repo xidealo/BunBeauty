@@ -1,17 +1,10 @@
 package com.android.ideal.myapplication
 
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.business.searchService.MainScreenUserInteractor
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.Tag
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.ServiceRepository
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.repositories.UserRepository
-import junit.framework.TestCase.assertEquals
-import org.junit.Test
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.ServiceRepository
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.UserRepository
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import java.util.*
 
 
 @RunWith(MockitoJUnitRunner::class)

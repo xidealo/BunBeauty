@@ -10,7 +10,7 @@
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="5dp"
     android:orientation="vertical"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.chatElements.messageElements.MessageElement">
+    tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.chatElements.messageElements.MessageElement">
 
     <LinearLayout
         android:id="@+id/messageMessageElementLayout"

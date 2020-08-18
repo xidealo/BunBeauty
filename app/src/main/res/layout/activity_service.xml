@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/allPages"
     android:id="@+id/serviceMainLayout"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.service.ServiceActivity">
+    tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity">
 
     <include layout="@layout/part_top_panel" />
 
@@ -159,7 +159,7 @@
 
                 <fragment
                     android:id="@+id/premiumBlockService"
-                    class="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.fragments.PremiumFragment"
+                    class="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

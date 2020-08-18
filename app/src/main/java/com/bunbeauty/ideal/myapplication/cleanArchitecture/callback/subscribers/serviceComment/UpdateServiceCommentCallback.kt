@@ -1,6 +1,0 @@
-package com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.serviceComment
-
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.callback.subscribers.baseSubscribers.BaseUpdateCallback
-import com.bunbeauty.ideal.myapplication.cleanArchitecture.data.db.models.entity.comment.ServiceComment
-
-interface UpdateServiceCommentCallback : BaseUpdateCallback<ServiceComment>

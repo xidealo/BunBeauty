@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/allPages"
     android:id="@+id/editServiceLayout"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.editing.EditServiceActivity">
+    tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.editing.EditServiceActivity">
 
     <include layout="@layout/part_top_panel" />
 
@@ -87,7 +87,7 @@
 
             <fragment
                 android:id="@+id/categoryEditServiceLayout"
-                class="com.bunbeauty.ideal.myapplication.cleanArchitecture.adapters.elements.CategoryFragment"
+                class="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.CategoryFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

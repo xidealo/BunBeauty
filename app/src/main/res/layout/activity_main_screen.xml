@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/allPages"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.searchService.MainScreenActivity">
+    tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.search_service.MainScreenActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/topPanelMainScreenLayout"
@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.chat.DialogsActivity">
+        tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat.DialogsActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"

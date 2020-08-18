@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/scheduleLayout"
     android:background="@color/backgroundLightBlue"
-    tools:context="com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.activities.ScheduleActivity">
+    tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.ScheduleActivity">
 
     <include
         layout="@layout/part_top_panel" />
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
+            <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.CustomGridLayout
                 android:id="@+id/daysScheduleGrid"
                 style="@style/horizontalLayout"
                 android:columnCount="7">
@@ -54,7 +54,7 @@
                 <TextView
                     style="@style/weekDayText"
                     android:text="ВС" />
-            </com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout>
+            </com.bunbeauty.ideal.myapplication.clean_architecture.mvp.CustomGridLayout>
 
             <LinearLayout
                 android:id="@+id/timeScheduleLayout"
@@ -67,7 +67,7 @@
                     android:text="Время"
                     app:layout_constraintBottom_toTopOf="@+id/saveScheduleButton" />
 
-                <com.bunbeauty.ideal.myapplication.cleanArchitecture.mvp.CustomGridLayout
+                <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.CustomGridLayout
                     android:id="@+id/timeScheduleGrid"
                     style="@style/horizontalLayout"
                     android:columnCount="6" />
