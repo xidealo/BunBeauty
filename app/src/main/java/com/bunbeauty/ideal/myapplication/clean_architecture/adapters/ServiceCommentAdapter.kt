@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
+import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.ServiceCommentElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.UserCommentElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.ServiceComment
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.UserComment
 
 class ServiceCommentAdapter :
     RecyclerView.Adapter<ServiceCommentAdapter.ServiceCommentViewHolder>() {
@@ -38,7 +41,9 @@ class ServiceCommentAdapter :
         RecyclerView.ViewHolder(view) {
 
         fun bind(serviceComment: ServiceComment) {
-
+            val commentElement = ServiceCommentElement(context)
+            commentElement.createElement(view)
+            commentElement.setData(serviceComment)
         }
     }
 

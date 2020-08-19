@@ -40,7 +40,7 @@ class ServiceCommentFirebase {
                 val serviceComments = mutableListOf<ServiceComment>()
 
                 for (serviceCommentSnapshot in serviceCommentsSnapshot.children.reversed()) {
-                    serviceComments.add(getServiceCommentFromSnapshot(serviceCommentsSnapshot, userId))
+                    serviceComments.add(getServiceCommentFromSnapshot(serviceCommentSnapshot, userId))
                 }
 
                 serviceCommentsCallback.returnList(serviceComments)

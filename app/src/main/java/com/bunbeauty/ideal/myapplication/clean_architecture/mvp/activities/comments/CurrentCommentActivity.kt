@@ -69,7 +69,21 @@ class CurrentCommentActivity : MvpAppCompatActivity(),
     }
 
     override fun setServiceComment(serviceComment: ServiceComment) {
+        Picasso.get()
+            .load(serviceComment.user.photoLink)
+            .resize(65, 65)
+            .centerCrop()
+            .transform(CircularTransformation())
+            .into(avatarCurrentCommentActivityImage)
 
+        userNameCurrentCommentActivityText.text =
+            "${serviceComment.user.name}  ${serviceComment.user.surname}"
+        reviewCurrentCommentActivityText.text = serviceComment.review
+        ratingCurrentCommentActivityBar.rating = serviceComment.rating
+
+        avatarCurrentCommentActivityImage.setOnClickListener {
+            goToProfile()
+        }
     }
 
     fun goToProfile() {

@@ -14,6 +14,7 @@ class CurrentCommentCommentInteractor(
     private lateinit var cacheUser: User
 
     override fun createCurrentCommentScreen(currentCommentPresenterCallback: CurrentCommentPresenterCallback) {
+
         if (intent.hasExtra(UserComment.USER_COMMENT)) {
             cacheUser = (intent.getSerializableExtra(
                 UserComment.USER_COMMENT
@@ -27,7 +28,7 @@ class CurrentCommentCommentInteractor(
         } else {
             cacheUser = (intent.getSerializableExtra(
                 ServiceComment.SERVICE_COMMENT
-            ) as UserComment).user
+            ) as ServiceComment).user
 
             currentCommentPresenterCallback.setServiceComment(
                 intent.getSerializableExtra(

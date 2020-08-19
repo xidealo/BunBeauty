@@ -73,7 +73,6 @@ class ServicePresenter(
 
     fun getPhotosLink() = servicePhotoInteractor.getPhotoLinkList()
 
-    fun getGottenService(): Service {
-        return serviceInteractor.gottenService
-    }
+    fun getGottenService() = serviceInteractor.gottenService
+
 }

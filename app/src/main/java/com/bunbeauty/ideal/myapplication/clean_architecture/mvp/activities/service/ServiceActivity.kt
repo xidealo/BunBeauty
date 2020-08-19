@@ -22,6 +22,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.di.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.SessionsActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.ServiceCommentsActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.UserCommentsActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.editing.EditServiceActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
@@ -125,6 +127,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
         if (countOfRates > 0) {
             showRatingBar(rating)
             countOfRatesServiceText.text = countOfRates.toString()
+            ratingServiceText.text = rating.toString()
         } else {
             showWithoutRating()
         }
@@ -136,7 +139,8 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
     }
 
     private fun showRatingBar(rating: Float) {
-        ratingServiceRatingBar.visibility = View.VISIBLE
+        withoutRatingServiceText.visibility = View.GONE
+        ratingServiceLayout.visibility = View.VISIBLE
         ratingServiceRatingBar.rating = rating
         ratingBlockServiceLayout.setOnClickListener {
             goToComments()
@@ -216,12 +220,10 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
     }
 
     private fun goToComments() {
-        /*val intent = Intent(this, Comments::class.java)
-        intent.putExtra(Service.SERVICE_ID, "")
-        intent.putExtra(TYPE, REVIEW_FOR_SERVICE)
-        intent.putExtra(Service.USER_ID, "")
-        intent.putExtra(Service.COUNT_OF_RATES, "")
-        startActivity(intent)*/
+        val intent = Intent(this, ServiceCommentsActivity::class.java).apply {
+            putExtra(Service.SERVICE, servicePresenter.getGottenService())
+        }
+        startActivity(intent)
     }
 
     private fun goToSessions() {

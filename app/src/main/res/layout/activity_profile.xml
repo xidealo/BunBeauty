@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/allPages"
     android:id="@+id/profileMainLayout"
+    style="@style/allPages"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -130,9 +130,9 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:checkable="true"
-                                    app:cardBackgroundColor="@color/mainBlue"
                                     android:clickable="true"
-                                    android:focusable="true">
+                                    android:focusable="true"
+                                    app:cardBackgroundColor="@color/mainBlue">
 
                                     <LinearLayout
                                         style="@style/wideHorizontalBlock"

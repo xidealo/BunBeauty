@@ -33,10 +33,12 @@ class ServiceCommentsPresenter(
     }
 
     override fun updateServiceComments(serviceComments: List<ServiceComment>) {
+        viewState.hideLoading()
         viewState.updateServiceComments(serviceComments)
     }
 
     override fun showEmptyScreen() {
+        viewState.hideLoading()
         viewState.showEmptyScreen()
     }
 

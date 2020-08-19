@@ -47,7 +47,7 @@ class ServiceCommentsServiceCommentInteractor(private val serviceCommentReposito
         cacheServiceComments[indexCacheServiceComment].user = user
         indexCacheServiceComment++
 
-        if (indexCacheServiceComment == cacheServiceComments.size - 1)
+        if (indexCacheServiceComment >= cacheServiceComments.size - 1)
             serviceCommentsPresenterCallback.updateServiceComments(cacheServiceComments)
     }
 

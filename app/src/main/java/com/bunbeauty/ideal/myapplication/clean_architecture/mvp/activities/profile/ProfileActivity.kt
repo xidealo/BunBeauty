@@ -340,15 +340,17 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
     }
 
     override fun goToSubscriptions(user: User) {
-        val intent = Intent(this, SubscriptionsActivity::class.java)
-        intent.putExtra(User.USER, user)
+        val intent = Intent(this, SubscriptionsActivity::class.java).apply {
+            putExtra(User.USER, user)
+        }
         startActivity(intent)
         overridePendingTransition(0, 0)
     }
 
     private fun goToComments(user: User) {
-        val intent = Intent(this, UserCommentsActivity::class.java)
-        intent.putExtra(User.USER, user)
+        val intent = Intent(this, UserCommentsActivity::class.java).apply {
+            putExtra(User.USER, user)
+        }
         startActivity(intent)
     }
 
