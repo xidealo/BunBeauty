@@ -53,7 +53,10 @@ class CurrentCommentActivity : MvpAppCompatActivity(),
     override fun setUserComment(userComment: UserComment) {
         Picasso.get()
             .load(userComment.user.photoLink)
-            .resize(65, 65)
+            .resize(
+                resources.getDimensionPixelSize(R.dimen.photo_avatar_width),
+                resources.getDimensionPixelSize(R.dimen.photo_avatar_width)
+            )
             .centerCrop()
             .transform(CircularTransformation())
             .into(avatarCurrentCommentActivityImage)
@@ -71,7 +74,10 @@ class CurrentCommentActivity : MvpAppCompatActivity(),
     override fun setServiceComment(serviceComment: ServiceComment) {
         Picasso.get()
             .load(serviceComment.user.photoLink)
-            .resize(65, 65)
+            .resize(
+                resources.getDimensionPixelSize(R.dimen.photo_avatar_width),
+                resources.getDimensionPixelSize(R.dimen.photo_avatar_width)
+            )
             .centerCrop()
             .transform(CircularTransformation())
             .into(avatarCurrentCommentActivityImage)

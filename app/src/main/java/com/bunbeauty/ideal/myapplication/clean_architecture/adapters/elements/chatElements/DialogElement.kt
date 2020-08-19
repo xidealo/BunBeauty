@@ -42,7 +42,7 @@ class DialogElement(
         messageTimeDialogElementText = view.findViewById(R.id.messageTimeDialogElementText)
         isCheckedDialogElementText = view.findViewById(R.id.isCheckedDialogElementText)
         dialogElementLayout = view.findViewById(R.id.dialogElementLayout)
-        dialogElementLayout.setOnClickListener{
+        dialogElementLayout.setOnClickListener {
             goToDialog()
         }
     }
@@ -65,7 +65,10 @@ class DialogElement(
     private fun showAvatar(user: User) {
         Picasso.get()
             .load(user.photoLink)
-            .resize(65, 65)
+            .resize(
+                context.resources.getDimensionPixelSize(R.dimen.photo_avatar_width),
+                context.resources.getDimensionPixelSize(R.dimen.photo_avatar_width)
+            )
             .centerCrop()
             .transform(CircularTransformation())
             .into(avatarDialogElementImage)

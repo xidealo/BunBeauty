@@ -4,9 +4,9 @@
     style="@style/block"
     android:layout_width="wrap_content"
     android:layout_height="100dp"
+    android:background="@color/white"
     android:orientation="horizontal"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CurrentCommentActivity">
-
 
     <ImageView
         android:id="@+id/avatarCurrentCommentActivityImage"
@@ -18,11 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:layout_margin="@dimen/default_margin"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/userNameCurrentCommentActivityText"
+            style="@style/mainTextMainScreen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Имя пользователя"
@@ -30,26 +32,24 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/reviewCurrentCommentActivityText"
                 style="@style/defaultTextMainScreen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="text"
-                />
+                android:text="text" />
         </LinearLayout>
     </LinearLayout>
 
     <RatingBar
         android:id="@+id/ratingCurrentCommentActivityBar"
         style="@android:style/Widget.Holo.RatingBar.Small"
-        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_weight="1"
         android:isIndicator="true"
         android:theme="@style/ratingBarColors" />
 

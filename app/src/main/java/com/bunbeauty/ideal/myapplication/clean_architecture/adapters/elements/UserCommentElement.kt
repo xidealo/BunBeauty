@@ -39,7 +39,10 @@ class UserCommentElement(
 
         Picasso.get()
             .load(userComment.user.photoLink)
-            .resize(65, 65)
+            .resize(
+                context.resources.getDimensionPixelSize(R.dimen.photo_avatar_width),
+                context.resources.getDimensionPixelSize(R.dimen.photo_avatar_width)
+            )
             .centerCrop()
             .transform(CircularTransformation())
             .into(avatarUserCommentElementImage)
