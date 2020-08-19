@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.order.OrderCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.order.OrdersCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Session
@@ -41,6 +42,23 @@ class OrderFirebase {
                     getOrderFromSnapshot(it, userId)
                 }
                 ordersCallback.returnList(orderList)
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
+    fun getById(userId: String, orderId: String, orderCallback: OrderCallback){
+        val ordersReference = FirebaseDatabase.getInstance()
+            .getReference(Order.ORDERS)
+            .child(userId)
+            .child(orderId)
+
+        ordersReference.addListenerForSingleValueEvent(object : ValueEventListener {
+
+            override fun onDataChange(ordersSnapshot: DataSnapshot) {
+                val order = getOrderFromSnapshot(ordersSnapshot, userId)
+                orderCallback.returnGottenObject(order)
             }
 
             override fun onCancelled(error: DatabaseError) {}

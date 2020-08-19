@@ -1,14 +1,13 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.iCreationComment.ICreationCommentServiceCommentInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.i_creation_comment.ICreationCommentServiceCommentInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.comments.CreationCommentPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service_comment.InsertServiceCommentCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.ServiceComment
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.ServiceCommentRepository
 
 class CreationCommentServiceCommentInteractor
-    (
-    private val serviceCommentRepository: ServiceCommentRepository) :
+    (private val serviceCommentRepository: ServiceCommentRepository) :
     ICreationCommentServiceCommentInteractor, InsertServiceCommentCallback {
 
     private var rating = 0f
@@ -29,11 +28,13 @@ class CreationCommentServiceCommentInteractor
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     ) {
         this.creationCommentPresenterCallback = creationCommentPresenterCallback
+        serviceComment.review = review
+        serviceComment.rating = rating
         serviceCommentRepository.insert(serviceComment, this)
     }
 
     override fun returnCreatedCallback(obj: ServiceComment) {
-        creationCommentPresenterCallback.updateServiceCommentMessage(obj)
+        creationCommentPresenterCallback.updateServiceRating(obj)
     }
 
 }

@@ -293,6 +293,11 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
+    fun provideCreationCommentServiceInteractor(serviceRepository: IServiceRepository) =
+        CreationCommentServiceInteractor(serviceRepository)
+
+    @Provides
+    @Singleton
     fun provideServiceCommentsServiceInteractor() = ServiceCommentsServiceInteractor(intent)
 
     @Provides

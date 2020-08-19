@@ -62,15 +62,17 @@ exports.sendChatMessageNotification = functions.database.ref('dialogs/{userId}/{
     const messageId = context.params.messageId;
     //get message
     const message = snapshot.child('message').val();
+    const type = snapshot.child('type').val();
     const ownerMessageId = snapshot.child('owner id').val();
 
     console.log("senderId: ", ownerId);
     console.log("companionId: ", companionId);
     console.log("messageId: ", messageId);
     console.log("message: ", message);
+    console.log("type: ", type);
     console.log("ownerMessageId: ", ownerMessageId);
 
-    if (String(ownerId) === String(ownerMessageId)) {
+    if (String(ownerId) === String(ownerMessageId) || type !== 0) {
         return;
     }
         return admin.database().ref("/users/" + companionId).once('value').then(snap => {

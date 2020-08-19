@@ -1,7 +1,7 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment
 
 import android.content.Intent
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.iCreationComment.ICreationCommentUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.i_creation_comment.ICreationCommentUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.comments.CreationCommentPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.user.UpdateUsersCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.user.UserCallback

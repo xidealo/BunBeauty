@@ -14,6 +14,7 @@ data class ServiceComment(
     var userId: String = "",
     @ColumnInfo(index = true)
     var serviceId: String = "",
+    var serviceName: String = "",
     @Ignore
     var user: User = User(), // owner
     var ownerId: String = "",
@@ -23,7 +24,7 @@ data class ServiceComment(
 ) : Serializable {
     companion object {
         const val SERVICE_COMMENT = "service comment"
-        const val COMMENTS = "comments"
+        const val SERVICE_COMMENTS = "service comments"
         const val RATING = "rating"
         const val REVIEW = "comment"
         const val TIME = "time"

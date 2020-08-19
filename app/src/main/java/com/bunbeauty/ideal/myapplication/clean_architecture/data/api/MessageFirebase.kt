@@ -161,6 +161,7 @@ class MessageFirebase {
         message.time = messageSnapshot.child(Message.TIME).value as? Long ?: 0
         message.type = messageSnapshot.child(Message.TYPE).getValue(Int::class.java) ?: 0
         message.ownerId = messageSnapshot.child(Message.OWNER_ID).value as? String ?: ""
+        message.orderId = messageSnapshot.child(Message.ORDER_ID).value as? String ?: ""
         return message
     }
 

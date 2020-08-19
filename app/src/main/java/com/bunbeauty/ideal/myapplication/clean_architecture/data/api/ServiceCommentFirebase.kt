@@ -11,18 +11,16 @@ class ServiceCommentFirebase {
 
     fun insert(serviceComment: ServiceComment) {
         val myRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(ServiceComment.SERVICE_COMMENTS)
             .child(serviceComment.userId)
-            .child(Service.SERVICES)
             .child(serviceComment.serviceId)
-            .child(UserComment.COMMENTS)
             .child(serviceComment.id)
 
         val items = HashMap<String, Any>()
-        items[UserComment.RATING] = serviceComment.rating
-        items[UserComment.REVIEW] = serviceComment.review
-        items[UserComment.TIME] = ServerValue.TIMESTAMP
-        items[UserComment.OWNER_ID] = serviceComment.ownerId
+        items[ServiceComment.RATING] = serviceComment.rating
+        items[ServiceComment.REVIEW] = serviceComment.review
+        items[ServiceComment.TIME] = ServerValue.TIMESTAMP
+        items[ServiceComment.OWNER_ID] = serviceComment.ownerId
 
         myRef.updateChildren(items)
     }
@@ -33,11 +31,9 @@ class ServiceCommentFirebase {
         serviceCommentsCallback: ServiceCommentsCallback
     ) {
         val servicesRef = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
+            .getReference(ServiceComment.SERVICE_COMMENTS)
             .child(userId)
-            .child(Service.SERVICE)
             .child(serviceId)
-            .child(ServiceComment.COMMENTS)
 
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(serviceCommentsSnapshot: DataSnapshot) {
@@ -75,9 +71,7 @@ class ServiceCommentFirebase {
     }
 
     fun getIdForNew(userId: String, serviceId: String) =
-        FirebaseDatabase.getInstance().getReference(User.USERS)
+        FirebaseDatabase.getInstance().getReference(ServiceComment.SERVICE_COMMENTS)
             .child(userId)
-            .child(Service.SERVICES)
-            .child(serviceId)
-            .child(ServiceComment.COMMENTS).push().key!!
+            .child(serviceId).push().key!!
 }

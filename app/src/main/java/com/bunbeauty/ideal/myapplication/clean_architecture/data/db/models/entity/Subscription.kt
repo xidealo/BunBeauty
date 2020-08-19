@@ -26,6 +26,5 @@ data class Subscription(
         const val SUBSCRIPTIONS = "subscriptions"
         const val SUBSCRIPTION_ID = "subscription id"
         const val DATE = "date"
-        const val USER_ID = "user id"
     }
 }

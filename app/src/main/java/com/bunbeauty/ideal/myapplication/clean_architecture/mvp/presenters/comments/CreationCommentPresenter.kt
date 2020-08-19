@@ -2,7 +2,8 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.comm
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.iCreationComment.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.CreationCommentServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.i_creation_comment.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.comments.CreationCommentPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
@@ -17,7 +18,8 @@ class CreationCommentPresenter(
     private val creationCommentServiceCommentInteractor: ICreationCommentServiceCommentInteractor,
     private val creationCommentOrderInteractor: ICreationCommentOrderInteractor,
     private val creationCommentMessageInteractor: ICreationCommentMessageInteractor,
-    private val creationCommentUserInteractor: ICreationCommentUserInteractor
+    private val creationCommentUserInteractor: ICreationCommentUserInteractor,
+    private val creationCommentServiceInteractor: ICreationCommentServiceInteractor
 ) : MvpPresenter<CreationCommentView>(), CreationCommentPresenterCallback {
 
     fun checkMessage(rating: Float, review: String) {
@@ -25,12 +27,12 @@ class CreationCommentPresenter(
     }
 
     override fun createUserComment(rating: Float, review: String) {
-        val comment = UserComment()
-        comment.rating = rating
-        comment.review = review
-        comment.ownerId = User.getMyId()
+        val userComment = UserComment()
+        userComment.rating = rating
+        userComment.review = review
+        userComment.ownerId = User.getMyId()
         creationCommentUserCommentInteractor.createUserComment(
-            comment,
+            userComment,
             creationCommentUserInteractor.getUser(),
             this
         )
@@ -43,11 +45,12 @@ class CreationCommentPresenter(
     }
 
     override fun createServiceComment(order: Order) {
-        val comment = ServiceComment()
-        comment.userId = order.masterId
-        comment.serviceId = order.serviceId
-        comment.ownerId = User.getMyId()
-        creationCommentServiceCommentInteractor.createServiceComment(comment, this)
+        val serviceComment = ServiceComment()
+        serviceComment.userId = order.masterId
+        serviceComment.serviceId = order.serviceId
+        serviceComment.serviceName = order.serviceName
+        serviceComment.ownerId = User.getMyId()
+        creationCommentServiceCommentInteractor.createServiceComment(serviceComment, this)
     }
 
     override fun updateUserRating(userComment: UserComment) {
@@ -56,6 +59,10 @@ class CreationCommentPresenter(
             userComment,
             this
         )
+    }
+
+    override fun updateServiceRating(serviceComment: ServiceComment) {
+        creationCommentServiceInteractor.updateService(serviceComment, this)
     }
 
     override fun updateUserCommentMessage(userComment: UserComment) {

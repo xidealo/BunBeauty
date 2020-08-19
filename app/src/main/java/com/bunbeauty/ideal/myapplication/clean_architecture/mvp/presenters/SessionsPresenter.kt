@@ -88,6 +88,7 @@ class SessionsPresenter(
                 message = "На услуге ${order.serviceName} был клиент. Оставьте отзыв о клиенте.",
                 dialogId = order.clientId,
                 userId = order.masterId,
+                orderId = order.id,
                 ownerId = order.masterId
             )
         val companionMessageUserReview =
@@ -97,6 +98,7 @@ class SessionsPresenter(
                 message = "На услуге ${order.serviceName} был клиент. Оставьте отзыв о клиенте.",
                 dialogId = order.masterId,
                 userId = order.clientId,
+                orderId = order.id,
                 ownerId = order.masterId
             )
         sessionsMessageInteractor.sendUserReviewMessage(myMessageUserReview)

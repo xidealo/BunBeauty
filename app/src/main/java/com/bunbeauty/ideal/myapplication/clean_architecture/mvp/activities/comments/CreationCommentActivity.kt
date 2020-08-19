@@ -35,6 +35,9 @@ class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
     @Inject
     lateinit var creationCommentUserInteractor: CreationCommentUserInteractor
 
+    @Inject
+    lateinit var creationCommentServiceInteractor: CreationCommentServiceInteractor
+
     @InjectPresenter
     lateinit var creationCommentPresenter: CreationCommentPresenter
 
@@ -51,7 +54,8 @@ class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
             creationCommentServiceCommentInteractor,
             creationCommentOrderInteractor,
             creationCommentMessageInteractor,
-            creationCommentUserInteractor
+            creationCommentUserInteractor,
+            creationCommentServiceInteractor
         )
     }
 

@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.iCreationComment.ICreationCommentOrderInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.i_creation_comment.ICreationCommentOrderInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.comments.CreationCommentPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.order.OrderCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
@@ -17,13 +17,13 @@ class CreationCommentOrderInteractor(private val orderRepository: IOrderReposito
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     ) {
         this.creationCommentPresenterCallback = creationCommentPresenterCallback
-        //orderRepository.getById(message.userId, message.orderId, this)
+        orderRepository.getById(message.userId, message.orderId, this)
     }
 
-    override fun returnGottenObject(element: Order?) {
-        if (element == null) return
+    override fun returnGottenObject(obj: Order?) {
+        if (obj == null) return
 
-        creationCommentPresenterCallback.createServiceComment(element)
+        creationCommentPresenterCallback.createServiceComment(obj)
     }
 
 }
