@@ -7,12 +7,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 interface IMessagesMessageInteractor {
     fun getMyMessages(dialog: Dialog, messagesPresenterCallback: MessagesPresenterCallback)
     fun getMyMessagesLink(): List<Message>
-    fun getCompanionMessages(dialog: Dialog, messagesPresenterCallback: MessagesPresenterCallback)
     fun updateMessages(message: Message, messagesPresenterCallback: MessagesPresenterCallback)
     fun sendMessage(message: Message, messagesPresenterCallback: MessagesPresenterCallback)
-    fun checkMoveToStart(
-        messages: List<Message>,
-        messagesPresenterCallback: MessagesPresenterCallback
-    )
+
     fun getId(userId: String, dialogId: String): String
 }

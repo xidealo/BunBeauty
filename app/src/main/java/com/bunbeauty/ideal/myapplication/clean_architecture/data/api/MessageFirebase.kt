@@ -48,7 +48,6 @@ class MessageFirebase {
     fun getByDialogId(
         dialog: Dialog,
         messageCallback: MessageCallback,
-        messagesCallback: MessagesCallback,
         updateMessageCallback: UpdateMessageCallback
     ) {
         val messageRef = FirebaseDatabase.getInstance()
@@ -56,69 +55,36 @@ class MessageFirebase {
             .child(dialog.id)
             .child(dialog.user.id)
 
-        messageRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(messagesSnapshot: DataSnapshot) {
-
-                val messages = arrayListOf<Message>()
-                if (messagesSnapshot.childrenCount > 0L) {
-                    for (messageSnapshot in messagesSnapshot.children) {
-                        if (!messageSnapshot.hasChildren()) continue
-                        val message = getMessageFromSnapshot(messageSnapshot)
-                        message.dialogId = dialog.id
-                        message.userId = dialog.ownerId
-                        messages.add(message)
-                    }
-                }
-                messagesCallback.returnList(messages)
-
-                messageRef.addChildEventListener(object : ChildEventListener {
-                    override fun onCancelled(p0: DatabaseError) {
-                    }
-
-                    override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-
-                    }
-
-                    override fun onChildChanged(messageSnapshot: DataSnapshot, p1: String?) {
-                        if (!messageSnapshot.hasChildren()) return
-                        updateMessageCallback.returnUpdatedCallback(
-                            getMessageFromSnapshot(messageSnapshot)
-                        )
-                    }
-
-                    override fun onChildAdded(messageSnapshot: DataSnapshot, previousId: String?) {
-                        if (!messageSnapshot.hasChildren()) return
-                        if (messages.isNotEmpty()) {
-                            if (previousId == messages.last().id) {
-                                val addedMessage =
-                                    getMessageFromSnapshot(messageSnapshot)
-                                addedMessage.dialogId = dialog.id
-                                addedMessage.userId = dialog.ownerId
-                                messages.add(addedMessage)
-                                messageCallback.returnGottenObject(addedMessage)
-
-                            }
-                        } else {
-                            val addedMessage =
-                                getMessageFromSnapshot(messageSnapshot)
-                            addedMessage.dialogId = dialog.id
-                            addedMessage.userId = dialog.ownerId
-                            messages.add(addedMessage)
-                            messageCallback.returnGottenObject(addedMessage)
-
-                        }
-                    }
-
-                    override fun onChildRemoved(p0: DataSnapshot) {
-
-                    }
-                })
+        messageRef.addChildEventListener(object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
             }
 
-            override fun onCancelled(p0: DatabaseError) {
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+
+            }
+
+            override fun onChildChanged(messageSnapshot: DataSnapshot, p1: String?) {
+                if (!messageSnapshot.hasChildren()) return
+                updateMessageCallback.returnUpdatedCallback(
+                    getMessageFromSnapshot(messageSnapshot)
+                )
+            }
+
+            override fun onChildAdded(messageSnapshot: DataSnapshot, previousId: String?) {
+                if (!messageSnapshot.hasChildren()) return
+                val addedMessage =
+                    getMessageFromSnapshot(messageSnapshot)
+                addedMessage.dialogId = dialog.id
+                addedMessage.userId = dialog.user.id
+                messageCallback.returnGottenObject(addedMessage)
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+
             }
         })
     }
+
 
     fun getLastMessage(
         myId: String,
@@ -171,4 +137,5 @@ class MessageFirebase {
             .child(Dialog.DIALOGS)
             .child(dialogId)
             .child(Message.MESSAGES).push().key!!
+
 }

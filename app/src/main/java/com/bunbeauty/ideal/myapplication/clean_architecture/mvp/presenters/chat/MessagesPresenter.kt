@@ -26,13 +26,6 @@ class MessagesPresenter(
         )
     }
 
-    fun checkMoveToStart() {
-        messagesMessageInteractor.checkMoveToStart(
-            messagesMessageInteractor.getMyMessagesLink(),
-            this
-        )
-    }
-
     fun updateMessage(message: Message) {
         messagesMessageInteractor.updateMessages(message, this)
     }
@@ -73,13 +66,17 @@ class MessagesPresenter(
         viewState.goToProfile(getCacheCurrentUser())
     }
 
-    override fun showMessagesScreen(messages: List<Message>) {
-        viewState.hideLoading()
-        viewState.showMessagesScreen(messages)
-    }
-
     override fun showMoveToStart() {
         viewState.moveToStart()
+    }
+
+    override fun showMessage(message: Message) {
+        viewState.showMessage(message)
+        viewState.hideLoading()
+    }
+
+    override fun updateMessageAdapter(message: Message) {
+        viewState.updateMessageAdapter(message)
     }
 
     override fun setUnchecked() {

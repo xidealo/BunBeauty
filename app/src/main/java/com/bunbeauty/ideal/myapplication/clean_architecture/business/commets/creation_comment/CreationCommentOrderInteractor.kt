@@ -17,7 +17,7 @@ class CreationCommentOrderInteractor(private val orderRepository: IOrderReposito
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     ) {
         this.creationCommentPresenterCallback = creationCommentPresenterCallback
-        orderRepository.getById(message.userId, message.orderId, this)
+        orderRepository.getById(message.ownerId, message.orderId, this)
     }
 
     override fun returnGottenObject(obj: Order?) {

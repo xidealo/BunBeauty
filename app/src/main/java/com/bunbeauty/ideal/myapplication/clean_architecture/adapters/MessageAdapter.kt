@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.ideal.myapplication.R
@@ -11,19 +12,31 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.MessageAdap
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.chatElements.messageElements.MessageServiceReviewElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.chatElements.messageElements.MessageTextElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.chatElements.messageElements.MessageUserReviewElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.DiffUtilCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat.MessagesPresenter
 
 class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
 
-    private val messageList: MutableList<Message> = ArrayList()
+    private var messageList = mutableListOf<Message>()
     private lateinit var messagesPresenter: MessagesPresenter
 
-    fun setData(messageList: List<Message>, messagesPresenter: MessagesPresenter) {
-        this.messageList.clear()
-        this.messageList.addAll(messageList)
+    fun setData(messagesPresenter: MessagesPresenter) {
         this.messagesPresenter = messagesPresenter
-        notifyDataSetChanged()
+    }
+
+    fun addItem(message: Message) {
+        messageList.add(message)
+        notifyItemInserted(messageList.size)
+    }
+
+    fun updateMessageAdapter(message: Message) {
+        val foundMessage = messageList.find { it.id == message.id }
+        if (foundMessage != null) {
+            val index = messageList.indexOf(foundMessage)
+            messageList[index] = message
+            notifyItemChanged(index)
+        }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MessageViewHolder {

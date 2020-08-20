@@ -41,7 +41,5 @@ class MessagesDialogInteractor(
         cacheDialog.isChecked = false
     }
 
-    override fun returnUpdatedCallback(obj: Dialog) {
-
-    }
+    override fun returnUpdatedCallback(obj: Dialog) {}
 }

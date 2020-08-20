@@ -9,6 +9,8 @@ import com.google.firebase.database.*
 
 class DialogFirebase {
 
+    //массив листенеров очищать при выходе с активити
+
     fun insert(dialog: Dialog) {
         val dialogRef = FirebaseDatabase.getInstance()
             .getReference(Dialog.DIALOGS)

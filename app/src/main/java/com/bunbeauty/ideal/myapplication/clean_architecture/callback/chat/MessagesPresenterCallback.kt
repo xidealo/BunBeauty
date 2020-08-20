@@ -3,7 +3,8 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.callback.chat
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 
 interface MessagesPresenterCallback {
-    fun showMessagesScreen(messages: List<Message>)
+    fun showMessage(message: Message)
+    fun updateMessageAdapter(message: Message)
     fun showMoveToStart()
     fun setUnchecked()
     fun updateUncheckedDialog(message: Message)

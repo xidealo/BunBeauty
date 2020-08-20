@@ -78,12 +78,13 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         val linearLayoutManager = LinearLayoutManager(this)
         resultsMessagesRecycleView.layoutManager = linearLayoutManager
         resultsMessagesRecycleView.adapter = messageAdapter
+        messageAdapter.setData(messagePresenter)
 
         setEventListener(
             this,
             object : KeyboardVisibilityEventListener {
                 override fun onVisibilityChanged(isOpen: Boolean) {
-                    messagePresenter.checkMoveToStart()
+                    moveToStart()
                 }
             })
     }
@@ -112,12 +113,17 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         }
     }
 
-    override fun showMessagesScreen(messages: List<Message>) {
-        messageAdapter.setData(messages, messagePresenter)
+    override fun showMessage(message: Message) {
+        messageAdapter.addItem(message)
+        moveToStart()
+    }
+
+    override fun updateMessageAdapter(message: Message) {
+        messageAdapter.updateMessageAdapter(message)
     }
 
     override fun moveToStart() {
-        resultsMessagesRecycleView.smoothScrollToPosition(resultsMessagesRecycleView.adapter!!.itemCount - 1)
+        resultsMessagesRecycleView.smoothScrollToPosition(messageAdapter.itemCount)
     }
 
     override fun hideLoading() {

@@ -1,5 +1,7 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.business.chat
 
+import android.util.Log
+import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.IMessagesMessageInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.chat.MessagesPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.InsertMessageCallback
@@ -12,11 +14,9 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.MessageRepository
 
 class MessagesMessageInteractor(private val messageRepository: MessageRepository) :
-    IMessagesMessageInteractor, MessagesCallback, InsertMessageCallback, MessageCallback,
-    UpdateMessageCallback {
+    IMessagesMessageInteractor, InsertMessageCallback, MessageCallback, UpdateMessageCallback {
 
     private var cacheMessages = mutableListOf<Message>()
-    private var cacheMessagesSet = mutableSetOf<Message>()
     private lateinit var messagesPresenterCallback: MessagesPresenterCallback
 
     override fun getMyMessagesLink() = cacheMessages
@@ -26,31 +26,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messagesPresenterCallback: MessagesPresenterCallback
     ) {
         this.messagesPresenterCallback = messagesPresenterCallback
-        messageRepository.getByDialogId(dialog, this, this, this)
-    }
-
-    override fun getCompanionMessages(
-        dialog: Dialog,
-        messagesPresenterCallback: MessagesPresenterCallback
-    ) {
-        this.messagesPresenterCallback = messagesPresenterCallback
-        messageRepository.getByDialogId(dialog, this, this, this)
-    }
-
-    /**
-     * add all text messages or if it is my messages add also commentMessages
-     *
-     * when we get from 2 activity_dialogs messages we sort it and show
-     */
-    override fun returnList(objects: List<Message>) {
-
-        for (message in objects) {
-            if (message.type == Message.TEXT_MESSAGE_STATUS || message.ownerId == User.getMyId()) {
-                cacheMessagesSet.add(message)
-            }
-        }
-        cacheMessages.addAll(cacheMessagesSet.sortedBy { it.time })
-        checkMoveToStart(cacheMessages, messagesPresenterCallback)
+        messageRepository.getByDialogId(dialog, this, this)
     }
 
     override fun updateMessages(
@@ -59,7 +35,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     ) {
         cacheMessages.remove(cacheMessages.find { it.id == message.id }!!)
         cacheMessages.add(message)
-        messagesPresenterCallback.showMessagesScreen(cacheMessages)
+        messagesPresenterCallback.updateMessageAdapter(message)
     }
 
     override fun sendMessage(
@@ -72,20 +48,11 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         }
     }
 
-    override fun checkMoveToStart(
-        messages: List<Message>,
-        messagesPresenterCallback: MessagesPresenterCallback
-    ) {
-        if (messages.isEmpty()) {
-            messagesPresenterCallback.showMessagesScreen(cacheMessages)
-        } else {
-            messagesPresenterCallback.showMessagesScreen(cacheMessages)
-            messagesPresenterCallback.showMoveToStart()
-        }
-    }
-
-    override fun getId(userId: String, dialogId: String): String {
-        return messageRepository.getIdForNew(userId, dialogId)
+    /**
+     * sent message and update unchecked dialog to our companion
+     */
+    override fun returnCreatedCallback(obj: Message) {
+        messagesPresenterCallback.updateUncheckedDialog(obj)
     }
 
     /**
@@ -94,33 +61,31 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     override fun returnGottenObject(element: Message?) {
         if (element == null) return
 
-        if (element.type == Message.TEXT_MESSAGE_STATUS || element.userId == User.getMyId()) {
+        if (element.type == Message.TEXT_MESSAGE_STATUS || element.ownerId == User.getMyId()) {
             addMessage(element)
+        } else {
+            Log.d(Tag.TEST_TAG, "Тип сообщения ${element.type} user id ${element.userId}")
         }
     }
 
     private fun addMessage(message: Message) {
         cacheMessages.add(message)
         messagesPresenterCallback.setUnchecked()
-        checkMoveToStart(cacheMessages, messagesPresenterCallback)
+        messagesPresenterCallback.showMessage(message)
     }
 
     /**
-     * we sent message and update unchecked dialog to our companion
-     *
-     * and show this message
-     */
-    override fun returnCreatedCallback(obj: Message) {
-        messagesPresenterCallback.updateUncheckedDialog(obj)
-    }
-
-    /**
-     * we wrote comment then we update our message to [Message.TEXT_MESSAGE_STATUS] and show it
+     * wrote comment then update our message to [Message.TEXT_MESSAGE_STATUS] and show it
      */
     override fun returnUpdatedCallback(obj: Message) {
-        cacheMessages.remove(cacheMessages.find { it.id == obj.id })
-        cacheMessages.add(obj)
-        messagesPresenterCallback.showMessagesScreen(cacheMessages)
+        //не апдейтить а создавать новые сообщения
+        if (cacheMessages.find { it.id == obj.id } == null) {
+            cacheMessages.add(obj)
+            messagesPresenterCallback.showMessage(obj)
+        }
     }
 
+    override fun getId(userId: String, dialogId: String): String {
+        return messageRepository.getIdForNew(userId, dialogId)
+    }
 }
