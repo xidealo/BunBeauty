@@ -65,7 +65,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
 
             when (message.type) {
                 Message.TEXT_MESSAGE_STATUS -> {
-                    val messageTextElement = MessageTextElement(messagesPresenter)
+                    val messageTextElement = MessageTextElement()
                     messageTextElement.createElement(view)
                     messageTextElement.setIsMyMessage(message)
                     messageTextElement.setVisibility(message)

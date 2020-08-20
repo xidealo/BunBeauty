@@ -78,7 +78,6 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
      * wrote comment then update our message to [Message.TEXT_MESSAGE_STATUS] and show it
      */
     override fun returnUpdatedCallback(obj: Message) {
-        //не апдейтить а создавать новые сообщения
         if (cacheMessages.find { it.id == obj.id } == null) {
             cacheMessages.add(obj)
             messagesPresenterCallback.showMessage(obj)

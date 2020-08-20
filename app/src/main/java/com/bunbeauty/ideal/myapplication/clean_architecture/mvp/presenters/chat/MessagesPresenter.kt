@@ -24,6 +24,7 @@ class MessagesPresenter(
             messagesDialogInteractor.getMyDialog(),
             this
         )
+        messagesDialogInteractor.updateCheckedDialog()
     }
 
     fun updateMessage(message: Message) {

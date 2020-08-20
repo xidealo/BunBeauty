@@ -10,6 +10,14 @@ import com.google.firebase.database.*
 
 class MessageFirebase {
 
+    private val firebaseLinks = mutableListOf<DatabaseReference>()
+
+    fun deleteLinks(){
+        for (link in firebaseLinks){
+            link.removeValue()
+        }
+    }
+
     fun insert(message: Message) {
         val messageRef = FirebaseDatabase.getInstance()
             .getReference(Dialog.DIALOGS)

@@ -12,9 +12,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat.
 import com.google.android.material.button.MaterialButton
 import java.util.*
 
-abstract class MessageElement(
-    private val messagesPresenter: MessagesPresenter
-) {
+abstract class MessageElement {
     protected lateinit var message: Message
     protected lateinit var messageTextMessageElementText: TextView
     protected lateinit var messageTimeMessageElementText: TextView
@@ -44,7 +42,6 @@ abstract class MessageElement(
             messageMessageElementLayout.gravity = Gravity.END
         } else {
             messageMessageElementLayout.gravity = Gravity.START
-            messagesPresenter.updateCheckedDialog()
         }
     }
 }

@@ -7,7 +7,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat.
 
 class MessageUserReviewElement(
     private val messagesPresenter: MessagesPresenter
-) : MessageElement(messagesPresenter) {
+) : MessageElement() {
 
     override fun setVisibility(message: Message) {
         if (message.ownerId == User.getMyId()){
