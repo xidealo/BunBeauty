@@ -25,9 +25,17 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
         this.messagesPresenter = messagesPresenter
     }
 
-    fun addItem(message: Message) {
-        messageList.add(message)
-        notifyItemInserted(messageList.size)
+    fun addItem(message: Message, toBottom: Boolean) {
+        if (!messageList.contains(message)) {
+            if (toBottom) {
+                messageList.add(message)
+                notifyItemInserted(messageList.size)
+            } else {
+                messageList.add(message)
+                messageList.sortBy { it.time }
+                notifyItemInserted(0)
+            }
+        }
     }
 
     fun updateMessageAdapter(message: Message) {

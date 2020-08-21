@@ -12,8 +12,8 @@ class MessageFirebase {
 
     private val firebaseLinks = mutableListOf<DatabaseReference>()
 
-    fun deleteLinks(){
-        for (link in firebaseLinks){
+    fun deleteLinks() {
+        for (link in firebaseLinks) {
             link.removeValue()
         }
     }
@@ -55,16 +55,18 @@ class MessageFirebase {
 
     fun getByDialogId(
         dialog: Dialog,
+        loadingLimit: Int,
         messageCallback: MessageCallback,
         updateMessageCallback: UpdateMessageCallback
     ) {
         val messageRef = FirebaseDatabase.getInstance()
             .getReference(Dialog.DIALOGS)
             .child(dialog.id)
-            .child(dialog.user.id)
+            .child(dialog.user.id).limitToLast(loadingLimit)
 
         messageRef.addChildEventListener(object : ChildEventListener {
             override fun onCancelled(p0: DatabaseError) {
+
             }
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {

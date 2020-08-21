@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -31,6 +33,9 @@ import javax.inject.Inject
 class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.OnClickListener {
 
     override var panelContext: Activity = this
+    private var loadingLimit: Int = 15
+    private var isScrolling = false
+    private var isSmoothScrollingToPosition = true
 
     @Inject
     lateinit var messageInteractor: MessagesMessageInteractor
@@ -69,7 +74,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         setContentView(R.layout.activity_messages)
         init()
         messagePresenter.getCompanionUser()
-        messagePresenter.createMessageScreen()
+        messagePresenter.createMessageScreen(loadingLimit)
     }
 
     private fun init() {
@@ -78,6 +83,22 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         val linearLayoutManager = LinearLayoutManager(this)
         resultsMessagesRecycleView.layoutManager = linearLayoutManager
         resultsMessagesRecycleView.adapter = messageAdapter
+
+        resultsMessagesRecycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (isScrolling && dy < 0) {
+                    updateData()
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    isScrolling = true
+                }
+            }
+        })
         messageAdapter.setData(messagePresenter)
 
         setEventListener(
@@ -87,6 +108,13 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
                     moveToStart()
                 }
             })
+    }
+
+    fun updateData() {
+        isSmoothScrollingToPosition = false
+        isScrolling = false
+        loadingLimit += 25
+        messagePresenter.createMessageScreen(loadingLimit)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -107,6 +135,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     override fun onClick(v: View) {
         when (v.id) {
             R.id.sendMessageMessagesBtn -> {
+                isSmoothScrollingToPosition = true
                 messagePresenter.sendMessage(messageMessagesInput.text.toString().trim())
                 messageMessagesInput.text.clear()
             }
@@ -114,8 +143,9 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     }
 
     override fun showMessage(message: Message) {
-        messageAdapter.addItem(message)
-        moveToStart()
+        messageAdapter.addItem(message, isSmoothScrollingToPosition)
+        if (isSmoothScrollingToPosition)
+            moveToStart()
     }
 
     override fun updateMessageAdapter(message: Message) {

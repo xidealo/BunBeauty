@@ -19,9 +19,10 @@ class MessagesPresenter(
 
     fun getCompanionUser() = messagesUserInteractor.getCompanionUser(this)
 
-    fun createMessageScreen() {
-        messagesMessageInteractor.getMyMessages(
+    fun createMessageScreen(loadingLimit: Int) {
+        messagesMessageInteractor.getMessages(
             messagesDialogInteractor.getMyDialog(),
+            loadingLimit,
             this
         )
         messagesDialogInteractor.updateCheckedDialog()
@@ -86,10 +87,6 @@ class MessagesPresenter(
 
     override fun updateUncheckedDialog(message: Message) {
         messagesDialogInteractor.updateUncheckedDialog(message)
-    }
-
-    fun updateCheckedDialog() {
-        messagesDialogInteractor.updateCheckedDialog()
     }
 
     override fun showCompanionUserInfo(fullName: String, photoLink: String) {

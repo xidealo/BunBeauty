@@ -14,6 +14,12 @@ class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
 
     private val dialogList:ArrayList<Dialog> = arrayListOf()
 
+    fun setData(dialogList: List<Dialog>) {
+        this.dialogList.clear()
+        this.dialogList.addAll(dialogList)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): DialogViewHolder {
         val context = viewGroup.context
         val layoutIdForListItem = R.layout.element_dialog
@@ -38,10 +44,5 @@ class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
         }
     }
 
-    fun setData(dialogList: List<Dialog>) {
-        this.dialogList.clear()
-        this.dialogList.addAll(dialogList)
-        notifyDataSetChanged()
-    }
 
 }

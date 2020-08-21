@@ -21,12 +21,13 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
 
     override fun getMyMessagesLink() = cacheMessages
 
-    override fun getMyMessages(
+    override fun getMessages(
         dialog: Dialog,
+        loadingLimit: Int,
         messagesPresenterCallback: MessagesPresenterCallback
     ) {
         this.messagesPresenterCallback = messagesPresenterCallback
-        messageRepository.getByDialogId(dialog, this, this)
+        messageRepository.getByDialogId(dialog, loadingLimit, this, this)
     }
 
     override fun updateMessages(

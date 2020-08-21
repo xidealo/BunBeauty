@@ -5,7 +5,12 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 
 interface IMessagesMessageInteractor {
-    fun getMyMessages(dialog: Dialog, messagesPresenterCallback: MessagesPresenterCallback)
+    fun getMessages(
+        dialog: Dialog,
+        loadingLimit: Int,
+        messagesPresenterCallback: MessagesPresenterCallback
+    )
+
     fun getMyMessagesLink(): List<Message>
     fun updateMessages(message: Message, messagesPresenterCallback: MessagesPresenterCallback)
     fun sendMessage(message: Message, messagesPresenterCallback: MessagesPresenterCallback)

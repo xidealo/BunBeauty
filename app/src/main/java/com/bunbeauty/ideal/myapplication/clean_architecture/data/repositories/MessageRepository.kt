@@ -44,12 +44,14 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
 
     override fun getByDialogId(
         dialog: Dialog,
+        loadingLimit: Int,
         messageCallback: MessageCallback,
         updateMessageCallback: UpdateMessageCallback
     ) {
         launch {
             messageFirebase.getByDialogId(
                 dialog,
+                loadingLimit,
                 messageCallback,
                 updateMessageCallback
             )
@@ -62,12 +64,12 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
         messageCallback: MessageCallback
     ) {
         launch {
-        messageFirebase.getLastMessage(
-            myId,
-            companionId,
-            messageCallback
-        )
-    }
+            messageFirebase.getLastMessage(
+                myId,
+                companionId,
+                messageCallback
+            )
+        }
     }
 
 
