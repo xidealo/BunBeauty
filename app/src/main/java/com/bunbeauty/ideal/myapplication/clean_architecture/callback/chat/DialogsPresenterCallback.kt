@@ -7,7 +7,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 interface DialogsPresenterCallback {
     fun getUser(dialog: Dialog)
     fun fillDialogs(user: User)
-    fun showDialogs(dialogs: List<Dialog>)
+    fun showDialogs(dialog: Dialog)
     fun getLastMessage(myId: String, companionId: String)
     fun fillDialogsByMessages(message: Message)
     fun showLoading()

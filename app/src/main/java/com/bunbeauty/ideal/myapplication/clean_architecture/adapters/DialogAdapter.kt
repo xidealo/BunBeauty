@@ -9,15 +9,24 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.chatElements.DialogElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 
 class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
 
-    private val dialogList:ArrayList<Dialog> = arrayListOf()
+    private val dialogList: ArrayList<Dialog> = arrayListOf()
 
-    fun setData(dialogList: List<Dialog>) {
-        this.dialogList.clear()
-        this.dialogList.addAll(dialogList)
-        notifyDataSetChanged()
+    fun addItem(dialog: Dialog) {
+        val foundDialog = dialogList.find { it.user.id == dialog.user.id }
+        if (foundDialog == null) {
+            dialogList.add(dialog)
+            dialogList.sortByDescending { it.lastMessage.time }
+            notifyItemInserted(dialogList.size)
+        }else{
+            val index = dialogList.indexOf(foundDialog)
+            dialogList[index] = dialog
+            dialogList.sortByDescending { it.lastMessage.time }
+            notifyItemChanged(index)
+        }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): DialogViewHolder {

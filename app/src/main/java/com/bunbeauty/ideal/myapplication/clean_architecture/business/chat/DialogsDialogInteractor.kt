@@ -16,7 +16,6 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
     private var finalCacheDialogs = mutableListOf<Dialog>()
     private var myCacheDialogs = mutableListOf<Dialog>()
     private lateinit var dialogsPresenterCallback: DialogsPresenterCallback
-    private var dialogCount = 0
 
     override fun getDialogsLink() = finalCacheDialogs
 
@@ -64,19 +63,12 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
         message: Message,
         dialogsPresenterCallback: DialogsPresenterCallback
     ) {
-        dialogCount++
-
         val dialogWithMessageId =
             myCacheDialogs.find { it.user.id == message.userId }
 
         if (dialogWithMessageId != null) {
             dialogWithMessageId.lastMessage = message
-        }
-
-        if (dialogCount >= myCacheDialogs.size) {
-            finalCacheDialogs.clear()
-            finalCacheDialogs.addAll(myCacheDialogs.sortedByDescending { it.lastMessage.time })
-            dialogsPresenterCallback.showDialogs(finalCacheDialogs)
+            dialogsPresenterCallback.showDialogs(dialogWithMessageId)
         }
     }
 

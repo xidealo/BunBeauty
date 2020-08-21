@@ -80,8 +80,8 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
         initTopPanel("Диалоги", ButtonTask.NONE)
     }
 
-    override fun showDialogs(dialogList: List<Dialog>) {
-        dialogAdapter.setData(dialogList)
+    override fun showDialogs(dialog: Dialog) {
+        dialogAdapter.addItem(dialog)
     }
 
     override fun showLoading() {

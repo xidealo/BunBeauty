@@ -95,7 +95,6 @@ class MessageFirebase {
         })
     }
 
-
     fun getLastMessage(
         myId: String,
         companionId: String,

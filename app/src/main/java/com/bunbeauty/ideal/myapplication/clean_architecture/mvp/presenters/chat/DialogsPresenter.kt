@@ -31,10 +31,10 @@ class DialogsPresenter(
         dialogsDialogInteractor.fillDialogs(user, this)
     }
 
-    override fun showDialogs(dialogs: List<Dialog>) {
+    override fun showDialogs(dialog: Dialog) {
         viewState.hideLoading()
         viewState.hideEmptyDialogs()
-        viewState.showDialogs(dialogs)
+        viewState.showDialogs(dialog)
     }
 
     override fun getLastMessage(myId: String, companionId: String) {
