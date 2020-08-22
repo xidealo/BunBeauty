@@ -7,16 +7,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.UserCommentElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.UserComment
 
 class UserCommentAdapter : RecyclerView.Adapter<UserCommentAdapter.UserCommentViewHolder>() {
 
     private val commentList: ArrayList<UserComment> = arrayListOf()
 
-    fun setData(commentList: List<UserComment>) {
-        this.commentList.clear()
-        this.commentList.addAll(commentList)
-        notifyDataSetChanged()
+    fun addItem(userComment: UserComment) {
+        val foundDialog = commentList.find { it.id == userComment.id }
+        if (foundDialog == null) {
+            commentList.add(userComment)
+            commentList.sortByDescending { it.date }
+            notifyItemInserted(commentList.size)
+        }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): UserCommentViewHolder {

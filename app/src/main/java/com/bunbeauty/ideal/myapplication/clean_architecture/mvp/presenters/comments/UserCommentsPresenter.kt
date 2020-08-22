@@ -31,9 +31,9 @@ class UserCommentsPresenter(
         userCommentsUserCommentInteractor.setUserOnUserComment(user, this)
     }
 
-    override fun updateUserComments(userComments: List<UserComment>) {
+    override fun updateUserComment(userComment: UserComment) {
         viewState.hideLoading()
-        viewState.updateUserComments(userComments)
+        viewState.updateUserComments(userComment)
     }
 
     override fun showEmptyScreen() {

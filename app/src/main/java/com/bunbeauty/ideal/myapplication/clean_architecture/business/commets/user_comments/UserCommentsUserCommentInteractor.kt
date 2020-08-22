@@ -6,8 +6,9 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.UserComment
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.UserCommentRepository
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IUserCommentRepository
 
-class UserCommentsUserCommentInteractor(private val userCommentRepository: UserCommentRepository) :
+class UserCommentsUserCommentInteractor(private val userCommentRepository: IUserCommentRepository) :
     IUserCommentsUserCommentInteractor, UserCommentsCallback {
 
     private val cacheUserComments = mutableListOf<UserComment>()
@@ -44,9 +45,7 @@ class UserCommentsUserCommentInteractor(private val userCommentRepository: UserC
         userCommentsPresenterCallback: UserCommentsPresenterCallback
     ) {
         cacheUserComments[indexCacheUserComment].user = user
+        userCommentsPresenterCallback.updateUserComment(cacheUserComments[indexCacheUserComment])
         indexCacheUserComment++
-
-        if (indexCacheUserComment >= cacheUserComments.size - 1)
-            userCommentsPresenterCallback.updateUserComments(cacheUserComments)
     }
 }

@@ -66,36 +66,36 @@ class UserCommentsActivity : MvpAppCompatActivity(), UserCommentsView, ITopPanel
     }
 
     fun init() {
-        resultsUserCommentsRecycleView.layoutManager = LinearLayoutManager(this)
-        resultsUserCommentsRecycleView.adapter = userCommentAdapter
+        activity_usercomments_rv_results.layoutManager = LinearLayoutManager(this)
+        activity_usercomments_rv_results.adapter = userCommentAdapter
     }
 
     override fun showLoading() {
-        progressBarUserComments.visibility = View.VISIBLE
+        activity_usercomments_pb_loading.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        progressBarUserComments.visibility = View.GONE
+        activity_usercomments_pb_loading.visibility = View.GONE
     }
 
-    override fun updateUserComments(userComments: List<UserComment>) {
-        userCommentAdapter.setData(userComments)
+    override fun updateUserComments(userComment: UserComment) {
+        userCommentAdapter.addItem(userComment)
     }
 
     override fun showUserComments() {
-        resultsUserCommentsRecycleView.visibility = View.VISIBLE
+        activity_usercomments_rv_results.visibility = View.VISIBLE
     }
 
     override fun hideUserComments() {
-        resultsUserCommentsRecycleView.visibility = View.GONE
+        activity_usercomments_rv_results.visibility = View.GONE
     }
 
     override fun showEmptyScreen() {
-        noUserCommentsText.visibility = View.VISIBLE
+        activity_usercomments_tv_empty.visibility = View.VISIBLE
     }
 
     override fun hideEmptyScreen() {
-        noUserCommentsText.visibility = View.GONE
+        activity_usercomments_tv_empty.visibility = View.GONE
     }
 
 }

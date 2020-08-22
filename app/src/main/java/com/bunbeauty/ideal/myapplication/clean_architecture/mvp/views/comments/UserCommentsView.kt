@@ -6,7 +6,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 interface UserCommentsView : MvpView {
     fun showLoading()
     fun hideLoading()
-    fun updateUserComments(userComments: List<UserComment>)
+    fun updateUserComments(userComment: UserComment)
     fun showUserComments()
     fun hideUserComments()
     fun showEmptyScreen()
