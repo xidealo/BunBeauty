@@ -8,4 +8,5 @@ interface VerifyPhonePresenterCallback {
     fun showVerificationFailed()
     fun showTooShortCodeError()
     fun showWrongCodeError()
+    fun showServiceConnectionProblem()
 }

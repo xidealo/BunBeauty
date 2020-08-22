@@ -56,7 +56,7 @@ public class UIAddingTests {
 
     private void goToAddingService() {
         //switcher
-        onView(withId(R.id.rightSwitcherElementBtn)).perform(click());
+        //onView(withId(R.id.rightSwitcherElementBtn)).perform(click());
         // button
         onView(withId(R.id.createServiceBtn)).perform(click());
     }

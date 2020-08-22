@@ -19,6 +19,10 @@ data class ScheduleWithWorkingTime(
         return workingTimeList.filter { it.getDayOfMonth() == dayOfMonth }
     }
 
+    fun getFreeWorkingTimes(dayOfMonth: Int): List<WorkingTime> {
+        return workingTimeList.filter { it.orderId.isEmpty() && it.getDayOfMonth() == dayOfMonth }
+    }
+
     fun containsWorkingTime(day: Int, workingTime: WorkingTime): Boolean {
         return workingTimeList.any {
             it.getDayOfMonth() == day &&
@@ -52,8 +56,10 @@ data class ScheduleWithWorkingTime(
             it.getDayOfMonth() == day &&
                     it.getHour() == timeParts[0].toInt() &&
                     it.getMinutes() == timeParts[1].toInt()
+        }!!
+        if (workingTime.orderId.isEmpty()) {
+            workingTimeList.remove(workingTime)
         }
-        workingTimeList.remove(workingTime)
     }
 
     fun getAvailableDays(serviceDuration: Float): Set<WorkingDay> {
@@ -61,7 +67,8 @@ data class ScheduleWithWorkingTime(
 
         var timeInRaw = 0
         var previousTime: WorkingTime? = null
-        for (time in workingTimeList) {
+        val freeWorkingTimeList = workingTimeList.filter { it.orderId.isEmpty() }
+        for (time in freeWorkingTimeList) {
             if (timeInRaw == 0) {
                 timeInRaw = 1
             } else {
@@ -87,10 +94,10 @@ data class ScheduleWithWorkingTime(
         }
 
         val sessionList = ArrayList<Session>()
-        val filteredTimeList = getWorkingTimes(dayOfMonth)
+        val dayTimeList = getFreeWorkingTimes(dayOfMonth)
         var timeInRaw = 0
         lateinit var previousTime: WorkingTime
-        for (time in filteredTimeList) {
+        for (time in dayTimeList) {
             if (timeInRaw == 0) {
                 timeInRaw = 1
             } else {
@@ -114,5 +121,13 @@ data class ScheduleWithWorkingTime(
 
     fun isEmpty(): Boolean {
         return workingTimeList.isEmpty()
+    }
+
+    fun haveSomeOrder(days: List<Int>, timeString: String): Boolean {
+        return days.any { day ->
+            getWorkingTimes(day).find { workingTime ->
+                workingTime.getStringTime() == timeString
+            }!!.orderId.isNotEmpty()
+        }
     }
 }

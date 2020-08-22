@@ -114,14 +114,16 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
     private fun getColumnCount(buttonWidth: Int): Int {
         val size = Point()
         windowManager.defaultDisplay.getRealSize(size)
-        return size.x / (buttonWidth + 2 * BUTTON_MARGIN)
+        val margin = resources.getDimensionPixelSize(R.dimen.sessions_button_margin)
+        return size.x / (buttonWidth + 2 * margin)
     }
 
     private fun getConfiguredButton(width: Int, height: Int, text: String): Button {
         val button = Button(this)
 
         val params = LinearLayout.LayoutParams(width, height)
-        params.setMargins(BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_MARGIN)
+        val margin = resources.getDimensionPixelSize(R.dimen.sessions_button_margin)
+        params.setMargins(margin, margin, margin, margin)
         button.layoutParams = params
         setBackground(button)
         button.text = text
@@ -134,7 +136,7 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
 
     private fun setBackground(button: Button) {
         val gradientDrawable = GradientDrawable()
-        gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
+        gradientDrawable.cornerRadius = resources.getDimension(R.dimen.schedule_button_corner_radius)
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
 
         button.background = gradientDrawable
@@ -185,9 +187,5 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
 
     override fun disableMakeAppointmentButton() {
         makeAppointmentSessionBtn.isEnabled = false
-    }
-
-    companion object {
-        const val BUTTON_MARGIN = 8
     }
 }

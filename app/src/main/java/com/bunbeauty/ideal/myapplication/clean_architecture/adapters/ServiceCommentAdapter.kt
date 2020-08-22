@@ -44,9 +44,8 @@ class ServiceCommentAdapter :
         RecyclerView.ViewHolder(view) {
 
         fun bind(serviceComment: ServiceComment) {
-            val commentElement = ServiceCommentElement(context)
+            val commentElement = ServiceCommentElement(context, serviceComment)
             commentElement.createElement(view)
-            commentElement.setData(serviceComment)
         }
     }
 

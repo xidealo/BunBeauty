@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 class VerifyPhoneNumberApi {
 
     private lateinit var verifyPhoneNumberCallback: VerifyPhoneNumberCallback
-    private lateinit var phoneVerificationId: String
+    private var phoneVerificationId: String? = null
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
 
     fun sendVerificationCode(
@@ -47,19 +47,13 @@ class VerifyPhoneNumberApi {
             return
         }
 
-        val credential = PhoneAuthProvider.getCredential(phoneVerificationId, code)
-        verifyPhoneNumberCallback.returnCredential(credential)
-        //FirebaseAuth.getInstance().currentUser!!.linkWithCredential(credential).isComplete
+        phoneVerificationId?.apply {
+            val credential = PhoneAuthProvider.getCredential(this, code)
+            verifyPhoneNumberCallback.returnCredential(credential)
+            return
+        }
 
-        /*FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                verifyPhoneNumberCallback.returnVerifySuccessful(credential)
-            } else {
-                if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                    verifyPhoneNumberCallback.returnWrongCodeError()
-                }
-            }
-        }*/
+        verifyPhoneNumberCallback.returnServiceConnectionProblem()
     }
 
     private val verificationCallbacks =

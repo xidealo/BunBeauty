@@ -127,6 +127,10 @@ class EditProfilePresenter(
         viewState.showMessage("Неверный код. Попробуйте ещё раз.")
     }
 
+    override fun showServiceConnectionProblem() {
+        viewState.showMessage("Проблемы соединения с сервером")
+    }
+
     override fun showPhoneAlreadyUsedError() {
         viewState.showMessage("Данный номер уже используется другим пользователем.")
     }

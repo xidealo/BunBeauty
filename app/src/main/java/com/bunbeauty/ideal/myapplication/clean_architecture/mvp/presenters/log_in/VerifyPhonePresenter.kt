@@ -45,6 +45,10 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneIntera
         viewState.showMessage("Неправильный код")
     }
 
+    override fun showServiceConnectionProblem() {
+        viewState.showMessage("Проблемы соединения с сервером")
+    }
+
     override fun goToRegistration(phone: String) {
         viewState.goToRegistration(phone)
     }

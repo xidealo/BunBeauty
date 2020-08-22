@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:layout_marginBottom="@dimen/default_small_margin"
     android:layout_marginStart="@dimen/default_small_margin"
     android:layout_marginEnd="@dimen/default_small_margin"
-    android:background="@drawable/block_text"
+    android:layout_marginBottom="@dimen/default_small_margin"
     android:orientation="horizontal">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/foundServiceElementLayout"
+        android:id="@+id/element_service_mcv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:checkable="true"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        app:cardCornerRadius="8dp">
 
         <LinearLayout
+            android:id="@+id/element_service_ll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:baselineAligned="false"
@@ -28,23 +30,21 @@
                 android:layout_width="@dimen/photo_avatar_width"
                 android:layout_height="@dimen/photo_avatar_height"
                 android:layout_marginEnd="10dp">
-
                 <ImageView
-                    android:id="@+id/avatarFoundServiceElementImage"
+                    android:id="@+id/element_service_avatar_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:srcCompat="@tools:sample/avatars" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:paddingTop="5dp">
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/serviceNameFoundServiceElementText"
+                    android:id="@+id/element_service_service_name_tv"
                     style="@style/mainTextMainScreen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -52,14 +52,14 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/cityFoundServiceElementText"
+                    android:id="@+id/element_service_city_tv"
                     style="@style/defaultTextMainScreen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Город" />
 
                 <me.zhanghai.android.materialratingbar.MaterialRatingBar
-                    android:id="@+id/ratingBarFondServiceElement"
+                    android:id="@+id/element_service_rating_rb"
                     style="@android:style/Widget.Holo.RatingBar.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -73,20 +73,20 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/userNameFoundServiceElementText"
+                    android:id="@+id/element_service_master_name_tv"
                     style="@style/defaultTextMainScreen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Имя человека" />
+                    android:text="Имя  мастера" />
 
                 <TextView
-                    android:id="@+id/costFoundServiceElementText"
+                    android:id="@+id/element_service_cost_tv"
                     style="@style/defaultTextMainScreen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Цена" />
+                    android:text="100 ₽" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

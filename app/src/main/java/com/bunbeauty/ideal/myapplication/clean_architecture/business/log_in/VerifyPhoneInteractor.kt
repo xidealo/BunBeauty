@@ -64,6 +64,10 @@ class VerifyPhoneInteractor(
         }
     }
 
+    override fun returnServiceConnectionProblem() {
+        verifyPresenterCallback.showServiceConnectionProblem()
+    }
+
     override fun returnGottenObject(element: User?) {
         if (element == null) return
 

@@ -17,7 +17,7 @@ class ProfileOrderAdapter() : RecyclerView.Adapter<ProfileOrderAdapter.ProfileOr
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileOrderViewHolder {
         context = parent.context
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.element_order, parent, false)
+        val view = layoutInflater.inflate(R.layout.element_profile_order, parent, false)
 
         return ProfileOrderViewHolder(view)
     }

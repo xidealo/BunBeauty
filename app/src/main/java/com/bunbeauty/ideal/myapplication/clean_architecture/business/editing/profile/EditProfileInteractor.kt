@@ -187,6 +187,10 @@ class EditProfileInteractor(
         }
     }
 
+    override fun returnServiceConnectionProblem() {
+        editProfilePresenterCallback.showServiceConnectionProblem()
+    }
+
     fun signOut() {
         val tokenRef = FirebaseDatabase
             .getInstance()

@@ -3,11 +3,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.view.View
-import android.widget.ImageView
-import android.widget.RatingBar
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTransformation
@@ -17,8 +13,9 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity
 import com.bunbeauty.ideal.myapplication.help_api.WorkWithViewApi
-import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.element_service.view.*
+import kotlin.random.Random
 
 class ServiceElement(
     private val service: Service,
@@ -27,59 +24,33 @@ class ServiceElement(
     private val context: Context
 ) {
 
-    private lateinit var nameUserText: TextView
-    private lateinit var cityText: TextView
-    private lateinit var nameServiceText: TextView
-    private lateinit var costText: TextView
-    private lateinit var avatarImage: ImageView
-    private lateinit var ratingBar: RatingBar
-    private lateinit var layout: MaterialCardView
-
     fun createElement() {
-        onViewCreated(view)
-    }
-
-    private fun onViewCreated(view: View) {
-
-        layout = view.findViewById(R.id.foundServiceElementLayout)
-        nameUserText = view.findViewById(R.id.userNameFoundServiceElementText)
-        cityText = view.findViewById(R.id.cityFoundServiceElementText)
-        nameServiceText = view.findViewById(R.id.serviceNameFoundServiceElementText)
-        costText = view.findViewById(R.id.costFoundServiceElementText)
-        ratingBar = view.findViewById(R.id.ratingBarFondServiceElement)
         val isPremium = WorkWithTimeApi.checkPremium(service.premiumDate)
-
         if (isPremium) {
-            setPremiumBackground()
-            ratingBar.progressTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
+            setPremiumColor()
         } else {
             setDefaultBackground()
-            ratingBar.progressTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
         }
 
-        avatarImage = view.findViewById(R.id.avatarFoundServiceElementImage)
+        setData()
 
-        layout.setOnClickListener {
+        view.element_service_mcv.setOnClickListener {
             goToService()
         }
-        setData()
     }
 
     private fun setData() {
-        //устанавливаем сокращения названий и имен в зависимости от размера экрана
         if (isMoreFiveInch()) {
-            nameUserText.text = WorkWithStringsApi.cutString(user.name, 9)
-            nameServiceText.text = WorkWithStringsApi.cutString(service.name.toUpperCase(), 14)
+            view.element_service_master_name_tv.text = WorkWithStringsApi.cutString(user.name, 9)
+            view.element_service_service_name_tv.text = WorkWithStringsApi.cutString(service.name.toUpperCase(), 14)
         } else {
-            nameUserText.text =
+            view.element_service_master_name_tv.text =
                 WorkWithStringsApi.doubleCapitalSymbols(WorkWithStringsApi.cutString(user.name, 9))
-            nameServiceText.text = WorkWithStringsApi.cutString(service.name.toUpperCase(), 18)
+            view.element_service_service_name_tv.text = WorkWithStringsApi.cutString(service.name.toUpperCase(), 18)
         }
-        cityText.text = WorkWithStringsApi.firstCapitalSymbol(user.city)
-        costText.text = "Цена \n${service.cost}"
-        ratingBar.rating = service.rating
+        view.element_service_city_tv.text = WorkWithStringsApi.firstCapitalSymbol(user.city)
+        view.element_service_cost_tv.text = "${service.cost} ₽"
+        view.element_service_rating_rb.rating = service.rating
 
         showAvatar()
     }
@@ -93,7 +64,7 @@ class ServiceElement(
             .resize(width, height)
             .centerCrop()
             .transform(CircularTransformation())
-            .into(avatarImage)
+            .into(view.element_service_avatar_iv)
     }
 
     private fun goToService() {
@@ -103,24 +74,17 @@ class ServiceElement(
         context.startActivity(intent)
     }
 
-    private fun setPremiumBackground() {
-        layout.setBackgroundResource(R.drawable.block_text_premium)
-        nameUserText.setBackgroundColor(Color.parseColor("#f6db40"))
-        cityText.setBackgroundColor(Color.parseColor("#f6db40"))
-        nameServiceText.setBackgroundColor(Color.parseColor("#f6db40"))
-        costText.setBackgroundColor(Color.parseColor("#f6db40"))
-        ratingBar.setBackgroundColor(Color.parseColor("#f6db40"))
+    private fun setPremiumColor() {
+        view.element_service_ll.setBackgroundResource(R.color.yellow)
+        view.element_service_rating_rb.supportProgressTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(context, R.color.mainBlue))
     }
 
     private fun setDefaultBackground() {
-        layout.setBackgroundResource(R.drawable.block_text)
-        nameUserText.setBackgroundColor(Color.WHITE)
-        cityText.setBackgroundColor(Color.WHITE)
-        nameServiceText.setBackgroundColor(Color.WHITE)
-        costText.setBackgroundColor(Color.WHITE)
-        ratingBar.setBackgroundColor(Color.WHITE)
+        view.element_service_ll.setBackgroundResource(R.color.white)
+        view.element_service_rating_rb.supportProgressTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
     }
 
     private fun isMoreFiveInch() = WorkWithViewApi.getInches(context) < 5
-
 }

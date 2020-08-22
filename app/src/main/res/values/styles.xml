@@ -116,7 +116,7 @@
     <style name="materialLoginSpinnerLayout" parent="materialSpinnerLayout">
         <item name="startIconTint">@color/white50</item>
         <item name="boxBackgroundColor">@color/mainBlue</item>
-        <item name="boxStrokeColor">@color/selector_white50</item>
+        <item name="boxStrokeColor">@color/white50</item>
         <item name="endIconTint">@color/white</item>
     </style>
 
@@ -177,13 +177,6 @@
         <item name="cornerRadius">18dp</item>
     </style>
 
-    <style name="switchButton" parent="baseButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:backgroundTint">@color/switcher</item>
-        <item name="cornerRadius">18dp</item>
-    </style>
-
     <style name="actionButton" parent="baseButton">
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">56dp</item>
@@ -204,7 +197,6 @@
     </style>
 
     <!-- BLOCKS -->
-
     <style name="verticalBlock">
         <item name="android:orientation">vertical</item>
     </style>
@@ -228,6 +220,13 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
+    <style name="wideHorizontalBlockWithSmallMargin">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/default_small_margin</item>
+    </style>
+
     <!-- IMAGE -->
 
     <style name="profileAvatar">
@@ -246,7 +245,7 @@
     <!-- RATING BAR -->
 
     <style name="ratingBar" parent="@android:style/Widget.RatingBar">
-        <item name="android:progressDrawable">@drawable/rating_bar</item>
+        <item name="android:progressDrawable">@drawable/layer_list_star</item>
         <item name="android:minHeight">23dip</item>
         <item name="android:maxHeight">25dip</item>
     </style>
@@ -270,43 +269,12 @@
         <item name="labelVisibilityMode">unlabeled</item>
         <item name="elevation">10dp</item>
         <item name="android:background">@color/mainBlue</item>
-        <item name="itemIconTint">@color/navigation</item>
-    </style>
-
-    <style name="topNavigation">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="labelVisibilityMode">unlabeled</item>
-        <item name="android:background">@color/mainBlue</item>
-        <item name="itemIconTint">@color/navigation</item>
+        <item name="itemIconTint">@color/selector_navigation</item>
     </style>
 
     <!-- ======================================================================================= -->
 
 
-    <style name="buttonText" parent="@android:style/Widget.RatingBar">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">16sp</item>
-        <item name="fontFamily">@font/roboto_bold</item>
-    </style>
-
-    <style name="lightText">
-        <item name="android:backgroundTint">@color/white50</item>
-        <item name="android:inputType">textPersonName|textCapWords</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:ems">10</item>
-        <item name="android:textColorHint">@color/white50</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="lightTextForText" parent="lightText">
-        <item name="android:inputType">textPersonName|textCapWords</item>
-    </style>
-
-    <style name="lightTextForPhone" parent="lightText">
-        <item name="android:inputType">phone</item>
-    </style>
 
     <!-- Style for icons -->
     <style name="icon">
@@ -314,27 +282,14 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="iconRegular" parent="icon">
-        <item name="fontFamily">@font/font_awesome_second_regular</item>
-    </style>
-
     <style name="iconSolid" parent="icon">
         <item name="fontFamily">@font/font_awesome_solid</item>
-    </style>
-
-    <!-- Style for titles -->
-    <style name="myTitle">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">20sp</item>
-        <item name="fontFamily">@font/roboto_bold</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <!-- Style for main text -->
     <style name="textOnPages">
         <item name="android:textColor">@color/black</item>
         <item name="fontFamily">@font/roboto_bold</item>
-        <item name="android:background">@drawable/block_text</item>
     </style>
 
     <style name="timeText" parent="textOnPages">
@@ -375,7 +330,7 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="foundProfileElement">
+    <style name="blueBoldText">
         <item name="android:textColor">@color/mainBlue</item>
         <item name="fontFamily">@font/roboto_bold</item>
         <item name="android:textSize">20sp</item>
@@ -383,12 +338,6 @@
     </style>
 
     <!-- Style for block style -->
-    <style name="block">
-        <item name="android:orientation">horizontal</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">@dimen/default_small_margin</item>
-    </style>
 
     <style name="ratingBarColors" parent="@android:style/Widget.RatingBar">
         <item name="android:progressBackgroundTint">@color/black</item>
@@ -431,7 +380,7 @@
     </style>
 
     <style name="unselected_button">
-        <item name="android:background">@drawable/unselected_item</item>
+        <item name="android:background">@drawable/item_unselected</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:backgroundTint">@color/mainBlue</item>
         <item name="android:textSize">10sp</item>
@@ -496,7 +445,7 @@
 
     <style name="lightBlueButton" parent="baseButton">
         <item name="fontFamily">@font/font_awesome_solid</item>
-        <item name="android:background">@drawable/unselected_item</item>
+        <item name="android:background">@drawable/item_unselected</item>
         <item name="android:layout_marginTop">2dp</item>
         <item name="android:layout_marginBottom">2dp</item>
         <item name="android:textSize">20sp</item>

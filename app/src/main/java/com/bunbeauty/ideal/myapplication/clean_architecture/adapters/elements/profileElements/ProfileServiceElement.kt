@@ -11,11 +11,11 @@ import kotlinx.android.synthetic.main.element_profile_service.view.*
 class ProfileServiceElement(private val service: Service, private val context: Context) {
 
     fun createElement(view: View) {
-        view.serviceNameProfileServiceElementText.text = WorkWithStringsApi.firstCapitalSymbol(
+        view.element_profile_service_tv_name.text = WorkWithStringsApi.firstCapitalSymbol(
             WorkWithStringsApi.cutString(service.name, 26)
         )
-        view.profileServiceElementRatingBar.rating = service.rating
-        view.profileServiceElementLayout.setOnClickListener {
+        view.element_profile_service_rb_rating.rating = service.rating
+        view.element_profile_service_mcv.setOnClickListener {
             goToService()
         }
     }

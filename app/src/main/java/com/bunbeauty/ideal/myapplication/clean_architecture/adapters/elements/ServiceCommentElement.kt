@@ -3,39 +3,22 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import android.widget.ImageView
-import android.widget.RatingBar
-import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTransformation
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.ServiceComment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CurrentCommentActivity
-import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.element_service_comment.view.*
 
 class ServiceCommentElement(
-    private val context: Context
+    private val context: Context,
+    private val serviceComment: ServiceComment
 ) {
-    private lateinit var avatarServiceCommentElementImage: ImageView
-    private lateinit var nameServiceCommentElementText: TextView
-    private lateinit var reviewServiceCommentElementText: TextView
-    private lateinit var ratingServiceCommentElementBar: RatingBar
-    private lateinit var commentElementMaterialCardView: MaterialCardView
-    private lateinit var serviceComment: ServiceComment
 
     fun createElement(view: View) {
-        avatarServiceCommentElementImage = view.findViewById(R.id.element_servicecomment_iv_avatar)
-        nameServiceCommentElementText = view.findViewById(R.id.element_servicecomment_tv_name)
-        reviewServiceCommentElementText = view.findViewById(R.id.element_servicecomment_tv_review)
-        ratingServiceCommentElementBar = view.findViewById(R.id.element_servicecomment_rb_rating)
-        commentElementMaterialCardView = view.findViewById(R.id.element_servicecomment_ll_main)
-        commentElementMaterialCardView.setOnClickListener {
+        view.element_service_comment_ll.setOnClickListener {
             goToCurrentComment()
         }
-    }
-
-    fun setData(serviceComment: ServiceComment) {
-        this.serviceComment = serviceComment
 
         Picasso.get()
             .load(serviceComment.user.photoLink)
@@ -45,12 +28,12 @@ class ServiceCommentElement(
             )
             .centerCrop()
             .transform(CircularTransformation())
-            .into(avatarServiceCommentElementImage)
+            .into(view.element_service_comment_iv_avatar)
 
-        nameServiceCommentElementText.text =
+        view.element_service_comment_tv_name.text =
             "${serviceComment.user.name}  ${serviceComment.user.surname}"
-        reviewServiceCommentElementText.text = serviceComment.review
-        ratingServiceCommentElementBar.rating = serviceComment.rating
+        view.element_service_comment_tv_review.text = serviceComment.review
+        view.element_service_comment_rb_rating.rating = serviceComment.rating
     }
 
     private fun goToCurrentComment() {

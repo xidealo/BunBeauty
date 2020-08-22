@@ -59,8 +59,9 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
     }
 
     fun getTime(schedulePresenterCallback: SchedulePresenterCallback) {
-        val accurateTime = LinkedHashSet<String>()
-        val inaccurateTime = LinkedHashSet<String>()
+        val accurateTimeSet = LinkedHashSet<String>()
+        val timeWithOrderSet = LinkedHashSet<String>()
+        val inaccurateTimeSet = LinkedHashSet<String>()
 
         for (day in selectedDays) {
             if (!schedule.containsWorkingDay(day)) {
@@ -69,15 +70,20 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
 
             for (workingTime in schedule.getWorkingTimes(day)) {
                 if (isAccurate(workingTime)) {
-                    accurateTime.add(workingTime.getStringTime())
+                    accurateTimeSet.add(workingTime.getStringTime())
                 } else {
-                    inaccurateTime.add(workingTime.getStringTime())
+                    inaccurateTimeSet.add(workingTime.getStringTime())
+                }
+
+                if (selectedDays.size == 1 && workingTime.orderId.isNotEmpty()) {
+                    timeWithOrderSet.add(workingTime.getStringTime())
                 }
             }
         }
 
-        schedulePresenterCallback.showAccurateTime(accurateTime)
-        schedulePresenterCallback.showInaccurateTime(inaccurateTime)
+        schedulePresenterCallback.showAccurateTime(accurateTimeSet)
+        schedulePresenterCallback.showTimeWithOrder(timeWithOrderSet)
+        schedulePresenterCallback.showInaccurateTime(inaccurateTimeSet)
     }
 
     private fun isAccurate(time: WorkingTime): Boolean {
@@ -110,6 +116,12 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         timeString: String,
         schedulePresenterCallback: SchedulePresenterCallback
     ) {
+        if (schedule.haveSomeOrder(days, timeString)) {
+            schedulePresenterCallback.showInaccurateTime(setOf(timeString))
+        } else {
+            schedulePresenterCallback.clearTime(timeString)
+        }
+
         for ((i, day) in days.withIndex()) {
             schedule.removeTime(day, timeString)
 

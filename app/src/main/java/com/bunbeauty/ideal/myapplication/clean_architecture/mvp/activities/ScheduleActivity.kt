@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -134,7 +135,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
     override fun showSchedule(dayIndexes: Set<Int>) {
         for (buttonIndex in dayIndexes) {
             if (buttonIndex in 0 until daysButtons.size) {
-                fillButton(daysButtons[buttonIndex])
+                fillDayButton(daysButtons[buttonIndex])
             }
         }
     }
@@ -164,7 +165,8 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
 
     private fun setBackground(button: Button) {
         val gradientDrawable = GradientDrawable()
-        gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
+        gradientDrawable.cornerRadius =
+            resources.getDimension(R.dimen.schedule_button_corner_radius)
         gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.yellow))
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
 
@@ -196,10 +198,11 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         when (viewId) {
             R.id.daysScheduleGrid -> {
                 for (button in daysButtons) {
-                    clearButtonSelection(button)
+                    clearDayButtonSelection(button)
                 }
                 for (button in timeButtons) {
-                    clearButtonFill(button)
+                    button.isEnabled = true
+                    clearTimeButtonFill(button)
                 }
             }
         }
@@ -229,32 +232,40 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
     }
 
     override fun showAccurateTime(accurateTime: Set<String>) {
-        for (button in timeButtons) {
-            if (accurateTime.contains(button.text.toString())) {
-                button.setTag(R.id.touchIdTag, touchId)
-                fillButton(button)
-            }
+        timeButtons.filter {
+            accurateTime.contains(it.text.toString())
+        }.map {
+            it.isEnabled = true
+            it.setTag(R.id.touchIdTag, touchId)
+            fillTimeButton(it)
+        }
+    }
+
+    override fun showTimeWithOrder(timeWithOrderSet: Set<String>) {
+        timeButtons.filter {
+            timeWithOrderSet.contains(it.text.toString())
+        }.map {
+            it.isEnabled = false
         }
     }
 
     override fun showInaccurateTime(inaccurateTime: Set<String>) {
-        for (button in timeButtons) {
-            if (inaccurateTime.contains(button.text.toString())) {
-                fillButtonInHalf(button)
-            }
+        timeButtons.filter {
+            inaccurateTime.contains(it.text.toString())
+        }.map {
+            it.isEnabled = true
+            fillButtonInHalf(it)
         }
     }
 
     private fun selectTimeButton(button: Button) {
         button.setTag(R.id.touchIdTag, touchId)
         if (isButtonSelected(button)) {
-            clearButtonFill(button)
-
             val selectedDayTexts =
                 schedulePresenter.getSelectedDays().map { daysButtons[it].text.toString() }
             schedulePresenter.removeFromSchedule(selectedDayTexts, button.text.toString())
         } else {
-            fillButton(button)
+            fillTimeButton(button)
 
             val selectedDayList =
                 schedulePresenter.getSelectedDays().map { daysButtons[it].text.toString() }
@@ -262,12 +273,16 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         }
     }
 
+    override fun clearTime(timeString: String) {
+        clearDayButtonFill(timeButtons.find { it.text == timeString }!!)
+    }
+
     override fun clearDay(dayIndex: Int) {
-        clearButtonFill(daysButtons[dayIndex])
+        clearDayButtonFill(daysButtons[dayIndex])
     }
 
     override fun fillDay(dayIndex: Int) {
-        fillButton(daysButtons[dayIndex])
+        fillDayButton(daysButtons[dayIndex])
     }
 
     private fun findTouchedButton(motionEvent: MotionEvent, buttons: List<Button>): Int? {
@@ -301,9 +316,10 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
     private fun selectButton(button: Button) {
         val gradientDrawable = button.background as GradientDrawable
 
-        gradientDrawable.cornerRadius = resources.getDimension(R.dimen.button_corner_radius)
+        gradientDrawable.cornerRadius =
+            resources.getDimension(R.dimen.schedule_button_corner_radius)
         gradientDrawable.setStroke(
-            resources.getDimensionPixelSize(R.dimen.button_stroke_width),
+            resources.getDimensionPixelSize(R.dimen.schedule_button_stroke_width),
             ContextCompat.getColor(this, R.color.mainBlue)
         )
         button.background = gradientDrawable
@@ -311,7 +327,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         button.setTag(R.id.touchedTag, TOUCHED)
     }
 
-    private fun clearButtonSelection(button: Button) {
+    private fun clearDayButtonSelection(button: Button) {
         val gradientDrawable = button.background as GradientDrawable
 
         gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.white))
@@ -320,7 +336,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
     }
 
-    private fun clearButtonFill(button: Button) {
+    private fun clearDayButtonFill(button: Button) {
         val gradientDrawable = button.background as GradientDrawable
 
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
@@ -329,7 +345,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
     }
 
-    private fun fillButton(button: Button) {
+    private fun fillDayButton(button: Button) {
         val gradientDrawable = button.background as GradientDrawable
 
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.yellow))
@@ -339,10 +355,37 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
     }
 
     private fun fillButtonInHalf(button: Button) {
-        val a = button.getTag(R.id.touchedTag)
-        val gradientDrawable = button.background as GradientDrawable
+        val gradientDrawable = GradientDrawable()
+        gradientDrawable.cornerRadius =
+            resources.getDimension(R.dimen.schedule_button_corner_radius)
+        gradientDrawable.gradientType = GradientDrawable.SWEEP_GRADIENT
+        gradientDrawable.colors = intArrayOf(
+            ContextCompat.getColor(this, R.color.yellow),
+            ContextCompat.getColor(this, R.color.white)
+        )
+        gradientDrawable.setGradientCenter(0f, 0.5f)
+        button.background = gradientDrawable
 
-        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.light_yellow))
+        button.setTag(R.id.touchedTag, NOT_TOUCHED)
+    }
+
+    private fun fillTimeButton(button: Button) {
+        val gradientDrawable = GradientDrawable()
+        gradientDrawable.cornerRadius =
+            resources.getDimension(R.dimen.schedule_button_corner_radius)
+        gradientDrawable.color =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yellow))
+        button.background = gradientDrawable
+
+        button.setTag(R.id.touchedTag, TOUCHED)
+    }
+
+    private fun clearTimeButtonFill(button: Button) {
+        val gradientDrawable = GradientDrawable()
+        gradientDrawable.cornerRadius =
+            resources.getDimension(R.dimen.schedule_button_corner_radius)
+        gradientDrawable.color =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white))
         button.background = gradientDrawable
 
         button.setTag(R.id.touchedTag, NOT_TOUCHED)

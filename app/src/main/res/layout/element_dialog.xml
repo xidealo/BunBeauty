@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/block"
+    style="@style/wideHorizontalBlockWithSmallMargin"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.chatElements.DialogElement">
 
     <com.google.android.material.card.MaterialCardView
@@ -68,6 +68,7 @@
                 <TextView
                     android:id="@+id/messageTimeDialogElementText"
                     style="@style/timeText"
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="5"

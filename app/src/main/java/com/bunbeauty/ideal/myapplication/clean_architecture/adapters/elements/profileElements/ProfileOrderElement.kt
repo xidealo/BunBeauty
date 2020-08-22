@@ -6,7 +6,7 @@ import android.view.View
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity
-import kotlinx.android.synthetic.main.element_order.view.*
+import kotlinx.android.synthetic.main.element_profile_order.view.*
 
 class ProfileOrderElement(private val order: Order, private val context: Context) {
 

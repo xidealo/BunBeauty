@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/block"
-    android:layout_margin="@dimen/default_small_margin"
-    android:background="@drawable/profile_block">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/wideHorizontalBlockWithSmallMargin">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/profileServiceElementLayout"
+        android:id="@+id/element_profile_service_mcv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:checkable="true"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        app:cardCornerRadius="8dp">
 
         <LinearLayout
             style="@style/wideHorizontalBlock"
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/serviceNameProfileServiceElementText"
-                style="@style/foundProfileElement"
+                android:id="@+id/element_profile_service_tv_name"
+                style="@style/blueBoldText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/nameAddServiceTB" />
 
             <me.zhanghai.android.materialratingbar.MaterialRatingBar
-                android:id="@+id/profileServiceElementRatingBar"
+                android:id="@+id/element_profile_service_rb_rating"
                 style="@android:style/Widget.Holo.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

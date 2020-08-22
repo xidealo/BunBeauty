@@ -42,9 +42,8 @@ class UserCommentAdapter : RecyclerView.Adapter<UserCommentAdapter.UserCommentVi
         RecyclerView.ViewHolder(view) {
 
         fun bind(userComment: UserComment) {
-            val commentElement = UserCommentElement(context)
+            val commentElement = UserCommentElement(context, userComment)
             commentElement.createElement(view)
-            commentElement.setData(userComment)
         }
     }
 

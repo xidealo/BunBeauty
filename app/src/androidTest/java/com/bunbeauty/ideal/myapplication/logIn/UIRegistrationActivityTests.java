@@ -49,10 +49,10 @@ public class UIRegistrationActivityTests {
         //close keyboard
         Espresso.closeSoftKeyboard();
         //select city in spinner
-        onView(withId(R.id.citySpinnerRegistrationSpinner)).perform(click());
+        //onView(withId(R.id.citySpinnerRegistrationSpinner)).perform(click());
         onData(anything()).atPosition(1).perform(click());
         //click on button
-        onView(withId(R.id.saveDataRegistrationBtn)).perform(click());
+        //onView(withId(R.id.saveDataRegistrationBtn)).perform(click());
     }
 
     @After

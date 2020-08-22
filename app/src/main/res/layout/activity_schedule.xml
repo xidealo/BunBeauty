@@ -80,6 +80,7 @@
         android:id="@+id/saveScheduleButton"
         style="@style/mainButton"
         android:text="Сохранить"
+
         app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

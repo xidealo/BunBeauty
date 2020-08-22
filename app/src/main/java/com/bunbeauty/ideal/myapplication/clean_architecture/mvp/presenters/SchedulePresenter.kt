@@ -32,12 +32,16 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
         scheduleInteractor.getTime(this)
     }
 
-    override fun showAccurateTime(accurateTime: Set<String>) {
-        viewState.showAccurateTime(accurateTime)
+    override fun showAccurateTime(accurateTimeSet: Set<String>) {
+        viewState.showAccurateTime(accurateTimeSet)
     }
 
-    override fun showInaccurateTime(inaccurateTime: Set<String>) {
-        viewState.showInaccurateTime(inaccurateTime)
+    override fun showTimeWithOrder(timeWithOrderSet: Set<String>) {
+        viewState.showTimeWithOrder(timeWithOrderSet)
+    }
+
+    override fun showInaccurateTime(inaccurateTimeSet: Set<String>) {
+        viewState.showInaccurateTime(inaccurateTimeSet)
     }
 
     fun getSelectedDays(): List<Int> {
@@ -59,6 +63,10 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
 
     fun removeFromSchedule(days: List<String>, time: String) {
         scheduleInteractor.removeFromSchedule(days.map { it.toInt() }, time, this)
+    }
+
+    override fun clearTime(timeString: String) {
+        viewState.clearTime(timeString)
     }
 
     override fun clearDay(dayIndex: Int) {

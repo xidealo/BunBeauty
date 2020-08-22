@@ -3,11 +3,9 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.callback
 import com.google.firebase.auth.PhoneAuthCredential
 
 interface VerifyPhoneNumberCallback {
-    //fun returnVerifySuccessful(credential: PhoneAuthCredential)
-
     fun returnVerificationFailed()
     fun returnTooManyRequestsError()
     fun returnTooShortCodeError()
-    //fun returnWrongCodeError()
     fun returnCredential(credential: PhoneAuthCredential)
+    fun returnServiceConnectionProblem()
 }
