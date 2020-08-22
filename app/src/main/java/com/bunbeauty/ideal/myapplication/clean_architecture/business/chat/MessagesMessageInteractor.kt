@@ -14,7 +14,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.MessageRepository
 
 class MessagesMessageInteractor(private val messageRepository: MessageRepository) :
-    IMessagesMessageInteractor, InsertMessageCallback, MessageCallback, UpdateMessageCallback {
+    IMessagesMessageInteractor, InsertMessageCallback, MessageCallback, MessagesCallback,
+    UpdateMessageCallback {
 
     private var cacheMessages = mutableListOf<Message>()
     private lateinit var messagesPresenterCallback: MessagesPresenterCallback
@@ -27,7 +28,13 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messagesPresenterCallback: MessagesPresenterCallback
     ) {
         this.messagesPresenterCallback = messagesPresenterCallback
-        messageRepository.getByDialogId(dialog, loadingLimit, this, this)
+        messageRepository.getByDialogId(dialog, loadingLimit, this, this, this)
+    }
+
+    override fun returnList(objects: List<Message>) {
+        if (objects.isEmpty()) {
+            messagesPresenterCallback.showEmptyScreen()
+        }
     }
 
     override fun updateMessages(

@@ -62,10 +62,8 @@ class MessagesPresenter(
         messagesMessageInteractor.sendMessage(companionMessage, this)
     }
 
-    fun getCacheCurrentUser() = messagesUserInteractor.getCacheCompanionUser()
-
     fun goToProfile() {
-        viewState.goToProfile(getCacheCurrentUser())
+        viewState.goToProfile(messagesUserInteractor.getCacheCompanionUser())
     }
 
     override fun showMoveToStart() {
@@ -75,6 +73,7 @@ class MessagesPresenter(
     override fun showMessage(message: Message) {
         viewState.showMessage(message)
         viewState.hideLoading()
+        viewState.hideEmptyScreen()
     }
 
     override fun updateMessageAdapter(message: Message) {
@@ -83,6 +82,11 @@ class MessagesPresenter(
 
     override fun setUnchecked() {
         messagesDialogInteractor.setUnchecked()
+    }
+
+    override fun showEmptyScreen() {
+        viewState.showEmptyScreen()
+        viewState.hideLoading()
     }
 
     override fun updateUncheckedDialog(message: Message) {
@@ -95,7 +99,7 @@ class MessagesPresenter(
 
     fun goToCreationComment(message: Message) {
         viewState.goToCreationComment(
-            getCacheCurrentUser(),
+            messagesUserInteractor.getCacheCompanionUser(),
             message,
             messagesDialogInteractor.getMyDialog()
         )

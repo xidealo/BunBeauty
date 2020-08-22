@@ -21,7 +21,7 @@ class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
             dialogList.add(dialog)
             dialogList.sortByDescending { it.lastMessage.time }
             notifyItemInserted(dialogList.size)
-        }else{
+        } else {
             val index = dialogList.indexOf(foundDialog)
             dialogList[index] = dialog
             dialogList.sortByDescending { it.lastMessage.time }
@@ -41,9 +41,7 @@ class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
         dialogViewHolder.bind(dialogList[i])
     }
 
-    override fun getItemCount(): Int {
-        return dialogList.size
-    }
+    override fun getItemCount() = dialogList.size
 
     inner class DialogViewHolder(private val view: View, private val context: Context) :
         ViewHolder(view) {

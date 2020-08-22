@@ -10,7 +10,7 @@
     <include layout="@layout/part_top_panel" />
 
     <ProgressBar
-        android:id="@+id/loadingMessagesProgressBar"
+        android:id="@+id/loading_messages_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -21,16 +21,28 @@
         app:layout_constraintTop_toBottomOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/resultsMessagesRecycleView"
+        android:id="@+id/results_messages_recycle_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/footerEditServiceLayout"
+        app:layout_constraintBottom_toTopOf="@+id/footer_edit_service_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topPanel" />
 
+    <TextView
+        android:id="@+id/empty_messages_text"
+        style="@style/infoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Нет сообщений"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+
     <LinearLayout
-        android:id="@+id/footerEditServiceLayout"
+        android:id="@+id/footer_edit_service_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/mainBlue"
@@ -49,7 +61,7 @@
             android:textColorHint="@color/white50" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/sendMessageMessagesBtn"
+            android:id="@+id/send_message_messages_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="5"

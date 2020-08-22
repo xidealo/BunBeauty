@@ -11,6 +11,8 @@ interface MessagesView : MvpView {
     fun moveToStart()
     fun hideLoading()
     fun showLoading()
+    fun showEmptyScreen()
+    fun hideEmptyScreen()
     fun showCompanionUser(fullName: String, photoLink: String)
     fun goToProfile(user: User)
     fun goToCreationComment(user: User, message: Message, dialog: Dialog)

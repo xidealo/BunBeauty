@@ -7,6 +7,7 @@ interface MessagesPresenterCallback {
     fun updateMessageAdapter(message: Message)
     fun showMoveToStart()
     fun setUnchecked()
+    fun showEmptyScreen()
     fun updateUncheckedDialog(message: Message)
     fun showCompanionUserInfo(fullName: String, photoLink: String)
 }

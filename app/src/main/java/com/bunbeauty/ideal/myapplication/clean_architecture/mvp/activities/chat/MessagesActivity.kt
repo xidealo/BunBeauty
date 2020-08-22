@@ -30,7 +30,7 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.set
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import javax.inject.Inject
 
-class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.OnClickListener {
+class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
 
     override var panelContext: Activity = this
     private var loadingLimit: Int = 15
@@ -78,13 +78,18 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     }
 
     private fun init() {
-        sendMessageMessagesBtn.setOnClickListener(this)
-
+        send_message_messages_btn.setOnClickListener {
+            isSmoothScrollingToPosition = true
+            messagePresenter.sendMessage(messageMessagesInput.text.toString().trim())
+            messageMessagesInput.text.clear()
+        }
+        hideEmptyScreen()
         val linearLayoutManager = LinearLayoutManager(this)
-        resultsMessagesRecycleView.layoutManager = linearLayoutManager
-        resultsMessagesRecycleView.adapter = messageAdapter
+        results_messages_recycle_view.layoutManager = linearLayoutManager
+        results_messages_recycle_view.adapter = messageAdapter
+        messageAdapter.setData(messagePresenter)
 
-        resultsMessagesRecycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        results_messages_recycle_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (isScrolling && dy < 0) {
@@ -99,8 +104,6 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
                 }
             }
         })
-        messageAdapter.setData(messagePresenter)
-
         setEventListener(
             this,
             object : KeyboardVisibilityEventListener {
@@ -132,16 +135,6 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
         }
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.sendMessageMessagesBtn -> {
-                isSmoothScrollingToPosition = true
-                messagePresenter.sendMessage(messageMessagesInput.text.toString().trim())
-                messageMessagesInput.text.clear()
-            }
-        }
-    }
-
     override fun showMessage(message: Message) {
         messageAdapter.addItem(message, isSmoothScrollingToPosition)
         if (isSmoothScrollingToPosition)
@@ -153,21 +146,29 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel, View.O
     }
 
     override fun moveToStart() {
-        resultsMessagesRecycleView.smoothScrollToPosition(messageAdapter.itemCount)
+        results_messages_recycle_view.smoothScrollToPosition(messageAdapter.itemCount)
     }
 
     override fun hideLoading() {
-        loadingMessagesProgressBar.visibility = View.GONE
+        loading_messages_progress_bar.visibility = View.GONE
     }
 
     override fun showLoading() {
-        loadingMessagesProgressBar.visibility = View.VISIBLE
+        loading_messages_progress_bar.visibility = View.VISIBLE
     }
 
     override fun showCompanionUser(fullName: String, photoLink: String) {
         initTopPanel(
             fullName, ButtonTask.GO_TO_PROFILE, photoLink
         )
+    }
+
+    override fun hideEmptyScreen() {
+        empty_messages_text.visibility = View.GONE
+    }
+
+    override fun showEmptyScreen() {
+        empty_messages_text.visibility = View.VISIBLE
     }
 
     override fun goToProfile(user: User) {

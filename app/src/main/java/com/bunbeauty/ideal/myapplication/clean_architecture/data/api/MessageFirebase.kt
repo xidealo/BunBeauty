@@ -56,22 +56,28 @@ class MessageFirebase {
     fun getByDialogId(
         dialog: Dialog,
         loadingLimit: Int,
+        messagesCallback: MessagesCallback,
         messageCallback: MessageCallback,
         updateMessageCallback: UpdateMessageCallback
     ) {
+
         val messageRef = FirebaseDatabase.getInstance()
             .getReference(Dialog.DIALOGS)
             .child(dialog.id)
             .child(dialog.user.id).limitToLast(loadingLimit)
 
+        messageRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.childrenCount == 0L) messagesCallback.returnList(emptyList())
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
+
         messageRef.addChildEventListener(object : ChildEventListener {
-            override fun onCancelled(p0: DatabaseError) {
+            override fun onCancelled(p0: DatabaseError) {}
 
-            }
-
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-
-            }
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
 
             override fun onChildChanged(messageSnapshot: DataSnapshot, p1: String?) {
                 if (!messageSnapshot.hasChildren()) return
@@ -89,9 +95,7 @@ class MessageFirebase {
                 messageCallback.returnGottenObject(addedMessage)
             }
 
-            override fun onChildRemoved(p0: DataSnapshot) {
-
-            }
+            override fun onChildRemoved(p0: DataSnapshot) {}
         })
     }
 
