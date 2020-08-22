@@ -15,8 +15,6 @@ class ServiceCommentsServiceCommentInteractor(private val serviceCommentReposito
     private lateinit var serviceCommentsPresenterCallback: ServiceCommentsPresenterCallback
     private var indexCacheServiceComment = 0
 
-    override fun getServiceCommentsLink() = cacheServiceComments
-
     override fun createServiceCommentsScreen(
         service: Service,
         serviceCommentsPresenterCallback: ServiceCommentsPresenterCallback
@@ -45,10 +43,9 @@ class ServiceCommentsServiceCommentInteractor(private val serviceCommentReposito
         serviceCommentsPresenterCallback: ServiceCommentsPresenterCallback
     ) {
         cacheServiceComments[indexCacheServiceComment].user = user
-        indexCacheServiceComment++
 
-        if (indexCacheServiceComment >= cacheServiceComments.size - 1)
-            serviceCommentsPresenterCallback.updateServiceComments(cacheServiceComments)
+        serviceCommentsPresenterCallback.updateServiceComments(cacheServiceComments[indexCacheServiceComment])
+        indexCacheServiceComment++
     }
 
 }

@@ -4,13 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTransformation
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.UserComment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CurrentCommentActivity
+import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
 
 class UserCommentElement(
@@ -20,16 +20,16 @@ class UserCommentElement(
     private lateinit var nameUserCommentElementText: TextView
     private lateinit var reviewUserCommentElementText: TextView
     private lateinit var ratingUserCommentElementBar: RatingBar
-    private lateinit var commentElementLayout: LinearLayout
+    private lateinit var commentElementMaterialCard: MaterialCardView
     private lateinit var userComment: UserComment
 
     fun createElement(view: View) {
-        avatarUserCommentElementImage = view.findViewById(R.id.avatarUserCommentElementImage)
-        nameUserCommentElementText = view.findViewById(R.id.nameUserCommentElementText)
-        reviewUserCommentElementText = view.findViewById(R.id.reviewUserCommentElementText)
-        ratingUserCommentElementBar = view.findViewById(R.id.ratingUserCommentElementBar)
-        commentElementLayout = view.findViewById(R.id.commentElementLayout)
-        commentElementLayout.setOnClickListener {
+        avatarUserCommentElementImage = view.findViewById(R.id.element_comment_iv_avatar)
+        nameUserCommentElementText = view.findViewById(R.id.element_comment_tv_name)
+        reviewUserCommentElementText = view.findViewById(R.id.element_comment_tv_review)
+        ratingUserCommentElementBar = view.findViewById(R.id.element_comment_rb_rating)
+        commentElementMaterialCard = view.findViewById(R.id.element_comment_ll_main)
+        commentElementMaterialCard.setOnClickListener {
             goToCurrentComment()
         }
     }

@@ -16,10 +16,13 @@ class ServiceCommentAdapter :
 
     private val serviceCommentList: ArrayList<ServiceComment> = arrayListOf()
 
-    fun setData(serviceCommentList: List<ServiceComment>) {
-        this.serviceCommentList.clear()
-        this.serviceCommentList.addAll(serviceCommentList)
-        notifyDataSetChanged()
+    fun addItem(serviceComment: ServiceComment) {
+        val foundDialog = serviceCommentList.find { it.id == serviceComment.id }
+        if (foundDialog == null) {
+            serviceCommentList.add(serviceComment)
+            serviceCommentList.sortByDescending { it.date }
+            notifyItemInserted(serviceCommentList.size)
+        }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ServiceCommentViewHolder {

@@ -69,35 +69,35 @@ class ServiceCommentsActivity : MvpAppCompatActivity(), ServiceCommentsView, ITo
     }
 
     fun init() {
-        resultsServiceCommentsRecycleView.layoutManager = LinearLayoutManager(this)
-        resultsServiceCommentsRecycleView.adapter = serviceCommentAdapter
+        activity_servicecomments_rv_results.layoutManager = LinearLayoutManager(this)
+        activity_servicecomments_rv_results.adapter = serviceCommentAdapter
     }
 
     override fun showLoading() {
-        progressBarServiceComments.visibility = View.VISIBLE
+        activity_servicecomments_pb_loading.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        progressBarServiceComments.visibility = View.GONE
+        activity_servicecomments_pb_loading.visibility = View.GONE
     }
 
-    override fun updateServiceComments(serviceComments: List<ServiceComment>) {
-        serviceCommentAdapter.setData(serviceComments)
+    override fun updateServiceComments(serviceComment: ServiceComment) {
+        serviceCommentAdapter.addItem(serviceComment)
     }
 
     override fun showServiceComments() {
-        resultsServiceCommentsRecycleView.visibility = View.VISIBLE
+        activity_servicecomments_rv_results.visibility = View.VISIBLE
     }
 
     override fun hideServiceComments() {
-        resultsServiceCommentsRecycleView.visibility = View.GONE
+        activity_servicecomments_rv_results.visibility = View.GONE
     }
 
     override fun showEmptyScreen() {
-        noServiceCommentsText.visibility = View.VISIBLE
+        activity_servicecomments_tv_empty.visibility = View.VISIBLE
     }
 
     override fun hideEmptyScreen() {
-        noServiceCommentsText.visibility = View.GONE
+        activity_servicecomments_tv_empty.visibility = View.GONE
     }
 }

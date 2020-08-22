@@ -6,7 +6,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 interface ServiceCommentsView : MvpView {
     fun showLoading()
     fun hideLoading()
-    fun updateServiceComments(serviceComments: List<ServiceComment>)
+    fun updateServiceComments(serviceComment: ServiceComment)
     fun showServiceComments()
     fun hideServiceComments()
     fun showEmptyScreen()

@@ -6,7 +6,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.ServiceComment
 
 interface IServiceCommentsServiceCommentInteractor {
-    fun getServiceCommentsLink(): List<ServiceComment>
     fun createServiceCommentsScreen(
         service: Service,
         serviceCommentsPresenterCallback: ServiceCommentsPresenterCallback

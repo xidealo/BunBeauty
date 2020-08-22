@@ -7,9 +7,8 @@
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.ServiceCommentsActivity">
     <include layout="@layout/part_top_panel" />
 
-
     <TextView
-        android:id="@+id/noServiceCommentsText"
+        android:id="@+id/activity_servicecomments_tv_empty"
         style="@style/infoText"
         android:text="Нет комментариев"
         app:layout_constraintBottom_toTopOf="@+id/topPanel"
@@ -18,7 +17,7 @@
         app:layout_constraintTop_toBottomOf="@+id/bottomPanel" />
 
     <ProgressBar
-        android:id="@+id/progressBarServiceComments"
+        android:id="@+id/activity_servicecomments_pb_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -29,7 +28,7 @@
         app:layout_constraintTop_toBottomOf="@+id/bottomPanel" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/resultsServiceCommentsRecycleView"
+        android:id="@+id/activity_servicecomments_rv_results"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="1dp"
