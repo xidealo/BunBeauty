@@ -76,36 +76,41 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
     }
 
     fun init() {
-        resultsSubscribersRecycleView.layoutManager = LinearLayoutManager(this)
-        resultsSubscribersRecycleView.adapter = subscriptionAdapter
+        activity_subscriptions_rv_results.layoutManager = LinearLayoutManager(this)
+        activity_subscriptions_rv_results.adapter = subscriptionAdapter
+        subscriptionAdapter.setData(subscriptionsPresenter)
     }
 
     private fun createPanels() {
         initTopPanel("Подписки", ButtonTask.NONE)
     }
 
-    override fun showSubscriptions(subscriptions: List<Subscription>) {
-        subscriptionAdapter.setData(subscriptions, subscriptionsPresenter)
+    override fun showSubscription(subscription: Subscription) {
+        subscriptionAdapter.addItem(subscription)
+    }
+
+    override fun removeSubscription(subscription: Subscription) {
+        subscriptionAdapter.removeItem(subscription)
     }
 
     override fun hideLoading() {
-        progressBarSubscribers.visibility = View.GONE
+        activity_subscriptions_pb_loading.visibility = View.GONE
     }
 
     override fun showLoading() {
-        progressBarSubscribers.visibility = View.VISIBLE
+        activity_subscriptions_pb_loading.visibility = View.VISIBLE
     }
 
     override fun showEmptySubscriptions() {
-        emptySubscriptionsSubscriptionsText.visibility = View.VISIBLE
+        activity_subscriptions_tv_empty.visibility = View.VISIBLE
     }
 
     override fun hideEmptySubscriptions() {
-        emptySubscriptionsSubscriptionsText.visibility = View.GONE
+        activity_subscriptions_tv_empty.visibility = View.GONE
     }
 
     override fun showMessage(message: String) {
-        Snackbar.make(subscriptionsMainLayout, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(activity_subscriptions_ll_main, message, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }

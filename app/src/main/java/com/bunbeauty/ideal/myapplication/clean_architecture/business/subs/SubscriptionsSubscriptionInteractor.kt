@@ -15,14 +15,22 @@ class SubscriptionsSubscriptionInteractor(
     private lateinit var subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     private var cacheSubscriptions = mutableListOf<Subscription>()
 
-    override fun getSubscriptionsLink() = cacheSubscriptions
-
     override fun getSubscriptions(
         user: User,
         subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     ) {
         this.subscriptionsPresenterCallback = subscriptionsPresenterCallback
         subscriptionRepository.getByUserId(user.id, this)
+    }
+
+    override fun returnList(objects: List<Subscription>) {
+        if (objects.isEmpty()) {
+            subscriptionsPresenterCallback.showEmptySubscription()
+            return
+        }
+        cacheSubscriptions.addAll(objects)
+        for (subscription in objects)
+            subscriptionsPresenterCallback.getUserBySubscription(subscription)
     }
 
     override fun deleteSubscription(
@@ -33,27 +41,22 @@ class SubscriptionsSubscriptionInteractor(
         subscriptionRepository.delete(subscription, this)
     }
 
-    override fun fillSubscriptions(
-        users: List<User>,
+    override fun fillSubscription(
+        user: User,
         subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     ) {
-        for (user in users) {
-            val subscriptionWithUserId = cacheSubscriptions.find { it.subscriptionId == user.id }
-            subscriptionWithUserId!!.subscriptionUser = user
+        val subscriptionWithUserId = cacheSubscriptions.find { it.subscriptionId == user.id }
+        if (subscriptionWithUserId != null) {
+            subscriptionWithUserId.subscriptionUser = user
+            subscriptionsPresenterCallback.showSubscription(subscriptionWithUserId)
         }
-        subscriptionsPresenterCallback.showSubscriptions(cacheSubscriptions)
-    }
-
-    override fun returnList(objects: List<Subscription>) {
-        cacheSubscriptions.addAll(objects)
-        subscriptionsPresenterCallback.getUsersBySubscription(objects)
     }
 
     override fun returnDeletedCallback(obj: Subscription) {
         cacheSubscriptions.remove(obj)
         subscriptionsPresenterCallback.deleteUser(obj.subscriptionId)
         subscriptionsPresenterCallback.showDeletedSubscription(obj)
-        subscriptionsPresenterCallback.showSubscriptions(cacheSubscriptions)
+        subscriptionsPresenterCallback.removeSubscription(obj)
     }
 
 }

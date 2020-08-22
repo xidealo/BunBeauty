@@ -38,28 +38,32 @@ class SubscriptionsPresenter(
         subscriptionsSubscriptionInteractor.getSubscriptions(user, this)
     }
 
-    override fun getUsersBySubscription(subscriptions: List<Subscription>) {
-        subscriptionsUserInteractor.getUsersBySubscription(subscriptions, this)
+    override fun getUserBySubscription(subscription: Subscription) {
+        subscriptionsUserInteractor.getUsersBySubscription(subscription, this)
     }
 
-    override fun showSubscriptions(subscriptions: List<Subscription>) {
-        viewState.showSubscriptions(subscriptions)
+    override fun showSubscription(subscription: Subscription) {
+        viewState.showSubscription(subscription)
         viewState.hideLoading()
+    }
+
+    override fun removeSubscription(subscription: Subscription) {
+        viewState.removeSubscription(subscription)
     }
 
     override fun showDeletedSubscription(subscription: Subscription) {
         viewState.showMessage("Вы отписались от ${subscription.subscriptionUser.name} ${subscription.subscriptionUser.surname} ")
     }
 
-    override fun showEmptySubscriptions() {
+    override fun showEmptySubscription() {
         viewState.hideLoading()
         viewState.showEmptySubscriptions()
     }
 
-    override fun fillSubscriptions(
-        users: List<User>
+    override fun fillSubscription(
+        user: User
     ) {
-        subscriptionsSubscriptionInteractor.fillSubscriptions(users, this)
+        subscriptionsSubscriptionInteractor.fillSubscription(user, this)
     }
 
 }

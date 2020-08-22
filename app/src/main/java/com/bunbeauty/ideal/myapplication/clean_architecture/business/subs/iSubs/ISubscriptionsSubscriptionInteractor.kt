@@ -6,13 +6,12 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 interface ISubscriptionsSubscriptionInteractor {
     fun getSubscriptions(user: User, subscriptionsPresenterCallback: SubscriptionsPresenterCallback)
-    fun getSubscriptionsLink(): List<Subscription>
     fun deleteSubscription(
         subscription: Subscription,
         subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     )
 
-    fun fillSubscriptions(
-        users: List<User>, subscriptionsPresenterCallback: SubscriptionsPresenterCallback
+    fun fillSubscription(
+        user: User, subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     )
 }

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/allPages"
-    android:id="@+id/subscriptionsMainLayout"
+    android:id="@+id/activity_subscriptions_ll_main"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.subscriptions.SubscriptionsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -23,19 +23,19 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
-        android:id="@+id/emptySubscriptionsSubscriptionsText"
+        android:id="@+id/activity_subscriptions_tv_empty"
         style="@style/infoText"
         android:layout_gravity="center"
         android:text="Нет подписок" />
 
     <ProgressBar
-        android:id="@+id/progressBarSubscribers"
+        android:id="@+id/activity_subscriptions_pb_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/resultsSubscribersRecycleView"
+        android:id="@+id/activity_subscriptions_rv_results"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/bottom_panel_height"

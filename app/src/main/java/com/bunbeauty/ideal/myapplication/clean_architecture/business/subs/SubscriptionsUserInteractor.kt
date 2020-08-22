@@ -17,10 +17,6 @@ class SubscriptionsUserInteractor(
     private lateinit var subscriptionsPresenterCallback: SubscriptionsPresenterCallback
 
     private var cacheUsers = mutableListOf<User>()
-    private var subscriptionsCount = 0
-    private var currentSubscriptionsCount = 0
-
-    override fun getUsersLink() = cacheUsers
 
     override fun deleteUser(
         subscriptionId: String,
@@ -39,31 +35,17 @@ class SubscriptionsUserInteractor(
     }
 
     override fun getUsersBySubscription(
-        subscriptions: List<Subscription>,
+        subscription: Subscription,
         subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     ) {
         this.subscriptionsPresenterCallback = subscriptionsPresenterCallback
-        subscriptionsCount = subscriptions.size
-
-        if (subscriptions.isEmpty()) {
-            subscriptionsPresenterCallback.showEmptySubscriptions()
-            return
-        }
-
-        for (subscription in subscriptions) {
-            userRepository.getById(subscription.subscriptionId, this, true)
-        }
+        userRepository.getById(subscription.subscriptionId, this, true)
     }
 
     override fun returnGottenObject(element: User?) {
         if (element == null) return
-
-        currentSubscriptionsCount++
         cacheUsers.add(element)
-
-        if (currentSubscriptionsCount == subscriptionsCount) {
-            subscriptionsPresenterCallback.fillSubscriptions(cacheUsers)
-        }
+        subscriptionsPresenterCallback.fillSubscription(element)
     }
 
     override fun returnUpdatedCallback(obj: User) {

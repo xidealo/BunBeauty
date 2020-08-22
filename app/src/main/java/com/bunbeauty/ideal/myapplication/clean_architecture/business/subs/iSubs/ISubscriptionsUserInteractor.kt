@@ -8,11 +8,9 @@ interface ISubscriptionsUserInteractor {
     fun createSubscriptionScreen(subscriptionsPresenterCallback: SubscriptionsPresenterCallback)
 
     fun getUsersBySubscription(
-        subscriptions: List<Subscription>,
+        subscription: Subscription,
         subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     )
-
-    fun getUsersLink(): List<User>
 
     fun deleteUser(subscriptionId: String, subscriptionsPresenterCallback: SubscriptionsPresenterCallback)
 }

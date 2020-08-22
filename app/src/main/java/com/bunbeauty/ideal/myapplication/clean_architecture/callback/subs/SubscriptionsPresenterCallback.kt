@@ -5,12 +5,13 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 interface SubscriptionsPresenterCallback {
     fun getSubscriptions(user: User)
-    fun getUsersBySubscription(subscriptions: List<Subscription>)
-    fun showSubscriptions(subscriptions: List<Subscription>)
+    fun getUserBySubscription(subscription: Subscription)
+    fun showSubscription(subscription: Subscription)
+    fun removeSubscription(subscription: Subscription)
     fun showDeletedSubscription(subscription: Subscription)
     fun deleteUser(subscriptionId: String)
-    fun showEmptySubscriptions()
-    fun fillSubscriptions(
-        users: List<User>
+    fun showEmptySubscription()
+    fun fillSubscription(
+        user: User
     )
 }
