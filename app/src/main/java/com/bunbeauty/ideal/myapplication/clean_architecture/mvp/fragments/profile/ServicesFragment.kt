@@ -41,7 +41,8 @@ class ServicesFragment(private val profileServiceAdapter: ProfileServiceAdapter)
     }
 
     fun updateServiceList(serviceList: List<Service>) {
-        profileServiceAdapter.updateAdapter(serviceList)
+        for (service in serviceList)
+            profileServiceAdapter.addItem(service)
     }
 
     private fun goToCreationService() {

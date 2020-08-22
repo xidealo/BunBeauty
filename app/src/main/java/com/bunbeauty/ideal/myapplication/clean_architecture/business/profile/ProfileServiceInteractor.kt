@@ -16,7 +16,6 @@ class ProfileServiceInteractor(private val serviceRepository: IServiceRepository
         profilePresenterCallback: ProfilePresenterCallback
     ) {
         this.profilePresenterCallback = profilePresenterCallback
-
         serviceRepository.getByUserId(userId, this, true)
     }
 

@@ -8,20 +8,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.profileElements.ProfileServiceElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscription
 
 class ProfileServiceAdapter :
     RecyclerView.Adapter<ProfileServiceAdapter.ProfileServiceViewHolder>() {
 
-    private val serviceList: MutableList<Service> = ArrayList()
-    private lateinit var context: Context
+    private val serviceList = mutableListOf<Service>()
+
+    fun addItem(service: Service) {
+        val foundService = serviceList.find { it.id == service.id }
+        if (foundService == null) {
+            serviceList.add(service)
+            serviceList.sortByDescending { it.creationDate }
+            notifyItemInserted(serviceList.size)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, i: Int): ProfileServiceViewHolder {
-        context = parent.context
+        val context = parent.context
         val layoutInflater = LayoutInflater.from(parent.context)
         val view =
             layoutInflater.inflate(R.layout.element_profile_service, parent, false)
 
-        return ProfileServiceViewHolder(view)
+        return ProfileServiceViewHolder(view, context)
     }
 
     override fun onBindViewHolder(holder: ProfileServiceViewHolder, i: Int) {
@@ -32,13 +41,8 @@ class ProfileServiceAdapter :
         return serviceList.size
     }
 
-    fun updateAdapter(serviceList: List<Service>) {
-        this.serviceList.clear()
-        this.serviceList.addAll(serviceList)
-        notifyDataSetChanged()
-    }
-
-    inner class ProfileServiceViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    inner class ProfileServiceViewHolder(private val view: View, private val context: Context) :
+        RecyclerView.ViewHolder(view) {
 
         fun bind(service: Service) {
             val profileServiceElement = ProfileServiceElement(service, context)
