@@ -14,6 +14,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileOrde
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfilePagerAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileServiceAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTransformation
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.NumberRoundingApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.profile.iProfile.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.AppModule
@@ -55,6 +56,9 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
 
     @Inject
     lateinit var profileUserInteractor: IProfileUserInteractor
+
+    @Inject
+    lateinit var numberRoundingApi: NumberRoundingApi
 
     @Inject
     lateinit var profileServiceInteractor: IProfileServiceInteractor
@@ -179,7 +183,7 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
 
     override fun showRating(rating: Float, countOfRates: Long) {
         profileRatingBar.rating = rating
-        ratingProfileText.text = "$rating ($countOfRates)"
+        ratingProfileText.text = "${numberRoundingApi.roundSomeSymbols(rating, 2)} ($countOfRates)"
     }
 
     override fun showServiceList(serviceList: List<Service>) {

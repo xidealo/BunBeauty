@@ -142,8 +142,6 @@
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
-
-
     <!-- BUTTONS -->
 
     <style name="baseButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">

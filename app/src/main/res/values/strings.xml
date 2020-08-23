@@ -21,6 +21,9 @@
     <string name="description">Описание</string>
     <string name="continueCreationService">Продолжить</string>
 
+    //Current comment
+    <string name="comment">Комментарий</string>
+
     //Edit service
     <string name="save">Сохранить</string>
 

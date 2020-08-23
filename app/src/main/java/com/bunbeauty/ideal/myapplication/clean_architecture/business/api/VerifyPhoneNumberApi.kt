@@ -78,6 +78,4 @@ class VerifyPhoneNumberApi {
                 resendToken = token
             }
         }
-
-
 }

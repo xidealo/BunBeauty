@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.android.ideal.myapplication.R
@@ -15,6 +16,9 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.di.AppModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.FirebaseModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.InteractorModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.comments.CurrentCommentPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.comments.CurrentCommentView
@@ -22,8 +26,9 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_current_comment.*
 import javax.inject.Inject
 
-class CurrentCommentActivity : MvpAppCompatActivity(),
-    CurrentCommentView {
+class CurrentCommentActivity : MvpAppCompatActivity(), CurrentCommentView, ITopPanel, IBottomPanel {
+
+    override var panelContext: Activity = this
 
     @Inject
     lateinit var currentCommentCommentInteractor: CurrentCommentCommentInteractor
@@ -51,45 +56,27 @@ class CurrentCommentActivity : MvpAppCompatActivity(),
     }
 
     override fun setUserComment(userComment: UserComment) {
-        Picasso.get()
-            .load(userComment.user.photoLink)
-            .resize(
-                resources.getDimensionPixelSize(R.dimen.photo_avatar_width),
-                resources.getDimensionPixelSize(R.dimen.photo_avatar_width)
-            )
-            .centerCrop()
-            .transform(CircularTransformation())
-            .into(avatarCurrentCommentActivityImage)
+        initTopPanel(
+            "${userComment.user.name}  ${userComment.user.surname}",
+            ButtonTask.GO_TO_PROFILE,
+            userComment.user.photoLink
+        )
+        activity_current_comment_tv_review.text = userComment.review
+        activity_current_comment_rb_rating.rating = userComment.rating
+    }
 
-        userNameCurrentCommentActivityText.text =
-            "${userComment.user.name}  ${userComment.user.surname}"
-        reviewCurrentCommentActivityText.text = userComment.review
-        ratingCurrentCommentActivityBar.rating = userComment.rating
-
-        avatarCurrentCommentActivityImage.setOnClickListener {
-            goToProfile()
-        }
+    override fun actionClick() {
+        goToProfile()
     }
 
     override fun setServiceComment(serviceComment: ServiceComment) {
-        Picasso.get()
-            .load(serviceComment.user.photoLink)
-            .resize(
-                resources.getDimensionPixelSize(R.dimen.photo_avatar_width),
-                resources.getDimensionPixelSize(R.dimen.photo_avatar_width)
-            )
-            .centerCrop()
-            .transform(CircularTransformation())
-            .into(avatarCurrentCommentActivityImage)
-
-        userNameCurrentCommentActivityText.text =
-            "${serviceComment.user.name}  ${serviceComment.user.surname}"
-        reviewCurrentCommentActivityText.text = serviceComment.review
-        ratingCurrentCommentActivityBar.rating = serviceComment.rating
-
-        avatarCurrentCommentActivityImage.setOnClickListener {
-            goToProfile()
-        }
+        initTopPanel(
+            "${serviceComment.user.name}  ${serviceComment.user.surname}",
+            ButtonTask.GO_TO_PROFILE,
+            serviceComment.user.photoLink
+        )
+        activity_current_comment_tv_review.text = serviceComment.review
+        activity_current_comment_rb_rating.rating = serviceComment.rating
     }
 
     fun goToProfile() {

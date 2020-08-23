@@ -25,8 +25,7 @@
             android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CreationCommentActivity"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
-            android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CurrentCommentActivity"
-            android:theme="@style/Theme.AppCompat.Dialog" />
+            android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CurrentCommentActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.UserCommentsActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat.MessagesActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.subscriptions.SubscriptionsActivity" />

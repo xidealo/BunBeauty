@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.di
 
 import android.app.Application
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.FiguringServicePointsApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.NumberRoundingApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.StringApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.dbInstance.LocalDatabase
@@ -38,13 +39,15 @@ class AppModule(private val app: Application) {
 
     //APIs
     @Provides
-    fun provideFigureServicePointsApi() =
-        FiguringServicePointsApi()
+    fun provideFigureServicePointsApi() = FiguringServicePointsApi()
 
     @Provides
     fun provideVerifyPhoneNumberApi() = VerifyPhoneNumberApi()
 
     @Provides
     fun provideStringApi() = StringApi()
+
+    @Provides
+    fun provideNumberRoundingApi() = NumberRoundingApi()
 
 }
