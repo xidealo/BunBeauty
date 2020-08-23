@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -23,7 +24,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.SessionsActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.ServiceCommentsActivity
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.UserCommentsActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.editing.EditServiceActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
@@ -100,10 +100,22 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
         photosServiceRecycleView.adapter = photoAdapter
     }
 
+    @SuppressLint("SetTextI18n")
     override fun showService(service: Service) {
         costServiceText.text = service.cost.toString() + "₽"
         addressServiceText.text = service.address
         descriptionServiceText.text = service.description
+        activity_service_tv_duration.text = if (service.duration.toInt() > 0) {
+            (service.duration / 1).toInt().toString() +
+                    if (service.duration % 1 > 0) {
+                        " ч 30 мин"
+                    } else {
+                        " ч"
+                    }
+        } else {
+            "30 мин"
+        }
+
         showRating(service.rating, service.countOfRates)
     }
 

@@ -13,12 +13,13 @@
     <string name="passwordRegistration">Пароль</string>
     <string name="logInRegistration">Войти</string>
 
-    //Add service
+    //service
     <string name="nameAddServiceTB">Название</string>
     <string name="cost">Цена</string>
     <string name="address">Адрес</string>
     <string name="main_screen">Главная страница</string>
     <string name="description">Описание</string>
+    <string name="duration">Длительность</string>
     <string name="continueCreationService">Продолжить</string>
 
     //Current comment

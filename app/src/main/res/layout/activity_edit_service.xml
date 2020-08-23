@@ -85,6 +85,38 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <LinearLayout
+                style="@style/materialInputLayout"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="12dp"
+                    android:src="@drawable/icon_duration" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Длительность"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="16sp" />
+
+                <NumberPicker
+                    android:id="@+id/activity_edit_service_np_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <NumberPicker
+                    android:id="@+id/activity_edit_service_np_minute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
             <fragment
                 android:id="@+id/categoryEditServiceLayout"
                 class="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.CategoryFragment"

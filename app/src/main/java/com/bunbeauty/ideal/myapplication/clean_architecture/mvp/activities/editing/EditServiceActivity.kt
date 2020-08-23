@@ -84,21 +84,30 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         setContentView(R.layout.activity_edit_service)
         init()
         showLoading()
-        editServicePresenter.createEditServiceScreen()
+        editServicePresenter.getService()
         createPanels()
     }
 
     private fun init() {
         saveEditServiceBtn.setOnClickListener {
-            editServicePresenter.save(
+            editServicePresenter.saveService(
                 nameEditServiceInput.text.toString().trim(),
                 addressEditServiceInput.text.toString().trim(),
                 descriptionEditServiceInput.text.toString().trim(),
                 costEditServiceInput.text.toString().toLongOrNull() ?: 0,
+                activity_edit_service_np_hour.value,
+                activity_edit_service_np_minute.value,
                 categoryFragment.getCategory(),
                 categoryFragment.getSelectedTags()
             )
         }
+
+        activity_edit_service_np_hour.minValue = 0
+        activity_edit_service_np_hour.maxValue = 8
+        activity_edit_service_np_minute.minValue = 0
+        activity_edit_service_np_minute.maxValue = 1
+        activity_edit_service_np_minute.displayedValues = arrayOf("0", "30")
+
         photoEditServiceBtn.setOnClickListener {
             CropImage.activity().start(this)
         }
@@ -113,6 +122,21 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
 
         categoryFragment =
             supportFragmentManager.findFragmentById(R.id.categoryEditServiceLayout) as CategoryFragment
+    }
+
+    override fun showEditService(service: Service) {
+        nameEditServiceInput.append(service.name)
+        addressEditServiceInput.append(service.address)
+        costEditServiceInput.append(service.cost.toString())
+        descriptionEditServiceInput.append(service.description)
+        activity_edit_service_np_hour.value = (service.duration / 1).toInt()
+        activity_edit_service_np_minute.value = if (service.duration % 1 == 0f) {
+            0
+        } else {
+            1
+        }
+
+        categoryFragment.setCategoryFragment(service.category, service.tags)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -144,14 +168,6 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     override fun onResume() {
         super.onResume()
         initBottomPanel()
-    }
-
-    override fun showEditService(service: Service) {
-        nameEditServiceInput.append(service.name)
-        addressEditServiceInput.append(service.address)
-        costEditServiceInput.append(service.cost.toString())
-        descriptionEditServiceInput.append(service.description)
-        categoryFragment.setCategoryFragment(service.category, service.tags)
     }
 
     override fun updatePhotoFeed() {

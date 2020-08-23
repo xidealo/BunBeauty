@@ -5,9 +5,9 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 interface IEditServiceServiceInteractor {
 
-    fun getCacheService(): Service
+    fun getGottenService(): Service
 
-    fun createEditServiceScreen(editServicePresenterCallback: EditServicePresenterCallback)
+    fun getService(editServicePresenterCallback: EditServicePresenterCallback)
     fun update(
         service: Service,
         editServicePresenterCallback: EditServicePresenterCallback

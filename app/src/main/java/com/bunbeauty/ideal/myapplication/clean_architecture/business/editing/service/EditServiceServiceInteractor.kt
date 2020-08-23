@@ -12,14 +12,15 @@ class EditServiceServiceInteractor(
     private val intent: Intent,
     private val serviceRepository: IServiceRepository
 ) : UpdateServiceCallback, DeleteServiceCallback, IEditServiceServiceInteractor {
-    private lateinit var cacheService: Service
+
+    private lateinit var gottenService: Service
     private lateinit var editServicePresenterCallback: EditServicePresenterCallback
 
-    override fun getCacheService() = cacheService
+    override fun getGottenService() = gottenService
 
-    override fun createEditServiceScreen(editServicePresenterCallback: EditServicePresenterCallback) {
-        cacheService = intent.getSerializableExtra(Service.SERVICE) as Service
-        editServicePresenterCallback.showEditService(cacheService)
+    override fun getService(editServicePresenterCallback: EditServicePresenterCallback) {
+        gottenService = intent.getSerializableExtra(Service.SERVICE) as Service
+        editServicePresenterCallback.showEditService(gottenService)
     }
 
     override fun update(
@@ -32,6 +33,11 @@ class EditServiceServiceInteractor(
         }
     }
 
+    override fun returnUpdatedCallback(obj: Service) {
+        editServicePresenterCallback.saveTags(obj)
+        editServicePresenterCallback.goToService(gottenService)
+    }
+
     override fun delete(
         service: Service,
         editServicePresenterCallback: EditServicePresenterCallback
@@ -42,11 +48,6 @@ class EditServiceServiceInteractor(
 
     override fun returnDeletedCallback(obj: Service) {
         editServicePresenterCallback.goToProfile(obj)
-    }
-
-    override fun returnUpdatedCallback(obj: Service) {
-        editServicePresenterCallback.saveTags(obj)
-        editServicePresenterCallback.goToService(cacheService)
     }
 
     fun getIsNameInputCorrect(name: String): Boolean {

@@ -120,7 +120,8 @@ class ServiceFirebase {
             name = serviceSnapshot.child(Service.NAME).value as? String ?: "",
             address = serviceSnapshot.child(Service.ADDRESS).value as? String ?: "",
             description = serviceSnapshot.child(Service.DESCRIPTION).value as? String ?: "",
-            duration = serviceSnapshot.child(Service.DURATION).getValue(Float::class.java) ?: 0.5f,
+            duration = serviceSnapshot.child(Service.DURATION).getValue(Double::class.java)
+                ?.toFloat() ?: 0.5f,
             cost = serviceSnapshot.child(Service.COST).getValue(Long::class.java) ?: 0,
             countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue(Long::class.java)
                 ?: 0L,

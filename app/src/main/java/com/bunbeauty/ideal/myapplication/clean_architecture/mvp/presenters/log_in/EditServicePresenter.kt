@@ -3,10 +3,10 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.IPhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.editing.service.IEditServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.editing.service.IEditServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.IPhotoCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.IPhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.service.EditServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
@@ -21,34 +21,37 @@ class EditServicePresenter(
 ) :
     MvpPresenter<EditServiceView>(), EditServicePresenterCallback, IPhotoCallback {
 
-    fun createEditServiceScreen() {
-        editServiceServiceInteractor.createEditServiceScreen(this)
+    fun getService() {
+        editServiceServiceInteractor.getService(this)
     }
 
-    fun save(
+    fun saveService(
         name: String,
         address: String,
         description: String,
         cost: Long,
+        durationHour: Int,
+        durationMinute: Int,
         category: String,
         tags: ArrayList<Tag>
     ) {
-        val service = editServiceServiceInteractor.getCacheService()
+        val service = editServiceServiceInteractor.getGottenService()
         service.name = name
         service.address = address
         service.description = description
         service.cost = cost
+        service.duration = durationHour + durationMinute * 0.5f
         service.category = category
         service.tags = tags
         editServiceServiceInteractor.update(service, this)
     }
 
     fun delete() {
-        val service = editServiceServiceInteractor.getCacheService()
+        val service = editServiceServiceInteractor.getGottenService()
         editServiceServiceInteractor.delete(service, this)
     }
 
-    fun getCacheService() = editServiceServiceInteractor.getCacheService()
+    fun getCacheService() = editServiceServiceInteractor.getGottenService()
 
     fun getPhotosLink() = photoInteractor.getPhotosLink()
 
