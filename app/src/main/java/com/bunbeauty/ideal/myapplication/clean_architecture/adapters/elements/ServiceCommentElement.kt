@@ -11,13 +11,14 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.element_service_comment.view.*
 
 class ServiceCommentElement(
-    private val context: Context,
-    private val serviceComment: ServiceComment
+    context: Context,
+    serviceComment: ServiceComment,
+    view: View
 ) {
 
-    fun createElement(view: View) {
+    init {
         view.element_service_comment_ll.setOnClickListener {
-            goToCurrentComment()
+            goToCurrentComment(serviceComment, context)
         }
 
         Picasso.get()
@@ -36,7 +37,7 @@ class ServiceCommentElement(
         view.element_service_comment_rb_rating.rating = serviceComment.rating
     }
 
-    private fun goToCurrentComment() {
+    private fun goToCurrentComment(serviceComment: ServiceComment, context: Context) {
         val intent = Intent(context, CurrentCommentActivity::class.java).apply {
             putExtra(ServiceComment.SERVICE_COMMENT, serviceComment)
         }

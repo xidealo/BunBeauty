@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/photoPhotoElementImage"
+        android:id="@+id/element_photo_iv_photo"
         style="@style/photoElement" />
 
 </LinearLayout>

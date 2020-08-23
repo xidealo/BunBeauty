@@ -10,38 +10,27 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat.MessagesPresenter
 import com.google.android.material.button.MaterialButton
+import kotlinx.android.synthetic.main.element_message.view.*
 import java.util.*
 
-abstract class MessageElement {
-    protected lateinit var message: Message
-    protected lateinit var messageTextMessageElementText: TextView
-    protected lateinit var messageTimeMessageElementText: TextView
-    protected lateinit var messageMessageElementLayout: LinearLayout
-    protected lateinit var mainLayoutMessageElementLayout: LinearLayout
-    protected lateinit var rateMessageElementButton: MaterialButton
+abstract class MessageElement(
+    message: Message,
+    view: View
+) {
 
-    fun createElement(view: View) {
-        messageTextMessageElementText = view.findViewById(R.id.messageTextMessageElementText)
-        messageTimeMessageElementText = view.findViewById(R.id.messageTimeMessageElementText)
-        messageMessageElementLayout = view.findViewById(R.id.messageMessageElementLayout)
-        mainLayoutMessageElementLayout = view.findViewById(R.id.mainLayoutMessageElementLayout)
-        rateMessageElementButton = view.findViewById(R.id.rateMessageElementButton)
-    }
-
-    open fun setVisibility(message: Message) {}
-
-    fun setData(message: Message) {
-        this.message = message
-        messageTextMessageElementText.text = message.message
-        messageTimeMessageElementText.text =
+    init {
+        view.messageTextMessageElementText.text = message.message
+        view.messageTimeMessageElementText.text =
             WorkWithTimeApi.getDateInFormatYMDHMS(Date(message.time)).substring(11, 16)
     }
 
-    open fun setIsMyMessage(message: Message) {
+    open fun setVisibility(message: Message, view: View) {}
+
+    open fun setIsMyMessage(message: Message, view: View) {
         if (message.ownerId == User.getMyId()) {
-            messageMessageElementLayout.gravity = Gravity.END
+            view.messageMessageElementLayout.gravity = Gravity.END
         } else {
-            messageMessageElementLayout.gravity = Gravity.START
+            view.messageMessageElementLayout.gravity = Gravity.START
         }
     }
 }

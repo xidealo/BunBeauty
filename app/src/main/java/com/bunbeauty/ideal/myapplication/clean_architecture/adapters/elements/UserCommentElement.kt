@@ -10,11 +10,14 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comme
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.element_user_comment.view.*
 
-class UserCommentElement(private val context: Context, private val userComment: UserComment) {
-
-    fun createElement(view: View) {
+class UserCommentElement(
+    context: Context,
+    userComment: UserComment,
+    view: View
+) {
+    init {
         view.element_user_comment_ll.setOnClickListener {
-            goToCurrentComment()
+            goToCurrentComment(userComment, context)
         }
         Picasso.get()
             .load(userComment.user.photoLink)
@@ -32,7 +35,7 @@ class UserCommentElement(private val context: Context, private val userComment: 
         view.element_user_comment_rb_rating.rating = userComment.rating
     }
 
-    private fun goToCurrentComment() {
+    private fun goToCurrentComment(userComment: UserComment, context: Context) {
         val intent = Intent(context, CurrentCommentActivity::class.java).apply {
             putExtra(UserComment.USER_COMMENT, userComment)
         }

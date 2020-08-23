@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTransformation
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithStringsApi
@@ -13,56 +11,39 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithTim
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat.MessagesActivity
-import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.element_dialog.view.*
 import java.util.*
 
 class DialogElement(
-    private val view: View,
-    private val context: Context
+    view: View,
+    context: Context,
+    dialog: Dialog
 ) {
-    private lateinit var avatarDialogElementImage: ImageView
-    private lateinit var nameDialogElementText: TextView
-    private lateinit var lastMessageDialogElementText: TextView
-    private lateinit var messageTimeDialogElementText: TextView
-    private lateinit var isCheckedDialogElementText: TextView
-    private lateinit var dialogElementLayout: MaterialCardView
-    private lateinit var dialog: Dialog
 
-    fun createElement(dialog: Dialog) {
-        this.dialog = dialog
-        onViewCreated(view)
-        setData(dialog)
-    }
-
-    private fun onViewCreated(view: View) {
-        avatarDialogElementImage = view.findViewById(R.id.avatarDialogElementImage)
-        nameDialogElementText = view.findViewById(R.id.nameDialogElementText)
-        lastMessageDialogElementText = view.findViewById(R.id.lastMessageDialogElementText)
-        messageTimeDialogElementText = view.findViewById(R.id.messageTimeDialogElementText)
-        isCheckedDialogElementText = view.findViewById(R.id.isCheckedDialogElementText)
-        dialogElementLayout = view.findViewById(R.id.dialogElementLayout)
-        dialogElementLayout.setOnClickListener {
-            goToDialog()
+    init {
+        setData(dialog, view, context)
+        view.element_dialog_mc_main.setOnClickListener {
+            goToDialog(dialog, context)
         }
     }
 
-    private fun setData(dialog: Dialog) {
-        showAvatar(dialog.user)
-        nameDialogElementText.text = "${dialog.user.name} ${dialog.user.surname}"
-        lastMessageDialogElementText.text =
+    private fun setData(dialog: Dialog, view: View, context: Context) {
+        showAvatar(dialog.user, view, context)
+        view.element_dialog_tv_name.text = "${dialog.user.name} ${dialog.user.surname}"
+        view.element_dialog_tv_last_message.text =
             WorkWithStringsApi.cutString(dialog.lastMessage.message, 23)
-        messageTimeDialogElementText.text =
+        view.element_dialog_tv_time.text =
             WorkWithTimeApi.getDateInFormatYMDHMS(Date(dialog.lastMessage.time)).substring(11, 16)
 
         if (!dialog.isChecked) {
-            isCheckedDialogElementText.visibility = View.VISIBLE
+            view.element_dialog_tv_is_checked.visibility = View.VISIBLE
         } else {
-            isCheckedDialogElementText.visibility = View.GONE
+            view.element_dialog_tv_is_checked.visibility = View.GONE
         }
     }
 
-    private fun showAvatar(user: User) {
+    private fun showAvatar(user: User, view: View, context: Context) {
         Picasso.get()
             .load(user.photoLink)
             .resize(
@@ -71,10 +52,10 @@ class DialogElement(
             )
             .centerCrop()
             .transform(CircularTransformation())
-            .into(avatarDialogElementImage)
+            .into(view.element_dialog_iv_avatar)
     }
 
-    private fun goToDialog() {
+    private fun goToDialog(dialog: Dialog, context: Context) {
         val intent = Intent(context, MessagesActivity::class.java)
         intent.putExtra(Dialog.DIALOG, dialog)
         intent.putExtra(User.USER, dialog.user)
@@ -88,9 +69,4 @@ class DialogElement(
         context.startActivity(intent)
         (context as Activity).overridePendingTransition(0, 0)
     }
-
-    companion object {
-        private const val TAG = "DBInf"
-    }
-
 }

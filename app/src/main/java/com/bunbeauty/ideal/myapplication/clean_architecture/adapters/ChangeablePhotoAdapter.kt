@@ -9,7 +9,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.ph
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.photoElement.ChangeablePhotoElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 
-class ChangeablePhotoAdapter: RecyclerView.Adapter<ChangeablePhotoAdapter.ChangeablePhotoViewHolder>() {
+class ChangeablePhotoAdapter :
+    RecyclerView.Adapter<ChangeablePhotoAdapter.ChangeablePhotoViewHolder>() {
 
     private val photos: ArrayList<Photo> = arrayListOf()
     private lateinit var iChangeablePhotoElement: IChangeablePhotoElement
@@ -43,20 +44,20 @@ class ChangeablePhotoAdapter: RecyclerView.Adapter<ChangeablePhotoAdapter.Change
         serviceViewHolder.bind(photos[i])
     }
 
-    override fun getItemCount(): Int {
-        return photos.size
-    }
+    override fun getItemCount() = photos.size
+
 
     inner class ChangeablePhotoViewHolder(private val view: View) :
         RecyclerView.ViewHolder(view) {
 
         fun bind(photo: Photo) {
-            val photoElement = ChangeablePhotoElement(
+            ChangeablePhotoElement(
                 iChangeablePhotoElement,
                 width,
-                height
+                height,
+                photo,
+                view
             )
-            photoElement.createPhoto(photo, view)
         }
     }
 }

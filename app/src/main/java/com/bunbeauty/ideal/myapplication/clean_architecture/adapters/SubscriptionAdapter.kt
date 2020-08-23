@@ -29,7 +29,7 @@ class SubscriptionAdapter : RecyclerView.Adapter<SubscriptionViewHolder>() {
         }
     }
 
-    fun removeItem(subscription: Subscription){
+    fun removeItem(subscription: Subscription) {
         val foundSubscription = subscriptions.find { it.id == subscription.id }
         if (foundSubscription != null) {
             val index = subscriptions.indexOf(foundSubscription)
@@ -61,9 +61,7 @@ class SubscriptionAdapter : RecyclerView.Adapter<SubscriptionViewHolder>() {
         RecyclerView.ViewHolder(view) {
 
         fun bind(subscription: Subscription) {
-            val subscriptionElement =
-                SubscriptionElement(view, context, subscriptionsPresenter, subscription)
-            subscriptionElement.createElement()
+            SubscriptionElement(view, context, subscriptionsPresenter, subscription)
         }
     }
 }

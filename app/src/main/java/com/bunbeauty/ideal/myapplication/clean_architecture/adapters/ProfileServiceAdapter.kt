@@ -45,8 +45,7 @@ class ProfileServiceAdapter :
         RecyclerView.ViewHolder(view) {
 
         fun bind(service: Service) {
-            val profileServiceElement = ProfileServiceElement(service, context)
-            profileServiceElement.createElement(view)
+            ProfileServiceElement(service, context, view)
         }
     }
 }

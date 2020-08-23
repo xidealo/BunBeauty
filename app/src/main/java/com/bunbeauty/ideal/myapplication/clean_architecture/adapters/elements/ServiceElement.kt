@@ -18,44 +18,45 @@ import kotlinx.android.synthetic.main.element_service.view.*
 import kotlin.random.Random
 
 class ServiceElement(
-    private val service: Service,
-    private val user: User,
-    private val view: View,
-    private val context: Context
+    service: Service,
+    user: User,
+    view: View,
+    context: Context
 ) {
-
-    fun createElement() {
+    init {
         val isPremium = WorkWithTimeApi.checkPremium(service.premiumDate)
         if (isPremium) {
-            setPremiumColor()
+            setPremiumColor(view, context)
         } else {
-            setDefaultBackground()
+            setDefaultBackground(view, context)
         }
 
-        setData()
+        setData(view, service, user, context)
 
         view.element_service_mcv.setOnClickListener {
-            goToService()
+            goToService(user, service, context)
         }
     }
 
-    private fun setData() {
-        if (isMoreFiveInch()) {
+    private fun setData(view: View, service: Service, user: User, context: Context) {
+        if (isMoreFiveInch(context)) {
             view.element_service_master_name_tv.text = WorkWithStringsApi.cutString(user.name, 9)
-            view.element_service_service_name_tv.text = WorkWithStringsApi.cutString(service.name.toUpperCase(), 14)
+            view.element_service_service_name_tv.text =
+                WorkWithStringsApi.cutString(service.name.toUpperCase(), 14)
         } else {
             view.element_service_master_name_tv.text =
                 WorkWithStringsApi.doubleCapitalSymbols(WorkWithStringsApi.cutString(user.name, 9))
-            view.element_service_service_name_tv.text = WorkWithStringsApi.cutString(service.name.toUpperCase(), 18)
+            view.element_service_service_name_tv.text =
+                WorkWithStringsApi.cutString(service.name.toUpperCase(), 18)
         }
         view.element_service_city_tv.text = WorkWithStringsApi.firstCapitalSymbol(user.city)
         view.element_service_cost_tv.text = "${service.cost} ₽"
         view.element_service_rating_rb.rating = service.rating
 
-        showAvatar()
+        showAvatar(user, view, context)
     }
 
-    private fun showAvatar() {
+    private fun showAvatar(user: User, view: View, context: Context) {
         val width = context.resources.getDimensionPixelSize(R.dimen.photo_avatar_width)
         val height = context.resources.getDimensionPixelSize(R.dimen.photo_avatar_height)
 
@@ -67,24 +68,24 @@ class ServiceElement(
             .into(view.element_service_avatar_iv)
     }
 
-    private fun goToService() {
+    private fun goToService(user: User, service: Service, context: Context) {
         val intent = Intent(context, ServiceActivity::class.java)
         intent.putExtra(Service.SERVICE, service)
         intent.putExtra(User.USER, user)
         context.startActivity(intent)
     }
 
-    private fun setPremiumColor() {
+    private fun setPremiumColor(view: View, context: Context) {
         view.element_service_ll.setBackgroundResource(R.color.yellow)
         view.element_service_rating_rb.supportProgressTintList =
             ColorStateList.valueOf(ContextCompat.getColor(context, R.color.mainBlue))
     }
 
-    private fun setDefaultBackground() {
+    private fun setDefaultBackground(view: View, context: Context) {
         view.element_service_ll.setBackgroundResource(R.color.white)
         view.element_service_rating_rb.supportProgressTintList =
             ColorStateList.valueOf(ContextCompat.getColor(context, R.color.yellow))
     }
 
-    private fun isMoreFiveInch() = WorkWithViewApi.getInches(context) < 5
+    private fun isMoreFiveInch(context: Context) = WorkWithViewApi.getInches(context) < 5
 }

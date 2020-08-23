@@ -46,8 +46,7 @@ class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
     inner class DialogViewHolder(private val view: View, private val context: Context) :
         ViewHolder(view) {
         fun bind(dialog: Dialog) {
-            val dialogElement = DialogElement(view, context)
-            dialogElement.createElement(dialog)
+           DialogElement(view, context, dialog)
         }
     }
 

@@ -40,12 +40,11 @@ class ProfileOrderAdapter() : RecyclerView.Adapter<ProfileOrderAdapter.ProfileOr
     inner class ProfileOrderViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(order: Order) {
-            val orderElement =
-                ProfileOrderElement(
-                    order,
-                    context
-                )
-            orderElement.createElement(view)
+            ProfileOrderElement(
+                order,
+                context,
+                view
+            )
         }
     }
 }

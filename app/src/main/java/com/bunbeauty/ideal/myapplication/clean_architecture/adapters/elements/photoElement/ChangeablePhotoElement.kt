@@ -1,45 +1,39 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.photoElement
 
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.element_changeable_photo.view.*
 
 class ChangeablePhotoElement(
-    private val iChangeablePhotoElement: IChangeablePhotoElement,
+    iChangeablePhotoElement: IChangeablePhotoElement,
     private val width: Int,
-    private val height: Int
+    private val height: Int,
+    photo: Photo,
+    view: View
 ) {
-    private lateinit var photoPhotoElementImage: ImageView
-    private lateinit var deletePhotoElementText: TextView
-    private lateinit var currentPhoto: Photo
 
-    fun createPhoto(photo: Photo, view: View) {
-        photoPhotoElementImage = view.findViewById(R.id.photoChangeablePhotoElementImage)
-        photoPhotoElementImage.setOnClickListener {
+    init {
+        view.element_changeable_photo_iv_photo.setOnClickListener {
             if (photo.link.isNotEmpty()) {
                 iChangeablePhotoElement.openPhoto(photo.link)
             }
         }
 
-        deletePhotoElementText = view.findViewById(R.id.deleteChangeablePhotoElementText)
-        deletePhotoElementText.setOnClickListener {
+        view.element_changeable_photo_tv_delete.setOnClickListener {
             iChangeablePhotoElement.deletePhoto(photo)
         }
 
-        currentPhoto = photo
-        setPhoto(photo)
+        setPhoto(photo, view)
     }
 
-    private fun setPhoto(photo: Photo) {
+    private fun setPhoto(photo: Photo, view: View) {
         if (photo.link.isNotEmpty()) {
             Picasso.get()
                 .load(photo.link)
                 .resize(width, height)
                 .centerCrop()
-                .into(photoPhotoElementImage)
+                .into(view.element_changeable_photo_iv_photo)
         }
     }
 }

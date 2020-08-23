@@ -1,37 +1,34 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.photoElement
 
 import android.view.View
-import android.widget.ImageView
-import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.element_photo.view.*
 
 class PhotoElement(
-    private val iPhotoElement: IPhotoElement,
+   iPhotoElement: IPhotoElement,
     private val width: Int,
-    private val height: Int
+    private val height: Int,
+    photo: Photo,
+    view: View
 ) {
-    private lateinit var photoPhotoElementImage: ImageView
-    private lateinit var currentPhoto: Photo
 
-    fun createPhoto(photo: Photo, view: View) {
-        photoPhotoElementImage = view.findViewById(R.id.photoPhotoElementImage)
-        photoPhotoElementImage.setOnClickListener {
+    init {
+        view.element_photo_iv_photo.setOnClickListener {
             if (photo.link.isNotEmpty()) {
                 iPhotoElement.openPhoto(photo.link)
             }
         }
-        currentPhoto = photo
-        setPhoto(photo)
+        setPhoto(photo, view)
     }
 
-    private fun setPhoto(photo: Photo) {
+    private fun setPhoto(photo: Photo, view: View) {
         if (photo.link.isNotEmpty()) {
             Picasso.get()
                 .load(photo.link)
                 .resize(width, height)
                 .centerCrop()
-                .into(photoPhotoElementImage)
+                .into(view.element_photo_iv_photo)
         }
     }
 }

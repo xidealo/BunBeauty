@@ -9,11 +9,11 @@ import kotlinx.android.synthetic.main.element_day.view.*
 
 class DayElement(
     private val view: View,
-    private val context: Context,
-    private val day: WorkingDay
+    context: Context,
+    day: WorkingDay
 ) {
 
-    fun createElement() {
+    init {
         view.dayBtn.text = day.dayOfMonth.toString()
         if (day.isSelected) {
             view.dayBtn.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow))

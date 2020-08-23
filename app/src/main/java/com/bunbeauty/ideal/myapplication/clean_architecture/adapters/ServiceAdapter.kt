@@ -42,8 +42,7 @@ class ServiceAdapter : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() 
         RecyclerView.ViewHolder(view) {
 
         fun bind(service: Service, user: User) {
-            val serviceElement = ServiceElement(service, user, view, context)
-            serviceElement.createElement()
+            ServiceElement(service, user, view, context)
         }
     }
 

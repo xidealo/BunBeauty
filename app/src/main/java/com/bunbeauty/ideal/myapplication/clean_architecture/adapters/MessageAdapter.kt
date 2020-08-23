@@ -62,9 +62,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
         messageViewHolder.bind(messageList[index])
     }
 
-    override fun getItemCount(): Int {
-        return messageList.size
-    }
+    override fun getItemCount() = messageList.size
 
     inner class MessageViewHolder(private val view: View, private val context: Context) :
         ViewHolder(view) {
@@ -73,29 +71,23 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
 
             when (message.type) {
                 Message.TEXT_MESSAGE_STATUS -> {
-                    val messageTextElement = MessageTextElement()
-                    messageTextElement.createElement(view)
-                    messageTextElement.setIsMyMessage(message)
-                    messageTextElement.setVisibility(message)
-                    messageTextElement.setData(message)
+                    val messageTextElement = MessageTextElement(message, view)
+                    messageTextElement.setIsMyMessage(message, view)
+                    messageTextElement.setVisibility(message, view)
                 }
 
                 Message.SERVICE_REVIEW_MESSAGE_STATUS -> {
                     val messageTextElement =
-                        MessageServiceReviewElement(messagesPresenter)
-                    messageTextElement.createElement(view)
-                    messageTextElement.setIsMyMessage(message)
-                    messageTextElement.setVisibility(message)
-                    messageTextElement.setData(message)
+                        MessageServiceReviewElement(messagesPresenter, message, view)
+                    messageTextElement.setIsMyMessage(message, view)
+                    messageTextElement.setVisibility(message, view)
                 }
 
                 Message.USER_REVIEW_MESSAGE_STATUS -> {
                     val messageUserReviewElement =
-                        MessageUserReviewElement(messagesPresenter)
-                    messageUserReviewElement.createElement(view)
-                    messageUserReviewElement.setIsMyMessage(message)
-                    messageUserReviewElement.setVisibility(message)
-                    messageUserReviewElement.setData(message)
+                        MessageUserReviewElement(messagesPresenter, message, view)
+                    messageUserReviewElement.setIsMyMessage(message, view)
+                    messageUserReviewElement.setVisibility(message, view)
                 }
             }
         }

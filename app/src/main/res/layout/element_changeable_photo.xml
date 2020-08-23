@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/deleteChangeablePhotoElementText"
+        android:id="@+id/element_changeable_photo_tv_delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -15,7 +15,7 @@
         android:textSize="24sp" />
 
     <ImageView
-        android:id="@+id/photoChangeablePhotoElementImage"
+        android:id="@+id/element_changeable_photo_iv_photo"
         style="@style/photoElement" />
 
 </LinearLayout>

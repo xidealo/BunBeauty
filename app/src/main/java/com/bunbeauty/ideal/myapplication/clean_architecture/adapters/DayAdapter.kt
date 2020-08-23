@@ -35,7 +35,6 @@ class DayAdapter(
 
         fun bind(day: WorkingDay, i: Int): DayElement {
             val dayElement = DayElement(view, context, day)
-            dayElement.createElement()
             dayElement.setClickListener(View.OnClickListener {
                 dayList.find { it.isSelected && dayList.indexOf(it) != i }?.isSelected = false
                 day.isSelected = !day.isSelected

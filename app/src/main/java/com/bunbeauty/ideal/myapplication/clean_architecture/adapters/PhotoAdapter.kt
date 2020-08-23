@@ -46,12 +46,13 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
         RecyclerView.ViewHolder(view) {
 
         fun bind(photo: Photo) {
-            val photoElement = PhotoElement(
+            PhotoElement(
                 iPhotoElement,
                 width,
-                height
+                height,
+                photo,
+                view
             )
-            photoElement.createPhoto(photo, view)
         }
     }
 }

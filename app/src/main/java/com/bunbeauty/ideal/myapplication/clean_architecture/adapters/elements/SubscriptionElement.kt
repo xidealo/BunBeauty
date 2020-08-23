@@ -15,30 +15,29 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.element_subscription.view.*
 
 class SubscriptionElement(
-    private val view: View,
-    private val context: Context,
-    private val subscriptionsPresenter: SubscriptionsPresenter,
-    private val subscription: Subscription
+    view: View,
+    context: Context,
+    subscriptionsPresenter: SubscriptionsPresenter,
+    subscription: Subscription
 ) {
-
-    fun createElement() {
+    init {
         view.workerNameSubscriptionElementText.text =
             "${subscription.subscriptionUser.name} ${subscription.subscriptionUser.surname}"
-        showAvatar(subscription.subscriptionUser, view)
+        showAvatar(subscription.subscriptionUser, view, context)
 
         view.subscriptionElementLayout.setOnClickListener {
-            goToProfile(subscription.subscriptionUser)
+            goToProfile(subscription.subscriptionUser, context)
         }
 
         view.subscribeSubscriptionElementCheckBox.isChecked = true
         view.subscribeSubscriptionElementCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (!isChecked) {
-                unsubscribe()
+                unsubscribe(subscriptionsPresenter, subscription)
             }
         }
     }
 
-    private fun showAvatar(user: User, view: View) {
+    private fun showAvatar(user: User, view: View, context: Context) {
         val width = context.resources.getDimensionPixelSize(R.dimen.photo_avatar_width)
         val height = context.resources.getDimensionPixelSize(R.dimen.photo_avatar_height)
 
@@ -50,16 +49,20 @@ class SubscriptionElement(
             .into(view.avatarSubscriptionElementImage)
     }
 
-    private fun unsubscribe() {
+    private fun unsubscribe(
+        subscriptionsPresenter: SubscriptionsPresenter,
+        subscription: Subscription
+    ) {
         subscriptionsPresenter.deleteSubscription(subscription)
-        subscriptionsPresenter.deleteSubscriber(Subscriber(
+        subscriptionsPresenter.deleteSubscriber(
+            Subscriber(
                 userId = subscription.subscriptionId,
                 subscriberId = subscription.userId
             )
         )
     }
 
-    private fun goToProfile(user: User) {
+    private fun goToProfile(user: User, context: Context) {
         val intent = Intent(context, ProfileActivity::class.java)
         intent.putExtra(User.USER, user)
         context.startActivity(intent)
