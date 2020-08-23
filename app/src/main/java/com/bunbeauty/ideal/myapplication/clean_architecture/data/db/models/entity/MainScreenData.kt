@@ -7,5 +7,5 @@ data class MainScreenData(
     @Embedded
     val user: User = User(),
     @Embedded
-    val service: Service = Service()
+    val service: Service
 )

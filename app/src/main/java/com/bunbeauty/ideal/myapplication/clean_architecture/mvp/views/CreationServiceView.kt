@@ -14,6 +14,6 @@ interface CreationServiceView : MvpView {
     fun showNameInputError(error: String)
     fun showDescriptionInputError(error: String)
     fun showCostInputError(error: String)
-    fun showCategoryInputError(error: String)
+    fun showError(error: String)
     fun showAddressInputError(error: String)
 }

@@ -16,20 +16,20 @@ import java.io.Serializable
 )data class Service(
     @PrimaryKey
     var id: String = "",
-    var userId: String = "",
-    var name: String = "",
-    var duration: Float = 0.5f,
-    var address: String = "",
-    var description: String = "",
-    var category: String = "",
+    var userId: String,
+    var name: String,
+    var duration: Float,
+    var address: String,
+    var description: String,
+    var category: String,
     var rating: Float = 0f,
     var countOfRates: Long = 0,
-    var cost: Long = 0L,
+    var cost: Long,
     var creationDate: Long = 0L,
-    var premiumDate: Long = 0L,
+    var premiumDate: Long = 0L
+) : Serializable {
     @Ignore
     var tags: ArrayList<Tag> = ArrayList()
-) : Serializable {
 
     companion object {
         const val SERVICES = "services"

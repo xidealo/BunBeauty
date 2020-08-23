@@ -5,6 +5,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.callback.creation_se
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service.InsertServiceCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IServiceRepository
+import java.time.Duration
 
 class CreationServiceServiceServiceInteractor(
     private val serviceRepository: IServiceRepository
@@ -17,8 +18,11 @@ class CreationServiceServiceServiceInteractor(
         creationServicePresenterCallback: CreationServicePresenterCallback
     ) {
         this.creationServicePresenterCallback = creationServicePresenterCallback
-        if (isNameCorrect(service.name) && isAddressCorrect(service.address)
-            && isCategoryCorrect(service.category) && isDescriptionCorrect(service.description)
+        if (isNameCorrect(service.name) &&
+            isAddressCorrect(service.address) &&
+            isCategoryCorrect(service.category) &&
+            isDescriptionCorrect(service.description) &&
+                    isDurationNotZero(service.duration)
         ) {
             serviceRepository.insert(service, this)
         }
@@ -61,6 +65,15 @@ class CreationServiceServiceServiceInteractor(
 
         if (!getIsDescriptionLengthLessTwoHundred(description)) {
             creationServicePresenterCallback.showDescriptionInputError("Описание должно быть меньше 200 символов")
+            return false
+        }
+
+        return true
+    }
+
+    private fun isDurationNotZero(duration: Float) : Boolean {
+        if (duration == 0f) {
+            creationServicePresenterCallback.showDurationInputError("Установите длительность услуги")
             return false
         }
 

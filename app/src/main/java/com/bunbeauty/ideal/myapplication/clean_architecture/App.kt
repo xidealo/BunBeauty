@@ -1,0 +1,53 @@
+package com.bunbeauty.ideal.myapplication.clean_architecture
+
+import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+
+class App : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val cancelChannel = NotificationChannel(
+                CANCEL_CHANNEL_ID,
+                "Cancel Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val orderChannel = NotificationChannel(
+                ORDER_CHANNEL_ID,
+                "Order Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val subscriberChannel = NotificationChannel(
+                SUBSCRIBER_CHANNEL_ID,
+                "Subscriber Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val rateChannel = NotificationChannel(
+                RATE_CHANNEL_ID,
+                "Rate Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val manager = getSystemService(NotificationManager::class.java)
+
+            manager?.createNotificationChannel(cancelChannel)
+            manager?.createNotificationChannel(orderChannel)
+            manager?.createNotificationChannel(subscriberChannel)
+            manager?.createNotificationChannel(rateChannel)
+        }
+    }
+
+    companion object {
+        const val CANCEL_CHANNEL_ID = "1"
+        const val ORDER_CHANNEL_ID = "2"
+        const val SUBSCRIBER_CHANNEL_ID = "3"
+        const val RATE_CHANNEL_ID = "4"
+    }
+}

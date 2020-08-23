@@ -17,6 +17,7 @@
 
     <color name="grey40">#66D1D1D1</color>
     <color name="grey">#888888</color>
+    <color name="dark_grey">#666666</color>
 
     <!-- Style for logIn pages -->
     <color name="rightBorder">#005F89</color>

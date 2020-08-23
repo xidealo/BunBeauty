@@ -8,6 +8,7 @@ interface CreationServicePresenterCallback {
     fun showCostInputError(error: String)
     fun showCategoryInputError(error: String)
     fun showAddressInputError(error: String)
+    fun showDurationInputError(error: String)
     fun showServiceCreated(service: Service)
 
     fun addTags(service: Service)

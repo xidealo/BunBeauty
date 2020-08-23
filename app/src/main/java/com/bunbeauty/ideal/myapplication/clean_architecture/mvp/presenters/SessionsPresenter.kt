@@ -3,7 +3,6 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsMessageInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsOrderInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.i_sessions.ISessionsMessageInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.sessions.SessionsPresenterCallback
@@ -24,16 +23,12 @@ class SessionsPresenter(
     }
 
     override fun showDays(days: Set<WorkingDay>) {
-        val sortedDays = days.sortedBy { it.dayOfMonth }
-        viewState.showDays(sortedDays)
+        viewState.showDays(days.toList())
     }
 
     fun getSessions(day: WorkingDay) {
         clearSessions()
-        val sortedSessionList = sessionsInteractor.getSessions(day).sortedBy {
-            it.startTime
-        }
-        viewState.showTime(sortedSessionList)
+        viewState.showTime(sessionsInteractor.getSessions(day))
     }
 
     fun clearSessions() {
@@ -81,26 +76,24 @@ class SessionsPresenter(
 
     override fun sendMessages(order: Order) {
         val userReviewId = sessionsMessageInteractor.getId(order.clientId, order.masterId)
-        val myMessageUserReview =
-            Message(
-                id = userReviewId,
-                type = Message.USER_REVIEW_MESSAGE_STATUS,
-                message = "На услуге ${order.serviceName} был клиент. Оставьте отзыв о клиенте.",
-                dialogId = order.clientId,
-                userId = order.masterId,
-                orderId = order.id,
-                ownerId = order.masterId
-            )
-        val companionMessageUserReview =
-            Message(
-                id = userReviewId,
-                type = Message.USER_REVIEW_MESSAGE_STATUS,
-                message = "На услуге ${order.serviceName} был клиент. Оставьте отзыв о клиенте.",
-                dialogId = order.masterId,
-                userId = order.clientId,
-                orderId = order.id,
-                ownerId = order.masterId
-            )
+        val myMessageUserReview = Message(
+            id = userReviewId,
+            type = Message.USER_REVIEW_MESSAGE_STATUS,
+            message = "На услуге ${order.serviceName} был клиент. Оставьте отзыв о клиенте.",
+            dialogId = order.clientId,
+            userId = order.masterId,
+            orderId = order.id,
+            ownerId = order.masterId
+        )
+        val companionMessageUserReview = Message(
+            id = userReviewId,
+            type = Message.USER_REVIEW_MESSAGE_STATUS,
+            message = "На услуге ${order.serviceName} был клиент. Оставьте отзыв о клиенте.",
+            dialogId = order.masterId,
+            userId = order.clientId,
+            orderId = order.id,
+            ownerId = order.masterId
+        )
         sessionsMessageInteractor.sendUserReviewMessage(myMessageUserReview)
         sessionsMessageInteractor.sendUserReviewMessage(companionMessageUserReview)
 

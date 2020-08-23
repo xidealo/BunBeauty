@@ -13,17 +13,17 @@ class CodeFirebase {
 
     fun update(code: Code, codeCallback: UpdateCodeCallback) {
         val myRef = FirebaseDatabase.getInstance()
-            .getReference(CreationServiceActivity.CODES)
+            .getReference(CODES)
             .child(code.id)
         val items = HashMap<String, Any>()
-        items[CreationServiceActivity.COUNT] = code.count
+        items[COUNT] = code.count
         myRef.updateChildren(items)
         codeCallback.returnUpdatedCallback(code)
     }
 
     fun getByCode(codeString: String, callback: GetCodeCallback) {
-        val query = FirebaseDatabase.getInstance().getReference(CreationServiceActivity.CODES)
-            .orderByChild(CreationServiceActivity.CODE).equalTo(codeString)
+        val query = FirebaseDatabase.getInstance().getReference(CODES)
+            .orderByChild(CODE).equalTo(codeString)
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(codesSnapshot: DataSnapshot) {
                 val code = Code()
@@ -50,5 +50,11 @@ class CodeFirebase {
 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
+    }
+
+    companion object {
+        const val CODES = "codes"
+        const val CODE = "code"
+        const val COUNT = "count"
     }
 }

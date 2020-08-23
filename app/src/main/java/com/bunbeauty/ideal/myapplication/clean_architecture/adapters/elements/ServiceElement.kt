@@ -12,10 +12,9 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithTim
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity
-import com.bunbeauty.ideal.myapplication.help_api.WorkWithViewApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.element_service.view.*
-import kotlin.random.Random
 
 class ServiceElement(
     service: Service,

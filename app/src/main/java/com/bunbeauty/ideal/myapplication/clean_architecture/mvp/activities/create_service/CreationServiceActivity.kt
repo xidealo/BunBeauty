@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.TimePicker
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -99,10 +100,19 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
                 descriptionCreationServiceInput.text.toString(),
                 costCreationServiceInput.text.toString().toLongOrNull() ?: 0,
                 addressCreationServiceInput.text.toString(),
+                activity_creation_service_np_hour.value,
+                activity_creation_service_np_minute.value,
                 categoryFragment.getCategory(),
                 categoryFragment.getSelectedTags()
             )
         }
+        activity_creation_service_np_hour.minValue = 0
+        activity_creation_service_np_hour.maxValue = 8
+        activity_creation_service_np_minute.minValue = 0
+        activity_creation_service_np_minute.maxValue = 1
+        activity_creation_service_np_minute.value = 1
+        activity_creation_service_np_minute.displayedValues = arrayOf("0", "30")
+
         photoCreationServiceBtn.setOnClickListener {
             CropImage.activity().start(this)
         }
@@ -140,9 +150,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
     override fun deletePhoto(photo: Photo) {
         MaterialAlertDialogBuilder(this, R.style.myDialogTheme)
             .setTitle("Внимание!")
-            .setMessage(
-                "Удалить фотографию?"
-            )
+            .setMessage("Удалить фотографию?")
             .setPositiveButton("Да") { _, _ ->
                 creationServicePresenter.removePhoto(photo)
             }.setNegativeButton("Нет") { _, _ ->
@@ -207,9 +215,9 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
         costCreationServiceInput.requestFocus()
     }
 
-    override fun showCategoryInputError(error: String) {
+    override fun showError(error: String) {
         Snackbar.make(mainCreationServiceLinearLayout, error, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(this, R.color.red))
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.grey))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
@@ -223,12 +231,6 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
         startActivity(intent)
         overridePendingTransition(0, 0)
         finish()
-    }
-
-    companion object {
-        const val CODES = "codes"
-        const val CODE = "code"
-        const val COUNT = "count"
     }
 
 }

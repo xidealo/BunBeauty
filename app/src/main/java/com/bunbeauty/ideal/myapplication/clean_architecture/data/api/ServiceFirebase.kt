@@ -19,6 +19,7 @@ class ServiceFirebase {
         items[Service.NAME] = service.name
         items[Service.ADDRESS] = service.address
         items[Service.DESCRIPTION] = service.description
+        items[Service.DURATION] = service.duration
         items[Service.COST] = service.cost
         items[Service.CATEGORY] = service.category
         items[Service.CREATION_DATE] = ServerValue.TIMESTAMP
@@ -47,6 +48,7 @@ class ServiceFirebase {
         items[Service.NAME] = service.name
         items[Service.ADDRESS] = service.address
         items[Service.DESCRIPTION] = service.description
+        items[Service.DURATION] = service.duration
         items[Service.COST] = service.cost
         items[Service.CATEGORY] = service.category
         items[Service.CREATION_DATE] = service.creationDate
@@ -68,7 +70,9 @@ class ServiceFirebase {
 
         serviceReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(serviceSnapshot: DataSnapshot) {
-                getServiceCallback.returnGottenObject(getServiceFromSnapshot(serviceSnapshot, userId))
+                getServiceCallback.returnGottenObject(
+                    getServiceFromSnapshot(serviceSnapshot, userId)
+                )
             }
 
             override fun onCancelled(error: DatabaseError) {}
@@ -111,19 +115,22 @@ class ServiceFirebase {
     }
 
     private fun getServiceFromSnapshot(serviceSnapshot: DataSnapshot, userId: String): Service {
-        val service = Service()
-        service.id = serviceSnapshot.key!!
-        service.name = serviceSnapshot.child(Service.NAME).value as? String ?: ""
-        service.address = serviceSnapshot.child(Service.ADDRESS).value as? String ?: ""
-        service.description = serviceSnapshot.child(Service.DESCRIPTION).value as? String ?: ""
-        service.cost = serviceSnapshot.child(Service.COST).getValue(Long::class.java) ?: 0
-        service.countOfRates =
-            serviceSnapshot.child(Service.COUNT_OF_RATES).getValue(Long::class.java) ?: 0L
-        service.rating = serviceSnapshot.child(Service.AVG_RATING).getValue(Float::class.java) ?: 0f
-        service.category = serviceSnapshot.child(Service.CATEGORY).value as? String ?: ""
-        service.creationDate = serviceSnapshot.child(Service.CREATION_DATE).value as? Long ?: 0
-        service.premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).value as? Long ?: 0
-        service.userId = userId
+        val service = Service(
+            id = serviceSnapshot.key!!,
+            name = serviceSnapshot.child(Service.NAME).value as? String ?: "",
+            address = serviceSnapshot.child(Service.ADDRESS).value as? String ?: "",
+            description = serviceSnapshot.child(Service.DESCRIPTION).value as? String ?: "",
+            duration = serviceSnapshot.child(Service.DURATION).getValue(Float::class.java) ?: 0.5f,
+            cost = serviceSnapshot.child(Service.COST).getValue(Long::class.java) ?: 0,
+            countOfRates = serviceSnapshot.child(Service.COUNT_OF_RATES).getValue(Long::class.java)
+                ?: 0L,
+            rating = serviceSnapshot.child(Service.AVG_RATING).getValue(Float::class.java) ?: 0f,
+            category = serviceSnapshot.child(Service.CATEGORY).value as? String ?: "",
+            creationDate = serviceSnapshot.child(Service.CREATION_DATE).value as? Long ?: 0,
+            premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).value as? Long ?: 0,
+            userId = userId
+        )
+
         for (tagSnapshot in serviceSnapshot.child(Tag.TAGS).children) {
             service.tags.add(getTagFromSnapshot(tagSnapshot, service.id, userId))
         }

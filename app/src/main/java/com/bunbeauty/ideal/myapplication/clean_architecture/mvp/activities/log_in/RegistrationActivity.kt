@@ -19,7 +19,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profi
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in.RegistrationPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.RegistrationView
-import com.bunbeauty.ideal.myapplication.help_api.WorkWithViewApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_registration.*
 import javax.inject.Inject

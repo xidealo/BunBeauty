@@ -30,7 +30,8 @@ class SessionsInteractor(
     }
 
     override fun returnGottenObject(schedule: ScheduleWithWorkingTime?) {
-        this.schedule = schedule!!
+        schedule!!.workingTimeList.sortBy { it.time }
+        this.schedule = schedule
         sessionsPresenterCallback.showDays(schedule.getAvailableDays(getService().duration))
     }
 

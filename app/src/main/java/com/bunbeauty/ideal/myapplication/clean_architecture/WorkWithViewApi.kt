@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.help_api
+package com.bunbeauty.ideal.myapplication.clean_architecture
 
 import android.app.Activity
 import android.content.Context
@@ -6,6 +6,8 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class WorkWithViewApi {
     companion object {
@@ -32,11 +34,10 @@ class WorkWithViewApi {
             val height = dm.heightPixels
             val wi = width.toDouble() / dm.xdpi.toDouble()
             val hi = height.toDouble() / dm.ydpi.toDouble()
-            val x = Math.pow(wi, 2.0)
-            val y = Math.pow(hi, 2.0)
-            return Math.sqrt(x + y) + 0.3
+            val x = wi.pow(2.0)
+            val y = hi.pow(2.0)
+            return sqrt(x + y) + 0.3
         }
-
     }
 
 }

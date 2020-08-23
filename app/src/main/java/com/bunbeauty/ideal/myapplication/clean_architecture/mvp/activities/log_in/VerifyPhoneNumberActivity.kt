@@ -17,7 +17,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.di.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in.VerifyPhonePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.VerifyPhoneView
-import com.bunbeauty.ideal.myapplication.help_api.WorkWithViewApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_verify_phone_number.*
 import javax.inject.Inject

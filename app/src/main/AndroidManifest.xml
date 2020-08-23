@@ -9,13 +9,13 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="com.bunbeauty.ideal.myapplication.other.App"
+        android:name="com.bunbeauty.ideal.myapplication.clean_architecture.App"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/BunBeauty"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.ServiceCommentsActivity" />
         <activity
@@ -55,12 +55,16 @@
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.ScheduleActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.SessionsActivity" />
 
-        <service android:name="com.bunbeauty.ideal.myapplication.clean_architecture.business.notifications.MyFirebaseInstanceIdService">
+        <service
+            android:name="com.bunbeauty.ideal.myapplication.clean_architecture.business.notifications.MyFirebaseInstanceIdService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.bunbeauty.ideal.myapplication.clean_architecture.business.notifications.MyFirebaseMessagingService">
+        <service
+            android:name="com.bunbeauty.ideal.myapplication.clean_architecture.business.notifications.MyFirebaseMessagingService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

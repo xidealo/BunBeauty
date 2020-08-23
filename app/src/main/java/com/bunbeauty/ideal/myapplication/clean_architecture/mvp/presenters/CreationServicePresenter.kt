@@ -4,9 +4,9 @@ import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.create_service.CreationServiceServiceServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.IPhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.create_service.iCreateService.ICreationServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.IPhotoCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.IPhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.creation_service.CreationServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
@@ -27,18 +27,20 @@ class CreationServicePresenter(
         description: String,
         cost: Long,
         address: String,
+        durationHours: Int,
+        durationMinutes: Int,
         category: String,
         tags: ArrayList<Tag>
     ) {
-        val service = Service()
-        service.name = name
-        service.description = description
-        service.cost = cost
-        service.category = category
-        service.address = address
-        service.rating = 0f
-        service.countOfRates = 0
-        service.userId = User.getMyId()
+        val service = Service(
+            name = name,
+            description = description,
+            cost = cost,
+            category = category,
+            address = address,
+            duration = durationHours + durationMinutes * 0.5f,
+            userId = User.getMyId()
+        )
         service.tags = tags
         creationServiceServiceInteractor.addService(service, this)
     }
@@ -70,11 +72,15 @@ class CreationServicePresenter(
     }
 
     override fun showCategoryInputError(error: String) {
-        viewState.showCategoryInputError(error)
+        viewState.showError(error)
     }
 
     override fun showAddressInputError(error: String) {
         viewState.showAddressInputError(error)
+    }
+
+    override fun showDurationInputError(error: String) {
+        viewState.showError(error)
     }
 
     override fun showServiceCreated(service: Service) {
