@@ -1,7 +1,7 @@
-package com.bunbeauty.ideal.myapplication.clean_architecture.business.chat
+package com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message
 
 import android.content.Intent
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.IMessagesDialogInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesDialogInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.dialog.UpdateDialogCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message

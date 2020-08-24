@@ -12,10 +12,10 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.UserComment
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.user_comments.UserCommentsUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.user_comments.UserCommentsUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.UserComment
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.InteractorModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel

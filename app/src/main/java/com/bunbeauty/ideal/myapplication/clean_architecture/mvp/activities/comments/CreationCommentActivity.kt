@@ -9,10 +9,10 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.InteractorModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.comments.CreationCommentPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.comments.CreationCommentView
 import kotlinx.android.synthetic.main.activity_creation_comment.*

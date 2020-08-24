@@ -2,9 +2,10 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.IMessagesDialogInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.IMessagesMessageInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.IMessagesUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesDialogInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesOrderInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.chat.MessagesPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
@@ -14,7 +15,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.chat.Messa
 class MessagesPresenter(
     private val messagesMessageInteractor: IMessagesMessageInteractor,
     private val messagesDialogInteractor: IMessagesDialogInteractor,
-    private val messagesUserInteractor: IMessagesUserInteractor
+    private val messagesUserInteractor: IMessagesUserInteractor,
+    private val messagesOrderInteractor: IMessagesOrderInteractor
 ) : MvpPresenter<MessagesView>(), MessagesPresenterCallback {
 
     fun getCompanionUser() = messagesUserInteractor.getCompanionUser(this)
@@ -103,5 +105,9 @@ class MessagesPresenter(
             message,
             messagesDialogInteractor.getMyDialog()
         )
+    }
+
+    fun cancelOrder(message: Message) {
+        messagesOrderInteractor.cancelOrder(message)
     }
 }

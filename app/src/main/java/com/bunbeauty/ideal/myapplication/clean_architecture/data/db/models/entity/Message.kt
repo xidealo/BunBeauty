@@ -35,6 +35,7 @@ data class Message(
         const val TEXT_MESSAGE_STATUS = 0
         const val USER_REVIEW_MESSAGE_STATUS = 1
         const val SERVICE_REVIEW_MESSAGE_STATUS = 2
+        const val CANCEL_MESSAGE_STATUS = 3
         const val TIME = "time"
         const val ORDER_ID = "order id"
         const val OWNER_ID = "owner id"

@@ -11,10 +11,11 @@ class MessageServiceReviewElement(
     message: Message,
     view: View
 ) : MessageElement(message, view) {
-    override fun setVisibility(message: Message, view: View) {
+    override fun setButtonVisibility(message: Message, view: View, buttonText: String) {
         if (message.ownerId == User.getMyId()) {
-            view.rateMessageElementButton.visibility = View.VISIBLE
-            view.rateMessageElementButton.setOnClickListener {
+            super.setButtonVisibility(message, view, buttonText)
+            view.element_message_btn_action.visibility = View.VISIBLE
+            view.element_message_btn_action.setOnClickListener {
                 messagesPresenter.goToCreationComment(message)
             }
         }

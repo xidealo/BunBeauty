@@ -19,7 +19,11 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.Ser
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.RepositoryModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.SessionsActivity

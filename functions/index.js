@@ -95,7 +95,7 @@ exports.sendChatMessageNotification = functions.database.ref('dialogs/{userId}/{
                     const payload = {
                         data: {
                             data_type: "chat message",
-                            user_id: senderId,
+                            user_id: ownerId,
                             name: senderName,
                             message: message,
                             photo_link: senderPhoto

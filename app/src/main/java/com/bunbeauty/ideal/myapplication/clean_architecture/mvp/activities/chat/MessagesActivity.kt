@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,14 +12,21 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.MessageAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.MessagesDialogInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.MessagesMessageInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.MessagesUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesDialogInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesOrderInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesOrderInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AdapterModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CreationCommentActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
@@ -47,6 +55,9 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
     lateinit var messagesUserInteractor: MessagesUserInteractor
 
     @Inject
+    lateinit var messagesOrderInteractor: MessagesOrderInteractor
+
+    @Inject
     lateinit var messageAdapter: MessageAdapter
 
     @InjectPresenter
@@ -65,7 +76,8 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
         return MessagesPresenter(
             messageInteractor,
             messagesDialogInteractor,
-            messagesUserInteractor
+            messagesUserInteractor,
+            messagesOrderInteractor
         )
     }
 
@@ -92,7 +104,8 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
         results_messages_recycle_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (isScrolling && dy < 0) {
+                if (isScrolling && dy < 0 && linearLayoutManager.findFirstVisibleItemPosition() <= 3) {
+                    Log.d(Tag.TEST_TAG, "Запрос в бд на докачку сообщений")
                     updateData()
                 }
             }

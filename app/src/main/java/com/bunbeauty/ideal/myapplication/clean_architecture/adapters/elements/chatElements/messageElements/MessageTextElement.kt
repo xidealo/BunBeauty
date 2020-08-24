@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.c
 
 import android.view.View
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat.MessagesPresenter
 import kotlinx.android.synthetic.main.element_message.view.*
 
 class MessageTextElement(
@@ -10,8 +9,8 @@ class MessageTextElement(
     view: View
 ) : MessageElement(message, view) {
 
-    override fun setVisibility(message: Message, view: View) {
-        view.rateMessageElementButton.visibility = View.GONE
+    override fun setButtonVisibility(message: Message, view: View, buttonText: String) {
+        view.element_message_btn_action.visibility = View.GONE
     }
 
 }

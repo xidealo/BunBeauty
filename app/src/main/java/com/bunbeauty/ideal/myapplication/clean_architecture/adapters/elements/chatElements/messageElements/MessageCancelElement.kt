@@ -6,20 +6,18 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat.MessagesPresenter
 import kotlinx.android.synthetic.main.element_message.view.*
 
-class MessageUserReviewElement(
+class MessageCancelElement(
     private val messagesPresenter: MessagesPresenter,
     message: Message,
     view: View
 ) : MessageElement(message, view) {
-
     override fun setButtonVisibility(message: Message, view: View, buttonText: String) {
         if (message.ownerId == User.getMyId()) {
             super.setButtonVisibility(message, view, buttonText)
             view.element_message_btn_action.visibility = View.VISIBLE
             view.element_message_btn_action.setOnClickListener {
-                messagesPresenter.goToCreationComment(message)
+                messagesPresenter.cancelOrder(message)
             }
         }
     }
-
 }

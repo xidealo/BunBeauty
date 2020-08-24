@@ -17,9 +17,9 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTra
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.NumberRoundingApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.profile.iProfile.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.*
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.InteractorModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.ScheduleActivity

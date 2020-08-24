@@ -16,7 +16,11 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithTim
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.fragments.premium.PremiumElementCodeInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.fragments.premium.PremiumElementServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.RepositoryModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.fragments.PremiumElementPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.fragments.PremiumElementFragmentView
 import com.google.android.material.snackbar.Snackbar

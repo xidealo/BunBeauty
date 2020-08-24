@@ -43,7 +43,7 @@
     <string name="resendCode">Отправить код снова</string>
     <string name="verifyCode">Подтвердить код</string>
     <string name="enterCode">Введите код</string>
-    <string name="canceled">Отказаться</string>
+    <string name="cancel">Отказаться</string>
     <string name="Dialogs">Диалоги</string>
     <string name="rate">Оценить</string>
     <string name="deleteService">Удалить</string>

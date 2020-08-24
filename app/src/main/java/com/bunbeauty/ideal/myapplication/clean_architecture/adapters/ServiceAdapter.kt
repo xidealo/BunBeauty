@@ -4,22 +4,31 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.ServiceElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.DiffUtilCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 
 class ServiceAdapter : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() {
 
-    private val mainScreenData: ArrayList<MainScreenData> = arrayListOf()
+    private var mainScreenDataList = mutableListOf<MainScreenData>()
+    private lateinit var diffUtil: DiffUtil.DiffResult
 
     fun setData(mainScreenData: ArrayList<MainScreenData>) {
-        this.mainScreenData.clear()
-        this.mainScreenData.addAll(mainScreenData)
+        this.mainScreenDataList.clear()
+        this.mainScreenDataList.addAll(mainScreenData)
         notifyDataSetChanged()
     }
+
+    /*fun setData(mainScreenData: ArrayList<MainScreenData>) {
+        diffUtil = DiffUtil.calculateDiff(DiffUtilCallback(mainScreenDataList, mainScreenData))
+        diffUtil.dispatchUpdatesTo(this)
+        mainScreenDataList = mainScreenData
+    }*/
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ServiceViewHolder {
         val context = viewGroup.context
@@ -31,12 +40,10 @@ class ServiceAdapter : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() 
     }
 
     override fun onBindViewHolder(serviceViewHolder: ServiceViewHolder, i: Int) {
-        serviceViewHolder.bind(mainScreenData[i].service, mainScreenData[i].user)
+        serviceViewHolder.bind(mainScreenDataList[i].service, mainScreenDataList[i].user)
     }
 
-    override fun getItemCount(): Int {
-        return mainScreenData.size
-    }
+    override fun getItemCount() = mainScreenDataList.size
 
     inner class ServiceViewHolder(private val view: View, private val context: Context) :
         RecyclerView.ViewHolder(view) {

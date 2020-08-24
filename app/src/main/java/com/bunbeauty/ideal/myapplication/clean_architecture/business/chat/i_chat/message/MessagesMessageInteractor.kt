@@ -1,8 +1,8 @@
-package com.bunbeauty.ideal.myapplication.clean_architecture.business.chat
+package com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message
 
 import android.util.Log
 import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.IMessagesMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesMessageInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.chat.MessagesPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.InsertMessageCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.MessageCallback
@@ -68,6 +68,12 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
      */
     override fun returnGottenObject(element: Message?) {
         if (element == null) return
+
+        /*when(element.type){
+
+            Message.TEXT_MESSAGE_STATUS -> addMessage(element)
+
+        }*/
 
         if (element.type == Message.TEXT_MESSAGE_STATUS || element.ownerId == User.getMyId()) {
             addMessage(element)

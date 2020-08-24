@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsOrderInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.i_sessions.ISessionsMessageInteractor
@@ -10,6 +11,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingDay
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.SessionsView
+import java.util.*
 
 @InjectViewState
 class SessionsPresenter(
@@ -118,6 +120,45 @@ class SessionsPresenter(
         )
         sessionsMessageInteractor.sendServiceReviewMessage(myMessageServiceReview)
         sessionsMessageInteractor.sendServiceReviewMessage(companionMessageServiceReview)
+
+        //send message cancel order
+        val cancelMessageId = sessionsMessageInteractor.getId(order.masterId, order.clientId)
+        val myMessageCancel = Message(
+            id = cancelMessageId,
+            type = Message.CANCEL_MESSAGE_STATUS,
+            message = "К вам на услугу ${order.serviceName} на время c ${
+                WorkWithTimeApi.getDateInFormatYMDHMS(
+                    Date(order.session.startTime)
+                )
+            } по ${
+                WorkWithTimeApi.getDateInFormatYMDHMS(
+                    Date(order.session.finishTime)
+                )
+            } записался клиент",
+            dialogId = order.clientId,
+            userId = order.masterId,
+            orderId = order.id,
+            ownerId = order.masterId
+        )
+        val companionMessageCancel = Message(
+            id = cancelMessageId,
+            type = Message.CANCEL_MESSAGE_STATUS,
+            message = "К вам на услугу ${order.serviceName} на время c ${
+                WorkWithTimeApi.getDateInFormatYMDHMS(
+                    Date(order.session.startTime)
+                )
+            } по ${
+                WorkWithTimeApi.getDateInFormatYMDHMS(
+                    Date(order.session.finishTime)
+                )
+            } записался клиент",
+            dialogId = order.masterId,
+            userId = order.clientId,
+            orderId = order.id,
+            ownerId = order.masterId
+        )
+        sessionsMessageInteractor.sendServiceReviewMessage(myMessageCancel)
+        sessionsMessageInteractor.sendServiceReviewMessage(companionMessageCancel)
     }
 
 }

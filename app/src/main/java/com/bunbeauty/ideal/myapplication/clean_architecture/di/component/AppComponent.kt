@@ -1,5 +1,6 @@
-package com.bunbeauty.ideal.myapplication.clean_architecture.di
+package com.bunbeauty.ideal.myapplication.clean_architecture.di.component
 
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.SessionsActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat.DialogsActivity

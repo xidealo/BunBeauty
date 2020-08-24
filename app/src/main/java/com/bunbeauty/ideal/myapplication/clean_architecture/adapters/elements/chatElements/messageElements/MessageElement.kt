@@ -2,14 +2,9 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.c
 
 import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
-import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat.MessagesPresenter
-import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.element_message.view.*
 import java.util.*
 
@@ -19,18 +14,20 @@ abstract class MessageElement(
 ) {
 
     init {
-        view.messageTextMessageElementText.text = message.message
-        view.messageTimeMessageElementText.text =
+        view.element_message_tv_message.text = message.message
+        view.element_message_tv_time.text =
             WorkWithTimeApi.getDateInFormatYMDHMS(Date(message.time)).substring(11, 16)
     }
 
-    open fun setVisibility(message: Message, view: View) {}
+    open fun setButtonVisibility(message: Message, view: View, buttonText: String) {
+        view.element_message_btn_action.text = buttonText
+    }
 
     open fun setIsMyMessage(message: Message, view: View) {
         if (message.ownerId == User.getMyId()) {
-            view.messageMessageElementLayout.gravity = Gravity.END
+            view.element_message_ll_main.gravity = Gravity.END
         } else {
-            view.messageMessageElementLayout.gravity = Gravity.START
+            view.element_message_ll_main.gravity = Gravity.START
         }
     }
 }

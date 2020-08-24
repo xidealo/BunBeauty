@@ -33,7 +33,6 @@ class SessionsOrderInteractor(private val orderRepository: IOrderRepository) : I
         sessionsPresenterCallback.showMadeAppointment()
         sessionsPresenterCallback.updateSchedule(order)
         sessionsPresenterCallback.sendMessages(order)
-        //create messages
     }
 
 }

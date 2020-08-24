@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.clean_architecture.di
+package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
 import android.app.Application
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.FiguringServicePointsApi

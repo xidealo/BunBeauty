@@ -1,6 +1,6 @@
-package com.bunbeauty.ideal.myapplication.clean_architecture.business.chat
+package com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.IDialogsUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.i_dialog.IDialogsUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.chat.DialogsPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.user.UserCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog

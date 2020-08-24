@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.clean_architecture.di
+package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.api.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.dao.*
@@ -51,8 +51,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideOrderRepository(orderFirebase: OrderFirebase): IOrderRepository =
-        OrderRepository(orderFirebase)
+    fun provideOrderRepository(orderFirebase: OrderFirebase) = OrderRepository(orderFirebase)
 
     @Provides
     @Singleton

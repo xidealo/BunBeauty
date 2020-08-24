@@ -1,9 +1,15 @@
-package com.bunbeauty.ideal.myapplication.clean_architecture.di
+package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.FiguringServicePointsApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.VerifyPhoneNumberApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.DialogsDialogInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.DialogsMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.DialogsUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesDialogInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesOrderInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.current_comment.CurrentCommentCommentInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.service_comments.ServiceCommentsServiceCommentInteractor
@@ -80,7 +86,7 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideProfileOrderInteractor(orderRepository: IOrderRepository): IProfileOrderInteractor =
+    fun provideProfileOrderInteractor(orderRepository: OrderRepository): IProfileOrderInteractor =
         ProfileOrderInteractor(orderRepository)
 
     @Provides
@@ -198,6 +204,15 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
+    fun provideMessagesUserInteractor() = MessagesUserInteractor(intent)
+
+    @Provides
+    @Singleton
+    fun provideMessagesOrderInteractor(orderRepository: OrderRepository) =
+        MessagesOrderInteractor(orderRepository)
+
+    @Provides
+    @Singleton
     fun provideScheduleInteractor(scheduleRepository: IScheduleRepository) =
         ScheduleInteractor(scheduleRepository)
 
@@ -215,10 +230,6 @@ class InteractorModule(private val intent: Intent) {
     @Singleton
     fun provideSubscriptionsSubscriberInteractor(subscriberRepository: SubscriberRepository) =
         SubscriptionsSubscriberInteractor(subscriberRepository)
-
-    @Provides
-    @Singleton
-    fun provideMessagesUserInteractor() = MessagesUserInteractor(intent)
 
     @Provides
     @Singleton
@@ -288,7 +299,7 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideCreationCommentOrderInteractor(orderRepository: IOrderRepository) =
+    fun provideCreationCommentOrderInteractor(orderRepository: OrderRepository) =
         CreationCommentOrderInteractor(orderRepository)
 
     @Provides
@@ -307,11 +318,12 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideSessionsOrderInteractor(orderRepository: IOrderRepository) =
+    fun provideSessionsOrderInteractor(orderRepository: OrderRepository) =
         SessionsOrderInteractor(orderRepository)
 
     @Provides
     @Singleton
     fun provideSessionsMessageInteractor(messageRepository: MessageRepository) =
         SessionsMessageInteractor(messageRepository)
+
 }

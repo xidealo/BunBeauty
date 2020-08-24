@@ -2,9 +2,9 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.IDialogsDialogInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.IDialogsMessageInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.IDialogsUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.i_dialog.IDialogsDialogInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.i_dialog.IDialogsMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.i_dialog.IDialogsUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.chat.DialogsPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message

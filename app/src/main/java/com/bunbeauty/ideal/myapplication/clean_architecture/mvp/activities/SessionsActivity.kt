@@ -21,10 +21,10 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.Se
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsOrderInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Session
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingDay
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.InteractorModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SessionsPresenter
