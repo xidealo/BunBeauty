@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.order.OrderCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.order.OrdersCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscriber
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Session
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -28,6 +29,15 @@ class OrderFirebase {
         orderReference.updateChildren(items)
 
         return order
+    }
+
+    fun delete(order: Order) {
+    /*    val orderRef = FirebaseDatabase.getInstance()
+            .getReference(Subscriber.SUBSCRIBERS)
+            .child(order.userId)
+            .child(subscriber.id)
+
+        orderRef.removeValue()*/
     }
 
     fun getByUserId(userId: String, ordersCallback: OrdersCallback) {
@@ -87,7 +97,7 @@ class OrderFirebase {
             .key!!
     }
 
-    fun delete(order: Order) {}
+
     fun update(order: Order) {}
     fun get(order: Order) {}
 }

@@ -2,12 +2,10 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesDialogInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesMessageInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesOrderInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.chat.MessagesPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.chat.MessagesView
 
@@ -16,7 +14,8 @@ class MessagesPresenter(
     private val messagesMessageInteractor: IMessagesMessageInteractor,
     private val messagesDialogInteractor: IMessagesDialogInteractor,
     private val messagesUserInteractor: IMessagesUserInteractor,
-    private val messagesOrderInteractor: IMessagesOrderInteractor
+    private val messagesOrderInteractor: IMessagesOrderInteractor,
+    private val messageScheduleInteractor: IMessageScheduleInteractor
 ) : MvpPresenter<MessagesView>(), MessagesPresenterCallback {
 
     fun getCompanionUser() = messagesUserInteractor.getCompanionUser(this)
@@ -78,6 +77,14 @@ class MessagesPresenter(
         viewState.hideEmptyScreen()
     }
 
+    override fun deleteOrderFromSchedule(order: Order) {
+        messageScheduleInteractor.deleteOrderFromSchedule(order)
+    }
+
+    override fun deleteOrder(message: Message) {
+        messagesOrderInteractor.deleteOrder(message, this)
+    }
+
     override fun updateMessageAdapter(message: Message) {
         viewState.updateMessageAdapter(message)
     }
@@ -107,7 +114,19 @@ class MessagesPresenter(
         )
     }
 
+    /**
+     * Delete messages
+     * Delete order
+     * Clear schedule
+     * */
     fun cancelOrder(message: Message) {
-        messagesOrderInteractor.cancelOrder(message)
+        //my order
+        messagesMessageInteractor.cancelOrder(message, messagesDialogInteractor.getMyDialog(), this)
+        //companion
+        messagesMessageInteractor.cancelOrder(
+            message,
+            messagesDialogInteractor.getCompanionDialog(),
+            this
+        )
     }
 }

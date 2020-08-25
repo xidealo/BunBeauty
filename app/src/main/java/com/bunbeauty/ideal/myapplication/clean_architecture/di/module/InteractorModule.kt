@@ -10,6 +10,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesMessageInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesOrderInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.MessagesScheduleInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.current_comment.CurrentCommentCommentInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.service_comments.ServiceCommentsServiceCommentInteractor
@@ -46,7 +47,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.Subscr
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.*
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IOrderRepository
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IScheduleRepository
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IServiceRepository
 import dagger.Module
@@ -210,6 +210,11 @@ class InteractorModule(private val intent: Intent) {
     @Singleton
     fun provideMessagesOrderInteractor(orderRepository: OrderRepository) =
         MessagesOrderInteractor(orderRepository)
+
+    @Provides
+    @Singleton
+    fun provideMessagesScheduleInteractor(scheduleRepository: IScheduleRepository) =
+        MessagesScheduleInteractor(scheduleRepository)
 
     @Provides
     @Singleton

@@ -92,7 +92,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
         initTopPanel("BunBeauty", ButtonTask.SEARCH)
 
         createMainScreen()
-        setSupportActionBar(topPanel)
+        setSupportActionBar(top_panel)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

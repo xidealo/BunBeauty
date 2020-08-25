@@ -4,10 +4,7 @@ import android.util.Log
 import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesMessageInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.chat.MessagesPresenterCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.InsertMessageCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.MessageCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.MessagesCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.UpdateMessageCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
@@ -15,7 +12,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.Me
 
 class MessagesMessageInteractor(private val messageRepository: MessageRepository) :
     IMessagesMessageInteractor, InsertMessageCallback, MessageCallback, MessagesCallback,
-    UpdateMessageCallback {
+    UpdateMessageCallback, DeleteMessageCallback {
 
     private var cacheMessages = mutableListOf<Message>()
     private lateinit var messagesPresenterCallback: MessagesPresenterCallback
@@ -29,6 +26,19 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     ) {
         this.messagesPresenterCallback = messagesPresenterCallback
         messageRepository.getByDialogId(dialog, loadingLimit, this, this, this)
+    }
+
+    override fun cancelOrder(
+        message: Message,
+        dialog: Dialog,
+        messagesPresenterCallback: MessagesPresenterCallback
+    ) {
+        this.messagesPresenterCallback = messagesPresenterCallback
+        messageRepository.deleteByOrderId(dialog, message.orderId, this)
+    }
+
+    override fun returnDeletedCallback(obj: Message) {
+        messagesPresenterCallback.deleteOrder(obj)
     }
 
     override fun returnList(objects: List<Message>) {
@@ -68,12 +78,6 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
      */
     override fun returnGottenObject(element: Message?) {
         if (element == null) return
-
-        /*when(element.type){
-
-            Message.TEXT_MESSAGE_STATUS -> addMessage(element)
-
-        }*/
 
         if (element.type == Message.TEXT_MESSAGE_STATUS || element.ownerId == User.getMyId()) {
             addMessage(element)

@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topPanel">
+        app:layout_constraintTop_toBottomOf="@+id/top_panel">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -158,7 +158,7 @@
         android:id="@+id/continueCreationServiceBtn"
         style="@style/mainButton"
         android:text="Продолжить"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

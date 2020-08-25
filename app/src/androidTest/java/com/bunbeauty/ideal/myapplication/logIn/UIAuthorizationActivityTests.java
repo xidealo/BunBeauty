@@ -30,11 +30,11 @@ public class UIAuthorizationActivityTests {
 
     void testEnterPhoneAuthorization(String phone){
         //set phone
-        onView(withId(R.id.phoneAuthorizationInput)).perform(typeText(phone));
+        onView(withId(R.id.activity_authorization_et_phone)).perform(typeText(phone));
         //close keyboard
         Espresso.closeSoftKeyboard();
         //click on button
-        onView(withId(R.id.verifyAuthorizationBtn)).perform(click());
+        onView(withId(R.id.activity_authorization_btn_login)).perform(click());
     }
 
     void testEnterCodeVerify(String code) throws InterruptedException {

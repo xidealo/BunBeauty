@@ -3,19 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/logInPage"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.AuthorizationActivity">
 
     <LinearLayout
         style="@style/loginPackageMainLinearLayout"
-        app:layout_constraintBottom_toTopOf="@+id/bottomLayoutAuthorizationLayout"
+        app:layout_constraintBottom_toTopOf="@+id/activity_authorization_ll_bottom"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/logoAuthorizationImage"
+            android:id="@+id/activity_authorization_iv_logo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -26,14 +24,14 @@
             android:gravity="center">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/codeAuthorizationInputLayout"
+                android:id="@+id/activity_authorization_til_code"
                 style="@style/materialLoginSpinnerLayout"
                 android:layout_marginEnd="3dp"
                 app:startIconDrawable="@drawable/icon_phone_number"
                 android:layout_weight="1.4">
 
                 <AutoCompleteTextView
-                    android:id="@+id/codeAuthorizationSpinner"
+                    android:id="@+id/activity_authorization_sp_code"
                     style="@style/materialLoginSpinner" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -45,7 +43,7 @@
                 android:hint="@string/phone">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/phoneAuthorizationInput"
+                    android:id="@+id/activity_authorization_et_phone"
                     style="@style/materialLoginInput"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -53,7 +51,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/bottomLayoutAuthorizationLayout"
+        android:id="@+id/activity_authorization_ll_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
@@ -64,14 +62,14 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <ProgressBar
-            android:id="@+id/loadingAuthorizationProgressBar"
+            android:id="@+id/activity_authorization_pb_loading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminateTint="@color/white" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/verifyAuthorizationBtn"
+            android:id="@+id/activity_authorization_btn_login"
             style="@style/loginButton"
             android:text="Войти"/>
 

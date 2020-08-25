@@ -12,10 +12,16 @@ interface IMessageRepository {
 
     fun getByDialogId(
         dialog: Dialog,
-        loadingLimit:Int,
+        loadingLimit: Int,
         messagesCallback: MessagesCallback,
         messageCallback: MessageCallback,
         updateMessageCallback: UpdateMessageCallback
+    )
+
+    fun deleteByOrderId(
+        dialog: Dialog,
+        orderId: String,
+        deleteMessageCallback: DeleteMessageCallback
     )
 
     fun getByIdLastMessage(myId: String, companionId: String, messageCallback: MessageCallback)

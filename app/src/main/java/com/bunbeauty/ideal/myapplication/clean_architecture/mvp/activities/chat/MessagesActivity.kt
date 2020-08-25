@@ -18,7 +18,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesMessageInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesOrderInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.IMessagesOrderInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.MessagesScheduleInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
@@ -58,6 +58,9 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
     lateinit var messagesOrderInteractor: MessagesOrderInteractor
 
     @Inject
+    lateinit var messagesScheduleInteractor: MessagesScheduleInteractor
+
+    @Inject
     lateinit var messageAdapter: MessageAdapter
 
     @InjectPresenter
@@ -77,7 +80,8 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
             messageInteractor,
             messagesDialogInteractor,
             messagesUserInteractor,
-            messagesOrderInteractor
+            messagesOrderInteractor,
+            messagesScheduleInteractor
         )
     }
 

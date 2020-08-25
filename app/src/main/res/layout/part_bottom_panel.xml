@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.bottomnavigation.BottomNavigationView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottomPanel"
+    android:id="@+id/bottom_panel"
     style="@style/bottomNavigation"
     android:layout_gravity="bottom"
     android:scrollbars="none"

@@ -11,6 +11,12 @@ interface IMessagesMessageInteractor {
         messagesPresenterCallback: MessagesPresenterCallback
     )
 
+    fun cancelOrder(
+        message: Message,
+        dialog: Dialog,
+        messagesPresenterCallback: MessagesPresenterCallback
+    )
+
     fun getMyMessagesLink(): List<Message>
     fun updateMessages(message: Message, messagesPresenterCallback: MessagesPresenterCallback)
     fun sendMessage(message: Message, messagesPresenterCallback: MessagesPresenterCallback)

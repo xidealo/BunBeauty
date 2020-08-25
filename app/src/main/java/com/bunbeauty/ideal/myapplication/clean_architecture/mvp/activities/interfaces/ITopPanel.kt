@@ -29,7 +29,7 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
     }
 
     fun setTitle(title: String){
-        panelContext.topPanel.titleTopPanelText.text = title
+        panelContext.top_panel.menu_top_panel_tv_title.text = title
     }
 
     fun initTopPanel(
@@ -39,15 +39,15 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
     ) {
         initTopPanel(title, buttonTask)
 
-        val imageView = panelContext.topPanel.avatarTopPanelImage
+        val imageView = panelContext.top_panel.menu_top_panel_iv_avatar
         setAvatar(photoLink, imageView)
     }
 
     private fun configBackIcon() {
         if (panelContext.isTaskRoot) {
-            panelContext.topPanel.navigationIcon = null
+            panelContext.top_panel.navigationIcon = null
         } else {
-            panelContext.topPanel.setNavigationOnClickListener {
+            panelContext.top_panel.setNavigationOnClickListener {
                 panelContext.onBackPressed()
                 panelContext.overridePendingTransition(0, 0)
             }
@@ -65,7 +65,7 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
             }
             ButtonTask.GO_TO_PROFILE -> {
                 hideActionIcon()
-                panelContext.topPanel.avatarTopPanelImage.setOnClickListener {
+                panelContext.top_panel.menu_top_panel_iv_avatar.setOnClickListener {
                     actionClick()
                 }
             }
@@ -79,17 +79,17 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
     }
 
     private fun hideActionIcon() {
-        panelContext.topPanel.menu.findItem(R.id.navigation_action).isVisible = false
+        panelContext.top_panel.menu.findItem(R.id.navigation_action).isVisible = false
     }
 
     private fun hideImageView() {
-        panelContext.topPanel.avatarTopPanelImage.visibility = View.GONE
+        panelContext.top_panel.menu_top_panel_iv_avatar.visibility = View.GONE
     }
 
     private fun configActionIcon(iconId: Int) {
-        panelContext.topPanel.menu.findItem(R.id.navigation_action).icon =
+        panelContext.top_panel.menu.findItem(R.id.navigation_action).icon =
             panelContext.getDrawable(iconId)
-        panelContext.topPanel.setOnMenuItemClickListener(this)
+        panelContext.top_panel.setOnMenuItemClickListener(this)
 
         hideImageView()
     }

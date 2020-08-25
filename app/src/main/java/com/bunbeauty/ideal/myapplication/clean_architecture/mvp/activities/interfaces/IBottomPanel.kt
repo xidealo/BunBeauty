@@ -15,14 +15,14 @@ interface IBottomPanel : IPanel, BottomNavigationView.OnNavigationItemSelectedLi
 
     fun initBottomPanel(selectedItemId: Int = -1) {
         updateBottomPanel(selectedItemId)
-        panelContext.bottomPanel.setOnNavigationItemSelectedListener(this)
+        panelContext.bottom_panel.setOnNavigationItemSelectedListener(this)
     }
 
     fun updateBottomPanel(selectedItemId: Int = -1) {
-        panelContext.bottomPanel.selectedItemId = selectedItemId
-        panelContext.bottomPanel.menu.findItem(selectedItemId)?.isEnabled = false
+        panelContext.bottom_panel.selectedItemId = selectedItemId
+        panelContext.bottom_panel.menu.findItem(selectedItemId)?.isEnabled = false
         if (selectedItemId == -1) {
-            panelContext.bottomPanel.menu.setGroupCheckable(0, false, true);
+            panelContext.bottom_panel.menu.setGroupCheckable(0, false, true);
         }
     }
 

@@ -9,7 +9,7 @@
         android:id="@+id/topPanelMainScreenLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
         app:layout_constraintTop_toTopOf="parent"
         tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat.DialogsActivity">
 
@@ -49,7 +49,7 @@
                         android:scrollbars="none"
                         app:layout_constraintBottom_toTopOf="@+id/tagsMainScreenLayout"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/topPanel">
+                        app:layout_constraintTop_toBottomOf="@+id/top_panel">
 
                         <LinearLayout
                             android:id="@+id/categoryMainScreenLayout"
@@ -117,7 +117,7 @@
             android:layout_height="match_parent"
             android:scrollbars="none"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/topPanelMainScreenLayout" />

@@ -1,10 +1,12 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.DeleteMessageCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.MessageCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.MessagesCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.UpdateMessageCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscriber
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.google.firebase.database.*
 
@@ -61,20 +63,20 @@ class MessageFirebase {
         updateMessageCallback: UpdateMessageCallback
     ) {
 
-        val messageRef = FirebaseDatabase.getInstance()
+        val messageQuery = FirebaseDatabase.getInstance()
             .getReference(Dialog.DIALOGS)
             .child(dialog.id)
             .child(dialog.user.id).limitToLast(loadingLimit)
 
-        messageRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        messageQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.childrenCount == 0L) messagesCallback.returnList(emptyList())
+                if (snapshot.childrenCount == 0L) messagesCallback.returnList(emptyList())
             }
 
             override fun onCancelled(error: DatabaseError) {}
         })
 
-        messageRef.addChildEventListener(object : ChildEventListener {
+        messageQuery.addChildEventListener(object : ChildEventListener {
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
@@ -97,6 +99,44 @@ class MessageFirebase {
 
             override fun onChildRemoved(p0: DataSnapshot) {}
         })
+    }
+
+    fun deleteByOrderId(
+        dialog: Dialog,
+        orderId: String,
+        deleteMessageCallback: DeleteMessageCallback
+    ) {
+        val messageQuery = FirebaseDatabase.getInstance()
+            .getReference(Dialog.DIALOGS)
+            .child(dialog.id)
+            .child(dialog.user.id)
+            .orderByChild(Message.ORDER_ID).equalTo(orderId)
+
+        messageQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var message = Message()
+                if (snapshot.childrenCount > 0) {
+                    for (messageSnapshot in snapshot.children) {
+                        message = getMessageFromSnapshot(messageSnapshot)
+                        delete(dialog, message)
+                    }
+                    deleteMessageCallback.returnDeletedCallback(message)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+
+        })
+    }
+
+    fun delete(dialog: Dialog, message: Message) {
+        val subscriberRef = FirebaseDatabase.getInstance()
+            .getReference(Dialog.DIALOGS)
+            .child(dialog.id)
+            .child(dialog.user.id)
+            .child(message.id)
+
+        subscriberRef.removeValue()
     }
 
     fun getLastMessage(

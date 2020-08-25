@@ -12,10 +12,10 @@
         android:id="@+id/activity_usercomments_tv_empty"
         style="@style/infoText"
         android:text="Нет комментариев"
-        app:layout_constraintBottom_toTopOf="@+id/topPanel"
+        app:layout_constraintBottom_toTopOf="@+id/top_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottomPanel" />
+        app:layout_constraintTop_toBottomOf="@+id/bottom_panel" />
 
     <ProgressBar
         android:id="@+id/activity_usercomments_pb_loading"
@@ -23,10 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminateTint="@color/mainBlue"
-        app:layout_constraintBottom_toTopOf="@+id/topPanel"
+        app:layout_constraintBottom_toTopOf="@+id/top_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottomPanel" />
+        app:layout_constraintTop_toBottomOf="@+id/bottom_panel" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/activity_usercomments_rv_results"
@@ -34,10 +34,10 @@
         android:layout_height="0dp"
         android:layout_margin="1dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topPanel" />
+        app:layout_constraintTop_toBottomOf="@+id/top_panel" />
 
     <include layout="@layout/part_bottom_panel" />
 

@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories
 
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.order.DeleteOrderCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.order.InsertOrderCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.order.OrderCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.order.OrdersCallback
@@ -19,6 +20,15 @@ class OrderRepository(private val orderFirebase: OrderFirebase) : BaseRepository
             //orderDao.insert(order)
             withContext(Dispatchers.Main) {
                 insertOrderCallback.returnCreatedCallback(insertedOrder)
+            }
+        }
+    }
+
+    override fun delete(order: Order, deleteOrderCallback: DeleteOrderCallback) {
+        launch {
+            orderFirebase.delete(order)
+            withContext(Dispatchers.Main) {
+                deleteOrderCallback.returnDeletedCallback(order)
             }
         }
     }

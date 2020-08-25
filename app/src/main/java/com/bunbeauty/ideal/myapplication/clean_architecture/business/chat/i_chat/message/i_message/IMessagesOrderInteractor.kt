@@ -4,5 +4,5 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.callback.chat.Messag
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 
 interface IMessagesOrderInteractor {
-    fun cancelOrder(message: Message, messagesPresenterCallback: MessagesPresenterCallback)
+    fun deleteOrder(message: Message, messagesPresenterCallback: MessagesPresenterCallback)
 }

@@ -2,7 +2,7 @@
 <com.google.android.material.appbar.MaterialToolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/topPanel"
+    android:id="@+id/top_panel"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/mainBlue"
@@ -12,7 +12,7 @@
     app:navigationIcon="@drawable/icon_back">
 
     <TextView
-        android:id="@+id/titleTopPanelText"
+        android:id="@+id/menu_top_panel_tv_title"
         style="@style/topTitleText" />
 
     <LinearLayout
@@ -21,7 +21,7 @@
         android:gravity="end">
 
         <ImageView
-            android:id="@+id/avatarTopPanelImage"
+            android:id="@+id/menu_top_panel_iv_avatar"
             android:layout_width="@dimen/photo_avatar_width"
             android:layout_height="@dimen/photo_avatar_height"
             android:layout_gravity="center"

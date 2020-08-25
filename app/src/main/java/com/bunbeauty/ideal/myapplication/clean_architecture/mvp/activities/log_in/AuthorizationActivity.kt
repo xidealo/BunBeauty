@@ -56,14 +56,14 @@ class AuthorizationActivity : MvpAppCompatActivity(), AuthorizationView, IAdapte
 
         setAdapter(
             countryCodes,
-            codeAuthorizationSpinner,
+            activity_authorization_sp_code,
             this
         )
-        codeAuthorizationSpinner.setText(countryCodes.first())
-        (codeAuthorizationSpinner.adapter as ArrayAdapter<String>).filter.filter("")
+        activity_authorization_sp_code.setText(countryCodes.first())
+        (activity_authorization_sp_code.adapter as ArrayAdapter<String>).filter.filter("")
 
-        verifyAuthorizationBtn.setOnClickListener {
-            authorizationPresenter.authorize(codeAuthorizationSpinner.text.toString() + phoneAuthorizationInput.text.toString())
+        activity_authorization_btn_login.setOnClickListener {
+            authorizationPresenter.authorize(activity_authorization_sp_code.text.toString() + activity_authorization_et_phone.text.toString())
         }
     }
 
@@ -73,28 +73,28 @@ class AuthorizationActivity : MvpAppCompatActivity(), AuthorizationView, IAdapte
     }
 
     override fun hideViewsOnScreen() {
-        loadingAuthorizationProgressBar.visibility = View.VISIBLE
+        activity_authorization_pb_loading.visibility = View.VISIBLE
 
-        codeAuthorizationInputLayout.visibility = View.GONE
-        phoneAuthorizationInput.visibility = View.GONE
-        verifyAuthorizationBtn.visibility = View.GONE
+        activity_authorization_til_code.visibility = View.GONE
+        activity_authorization_et_phone.visibility = View.GONE
+        activity_authorization_btn_login.visibility = View.GONE
     }
 
     override fun showViewsOnScreen() {
-        loadingAuthorizationProgressBar.visibility = View.GONE
+        activity_authorization_pb_loading.visibility = View.GONE
 
-        codeAuthorizationInputLayout.visibility = View.VISIBLE
-        phoneAuthorizationInput.visibility = View.VISIBLE
-        verifyAuthorizationBtn.visibility = View.VISIBLE
+        activity_authorization_til_code.visibility = View.VISIBLE
+        activity_authorization_et_phone.visibility = View.VISIBLE
+        activity_authorization_btn_login.visibility = View.VISIBLE
     }
 
     override fun showPhoneError(error: String) {
-        phoneAuthorizationInput.error = error
-        phoneAuthorizationInput.requestFocus()
+        activity_authorization_et_phone.error = error
+        activity_authorization_et_phone.requestFocus()
     }
 
     override fun enableVerifyBtn(status: Boolean) {
-        verifyAuthorizationBtn.isClickable = status
+        activity_authorization_btn_login.isClickable = status
     }
 
     override fun goToVerifyPhone(phone: String) {
@@ -126,10 +126,10 @@ class AuthorizationActivity : MvpAppCompatActivity(), AuthorizationView, IAdapte
     }
 
     override fun disableButton() {
-        verifyAuthorizationBtn.isEnabled = false
+        activity_authorization_btn_login.isEnabled = false
     }
 
     override fun enableButton() {
-        verifyAuthorizationBtn.isEnabled = true
+        activity_authorization_btn_login.isEnabled = true
     }
 }

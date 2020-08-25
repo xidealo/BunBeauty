@@ -6,10 +6,11 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 interface IOrderRepository {
 
     fun insert(order: Order, insertOrderCallback: InsertOrderCallback)
+    fun delete(order: Order, deleteOrderCallback: DeleteOrderCallback)
     fun getByUserId(userId: String, ordersCallback: OrdersCallback)
     fun getById(userId: String, orderId: String, orderCallback: OrderCallback)
 
-    /* fun delete(order: Order, deleteOrderCallback: DeleteOrderCallback)
+    /*
      fun update(order: Order, updateOrderCallback: UpdateOrderCallback)
      fun get(ordersCallback: OrdersCallback)
 
