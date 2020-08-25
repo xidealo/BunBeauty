@@ -120,6 +120,9 @@ class MessageFirebase {
                         message = getMessageFromSnapshot(messageSnapshot)
                         delete(dialog, message)
                     }
+                    message.dialogId = dialog.id
+                    message.userId = dialog.user.id
+                    message.orderId = orderId
                     deleteMessageCallback.returnDeletedCallback(message)
                 }
             }

@@ -32,12 +32,12 @@ class OrderFirebase {
     }
 
     fun delete(order: Order) {
-    /*    val orderRef = FirebaseDatabase.getInstance()
-            .getReference(Subscriber.SUBSCRIBERS)
-            .child(order.userId)
-            .child(subscriber.id)
+        val orderRef = FirebaseDatabase.getInstance()
+            .getReference(Order.ORDERS)
+            .child(order.clientId)
+            .child(order.id)
 
-        orderRef.removeValue()*/
+        orderRef.removeValue()
     }
 
     fun getByUserId(userId: String, ordersCallback: OrdersCallback) {
@@ -58,7 +58,7 @@ class OrderFirebase {
         })
     }
 
-    fun getById(userId: String, orderId: String, orderCallback: OrderCallback){
+    fun getById(userId: String, orderId: String, orderCallback: OrderCallback) {
         val ordersReference = FirebaseDatabase.getInstance()
             .getReference(Order.ORDERS)
             .child(userId)
@@ -67,8 +67,10 @@ class OrderFirebase {
         ordersReference.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(ordersSnapshot: DataSnapshot) {
-                val order = getOrderFromSnapshot(ordersSnapshot, userId)
-                orderCallback.returnGottenObject(order)
+                if (ordersSnapshot.hasChildren()) {
+                    val order = getOrderFromSnapshot(ordersSnapshot, userId)
+                    orderCallback.returnGottenObject(order)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {}
