@@ -65,21 +65,21 @@ public class UIAddingTests {
         goToAddingService();
 
         //name
-        onView(withId(R.id.nameCreationServiceInput)).perform(typeText(name));
+        onView(withId(R.id.activity_creation_service_et_name)).perform(typeText(name));
         // cost
-        onView(withId(R.id.costCreationServiceInput)).perform(typeText(cost));
+        onView(withId(R.id.activity_creation_service_et_cost)).perform(typeText(cost));
         //address
-        onView(withId(R.id.addressCreationServiceInput)).perform(typeText(address));
+        onView(withId(R.id.activity_creation_service_et_address)).perform(typeText(address));
         //description
-        onView(withId(R.id.descriptionCreationServiceInput)).perform(typeText(description));
+        onView(withId(R.id.activity_creation_service_et_description)).perform(typeText(description));
         //category
-        onView(withId(R.id.categoryCreationServiceLayout)).perform(click());
+        onView(withId(R.id.activity_creation_service_fg_category)).perform(click());
 
         onData(anything()).atPosition(1).perform(click());
         Thread.sleep(2000);
         Espresso.closeSoftKeyboard();
 
-        onView(withId(R.id.addServiceCreationServiceBtn))
+        onView(withId(R.id.activity_creation_service_btn_add_service))
                 .perform(scrollTo(), click());
     }
 

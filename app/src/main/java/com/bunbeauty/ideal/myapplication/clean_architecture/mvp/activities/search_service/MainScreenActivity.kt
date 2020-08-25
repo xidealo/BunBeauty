@@ -98,7 +98,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_item, menu)
         val item: MenuItem = menu.findItem(R.id.action_search)
-        searchPanelMainScreenSearchView.setMenuItem(item)
+        activity_main_screen_msv_search.setMenuItem(item)
         return true
     }
 
@@ -111,16 +111,16 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     private fun init() {
         categories = ArrayList(listOf(*resources.getStringArray(R.array.categories)))
 
-        noResultMainScreenText.visibility = View.GONE
+        activity_main_screen_tv_empty.visibility = View.GONE
 
-        val minimizeTagsBtn = findViewById<MaterialButton>(R.id.minimizeTagsMainScreenBtn)
-        val clearTagsBtn = findViewById<MaterialButton>(R.id.clearTagsMainScreenBtn)
+        val minimizeTagsBtn = findViewById<MaterialButton>(R.id.activity_main_screen_btn_close)
+        val clearTagsBtn = findViewById<MaterialButton>(R.id.activity_main_screen_btn_clear)
 
-        resultsMainScreenRecycleView.layoutManager = LinearLayoutManager(this)
+        activity_main_screen_rv_services.layoutManager = LinearLayoutManager(this)
 
-        resultsMainScreenRecycleView.adapter = serviceAdapter
+        activity_main_screen_rv_services.adapter = serviceAdapter
 
-        searchPanelMainScreenSearchView.setOnQueryTextListener(object :
+        activity_main_screen_msv_search.setOnQueryTextListener(object :
             MaterialSearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 mainScreenPresenter.getMainScreenDataByName(query?.toLowerCase(Locale.ROOT))
@@ -134,7 +134,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             }
         })
 
-        searchPanelMainScreenSearchView.setOnSearchViewListener(object :
+        activity_main_screen_msv_search.setOnSearchViewListener(object :
             MaterialSearchView.SearchViewListener {
             override fun onSearchViewShown() {
                 //Do some magic
@@ -152,21 +152,21 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.minimizeTagsMainScreenBtn -> hideTags()
+            R.id.activity_main_screen_btn_close -> hideTags()
 
-            R.id.clearTagsMainScreenBtn -> {
+            R.id.activity_main_screen_btn_clear -> {
                 mainScreenPresenter.clearCategory(categoriesBtns)
                 mainScreenPresenter.showCurrentMainScreen()
             }
 
-            else -> if ((v.parent as View).id == R.id.categoryMainScreenLayout) {
+            else -> if ((v.parent as View).id == R.id.activity_main_screen_ll_category) {
                 //показать тэги
                 //начать поиск по категории
                 val category = (v as Button).text.toString()
                 mainScreenPresenter.disableCategoryBtns(categoriesBtns)
                 if (mainScreenPresenter.isSelectedCategory(category)) {
                     mainScreenPresenter.showCurrentMainScreen()
-                    mainScreenPresenter.setTagsState(tagsMainScreenLayout.visibility)
+                    mainScreenPresenter.setTagsState(activity_main_screen_ll_main_tags.visibility)
                 } else {
                     mainScreenPresenter.createMainScreenWithCategory(category)
                     enableCategoryButton(v)
@@ -208,13 +208,13 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     override fun showLoading() {
-        progressBarMainScreen.visibility = View.VISIBLE
-        resultsMainScreenRecycleView.visibility = View.GONE
+        activity_main_screen_pb_loading.visibility = View.VISIBLE
+        activity_main_screen_rv_services.visibility = View.GONE
     }
 
     override fun hideLoading() {
-        progressBarMainScreen.visibility = View.GONE
-        resultsMainScreenRecycleView.visibility = View.VISIBLE
+        activity_main_screen_pb_loading.visibility = View.GONE
+        activity_main_screen_rv_services.visibility = View.VISIBLE
     }
 
     override fun showMainScreen(mainScreenData: ArrayList<MainScreenData>) {
@@ -222,19 +222,19 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
     }
 
     override fun hideTags() {
-        tagsMainScreenLayout.visibility = View.GONE
+        activity_main_screen_ll_main_tags.visibility = View.GONE
     }
 
     override fun clearTags() {
-        tagsInnerMainScreenLayout.removeAllViews()
+        activity_main_screen_ll_tags.removeAllViews()
     }
 
     override fun showTags() {
-        tagsMainScreenLayout.visibility = View.VISIBLE
+        activity_main_screen_ll_main_tags.visibility = View.VISIBLE
     }
 
     override fun showEmptyScreen() {
-        noResultMainScreenText.visibility = View.VISIBLE
+        activity_main_screen_tv_empty.visibility = View.VISIBLE
     }
 
     override fun createCategoryFeed(categories: MutableSet<String>) {
@@ -251,16 +251,16 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
             params.setMargins(8, 8, 8, 8)
             categoriesBtns[i].layoutParams = params
 
-            categoryMainScreenLayout.addView(categoriesBtns[i])
+            activity_main_screen_ll_category.addView(categoriesBtns[i])
         }
     }
 
     override fun showCategory() {
-        categoryMainScreenLayout.visibility = View.VISIBLE
+        activity_main_screen_ll_category.visibility = View.VISIBLE
     }
 
     override fun hideCategory() {
-        categoryMainScreenLayout.visibility = View.GONE
+        activity_main_screen_ll_category.visibility = View.GONE
     }
 
     override fun createTags(category: String, selectedTagsArray: ArrayList<String>) {
@@ -285,7 +285,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
                 view.style(R.style.choiceChip)
             }
 
-            tagsInnerMainScreenLayout.addView(view)
+            activity_main_screen_ll_tags.addView(view)
         }
     }
 }

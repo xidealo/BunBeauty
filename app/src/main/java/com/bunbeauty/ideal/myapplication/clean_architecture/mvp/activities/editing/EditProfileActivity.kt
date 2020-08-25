@@ -78,26 +78,26 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
     private fun configViews() {
         setAdapter(
             arrayListOf(*resources.getStringArray(R.array.cities)),
-            cityEditProfileSpinner,
+            activity_edit_profile_sp_city,
             this
         )
         setAdapter(
             arrayListOf(*resources.getStringArray(R.array.countryCode)),
-            codeEditProfileSpinner,
+            activity_edit_profile_sp_code,
             this
         )
-        loadingEditProfileProgressBar.visibility = View.GONE
-        saveChangesEditProfileBtn.setOnClickListener { saveChanges() }
-        verifyCodeEditProfileBtn.setOnClickListener {
-            editProfilePresenter.verifyCode(codeEditProfileInput.text.toString())
+        activity_edit_profile_pb_loading.visibility = View.GONE
+        activity_edit_profile_btn_save.setOnClickListener { saveChanges() }
+        activity_edit_profile_btn_verify.setOnClickListener {
+            editProfilePresenter.verifyCode(activity_edit_profile_et_code.text.toString())
         }
-        resendCodeEditProfileBtn.setOnClickListener {
-            editProfilePresenter.resendCode(phoneEditProfileInput.text.toString())
+        activity_edit_profile_btn_resend.setOnClickListener {
+            editProfilePresenter.resendCode(activity_edit_profile_et_phone.text.toString())
         }
-        avatarEditProfileImage.setOnClickListener {
+        activity_edit_profile_iv_avatar.setOnClickListener {
             openPhoto()
         }
-        photoEditProfileBtn.setOnClickListener {
+        activity_edit_profile_btn_add_photo.setOnClickListener {
             CropImage.activity().start(this)
         }
     }
@@ -133,55 +133,55 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
     }
 
     override fun showEditProfile(user: User) {
-        nameEditProfileInput.setText(user.name)
-        surnameEditProfileInput.setText(user.surname)
-        phoneEditProfileInput.setText(user.phone.substring(2))
+        activity_edit_profile_et_name.setText(user.name)
+        activity_edit_profile_et_surname.setText(user.surname)
+        activity_edit_profile_et_phone.setText(user.phone.substring(2))
         showAvatar(user.photoLink)
 
-        cityEditProfileSpinner.setText(user.city)
-        (cityEditProfileSpinner.adapter as ArrayAdapter<String>).filter.filter("")
-        codeEditProfileSpinner.setText(user.phone.substring(0, 2))
-        (codeEditProfileSpinner.adapter as ArrayAdapter<String>).filter.filter("")
+        activity_edit_profile_sp_city.setText(user.city)
+        (activity_edit_profile_sp_city.adapter as ArrayAdapter<String>).filter.filter("")
+        activity_edit_profile_sp_code.setText(user.phone.substring(0, 2))
+        (activity_edit_profile_sp_code.adapter as ArrayAdapter<String>).filter.filter("")
     }
 
     private fun saveChanges() {
         val phoneNumber =
-            codeEditProfileSpinner.text.toString() + phoneEditProfileInput.text.toString().trim()
+            activity_edit_profile_sp_code.text.toString() + activity_edit_profile_et_phone.text.toString().trim()
 
         editProfilePresenter.saveData(
-            nameEditProfileInput.text.toString().trim(),
-            surnameEditProfileInput.text.toString().trim(),
-            cityEditProfileSpinner.text.toString(),
+            activity_edit_profile_et_name.text.toString().trim(),
+            activity_edit_profile_et_surname.text.toString().trim(),
+            activity_edit_profile_sp_city.text.toString(),
             phoneNumber
         )
     }
 
     override fun disableEditProfileEditButton() {
-        saveChangesEditProfileBtn.isEnabled = false
+        activity_edit_profile_btn_save.isEnabled = false
     }
 
     override fun enableEditProfileEditButton() {
-        saveChangesEditProfileBtn.isEnabled = true
+        activity_edit_profile_btn_save.isEnabled = true
     }
 
     override fun showPhoneError(error: String) {
-        phoneEditProfileInput.error = error
-        phoneEditProfileInput.requestFocus()
+        activity_edit_profile_et_phone.error = error
+        activity_edit_profile_et_phone.requestFocus()
     }
 
     override fun setNameEditProfileInputError(error: String) {
-        nameEditProfileInput.error = error
-        nameEditProfileInput.requestFocus()
+        activity_edit_profile_et_name.error = error
+        activity_edit_profile_et_name.requestFocus()
     }
 
     override fun setSurnameEditProfileInputError(error: String) {
-        surnameEditProfileInput.error = error
-        surnameEditProfileInput.requestFocus()
+        activity_edit_profile_et_surname.error = error
+        activity_edit_profile_et_surname.requestFocus()
     }
 
     override fun setPhoneEditProfileInputError(error: String) {
-        phoneEditProfileInput.error = error
-        phoneEditProfileInput.requestFocus()
+        activity_edit_profile_et_phone.error = error
+        activity_edit_profile_et_phone.requestFocus()
     }
 
     override fun showAvatar(photoLink: String) {
@@ -192,21 +192,21 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
             .resize(width, height)
             .centerCrop()
             .transform(CircularTransformation())
-            .into(avatarEditProfileImage)
+            .into(activity_edit_profile_iv_avatar)
     }
 
     override fun showCodeInputAndButtons() {
-        codeEditProfileLayout.visibility = View.VISIBLE
-        verifyCodeEditProfileBtn.visibility = View.VISIBLE
-        resendCodeEditProfileBtn.visibility = View.VISIBLE
-        saveChangesEditProfileBtn.visibility = View.GONE
+        activity_edit_profile_til_code.visibility = View.VISIBLE
+        activity_edit_profile_btn_verify.visibility = View.VISIBLE
+        activity_edit_profile_btn_resend.visibility = View.VISIBLE
+        activity_edit_profile_btn_save.visibility = View.GONE
     }
 
     override fun hideCodeInputAndButtons() {
-        codeEditProfileLayout.visibility = View.GONE
-        verifyCodeEditProfileBtn.visibility = View.GONE
-        resendCodeEditProfileBtn.visibility = View.GONE
-        saveChangesEditProfileBtn.visibility = View.VISIBLE
+        activity_edit_profile_til_code.visibility = View.GONE
+        activity_edit_profile_btn_verify.visibility = View.GONE
+        activity_edit_profile_btn_resend.visibility = View.GONE
+        activity_edit_profile_btn_save.visibility = View.VISIBLE
     }
 
     override fun goToProfile(user: User) {
@@ -232,8 +232,8 @@ class EditProfileActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, Edi
     }
 
     override fun showLoading() {
-        loadingEditProfileProgressBar.visibility = View.VISIBLE
-        saveChangesEditProfileBtn.isEnabled = false
+        activity_edit_profile_pb_loading.visibility = View.VISIBLE
+        activity_edit_profile_btn_save.isEnabled = false
     }
 
     override fun showMessage(message: String) {

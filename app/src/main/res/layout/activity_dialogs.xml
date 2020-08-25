@@ -24,20 +24,20 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
-        android:id="@+id/noDialogsDialogsText"
+        android:id="@+id/activity_dialogs_tv_empty"
         style="@style/infoText"
         android:layout_gravity="center"
         android:text="Нет диалогов" />
 
     <ProgressBar
-        android:id="@+id/progressBarDialogs"
+        android:id="@+id/activity_dialogs_pb_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminateTint="@color/mainBlue" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/resultsDialogsRecycleView"
+        android:id="@+id/activity_dialogs_rv_dialogs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"

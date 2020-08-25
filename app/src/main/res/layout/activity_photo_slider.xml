@@ -10,7 +10,7 @@
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity">
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/photosPhotoSliderPager"
+        android:id="@+id/activity_photo_slider_vp_photos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
-        android:id="@+id/loadingPhotoSliderProgressBar"
+        android:id="@+id/activity_photo_slider_pb_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

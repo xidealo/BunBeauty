@@ -76,8 +76,8 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     }
 
     private fun init() {
-        resultsDialogsRecycleView.layoutManager = LinearLayoutManager(this)
-        resultsDialogsRecycleView.adapter = dialogAdapter
+        activity_dialogs_rv_dialogs.layoutManager = LinearLayoutManager(this)
+        activity_dialogs_rv_dialogs.adapter = dialogAdapter
     }
 
     private fun createPanels() {
@@ -89,19 +89,19 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
     }
 
     override fun showLoading() {
-        progressBarDialogs.visibility = View.VISIBLE
+        activity_dialogs_pb_loading.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        progressBarDialogs.visibility = View.GONE
+        activity_dialogs_pb_loading.visibility = View.GONE
     }
 
     override fun showEmptyDialogs() {
-        noDialogsDialogsText.visibility = View.VISIBLE
+        activity_dialogs_tv_empty.visibility = View.VISIBLE
     }
 
     override fun hideEmptyDialogs() {
-        noDialogsDialogsText.visibility = View.GONE
+        activity_dialogs_tv_empty.visibility = View.GONE
     }
 
 }

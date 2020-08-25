@@ -27,20 +27,20 @@ class PhotoSliderActivity : MvpAppCompatActivity(), PhotoSlideCallback {
             PhotoPagerAdapter(
                 this
             )
-        photosPhotoSliderPager.adapter = photoPagerAdapter
+        activity_photo_slider_vp_photos.adapter = photoPagerAdapter
         photoPagerAdapter.setItems(photosList, this)
 
-        photosPhotoSliderPager.setCurrentItem(
+        activity_photo_slider_vp_photos.setCurrentItem(
             photoPosition,
             false
         )
     }
 
     override fun loadedPhoto(position: Int) {
-        loadingPhotoSliderProgressBar.visibility = View.GONE
+        activity_photo_slider_pb_loading.visibility = View.GONE
     }
 
     override fun startLoad() {
-        loadingPhotoSliderProgressBar.visibility = View.VISIBLE
+        activity_photo_slider_pb_loading.visibility = View.VISIBLE
     }
 }

@@ -9,7 +9,7 @@
     <include layout="@layout/part_top_panel" />
 
     <ProgressBar
-        android:id="@+id/progressEditServiceBar"
+        android:id="@+id/activity_edit_service_pb_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toBottomOf="@+id/top_panel" />
 
     <ScrollView
-        android:id="@+id/editServiceScroll"
+        android:id="@+id/activity_edit_service_sv_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
@@ -30,7 +30,6 @@
         app:layout_constraintTop_toBottomOf="@id/top_panel">
 
         <LinearLayout
-            android:id="@+id/mainEditServiceLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -41,7 +40,7 @@
                 app:startIconDrawable="@drawable/icon_profile">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/nameEditServiceInput"
+                    android:id="@+id/activity_edit_service_et_name"
                     style="@style/materialInput"
                     android:inputType="textCapSentences" />
 
@@ -53,7 +52,7 @@
                 app:startIconDrawable="@drawable/icon_map_marked_solid">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/addressEditServiceInput"
+                    android:id="@+id/activity_edit_service_et_address"
                     style="@style/materialInput"
                     android:inputType="textCapSentences" />
 
@@ -65,7 +64,7 @@
                 app:startIconDrawable="@drawable/icon_dollar_sign_solid">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/costEditServiceInput"
+                    android:id="@+id/activity_edit_service_et_cost"
                     style="@style/materialInput"
                     android:inputType="number" />
 
@@ -78,7 +77,7 @@
                 app:startIconDrawable="@drawable/icon_file_alt_regular">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/descriptionEditServiceInput"
+                    android:id="@+id/activity_edit_service_et_description"
                     style="@style/materialInput"
                     android:inputType="textMultiLine|textCapSentences"
                     android:maxLines="10" />
@@ -118,13 +117,13 @@
             </LinearLayout>
 
             <fragment
-                android:id="@+id/categoryEditServiceLayout"
+                android:id="@+id/activity_edit_service_fr_category"
                 class="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.CategoryFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/photoEditServiceBtn"
+                android:id="@+id/activity_edit_service_btn_add_photo"
                 style="@style/smallButton"
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="@font/font_awesome_solid"
@@ -137,7 +136,7 @@
                 android:orientation="horizontal">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/resultsEditServiceRecycleView"
+                    android:id="@+id/activity_edit_service_rv_photos"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -145,7 +144,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/bottomControlPanelEditServiceLayout"
+                android:id="@+id/activity_edit_service_ll_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -153,12 +152,12 @@
                 app:layout_constraintBottom_toTopOf="@+id/bottom_panel">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/deleteEditServiceBtn"
+                    android:id="@+id/activity_edit_service_btn_delete"
                     style="@style/smallButton"
                     android:text="Удалить" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/saveEditServiceBtn"
+                    android:id="@+id/activity_edit_service_btn_save"
                     style="@style/smallButton"
                     android:text="Сохранить" />
 

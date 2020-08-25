@@ -30,13 +30,13 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:id="@+id/avatarEditProfileImage"
+                    android:id="@+id/activity_edit_profile_iv_avatar"
                     style="@style/profileAvatar"
                     tools:srcCompat="@tools:sample/avatars" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/photoEditProfileBtn"
+                android:id="@+id/activity_edit_profile_btn_add_photo"
                 style="@style/smallButton"
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="@font/font_awesome_solid"
@@ -49,7 +49,7 @@
                 app:startIconDrawable="@drawable/icon_profile">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/nameEditProfileInput"
+                    android:id="@+id/activity_edit_profile_et_name"
                     style="@style/materialInput"
                     android:inputType="textCapSentences" />
 
@@ -61,7 +61,7 @@
                 app:startIconDrawable="@drawable/icon_profile">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/surnameEditProfileInput"
+                    android:id="@+id/activity_edit_profile_et_surname"
                     style="@style/materialInput"
                     android:inputType="textCapSentences" />
 
@@ -72,7 +72,7 @@
                 app:startIconDrawable="@drawable/icon_city">
 
                 <AutoCompleteTextView
-                    android:id="@+id/cityEditProfileSpinner"
+                    android:id="@+id/activity_edit_profile_sp_city"
                     style="@style/materialSpinner" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -89,7 +89,7 @@
                     app:startIconDrawable="@drawable/icon_phone_number">
 
                     <AutoCompleteTextView
-                        android:id="@+id/codeEditProfileSpinner"
+                        android:id="@+id/activity_edit_profile_sp_code"
                         style="@style/materialSpinner" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -101,37 +101,37 @@
                     android:hint="@string/phone">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/phoneEditProfileInput"
+                        android:id="@+id/activity_edit_profile_et_phone"
                         style="@style/materialInput"
                         android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/codeEditProfileLayout"
+                android:id="@+id/activity_edit_profile_til_code"
                 style="@style/materialInputLayout"
                 android:hint="Код"
                 app:startIconDrawable="@drawable/icon_sms_code">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/codeEditProfileInput"
+                    android:id="@+id/activity_edit_profile_et_code"
                     style="@style/materialInput"
                     android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/verifyCodeEditProfileBtn"
+                android:id="@+id/activity_edit_profile_btn_verify"
                 style="@style/smallButton"
                 android:text="@string/verifyCode" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/resendCodeEditProfileBtn"
+                android:id="@+id/activity_edit_profile_btn_resend"
                 style="@style/outlineButton"
                 android:text="@string/resendCode" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/saveChangesEditProfileBtn"
+                android:id="@+id/activity_edit_profile_btn_save"
                 style="@style/mainButton"
                 android:text="@string/saveData" />
 
@@ -139,7 +139,7 @@
     </ScrollView>
 
     <ProgressBar
-        android:id="@+id/loadingEditProfileProgressBar"
+        android:id="@+id/activity_edit_profile_pb_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

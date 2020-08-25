@@ -22,7 +22,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/mainCreationServiceLinearLayout"
+                android:id="@+id/activity_creation_service_ll_main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -33,7 +33,7 @@
                     app:startIconDrawable="@drawable/icon_profile">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/nameCreationServiceInput"
+                        android:id="@+id/activity_creation_service_et_name"
                         style="@style/materialInput"
                         android:inputType="textCapSentences" />
 
@@ -45,7 +45,7 @@
                     app:startIconDrawable="@drawable/icon_dollar_sign_solid">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/costCreationServiceInput"
+                        android:id="@+id/activity_creation_service_et_cost"
                         style="@style/materialInput"
                         android:inputType="number" />
 
@@ -57,7 +57,7 @@
                     app:startIconDrawable="@drawable/icon_map_marked_solid">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/addressCreationServiceInput"
+                        android:id="@+id/activity_creation_service_et_address"
                         style="@style/materialInput"
                         android:inputType="textCapSentences" />
 
@@ -69,7 +69,7 @@
                     app:startIconDrawable="@drawable/icon_file_alt_regular">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/descriptionCreationServiceInput"
+                        android:id="@+id/activity_creation_service_et_description"
                         style="@style/materialInput"
                         android:inputType="textMultiLine|textCapSentences"
                         android:maxLines="10" />
@@ -109,13 +109,13 @@
                 </LinearLayout>
 
                 <fragment
-                    android:id="@+id/categoryCreationServiceLayout"
+                    android:id="@+id/activity_creation_service_fg_category"
                     class="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.CategoryFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/photoCreationServiceBtn"
+                    android:id="@+id/activity_creation_service_btn_add_photo"
                     style="@style/smallButton"
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/font_awesome_solid"
@@ -128,7 +128,7 @@
                     android:orientation="horizontal">
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/resultsCreationServiceRecycleView"
+                        android:id="@+id/activity_creation_service_rv_photos"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -137,7 +137,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/premiumCreationServiceLayout"
+                android:id="@+id/activity_creation_service_ll_premium"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -146,7 +146,7 @@
 
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/addServiceCreationServiceBtn"
+                android:id="@+id/activity_creation_service_btn_add_service"
                 style="@style/mainButton"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/addServices" />
@@ -155,7 +155,7 @@
     </ScrollView>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/continueCreationServiceBtn"
+        android:id="@+id/activity_creation_service_btn_continue"
         style="@style/mainButton"
         android:text="Продолжить"
         app:layout_constraintBottom_toTopOf="@+id/bottom_panel"

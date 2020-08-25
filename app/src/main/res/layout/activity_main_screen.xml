@@ -6,7 +6,7 @@
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.search_service.MainScreenActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/topPanelMainScreenLayout"
+        android:id="@+id/activity_main_screen_cl_top_panel"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
@@ -36,35 +36,35 @@
                         <include layout="@layout/part_top_panel" />
 
                         <com.miguelcatalan.materialsearchview.MaterialSearchView
-                            android:id="@+id/searchPanelMainScreenSearchView"
+                            android:id="@+id/activity_main_screen_msv_search"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:layout_constraintTop_toTopOf="@+id/topPanelLayout" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                     <!-- Категории -->
                     <HorizontalScrollView
-                        android:id="@+id/categoryMainScreenScroll"
+                        android:id="@+id/activity_main_screen_sv_category"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:scrollbars="none"
-                        app:layout_constraintBottom_toTopOf="@+id/tagsMainScreenLayout"
+                        app:layout_constraintBottom_toTopOf="@+id/activity_main_screen_ll_main_tags"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/top_panel">
 
                         <LinearLayout
-                            android:id="@+id/categoryMainScreenLayout"
+                            android:id="@+id/activity_main_screen_ll_category"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="horizontal" />
                     </HorizontalScrollView>
 
                     <LinearLayout
-                        android:id="@+id/tagsMainScreenLayout"
+                        android:id="@+id/activity_main_screen_ll_main_tags"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        app:layout_constraintBottom_toTopOf="@+id/resultsMainScreenRecycleView"
-                        app:layout_constraintTop_toBottomOf="@+id/categoryMainScreenScroll">
+                        app:layout_constraintBottom_toTopOf="@+id/activity_main_screen_rv_services"
+                        app:layout_constraintTop_toBottomOf="@+id/activity_main_screen_sv_category">
 
                         <HorizontalScrollView
                             android:layout_width="match_parent"
@@ -73,7 +73,7 @@
                             android:scrollbars="none">
 
                             <LinearLayout
-                                android:id="@+id/tagsInnerMainScreenLayout"
+                                android:id="@+id/activity_main_screen_ll_tags"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
@@ -87,7 +87,7 @@
                             android:orientation="horizontal">
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/minimizeTagsMainScreenBtn"
+                                android:id="@+id/activity_main_screen_btn_close"
                                 style="@style/lightBlueButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="36dp"
@@ -97,7 +97,7 @@
                                 android:text="" />
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/clearTagsMainScreenBtn"
+                                android:id="@+id/activity_main_screen_btn_clear"
                                 style="@style/lightBlueButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="36dp"
@@ -112,7 +112,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/resultsMainScreenRecycleView"
+            android:id="@+id/activity_main_screen_rv_services"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
@@ -120,12 +120,12 @@
             app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topPanelMainScreenLayout" />
+            app:layout_constraintTop_toBottomOf="@id/activity_main_screen_cl_top_panel" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <ProgressBar
-        android:id="@+id/progressBarMainScreen"
+        android:id="@+id/activity_main_screen_pb_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -136,7 +136,7 @@
         app:layout_constraintTop_toBottomOf="parent" />
 
     <TextView
-        android:id="@+id/noResultMainScreenText"
+        android:id="@+id/activity_main_screen_tv_empty"
         style="@style/infoText"
         android:gravity="center"
         android:text="В вашем регионе нет услуг :("

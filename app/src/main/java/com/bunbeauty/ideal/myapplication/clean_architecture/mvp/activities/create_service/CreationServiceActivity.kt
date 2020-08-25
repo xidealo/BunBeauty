@@ -89,16 +89,16 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
     }
 
     private fun init() {
-        resultsCreationServiceRecycleView.layoutManager =
+        activity_creation_service_rv_photos.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        resultsCreationServiceRecycleView.adapter = changeablePhotoAdapter
+        activity_creation_service_rv_photos.adapter = changeablePhotoAdapter
 
-        addServiceCreationServiceBtn.setOnClickListener {
+        activity_creation_service_btn_add_service.setOnClickListener {
             creationServicePresenter.addService(
-                nameCreationServiceInput.text.toString(),
-                descriptionCreationServiceInput.text.toString(),
-                costCreationServiceInput.text.toString().toLongOrNull() ?: 0,
-                addressCreationServiceInput.text.toString(),
+                activity_creation_service_et_name.text.toString(),
+                activity_creation_service_et_description.text.toString(),
+                activity_creation_service_et_cost.text.toString().toLongOrNull() ?: 0,
+                activity_creation_service_et_address.text.toString(),
                 activity_creation_service_np_hour.value,
                 activity_creation_service_np_minute.value,
                 categoryFragment.getCategory(),
@@ -112,16 +112,16 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
         activity_creation_service_np_minute.value = 1
         activity_creation_service_np_minute.displayedValues = arrayOf("0", "30")
 
-        photoCreationServiceBtn.setOnClickListener {
+        activity_creation_service_btn_add_photo.setOnClickListener {
             CropImage.activity().start(this)
         }
-        continueCreationServiceBtn.setOnClickListener {
+        activity_creation_service_btn_continue.setOnClickListener {
             goToSchedule()
         }
 
         initTopPanel("Создание услуги", ButtonTask.NONE)
         categoryFragment =
-            supportFragmentManager.findFragmentById(R.id.categoryCreationServiceLayout) as CategoryFragment
+            supportFragmentManager.findFragmentById(R.id.activity_creation_service_fg_category) as CategoryFragment
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -141,9 +141,9 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
     override fun showPremiumBlock(service: Service) {
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.premiumCreationServiceLayout, PremiumFragment.newInstance(service))
+            .add(R.id.activity_creation_service_ll_premium, PremiumFragment.newInstance(service))
             .commit()
-        premiumCreationServiceLayout.visibility = View.VISIBLE
+        activity_creation_service_ll_premium.visibility = View.VISIBLE
     }
 
     override fun deletePhoto(photo: Photo) {
@@ -178,19 +178,19 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
     }
 
     override fun hideMainBlock() {
-        mainCreationServiceLinearLayout.visibility = View.GONE
-        addServiceCreationServiceBtn.visibility = View.GONE
-        continueCreationServiceBtn.visibility = View.VISIBLE
+        activity_creation_service_ll_main.visibility = View.GONE
+        activity_creation_service_btn_add_service.visibility = View.GONE
+        activity_creation_service_btn_continue.visibility = View.VISIBLE
     }
 
     override fun showMainBlock() {
-        mainCreationServiceLinearLayout.visibility = View.VISIBLE
-        addServiceCreationServiceBtn.visibility = View.VISIBLE
-        continueCreationServiceBtn.visibility = View.GONE
+        activity_creation_service_ll_main.visibility = View.VISIBLE
+        activity_creation_service_btn_add_service.visibility = View.VISIBLE
+        activity_creation_service_btn_continue.visibility = View.GONE
     }
 
     override fun showMessage(message: String) {
-        Snackbar.make(mainCreationServiceLinearLayout, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(activity_creation_service_ll_main, message, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
@@ -200,29 +200,29 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
     }
 
     override fun showNameInputError(error: String) {
-        nameCreationServiceInput.error = error
-        nameCreationServiceInput.requestFocus()
+        activity_creation_service_et_name.error = error
+        activity_creation_service_et_name.requestFocus()
     }
 
     override fun showDescriptionInputError(error: String) {
-        descriptionCreationServiceInput.error = error
-        descriptionCreationServiceInput.requestFocus()
+        activity_creation_service_et_description.error = error
+        activity_creation_service_et_description.requestFocus()
     }
 
     override fun showCostInputError(error: String) {
-        costCreationServiceInput.error = error
-        costCreationServiceInput.requestFocus()
+        activity_creation_service_et_cost.error = error
+        activity_creation_service_et_cost.requestFocus()
     }
 
     override fun showError(error: String) {
-        Snackbar.make(mainCreationServiceLinearLayout, error, Snackbar.LENGTH_LONG)
+        Snackbar.make(activity_creation_service_ll_main, error, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.grey))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
     override fun showAddressInputError(error: String) {
-        addressCreationServiceInput.error = error
-        addressCreationServiceInput.requestFocus()
+        activity_creation_service_et_address.error = error
+        activity_creation_service_et_address.requestFocus()
     }
 
     private fun goToSchedule() {

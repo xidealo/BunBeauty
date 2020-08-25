@@ -61,7 +61,7 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterS
         )
         (cityRegistrationSpinner.adapter as ArrayAdapter<String>).filter.filter("")
 
-        saveRegistrationBtn.setOnClickListener {
+        activity_registration_btn_registrate.setOnClickListener {
             WorkWithViewApi.hideKeyboard(this)
             registrationPresenter.registerUser(
                 WorkWithStringsApi.firstCapitalSymbol(nameRegistrationInput.text.toString().trim()),
@@ -78,11 +78,11 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterS
     override fun fillPhoneInput(phone: String) = phoneRegistrationInput.setText(phone)
 
     override fun disableRegistrationButton() {
-        saveRegistrationBtn.isEnabled = false
+        activity_registration_btn_registrate.isEnabled = false
     }
 
     override fun enableRegistrationButton() {
-        saveRegistrationBtn.isEnabled = true
+        activity_registration_btn_registrate.isEnabled = true
     }
 
     override fun setNameInputError(error: String) {

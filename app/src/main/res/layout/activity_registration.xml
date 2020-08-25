@@ -8,7 +8,7 @@
     <LinearLayout
         style="@style/loginPackageMainLinearLayout"
         android:id="@+id/registrationLinearLayout"
-        app:layout_constraintBottom_toTopOf="@+id/saveRegistrationBtn"
+        app:layout_constraintBottom_toTopOf="@+id/activity_registration_btn_registrate"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -86,7 +86,7 @@
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/saveRegistrationBtn"
+        android:id="@+id/activity_registration_btn_registrate"
         style="@style/loginButton"
         android:layout_marginBottom="50dp"
         android:text="сохранить данные"

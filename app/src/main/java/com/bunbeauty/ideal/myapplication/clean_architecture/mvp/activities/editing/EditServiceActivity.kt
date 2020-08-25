@@ -89,12 +89,12 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     }
 
     private fun init() {
-        saveEditServiceBtn.setOnClickListener {
+        activity_edit_service_btn_save.setOnClickListener {
             editServicePresenter.saveService(
-                nameEditServiceInput.text.toString().trim(),
-                addressEditServiceInput.text.toString().trim(),
-                descriptionEditServiceInput.text.toString().trim(),
-                costEditServiceInput.text.toString().toLongOrNull() ?: 0,
+                activity_edit_service_et_name.text.toString().trim(),
+                activity_edit_service_et_address.text.toString().trim(),
+                activity_edit_service_et_description.text.toString().trim(),
+                activity_edit_service_et_cost.text.toString().toLongOrNull() ?: 0,
                 activity_edit_service_np_hour.value,
                 activity_edit_service_np_minute.value,
                 categoryFragment.getCategory(),
@@ -108,27 +108,27 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
         activity_edit_service_np_minute.maxValue = 1
         activity_edit_service_np_minute.displayedValues = arrayOf("0", "30")
 
-        photoEditServiceBtn.setOnClickListener {
+        activity_edit_service_btn_add_photo.setOnClickListener {
             CropImage.activity().start(this)
         }
 
-        deleteEditServiceBtn.setOnClickListener {
+        activity_edit_service_btn_delete.setOnClickListener {
             confirmDelete(editServicePresenter.getCacheService())
         }
 
-        resultsEditServiceRecycleView.layoutManager =
+        activity_edit_service_rv_photos.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        resultsEditServiceRecycleView.adapter = changeablePhotoAdapter
+        activity_edit_service_rv_photos.adapter = changeablePhotoAdapter
 
         categoryFragment =
-            supportFragmentManager.findFragmentById(R.id.categoryEditServiceLayout) as CategoryFragment
+            supportFragmentManager.findFragmentById(R.id.activity_edit_service_fr_category) as CategoryFragment
     }
 
     override fun showEditService(service: Service) {
-        nameEditServiceInput.append(service.name)
-        addressEditServiceInput.append(service.address)
-        costEditServiceInput.append(service.cost.toString())
-        descriptionEditServiceInput.append(service.description)
+        activity_edit_service_et_name.append(service.name)
+        activity_edit_service_et_address.append(service.address)
+        activity_edit_service_et_cost.append(service.cost.toString())
+        activity_edit_service_et_description.append(service.description)
         activity_edit_service_np_hour.value = (service.duration / 1).toInt()
         activity_edit_service_np_minute.value = if (service.duration % 1 == 0f) {
             0
@@ -180,20 +180,20 @@ class EditServiceActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel,
     }
 
     override fun showLoading() {
-        progressEditServiceBar.visibility = View.VISIBLE
-        editServiceScroll.visibility = View.VISIBLE
-        saveEditServiceBtn.visibility = View.VISIBLE
+        activity_edit_service_pb_loading.visibility = View.VISIBLE
+        activity_edit_service_sv_main.visibility = View.VISIBLE
+        activity_edit_service_btn_save.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        progressEditServiceBar.visibility = View.GONE
-        editServiceScroll.visibility = View.VISIBLE
-        saveEditServiceBtn.visibility = View.VISIBLE
+        activity_edit_service_pb_loading.visibility = View.GONE
+        activity_edit_service_sv_main.visibility = View.VISIBLE
+        activity_edit_service_btn_save.visibility = View.VISIBLE
     }
 
     override fun setNameEditServiceInputError(error: String) {
-        nameEditServiceInput.error = error
-        nameEditServiceInput.requestFocus()
+        activity_edit_service_et_name.error = error
+        activity_edit_service_et_name.requestFocus()
     }
 
     override fun deletePhoto(photo: Photo) {

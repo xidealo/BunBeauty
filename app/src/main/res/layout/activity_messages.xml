@@ -10,7 +10,7 @@
     <include layout="@layout/part_top_panel" />
 
     <ProgressBar
-        android:id="@+id/loading_messages_progress_bar"
+        android:id="@+id/activity_messages_pb_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -21,16 +21,16 @@
         app:layout_constraintTop_toBottomOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/results_messages_recycle_view"
+        android:id="@+id/activity_messages_tv_messages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/footer_edit_service_layout"
+        app:layout_constraintBottom_toTopOf="@+id/activity_messages_ll_footer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_panel" />
 
     <TextView
-        android:id="@+id/empty_messages_text"
+        android:id="@+id/activity_messages_tv_empty"
         style="@style/infoText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="parent" />
 
     <LinearLayout
-        android:id="@+id/footer_edit_service_layout"
+        android:id="@+id/activity_messages_ll_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/mainBlue"
@@ -50,7 +50,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <EditText
-            android:id="@+id/messageMessagesInput"
+            android:id="@+id/activity_messages_et_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -61,7 +61,7 @@
             android:textColorHint="@color/white50" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/send_message_messages_btn"
+            android:id="@+id/activity_messages_btn_send"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="5"

@@ -94,18 +94,18 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
     }
 
     private fun init() {
-        send_message_messages_btn.setOnClickListener {
+        activity_messages_btn_send.setOnClickListener {
             isSmoothScrollingToPosition = true
-            messagePresenter.sendMessage(messageMessagesInput.text.toString().trim())
-            messageMessagesInput.text.clear()
+            messagePresenter.sendMessage(activity_messages_et_message.text.toString().trim())
+            activity_messages_et_message.text.clear()
         }
         hideEmptyScreen()
         val linearLayoutManager = LinearLayoutManager(this)
-        results_messages_recycle_view.layoutManager = linearLayoutManager
-        results_messages_recycle_view.adapter = messageAdapter
+        activity_messages_tv_messages.layoutManager = linearLayoutManager
+        activity_messages_tv_messages.adapter = messageAdapter
         messageAdapter.setData(messagePresenter)
 
-        results_messages_recycle_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        activity_messages_tv_messages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (isScrolling && dy < 0 && linearLayoutManager.findFirstVisibleItemPosition() <= 3) {
@@ -163,15 +163,15 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
     }
 
     override fun moveToStart() {
-        results_messages_recycle_view.smoothScrollToPosition(messageAdapter.itemCount)
+        activity_messages_tv_messages.smoothScrollToPosition(messageAdapter.itemCount)
     }
 
     override fun hideLoading() {
-        loading_messages_progress_bar.visibility = View.GONE
+        activity_messages_pb_loading.visibility = View.GONE
     }
 
     override fun showLoading() {
-        loading_messages_progress_bar.visibility = View.VISIBLE
+        activity_messages_pb_loading.visibility = View.VISIBLE
     }
 
     override fun showCompanionUser(fullName: String, photoLink: String) {
@@ -181,11 +181,11 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
     }
 
     override fun hideEmptyScreen() {
-        empty_messages_text.visibility = View.GONE
+        activity_messages_tv_empty.visibility = View.GONE
     }
 
     override fun showEmptyScreen() {
-        empty_messages_text.visibility = View.VISIBLE
+        activity_messages_tv_empty.visibility = View.VISIBLE
     }
 
     override fun goToProfile(user: User) {
