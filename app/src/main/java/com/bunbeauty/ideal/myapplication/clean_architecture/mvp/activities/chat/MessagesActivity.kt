@@ -41,9 +41,8 @@ import javax.inject.Inject
 class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
 
     override var panelContext: Activity = this
-    private var loadingLimit: Int = 15
+    private var loadingLimit: Int = 25
     private var isScrolling = false
-    private var isSmoothScrollingToPosition = true
 
     @Inject
     lateinit var messageInteractor: MessagesMessageInteractor
@@ -95,7 +94,6 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
 
     private fun init() {
         activity_messages_btn_send.setOnClickListener {
-            isSmoothScrollingToPosition = true
             messagePresenter.sendMessage(activity_messages_et_message.text.toString().trim())
             activity_messages_et_message.text.clear()
         }
@@ -131,7 +129,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
     }
 
     fun updateData() {
-        isSmoothScrollingToPosition = false
+        messagePresenter.setIsSmoothScrollingToPosition(false)
         isScrolling = false
         loadingLimit += 25
         messagePresenter.createMessageScreen(loadingLimit)
@@ -152,7 +150,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
         }
     }
 
-    override fun showMessage(message: Message) {
+    override fun showMessage(message: Message, isSmoothScrollingToPosition: Boolean) {
         messageAdapter.addItem(message, isSmoothScrollingToPosition)
         if (isSmoothScrollingToPosition)
             moveToStart()
@@ -160,6 +158,10 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
 
     override fun updateMessageAdapter(message: Message) {
         messageAdapter.updateMessageAdapter(message)
+    }
+
+    override fun removeMessageAdapter(message: Message) {
+        messageAdapter.removeMessageAdapter(message)
     }
 
     override fun moveToStart() {

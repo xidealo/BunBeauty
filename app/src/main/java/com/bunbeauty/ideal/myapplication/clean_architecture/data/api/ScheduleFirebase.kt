@@ -2,6 +2,8 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.GetScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule.Companion.SCHEDULE
@@ -54,7 +56,36 @@ class ScheduleFirebase {
     fun updateScheduleRemoveOrders(
         order: Order,
         updateScheduleCallback: UpdateScheduleCallback
-    ){
+    ) {
+        val scheduleQuery = FirebaseDatabase.getInstance()
+            .getReference(SCHEDULE)
+            .child(order.masterId)
+            .orderByChild(ORDER_ID).equalTo(order.id)
+        scheduleQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.childrenCount > 0) {
+                    val workingTimes = getWorkingTimeFromSnapshot(snapshot)
+                    val clearWorkingTimes = mutableListOf<WorkingTime>()
+                    for (time in workingTimes) {
+                        time.orderId = ""
+                        time.clientId = ""
+                        clearWorkingTimes.add(time)
+                    }
+                    val schedule = ScheduleWithWorkingTime(
+                        Schedule(masterId = order.masterId),
+                        clearWorkingTimes
+                    )
+                    update(schedule)
+                    updateScheduleCallback.returnUpdatedCallback(schedule)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
 
     }
 

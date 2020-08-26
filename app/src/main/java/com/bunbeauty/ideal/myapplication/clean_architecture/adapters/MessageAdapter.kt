@@ -25,7 +25,8 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
     }
 
     fun addItem(message: Message, toBottom: Boolean) {
-        if (!messageList.contains(message)) {
+        val foundMessage = messageList.find { it.id == message.id }
+        if (foundMessage == null) {
             if (toBottom) {
                 messageList.add(message)
                 notifyItemInserted(messageList.size)
@@ -43,6 +44,15 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
             val index = messageList.indexOf(foundMessage)
             messageList[index] = message
             notifyItemChanged(index)
+        }
+    }
+
+    fun removeMessageAdapter(message: Message) {
+        val foundMessage = messageList.find { it.id == message.id }
+        if (foundMessage != null) {
+            val index = messageList.indexOf(foundMessage)
+            messageList.remove(message)
+            notifyItemRemoved(index)
         }
     }
 
@@ -72,28 +82,40 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
                 Message.TEXT_MESSAGE_STATUS -> {
                     val messageTextElement = MessageTextElement(message, view)
                     messageTextElement.setIsMyMessage(message, view)
-                    messageTextElement.setButtonVisibility(message, view,"")
+                    messageTextElement.setButtonVisibility(message, view, "")
                 }
 
                 Message.SERVICE_REVIEW_MESSAGE_STATUS -> {
                     val messageTextElement =
                         MessageServiceReviewElement(messagesPresenter, message, view)
                     messageTextElement.setIsMyMessage(message, view)
-                    messageTextElement.setButtonVisibility(message, view, context.getString(R.string.rate))
+                    messageTextElement.setButtonVisibility(
+                        message,
+                        view,
+                        context.getString(R.string.rate)
+                    )
                 }
 
                 Message.USER_REVIEW_MESSAGE_STATUS -> {
                     val messageUserReviewElement =
                         MessageUserReviewElement(messagesPresenter, message, view)
                     messageUserReviewElement.setIsMyMessage(message, view)
-                    messageUserReviewElement.setButtonVisibility(message, view, context.getString(R.string.rate))
+                    messageUserReviewElement.setButtonVisibility(
+                        message,
+                        view,
+                        context.getString(R.string.rate)
+                    )
                 }
 
-                Message.CANCEL_MESSAGE_STATUS ->{
+                Message.CANCEL_MESSAGE_STATUS -> {
                     val messageCancelElement =
                         MessageCancelElement(messagesPresenter, message, view)
                     messageCancelElement.setIsMyMessage(message, view)
-                    messageCancelElement.setButtonVisibility(message, view, context.getString(R.string.cancel))
+                    messageCancelElement.setButtonVisibility(
+                        message,
+                        view,
+                        context.getString(R.string.cancel)
+                    )
                 }
 
                 else -> {

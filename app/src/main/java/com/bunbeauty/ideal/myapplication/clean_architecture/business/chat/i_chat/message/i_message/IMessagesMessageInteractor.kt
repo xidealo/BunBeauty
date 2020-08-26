@@ -5,6 +5,9 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 
 interface IMessagesMessageInteractor {
+
+    var isSmoothScrollingToPosition: Boolean
+
     fun getMessages(
         dialog: Dialog,
         loadingLimit: Int,

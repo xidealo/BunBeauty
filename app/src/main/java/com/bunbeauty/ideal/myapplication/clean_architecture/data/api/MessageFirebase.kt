@@ -1,9 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.DeleteMessageCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.MessageCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.MessagesCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.UpdateMessageCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscriber
@@ -104,7 +101,7 @@ class MessageFirebase {
     fun deleteByOrderId(
         dialog: Dialog,
         orderId: String,
-        deleteMessageCallback: DeleteMessageCallback
+        deleteAllMessageCallback: DeleteAllMessageCallback
     ) {
         val messageQuery = FirebaseDatabase.getInstance()
             .getReference(Dialog.DIALOGS)
@@ -114,16 +111,17 @@ class MessageFirebase {
 
         messageQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                var message = Message()
+                val messages = mutableListOf<Message>()
                 if (snapshot.childrenCount > 0) {
                     for (messageSnapshot in snapshot.children) {
-                        message = getMessageFromSnapshot(messageSnapshot)
+                        val message = getMessageFromSnapshot(messageSnapshot)
                         delete(dialog, message)
+                        message.dialogId = dialog.id
+                        message.userId = dialog.user.id
+                        message.orderId = orderId
+                        messages.add(message)
                     }
-                    message.dialogId = dialog.id
-                    message.userId = dialog.user.id
-                    message.orderId = orderId
-                    deleteMessageCallback.returnDeletedCallback(message)
+                    deleteAllMessageCallback.returnDeletedList(messages)
                 }
             }
 

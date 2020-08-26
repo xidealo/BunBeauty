@@ -12,10 +12,11 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.Me
 
 class MessagesMessageInteractor(private val messageRepository: MessageRepository) :
     IMessagesMessageInteractor, InsertMessageCallback, MessageCallback, MessagesCallback,
-    UpdateMessageCallback, DeleteMessageCallback {
+    UpdateMessageCallback, DeleteAllMessageCallback {
 
     private var cacheMessages = mutableListOf<Message>()
     private lateinit var messagesPresenterCallback: MessagesPresenterCallback
+    override var isSmoothScrollingToPosition = true
 
     override fun getMyMessagesLink() = cacheMessages
 
@@ -37,8 +38,15 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messageRepository.deleteByOrderId(dialog, message.orderId, this)
     }
 
-    override fun returnDeletedCallback(obj: Message) {
-        messagesPresenterCallback.deleteOrder(obj)
+    override fun returnDeletedList(objects: List<Message>) {
+        if (objects.isNotEmpty()) {
+            messagesPresenterCallback.deleteOrder(objects.first())
+
+            for (message in objects) {
+                cacheMessages.remove(message)
+                messagesPresenterCallback.removeMessageAdapter(message)
+            }
+        }
     }
 
     override fun returnList(objects: List<Message>) {
@@ -87,9 +95,14 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     }
 
     private fun addMessage(message: Message) {
-        cacheMessages.add(message)
-        messagesPresenterCallback.setUnchecked()
-        messagesPresenterCallback.showMessage(message)
+        //only from my dialog
+        if (message.dialogId == User.getMyId()) {
+            cacheMessages.add(message)
+            messagesPresenterCallback.setUnchecked()
+            messagesPresenterCallback.showMessage(message, isSmoothScrollingToPosition)
+        } else {
+            Log.d(Tag.TEST_TAG, "Сообщение из другого диалога $message")
+        }
     }
 
     /**
@@ -98,7 +111,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     override fun returnUpdatedCallback(obj: Message) {
         if (cacheMessages.find { it.id == obj.id } == null) {
             cacheMessages.add(obj)
-            messagesPresenterCallback.showMessage(obj)
+            messagesPresenterCallback.showMessage(obj, isSmoothScrollingToPosition)
         }
     }
 

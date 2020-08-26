@@ -63,13 +63,13 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
     override fun deleteByOrderId(
         dialog: Dialog,
         orderId: String,
-        deleteMessageCallback: DeleteMessageCallback
+        deleteAllMessageCallback: DeleteAllMessageCallback
     ) {
         launch {
             messageFirebase.deleteByOrderId(
                 dialog,
                 orderId,
-                deleteMessageCallback
+                deleteAllMessageCallback
             )
         }
     }

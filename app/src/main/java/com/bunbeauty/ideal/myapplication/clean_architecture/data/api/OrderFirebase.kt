@@ -91,13 +91,11 @@ class OrderFirebase {
         )
     }
 
-    fun getIdForNew(clientId: String): String {
-        return FirebaseDatabase.getInstance()
-            .getReference(Order.ORDERS)
-            .child(clientId)
-            .push()
-            .key!!
-    }
+    fun getIdForNew(clientId: String) = FirebaseDatabase.getInstance()
+        .getReference(Order.ORDERS)
+        .child(clientId)
+        .push()
+        .key!!
 
 
     fun update(order: Order) {}

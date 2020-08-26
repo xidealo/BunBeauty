@@ -4,10 +4,12 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 
 interface MessagesPresenterCallback {
-    fun showMessage(message: Message)
+    fun sendMessage(messageText: String)
+    fun showMessage(message: Message, isSmoothScrollingToPosition: Boolean)
     fun deleteOrderFromSchedule(order: Order)
     fun deleteOrder(message: Message)
     fun updateMessageAdapter(message: Message)
+    fun removeMessageAdapter(message: Message)
     fun showMoveToStart()
     fun setUnchecked()
     fun showEmptyScreen()

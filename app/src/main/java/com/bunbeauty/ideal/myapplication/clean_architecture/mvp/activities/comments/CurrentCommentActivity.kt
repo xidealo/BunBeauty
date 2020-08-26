@@ -35,7 +35,7 @@ class CurrentCommentActivity : MvpAppCompatActivity(), CurrentCommentView, ITopP
     lateinit var currentCommentPresenter: CurrentCommentPresenter
 
     @ProvidePresenter
-    internal fun currenCommentPresenter(): CurrentCommentPresenter {
+    internal fun currentCommentPresenter(): CurrentCommentPresenter {
         DaggerAppComponent.builder()
             .appModule(AppModule(application))
             .firebaseModule(FirebaseModule())
@@ -51,6 +51,11 @@ class CurrentCommentActivity : MvpAppCompatActivity(), CurrentCommentView, ITopP
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_current_comment)
         currentCommentPresenter.createCurrentCommentScreen()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initBottomPanel()
     }
 
     override fun setUserComment(userComment: UserComment) {

@@ -20,6 +20,10 @@ class MessagesPresenter(
 
     fun getCompanionUser() = messagesUserInteractor.getCompanionUser(this)
 
+    fun setIsSmoothScrollingToPosition(isSmoothScrollingToPosition: Boolean) {
+        messagesMessageInteractor.isSmoothScrollingToPosition = isSmoothScrollingToPosition
+    }
+
     fun createMessageScreen(loadingLimit: Int) {
         messagesMessageInteractor.getMessages(
             messagesDialogInteractor.getMyDialog(),
@@ -37,7 +41,9 @@ class MessagesPresenter(
         messagesUserInteractor.updateUser(user)
     }
 
-    fun sendMessage(messageText: String) {
+    override fun sendMessage(messageText: String) {
+        setIsSmoothScrollingToPosition(true)
+
         val messageId = messagesMessageInteractor.getId(
             messagesDialogInteractor.getMyDialog().ownerId,
             messagesDialogInteractor.getMyDialog().id
@@ -71,14 +77,14 @@ class MessagesPresenter(
         viewState.moveToStart()
     }
 
-    override fun showMessage(message: Message) {
-        viewState.showMessage(message)
+    override fun showMessage(message: Message, isSmoothScrollingToPosition: Boolean) {
+        viewState.showMessage(message, isSmoothScrollingToPosition)
         viewState.hideLoading()
         viewState.hideEmptyScreen()
     }
 
     override fun deleteOrderFromSchedule(order: Order) {
-        messageScheduleInteractor.deleteOrderFromSchedule(order)
+        messageScheduleInteractor.deleteOrderFromSchedule(order, this)
     }
 
     override fun deleteOrder(message: Message) {
@@ -87,6 +93,10 @@ class MessagesPresenter(
 
     override fun updateMessageAdapter(message: Message) {
         viewState.updateMessageAdapter(message)
+    }
+
+    override fun removeMessageAdapter(message: Message) {
+        viewState.removeMessageAdapter(message)
     }
 
     override fun setUnchecked() {
@@ -120,9 +130,10 @@ class MessagesPresenter(
      * Clear schedule
      * */
     fun cancelOrder(message: Message) {
-        //my order
+        setIsSmoothScrollingToPosition(false)
+        //my order messages
         messagesMessageInteractor.cancelOrder(message, messagesDialogInteractor.getMyDialog(), this)
-        //companion
+        //companion order messages
         messagesMessageInteractor.cancelOrder(
             message,
             messagesDialogInteractor.getCompanionDialog(),
