@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.search_service
 
-import android.app.Activity
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -14,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.paris.extensions.style
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ServiceAdapter
@@ -22,14 +20,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_serv
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_service.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_service.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.MainScreenData
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AdapterModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.MainScreenView
 import com.google.android.material.button.MaterialButton
@@ -42,13 +34,10 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScreenView,
-    ITopPanel, IBottomPanel {
+class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView {
 
     private var categoriesBtns: ArrayList<MaterialButton> = arrayListOf()
     private lateinit var categories: ArrayList<String>
-
-    override var panelContext: Activity = this
 
     @InjectPresenter
     lateinit var mainScreenPresenter: MainScreenPresenter
@@ -67,13 +56,7 @@ class MainScreenActivity : MvpAppCompatActivity(), View.OnClickListener, MainScr
 
     @ProvidePresenter
     internal fun provideAddingServicePresenter(): MainScreenPresenter {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
-            .adapterModule(AdapterModule())
-            .build()
-            .inject(this)
+        buildDagger().inject(this)
 
         return MainScreenPresenter(
             mainScreenUserInteractor,

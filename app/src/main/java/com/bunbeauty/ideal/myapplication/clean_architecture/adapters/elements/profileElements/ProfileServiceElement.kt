@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.profileElements
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -27,5 +28,6 @@ class ProfileServiceElement(
         val intent = Intent(context, ServiceActivity::class.java)
         intent.putExtra(Service.SERVICE, service)
         context.startActivity(intent)
+        (context as Activity).overridePendingTransition(0, 0)
     }
 }

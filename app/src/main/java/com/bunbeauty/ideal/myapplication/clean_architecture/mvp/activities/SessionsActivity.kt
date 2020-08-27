@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities
 
-import android.app.Activity
 import android.graphics.Point
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -12,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.DayAdapter
@@ -21,21 +19,14 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.Se
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsOrderInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Session
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingDay
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SessionsPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.SessionsView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_sessions.*
 import javax.inject.Inject
 
-class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBottomPanel {
-
-    override var panelContext: Activity = this
+class SessionsActivity : BaseActivity(), SessionsView{
 
     private val timeButtonList: MutableList<Button> = ArrayList()
 
@@ -53,13 +44,7 @@ class SessionsActivity : MvpAppCompatActivity(), SessionsView, ITopPanel, IBotto
 
     @ProvidePresenter
     internal fun provideSessionsPresenter(): SessionsPresenter {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
-            .build()
-            .inject(this)
-
+        buildDagger().inject(this)
         return SessionsPresenter(
             sessionsInteractor,
             sessionsOrderInteractor,

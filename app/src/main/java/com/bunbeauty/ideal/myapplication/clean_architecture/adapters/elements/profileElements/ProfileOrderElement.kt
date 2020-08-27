@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.profileElements
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -30,5 +31,6 @@ class ProfileOrderElement(
             this.putExtra(Order.MASTER_ID, order.masterId)
         }
         context.startActivity(intent)
+        (context as Activity).overridePendingTransition(0, 0)
     }
 }

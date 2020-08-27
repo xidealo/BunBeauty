@@ -13,25 +13,18 @@ import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SchedulePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.ScheduleView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_schedule.*
 import javax.inject.Inject
 
-class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBottomPanel,
-    View.OnTouchListener {
+class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
 
     override var panelContext: Activity = this
 
@@ -48,13 +41,7 @@ class ScheduleActivity : MvpAppCompatActivity(), ScheduleView, ITopPanel, IBotto
 
     @ProvidePresenter
     internal fun provideSchedulePresenter(): SchedulePresenter {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
-            .build()
-            .inject(this)
-
+        buildDagger().inject(this)
         return SchedulePresenter(scheduleInteractor)
     }
 

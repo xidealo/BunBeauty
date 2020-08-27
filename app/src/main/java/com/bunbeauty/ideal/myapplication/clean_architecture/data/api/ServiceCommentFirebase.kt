@@ -1,8 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service_comment.ServiceCommentsCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.ServiceComment
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.UserComment
 import com.google.firebase.database.*

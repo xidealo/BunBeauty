@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -72,6 +73,7 @@ class ServiceElement(
         intent.putExtra(Service.SERVICE, service)
         intent.putExtra(User.USER, user)
         context.startActivity(intent)
+        (context as Activity).overridePendingTransition(0, 0)
     }
 
     private fun setPremiumColor(view: View, context: Context) {

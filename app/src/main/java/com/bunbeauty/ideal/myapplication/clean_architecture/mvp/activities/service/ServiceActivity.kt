@@ -8,7 +8,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.PhotoAdapter
@@ -19,31 +18,22 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.Ser
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.RepositoryModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.SessionsActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.ServiceCommentsActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.editing.EditServiceActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IProfileAvailable
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.ServicePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.ServiceView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_service.*
 import javax.inject.Inject
 
-class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomPanel,
-    IProfileAvailable, IPhotoElement {
-
-    override var panelContext: Activity = this
+class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoElement {
 
     private lateinit var premiumFragment: PremiumFragment
 
@@ -64,14 +54,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
 
     @ProvidePresenter
     fun provideServicePresenter(): ServicePresenter {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .interactorModule(InteractorModule(intent))
-            .repositoryModule(RepositoryModule())
-            .firebaseModule(FirebaseModule())
-            .build()
-            .inject(this)
-
+        buildDagger().inject(this)
         return ServicePresenter(serviceInteractor, servicePhotoInteractor, serviceUserInteractor)
     }
 
@@ -217,6 +200,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
         val intent = Intent(this, EditServiceActivity::class.java)
         intent.putExtra(Service.SERVICE, service)
         startActivityForResult(intent, REQUEST_EDIT_SERVICE)
+        overridePendingTransition(0, 0)
     }
 
     override fun goToProfile(user: User) {
@@ -224,6 +208,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
             putExtra(User.USER, user)
         }
         startActivity(intent)
+        overridePendingTransition(0, 0)
     }
 
     override fun openPhoto(openedPhotoLinkOrUri: String) {
@@ -240,6 +225,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
             putExtra(Service.SERVICE, servicePresenter.getGottenService())
         }
         startActivity(intent)
+        overridePendingTransition(0, 0)
     }
 
     private fun goToSessions() {
@@ -247,6 +233,7 @@ class ServiceActivity : MvpAppCompatActivity(), ServiceView, ITopPanel, IBottomP
             this.putExtra(Service.SERVICE, servicePresenter.getGottenService())
         }
         startActivity(intent)
+        overridePendingTransition(0, 0)
     }
 
     companion object {

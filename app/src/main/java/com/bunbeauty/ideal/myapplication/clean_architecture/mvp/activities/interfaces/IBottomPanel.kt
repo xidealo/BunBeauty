@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces
 
+import android.app.Activity
 import android.content.Intent
 import android.view.MenuItem
 import com.android.ideal.myapplication.R

@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +8,6 @@ import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
@@ -22,15 +20,10 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AdapterModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CreationCommentActivity
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat.MessagesPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.chat.MessagesView
 import kotlinx.android.synthetic.main.activity_messages.*
@@ -38,9 +31,8 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.set
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import javax.inject.Inject
 
-class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
+class MessagesActivity : BaseActivity(), MessagesView {
 
-    override var panelContext: Activity = this
     private var loadingLimit: Int = 25
     private var isScrolling = false
 
@@ -67,13 +59,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
 
     @ProvidePresenter
     internal fun provideProfilePresenter(): MessagesPresenter {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
-            .adapterModule(AdapterModule())
-            .build()
-            .inject(this)
+        buildDagger().inject(this)
 
         return MessagesPresenter(
             messageInteractor,
@@ -194,6 +180,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
         val intent = Intent(this, ProfileActivity::class.java)
         intent.putExtra(User.USER, user)
         startActivity(intent)
+        overridePendingTransition(0, 0)
     }
 
     override fun actionClick() {

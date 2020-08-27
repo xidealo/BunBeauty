@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.SubscriptionAdapter.SubscriptionViewHolder
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.SubscriptionElement
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscription
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SubscriptionsPresenter
 

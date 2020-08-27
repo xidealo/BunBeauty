@@ -1,32 +1,23 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.current_comment.CurrentCommentCommentInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.ServiceComment
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.UserComment
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.comments.CurrentCommentPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.comments.CurrentCommentView
 import kotlinx.android.synthetic.main.activity_current_comment.*
 import javax.inject.Inject
 
-class CurrentCommentActivity : MvpAppCompatActivity(), CurrentCommentView, ITopPanel, IBottomPanel {
-
-    override var panelContext: Activity = this
+class CurrentCommentActivity : BaseActivity(), CurrentCommentView {
 
     @Inject
     lateinit var currentCommentCommentInteractor: CurrentCommentCommentInteractor
@@ -36,12 +27,7 @@ class CurrentCommentActivity : MvpAppCompatActivity(), CurrentCommentView, ITopP
 
     @ProvidePresenter
     internal fun currentCommentPresenter(): CurrentCommentPresenter {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
-            .build()
-            .inject(this)
+        buildDagger().inject(this)
         return CurrentCommentPresenter(
             currentCommentCommentInteractor
         )

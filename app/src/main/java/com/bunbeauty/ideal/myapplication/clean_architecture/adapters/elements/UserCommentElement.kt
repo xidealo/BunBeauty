@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -40,6 +41,7 @@ class UserCommentElement(
             putExtra(UserComment.USER_COMMENT, userComment)
         }
         context.startActivity(intent)
+        (context as Activity).overridePendingTransition(0, 0)
     }
 
 }

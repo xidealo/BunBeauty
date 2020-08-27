@@ -1,9 +1,11 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.DeleteAllMessageCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.MessageCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.MessagesCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.message.UpdateMessageCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscriber
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.google.firebase.database.*
 

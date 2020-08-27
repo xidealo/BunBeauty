@@ -3,7 +3,6 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.code.GetCodeCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.code.UpdateCodeCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Code
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.create_service.CreationServiceActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase

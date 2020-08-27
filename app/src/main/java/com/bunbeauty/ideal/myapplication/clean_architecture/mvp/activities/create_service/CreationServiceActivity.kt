@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ChangeablePhotoAdapter
@@ -20,16 +19,11 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.create_serv
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.CreationServiceView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -39,10 +33,8 @@ import kotlinx.android.synthetic.main.activity_creation_service.*
 import javax.inject.Inject
 
 
-class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBottomPanel,
-    ITopPanel, IChangeablePhotoElement {
+class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeablePhotoElement {
 
-    override var panelContext: Activity = this
     private lateinit var categoryFragment: CategoryFragment
 
     @Inject
@@ -62,13 +54,7 @@ class CreationServiceActivity : MvpAppCompatActivity(), CreationServiceView, IBo
 
     @ProvidePresenter
     internal fun provideAddingServicePresenter(): CreationServicePresenter {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
-            .build()
-            .inject(this)
-
+        buildDagger().inject(this)
         return CreationServicePresenter(
             creationServiceServiceInteractor,
             creationServiceTagInteractor,

@@ -1,11 +1,9 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.DialogAdapter
@@ -13,22 +11,14 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.DialogsMessageInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.DialogsUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AdapterModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat.DialogsPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.chat.DialogsView
 import kotlinx.android.synthetic.main.activity_dialogs.*
 import javax.inject.Inject
 
-class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, DialogsView {
-
-    override var panelContext: Activity = this
+class DialogsActivity : BaseActivity(), DialogsView {
 
     @Inject
     lateinit var dialogsDialogInteractor: DialogsDialogInteractor
@@ -47,13 +37,7 @@ class DialogsActivity : MvpAppCompatActivity(), IBottomPanel, ITopPanel, Dialogs
 
     @ProvidePresenter
     internal fun provideProfilePresenter(): DialogsPresenter {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
-            .adapterModule(AdapterModule())
-            .build()
-            .inject(this)
+        buildDagger().inject(this)
         return DialogsPresenter(
             dialogsDialogInteractor,
             dialogsUserInteractor,

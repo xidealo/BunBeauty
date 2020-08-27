@@ -1,12 +1,10 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.subscriptions
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.SubscriptionAdapter
@@ -14,22 +12,15 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.Subscr
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscription
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SubscriptionsPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.SubscriptionsView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_subscriptions.*
 import javax.inject.Inject
 
-class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, SubscriptionsView {
-
-    override var panelContext: Activity = this
+class SubscriptionsActivity : BaseActivity(), SubscriptionsView {
 
     @Inject
     lateinit var subscriptionsSubscriptionInteractor: SubscriptionsSubscriptionInteractor
@@ -48,12 +39,8 @@ class SubscriptionsActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel, S
 
     @ProvidePresenter
     internal fun provideProfilePresenter(): SubscriptionsPresenter {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
-            .build()
-            .inject(this)
+        buildDagger().inject(this)
+
         return SubscriptionsPresenter(
             subscriptionsSubscriptionInteractor,
             subscriptionsUserInteractor,

@@ -9,7 +9,7 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.profileElements.ProfileOrderElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 
-class ProfileOrderAdapter() : RecyclerView.Adapter<ProfileOrderAdapter.ProfileOrderViewHolder>() {
+class ProfileOrderAdapter : RecyclerView.Adapter<ProfileOrderAdapter.ProfileOrderViewHolder>() {
 
     lateinit var context: Context
     private val orderList: MutableList<Order> = ArrayList()

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.chatElements.DialogElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 
 class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
 

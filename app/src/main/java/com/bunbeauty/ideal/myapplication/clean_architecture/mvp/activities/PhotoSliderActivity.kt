@@ -3,13 +3,13 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities
 import android.os.Bundle
 import android.view.View
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.PhotoPagerAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.photo.PhotoSlideCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_photo_slider.*
 
-class PhotoSliderActivity : MvpAppCompatActivity(), PhotoSlideCallback {
+class PhotoSliderActivity : BaseActivity(), PhotoSlideCallback {
 
     private lateinit var photosList: ArrayList<Photo>
     private lateinit var photoPagerAdapter: PhotoPagerAdapter

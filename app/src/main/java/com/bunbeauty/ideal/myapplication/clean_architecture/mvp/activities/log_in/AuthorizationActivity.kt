@@ -5,24 +5,19 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.RepositoryModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in.AuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.AuthorizationView
 import kotlinx.android.synthetic.main.activity_authorization.*
 import javax.inject.Inject
 
-class AuthorizationActivity : MvpAppCompatActivity(), AuthorizationView, IAdapterSpinner {
+class AuthorizationActivity : BaseActivity(), AuthorizationView, IAdapterSpinner {
 
     @Inject
     lateinit var authorizationInteractor: AuthorizationInteractor
@@ -32,14 +27,7 @@ class AuthorizationActivity : MvpAppCompatActivity(), AuthorizationView, IAdapte
 
     @ProvidePresenter
     internal fun provideAuthorizationPresenter(): AuthorizationPresenter {
-        DaggerAppComponent
-            .builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
-            .repositoryModule(RepositoryModule())
-            .build().inject(this)
-
+        buildDagger().inject(this)
         return AuthorizationPresenter(authorizationInteractor)
     }
 
@@ -114,7 +102,8 @@ class AuthorizationActivity : MvpAppCompatActivity(), AuthorizationView, IAdapte
 
     override fun goToProfile(user: User) {
         val intent = Intent(this, ProfileActivity::class.java).apply {
-            putExtra(User.USER, user) }
+            putExtra(User.USER, user)
+        }
 
         this.startActivity(intent)
         overridePendingTransition(0, 0)

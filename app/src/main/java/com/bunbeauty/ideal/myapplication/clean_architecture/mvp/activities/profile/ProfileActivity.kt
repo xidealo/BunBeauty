@@ -1,13 +1,11 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentPagerAdapter
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileOrderAdapter
@@ -17,18 +15,14 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTra
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.NumberRoundingApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.profile.iProfile.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.*
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat.MessagesActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.UserCommentsActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.editing.EditProfileActivity
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IBottomPanel
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.subscriptions.SubscriptionsActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.profile.OrdersFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.profile.ServicesFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.ProfilePresenter
@@ -40,10 +34,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_profile.*
 import javax.inject.Inject
 
-class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomPanel,
-    TabLayout.OnTabSelectedListener {
-
-    override var panelContext: Activity = this
+class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedListener {
 
     private lateinit var ordersFragment: OrdersFragment
     private lateinit var servicesFragment: ServicesFragment
@@ -80,12 +71,7 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
 
     @ProvidePresenter
     internal fun provideProfilePresenter(): ProfilePresenter {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .interactorModule(InteractorModule(intent))
-            .build()
-            .inject(this)
-
+        buildDagger().inject(this)
         return ProfilePresenter(
             profileUserInteractor,
             profileServiceInteractor,
@@ -318,6 +304,7 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
         val intent = Intent(this, EditProfileActivity::class.java)
         intent.putExtra(User.USER, user)
         startActivityForResult(intent, REQUEST_EDIT_PROFILE)
+        overridePendingTransition(0, 0)
     }
 
     override fun goToMessages(dialog: Dialog, companionDialog: Dialog) {
@@ -356,6 +343,7 @@ class ProfileActivity : MvpAppCompatActivity(), ProfileView, ITopPanel, IBottomP
             putExtra(User.USER, user)
         }
         startActivity(intent)
+        overridePendingTransition(0, 0)
     }
 
     companion object {

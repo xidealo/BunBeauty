@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.profileElements.ProfileServiceElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscription
 
 class ProfileServiceAdapter :
     RecyclerView.Adapter<ProfileServiceAdapter.ProfileServiceViewHolder>() {

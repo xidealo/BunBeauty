@@ -5,26 +5,22 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.iLogIn.IRegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in.RegistrationPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.RegistrationView
-import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_registration.*
 import javax.inject.Inject
 
-class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterSpinner {
+class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
 
     @Inject
     lateinit var registrationUserInteractor: IRegistrationUserInteractor
@@ -34,13 +30,7 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterS
 
     @ProvidePresenter
     internal fun provideRegistrationPresenter(): RegistrationPresenter {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
-            .build()
-            .inject(this)
-
+        buildDagger().inject(this)
         return RegistrationPresenter(registrationUserInteractor)
     }
 
@@ -117,7 +107,7 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, IAdapterS
         finish()
     }
 
-    companion object{
+    companion object {
         const val REGISTRATION_ACTIVITY = "registration activity"
     }
 }
