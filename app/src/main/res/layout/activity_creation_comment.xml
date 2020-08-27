@@ -1,36 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/allPages"
+    android:orientation="vertical"
+    tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CreationCommentActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Оценка" />
+    <include layout="@layout/part_top_panel" />
 
-    <RatingBar
-        android:id="@+id/ratingCreationCommentRatingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/activity_creation_comment_btn_rate"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_panel">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Отзыв" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/rating"
+            android:textAppearance="?attr/textAppearanceHeadline6" />
 
-    <EditText
-        android:id="@+id/reviewCreationCommentInput"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content" />
+        <RatingBar
+            android:id="@+id/activity_creation_comment_rb_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:theme="@style/ratingBarColors" />
 
-    <Button
-        android:id="@+id/rateCreationCommentBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Оставить отзыв"/>
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/materialInputLayout"
+            android:hint="@string/review"
+            app:startIconDrawable="@drawable/icon_file_alt_regular">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_creation_comment_rb_review"
+                style="@style/materialInput"
+                android:inputType="textMultiLine|textCapSentences"
+                android:maxLines="10" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/activity_creation_comment_btn_rate"
+        style="@style/loginButton"
+        android:layout_marginBottom="@dimen/default_bottom_button_margin"
+        android:text="@string/rate"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

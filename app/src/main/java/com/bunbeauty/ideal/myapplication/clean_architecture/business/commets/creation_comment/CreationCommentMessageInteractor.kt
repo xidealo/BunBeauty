@@ -71,6 +71,7 @@ class CreationCommentMessageInteractor(
     private fun updateCompanionMessage(dialog: Dialog, messageText: String) {
         val companionMessage = (intent.getSerializableExtra(Message.MESSAGE) as Message).copy()
         companionMessage.dialogId = dialog.user.id
+        companionMessage.userId = dialog.id
         companionMessage.type = Message.TEXT_MESSAGE_STATUS
         companionMessage.message = messageText
         messageRepository.update(companionMessage, this)

@@ -46,6 +46,8 @@
     <string name="cancel">Отказаться</string>
     <string name="Dialogs">Диалоги</string>
     <string name="rate">Оценить</string>
+    <string name="rating">Оценка</string>
+    <string name="review">Отзыв</string>
     <string name="deleteService">Удалить</string>
     <string name="channel_name">q</string>
     <string name="channel_description">qq</string>

@@ -28,8 +28,11 @@ class MessageFirebase {
         items[Message.MESSAGE] = message.message
         items[Message.TIME] = ServerValue.TIMESTAMP
         items[Message.OWNER_ID] = message.ownerId
+
         if (message.orderId.isNotEmpty())
             items[Message.ORDER_ID] = message.orderId
+        if (message.finishOrderTime != 0L)
+            items[Message.FINISH_ORDER_TIME_ID] = message.finishOrderTime
 
         items[Message.TYPE] = message.type
         messageRef.updateChildren(items)
@@ -45,8 +48,11 @@ class MessageFirebase {
         val items = HashMap<String, Any>()
         items[Message.MESSAGE] = message.message
         items[Message.TIME] = ServerValue.TIMESTAMP
+
         if (message.orderId.isNotEmpty())
             items[Message.ORDER_ID] = message.orderId
+        if (message.finishOrderTime != 0L)
+            items[Message.FINISH_ORDER_TIME_ID] = message.finishOrderTime
 
         items[Message.TYPE] = message.type
         messageRef.updateChildren(items)
@@ -179,6 +185,8 @@ class MessageFirebase {
         message.id = messageSnapshot.key!!
         message.message = messageSnapshot.child(Message.MESSAGE).value as? String ?: ""
         message.time = messageSnapshot.child(Message.TIME).value as? Long ?: 0
+        message.finishOrderTime =
+            messageSnapshot.child(Message.FINISH_ORDER_TIME_ID).value as? Long ?: 0
         message.type = messageSnapshot.child(Message.TYPE).getValue(Int::class.java) ?: 0
         message.ownerId = messageSnapshot.child(Message.OWNER_ID).value as? String ?: ""
         message.orderId = messageSnapshot.child(Message.ORDER_ID).value as? String ?: ""

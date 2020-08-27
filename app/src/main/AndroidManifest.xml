@@ -21,9 +21,7 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity
-            android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CreationCommentActivity"
-            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CreationCommentActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CurrentCommentActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.UserCommentsActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat.MessagesActivity" />

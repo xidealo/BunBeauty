@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.android.ideal.myapplication.R
@@ -13,12 +14,16 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerA
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.ITopPanel
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.comments.CreationCommentPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.comments.CreationCommentView
 import kotlinx.android.synthetic.main.activity_creation_comment.*
 import javax.inject.Inject
 
-class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
+class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView, ITopPanel {
+
+    override var panelContext: Activity = this
 
     @Inject
     lateinit var creationCommentUserCommentInteractor: CreationCommentUserCommentInteractor
@@ -66,10 +71,11 @@ class CreationCommentActivity : MvpAppCompatActivity(), CreationCommentView {
     }
 
     private fun configViews() {
-        rateCreationCommentBtn.setOnClickListener {
+        initTopPanel("Отзыв", ButtonTask.NONE)
+        activity_creation_comment_btn_rate.setOnClickListener {
             creationCommentPresenter.checkMessage(
-                ratingCreationCommentRatingBar.rating,
-                reviewCreationCommentInput.text.toString()
+                activity_creation_comment_rb_rating.rating,
+                activity_creation_comment_rb_review.text.toString()
             )
         }
     }

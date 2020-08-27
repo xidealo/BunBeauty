@@ -13,7 +13,7 @@ class MessageServiceReviewElement(
     view: View
 ) : MessageElement(message, view) {
     override fun setButtonVisibility(message: Message, view: View, buttonText: String) {
-        if (message.ownerId == User.getMyId() && message.finishOrderTime >= Date().time) {
+        if (message.ownerId == User.getMyId() && message.finishOrderTime <= Date().time) {
             super.setButtonVisibility(message, view, buttonText)
             view.element_message_btn_action.visibility = View.VISIBLE
             view.element_message_btn_action.setOnClickListener {
