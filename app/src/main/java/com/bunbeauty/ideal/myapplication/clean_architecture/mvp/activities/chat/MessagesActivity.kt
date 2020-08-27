@@ -107,7 +107,7 @@ class MessagesActivity : MvpAppCompatActivity(), MessagesView, ITopPanel {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (isScrolling && dy < 0 && linearLayoutManager.findFirstVisibleItemPosition() <= 3) {
-                    Log.d(Tag.TEST_TAG, "Запрос в бд на докачку сообщений")
+                    Log.d(Tag.TEST_TAG, "Запрос на докачку сообщений")
                     updateData()
                 }
             }

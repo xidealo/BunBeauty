@@ -23,6 +23,7 @@ data class Message(
     var userId: String = "",
     var message: String = "",
     var orderId: String = "",
+    var finishOrderTime: Long = 0,
     var ownerId: String = "",
     var time: Long = 0L,
     var type: Int = 0
@@ -38,6 +39,7 @@ data class Message(
         const val CANCEL_MESSAGE_STATUS = 3
         const val TIME = "time"
         const val ORDER_ID = "order id"
+        const val FINISH_ORDER_TIME_ID = "finish order time"
         const val OWNER_ID = "owner id"
     }
 

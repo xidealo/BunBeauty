@@ -81,20 +81,30 @@ class SessionsPresenter(
         val myMessageUserReview = Message(
             id = userReviewId,
             type = Message.USER_REVIEW_MESSAGE_STATUS,
-            message = "На услуге ${order.serviceName} был клиент. Оставьте отзыв о клиенте.",
+            message = "На услуге ${order.serviceName} был клиент. Вы сможете оставить отзыв о клиенте после ${
+                WorkWithTimeApi.getDateInFormatYMDHMS(
+                    Date(order.session.finishTime)
+                )
+            }.",
             dialogId = order.clientId,
             userId = order.masterId,
             orderId = order.id,
-            ownerId = order.masterId
+            ownerId = order.masterId,
+            finishOrderTime = order.session.finishTime
         )
         val companionMessageUserReview = Message(
             id = userReviewId,
             type = Message.USER_REVIEW_MESSAGE_STATUS,
-            message = "На услуге ${order.serviceName} был клиент. Оставьте отзыв о клиенте.",
+            message = "На услуге ${order.serviceName} был клиент. Вы сможете оставить отзыв о клиенте после ${
+                WorkWithTimeApi.getDateInFormatYMDHMS(
+                    Date(order.session.finishTime)
+                )
+            }.",
             dialogId = order.masterId,
             userId = order.clientId,
             orderId = order.id,
-            ownerId = order.masterId
+            ownerId = order.masterId,
+            finishOrderTime = order.session.finishTime
         )
         sessionsMessageInteractor.sendUserReviewMessage(myMessageUserReview)
         sessionsMessageInteractor.sendUserReviewMessage(companionMessageUserReview)
@@ -103,20 +113,30 @@ class SessionsPresenter(
         val myMessageServiceReview = Message(
             id = serviceReviewId,
             type = Message.SERVICE_REVIEW_MESSAGE_STATUS,
-            message = "Вам была оказана услуга ${order.serviceName}. Оставьте отзыв об услуге.",
+            message = "Вам была оказана услуга ${order.serviceName}. Вы сможете оставить отзыв об услуге после ${
+                WorkWithTimeApi.getDateInFormatYMDHMS(
+                    Date(order.session.finishTime)
+                )
+            }.",
             dialogId = order.clientId,
             userId = order.masterId,
             orderId = order.id,
-            ownerId = order.clientId
+            ownerId = order.clientId,
+            finishOrderTime = order.session.finishTime
         )
         val companionMessageServiceReview = Message(
             id = serviceReviewId,
             type = Message.SERVICE_REVIEW_MESSAGE_STATUS,
-            message = "Вам была оказана услуга ${order.serviceName}. Оставьте отзыв об услуге.",
+            message = "Вам была оказана услуга ${order.serviceName}. Вы сможете оставить отзыв об услуге после ${
+                WorkWithTimeApi.getDateInFormatYMDHMS(
+                    Date(order.session.finishTime)
+                )
+            }.",
             dialogId = order.masterId,
             userId = order.clientId,
             orderId = order.id,
-            ownerId = order.clientId
+            ownerId = order.clientId,
+            finishOrderTime = order.session.finishTime
         )
         sessionsMessageInteractor.sendServiceReviewMessage(myMessageServiceReview)
         sessionsMessageInteractor.sendServiceReviewMessage(companionMessageServiceReview)
@@ -138,7 +158,8 @@ class SessionsPresenter(
             dialogId = order.clientId,
             userId = order.masterId,
             orderId = order.id,
-            ownerId = order.masterId
+            ownerId = order.masterId,
+            finishOrderTime = order.session.finishTime
         )
         val companionMessageCancel = Message(
             id = cancelMessageId,
@@ -155,7 +176,8 @@ class SessionsPresenter(
             dialogId = order.masterId,
             userId = order.clientId,
             orderId = order.id,
-            ownerId = order.masterId
+            ownerId = order.masterId,
+            finishOrderTime = order.session.finishTime
         )
         sessionsMessageInteractor.sendServiceReviewMessage(myMessageCancel)
         sessionsMessageInteractor.sendServiceReviewMessage(companionMessageCancel)
