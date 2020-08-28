@@ -1,11 +1,15 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.UserCommentAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.user_comments.UserCommentsUserCommentInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.user_comments.UserCommentsUserInteractor
@@ -18,6 +22,8 @@ import kotlinx.android.synthetic.main.activity_comments.*
 import javax.inject.Inject
 
 class UserCommentsActivity : BaseActivity(), UserCommentsView {
+    private var loadingLimit = 15
+    private var isScrolling = false
 
     @Inject
     lateinit var userCommentAdapter: UserCommentAdapter
@@ -48,12 +54,37 @@ class UserCommentsActivity : BaseActivity(), UserCommentsView {
         initBottomPanel()
         hideEmptyScreen()
 
-        userCommentsPresenter.createUserCommentsScreen()
+        userCommentsPresenter.createUserCommentsScreen(loadingLimit)
     }
 
     fun init() {
-        activity_usercomments_rv_results.layoutManager = LinearLayoutManager(this)
+        val linearLayoutManager = LinearLayoutManager(this)
+        activity_usercomments_rv_results.layoutManager = linearLayoutManager
         activity_usercomments_rv_results.adapter = userCommentAdapter
+
+        activity_usercomments_rv_results.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (isScrolling && dy < 0 && linearLayoutManager.findFirstVisibleItemPosition() <= 3) {
+                    Log.d(Tag.TEST_TAG, "Запрос на докачку сообщений")
+                    updateData()
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    isScrolling = true
+                }
+            }
+        })
+    }
+
+    fun updateData() {
+        isScrolling = false
+        loadingLimit += 15
+        userCommentsPresenter.createUserCommentsScreen(loadingLimit)
     }
 
     override fun showLoading() {

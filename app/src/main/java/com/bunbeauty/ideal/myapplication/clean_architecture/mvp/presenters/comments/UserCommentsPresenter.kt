@@ -16,9 +16,10 @@ class UserCommentsPresenter(
 ) :
     MvpPresenter<UserCommentsView>(), UserCommentsPresenterCallback {
 
-    fun createUserCommentsScreen() {
+    fun createUserCommentsScreen(loadingLimit: Int) {
         userCommentsUserCommentInteractor.getUserComments(
             userCommentsUserInteractor.getCurrentUser(),
+            loadingLimit,
             this
         )
     }

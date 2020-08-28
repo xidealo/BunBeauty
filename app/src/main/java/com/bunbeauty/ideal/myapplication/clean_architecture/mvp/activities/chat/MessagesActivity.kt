@@ -85,11 +85,11 @@ class MessagesActivity : BaseActivity(), MessagesView {
         }
         hideEmptyScreen()
         val linearLayoutManager = LinearLayoutManager(this)
-        activity_messages_tv_messages.layoutManager = linearLayoutManager
-        activity_messages_tv_messages.adapter = messageAdapter
+        activity_messages_rv_messages.layoutManager = linearLayoutManager
+        activity_messages_rv_messages.adapter = messageAdapter
         messageAdapter.setData(messagePresenter)
 
-        activity_messages_tv_messages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        activity_messages_rv_messages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (isScrolling && dy < 0 && linearLayoutManager.findFirstVisibleItemPosition() <= 3) {
@@ -151,7 +151,7 @@ class MessagesActivity : BaseActivity(), MessagesView {
     }
 
     override fun moveToStart() {
-        activity_messages_tv_messages.smoothScrollToPosition(messageAdapter.itemCount)
+        activity_messages_rv_messages.smoothScrollToPosition(messageAdapter.itemCount)
     }
 
     override fun hideLoading() {

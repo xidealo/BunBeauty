@@ -19,10 +19,11 @@ class UserCommentsUserCommentInteractor(private val userCommentRepository: IUser
 
     override fun getUserComments(
         user: User,
+        loadingLimit: Int,
         userCommentsPresenterCallback: UserCommentsPresenterCallback
     ) {
         this.userCommentsPresenterCallback = userCommentsPresenterCallback
-        userCommentRepository.getByUserId(user.id, this)
+        userCommentRepository.getByUserId(user.id, loadingLimit, this)
     }
 
     override fun returnList(objects: List<UserComment>) {

@@ -22,11 +22,12 @@ class UserCommentFirebase {
         myRef.updateChildren(items)
     }
 
-    fun getByUserId(userId: String, userCommentsCallback: UserCommentsCallback) {
+    fun getByUserId(userId: String, loadingLimit:Int, userCommentsCallback: UserCommentsCallback) {
 
         val servicesRef = FirebaseDatabase.getInstance()
             .getReference(UserComment.COMMENTS)
             .child(userId)
+            .limitToLast(loadingLimit)
 
         servicesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(userCommentsSnapshot: DataSnapshot) {
