@@ -40,9 +40,8 @@ public class NotificationCancel extends NotificationConstructor {
         PendingIntent pIntent = PendingIntent.getActivity(context, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT );
 
-        //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.bun_beauty)
+                .setSmallIcon(R.drawable.bun_beauty_icon)
                 .setContentIntent(pIntent)
                 .setContentTitle("Отказ в предоставлении услуги")
                 .setContentText("Мастер " + workerName

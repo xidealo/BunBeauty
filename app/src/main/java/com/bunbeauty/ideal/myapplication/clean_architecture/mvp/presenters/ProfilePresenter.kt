@@ -69,8 +69,8 @@ class ProfilePresenter(
         profileSubscriberInteractor.checkSubscribed(User.getMyId(), user, this)
     }
 
-    fun updateServices() {
-        profileServiceInteractor.getServicesByUserId(profileUserInteractor.owner.id, this)
+    fun checkProfileToUpdateServices() {
+        profileUserInteractor.checkProfileToUpdateServices(this)
     }
 
     override fun getServiceList(userId: String) {
@@ -82,7 +82,7 @@ class ProfilePresenter(
         viewState.hideProgress()
     }
 
-    fun updateOrders() {
+    fun checkProfileToUpdateOrders() {
         profileUserInteractor.checkProfileToUpdateOrders(this)
     }
 
@@ -99,10 +99,10 @@ class ProfilePresenter(
         profileUserInteractor.updateUserFromEditUser(user, this)
     }
 
-    fun getCacheOwner() = profileUserInteractor.owner
+    fun getCacheOwner() = profileUserInteractor.owner!!
 
     fun getDialog() {
-        profileDialogInteractor.getDialog(cacheUser, profileUserInteractor.owner, this)
+        profileDialogInteractor.getDialog(cacheUser, profileUserInteractor.owner!!, this)
     }
 
     override fun goToMessages(myDialog: Dialog, companionDialog: Dialog) {
@@ -111,14 +111,14 @@ class ProfilePresenter(
 
     fun subscribe() {
         val subscriber = Subscriber()
-        subscriber.userId = profileUserInteractor.owner.id
+        subscriber.userId = profileUserInteractor.owner!!.id
         subscriber.subscriberId = User.getMyId()
         profileSubscriberInteractor.checkSubscriber(subscriber, this)
     }
 
     override fun updateCountOfSubscribers(subscriber: Int) {
         profileUserInteractor.updateCountOfSubscribers(
-            profileUserInteractor.owner,
+            profileUserInteractor.owner!!,
             subscriber,
             this
         )
@@ -140,7 +140,7 @@ class ProfilePresenter(
     }
 
     fun goToSubscriptions() {
-        viewState.goToSubscriptions(profileUserInteractor.owner)
+        viewState.goToSubscriptions(profileUserInteractor.owner!!)
     }
 
     override fun showSubscribed() {

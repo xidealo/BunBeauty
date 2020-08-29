@@ -29,7 +29,7 @@ public class NotificationReviewForService extends NotificationConstructor {
 
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.bun_beauty)
+                .setSmallIcon(R.drawable.bun_beauty_icon)
                 .setContentTitle("Возможность оценить")
                 .setContentText("У вас есть возможность оценить услугу \"" + serviceName + "\"")
                 .setStyle(new NotificationCompat.BigTextStyle()

@@ -78,10 +78,6 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
         premiumFragment =
             supportFragmentManager.findFragmentById(R.id.premiumBlockService) as PremiumFragment
 
-        scheduleServiceBtn.setOnClickListener {
-            goToSessions()
-        }
-
         photosServiceRecycleView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         photosServiceRecycleView.adapter = photoAdapter
@@ -171,6 +167,17 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
         )
     }
 
+    override fun showSessionButton() {
+        scheduleServiceBtn.visibility = View.VISIBLE
+        scheduleServiceBtn.setOnClickListener {
+            goToSessions()
+        }
+    }
+
+    override fun hideSessionButton() {
+        scheduleServiceBtn.visibility = View.GONE
+    }
+
     override fun actionClick() {
         servicePresenter.iconClick()
     }
@@ -230,7 +237,7 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
 
     private fun goToSessions() {
         val intent = Intent(this, SessionsActivity::class.java).apply {
-            this.putExtra(Service.SERVICE, servicePresenter.getGottenService())
+            putExtra(Service.SERVICE, servicePresenter.getGottenService())
         }
         startActivity(intent)
         overridePendingTransition(0, 0)

@@ -4,5 +4,5 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.callback.profile.Pro
 
 interface IProfileServiceInteractor {
 
-    fun getServicesByUserId(userId: String, profilePresenterCallback: ProfilePresenterCallback)
+    fun getServicesByUserId(userId: String?, profilePresenterCallback: ProfilePresenterCallback)
 }

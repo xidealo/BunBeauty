@@ -55,6 +55,14 @@ class ServicePresenter(
         serviceInteractor.updateService(service, this)
     }
 
+    override fun showSessionButton() {
+        viewState.showSessionButton()
+    }
+
+    override fun hideSessionButton() {
+        viewState.hideSessionButton()
+    }
+
     override fun setTitle(title: String) {
         viewState.setTopPanelTitle(title)
     }

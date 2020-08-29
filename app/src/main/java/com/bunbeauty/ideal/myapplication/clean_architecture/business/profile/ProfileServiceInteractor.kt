@@ -12,9 +12,13 @@ class ProfileServiceInteractor(private val serviceRepository: IServiceRepository
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
 
     override fun getServicesByUserId(
-        userId: String,
+        userId: String?,
         profilePresenterCallback: ProfilePresenterCallback
     ) {
+        if (userId == null) {
+            return
+        }
+
         this.profilePresenterCallback = profilePresenterCallback
         serviceRepository.getByUserId(userId, this, true)
     }

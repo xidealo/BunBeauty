@@ -16,7 +16,7 @@ class ProfileUserInteractor(
     private val intent: Intent
 ) : BaseRepository(), IProfileUserInteractor, UserCallback, UpdateUsersCallback {
 
-    override lateinit var owner: User
+    override var owner: User? = null
 
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
 
@@ -55,6 +55,8 @@ class ProfileUserInteractor(
             cacheUser = user
             profilePresenterCallback.showMyProfile(user)
             profilePresenterCallback.showUpdatedBottomPanel(R.id.navigation_profile)
+            profilePresenterCallback.getOrderList(user.id)
+            profilePresenterCallback.getServiceList(user.id)
         } else {
             profilePresenterCallback.showAlienProfile(user)
             profilePresenterCallback.showUpdatedBottomPanel()
@@ -63,9 +65,21 @@ class ProfileUserInteractor(
 
     override fun isMyProfile(ownerId: String, myId: String) = ownerId == myId
 
-   override fun checkProfileToUpdateOrders(profilePresenterCallback: ProfilePresenterCallback) {
-        if (isMyProfile(owner.id, User.getMyId())) {
-            profilePresenterCallback.getOrderList(owner.id)
+    override fun checkProfileToUpdateServices(profilePresenterCallback: ProfilePresenterCallback) {
+        if (owner == null) {
+            return
+        }
+
+        profilePresenterCallback.getServiceList(owner!!.id)
+    }
+
+    override fun checkProfileToUpdateOrders(profilePresenterCallback: ProfilePresenterCallback) {
+        if (owner == null) {
+            return
+        }
+
+        if (isMyProfile(owner!!.id, User.getMyId())) {
+            profilePresenterCallback.getOrderList(owner!!.id)
         }
     }
 

@@ -27,8 +27,8 @@ class ProfileOrderElement(
 
     private fun goToService(order: Order, context: Context) {
         val intent = Intent(context, ServiceActivity::class.java).apply {
-            this.putExtra(Order.SERVICE_ID, order.serviceId)
-            this.putExtra(Order.MASTER_ID, order.masterId)
+            putExtra(Order.SERVICE_ID, order.serviceId)
+            putExtra(Order.MASTER_ID, order.masterId)
         }
         context.startActivity(intent)
         (context as Activity).overridePendingTransition(0, 0)

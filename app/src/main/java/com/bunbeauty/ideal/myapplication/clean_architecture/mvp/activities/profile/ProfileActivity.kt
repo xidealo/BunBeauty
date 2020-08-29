@@ -93,8 +93,8 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
 
     override fun onStart() {
         super.onStart()
-        profilePresenter.updateServices()
-        profilePresenter.updateOrders()
+        profilePresenter.checkProfileToUpdateServices()
+        profilePresenter.checkProfileToUpdateOrders()
     }
 
     private fun init() {
