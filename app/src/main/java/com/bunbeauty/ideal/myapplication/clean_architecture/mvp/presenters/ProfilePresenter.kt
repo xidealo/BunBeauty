@@ -3,6 +3,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.profile.ProfileUserInteractor.Companion.cacheUser
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.profile.iProfile.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.profile.ProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.*
@@ -30,10 +31,6 @@ class ProfilePresenter(
         viewState.hideDialogsButton()
 
         profileUserInteractor.getProfileOwner(this)
-    }
-
-    fun updateMyProfileServices() {
-        profileUserInteractor.updateMyProfileServices(this)
     }
 
     override fun returnProfileOwner(user: User) {
@@ -72,36 +69,56 @@ class ProfilePresenter(
         profileSubscriberInteractor.checkSubscribed(User.getMyId(), user, this)
     }
 
+    fun updateServices() {
+        profileServiceInteractor.getServicesByUserId(profileUserInteractor.owner.id, this)
+    }
+
+    override fun getServiceList(userId: String) {
+        profileServiceInteractor.getServicesByUserId(userId, this)
+    }
+
+    override fun showServiceList(serviceList: List<Service>) {
+        viewState.showServiceList(serviceList)
+        viewState.hideProgress()
+    }
+
+    fun updateOrders() {
+        profileUserInteractor.checkProfileToUpdateOrders(this)
+    }
+
+    override fun getOrderList(userId: String) {
+        profileOrderInteractor.getOrderListByUserId(userId, this)
+    }
+
+    override fun showOrderList(orderList: List<Order>) {
+        viewState.showOrderList(orderList)
+        viewState.hideProgress()
+    }
+
     fun updateUser(user: User) {
         profileUserInteractor.updateUserFromEditUser(user, this)
     }
 
-    fun getCacheOwner() = profileUserInteractor.getCacheOwner()
+    fun getCacheOwner() = profileUserInteractor.owner
 
-    fun getCacheUser() = profileUserInteractor.getCacheUser()
-
-    fun goToDialog() {
-        profileDialogInteractor.goToDialog(getCacheUser(), getCacheOwner(), this)
+    fun getDialog() {
+        profileDialogInteractor.getDialog(cacheUser, profileUserInteractor.owner, this)
     }
 
-    override fun goToEditProfile(user: User) {
-        //viewState.goToEditProfile(user)
-    }
-
-    override fun goToDialog(myDialog: Dialog, companionDialog: Dialog) {
+    override fun goToMessages(myDialog: Dialog, companionDialog: Dialog) {
         viewState.goToMessages(myDialog, companionDialog)
     }
 
     fun subscribe() {
         val subscriber = Subscriber()
-        subscriber.userId = profileUserInteractor.getCacheOwner().id
+        subscriber.userId = profileUserInteractor.owner.id
         subscriber.subscriberId = User.getMyId()
         profileSubscriberInteractor.checkSubscriber(subscriber, this)
     }
 
     override fun updateCountOfSubscribers(subscriber: Int) {
         profileUserInteractor.updateCountOfSubscribers(
-            profileUserInteractor.getCacheOwner(),
+            profileUserInteractor.owner,
             subscriber,
             this
         )
@@ -123,25 +140,7 @@ class ProfilePresenter(
     }
 
     fun goToSubscriptions() {
-        viewState.goToSubscriptions(profileUserInteractor.getCacheOwner())
-    }
-
-    override fun getServiceList(userId: String) {
-        profileServiceInteractor.getServicesByUserId(userId, this)
-    }
-
-    override fun showServiceList(serviceList: List<Service>) {
-        viewState.showServiceList(serviceList)
-        viewState.hideProgress()
-    }
-
-    override fun getOrderList(userId: String) {
-        profileOrderInteractor.getOrderListByUserId(userId, this)
-    }
-
-    override fun showOrderList(orderList: List<Order>) {
-        viewState.showOrderList(orderList)
-        viewState.hideProgress()
+        viewState.goToSubscriptions(profileUserInteractor.owner)
     }
 
     override fun showSubscribed() {
@@ -156,10 +155,6 @@ class ProfilePresenter(
 
     override fun showCountOfSubscriber(count: Long) {
         viewState.showCountOfSubscriber(count)
-    }
-
-    fun updateBottomPanel() {
-        profileUserInteractor.updateBottomPanel(this)
     }
 
     override fun showUpdatedBottomPanel(selectedItemId: Int) {

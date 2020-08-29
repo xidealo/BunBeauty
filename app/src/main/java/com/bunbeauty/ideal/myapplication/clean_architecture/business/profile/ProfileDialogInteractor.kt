@@ -5,7 +5,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.callback.profile.Pro
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.dialog.DialogCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.dialog.DialogChangedCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.dialog.DialogsCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.dialog.InsertDialogCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IDialogRepository
@@ -14,25 +13,25 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
     IProfileDialogInteractor, DialogCallback, DialogChangedCallback {
 
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
-    private lateinit var ownerProfile: User
+    private lateinit var profileOwner: User
     private lateinit var user: User
 
-    override fun goToDialog(
+    override fun getDialog(
         user: User,
         profileOwner: User,
         profilePresenterCallback: ProfilePresenterCallback
     ) {
         this.profilePresenterCallback = profilePresenterCallback
-        this.ownerProfile = profileOwner
+        this.profileOwner = profileOwner
         this.user = user
 
         dialogRepository.getByUserId(user.id, this, this, this)
     }
 
     override fun returnList(objects: List<Dialog>) {
-        val myDialog = createMyDialog(user, ownerProfile)
-        val companionDialog = createCompanionDialog(user, ownerProfile)
-        profilePresenterCallback.goToDialog(myDialog, companionDialog)
+        val myDialog = createMyDialog(user, profileOwner)
+        val companionDialog = createCompanionDialog(user, profileOwner)
+        profilePresenterCallback.goToMessages(myDialog, companionDialog)
     }
 
     private fun createMyDialog(user: User, companionUser: User): Dialog {

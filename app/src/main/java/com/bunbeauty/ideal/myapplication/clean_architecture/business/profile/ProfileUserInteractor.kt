@@ -9,32 +9,28 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.BaseRepository
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IUserRepository
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.RegistrationActivity
 import com.google.firebase.iid.FirebaseInstanceId
-
 
 class ProfileUserInteractor(
     private val userRepository: IUserRepository,
     private val intent: Intent
 ) : BaseRepository(), IProfileUserInteractor, UserCallback, UpdateUsersCallback {
 
+    override lateinit var owner: User
+
     private lateinit var profilePresenterCallback: ProfilePresenterCallback
 
-    private var cacheOwner: User? = null
-
-    override fun getCacheOwner(): User = cacheOwner!!
-
-    override fun getCacheUser(): User = cacheUser
+    override fun initFCM() {
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { instanceIdResult ->
+            userRepository.setToken(instanceIdResult.token)
+        }
+    }
 
     override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
         this.profilePresenterCallback = profilePresenterCallback
 
-        val user: User? = if (intent.hasExtra(User.USER)) {
-            intent.getSerializableExtra(User.USER) as User
-        } else {
-            null
-        }
-        if (user != null && user.id.isNotEmpty()) {
+        if (intent.hasExtra(User.USER)) {
+            val user = intent.getSerializableExtra(User.USER) as User
             returnGottenObject(user)
         } else {
             userRepository.getById(
@@ -48,52 +44,36 @@ class ProfileUserInteractor(
     override fun returnGottenObject(user: User?) {
         if (user == null) return
 
-        cacheOwner = user
+        owner = user
         profilePresenterCallback.returnProfileOwner(user)
         profilePresenterCallback.showCountOfSubscriber(user.subscribersCount)
         whoseProfile(user, profilePresenterCallback)
     }
 
-    private fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
+    override fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         if (isMyProfile(user.id, User.getMyId())) {
+            cacheUser = user
             profilePresenterCallback.showMyProfile(user)
-            cacheUser = cacheOwner!!
-            profilePresenterCallback.getOrderList(user.id)
+            profilePresenterCallback.showUpdatedBottomPanel(R.id.navigation_profile)
         } else {
             profilePresenterCallback.showAlienProfile(user)
+            profilePresenterCallback.showUpdatedBottomPanel()
         }
     }
 
     override fun isMyProfile(ownerId: String, myId: String) = ownerId == myId
 
+   override fun checkProfileToUpdateOrders(profilePresenterCallback: ProfilePresenterCallback) {
+        if (isMyProfile(owner.id, User.getMyId())) {
+            profilePresenterCallback.getOrderList(owner.id)
+        }
+    }
+
     override fun updateUserFromEditUser(
         user: User,
         profilePresenterCallback: ProfilePresenterCallback
     ) {
-        cacheOwner = user
-        cacheUser = user
-
-        profilePresenterCallback.returnProfileOwner(user)
-        whoseProfile(user, profilePresenterCallback)
-    }
-
-    override fun initFCM() {
-        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { instanceIdResult ->
-            userRepository.setToken(instanceIdResult.token)
-        }
-    }
-
-    private fun isFromRegistration() =
-        (intent.getStringExtra(RegistrationActivity.REGISTRATION_ACTIVITY) ?: "").isNotEmpty()
-
-    override fun updateMyProfileServices(
-        profilePresenterCallback: ProfilePresenterCallback
-    ) {
-        if (cacheOwner != null) {
-            if (isMyProfile(cacheOwner!!.id, User.getMyId())) {
-                profilePresenterCallback.getServiceList(cacheOwner!!.id)
-            }
-        }
+        returnGottenObject(user)
     }
 
     override fun updateCountOfSubscribers(
@@ -105,31 +85,12 @@ class ProfileUserInteractor(
         userRepository.update(user, this)
     }
 
-    override fun returnUpdatedCallback(obj: User) {
-        cacheOwner = obj
-        profilePresenterCallback.showCountOfSubscriber(obj.subscribersCount)
-    }
-
-    override fun checkIconClick(profilePresenterCallback: ProfilePresenterCallback) {
-        if (isMyProfile(cacheOwner!!.id, User.getMyId())) {
-            profilePresenterCallback.goToEditProfile(cacheOwner!!)
-        }
-    }
-
-    override fun updateBottomPanel(profilePresenterCallback: ProfilePresenterCallback) {
-        if (cacheOwner == null) {
-            return
-        }
-
-        if (isMyProfile(cacheOwner!!.id, User.getMyId())) {
-            profilePresenterCallback.showUpdatedBottomPanel(R.id.navigation_profile)
-        } else {
-            profilePresenterCallback.showUpdatedBottomPanel()
-        }
+    override fun returnUpdatedCallback(user: User) {
+        owner = user
+        profilePresenterCallback.showCountOfSubscriber(user.subscribersCount)
     }
 
     companion object {
         var cacheUser = User()
     }
-
 }
