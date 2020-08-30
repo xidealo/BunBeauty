@@ -35,8 +35,8 @@ class ServicePresenter(
         viewState.showPhotos(photoList)
     }
 
-    override fun getUser(userId: String) {
-        serviceUserInteractor.getUser(userId, this)
+    override fun checkMaster(userId: String) {
+        serviceUserInteractor.checkMaster(userId, this)
     }
 
     override fun createOwnServiceTopPanel() {

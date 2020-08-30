@@ -34,7 +34,7 @@ class ServiceInteractor(
 
         servicePresenterCallback.showService(service)
         servicePresenterCallback.getServicePhotos(service)
-        servicePresenterCallback.getUser(service.userId)
+        servicePresenterCallback.checkMaster(service.userId)
     }
 
     override fun updateService(

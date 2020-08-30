@@ -5,6 +5,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 interface SessionsPresenterCallback {
     fun showDays(days: Set<WorkingDay>)
+    fun showNoAvailableSessions()
     fun clearTime(time: String)
     fun selectTime(selectedTime: String)
     fun disableMakeAppointmentButton()

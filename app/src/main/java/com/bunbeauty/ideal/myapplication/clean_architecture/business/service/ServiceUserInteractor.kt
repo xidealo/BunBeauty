@@ -15,7 +15,7 @@ class ServiceUserInteractor(
     private lateinit var servicePresenterCallback: ServicePresenterCallback
     private lateinit var gottenUser: User
 
-    override fun getUser(userId: String, servicePresenterCallback: ServicePresenterCallback) {
+    override fun checkMaster(userId: String, servicePresenterCallback: ServicePresenterCallback) {
         this.servicePresenterCallback = servicePresenterCallback
 
         if (intent.hasExtra(User.USER)) {

@@ -6,6 +6,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 interface SessionsView: MvpView {
     fun showDays(days: List<WorkingDay>)
+    fun showNoAvailableSessions()
     fun clearSessionsLayout()
     fun showTime(sessions: List<Session>)
     fun clearTime(time: String)
@@ -14,4 +15,6 @@ interface SessionsView: MvpView {
     fun disableMakeAppointmentButton()
     fun showMessage(message: String)
     fun goBack()
+    fun showLoading()
+    fun hideLoading()
 }

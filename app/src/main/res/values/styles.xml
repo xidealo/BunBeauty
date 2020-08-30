@@ -116,7 +116,7 @@
     <style name="materialLoginSpinnerLayout" parent="materialSpinnerLayout">
         <item name="startIconTint">@color/white50</item>
         <item name="boxBackgroundColor">@color/mainBlue</item>
-        <item name="boxStrokeColor">@color/white50</item>
+        <item name="boxStrokeColor">@color/selector_white</item>
         <item name="endIconTint">@color/white</item>
     </style>
 

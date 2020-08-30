@@ -115,7 +115,6 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
     override fun hideLoading() {
         loadingServiceProgressBar.visibility = View.GONE
         mainViewServiceScroll.visibility = View.VISIBLE
-        scheduleServiceBtn.visibility = View.VISIBLE
     }
 
     override fun showRating(rating: Float, countOfRates: Long) {

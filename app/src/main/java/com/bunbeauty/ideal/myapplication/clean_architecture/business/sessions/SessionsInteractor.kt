@@ -32,7 +32,13 @@ class SessionsInteractor(
     override fun returnGottenObject(schedule: ScheduleWithWorkingTime?) {
         schedule!!.workingTimeList.sortBy { it.time }
         this.schedule = schedule
-        sessionsPresenterCallback.showDays(schedule.getAvailableDays(getService().duration))
+
+        val availableDaySet = schedule.getAvailableDays(getService().duration)
+        if (availableDaySet.isEmpty()) {
+            sessionsPresenterCallback.showNoAvailableSessions()
+        } else {
+            sessionsPresenterCallback.showDays(availableDaySet)
+        }
     }
 
     fun getSessions(workingDay: WorkingDay): List<Session> {

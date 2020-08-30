@@ -14,7 +14,7 @@ interface ServicePresenterCallback {
     fun goToProfile(user: User)
     fun getServicePhotos(service: Service)
     fun setTitle(title: String)
-    fun getUser(userId: String)
+    fun checkMaster(userId: String)
     fun hideSessionButton()
     fun showSessionButton()
 }

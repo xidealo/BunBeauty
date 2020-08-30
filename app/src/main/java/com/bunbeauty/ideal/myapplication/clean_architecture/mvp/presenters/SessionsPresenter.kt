@@ -21,11 +21,18 @@ class SessionsPresenter(
 ) : MvpPresenter<SessionsView>(), SessionsPresenterCallback {
 
     fun getSchedule() {
+        viewState.showLoading()
         sessionsInteractor.getSchedule(this)
     }
 
     override fun showDays(days: Set<WorkingDay>) {
+        viewState.hideLoading()
         viewState.showDays(days.toList())
+    }
+
+    override fun showNoAvailableSessions() {
+        viewState.hideLoading()
+        viewState.showNoAvailableSessions()
     }
 
     fun getSessions(day: WorkingDay) {

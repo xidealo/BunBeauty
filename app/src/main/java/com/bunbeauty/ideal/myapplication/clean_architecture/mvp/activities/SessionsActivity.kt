@@ -69,14 +69,21 @@ class SessionsActivity : BaseActivity(), SessionsView{
     }
 
     private fun init() {
-        makeAppointmentSessionBtn.setOnClickListener {
+        activity_session_btn_make_appointment.setOnClickListener {
             sessionsPresenter.makeAppointment()
         }
     }
 
     override fun showDays(days: List<WorkingDay>) {
-        daysSessionsRecyclerView.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
-        daysSessionsRecyclerView.adapter = DayAdapter(days, sessionsPresenter)
+        activity_session_sv.visibility = View.VISIBLE
+        activity_session_btn_make_appointment.visibility = View.VISIBLE
+
+        activity_session_rv_days.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
+        activity_session_rv_days.adapter = DayAdapter(days, sessionsPresenter)
+    }
+
+    override fun showNoAvailableSessions() {
+        activity_session_tv_no_available_sessions.visibility = View.VISIBLE
     }
 
     override fun showTime(sessions: List<Session>) {
@@ -85,14 +92,14 @@ class SessionsActivity : BaseActivity(), SessionsView{
         val width = resources.getDimensionPixelSize(R.dimen.sessions_button_width)
         val height = resources.getDimensionPixelSize(R.dimen.sessions_button_height)
 
-        timeSessionGrid.columnCount = getColumnCount(width)
+        activity_session_gl_sessions.columnCount = getColumnCount(width)
 
         for (session in sessions) {
             val text = session.getStringStartTime()
             val button = getConfiguredButton(width, height, text)
 
             timeButtonList.add(button)
-            addViewToContainer(button, timeSessionGrid)
+            addViewToContainer(button, activity_session_gl_sessions)
         }
     }
 
@@ -153,7 +160,7 @@ class SessionsActivity : BaseActivity(), SessionsView{
     }
 
     override fun showMessage(message: String) {
-        Snackbar.make(sessionsMainLayout, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(activity_session_cl_main, message, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
@@ -163,14 +170,25 @@ class SessionsActivity : BaseActivity(), SessionsView{
     }
 
     override fun clearSessionsLayout() {
-        timeSessionGrid.removeAllViews()
+        activity_session_gl_sessions.removeAllViews()
     }
 
     override fun enableMakeAppointmentButton() {
-        makeAppointmentSessionBtn.isEnabled = true
+        activity_session_btn_make_appointment.isEnabled = true
     }
 
     override fun disableMakeAppointmentButton() {
-        makeAppointmentSessionBtn.isEnabled = false
+        activity_session_btn_make_appointment.isEnabled = false
+    }
+
+    override fun showLoading() {
+        activity_session_pb.visibility = View.VISIBLE
+        activity_session_sv.visibility = View.GONE
+        activity_session_btn_make_appointment.visibility = View.GONE
+        activity_session_tv_no_available_sessions.visibility = View.GONE
+    }
+
+    override fun hideLoading() {
+        activity_session_pb.visibility = View.GONE
     }
 }
