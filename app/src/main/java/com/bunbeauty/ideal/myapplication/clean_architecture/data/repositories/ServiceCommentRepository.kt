@@ -54,10 +54,11 @@ class ServiceCommentRepository(
     override fun getByServiceId(
         userId: String,
         serviceId: String,
+        loadingLimit: Int,
         serviceCommentsCallback: ServiceCommentsCallback
     ) {
         launch {
-            serviceCommentFirebase.getByServiceId(userId, serviceId, serviceCommentsCallback)
+            serviceCommentFirebase.getByServiceId(userId, serviceId, loadingLimit, serviceCommentsCallback)
         }
     }
 }

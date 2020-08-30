@@ -6,7 +6,12 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 interface IUserCommentsUserCommentInteractor {
     fun getUserCommentsLink(): List<UserComment>
-    fun getUserComments(user: User, userCommentsPresenterCallback: UserCommentsPresenterCallback)
+    fun getUserComments(
+        user: User,
+        loadingLimit: Int,
+        userCommentsPresenterCallback: UserCommentsPresenterCallback
+    )
+
     fun setUserOnUserComment(
         user: User,
         userCommentsPresenterCallback: UserCommentsPresenterCallback

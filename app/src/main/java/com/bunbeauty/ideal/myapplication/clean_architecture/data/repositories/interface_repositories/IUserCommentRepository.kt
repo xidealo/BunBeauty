@@ -11,5 +11,5 @@ interface IUserCommentRepository {
     fun delete(userComment: UserComment, deleteUserCommentCallback: DeleteUserCommentCallback)
     fun update(userComment: UserComment, updateUserCommentCallback: UpdateUserCommentCallback)
     fun get(userCommentsCallback: UserCommentsCallback)
-    fun getByUserId(userId: String, userCommentsCallback: UserCommentsCallback)
+    fun getByUserId(userId: String, loadingLimit:Int, userCommentsCallback: UserCommentsCallback)
 }

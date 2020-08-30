@@ -45,9 +45,13 @@ class UserCommentRepository(private val userCommentFirebase: UserCommentFirebase
 
     }
 
-    override fun getByUserId(userId: String, userCommentsCallback: UserCommentsCallback) {
+    override fun getByUserId(
+        userId: String,
+        loadingLimit: Int,
+        userCommentsCallback: UserCommentsCallback
+    ) {
         launch {
-            userCommentFirebase.getByUserId(userId, userCommentsCallback)
+            userCommentFirebase.getByUserId(userId, loadingLimit, userCommentsCallback)
         }
     }
 
