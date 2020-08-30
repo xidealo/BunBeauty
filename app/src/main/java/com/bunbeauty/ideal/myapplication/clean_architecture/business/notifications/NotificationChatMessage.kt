@@ -35,7 +35,7 @@ class NotificationChatMessage(
                 context,
                 CHANNEL_ID
             )
-                .setSmallIcon(R.drawable.bun_beauty)
+                .setSmallIcon(R.drawable.bun_beauty_icon)
                 .setLargeIcon(getBitmapFromURL(photoLink))
                 .setContentIntent(pIntent)
                 .setContentTitle("Сообщение от " + WorkWithStringsApi.doubleCapitalSymbols(name))

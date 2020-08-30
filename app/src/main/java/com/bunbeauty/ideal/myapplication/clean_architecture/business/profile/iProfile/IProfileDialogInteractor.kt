@@ -5,7 +5,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 interface IProfileDialogInteractor {
 
-    fun goToDialog(
+    fun getDialog(
         user: User,
         profileOwner: User,
         profilePresenterCallback: ProfilePresenterCallback

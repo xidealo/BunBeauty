@@ -23,7 +23,7 @@ class NotificationReviewForUser(
                 context,
                 CHANNEL_ID
             )
-                .setSmallIcon(R.drawable.bun_beauty)
+                .setSmallIcon(R.drawable.bun_beauty_icon)
                 .setContentTitle("Возможность оценить")
                 .setContentText("У вас есть возможность оценить пользователя $userName")
                 .setStyle(

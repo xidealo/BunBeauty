@@ -19,4 +19,6 @@ interface ServiceView: MvpView {
     fun goToProfile(user: User)
     fun showMessage(message: String)
     fun setTopPanelTitle(title: String)
+    fun showSessionButton()
+    fun hideSessionButton()
 }

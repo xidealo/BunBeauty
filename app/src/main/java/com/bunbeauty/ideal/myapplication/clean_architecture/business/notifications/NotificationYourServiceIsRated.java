@@ -35,7 +35,7 @@ public class NotificationYourServiceIsRated extends NotificationConstructor {
 
         //создание notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.bun_beauty)
+                .setSmallIcon(R.drawable.bun_beauty_icon)
                 .setContentIntent(pIntent)
                 .setContentTitle("Новая оценка!")
                 .setContentText("Клиент " + name + " оценил ваш сервис \"" + serviceName + "\"")

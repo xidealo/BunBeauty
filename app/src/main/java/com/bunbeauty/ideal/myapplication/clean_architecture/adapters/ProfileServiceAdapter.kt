@@ -14,12 +14,14 @@ class ProfileServiceAdapter :
 
     private val serviceList = mutableListOf<Service>()
 
-    fun addItem(service: Service) {
-        val foundService = serviceList.find { it.id == service.id }
-        if (foundService == null) {
-            serviceList.add(service)
-            serviceList.sortByDescending { it.creationDate }
-            notifyItemInserted(serviceList.size)
+    fun updateItems(serviceList: List<Service>) {
+        val newServiceList = serviceList.filter { service ->
+            !this.serviceList.any { it.id == service.id }
+        }
+        for (newService in newServiceList) {
+            this.serviceList.add(newService)
+            this.serviceList.sortByDescending { it.creationDate }
+            notifyItemInserted(0)
         }
     }
 

@@ -204,14 +204,13 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/scheduleServiceBtn"
-                style="@style/mainButton"
+                android:visibility="gone"
+                style="@style/smallButton"
                 android:layout_gravity="center"
                 android:text="Расписание" />
         </LinearLayout>
     </ScrollView>
 
-
     <include layout="@layout/part_bottom_panel" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

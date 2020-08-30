@@ -35,7 +35,7 @@ class NotificationSubscribers(
                 context,
                 CHANNEL_ID
             )
-                .setSmallIcon(R.drawable.bun_beauty)
+                .setSmallIcon(R.drawable.bun_beauty_icon)
                 .setContentIntent(pIntent)
                 .setLargeIcon(getBitmapFromURL(photoLink))
                 .setContentTitle("Новый подписчик!")

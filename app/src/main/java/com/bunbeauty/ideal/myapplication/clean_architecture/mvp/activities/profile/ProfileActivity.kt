@@ -93,12 +93,8 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
 
     override fun onStart() {
         super.onStart()
-        profilePresenter.updateMyProfileServices()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        profilePresenter.updateBottomPanel()
+        profilePresenter.checkProfileToUpdateServices()
+        profilePresenter.checkProfileToUpdateOrders()
     }
 
     private fun init() {
@@ -109,7 +105,7 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
             profilePresenter.subscribe()
         }
         dialogsProfileBtn.setOnClickListener {
-            profilePresenter.goToDialog()
+            profilePresenter.getDialog()
         }
         subscriptionsProfileBtn.setOnClickListener {
             profilePresenter.goToSubscriptions()
@@ -189,11 +185,11 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
     }
 
     override fun showTopPanelWithEditIcon() {
-        initTopPanel(ButtonTask.EDIT)
+        initTopPanel(buttonTask = ButtonTask.EDIT)
     }
 
     override fun showEmptyTopPanel() {
-        initTopPanel(ButtonTask.NONE)
+        initTopPanel()
     }
 
     override fun showOrders() {
@@ -255,7 +251,6 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
     override fun hideScheduleButton() {
         scheduleProfileBtn.visibility = View.GONE
     }
-
 
     override fun onTabSelected(tab: TabLayout.Tab) {
         profileViewPager.currentItem = tab.position

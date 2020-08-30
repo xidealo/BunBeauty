@@ -14,6 +14,19 @@ class ProfileOrderAdapter : RecyclerView.Adapter<ProfileOrderAdapter.ProfileOrde
     lateinit var context: Context
     private val orderList: MutableList<Order> = ArrayList()
 
+    fun updateItems(orderList: List<Order>) {
+        val newOrderList = orderList.filter { order ->
+            !this.orderList.any { it.id == order.id }
+        }
+
+        for (newOrder in newOrderList) {
+            this.orderList.add(newOrder)
+            this.orderList.sortBy { it.session.startTime }
+            val newOrderIndex = this.orderList.indexOf(newOrder)
+            notifyItemInserted(newOrderIndex)
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileOrderViewHolder {
         context = parent.context
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -29,13 +42,6 @@ class ProfileOrderAdapter : RecyclerView.Adapter<ProfileOrderAdapter.ProfileOrde
     override fun getItemCount(): Int {
         return orderList.size
     }
-
-    fun updateAdapter(orderList: List<Order>) {
-        this.orderList.clear()
-        this.orderList.addAll(orderList)
-        notifyDataSetChanged()
-    }
-
 
     inner class ProfileOrderViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 

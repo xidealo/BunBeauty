@@ -15,4 +15,6 @@ interface ServicePresenterCallback {
     fun getServicePhotos(service: Service)
     fun setTitle(title: String)
     fun getUser(userId: String)
+    fun hideSessionButton()
+    fun showSessionButton()
 }

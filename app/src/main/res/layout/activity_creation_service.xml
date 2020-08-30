@@ -147,16 +147,15 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_creation_service_btn_add_service"
-                style="@style/mainButton"
+                style="@style/smallButton"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/addServices" />
         </LinearLayout>
-
     </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_creation_service_btn_continue"
-        style="@style/mainButton"
+        style="@style/smallButton"
         android:text="Продолжить"
         app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
         app:layout_constraintLeft_toLeftOf="parent"

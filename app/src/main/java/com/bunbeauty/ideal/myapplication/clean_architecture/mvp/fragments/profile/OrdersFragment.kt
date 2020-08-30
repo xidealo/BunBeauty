@@ -27,6 +27,6 @@ class OrdersFragment(private val profileOrderAdapter: ProfileOrderAdapter) : Mvp
     }
 
     fun updateOrderList(orderList: List<Order>) {
-        profileOrderAdapter.updateAdapter(orderList)
+        profileOrderAdapter.updateItems(orderList)
     }
 }
