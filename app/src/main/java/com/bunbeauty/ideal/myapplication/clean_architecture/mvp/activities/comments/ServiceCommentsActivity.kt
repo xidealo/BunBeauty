@@ -22,7 +22,7 @@ class ServiceCommentsActivity : BaseActivity(), ServiceCommentsView{
 
     @Inject
     lateinit var serviceCommentAdapter: ServiceCommentAdapter
-
+    //add loading limit
     @Inject
     lateinit var serviceCommentsServiceCommentInteractor: ServiceCommentsServiceCommentInteractor
 
@@ -52,7 +52,7 @@ class ServiceCommentsActivity : BaseActivity(), ServiceCommentsView{
         initTopPanel("Оценки услуги", ButtonTask.NONE)
         initBottomPanel()
         hideEmptyScreen()
-        serviceCommentsPresenter.createServiceCommentsScreen()
+        serviceCommentsPresenter.createServiceCommentsScreen(15)
     }
 
     fun init() {

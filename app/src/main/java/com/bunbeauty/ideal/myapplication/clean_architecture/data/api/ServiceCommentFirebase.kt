@@ -26,6 +26,7 @@ class ServiceCommentFirebase {
     fun getByServiceId(
         userId: String,
         serviceId: String,
+        loadingLimit:Int,
         serviceCommentsCallback: ServiceCommentsCallback
     ) {
         val servicesRef = FirebaseDatabase.getInstance()

@@ -8,6 +8,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 interface IServiceCommentsServiceCommentInteractor {
     fun createServiceCommentsScreen(
         service: Service,
+        loadingLimit:Int,
         serviceCommentsPresenterCallback: ServiceCommentsPresenterCallback
     )
 

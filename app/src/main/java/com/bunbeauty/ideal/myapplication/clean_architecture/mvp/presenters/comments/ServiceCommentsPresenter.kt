@@ -17,9 +17,10 @@ class ServiceCommentsPresenter(
     private val serviceCommentsServiceInteractor: IServiceCommentsServiceInteractor
 ) : MvpPresenter<ServiceCommentsView>(), ServiceCommentsPresenterCallback {
 
-    fun createServiceCommentsScreen() {
+    fun createServiceCommentsScreen(loadingLimit: Int) {
         serviceCommentsServiceCommentInteractor.createServiceCommentsScreen(
             serviceCommentsServiceInteractor.getService(),
+            loadingLimit,
             this
         )
     }

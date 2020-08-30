@@ -17,10 +17,11 @@ class ServiceCommentsServiceCommentInteractor(private val serviceCommentReposito
 
     override fun createServiceCommentsScreen(
         service: Service,
+        loadingLimit:Int,
         serviceCommentsPresenterCallback: ServiceCommentsPresenterCallback
     ) {
         this.serviceCommentsPresenterCallback = serviceCommentsPresenterCallback
-        serviceCommentRepository.getByServiceId(service.userId, service.id, this)
+        serviceCommentRepository.getByServiceId(service.userId, service.id, loadingLimit,this)
     }
 
     override fun returnList(objects: List<ServiceComment>) {

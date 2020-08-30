@@ -28,6 +28,7 @@ interface IServiceCommentRepository {
     fun getByServiceId(
         userId: String,
         serviceId: String,
+        loadingLimit:Int,
         serviceCommentsCallback: ServiceCommentsCallback
     )
 }
