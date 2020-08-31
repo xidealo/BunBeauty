@@ -84,11 +84,31 @@ class SessionsPresenter(
     }
 
     override fun sendMessages(order: Order) {
+        val infoMessageId = sessionsMessageInteractor.getId(order.clientId, order.masterId)
+        val myInfoMessageId = Message(
+            id = infoMessageId,
+            type = Message.TEXT_STATUS,
+            message = "Новая запись на услугу ${order.serviceName}",
+            dialogId = order.clientId,
+            userId = order.masterId,
+            ownerId = order.clientId
+        )
+        val companionInfoMessageId = Message(
+            id = infoMessageId,
+            type = Message.TEXT_STATUS,
+            message = "Новая запись на услугу ${order.serviceName}",
+            dialogId = order.masterId,
+            userId = order.clientId,
+            ownerId = order.clientId
+        )
+        sessionsMessageInteractor.sendMessage(myInfoMessageId)
+        sessionsMessageInteractor.sendMessage(companionInfoMessageId)
+
         val userReviewId = sessionsMessageInteractor.getId(order.clientId, order.masterId)
         val myMessageUserReview = Message(
             id = userReviewId,
-            type = Message.USER_REVIEW_MESSAGE_STATUS,
-            message = "На услуге ${order.serviceName} был клиент. Вы сможете оставить отзыв о клиенте после ${
+            type = Message.USER_REVIEW_STATUS,
+            message = "Вы сможете оставить отзыв о клиенте после ${
                 WorkWithTimeApi.getDateInFormatYMDHMS(
                     Date(order.session.finishTime)
                 )
@@ -101,8 +121,8 @@ class SessionsPresenter(
         )
         val companionMessageUserReview = Message(
             id = userReviewId,
-            type = Message.USER_REVIEW_MESSAGE_STATUS,
-            message = "На услуге ${order.serviceName} был клиент. Вы сможете оставить отзыв о клиенте после ${
+            type = Message.USER_REVIEW_STATUS,
+            message = "Вы сможете оставить отзыв о клиенте после ${
                 WorkWithTimeApi.getDateInFormatYMDHMS(
                     Date(order.session.finishTime)
                 )
@@ -113,14 +133,14 @@ class SessionsPresenter(
             ownerId = order.masterId,
             finishOrderTime = order.session.finishTime
         )
-        sessionsMessageInteractor.sendUserReviewMessage(myMessageUserReview)
-        sessionsMessageInteractor.sendUserReviewMessage(companionMessageUserReview)
+        sessionsMessageInteractor.sendMessage(myMessageUserReview)
+        sessionsMessageInteractor.sendMessage(companionMessageUserReview)
 
         val serviceReviewId = sessionsMessageInteractor.getId(order.masterId, order.clientId)
         val myMessageServiceReview = Message(
             id = serviceReviewId,
-            type = Message.SERVICE_REVIEW_MESSAGE_STATUS,
-            message = "Вам была оказана услуга ${order.serviceName}. Вы сможете оставить отзыв об услуге после ${
+            type = Message.SERVICE_REVIEW_STATUS,
+            message = "Вы сможете оставить отзыв об услуге ${order.serviceName} после ${
                 WorkWithTimeApi.getDateInFormatYMDHMS(
                     Date(order.session.finishTime)
                 )
@@ -133,8 +153,8 @@ class SessionsPresenter(
         )
         val companionMessageServiceReview = Message(
             id = serviceReviewId,
-            type = Message.SERVICE_REVIEW_MESSAGE_STATUS,
-            message = "Вам была оказана услуга ${order.serviceName}. Вы сможете оставить отзыв об услуге после ${
+            type = Message.SERVICE_REVIEW_STATUS,
+            message = "Вы сможете оставить отзыв об услуге ${order.serviceName} после ${
                 WorkWithTimeApi.getDateInFormatYMDHMS(
                     Date(order.session.finishTime)
                 )
@@ -145,14 +165,14 @@ class SessionsPresenter(
             ownerId = order.clientId,
             finishOrderTime = order.session.finishTime
         )
-        sessionsMessageInteractor.sendServiceReviewMessage(myMessageServiceReview)
-        sessionsMessageInteractor.sendServiceReviewMessage(companionMessageServiceReview)
+        sessionsMessageInteractor.sendMessage(myMessageServiceReview)
+        sessionsMessageInteractor.sendMessage(companionMessageServiceReview)
 
         //send message cancel order
         val cancelMessageId = sessionsMessageInteractor.getId(order.masterId, order.clientId)
         val myMessageCancel = Message(
             id = cancelMessageId,
-            type = Message.CANCEL_MESSAGE_STATUS,
+            type = Message.CANCEL_STATUS,
             message = "К вам на услугу ${order.serviceName} на время c ${
                 WorkWithTimeApi.getDateInFormatYMDHMS(
                     Date(order.session.startTime)
@@ -170,7 +190,7 @@ class SessionsPresenter(
         )
         val companionMessageCancel = Message(
             id = cancelMessageId,
-            type = Message.CANCEL_MESSAGE_STATUS,
+            type = Message.CANCEL_STATUS,
             message = "К вам на услугу ${order.serviceName} на время c ${
                 WorkWithTimeApi.getDateInFormatYMDHMS(
                     Date(order.session.startTime)
@@ -186,8 +206,8 @@ class SessionsPresenter(
             ownerId = order.masterId,
             finishOrderTime = order.session.finishTime
         )
-        sessionsMessageInteractor.sendServiceReviewMessage(myMessageCancel)
-        sessionsMessageInteractor.sendServiceReviewMessage(companionMessageCancel)
+        sessionsMessageInteractor.sendMessage(myMessageCancel)
+        sessionsMessageInteractor.sendMessage(companionMessageCancel)
     }
 
 }

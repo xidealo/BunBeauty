@@ -55,7 +55,7 @@ class MessagesPresenter(
         myMessage.message = messageText
         myMessage.dialogId = messagesDialogInteractor.getMyDialog().id
         myMessage.userId = messagesDialogInteractor.getMyDialog().user.id
-        myMessage.type = Message.TEXT_MESSAGE_STATUS
+        myMessage.type = Message.TEXT_STATUS
         messagesMessageInteractor.sendMessage(myMessage, this)
 
         //добавление в диалог копманиона
@@ -65,7 +65,7 @@ class MessagesPresenter(
         companionMessage.message = messageText
         companionMessage.dialogId = messagesDialogInteractor.getCompanionDialog().id
         companionMessage.userId = messagesDialogInteractor.getCompanionDialog().user.id
-        companionMessage.type = Message.TEXT_MESSAGE_STATUS
+        companionMessage.type = Message.TEXT_STATUS
         messagesMessageInteractor.sendMessage(companionMessage, this)
     }
 

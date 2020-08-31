@@ -23,7 +23,7 @@ class CreationCommentMessageInteractor(
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     ) {
         val message = intent.getSerializableExtra(Message.MESSAGE) as Message
-        if (message.type == Message.USER_REVIEW_MESSAGE_STATUS) {
+        if (message.type == Message.USER_REVIEW_STATUS) {
             creationCommentPresenterCallback.createUserComment(rating, review)
         } else {
             creationCommentPresenterCallback.getOrderForServiceComment(message, rating, review)
@@ -63,7 +63,7 @@ class CreationCommentMessageInteractor(
     private fun updateMyMessage(dialog: Dialog, messageText: String) {
         val message = (intent.getSerializableExtra(Message.MESSAGE) as Message).copy()
         message.userId = dialog.user.id
-        message.type = Message.TEXT_MESSAGE_STATUS
+        message.type = Message.TEXT_STATUS
         message.message = messageText
         messageRepository.update(message, this)
     }
@@ -72,7 +72,7 @@ class CreationCommentMessageInteractor(
         val companionMessage = (intent.getSerializableExtra(Message.MESSAGE) as Message).copy()
         companionMessage.dialogId = dialog.user.id
         companionMessage.userId = dialog.id
-        companionMessage.type = Message.TEXT_MESSAGE_STATUS
+        companionMessage.type = Message.TEXT_STATUS
         companionMessage.message = messageText
         messageRepository.update(companionMessage, this)
     }

@@ -10,11 +10,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.Me
 class SessionsMessageInteractor(private val messageRepository: MessageRepository) :
     ISessionsMessageInteractor, InsertMessageCallback {
 
-    override fun sendUserReviewMessage(message: Message) {
-        messageRepository.insert(message, this)
-    }
-
-    override fun sendServiceReviewMessage(message: Message) {
+    override fun sendMessage(message: Message) {
         messageRepository.insert(message, this)
     }
 

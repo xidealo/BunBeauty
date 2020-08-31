@@ -166,7 +166,7 @@ class MessageFirebase {
                 if (messagesSnapshot.childrenCount > 0) {
                     for (messageSnapshot in messagesSnapshot.children.reversed()) {
                         val message = getMessageFromSnapshot(messageSnapshot)
-                        if (message.type == Message.TEXT_MESSAGE_STATUS || message.ownerId == User.getMyId()) {
+                        if (message.type == Message.TEXT_STATUS || message.ownerId == User.getMyId()) {
                             lastMessage = message
                             break
                         }

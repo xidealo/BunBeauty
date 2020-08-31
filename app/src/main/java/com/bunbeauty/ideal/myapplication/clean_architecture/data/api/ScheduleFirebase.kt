@@ -64,7 +64,7 @@ class ScheduleFirebase : BaseRepository() {
         val scheduleReference = FirebaseDatabase.getInstance()
             .getReference(SCHEDULE)
             .child(order.masterId)
-        val scheduleQuery = scheduleReference.child(order.masterId)
+        val scheduleQuery = scheduleReference
             .orderByChild(ORDER_ID)
             .equalTo(order.id)
 

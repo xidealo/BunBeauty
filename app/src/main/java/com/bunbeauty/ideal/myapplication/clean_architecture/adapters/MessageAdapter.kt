@@ -79,13 +79,13 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
         fun bind(message: Message) {
 
             when (message.type) {
-                Message.TEXT_MESSAGE_STATUS -> {
+                Message.TEXT_STATUS -> {
                     val messageTextElement = MessageTextElement(message, view)
                     messageTextElement.setIsMyMessage(message, view)
                     messageTextElement.setButtonVisibility(message, view, "")
                 }
 
-                Message.SERVICE_REVIEW_MESSAGE_STATUS -> {
+                Message.SERVICE_REVIEW_STATUS -> {
                     val messageTextElement =
                         MessageServiceReviewElement(messagesPresenter, message, view)
                     messageTextElement.setIsMyMessage(message, view)
@@ -96,7 +96,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
                     )
                 }
 
-                Message.USER_REVIEW_MESSAGE_STATUS -> {
+                Message.USER_REVIEW_STATUS -> {
                     val messageUserReviewElement =
                         MessageUserReviewElement(messagesPresenter, message, view)
                     messageUserReviewElement.setIsMyMessage(message, view)
@@ -107,7 +107,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
                     )
                 }
 
-                Message.CANCEL_MESSAGE_STATUS -> {
+                Message.CANCEL_STATUS -> {
                     val messageCancelElement =
                         MessageCancelElement(messagesPresenter, message, view)
                     messageCancelElement.setIsMyMessage(message, view)
