@@ -11,11 +11,11 @@ import com.google.firebase.database.*
 
 class MessageFirebase {
 
-    private val firebaseLinks = mutableListOf<DatabaseReference>()
+    private val referencesMap = hashMapOf<Query, ValueEventListener>()
 
-    fun deleteLinks() {
-        for (link in firebaseLinks) {
-            link.removeValue()
+    fun removeObservers() {
+        referencesMap.forEach {
+            it.key.removeEventListener(it.value)
         }
     }
 
@@ -159,7 +159,7 @@ class MessageFirebase {
             .child(companionId)
             .orderByChild(Message.TIME).limitToLast(10)
 
-        messageRef.addValueEventListener(object : ValueEventListener {
+        val valueEventListener = object : ValueEventListener {
             override fun onDataChange(messagesSnapshot: DataSnapshot) {
 
                 var lastMessage = Message()
@@ -179,7 +179,9 @@ class MessageFirebase {
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
-        })
+        }
+        referencesMap[messageRef] = valueEventListener
+        messageRef.addListenerForSingleValueEvent(valueEventListener)
     }
 
     private fun getMessageFromSnapshot(messageSnapshot: DataSnapshot): Message {

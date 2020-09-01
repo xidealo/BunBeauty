@@ -88,6 +88,9 @@ class MessageRepository(private val messageFirebase: MessageFirebase) : BaseRepo
         }
     }
 
+    override fun removeObservers() {
+        messageFirebase.removeObservers()
+    }
 
     fun getIdForNew(userId: String, dialogId: String): String = messageFirebase.getIdForNew(
         userId,

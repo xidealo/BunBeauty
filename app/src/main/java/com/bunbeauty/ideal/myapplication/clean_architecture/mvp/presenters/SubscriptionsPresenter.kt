@@ -18,8 +18,8 @@ class SubscriptionsPresenter(
     private val subscriptionsSubscriberInteractor: ISubscriptionsSubscriberInteractor
 ) : MvpPresenter<SubscriptionsView>(), SubscriptionsPresenterCallback {
 
-    fun createSubscriptionsScreen() {
-        subscriptionsUserInteractor.createSubscriptionScreen(this)
+    fun createSubscriptionsScreen(loadingLimit: Int) {
+        subscriptionsUserInteractor.createSubscriptionScreen(loadingLimit, this)
     }
 
     fun deleteSubscription(subscription: Subscription) {
@@ -34,8 +34,8 @@ class SubscriptionsPresenter(
         subscriptionsUserInteractor.deleteUser(subscriptionId, this)
     }
 
-    override fun getSubscriptions(user: User) {
-        subscriptionsSubscriptionInteractor.getSubscriptions(user, this)
+    override fun getSubscriptions(user: User, loadingLimit: Int) {
+        subscriptionsSubscriptionInteractor.getSubscriptions(user, loadingLimit, this)
     }
 
     override fun getUserBySubscription(subscription: Subscription) {

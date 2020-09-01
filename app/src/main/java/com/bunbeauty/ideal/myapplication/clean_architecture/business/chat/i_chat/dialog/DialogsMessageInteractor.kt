@@ -25,6 +25,10 @@ class DialogsMessageInteractor(private val messageRepository: IMessageRepository
         )
     }
 
+    override fun removeObservers() {
+        messageRepository.removeObservers()
+    }
+
     override fun returnGottenObject(element: Message?) {
 
         if (element == null) return

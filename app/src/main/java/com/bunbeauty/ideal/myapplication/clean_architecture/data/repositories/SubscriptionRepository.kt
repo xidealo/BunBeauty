@@ -63,6 +63,16 @@ class SubscriptionRepository(private val subscriptionFirebase: SubscriptionFireb
         }
     }
 
+    override fun getByUserId(
+        userId: String,
+        loadingLimit: Int,
+        subscriptionsCallback: SubscriptionsCallback
+    ) {
+        launch {
+            subscriptionFirebase.getByUserId(userId, loadingLimit, subscriptionsCallback)
+        }
+    }
+
     override fun deleteByBySubscriptionId(
         subscription: Subscription,
         deleteSubscriptionCallback: DeleteSubscriptionCallback

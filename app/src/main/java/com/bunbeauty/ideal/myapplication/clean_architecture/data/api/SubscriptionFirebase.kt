@@ -28,7 +28,12 @@ class SubscriptionFirebase {
         subscriptionRef.removeValue()
     }
 
-    fun getByUserId(userId: String, subscriptionsCallback: SubscriptionsCallback) {
+
+
+    fun getByUserId(
+        userId: String,
+        subscriptionsCallback: SubscriptionsCallback
+    ) {
         val subscriptionRef = FirebaseDatabase.getInstance()
             .getReference(Subscription.SUBSCRIPTIONS)
             .child(userId)
@@ -46,7 +51,31 @@ class SubscriptionFirebase {
                 // Some error
             }
         })
+    }
 
+    fun getByUserId(
+        userId: String,
+        loadingLimit: Int,
+        subscriptionsCallback: SubscriptionsCallback
+    ) {
+        val subscriptionRef = FirebaseDatabase.getInstance()
+            .getReference(Subscription.SUBSCRIPTIONS)
+            .child(userId)
+            .limitToLast(loadingLimit)
+
+        subscriptionRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(subscriptionsSnapshot: DataSnapshot) {
+                val subscriptions = arrayListOf<Subscription>()
+                for (subscriptionSnapshot in subscriptionsSnapshot.children) {
+                    subscriptions.add(getSubscriptionFromSnapshot(subscriptionSnapshot, userId))
+                }
+                subscriptionsCallback.returnList(subscriptions)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Some error
+            }
+        })
     }
 
     fun deleteByBySubscriptionId(

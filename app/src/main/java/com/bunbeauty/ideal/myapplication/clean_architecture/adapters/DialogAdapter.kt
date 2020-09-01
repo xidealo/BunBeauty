@@ -19,12 +19,13 @@ class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
         if (foundDialog == null) {
             dialogList.add(dialog)
             dialogList.sortByDescending { it.lastMessage.time }
-            notifyItemInserted(dialogList.size)
+            val dialogIndex = dialogList.indexOf(dialog)
+            notifyItemInserted(dialogIndex)
         } else {
             val index = dialogList.indexOf(foundDialog)
             dialogList[index] = dialog
             dialogList.sortByDescending { it.lastMessage.time }
-            notifyItemChanged(index)
+            notifyDataSetChanged()
         }
     }
 
@@ -45,9 +46,8 @@ class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
     inner class DialogViewHolder(private val view: View, private val context: Context) :
         ViewHolder(view) {
         fun bind(dialog: Dialog) {
-           DialogElement(view, context, dialog)
+            DialogElement(view, context, dialog)
         }
     }
-
 
 }

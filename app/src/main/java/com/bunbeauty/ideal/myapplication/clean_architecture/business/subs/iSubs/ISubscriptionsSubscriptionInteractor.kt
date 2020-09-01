@@ -5,7 +5,12 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 
 interface ISubscriptionsSubscriptionInteractor {
-    fun getSubscriptions(user: User, subscriptionsPresenterCallback: SubscriptionsPresenterCallback)
+    fun getSubscriptions(
+        user: User,
+        loadingLimit: Int,
+        subscriptionsPresenterCallback: SubscriptionsPresenterCallback
+    )
+
     fun deleteSubscription(
         subscription: Subscription,
         subscriptionsPresenterCallback: SubscriptionsPresenterCallback

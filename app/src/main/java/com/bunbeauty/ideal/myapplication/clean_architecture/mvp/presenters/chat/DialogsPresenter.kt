@@ -61,4 +61,9 @@ class DialogsPresenter(
         viewState.hideEmptyDialogs()
     }
 
+    fun removeObservers() {
+        dialogsDialogInteractor.removeReference()
+        dialogsMessageInteractor.removeObservers()
+    }
+
 }

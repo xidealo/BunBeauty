@@ -57,7 +57,7 @@ dependencies {
 
     //Espresso
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:3.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
 
     //firebase
     implementation 'com.google.firebase:firebase-core:17.5.0'

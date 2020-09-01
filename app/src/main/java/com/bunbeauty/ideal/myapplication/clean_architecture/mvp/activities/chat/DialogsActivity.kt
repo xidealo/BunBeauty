@@ -59,6 +59,11 @@ class DialogsActivity : BaseActivity(), DialogsView {
         initBottomPanel(R.id.navigation_chat)
     }
 
+    override fun onStop() {
+        super.onStop()
+        dialogsPresenter.removeObservers()
+    }
+
     private fun init() {
         activity_dialogs_rv_dialogs.layoutManager = LinearLayoutManager(this)
         activity_dialogs_rv_dialogs.adapter = dialogAdapter

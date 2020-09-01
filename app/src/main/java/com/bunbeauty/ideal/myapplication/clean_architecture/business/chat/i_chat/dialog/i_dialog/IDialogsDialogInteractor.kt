@@ -13,4 +13,6 @@ interface IDialogsDialogInteractor {
         message: Message,
         dialogsPresenterCallback: DialogsPresenterCallback
     )
+
+    fun removeReference()
 }

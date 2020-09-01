@@ -17,4 +17,6 @@ interface IDialogRepository {
     )
 
     fun getById(dialog: Dialog, dialogCallback: DialogCallback)
+
+    fun removeObservers()
 }

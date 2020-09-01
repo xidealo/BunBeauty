@@ -7,9 +7,10 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscription
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.SubscriptionRepository
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.ISubscriptionRepository
 
 class SubscriptionsSubscriptionInteractor(
-    private val subscriptionRepository: SubscriptionRepository
+    private val subscriptionRepository: ISubscriptionRepository
 ) : ISubscriptionsSubscriptionInteractor, SubscriptionsCallback, DeleteSubscriptionCallback {
 
     private lateinit var subscriptionsPresenterCallback: SubscriptionsPresenterCallback
@@ -17,10 +18,11 @@ class SubscriptionsSubscriptionInteractor(
 
     override fun getSubscriptions(
         user: User,
+        loadingLimit: Int,
         subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     ) {
         this.subscriptionsPresenterCallback = subscriptionsPresenterCallback
-        subscriptionRepository.getByUserId(user.id, this)
+        subscriptionRepository.getByUserId(user.id, loadingLimit, this)
     }
 
     override fun returnList(objects: List<Subscription>) {

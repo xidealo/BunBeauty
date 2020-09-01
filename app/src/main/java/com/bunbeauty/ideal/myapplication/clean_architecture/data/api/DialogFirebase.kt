@@ -9,7 +9,13 @@ import com.google.firebase.database.*
 
 class DialogFirebase {
 
-    //массив листенеров очищать при выходе с активити
+    private val referencesMap = hashMapOf<DatabaseReference, ChildEventListener>()
+
+    fun removeObservers() {
+        referencesMap.forEach {
+            it.key.removeEventListener(it.value)
+        }
+    }
 
     fun insert(dialog: Dialog) {
         val dialogRef = FirebaseDatabase.getInstance()
@@ -47,8 +53,7 @@ class DialogFirebase {
         val dialogsRef = FirebaseDatabase.getInstance()
             .getReference(Dialog.DIALOGS)
             .child(userId)
-
-        dialogsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        val valueEventListener = object : ValueEventListener {
             override fun onDataChange(dialogsSnapshot: DataSnapshot) {
 
                 val dialogs = arrayListOf<Dialog>()
@@ -57,46 +62,52 @@ class DialogFirebase {
                 }
 
                 dialogsCallback.returnList(dialogs)
+                val childEventListener =
+                    object : ChildEventListener {
+                        override fun onCancelled(p0: DatabaseError) {
 
-                dialogsRef.addChildEventListener(object : ChildEventListener {
-                    override fun onCancelled(p0: DatabaseError) {
+                        }
 
-                    }
+                        override fun onChildMoved(p0: DataSnapshot, p1: String?) {
 
-                    override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+                        }
 
-                    }
+                        override fun onChildChanged(dialogSnapshot: DataSnapshot, p1: String?) {
+                            val changedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
+                            dialogChangedCallback.returnChanged(changedDialog)
+                        }
 
-                    override fun onChildChanged(dialogSnapshot: DataSnapshot, p1: String?) {
-                        val changedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
-                        dialogChangedCallback.returnChanged(changedDialog)
-                    }
-
-                    override fun onChildAdded(dialogSnapshot: DataSnapshot, previousId: String?) {
-                        if (dialogs.isNotEmpty()) {
-                            if (previousId == dialogs.last().id) {
+                        override fun onChildAdded(
+                            dialogSnapshot: DataSnapshot,
+                            previousId: String?
+                        ) {
+                            if (dialogs.isNotEmpty()) {
+                                if (previousId == dialogs.last().id) {
+                                    val addedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
+                                    dialogs.add(addedDialog)
+                                    dialogCallback.returnGottenObject(addedDialog)
+                                }
+                            } else {
                                 val addedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
                                 dialogs.add(addedDialog)
                                 dialogCallback.returnGottenObject(addedDialog)
                             }
-                        } else {
-                            val addedDialog = getDialogFromSnapshot(dialogSnapshot, userId)
-                            dialogs.add(addedDialog)
-                            dialogCallback.returnGottenObject(addedDialog)
+
                         }
 
+                        override fun onChildRemoved(p0: DataSnapshot) {
+                        }
                     }
-
-                    override fun onChildRemoved(p0: DataSnapshot) {
-                    }
-
-                })
+                dialogsRef.addChildEventListener(childEventListener)
+                referencesMap[dialogsRef] = childEventListener
             }
 
             override fun onCancelled(error: DatabaseError) {
                 // Some error
             }
-        })
+        }
+
+        dialogsRef.addListenerForSingleValueEvent(valueEventListener)
     }
 
     fun getById(dialog: Dialog, dialogCallback: DialogCallback) {
@@ -108,7 +119,12 @@ class DialogFirebase {
 
         dialogsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dialogSnapshot: DataSnapshot) {
-                dialogCallback.returnGottenObject(getDialogFromSnapshot(dialogSnapshot, dialog.ownerId))
+                dialogCallback.returnGottenObject(
+                    getDialogFromSnapshot(
+                        dialogSnapshot,
+                        dialog.ownerId
+                    )
+                )
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -141,5 +157,6 @@ class DialogFirebase {
     fun getIdForNew(userId: String) = FirebaseDatabase.getInstance().getReference(User.USERS)
         .child(userId)
         .child(Dialog.DIALOGS).push().key!!
+
 
 }

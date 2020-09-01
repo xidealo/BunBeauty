@@ -8,6 +8,8 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTransformation
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithTimeApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat.MessagesActivity
@@ -37,9 +39,9 @@ class DialogElement(
             WorkWithTimeApi.getDateInFormatYMDHMS(Date(dialog.lastMessage.time)).substring(11, 16)
 
         if (!dialog.isChecked) {
-            view.element_dialog_tv_is_checked.visibility = View.VISIBLE
+            view.element_dialog_tv_is_checked.visible()
         } else {
-            view.element_dialog_tv_is_checked.visibility = View.GONE
+            view.element_dialog_tv_is_checked.gone()
         }
     }
 

@@ -1,13 +1,19 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.subscriptions
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.AbsListView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.SubscriptionAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsSubscriberInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsUserInteractor
@@ -21,6 +27,9 @@ import kotlinx.android.synthetic.main.activity_subscriptions.*
 import javax.inject.Inject
 
 class SubscriptionsActivity : BaseActivity(), SubscriptionsView {
+
+    private var loadingLimit = 15
+    private var isScrolling = false
 
     @Inject
     lateinit var subscriptionsSubscriptionInteractor: SubscriptionsSubscriptionInteractor
@@ -54,7 +63,7 @@ class SubscriptionsActivity : BaseActivity(), SubscriptionsView {
         init()
         createPanels()
         hideEmptySubscriptions()
-        subscriptionsPresenter.createSubscriptionsScreen()
+        subscriptionsPresenter.createSubscriptionsScreen(loadingLimit)
     }
 
     override fun onResume() {
@@ -63,9 +72,34 @@ class SubscriptionsActivity : BaseActivity(), SubscriptionsView {
     }
 
     fun init() {
-        activity_subscriptions_rv_results.layoutManager = LinearLayoutManager(this)
+        val linearLayoutManager = LinearLayoutManager(this)
+        activity_subscriptions_rv_results.layoutManager = linearLayoutManager
         activity_subscriptions_rv_results.adapter = subscriptionAdapter
         subscriptionAdapter.setData(subscriptionsPresenter)
+
+        activity_subscriptions_rv_results.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (isScrolling && dy > 30 && linearLayoutManager.findLastVisibleItemPosition() <= loadingLimit - 3) {
+                    Log.d(Tag.TEST_TAG, "Запрос на докачку сообщений")
+                    updateData()
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    isScrolling = true
+                }
+            }
+        })
+    }
+
+    fun updateData() {
+        isScrolling = false
+        loadingLimit += 15
+        subscriptionsPresenter.createSubscriptionsScreen(loadingLimit)
     }
 
     private fun createPanels() {
@@ -81,19 +115,19 @@ class SubscriptionsActivity : BaseActivity(), SubscriptionsView {
     }
 
     override fun hideLoading() {
-        activity_subscriptions_pb_loading.visibility = View.GONE
+        activity_subscriptions_pb_loading.gone()
     }
 
     override fun showLoading() {
-        activity_subscriptions_pb_loading.visibility = View.VISIBLE
+        activity_subscriptions_pb_loading.visible()
     }
 
     override fun showEmptySubscriptions() {
-        activity_subscriptions_tv_empty.visibility = View.VISIBLE
+        activity_subscriptions_tv_empty.visible()
     }
 
     override fun hideEmptySubscriptions() {
-        activity_subscriptions_tv_empty.visibility = View.GONE
+        activity_subscriptions_tv_empty.gone()
     }
 
     override fun showMessage(message: String) {

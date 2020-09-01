@@ -71,4 +71,8 @@ class DialogRepository(
         }
     }
 
+    override fun removeObservers() {
+        dialogFirebase.removeObservers()
+    }
+
 }

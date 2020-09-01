@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_comments.*
 import javax.inject.Inject
 
 class UserCommentsActivity : BaseActivity(), UserCommentsView {
+
     private var loadingLimit = 15
     private var isScrolling = false
 

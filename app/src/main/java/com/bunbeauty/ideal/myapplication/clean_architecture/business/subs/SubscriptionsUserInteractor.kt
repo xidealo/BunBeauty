@@ -29,9 +29,12 @@ class SubscriptionsUserInteractor(
         userRepository.update(user, this)
     }
 
-    override fun createSubscriptionScreen(subscriptionsPresenterCallback: SubscriptionsPresenterCallback) {
+    override fun createSubscriptionScreen(
+        loadingLimit: Int,
+        subscriptionsPresenterCallback: SubscriptionsPresenterCallback
+    ) {
         val user = intent.getSerializableExtra(User.USER) as User
-        subscriptionsPresenterCallback.getSubscriptions(user)
+        subscriptionsPresenterCallback.getSubscriptions(user, loadingLimit)
     }
 
     override fun getUsersBySubscription(

@@ -11,7 +11,18 @@ interface ISubscriptionRepository {
     fun delete(subscription: Subscription, deleteSubscriptionCallback: DeleteSubscriptionCallback)
     fun update(subscription: Subscription, updateSubscriptionCallback: UpdateSubscriptionCallback)
     fun get(subscriptionsCallback: SubscriptionsCallback)
-    fun getByUserId(userId: String, subscriptionsCallback: SubscriptionsCallback)
+
+    fun getByUserId(
+        userId: String,
+        subscriptionsCallback: SubscriptionsCallback
+    )
+
+    fun getByUserId(
+        userId: String,
+        loadingLimit: Int,
+        subscriptionsCallback: SubscriptionsCallback
+    )
+
     fun deleteByBySubscriptionId(
         subscription: Subscription,
         deleteSubscriptionCallback: DeleteSubscriptionCallback

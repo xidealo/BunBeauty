@@ -8,4 +8,6 @@ interface IDialogsMessageInteractor {
         companionId: String,
         dialogsPresenterCallback: DialogsPresenterCallback
     )
+
+    fun removeObservers()
 }

@@ -23,6 +23,6 @@ interface IMessageRepository {
         orderId: String,
         deleteAllMessageCallback: DeleteAllMessageCallback
     )
-
+    fun removeObservers()
     fun getByIdLastMessage(myId: String, companionId: String, messageCallback: MessageCallback)
 }

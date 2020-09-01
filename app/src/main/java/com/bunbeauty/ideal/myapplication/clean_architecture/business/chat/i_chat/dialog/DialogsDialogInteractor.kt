@@ -33,7 +33,7 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
 
         myCacheDialogs.addAll(objects)
 
-        for (dialog in objects) {
+        for (dialog in myCacheDialogs) {
             dialogsPresenterCallback.getUser(dialog)
         }
     }
@@ -72,8 +72,12 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
         }
     }
 
+    override fun removeReference() {
+        dialogRepository.removeObservers()
+    }
+
     override fun returnChanged(element: Dialog) {
-        val dialog = myCacheDialogs.find { it.id == element.id }
+        val dialog = myCacheDialogs.find { it.user.id == element.user.id }
         if (dialog != null) {
             dialog.isChecked = element.isChecked
             dialogsPresenterCallback.getLastMessage(element.id, element.user.id)
