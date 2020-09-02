@@ -16,4 +16,12 @@ fun String.cutStringWithDots(limit: Int): String {
     }
 }
 
+fun String.cutStringWithLineBreak(limit: Int): String {
+    return if (this.split("\n").size > limit) {
+        this.substring(0, this.split("\n")[0].length).trim { it <= ' ' } + " ..."
+    } else {
+        this
+    }
+}
+
 

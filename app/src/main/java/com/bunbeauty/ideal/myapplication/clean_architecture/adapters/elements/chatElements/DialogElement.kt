@@ -8,6 +8,8 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTransformation
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithTimeApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.cutStringWithDots
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.cutStringWithLineBreak
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
@@ -34,7 +36,7 @@ class DialogElement(
         showAvatar(dialog.user, view, context)
         view.element_dialog_tv_name.text = "${dialog.user.name} ${dialog.user.surname}"
         view.element_dialog_tv_last_message.text =
-            WorkWithStringsApi.cutStringWithDots(dialog.lastMessage.message, 23)
+            dialog.lastMessage.message.cutStringWithDots(23).cutStringWithLineBreak(2)
         view.element_dialog_tv_time.text =
             WorkWithTimeApi.getDateInFormatYMDHMS(Date(dialog.lastMessage.time)).substring(11, 16)
 
