@@ -70,6 +70,6 @@ class DialogElement(
         intent.putExtra(User.USER, dialog.user)
         intent.putExtra(Dialog.COMPANION_DIALOG, companionDialog)
         context.startActivity(intent)
-        (context as Activity).overridePendingTransition(0, 0)
+        //(context as Activity).overridePendingTransition(0, 0)
     }
 }

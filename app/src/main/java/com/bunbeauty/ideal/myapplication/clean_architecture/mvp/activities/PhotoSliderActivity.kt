@@ -1,15 +1,13 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities
 
 import android.os.Bundle
-import android.view.View
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.PhotoPagerAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.photo.PhotoSlideCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_photo_slider.*
 
-class PhotoSliderActivity : BaseActivity(), PhotoSlideCallback {
+class PhotoSliderActivity : BaseActivity() {
 
     private lateinit var photosList: ArrayList<Photo>
     private lateinit var photoPagerAdapter: PhotoPagerAdapter
@@ -28,7 +26,7 @@ class PhotoSliderActivity : BaseActivity(), PhotoSlideCallback {
                 this
             )
         activity_photo_slider_vp_photos.adapter = photoPagerAdapter
-        photoPagerAdapter.setItems(photosList, this)
+        photoPagerAdapter.setItems(photosList)
 
         activity_photo_slider_vp_photos.setCurrentItem(
             photoPosition,
@@ -36,11 +34,4 @@ class PhotoSliderActivity : BaseActivity(), PhotoSlideCallback {
         )
     }
 
-    override fun loadedPhoto(position: Int) {
-        activity_photo_slider_pb_loading.visibility = View.GONE
-    }
-
-    override fun startLoad() {
-        activity_photo_slider_pb_loading.visibility = View.VISIBLE
-    }
 }

@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.photo.PhotoSlideCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.squareup.picasso.Picasso
@@ -20,13 +20,11 @@ import kotlinx.android.synthetic.main.fragment_photo_pager_element.*
 class PhotoPagerElement : Fragment() {
 
     private lateinit var photo: Photo
-    private lateinit var photoSlideCallback: PhotoSlideCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             photo = it.getParcelable(Photo.PHOTO) ?: Photo()
-            photoSlideCallback = it.getSerializable(Photo.PHOTO_CALLBACK) as PhotoSlideCallback
         }
     }
 
@@ -43,24 +41,29 @@ class PhotoPagerElement : Fragment() {
         val target = object : Target {
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
                 Log.d("", "onPrepareLoad")
-                photoSlideCallback.startLoad()
+                fragment_photo_pager_ssi_photo.showLoading()
             }
 
             override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {
                 Log.d("", e?.printStackTrace().toString())
-                errorPhotoPagerElementText.visibility = View.VISIBLE
-                photoSlideCallback.loadedPhoto(1)
+                fragment_photo_pager_ssi_photo.showError()
             }
 
+            /**
+             * Can be catch if leave from [PhotoPagerElement], while it loading
+             */
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
                 if (bitmap != null) {
-                    photoPhotoPagerElementImage.setImage(ImageSource.bitmap(bitmap))
+                    try {
+                        fragment_photo_pager_ssi_photo.showPhoto(ImageSource.bitmap(bitmap))
+                    } catch (e: Exception) {
+                        Log.e(Tag.ERROR_TAG, "${e.printStackTrace()}")
+                    }
                 }
-                photoSlideCallback.loadedPhoto(1)
             }
         }
 
-        photoPhotoPagerElementImage.tag = target
+        fragment_photo_pager_ssi_photo.tag = target
         Picasso.get()
             .load(photo.link)
             .into(target)
@@ -68,11 +71,10 @@ class PhotoPagerElement : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(photo: Photo, photoSlideCallback: PhotoSlideCallback) =
+        fun newInstance(photo: Photo) =
             PhotoPagerElement().apply {
                 arguments = Bundle().apply {
                     putParcelable(Photo.PHOTO, photo)
-                    putSerializable(Photo.PHOTO_CALLBACK, photoSlideCallback)
                 }
             }
     }

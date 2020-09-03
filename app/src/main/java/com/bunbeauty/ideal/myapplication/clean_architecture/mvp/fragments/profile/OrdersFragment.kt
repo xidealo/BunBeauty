@@ -22,8 +22,8 @@ class OrdersFragment(private val profileOrderAdapter: ProfileOrderAdapter) : Mvp
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        ordersRecyclerView.layoutManager = LinearLayoutManager(context)
-        ordersRecyclerView.adapter = profileOrderAdapter
+        fragment_orders_rv_main.layoutManager = LinearLayoutManager(context)
+        fragment_orders_rv_main.adapter = profileOrderAdapter
     }
 
     fun updateOrderList(orderList: List<Order>) {

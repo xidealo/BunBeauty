@@ -7,23 +7,10 @@
     android:background="@color/black"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.photoElement.PhotoPagerElement">
 
-    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-        android:id="@+id/photoPhotoPagerElementImage"
+    <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.ProgressPhoto
+        android:id="@+id/fragment_photo_pager_ssi_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/errorPhotoPagerElementText"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone"
-        android:text="Ошибка загрузки"
-        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
