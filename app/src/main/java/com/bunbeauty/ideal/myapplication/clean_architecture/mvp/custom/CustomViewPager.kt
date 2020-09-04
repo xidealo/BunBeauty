@@ -1,4 +1,4 @@
-package com.bunbeauty.ideal.myapplication.clean_architecture.mvp
+package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom
 
 import android.annotation.SuppressLint
 import android.content.Context

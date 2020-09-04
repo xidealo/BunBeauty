@@ -52,13 +52,6 @@
     <string name="channel_name">q</string>
     <string name="channel_description">qq</string>
 
-    <!-- <string name="edit_ico"></string>
-    <string name="settings_ico">\uf303</string>
-    <string name="subscribe_ico">\uf004</string>
-    <string name="premium_ico">\uf091</string>-->
-
-    <string name="back_ico">\uf104</string>
-    <string name="search_ico">\uf002</string>
     <string name="premium">\uf091</string>
 
     //bottom panel
@@ -83,12 +76,12 @@
         <item>+1</item>
     </string-array>
 
-    <string name="title_activity_picked_comment">PickedComment</string>
     <string name="saveData">Сохранить данные</string>
-    <string name="subscribed"><![CDATA[<B]]></string>
     <string name="change_number">Изменить номер</string>
-    <string name="title_activity_tabs">Tabs</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+
+    // MainScreen
+    <string name="search">Поиск</string>
+    <string name="no_services_in_your_region">В вашем регионе нет услуг 🤷‍♀️</string>
+
 
 </resources>

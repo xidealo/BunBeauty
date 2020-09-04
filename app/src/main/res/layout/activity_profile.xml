@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/profileMainLayout"
-    style="@style/allPages"
+    style="@style/DefaultTheme"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -177,7 +177,7 @@
             </com.google.android.material.tabs.TabLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.CustomViewPager
+        <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.CustomViewPager
             android:id="@+id/profileViewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

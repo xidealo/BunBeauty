@@ -36,7 +36,7 @@ import kotlin.collections.ArrayList
 
 class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView {
 
-    private var categoriesBtns: ArrayList<MaterialButton> = arrayListOf()
+    private var categoriesButtonList: MutableList<MaterialButton> = ArrayList()
     private lateinit var categories: ArrayList<String>
 
     @InjectPresenter
@@ -96,11 +96,7 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
 
         activity_main_screen_tv_empty.visibility = View.GONE
 
-        val minimizeTagsBtn = findViewById<MaterialButton>(R.id.activity_main_screen_btn_close)
-        val clearTagsBtn = findViewById<MaterialButton>(R.id.activity_main_screen_btn_clear)
-
         activity_main_screen_rv_services.layoutManager = LinearLayoutManager(this)
-
         activity_main_screen_rv_services.adapter = serviceAdapter
 
         activity_main_screen_msv_search.setOnQueryTextListener(object :
@@ -128,35 +124,21 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
 
             }
         })
-
-        minimizeTagsBtn.setOnClickListener(this)
-        clearTagsBtn.setOnClickListener(this)
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.activity_main_screen_btn_close -> hideTags()
-
-            R.id.activity_main_screen_btn_clear -> {
-                mainScreenPresenter.clearCategory(categoriesBtns)
+    override fun onClick(view: View) {
+        if ((view.parent as View).id == R.id.activity_main_screen_ll_category) {
+            val category = (view as Button).text.toString()
+            mainScreenPresenter.disableCategoryButtons(categoriesButtonList)
+            if (mainScreenPresenter.isSelectedCategory(category)) {
                 mainScreenPresenter.showCurrentMainScreen()
-            }
-
-            else -> if ((v.parent as View).id == R.id.activity_main_screen_ll_category) {
-                //показать тэги
-                //начать поиск по категории
-                val category = (v as Button).text.toString()
-                mainScreenPresenter.disableCategoryBtns(categoriesBtns)
-                if (mainScreenPresenter.isSelectedCategory(category)) {
-                    mainScreenPresenter.showCurrentMainScreen()
-                    mainScreenPresenter.setTagsState(activity_main_screen_ll_main_tags.visibility)
-                } else {
-                    mainScreenPresenter.createMainScreenWithCategory(category)
-                    enableCategoryButton(v)
-                }
+                mainScreenPresenter.setTagsState(activity_main_screen_ll_main_tags.visibility)
             } else {
-                mainScreenPresenter.createMainScreenWithTag(v as Chip)
+                mainScreenPresenter.createMainScreenWithCategory(category)
+                enableCategoryButton(view)
             }
+        } else {
+            mainScreenPresenter.createMainScreenWithTag(view as Chip)
         }
     }
 
@@ -164,9 +146,7 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
         mainScreenPresenter.createMainScreen()
     }
 
-    override fun actionClick() {
-
-    }
+    override fun actionClick() {}
 
     override fun disableCategoryBtn(button: Button) {
         button.setTextColor(Color.WHITE)
@@ -222,28 +202,20 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
 
     override fun createCategoryFeed(categories: MutableSet<String>) {
         for (i in categories.indices) {
-            categoriesBtns.add(MaterialButton(this))
-            categoriesBtns[i].setOnClickListener(this)
-            categoriesBtns[i].text = categories.toTypedArray()[i]
-            categoriesBtns[i].style(R.style.unselected_button)
-            categoriesBtns[i].setTextColor(Color.WHITE)
+            categoriesButtonList.add(MaterialButton(this))
+            categoriesButtonList[i].setOnClickListener(this)
+            categoriesButtonList[i].text = categories.toTypedArray()[i]
+            categoriesButtonList[i].style(R.style.unselected_button)
+            categoriesButtonList[i].setTextColor(Color.WHITE)
             val params = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
             params.setMargins(8, 8, 8, 8)
-            categoriesBtns[i].layoutParams = params
+            categoriesButtonList[i].layoutParams = params
 
-            activity_main_screen_ll_category.addView(categoriesBtns[i])
+            activity_main_screen_ll_category.addView(categoriesButtonList[i])
         }
-    }
-
-    override fun showCategory() {
-        activity_main_screen_ll_category.visibility = View.VISIBLE
-    }
-
-    override fun hideCategory() {
-        activity_main_screen_ll_category.visibility = View.GONE
     }
 
     override fun createTags(category: String, selectedTagsArray: ArrayList<String>) {

@@ -86,16 +86,18 @@ class AuthorizationActivity : BaseActivity(), AuthorizationView, IAdapterSpinner
     }
 
     override fun goToVerifyPhone(phone: String) {
-        val intent = Intent(this, VerifyPhoneNumberActivity::class.java)
-        intent.putExtra(User.PHONE, phone)
-        this.startActivity(intent)
+        val intent = Intent(this, VerifyPhoneNumberActivity::class.java).apply {
+            putExtra(User.PHONE, phone)
+        }
+        startActivity(intent)
         overridePendingTransition(0, 0)
     }
 
     override fun goToRegistration(phone: String) {
-        val intent = Intent(this, RegistrationActivity::class.java)
-        intent.putExtra(User.PHONE, phone)
-        this.startActivity(intent)
+        val intent = Intent(this, RegistrationActivity::class.java).apply {
+            putExtra(User.PHONE, phone)
+        }
+        startActivity(intent)
         overridePendingTransition(0, 0)
         finish()
     }
@@ -104,8 +106,7 @@ class AuthorizationActivity : BaseActivity(), AuthorizationView, IAdapterSpinner
         val intent = Intent(this, ProfileActivity::class.java).apply {
             putExtra(User.USER, user)
         }
-
-        this.startActivity(intent)
+        startActivity(intent)
         overridePendingTransition(0, 0)
         finish()
     }

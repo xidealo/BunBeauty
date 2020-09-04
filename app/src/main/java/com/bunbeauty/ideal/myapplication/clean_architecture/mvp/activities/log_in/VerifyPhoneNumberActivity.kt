@@ -61,12 +61,12 @@ class VerifyPhoneNumberActivity : BaseActivity(), VerifyPhoneView {
 
     override fun hideViewsOnScreen() {
         verifyVerifyPhoneBtn.visibility = View.GONE
-        loadingVerifyPhoneProgressBar.visibility = View.VISIBLE
+        activity_verify_phone_number_pb_loading.visibility = View.VISIBLE
     }
 
     override fun showViewsOnScreen() {
         verifyVerifyPhoneBtn.visibility = View.VISIBLE
-        loadingVerifyPhoneProgressBar.visibility = View.GONE
+        activity_verify_phone_number_pb_loading.visibility = View.GONE
     }
 
     override fun showMessage(message: String) {
@@ -80,16 +80,18 @@ class VerifyPhoneNumberActivity : BaseActivity(), VerifyPhoneView {
     }
 
     override fun goToRegistration(phone: String) {
-        val intent = Intent(this, RegistrationActivity::class.java)
-        intent.putExtra(User.PHONE, phone)
+        val intent = Intent(this, RegistrationActivity::class.java).apply {
+            putExtra(User.PHONE, phone)
+        }
         startActivity(intent)
         overridePendingTransition(0, 0)
-        finish()
     }
 
     override fun goToProfile() {
-        val intent = Intent(this, ProfileActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        val intent = Intent(this, ProfileActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
         startActivity(intent)
         overridePendingTransition(0, 0)
         finish()

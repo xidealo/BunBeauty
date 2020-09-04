@@ -1,81 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/logInPage"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.AuthorizationActivity">
 
     <LinearLayout
-        style="@style/loginPackageMainLinearLayout"
-        app:layout_constraintBottom_toTopOf="@+id/activity_authorization_ll_bottom"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        style="@style/wideHorizontalBlock"
+        android:baselineAligned="false">
 
-        <ImageView
-            android:id="@+id/activity_authorization_iv_logo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/bun_beauty" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/activity_authorization_til_code"
+            style="@style/materialLoginSpinnerLayout"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="3dp"
+            app:startIconDrawable="@drawable/icon_phone_number">
 
-        <LinearLayout
-            style="@style/wideHorizontalBlock"
-            android:gravity="center">
+            <AutoCompleteTextView
+                android:id="@+id/activity_authorization_sp_code"
+                style="@style/materialLoginSpinner" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/activity_authorization_til_code"
-                style="@style/materialLoginSpinnerLayout"
-                android:layout_width="wrap_content"
-                android:layout_marginEnd="3dp"
-                app:startIconDrawable="@drawable/icon_phone_number">
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <AutoCompleteTextView
-                    android:id="@+id/activity_authorization_sp_code"
-                    style="@style/materialLoginSpinner" />
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/materialLoginInputLayout"
+            android:layout_width="0dp"
+            android:layout_marginStart="3dp"
+            android:layout_weight="1"
+            android:hint="@string/phone">
 
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/materialLoginInputLayout"
-                android:layout_marginStart="3dp"
-                android:layout_weight="1"
-                android:hint="@string/phone"
-                android:layout_width="0dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/activity_authorization_et_phone"
-                    style="@style/materialLoginInput"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_authorization_et_phone"
+                style="@style/materialLoginInput"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/activity_authorization_ll_bottom"
+    <ProgressBar
+        android:id="@+id/activity_authorization_pb_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        android:indeterminateTint="@color/white"
+        android:paddingTop="48dp" />
 
-        <ProgressBar
-            android:id="@+id/activity_authorization_pb_loading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminateTint="@color/white" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/activity_authorization_btn_login"
+        style="@style/loginButton"
+        android:text="Войти" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/activity_authorization_btn_login"
-            style="@style/loginButton"
-            android:text="Войти" />
-
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

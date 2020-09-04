@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/editServiceLayout"
-    style="@style/allPages"
+    style="@style/DefaultTheme"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.editing.EditProfileActivity">
 
     <include layout="@layout/part_top_panel" />

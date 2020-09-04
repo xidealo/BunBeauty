@@ -37,9 +37,9 @@ class MainScreenPresenter(
         mainScreenDataInteractor.getMainScreenData(category, this)
     }
 
-    fun createMainScreenWithTag(tagText: Chip) {
+    fun createMainScreenWithTag(chip: Chip) {
         mainScreenDataInteractor.getMainScreenData(
-            tagText, mainScreenDataInteractor.selectedTagsArray, this
+            chip, mainScreenDataInteractor.selectedTagsArray, this
         )
     }
 
@@ -126,22 +126,9 @@ class MainScreenPresenter(
         }
     }
 
-    fun disableCategoryBtns(categoriesBtns: ArrayList<MaterialButton>) {
-        for (categoriesBtn in categoriesBtns) {
+    fun disableCategoryButtons(categoriesButtonList: List<MaterialButton>) {
+        for (categoriesBtn in categoriesButtonList) {
             viewState.disableCategoryBtn(categoriesBtn)
-        }
-    }
-
-    fun clearCategory(categoriesBtns: ArrayList<MaterialButton>) {
-        viewState.showLoading()
-        mainScreenDataInteractor.selectedTagsArray.clear()
-        for (btn in categoriesBtns) {
-            if (mainScreenDataInteractor.selectedCategory == btn.text.toString()) {
-                mainScreenDataInteractor.selectedCategory = ""
-                viewState.disableCategoryBtn(btn)
-                viewState.hideTags()
-                break
-            }
         }
     }
 

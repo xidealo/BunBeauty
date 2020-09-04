@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/mainBlue"
-    android:padding="4dp"
     app:layout_constraintTop_toTopOf="parent"
     app:menu="@menu/top_navigation_menu"
     app:navigationIcon="@drawable/icon_back">

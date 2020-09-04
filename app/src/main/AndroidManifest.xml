@@ -28,7 +28,9 @@
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.subscriptions.SubscriptionsActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat.DialogsActivity" />
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.RegistrationActivity" />
-        <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.AuthorizationActivity">
+        <activity
+            android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.AuthorizationActivity"
+            android:theme="@style/AppTheme.LoadingScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

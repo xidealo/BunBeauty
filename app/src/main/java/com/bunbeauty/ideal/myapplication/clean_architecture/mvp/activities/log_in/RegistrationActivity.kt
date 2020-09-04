@@ -51,7 +51,7 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
         )
         (cityRegistrationSpinner.adapter as ArrayAdapter<String>).filter.filter("")
 
-        activity_registration_btn_registrate.setOnClickListener {
+        activity_registration_btn_register.setOnClickListener {
             WorkWithViewApi.hideKeyboard(this)
             registrationPresenter.registerUser(
                 WorkWithStringsApi.firstCapitalSymbol(nameRegistrationInput.text.toString().trim()),
@@ -68,11 +68,11 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
     override fun fillPhoneInput(phone: String) = phoneRegistrationInput.setText(phone)
 
     override fun disableRegistrationButton() {
-        activity_registration_btn_registrate.isEnabled = false
+        activity_registration_btn_register.isEnabled = false
     }
 
     override fun enableRegistrationButton() {
-        activity_registration_btn_registrate.isEnabled = true
+        activity_registration_btn_register.isEnabled = true
     }
 
     override fun setNameInputError(error: String) {
@@ -86,13 +86,13 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
     }
 
     override fun showNoSelectedCity() {
-        Snackbar.make(registrationLinearLayout, "Выберите город", Snackbar.LENGTH_LONG)
+        Snackbar.make(activity_registration_ll, "Выберите город", Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.red))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
 
     override fun showSuccessfulRegistration() {
-        Snackbar.make(registrationLinearLayout, "Пользователь зарегестирован", Snackbar.LENGTH_LONG)
+        Snackbar.make(activity_registration_ll, "Пользователь зарегестирован", Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
@@ -100,6 +100,7 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
     override fun goToProfile(user: User) {
         val intent = Intent(this, ProfileActivity::class.java).apply {
             putExtra(User.USER, user)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
         startActivity(intent)
         overridePendingTransition(0, 0)

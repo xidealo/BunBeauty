@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <com.miguelcatalan.materialsearchview.MaterialSearchView
+        android:id="@+id/part_search_bar_msv_search"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/search_height"
+        app:searchBackIcon="@drawable/icon_back"
+        android:hint="Поиск"
+        app:layout_constraintTop_toTopOf="@+id/topPanelLayout" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/part_search_bar_iv_search"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/icon_search"
+        android:scaleType="center" />
+
+</merge>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/serviceMainLayout"
-    style="@style/allPages"
+    style="@style/DefaultTheme"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity">
 
     <include layout="@layout/part_top_panel" />
@@ -34,6 +34,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <!--<com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.ProgressButton
+                android:layout_width="100dp"
+                android:layout_height="100dp" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"

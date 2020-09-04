@@ -20,6 +20,4 @@ interface MainScreenView : MvpView {
     fun showMainScreen(mainScreenData: ArrayList<MainScreenData>)
     fun enableTag(tagText: Chip)
     fun disableTag(tagText: Chip)
-    fun hideCategory()
-    fun showCategory()
 }
