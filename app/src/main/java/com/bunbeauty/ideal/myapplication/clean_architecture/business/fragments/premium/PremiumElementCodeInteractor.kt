@@ -9,7 +9,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.Co
 class PremiumElementCodeInteractor(private val codeRepository: CodeRepository) :
     GetCodeCallback, UpdateCodeCallback {
 
-    lateinit var checkPremiumPresenterCallback: CheckPremiumPresenterCallback
+    private lateinit var checkPremiumPresenterCallback: CheckPremiumPresenterCallback
 
     fun checkCode(
         code: String,

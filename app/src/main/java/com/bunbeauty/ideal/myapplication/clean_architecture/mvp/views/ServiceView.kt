@@ -5,11 +5,11 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 
-interface ServiceView: MvpView {
+interface ServiceView : MvpView {
     fun showService(service: Service)
     fun showPhotos(photos: List<Photo>)
     fun hidePremium()
-    fun showPremium(service: Service)
+    fun showPremium()
     fun createOwnServiceTopPanel(service: Service)
     fun createAlienServiceTopPanel(user: User, service: Service)
     fun showLoading()
@@ -19,6 +19,8 @@ interface ServiceView: MvpView {
     fun goToProfile(user: User)
     fun showMessage(message: String)
     fun setTopPanelTitle(title: String)
-    fun showSessionButton()
-    fun hideSessionButton()
+    fun showPremiumButton()
+    fun hidePremiumButton()
+    fun showScheduleButton()
+    fun hideScheduleButton()
 }

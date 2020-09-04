@@ -30,11 +30,10 @@ class ServiceUserInteractor(
 
         if (isMyService(user)) {
             servicePresenterCallback.createOwnServiceTopPanel()
-            servicePresenterCallback.hideSessionButton()
+            servicePresenterCallback.showMyService()
         } else {
-            servicePresenterCallback.showPremium()
             servicePresenterCallback.createAlienServiceTopPanel(user)
-            servicePresenterCallback.showSessionButton()
+            servicePresenterCallback.showAlienService()
         }
     }
 

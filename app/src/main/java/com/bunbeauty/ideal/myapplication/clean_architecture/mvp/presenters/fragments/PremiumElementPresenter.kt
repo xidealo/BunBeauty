@@ -34,6 +34,5 @@ class PremiumElementPresenter(
             premiumElementServiceInteractor.service,
             this
         )
-
     }
 }

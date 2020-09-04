@@ -27,8 +27,7 @@ import javax.inject.Inject
 
 //TODO переписать без логики
 class PremiumFragment : MvpAppCompatFragment(), PremiumElementFragmentView {
-
-    lateinit var service: Service
+    private lateinit var service: Service
 
     @InjectPresenter
     lateinit var premiumElementPresenter: PremiumElementPresenter
@@ -71,17 +70,19 @@ class PremiumFragment : MvpAppCompatFragment(), PremiumElementFragmentView {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        fragment_premium_btn_set.setOnClickListener{
+        fragment_premium_btn_set.setOnClickListener {
             premiumElementPresenter.setPremium(
                 fragment_premium_et_code.text.toString().toLowerCase().trim(),
                 service
             )
+            fragment_premium_btn_set.showLoading()
         }
     }
 
     override fun showError(error: String) {
         fragment_premium_et_code.error = error
         fragment_premium_et_code.requestFocus()
+        fragment_premium_btn_set.hideLoading()
     }
 
     override fun showPremiumActivated() {
@@ -94,19 +95,15 @@ class PremiumFragment : MvpAppCompatFragment(), PremiumElementFragmentView {
         fragment_premium_tv_no.visibility = View.GONE
         fragment_premium_tv_yes.visibility = View.VISIBLE
         fragment_premium_tv_yes.isEnabled = false
-        fragment_premium_btn_set.text = "Продлить премиум"
-        fragment_premium_tv_label.text = "Премиум до ${WorkWithTimeApi.getDateInFormatYMD(
-            premiumDate
-        )}"
+        fragment_premium_tv_label.text = "Премиум до ${
+            WorkWithTimeApi.getDateInFormatYMD(
+                premiumDate
+            )
+        }"
     }
 
     override fun hideBottom() {
         fragment_premium_ll_bottom.gone()
-    }
-
-
-    fun setPremium(service: Service) {
-        this.service = service
     }
 
     companion object {

@@ -36,8 +36,6 @@ import javax.inject.Inject
 
 class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoElement {
 
-    private lateinit var premiumFragment: PremiumFragment
-
     @Inject
     lateinit var photoAdapter: PhotoAdapter
 
@@ -97,7 +95,11 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
         }
 
         showRating(service.rating, service.countOfRates)
-        premiumFragment = PremiumFragment.newInstance(service)
+
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.activity_service_ll_premium, PremiumFragment.newInstance(service), "premium")
+            .commit()
     }
 
     override fun showLoading() {
@@ -147,7 +149,7 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
         initTopPanel(service.name, ButtonTask.GO_TO_PROFILE, user.photoLink)
     }
 
-    override fun showPremium(service: Service) {
+    override fun showPremium() {
         activity_service_ll_premium.visible()
     }
 
@@ -164,15 +166,27 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
         )
     }
 
-    override fun showSessionButton() {
-        activity_service_btn_schedule.visibility = View.VISIBLE
+    override fun showPremiumButton() {
+        activity_service_btn_premium.visible()
+        activity_service_btn_premium.setOnClickListener {
+            showPremium()
+            activity_service_btn_premium.gone()
+        }
+    }
+
+    override fun hidePremiumButton() {
+        activity_service_btn_premium.gone()
+    }
+
+    override fun showScheduleButton() {
+        activity_service_btn_schedule.visible()
         activity_service_btn_schedule.setOnClickListener {
             goToSessions()
         }
     }
 
-    override fun hideSessionButton() {
-        activity_service_btn_schedule.visibility = View.GONE
+    override fun hideScheduleButton() {
+        activity_service_btn_schedule.gone()
     }
 
     override fun actionClick() {

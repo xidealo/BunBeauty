@@ -47,20 +47,18 @@ class ServicePresenter(
         viewState.createAlienServiceTopPanel(user, serviceInteractor.gottenService)
     }
 
-    override fun showPremium() {
-        viewState.showPremium(serviceInteractor.gottenService)
-    }
-
     fun updateService(service: Service) {
         serviceInteractor.updateService(service, this)
     }
 
-    override fun showSessionButton() {
-        viewState.showSessionButton()
+    override fun showMyService() {
+        viewState.showPremiumButton()
+        viewState.hideScheduleButton()
     }
 
-    override fun hideSessionButton() {
-        viewState.hideSessionButton()
+    override fun showAlienService() {
+        viewState.hidePremiumButton()
+        viewState.showScheduleButton()
     }
 
     override fun setTitle(title: String) {

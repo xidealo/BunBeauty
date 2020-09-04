@@ -48,9 +48,8 @@ class ServiceRepository(
         updateServiceCallback: UpdateServiceCallback
     ) {
         launch {
-            serviceFirebase.updatePremium(service, durationPremium)
             withContext(Dispatchers.Main) {
-                updateServiceCallback.returnUpdatedCallback(service)
+                serviceFirebase.updatePremium(service, durationPremium, updateServiceCallback)
             }
         }
     }
