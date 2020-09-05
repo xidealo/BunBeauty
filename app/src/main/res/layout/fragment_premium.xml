@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/maimPremiumElementLayout"
     style="@style/DefaultTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +9,7 @@
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment">
 
     <LinearLayout
-        android:id="@+id/premiumAddServiceHeaderLayout"
+        android:id="@+id/fragment_premium_ll_header"
         style="@style/wideHorizontalBlockWithSmallMargin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +17,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/premiumDatePremiumElementText"
+            android:id="@+id/fragment_premium_tv_label"
             style="@style/mainBlockText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +33,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/noPremiumPremiumElementText"
+                android:id="@+id/fragment_premium_tv_no"
                 style="@style/iconSolid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -44,7 +43,7 @@
                 android:visibility="visible" />
 
             <TextView
-                android:id="@+id/yesPremiumPremiumElementText"
+                android:id="@+id/fragment_premium_tv_yes"
                 style="@style/iconSolid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -57,10 +56,27 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/premiumAddServiceBottomLayout"
+        android:id="@+id/fragment_premium_ll_bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/description"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
+
+            <TextView
+                style="@style/ServiceBodyText"
+                android:text="@string/premium_description" />
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/MaterialInputLayout"
@@ -68,15 +84,16 @@
             app:startIconDrawable="@drawable/icon_file_alt_regular">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/codePremiumElement"
+                android:id="@+id/fragment_premium_et_code"
                 style="@style/MaterialInput"
                 android:inputType="textMultiLine|textCapSentences"
                 android:maxLines="10" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/setPremiumPremiumElementBtn"
-            style="@style/smallButton"
+            android:id="@+id/fragment_premium_btn_set"
+            style="@style/largeButton"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text="Получить премиум"/>

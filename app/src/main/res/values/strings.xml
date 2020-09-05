@@ -16,6 +16,7 @@
     //service
     <string name="nameAddServiceTB">Название</string>
     <string name="cost">Цена</string>
+    <string name="premium_description">После успешного ввода кода, ваша услуга получит статус "\"Премиумной услуги"\" на следующие 7 дней</string>
     <string name="address">Адрес</string>
     <string name="main_screen">Главная страница</string>
     <string name="description">Описание</string>

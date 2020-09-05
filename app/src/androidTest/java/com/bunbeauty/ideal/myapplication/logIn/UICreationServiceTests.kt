@@ -28,13 +28,15 @@ class UICreationServiceTests : MainTest() {
     @Test
     @Throws(InterruptedException::class)
     fun testAddingServiceWithPremiumTests() {
-        val uiRegistrationActivityTests = UIRegistrationActivityTests()
-        uiRegistrationActivityTests.testRegistration()
+        val uiAuthorizationActivityTests = UIAuthorizationActivityTests()
+        uiAuthorizationActivityTests.testVerification()
+        Thread.sleep(PAUSE)
+        goToAddingService()
         Thread.sleep(PAUSE)
         addService("Test Name", "123456", "Test address", "Test Description", "ногти")
         Thread.sleep(PAUSE)
         addPremium("bb")
-        Thread.sleep(PAUSE)
+        Thread.sleep(LONG_PAUSE)
     }
 
     private fun goToAddingService() {
@@ -76,13 +78,13 @@ class UICreationServiceTests : MainTest() {
             .perform(scrollTo(), click())
     }
 
-    @Throws(InterruptedException::class)
     private fun addPremium(premiumCode: String?) {
-        onView(withId(R.id.codePremiumElement))
+        onView(withId(R.id.fragment_premium_et_code))
             .perform(ViewActions.typeText(premiumCode))
-        Thread.sleep(1000)
-        onView(withId(R.id.setPremiumPremiumElementBtn))
-            .perform(click())
+        Espresso.closeSoftKeyboard()
+        Thread.sleep(PAUSE)
+        onView(withId(R.id.fragment_premium_btn_set))
+            .perform(scrollTo(), click())
     }
 
 }

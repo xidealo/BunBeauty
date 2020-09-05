@@ -2,12 +2,13 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.business.fragments.
 
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.CheckPremiumPresenterCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service.GetServiceCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service.UpdateServiceCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IServiceRepository
 
 class PremiumElementServiceInteractor(val serviceRepository: IServiceRepository) :
-    UpdateServiceCallback {
+    UpdateServiceCallback, GetServiceCallback {
 
     lateinit var service: Service
     lateinit var checkPremiumPresenterCallback: CheckPremiumPresenterCallback
@@ -17,20 +18,20 @@ class PremiumElementServiceInteractor(val serviceRepository: IServiceRepository)
         checkPremiumPresenterCallback: CheckPremiumPresenterCallback
     ) {
         this.checkPremiumPresenterCallback = checkPremiumPresenterCallback
-        service.premiumDate = addSevenDayPremium(service)
-        serviceRepository.update(service, this)
+        serviceRepository.getById(service.id, service.userId, true, this)
     }
 
-    private fun addSevenDayPremium(service: Service): Long {
-        val sysdateLong: Long = if (service.premiumDate == Service.DEFAULT_PREMIUM_DATE) {
-            WorkWithTimeApi.getSysdateLong() + (86400000 * 7)
-        } else {
-            service.premiumDate + (86400000 * 7)
-        }
-        return sysdateLong
+    override fun returnGottenObject(obj: Service?) {
+        if (obj == null) return
+        serviceRepository.updatePremium(obj, SEVEN_DAYS, this)
     }
+
 
     override fun returnUpdatedCallback(obj: Service) {
         checkPremiumPresenterCallback.showPremiumActivated(obj)
+    }
+
+    companion object {
+        const val SEVEN_DAYS: Long = 86400000 * 7
     }
 }

@@ -7,6 +7,12 @@ interface IServiceRepository {
     fun insert(service: Service, insertServiceCallback: InsertServiceCallback)
     fun delete(service: Service, deleteServiceCallback: DeleteServiceCallback)
     fun update(service: Service, updateServiceCallback: UpdateServiceCallback)
+    fun updatePremium(
+        service: Service,
+        durationPremium: Long,
+        updateServiceCallback: UpdateServiceCallback
+    )
+
     fun get(getServicesCallback: GetServicesCallback)
 
     fun getByUserId(
@@ -19,6 +25,6 @@ interface IServiceRepository {
         serviceId: String,
         userId: String,
         isFirstEnter: Boolean,
-        getServiceCallback : GetServiceCallback
+        getServiceCallback: GetServiceCallback
     )
 }

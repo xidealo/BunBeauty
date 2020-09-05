@@ -4,15 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithTimeApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.fragments.premium.PremiumElementCodeInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.fragments.premium.PremiumElementServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
@@ -28,17 +26,9 @@ import kotlinx.android.synthetic.main.fragment_premium.*
 import javax.inject.Inject
 
 //TODO переписать без логики
-class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
-    PremiumElementFragmentView {
+class PremiumFragment : MvpAppCompatFragment(), PremiumElementFragmentView {
 
     lateinit var service: Service
-    private lateinit var premiumText: TextView
-    private lateinit var noPremiumText: TextView
-    private lateinit var bottomLayout: LinearLayout
-    private lateinit var maimPremiumElementLayout: LinearLayout
-    private lateinit var codeText: TextView
-    private lateinit var setPremiumPremiumElementBtn: Button
-    private lateinit var premiumDatePremiumElementText: TextView
 
     @InjectPresenter
     lateinit var premiumElementPresenter: PremiumElementPresenter
@@ -81,65 +71,43 @@ class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        codeText = view.findViewById(R.id.codePremiumElement)
-        premiumText = view.findViewById(R.id.yesPremiumPremiumElementText)
-        noPremiumText = view.findViewById(R.id.noPremiumPremiumElementText)
-        bottomLayout = view.findViewById(R.id.premiumAddServiceBottomLayout)
-        maimPremiumElementLayout = view.findViewById(R.id.maimPremiumElementLayout)
-        premiumDatePremiumElementText = view.findViewById(R.id.premiumDatePremiumElementText)
-        setPremiumPremiumElementBtn = view.findViewById(R.id.setPremiumPremiumElementBtn)
-        setPremiumPremiumElementBtn.setOnClickListener(this)
-    }
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.setPremiumPremiumElementBtn -> {
-                premiumElementPresenter.setPremium(
-                    codeText.text.toString().toLowerCase().trim(),
-                    service
-                )
-            }
+        fragment_premium_btn_set.setOnClickListener{
+            premiumElementPresenter.setPremium(
+                fragment_premium_et_code.text.toString().toLowerCase().trim(),
+                service
+            )
         }
     }
 
     override fun showError(error: String) {
-        codeText.error = error
-        codeText.requestFocus()
+        fragment_premium_et_code.error = error
+        fragment_premium_et_code.requestFocus()
     }
 
     override fun showPremiumActivated() {
-        Snackbar.make(premiumAddServiceHeaderLayout, "Премиум активирован", Snackbar.LENGTH_LONG)
+        Snackbar.make(fragment_premium_ll_header, "Премиум активирован", Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(context!!, R.color.mainBlue))
             .setActionTextColor(ContextCompat.getColor(context!!, R.color.white)).show()
     }
 
     override fun setWithPremium(premiumDate: Long) {
-        noPremiumText.visibility = View.GONE
-        premiumText.visibility = View.VISIBLE
-        premiumText.isEnabled = false
-        setPremiumPremiumElementBtn.text = "Продлить премиум"
-        premiumDatePremiumElementText.text = "Премиум до ${WorkWithTimeApi.getDateInFormatYMD(
+        fragment_premium_tv_no.visibility = View.GONE
+        fragment_premium_tv_yes.visibility = View.VISIBLE
+        fragment_premium_tv_yes.isEnabled = false
+        fragment_premium_btn_set.text = "Продлить премиум"
+        fragment_premium_tv_label.text = "Премиум до ${WorkWithTimeApi.getDateInFormatYMD(
             premiumDate
         )}"
     }
 
     override fun hideBottom() {
-        bottomLayout.visibility = View.GONE
+        fragment_premium_ll_bottom.gone()
     }
 
-    override fun hidePremium() {
-        maimPremiumElementLayout.visibility = View.GONE
-    }
 
     fun setPremium(service: Service) {
         this.service = service
-        /*if (isPremium(service.premiumDate)) {
-            setWithPremium(service.premiumDate)
-        }*/
     }
-
-    private fun isPremium(premiumDate: Long): Boolean = WorkWithTimeApi.checkPremium(premiumDate)
-
 
     companion object {
         @JvmStatic

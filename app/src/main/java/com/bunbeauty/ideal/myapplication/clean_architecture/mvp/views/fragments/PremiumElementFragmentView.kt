@@ -7,5 +7,4 @@ interface PremiumElementFragmentView: MvpView {
     fun setWithPremium(premiumDate: Long)
     fun showPremiumActivated()
     fun hideBottom()
-    fun hidePremium()
 }

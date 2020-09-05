@@ -42,6 +42,19 @@ class ServiceRepository(
         }
     }
 
+    override fun updatePremium(
+        service: Service,
+        durationPremium: Long,
+        updateServiceCallback: UpdateServiceCallback
+    ) {
+        launch {
+            serviceFirebase.updatePremium(service, durationPremium)
+            withContext(Dispatchers.Main) {
+                updateServiceCallback.returnUpdatedCallback(service)
+            }
+        }
+    }
+
     //Обратить внимание
     override fun get(getServicesCallback: GetServicesCallback) {
         launch {
@@ -56,7 +69,7 @@ class ServiceRepository(
         serviceId: String,
         userId: String,
         isFirstEnter: Boolean,
-        getServiceCallback : GetServiceCallback
+        getServiceCallback: GetServiceCallback
     ) {
 
         if (isFirstEnter) {

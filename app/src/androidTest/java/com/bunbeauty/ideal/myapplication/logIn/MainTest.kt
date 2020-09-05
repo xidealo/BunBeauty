@@ -22,14 +22,14 @@ abstract class MainTest {
 
     @Before
     fun setup() {
-        FirebaseAuth.getInstance().signOut()
-
         val userReference = FirebaseDatabase.getInstance()
-            .getReference(User.USERS)
-            .child("nwy4LggmHsRMqioQOupcoeiNT0H2")
+        .getReference(User.USERS)
+        .child("nwy4LggmHsRMqioQOupcoeiNT0H2")
 
         userReference.child(User.NAME).setValue("")
         userReference.child(User.SURNAME).setValue("")
+
+        FirebaseAuth.getInstance().signOut()
     }
 
     @After

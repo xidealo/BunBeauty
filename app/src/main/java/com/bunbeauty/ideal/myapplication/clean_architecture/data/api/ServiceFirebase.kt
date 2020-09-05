@@ -1,11 +1,14 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.server_time.ServerTimeCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service.GetServiceCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service.GetServicesCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Tag
 import com.google.firebase.database.*
+import com.google.firebase.functions.FirebaseFunctions
 import java.util.*
+
 
 class ServiceFirebase {
 
@@ -58,8 +61,36 @@ class ServiceFirebase {
         serviceRef.updateChildren(items)
     }
 
-    fun get(): List<Service> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun updatePremium(
+        service: Service,
+        durationPremium: Long
+    ) {
+
+        FirebaseFunctions.getInstance()
+            .getHttpsCallable("getTime")
+            .call()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val timestamp = task.result!!.data as Long
+                    val serviceRef = FirebaseDatabase.getInstance()
+                        .getReference(Service.SERVICES)
+                        .child(service.userId)
+                        .child(service.id)
+
+                    val items = HashMap<String, Any>()
+                    items[Service.NAME] = service.name
+                    items[Service.ADDRESS] = service.address
+                    items[Service.DESCRIPTION] = service.description
+                    items[Service.DURATION] = service.duration
+                    items[Service.COST] = service.cost
+                    items[Service.CATEGORY] = service.category
+                    items[Service.CREATION_DATE] = service.creationDate
+                    items[Service.PREMIUM_DATE] = timestamp + durationPremium
+                    items[Service.AVG_RATING] = service.rating
+                    items[Service.COUNT_OF_RATES] = service.countOfRates
+                    serviceRef.updateChildren(items)
+                }
+            }
     }
 
     fun getById(userId: String, serviceId: String, getServiceCallback: GetServiceCallback) {

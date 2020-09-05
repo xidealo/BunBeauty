@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileOrderAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileServiceAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.profile.OrdersFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.profile.ServicesFragment
 import dagger.Module

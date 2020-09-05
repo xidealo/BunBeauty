@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/serviceMainLayout"
+    android:id="@+id/activity_service_cl_main"
     style="@style/DefaultTheme"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity">
 
     <include layout="@layout/part_top_panel" />
 
     <ScrollView
-        android:id="@+id/mainViewServiceScroll"
+        android:id="@+id/activity_service_sv_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="2dp"
@@ -37,13 +37,13 @@
                     android:focusable="true">
 
                     <LinearLayout
-                        android:id="@+id/ratingBlockServiceLayout"
+                        android:id="@+id/activity_service_ll_rating_block"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/withoutRatingServiceText"
+                            android:id="@+id/activity_service_tv_empty"
                             style="@style/mainBlockText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -51,14 +51,14 @@
                             android:text="Оценок еще нет" />
 
                         <LinearLayout
-                            android:id="@+id/ratingServiceLayout"
+                            android:id="@+id/activity_service_ll_rating"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:orientation="horizontal">
 
                             <me.zhanghai.android.materialratingbar.MaterialRatingBar
-                                android:id="@+id/ratingServiceRatingBar"
+                                android:id="@+id/activity_service_rb_rating"
                                 style="@android:style/Widget.Holo.RatingBar.Small"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                                 android:theme="@style/ratingBarColors" />
 
                             <TextView
-                                android:id="@+id/ratingServiceText"
+                                android:id="@+id/activity_service_tv_rating"
                                 style="@style/defaultText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                                 android:text="0" />
 
                             <TextView
-                                android:id="@+id/countOfRatesServiceText"
+                                android:id="@+id/activity_service_tv_count"
                                 style="@style/defaultText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -167,12 +167,16 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <fragment
-                    android:id="@+id/premiumBlockService"
-                    class="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment"
+                <LinearLayout
+                    android:id="@+id/activity_service_ll_premium"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
 
+                    <androidx.fragment.app.FragmentContainerView
+                        android:id="@+id/activity_service_f_premium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Нижняя часть фотографии и кнопка-->
@@ -180,11 +184,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_margin"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@+id/mainServiceLayout">
+                android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/photosServiceRecycleView"
+                    android:id="@+id/activity_service_rv_photos"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -192,16 +195,16 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/scheduleServiceBtn"
-                android:visibility="gone"
+                android:id="@+id/activity_service_btn_schedule"
                 style="@style/largeButton"
                 android:layout_gravity="center"
-                android:text="Расписание" />
+                android:text="Расписание"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 
     <ProgressBar
-        android:id="@+id/loadingServiceProgressBar"
+        android:id="@+id/activity_service_pb_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

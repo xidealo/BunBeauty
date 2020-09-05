@@ -124,6 +124,10 @@ exports.sendChatMessageNotification = functions.database.ref('dialogs/{userId}/{
         });
 });
 
+exports.getTime = functions.https.onCall((data,context)=>{
+return Date.now()
+})
+
 // exports.sendOrderNotification = functions
 //     .database
 //     .ref('/users/{userId}/services/{serviceId}/working days/{wdId}/working time/{wtId}/orders/{orderId}')

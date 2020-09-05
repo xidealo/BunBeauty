@@ -32,9 +32,6 @@ data class Service(
     @Embedded
     var photos: ArrayList<Photo> = arrayListOf()
 ) : Parcelable {
-/*    @Ignore
-
-    @Ignore*/
 
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,

@@ -75,12 +75,9 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
     }
 
     private fun init() {
-        premiumFragment =
-            supportFragmentManager.findFragmentById(R.id.premiumBlockService) as PremiumFragment
-
-        photosServiceRecycleView.layoutManager =
+        activity_service_rv_photos.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        photosServiceRecycleView.adapter = photoAdapter
+        activity_service_rv_photos.adapter = photoAdapter
     }
 
     @SuppressLint("SetTextI18n")
@@ -100,12 +97,13 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
         }
 
         showRating(service.rating, service.countOfRates)
+        premiumFragment = PremiumFragment.newInstance(service)
     }
 
     override fun showLoading() {
-        loadingServiceProgressBar.visible()
-        mainViewServiceScroll.gone()
-        scheduleServiceBtn.gone()
+        activity_service_pb_loading.visible()
+        activity_service_sv_main.gone()
+        activity_service_btn_schedule.gone()
     }
 
     override fun setTopPanelTitle(title: String) {
@@ -113,36 +111,32 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
     }
 
     override fun hideLoading() {
-        loadingServiceProgressBar.gone()
-        mainViewServiceScroll.visible()
+        activity_service_pb_loading.gone()
+        activity_service_sv_main.visible()
     }
 
     override fun showRating(rating: Float, countOfRates: Long) {
         if (countOfRates > 0) {
             showRatingBar(rating)
-            countOfRatesServiceText.text = countOfRates.toString()
-            ratingServiceText.text = rating.toString()
+            activity_service_tv_count.text = countOfRates.toString()
+            activity_service_tv_rating.text = rating.toString()
         } else {
             showWithoutRating()
         }
     }
 
     private fun showWithoutRating() {
-        withoutRatingServiceText.visible()
-        ratingServiceLayout.gone()
+        activity_service_tv_empty.visible()
+        activity_service_ll_rating.gone()
     }
 
     private fun showRatingBar(rating: Float) {
-        withoutRatingServiceText.gone()
-        ratingServiceLayout.visible()
-        ratingServiceRatingBar.rating = rating
-        ratingBlockServiceLayout.setOnClickListener {
+        activity_service_tv_empty.gone()
+        activity_service_ll_rating.visible()
+        activity_service_rb_rating.rating = rating
+        activity_service_ll_rating_block.setOnClickListener {
             goToComments()
         }
-    }
-
-    override fun showPremium(service: Service) {
-        premiumFragment.setPremium(service)
     }
 
     override fun createOwnServiceTopPanel(service: Service) {
@@ -153,8 +147,12 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
         initTopPanel(service.name, ButtonTask.GO_TO_PROFILE, user.photoLink)
     }
 
+    override fun showPremium(service: Service) {
+        activity_service_ll_premium.visible()
+    }
+
     override fun hidePremium() {
-        premiumFragment.hidePremium()
+        activity_service_ll_premium.gone()
     }
 
     override fun showPhotos(photos: List<Photo>) {
@@ -167,14 +165,14 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
     }
 
     override fun showSessionButton() {
-        scheduleServiceBtn.visibility = View.VISIBLE
-        scheduleServiceBtn.setOnClickListener {
+        activity_service_btn_schedule.visibility = View.VISIBLE
+        activity_service_btn_schedule.setOnClickListener {
             goToSessions()
         }
     }
 
     override fun hideSessionButton() {
-        scheduleServiceBtn.visibility = View.GONE
+        activity_service_btn_schedule.visibility = View.GONE
     }
 
     override fun actionClick() {
@@ -182,7 +180,7 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
     }
 
     override fun showMessage(message: String) {
-        Snackbar.make(serviceMainLayout, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(activity_service_cl_main, message, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
