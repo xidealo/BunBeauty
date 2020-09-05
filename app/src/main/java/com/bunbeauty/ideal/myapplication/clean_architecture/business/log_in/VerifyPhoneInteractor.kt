@@ -1,6 +1,8 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in
 
 import android.content.Intent
+import android.util.Log
+import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.iLogIn.IVerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.VerifyPhoneNumberCallback
@@ -60,6 +62,8 @@ class VerifyPhoneInteractor(
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {
                     verifyPresenterCallback.showWrongCodeError()
                 }
+
+                Log.d(Tag.ERROR_TAG, task.exception.toString())
             }
         }
     }
@@ -85,11 +89,6 @@ class VerifyPhoneInteractor(
     override fun returnVerifySuccessful(credential: PhoneAuthCredential) {
         userRepository.getByPhoneNumber(getMyPhoneNumber(), this, true)
     }*/
-
-
-    companion object {
-        const val TAG = "DBInf"
-    }
 
 
 

@@ -80,7 +80,7 @@
 
     <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.ProgressButton
         android:id="@+id/activity_registration_pbtn_register"
-        style="@style/progressButton"
+        style="@style/mainButton"
         android:text="Сохранить"
         android:layout_marginBottom="@dimen/default_bottom_margin"
         android:gravity="bottom" />

@@ -7,9 +7,9 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fragment_services_btn_add_service"
-        style="@style/smallButton"
+        style="@style/mainButton"
         android:gravity="center"
-        android:text="@string/addServices" />
+        android:text="@string/add" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_services_rv_list"

@@ -68,7 +68,7 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
             this
         )
         setAdapter(
-            arrayListOf(*resources.getStringArray(R.array.countryCode)),
+            arrayListOf(*resources.getStringArray(R.array.country_codes)),
             activity_edit_profile_sp_code,
             this
         )

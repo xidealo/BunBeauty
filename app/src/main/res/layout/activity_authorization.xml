@@ -49,7 +49,7 @@
 
     <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.ProgressButton
         android:id="@+id/activity_authorization_pbtn_log_in"
-        style="@style/progressButton"
+        style="@style/mainButton"
         android:layout_marginBottom="@dimen/default_bottom_margin"
         android:gravity="bottom"
         android:text="Получить код" />
