@@ -12,6 +12,7 @@ class RegistrationPresenter(private val registrationUserInteractor: IRegistratio
     MvpPresenter<RegistrationView>(), RegistrationPresenterCallback {
 
     fun registerUser(name: String, surname: String, city: String, phone: String) {
+        viewState.showLoading()
         val user = User(phone = phone, city = city, name = name, surname = surname)
         registrationUserInteractor.registerUser(user, this)
     }
@@ -24,36 +25,43 @@ class RegistrationPresenter(private val registrationUserInteractor: IRegistratio
     }
 
     override fun registrationNameInputError() {
+        viewState.hideLoading()
         viewState.enableRegistrationButton()
         viewState.setNameInputError("Допустимы только буквы и тире")
     }
 
     override fun registrationNameInputErrorEmpty() {
+        viewState.hideLoading()
         viewState.enableRegistrationButton()
         viewState.setNameInputError("Введите своё имя")
     }
 
     override fun registrationNameInputErrorLong() {
+        viewState.hideLoading()
         viewState.enableRegistrationButton()
         viewState.setNameInputError("Слишком длинное имя")
     }
 
     override fun registrationSurnameInputError() {
+        viewState.hideLoading()
         viewState.enableRegistrationButton()
         viewState.setSurnameInputError("Допустимы только буквы и тире")
     }
 
     override fun registrationSurnameInputErrorEmpty() {
+        viewState.hideLoading()
         viewState.enableRegistrationButton()
         viewState.setSurnameInputError("Введите свою фамилию")
     }
 
     override fun registrationSurnameInputErrorLong() {
+        viewState.hideLoading()
         viewState.enableRegistrationButton()
         viewState.setSurnameInputError("Слишком длинная фамилия")
     }
 
     override fun registrationCityInputError() {
+        viewState.hideLoading()
         viewState.enableRegistrationButton()
         viewState.showNoSelectedCity()
     }

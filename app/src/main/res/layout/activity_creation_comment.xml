@@ -33,13 +33,13 @@
             android:theme="@style/ratingBarColors" />
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/materialInputLayout"
+            style="@style/MaterialInputLayout"
             android:hint="@string/review"
             app:startIconDrawable="@drawable/icon_file_alt_regular">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activity_creation_comment_rb_review"
-                style="@style/materialInput"
+                style="@style/MaterialInput"
                 android:inputType="textMultiLine|textCapSentences"
                 android:maxLines="10" />
 

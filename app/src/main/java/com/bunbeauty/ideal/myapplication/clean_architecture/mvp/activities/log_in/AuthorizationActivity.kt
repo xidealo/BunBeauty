@@ -2,18 +2,19 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.ArrayAdapter
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in.AuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.AuthorizationView
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import kotlinx.android.synthetic.main.activity_authorization.*
 import javax.inject.Inject
 
@@ -61,19 +62,15 @@ class AuthorizationActivity : BaseActivity(), AuthorizationView, IAdapterSpinner
     }
 
     override fun hideViewsOnScreen() {
-        activity_authorization_pb_loading.visibility = View.VISIBLE
-
-        activity_authorization_til_code.visibility = View.GONE
-        activity_authorization_et_phone.visibility = View.GONE
-        activity_authorization_btn_login.visibility = View.GONE
+        activity_authorization_pb_loading.visible()
+        activity_authorization_ll_main.gone()
+        activity_authorization_btn_login.gone()
     }
 
     override fun showViewsOnScreen() {
-        activity_authorization_pb_loading.visibility = View.GONE
-
-        activity_authorization_til_code.visibility = View.VISIBLE
-        activity_authorization_et_phone.visibility = View.VISIBLE
-        activity_authorization_btn_login.visibility = View.VISIBLE
+        activity_authorization_pb_loading.gone()
+        activity_authorization_ll_main.visible()
+        activity_authorization_btn_login.visible()
     }
 
     override fun showPhoneError(error: String) {

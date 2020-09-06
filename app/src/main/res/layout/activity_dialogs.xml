@@ -25,7 +25,7 @@
 
     <TextView
         android:id="@+id/activity_dialogs_tv_empty"
-        style="@style/infoText"
+        style="@style/InfoText"
         android:layout_gravity="center"
         android:text="Нет диалогов" />
 

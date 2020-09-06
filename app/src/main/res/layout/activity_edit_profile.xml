@@ -44,36 +44,36 @@
                 android:textSize="20sp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/materialInputLayout"
+                style="@style/MaterialInputLayout"
                 android:hint="Имя"
                 app:startIconDrawable="@drawable/icon_profile">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/activity_edit_profile_et_name"
-                    style="@style/materialInput"
+                    style="@style/MaterialInput"
                     android:inputType="textCapSentences" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/materialInputLayout"
+                style="@style/MaterialInputLayout"
                 android:hint="Фамилия"
                 app:startIconDrawable="@drawable/icon_profile">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/activity_edit_profile_et_surname"
-                    style="@style/materialInput"
+                    style="@style/MaterialInput"
                     android:inputType="textCapSentences" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/materialSpinnerLayout"
+                style="@style/MaterialSpinnerLayout"
                 app:startIconDrawable="@drawable/icon_city">
 
                 <AutoCompleteTextView
                     android:id="@+id/activity_edit_profile_sp_city"
-                    style="@style/materialSpinner" />
+                    style="@style/MaterialSpinner" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,39 +83,39 @@
                 android:gravity="center">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/materialSpinnerLayout"
+                    style="@style/MaterialSpinnerLayout"
                     android:layout_marginEnd="3dp"
                     android:layout_weight="1.4"
                     app:startIconDrawable="@drawable/icon_phone_number">
 
                     <AutoCompleteTextView
                         android:id="@+id/activity_edit_profile_sp_code"
-                        style="@style/materialSpinner" />
+                        style="@style/MaterialSpinner" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/materialInputLayout"
+                    style="@style/MaterialInputLayout"
                     android:layout_marginStart="3dp"
                     android:layout_weight="1"
                     android:hint="@string/phone">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/activity_edit_profile_et_phone"
-                        style="@style/materialInput"
+                        style="@style/MaterialInput"
                         android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/activity_edit_profile_til_code"
-                style="@style/materialInputLayout"
+                style="@style/MaterialInputLayout"
                 android:hint="Код"
                 app:startIconDrawable="@drawable/icon_sms_code">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/activity_edit_profile_et_code"
-                    style="@style/materialInput"
+                    style="@style/MaterialInput"
                     android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>

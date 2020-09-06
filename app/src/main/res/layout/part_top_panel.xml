@@ -12,7 +12,7 @@
 
     <TextView
         android:id="@+id/menu_top_panel_tv_title"
-        style="@style/topTitleText" />
+        style="@style/TopTitleText" />
 
     <LinearLayout
         android:layout_width="match_parent"

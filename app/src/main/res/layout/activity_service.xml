@@ -121,7 +121,7 @@
 
                             <TextView
                                 android:id="@+id/costServiceText"
-                                style="@style/serviceBodyText"
+                                style="@style/ServiceBodyText"
                                 android:text="@string/cost" />
                         </LinearLayout>
 
@@ -139,7 +139,7 @@
 
                             <TextView
                                 android:id="@+id/addressServiceText"
-                                style="@style/serviceBodyText"
+                                style="@style/ServiceBodyText"
                                 android:text="@string/address" />
                         </LinearLayout>
 
@@ -157,7 +157,7 @@
 
                             <TextView
                                 android:id="@+id/descriptionServiceText"
-                                style="@style/serviceBodyText"
+                                style="@style/ServiceBodyText"
                                 android:text="@string/description" />
                         </LinearLayout>
 
@@ -175,7 +175,7 @@
 
                             <TextView
                                 android:id="@+id/activity_service_tv_duration"
-                                style="@style/serviceBodyText"
+                                style="@style/ServiceBodyText"
                                 android:text="@string/duration" />
                         </LinearLayout>
 

@@ -60,7 +60,7 @@
 
                     <TextView
                         android:id="@+id/activity_current_comment_tv_review"
-                        style="@style/serviceBodyText"
+                        style="@style/ServiceBodyText"
                         android:text="@string/comment" />
                 </LinearLayout>
 

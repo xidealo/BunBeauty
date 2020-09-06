@@ -5,6 +5,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 interface RegistrationView : MvpView {
     fun setNameInputError(error: String)
+    fun showLoading()
+    fun hideLoading()
     fun setSurnameInputError(error: String)
     fun showNoSelectedCity()
     fun goToProfile(user: User)

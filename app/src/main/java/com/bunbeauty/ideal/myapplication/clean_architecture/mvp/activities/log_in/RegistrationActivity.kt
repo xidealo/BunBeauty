@@ -11,11 +11,13 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.iLogIn.IRegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in.RegistrationPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.RegistrationView
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_registration.*
 import javax.inject.Inject
@@ -42,8 +44,8 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
     }
 
     private fun configViews() {
-        phoneRegistrationInput.setText(registrationPresenter.getMyPhoneNumber())
-
+        activity_registration_et_phone.setText(registrationPresenter.getMyPhoneNumber())
+        hideLoading()
         setAdapter(
             arrayListOf(*resources.getStringArray(R.array.cities)),
             cityRegistrationSpinner,
@@ -54,18 +56,27 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
         activity_registration_btn_register.setOnClickListener {
             WorkWithViewApi.hideKeyboard(this)
             registrationPresenter.registerUser(
-                WorkWithStringsApi.firstCapitalSymbol(nameRegistrationInput.text.toString().trim()),
+                WorkWithStringsApi.firstCapitalSymbol(activity_registration_et_name.text.toString().trim()),
                 WorkWithStringsApi.firstCapitalSymbol(
-                    surnameRegistrationInput.text.toString().trim()
+                    activity_registration_et_surname.text.toString().trim()
                 ),
                 WorkWithStringsApi.firstCapitalSymbol(cityRegistrationSpinner.text.toString()),
-                phoneRegistrationInput.text.toString()
+                activity_registration_et_phone.text.toString()
             )
         }
-
     }
 
-    override fun fillPhoneInput(phone: String) = phoneRegistrationInput.setText(phone)
+    override fun showLoading() {
+        activity_registration_btn_register.gone()
+        activity_registration_pb_loading.visible()
+    }
+
+    override fun hideLoading() {
+        activity_registration_btn_register.visible()
+        activity_registration_pb_loading.gone()
+    }
+
+    override fun fillPhoneInput(phone: String) = activity_registration_et_phone.setText(phone)
 
     override fun disableRegistrationButton() {
         activity_registration_btn_register.isEnabled = false
@@ -76,13 +87,13 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
     }
 
     override fun setNameInputError(error: String) {
-        nameRegistrationInput.error = error
-        nameRegistrationInput.requestFocus()
+        activity_registration_et_name.error = error
+        activity_registration_et_name.requestFocus()
     }
 
     override fun setSurnameInputError(error: String) {
-        surnameRegistrationInput.error = error
-        surnameRegistrationInput.requestFocus()
+        activity_registration_et_surname.error = error
+        activity_registration_et_surname.requestFocus()
     }
 
     override fun showNoSelectedCity() {
@@ -90,7 +101,7 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
             .setBackgroundTint(ContextCompat.getColor(this, R.color.red))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
-
+    //TODO (dont work)
     override fun showSuccessfulRegistration() {
         Snackbar.make(activity_registration_ll, "Пользователь зарегестирован", Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))

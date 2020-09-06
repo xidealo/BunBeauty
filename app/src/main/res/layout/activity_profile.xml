@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/profileMainLayout"
+    android:id="@+id/activity_profile_cl_main"
     style="@style/DefaultTheme"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity">
 
@@ -30,7 +30,6 @@
                     <include layout="@layout/part_top_panel" />
 
                     <LinearLayout
-                        android:id="@+id/infoProfileLayout"
                         style="@style/wideVerticalBlock"
                         android:background="@color/mainBlue"
                         app:layout_constraintStart_toStartOf="parent"
@@ -50,18 +49,18 @@
                                     android:visibility="invisible" />
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                    android:id="@+id/subscribeProfileBtn"
+                                    android:id="@+id/activity_profile_btn_subscribe"
                                     style="@style/actionButton"
                                     app:srcCompat="@drawable/icon_heart_outline" />
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                    android:id="@+id/subscriptionsProfileBtn"
+                                    android:id="@+id/activity_profile_btn_subscriptions"
                                     style="@style/actionButton"
                                     app:srcCompat="@drawable/icon_subscriptions" />
                             </RelativeLayout>
 
                             <ImageView
-                                android:id="@+id/avatarProfileImage"
+                                android:id="@+id/activity_profile_iv_avatar"
                                 style="@style/profileAvatar"
                                 android:layout_weight="1"
                                 tools:srcCompat="@tools:sample/avatars" />
@@ -76,12 +75,12 @@
                                     android:visibility="invisible" />
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                    android:id="@+id/dialogsProfileBtn"
+                                    android:id="@+id/activity_profile_btn_dialogs"
                                     style="@style/actionButton"
                                     app:srcCompat="@drawable/icon_dialog" />
 
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                    android:id="@+id/scheduleProfileBtn"
+                                    android:id="@+id/activity_profile_btn_schedule"
                                     style="@style/actionButton"
                                     app:srcCompat="@drawable/icon_schedule" />
                             </RelativeLayout>
@@ -93,13 +92,13 @@
                             android:padding="5dp">
 
                             <TextView
-                                android:id="@+id/fullNameProfileText"
-                                style="@style/profileMediumText"
+                                android:id="@+id/activity_profile_tv_full_name"
+                                style="@style/ProfileMediumText"
                                 android:text="Name Surname" />
 
                             <TextView
-                                android:id="@+id/cityProfileText"
-                                style="@style/profileThinText"
+                                android:id="@+id/activity_profile_tv_city"
+                                style="@style/ProfileThinText"
                                 android:text="City" />
                         </LinearLayout>
 
@@ -114,8 +113,8 @@
                                 android:gravity="center">
 
                                 <TextView
-                                    android:id="@+id/subscribersProfileText"
-                                    style="@style/profileThinText"
+                                    android:id="@+id/activity_profile_tv_subscribers"
+                                    style="@style/ProfileThinText"
                                     android:text="Подписчики:" />
                             </LinearLayout>
 
@@ -126,7 +125,7 @@
                                 android:gravity="center">
 
                                 <com.google.android.material.card.MaterialCardView
-                                    android:id="@+id/ratingProfileLayout"
+                                    android:id="@+id/activity_profile_mcv_rating"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:checkable="true"
@@ -139,7 +138,7 @@
                                         android:gravity="center">
 
                                         <me.zhanghai.android.materialratingbar.MaterialRatingBar
-                                            android:id="@+id/profileRatingBar"
+                                            android:id="@+id/activity_profile_rb_rating"
                                             style="@android:style/Widget.Holo.RatingBar.Small"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -147,8 +146,8 @@
                                             android:theme="@style/ratingBarColors" />
 
                                         <TextView
-                                            android:id="@+id/ratingProfileText"
-                                            style="@style/profileThinText"
+                                            android:id="@+id/activity_profile_tv_rating"
+                                            style="@style/ProfileThinText"
                                             android:text="0 (0)" />
                                     </LinearLayout>
 
@@ -162,7 +161,7 @@
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/profileTabLayout"
+                android:id="@+id/activity_profile_tl_tab"
                 style="@style/tabs">
 
                 <com.google.android.material.tabs.TabItem
@@ -178,7 +177,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.CustomViewPager
-            android:id="@+id/profileViewPager"
+            android:id="@+id/activity_profile_vp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
@@ -186,7 +185,7 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <ProgressBar
-        android:id="@+id/loadingProfileProgressBar"
+        android:id="@+id/activity_profile_pb_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

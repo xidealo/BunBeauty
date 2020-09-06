@@ -12,7 +12,10 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileOrde
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfilePagerAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileServiceAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTransformation
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.NumberRoundingApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.invisible
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.roundSomeSymbols
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.profile.iProfile.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
@@ -47,9 +50,6 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
 
     @Inject
     lateinit var profileUserInteractor: IProfileUserInteractor
-
-    @Inject
-    lateinit var numberRoundingApi: NumberRoundingApi
 
     @Inject
     lateinit var profileServiceInteractor: IProfileServiceInteractor
@@ -98,36 +98,36 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
     }
 
     private fun init() {
-        ratingProfileLayout.setOnClickListener {
+        activity_profile_mcv_rating.setOnClickListener {
             goToComments(profilePresenter.getCacheOwner())
         }
-        subscribeProfileBtn.setOnClickListener {
+        activity_profile_btn_subscribe.setOnClickListener {
             profilePresenter.subscribe()
         }
-        dialogsProfileBtn.setOnClickListener {
+        activity_profile_btn_dialogs.setOnClickListener {
             profilePresenter.getDialog()
         }
-        subscriptionsProfileBtn.setOnClickListener {
+        activity_profile_btn_subscriptions.setOnClickListener {
             profilePresenter.goToSubscriptions()
         }
-        scheduleProfileBtn.setOnClickListener {
+        activity_profile_btn_schedule.setOnClickListener {
             goToSchedule()
         }
 
-        avatarProfileImage.setOnClickListener {
+        activity_profile_iv_avatar.setOnClickListener {
             openPhoto()
         }
 
         ordersFragment = OrdersFragment(profileOrderAdapter)
         servicesFragment = ServicesFragment(profileServiceAdapter)
-        profileViewPager.adapter = ProfilePagerAdapter(
+        activity_profile_vp.adapter = ProfilePagerAdapter(
             supportFragmentManager,
             FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
             ordersFragment,
             servicesFragment
         )
-        profileTabLayout.addOnTabSelectedListener(this)
-        profileViewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(profileTabLayout))
+        activity_profile_tl_tab.addOnTabSelectedListener(this)
+        activity_profile_vp.addOnPageChangeListener(TabLayoutOnPageChangeListener(activity_profile_tl_tab))
     }
 
     private fun openPhoto() {
@@ -143,8 +143,8 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
     }
 
     override fun showProfileInfo(name: String, surname: String, city: String) {
-        fullNameProfileText.text = "$name $surname"
-        cityProfileText.text = city
+        activity_profile_tv_full_name.text = "$name $surname"
+        activity_profile_tv_city.text = city
     }
 
     override fun showAvatar(photoLink: String) {
@@ -155,17 +155,17 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
             .resize(width, height)
             .centerCrop()
             .transform(CircularTransformation())
-            .into(avatarProfileImage)
+            .into(activity_profile_iv_avatar)
     }
 
     override fun showCountOfSubscriber(count: Long) {
-        subscribersProfileText.text = "Подписчики: $count"
-        subscribersProfileText.visibility = View.VISIBLE
+        activity_profile_tv_subscribers.text = "Подписчики: $count"
+        activity_profile_tv_subscribers.visible()
     }
 
     override fun showRating(rating: Float, countOfRates: Long) {
-        profileRatingBar.rating = rating
-        ratingProfileText.text = "${numberRoundingApi.roundSomeSymbols(rating, 2)} ($countOfRates)"
+        activity_profile_rb_rating.rating = rating
+        activity_profile_tv_rating.text = "${rating.roundSomeSymbols(2)} ($countOfRates)"
     }
 
     override fun showServiceList(serviceList: List<Service>) {
@@ -193,23 +193,23 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
     }
 
     override fun showOrders() {
-        profileViewPager.currentItem = ORDERS_INDEX
+        activity_profile_vp.currentItem = ORDERS_INDEX
     }
 
     override fun showServices() {
-        profileViewPager.currentItem = SERVICES_INDEX
+        activity_profile_vp.currentItem = SERVICES_INDEX
     }
 
     override fun showTabLayout() {
-        profileTabLayout.visibility = View.VISIBLE
+        activity_profile_tl_tab.visible()
     }
 
     override fun hideTabLayout() {
-        profileTabLayout.visibility = View.GONE
+        activity_profile_tl_tab.gone()
     }
 
     override fun disableSwipe() {
-        profileViewPager.isEnable = false
+        activity_profile_vp.isEnable = false
     }
 
     override fun showCreateServiceButton() {
@@ -221,39 +221,39 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
     }
 
     override fun showDialogsButton() {
-        dialogsProfileBtn.visibility = View.VISIBLE
+        activity_profile_btn_dialogs.visible()
     }
 
     override fun hideDialogsButton() {
-        dialogsProfileBtn.visibility = View.GONE
+        activity_profile_btn_dialogs.gone()
     }
 
     override fun showSubscribeButton() {
-        subscribeProfileBtn.visibility = View.VISIBLE
+        activity_profile_btn_subscribe.visible()
     }
 
     override fun hideSubscribeButton() {
-        subscribeProfileBtn.visibility = View.GONE
+        activity_profile_btn_subscribe.gone()
     }
 
     override fun showSubscriptionsButton() {
-        subscriptionsProfileBtn.visibility = View.VISIBLE
+        activity_profile_btn_subscriptions.visible()
     }
 
     override fun hideSubscriptionsButton() {
-        subscriptionsProfileBtn.visibility = View.GONE
+        activity_profile_btn_subscriptions.gone()
     }
 
     override fun showScheduleButton() {
-        scheduleProfileBtn.visibility = View.VISIBLE
+        activity_profile_btn_schedule.visible()
     }
 
     override fun hideScheduleButton() {
-        scheduleProfileBtn.visibility = View.GONE
+        activity_profile_btn_schedule.gone()
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
-        profileViewPager.currentItem = tab.position
+        activity_profile_vp.currentItem = tab.position
     }
 
     override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -261,17 +261,17 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
     override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
     override fun showProgress() {
-        loadingProfileProgressBar.visibility = View.VISIBLE
-        profileViewPager.visibility = View.INVISIBLE
+        activity_profile_pb_loading.visible()
+        activity_profile_vp.invisible()
     }
 
     override fun hideProgress() {
-        loadingProfileProgressBar.visibility = View.GONE
-        profileViewPager.visibility = View.VISIBLE
+        activity_profile_pb_loading.gone()
+        activity_profile_vp.visible()
     }
 
     override fun showMessage(message: String) {
-        Snackbar.make(profileMainLayout, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(activity_profile_cl_main, message, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
@@ -312,11 +312,11 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
     }
 
     override fun showSubscribed() {
-        subscribeProfileBtn.setImageResource(R.drawable.icon_heart)
+        activity_profile_btn_subscribe.setImageResource(R.drawable.icon_heart)
     }
 
     override fun showUnsubscribed() {
-        subscribeProfileBtn.setImageResource(R.drawable.icon_heart_outline)
+        activity_profile_btn_subscribe.setImageResource(R.drawable.icon_heart_outline)
     }
 
     private fun goToSchedule() {

@@ -44,8 +44,8 @@ public class UIRegistrationActivityTests {
         String name = "TestName";
         String surnameTest = "TestSurname";
         //set data
-        onView(withId(R.id.nameRegistrationInput)).perform(typeText(name));
-        onView(withId(R.id.surnameRegistrationInput)).perform(typeText(surnameTest));
+        onView(withId(R.id.activity_registration_et_name)).perform(typeText(name));
+        onView(withId(R.id.activity_registration_et_surname)).perform(typeText(surnameTest));
         //close keyboard
         Espresso.closeSoftKeyboard();
         //select city in spinner

@@ -35,57 +35,57 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/materialInputLayout"
+                style="@style/MaterialInputLayout"
                 android:hint="Название"
                 app:startIconDrawable="@drawable/icon_profile">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/activity_edit_service_et_name"
-                    style="@style/materialInput"
+                    style="@style/MaterialInput"
                     android:inputType="textCapSentences" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/materialInputLayout"
+                style="@style/MaterialInputLayout"
                 android:hint="Адрес"
                 app:startIconDrawable="@drawable/icon_map_marked_solid">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/activity_edit_service_et_address"
-                    style="@style/materialInput"
+                    style="@style/MaterialInput"
                     android:inputType="textCapSentences" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/materialInputLayout"
+                style="@style/MaterialInputLayout"
                 android:hint="Цена"
                 app:startIconDrawable="@drawable/icon_dollar_sign_solid">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/activity_edit_service_et_cost"
-                    style="@style/materialInput"
+                    style="@style/MaterialInput"
                     android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/materialInputLayout"
+                style="@style/MaterialInputLayout"
                 android:hint="Описание"
                 app:startIconDrawable="@drawable/icon_file_alt_regular">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/activity_edit_service_et_description"
-                    style="@style/materialInput"
+                    style="@style/MaterialInput"
                     android:inputType="textMultiLine|textCapSentences"
                     android:maxLines="10" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
-                style="@style/materialInputLayout"
+                style="@style/MaterialInputLayout"
                 android:gravity="center">
 
                 <ImageView

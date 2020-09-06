@@ -45,7 +45,7 @@ class VerifyPhoneNumberActivity : BaseActivity(), VerifyPhoneView {
     private fun configViews() {
         phoneVerifyPhoneInput.setText(verifyPhonePresenter.getPhoneNumber())
 
-        verifyVerifyPhoneBtn.setOnClickListener {
+        activity_verify_phone_number_btn_log_in.setOnClickListener {
             WorkWithViewApi.hideKeyboard(this)
             verifyPhonePresenter.checkCode(codeVerifyPhoneInput.text.toString())
         }
@@ -60,12 +60,12 @@ class VerifyPhoneNumberActivity : BaseActivity(), VerifyPhoneView {
     }
 
     override fun hideViewsOnScreen() {
-        verifyVerifyPhoneBtn.visibility = View.GONE
+        activity_verify_phone_number_btn_log_in.visibility = View.GONE
         activity_verify_phone_number_pb_loading.visibility = View.VISIBLE
     }
 
     override fun showViewsOnScreen() {
-        verifyVerifyPhoneBtn.visibility = View.VISIBLE
+        activity_verify_phone_number_btn_log_in.visibility = View.VISIBLE
         activity_verify_phone_number_pb_loading.visibility = View.GONE
     }
 

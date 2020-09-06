@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/activity_usercomments_tv_empty"
-        style="@style/infoText"
+        style="@style/InfoText"
         android:text="Нет комментариев"
         app:layout_constraintBottom_toTopOf="@+id/top_panel"
         app:layout_constraintEnd_toEndOf="parent"

@@ -26,4 +26,6 @@
     <dimen name="default_small_margin">4dp</dimen>
     <dimen name="default_bottom_button_margin">50dp</dimen>
 
+    <dimen name="top_logo_margin">50dp</dimen>
+
 </resources>

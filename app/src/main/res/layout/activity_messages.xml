@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/activity_messages_tv_empty"
-        style="@style/infoText"
+        style="@style/InfoText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

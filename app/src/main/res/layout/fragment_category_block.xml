@@ -6,12 +6,12 @@
     android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/materialSpinnerLayout"
+        style="@style/MaterialSpinnerLayout"
         app:startIconDrawable="@drawable/icon_file_alt_regular">
 
         <AutoCompleteTextView
             android:id="@+id/categorySpinner"
-            style="@style/materialSpinner" />
+            style="@style/MaterialSpinner" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
