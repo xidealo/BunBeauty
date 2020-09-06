@@ -14,45 +14,47 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
 
     private lateinit var authorizationPresenterCallback: AuthorizationPresenterCallback
 
-    override fun defaultAuthorize(authorizationPresenterCallback: AuthorizationPresenterCallback) {
+    override fun authorizeByDefault(authorizationPresenterCallback: AuthorizationPresenterCallback) {
         this.authorizationPresenterCallback = authorizationPresenterCallback
 
-        if (getCurrentFbUser() != null) {
+        if (getCurrentUser() != null) {
             userRepository.getByPhoneNumber(
                 FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,
                 this,
                 true
             )
         } else {
-            authorizationPresenterCallback.showViewOnScreen()
+            authorizationPresenterCallback.showDefaultAuthorizationFailed()
         }
     }
 
-    override fun returnGottenObject(element: User?) {
-        if (element == null) {
-            authorizationPresenterCallback.showViewOnScreen()
+    override fun returnGottenObject(user: User?) {
+        if (user == null) {
+            authorizationPresenterCallback.showDefaultAuthorizationFailed()
             return
         }
 
-        if (element.name.isNotEmpty()) {
-            authorizationPresenterCallback.goToProfile(element)
+        if (user.name.isNotEmpty()) {
+            authorizationPresenterCallback.goToProfile(user)
         }else {
-            authorizationPresenterCallback.goToRegistration(getCurrentFbUser()!!.phoneNumber!!)
+            authorizationPresenterCallback.goToRegistration(getCurrentUser()!!.phoneNumber!!)
         }
     }
 
     override fun authorize(
+        code: String,
         phone: String,
         authorizationPresenterCallback: AuthorizationPresenterCallback
     ) {
-        if (isPhoneCorrect(phone.trim())) {
-            authorizationPresenterCallback.goToVerifyPhone(phone)
+        val fullPhone = code + phone
+        if (isPhoneCorrect(fullPhone)) {
+            authorizationPresenterCallback.goToVerifyPhone(fullPhone)
         } else {
             authorizationPresenterCallback.setPhoneError()
         }
     }
 
-    private fun getCurrentFbUser(): FirebaseUser? {
+    private fun getCurrentUser(): FirebaseUser? {
         return FirebaseAuth.getInstance().currentUser
     }
 

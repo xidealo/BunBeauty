@@ -3,15 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/LogInPage"
-    android:gravity="center"
-    android:orientation="vertical"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.AuthorizationActivity">
 
     <ImageView
-        android:id="@+id/activity_authorization_iv_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/top_logo_margin"
+        android:layout_marginTop="@dimen/logo_top_margin"
+        android:contentDescription="logo"
         app:srcCompat="@drawable/bun_beauty" />
 
     <LinearLayout
@@ -19,56 +17,40 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <LinearLayout
-            style="@style/wideHorizontalBlock"
-            android:baselineAligned="false">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/activity_authorization_til_code"
-                style="@style/MaterialLoginSpinnerLayout"
-                android:layout_width="wrap_content"
-                android:layout_marginEnd="3dp"
-                app:startIconDrawable="@drawable/icon_phone_number">
-
-                <AutoCompleteTextView
-                    android:id="@+id/activity_authorization_sp_code"
-                    style="@style/MaterialLoginSpinner" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/MaterialLoginInputLayout"
-                android:layout_width="0dp"
-                android:layout_marginStart="3dp"
-                android:layout_weight="1"
-                android:hint="@string/phone">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/activity_authorization_et_phone"
-                    style="@style/MaterialLoginInput"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        style="@style/wideVerticalBlock"
-        android:layout_marginBottom="@dimen/default_bottom_button_margin"
+        android:baselineAligned="false"
         android:gravity="center">
 
-        <ProgressBar
-            android:id="@+id/activity_authorization_pb_loading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="@color/white" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/activity_authorization_til_code"
+            style="@style/MaterialLoginSpinnerLayout"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="3dp"
+            app:startIconDrawable="@drawable/icon_phone_number">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/activity_authorization_btn_login"
-            style="@style/loginButton"
-            android:text="Войти" />
+            <AutoCompleteTextView
+                android:id="@+id/activity_authorization_sp_code"
+                style="@style/MaterialLoginSpinner" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/MaterialLoginInputLayout"
+            android:layout_width="0dp"
+            android:layout_marginStart="3dp"
+            android:layout_weight="1"
+            android:hint="@string/phone">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_authorization_et_phone"
+                style="@style/MaterialLoginInput"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
+    <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.ProgressButton
+        android:id="@+id/activity_authorization_pbtn_log_in"
+        style="@style/progressButton"
+        android:layout_marginBottom="@dimen/default_bottom_margin"
+        android:gravity="bottom"
+        android:text="Получить код" />
 </LinearLayout>

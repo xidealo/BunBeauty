@@ -61,7 +61,6 @@ interface IBottomPanel : IPanel, BottomNavigationView.OnNavigationItemSelectedLi
     }
 
     private fun startActivity(intent: Intent) {
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         panelContext.startActivity(intent)
         panelContext.overridePendingTransition(0, 0)
         panelContext.finish()

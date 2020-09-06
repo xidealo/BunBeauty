@@ -11,7 +11,4 @@ interface RegistrationView : MvpView {
     fun showNoSelectedCity()
     fun goToProfile(user: User)
     fun fillPhoneInput(phone: String)
-    fun showSuccessfulRegistration()
-    fun disableRegistrationButton()
-    fun enableRegistrationButton()
 }

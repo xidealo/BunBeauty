@@ -2,17 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/verifyPhoneNumberLayout"
+    android:id="@+id/activity_verify_phone_number_ll"
     style="@style/LogInPage"
-    android:gravity="center"
-    android:orientation="vertical"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.VerifyPhoneNumberActivity">
 
     <ImageView
         android:id="@+id/logoVerifyImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/top_logo_margin"
+        android:layout_marginTop="@dimen/logo_top_margin"
+        android:contentDescription="logo"
         app:srcCompat="@drawable/bun_beauty" />
 
     <LinearLayout
@@ -22,14 +21,13 @@
         android:gravity="center"
         android:orientation="vertical">
 
-
         <com.google.android.material.textfield.TextInputLayout
             style="@style/MaterialLoginInputLayout"
             android:hint="@string/phone"
             app:startIconDrawable="@drawable/icon_phone_number">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/phoneVerifyPhoneInput"
+                android:id="@+id/activity_verify_phone_number_et_phone_number"
                 style="@style/MaterialLoginInput"
                 android:enabled="false"
                 android:focusable="false"
@@ -39,12 +37,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/changePhoneVerifyPhoneText"
+            android:id="@+id/activity_verify_phone_number_tv_change_phone_number"
             style="@style/LoginPackageText"
             android:text="@string/change_number" />
 
         <TextView
-            android:id="@+id/alertCodeVerifyText"
             style="@style/ExtraText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,7 +54,7 @@
             app:startIconDrawable="@drawable/icon_sms_code">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/codeVerifyPhoneInput"
+                android:id="@+id/activity_verify_phone_number_et_code"
                 style="@style/MaterialLoginInput"
                 android:inputType="number" />
 
@@ -77,7 +74,7 @@
                 android:text="Не получили sms?" />
 
             <TextView
-                android:id="@+id/resendCodeVerifyPhoneText"
+                android:id="@+id/activity_verify_phone_number_tv_resend_code"
                 style="@style/LoginPackageText"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
@@ -86,21 +83,11 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        style="@style/wideVerticalBlock"
-        android:layout_marginBottom="@dimen/default_bottom_button_margin"
-        android:gravity="center">
-
-        <ProgressBar
-            android:id="@+id/activity_verify_phone_number_pb_loading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="@color/white" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/activity_verify_phone_number_btn_log_in"
-            style="@style/loginButton"
-            android:text="Войти" />
-    </LinearLayout>
+    <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.ProgressButton
+        android:id="@+id/activity_verify_phone_number_pbtn_log_in"
+        style="@style/progressButton"
+        android:layout_marginBottom="@dimen/default_bottom_margin"
+        android:gravity="bottom"
+        android:text="Далее" />
 
 </LinearLayout>

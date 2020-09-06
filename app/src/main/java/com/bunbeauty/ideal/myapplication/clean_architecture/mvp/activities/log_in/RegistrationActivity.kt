@@ -53,7 +53,7 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
         )
         (cityRegistrationSpinner.adapter as ArrayAdapter<String>).filter.filter("")
 
-        activity_registration_btn_register.setOnClickListener {
+        activity_registration_pbtn_register.setOnClickListener {
             WorkWithViewApi.hideKeyboard(this)
             registrationPresenter.registerUser(
                 WorkWithStringsApi.firstCapitalSymbol(activity_registration_et_name.text.toString().trim()),
@@ -67,24 +67,14 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
     }
 
     override fun showLoading() {
-        activity_registration_btn_register.gone()
-        activity_registration_pb_loading.visible()
+        activity_registration_pbtn_register.showLoading()
     }
 
     override fun hideLoading() {
-        activity_registration_btn_register.visible()
-        activity_registration_pb_loading.gone()
+        activity_registration_pbtn_register.hideLoading()
     }
 
     override fun fillPhoneInput(phone: String) = activity_registration_et_phone.setText(phone)
-
-    override fun disableRegistrationButton() {
-        activity_registration_btn_register.isEnabled = false
-    }
-
-    override fun enableRegistrationButton() {
-        activity_registration_btn_register.isEnabled = true
-    }
 
     override fun setNameInputError(error: String) {
         activity_registration_et_name.error = error
@@ -101,17 +91,11 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
             .setBackgroundTint(ContextCompat.getColor(this, R.color.red))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }
-    //TODO (dont work)
-    override fun showSuccessfulRegistration() {
-        Snackbar.make(activity_registration_ll, "Пользователь зарегестирован", Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
-            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
-    }
 
     override fun goToProfile(user: User) {
         val intent = Intent(this, ProfileActivity::class.java).apply {
             putExtra(User.USER, user)
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         startActivity(intent)
         overridePendingTransition(0, 0)

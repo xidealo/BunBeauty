@@ -6,15 +6,17 @@ import android.widget.ArrayAdapter
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.invisible
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in.AuthorizationPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.AuthorizationView
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import kotlinx.android.synthetic.main.activity_authorization.*
 import javax.inject.Inject
 
@@ -37,49 +39,43 @@ class AuthorizationActivity : BaseActivity(), AuthorizationView, IAdapterSpinner
         setContentView(R.layout.activity_authorization)
         configViews()
 
-        authorizationPresenter.defaultAuthorize()
+        authorizationPresenter.authorizeByDefault()
     }
 
     private fun configViews() {
         val countryCodes = arrayListOf(*resources.getStringArray(R.array.countryCode))
 
-        setAdapter(
-            countryCodes,
-            activity_authorization_sp_code,
-            this
-        )
+        setAdapter(countryCodes, activity_authorization_sp_code, this)
         activity_authorization_sp_code.setText(countryCodes.first())
         (activity_authorization_sp_code.adapter as ArrayAdapter<String>).filter.filter("")
 
-        activity_authorization_btn_login.setOnClickListener {
-            authorizationPresenter.authorize(activity_authorization_sp_code.text.toString() + activity_authorization_et_phone.text.toString())
+        activity_authorization_pbtn_log_in.setOnClickListener {
+            authorizationPresenter.authorize(
+                activity_authorization_sp_code.text.toString(),
+                activity_authorization_et_phone.text.toString()
+            )
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        enableVerifyBtn(true)
+    override fun hidePhoneNumberFields() {
+        activity_authorization_ll_main.invisible()
     }
 
-    override fun hideViewsOnScreen() {
-        activity_authorization_pb_loading.visible()
-        activity_authorization_ll_main.gone()
-        activity_authorization_btn_login.gone()
-    }
-
-    override fun showViewsOnScreen() {
-        activity_authorization_pb_loading.gone()
+    override fun showPhoneNumberFields() {
         activity_authorization_ll_main.visible()
-        activity_authorization_btn_login.visible()
+    }
+
+    override fun hideLoading() {
+        activity_authorization_pbtn_log_in.hideLoading()
+    }
+
+    override fun showLoading() {
+        activity_authorization_pbtn_log_in.showLoading()
     }
 
     override fun showPhoneError(error: String) {
         activity_authorization_et_phone.error = error
         activity_authorization_et_phone.requestFocus()
-    }
-
-    override fun enableVerifyBtn(status: Boolean) {
-        activity_authorization_btn_login.isClickable = status
     }
 
     override fun goToVerifyPhone(phone: String) {
@@ -106,17 +102,5 @@ class AuthorizationActivity : BaseActivity(), AuthorizationView, IAdapterSpinner
         startActivity(intent)
         overridePendingTransition(0, 0)
         finish()
-    }
-
-    override fun hideKeyboard() {
-        //WorkWithViewApi.hideKeyboard(this)
-    }
-
-    override fun disableButton() {
-        activity_authorization_btn_login.isEnabled = false
-    }
-
-    override fun enableButton() {
-        activity_authorization_btn_login.isEnabled = true
     }
 }

@@ -49,7 +49,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_creation_comment_btn_rate"
         style="@style/smallButton"
-        android:layout_marginBottom="@dimen/default_bottom_button_margin"
+        android:layout_marginBottom="@dimen/default_bottom_margin"
         android:text="@string/rate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

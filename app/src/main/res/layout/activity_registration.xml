@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_registration_ll"
     style="@style/LogInPage"
-    android:gravity="center"
-    android:orientation="vertical"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.RegistrationActivity">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/top_logo_margin"
+        android:layout_marginTop="@dimen/logo_top_margin"
+        android:contentDescription="logo"
         app:srcCompat="@drawable/bun_beauty" />
 
     <LinearLayout
@@ -21,85 +20,70 @@
         android:gravity="center"
         android:orientation="vertical">
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/phoneRegistrationInputLayout"
+            style="@style/MaterialLoginInputLayout"
+            android:hint="@string/phone"
+            app:startIconDrawable="@drawable/icon_phone_number">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_registration_et_phone"
+                style="@style/MaterialLoginInput"
+                android:enabled="false"
+                android:focusable="false"
+                android:inputType="number"
+                android:textColor="@color/white50" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameRegistrationInputLayout"
+            style="@style/MaterialLoginInputLayout"
+            android:hint="@string/name"
+            app:startIconDrawable="@drawable/icon_profile">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_registration_et_name"
+                style="@style/MaterialLoginInput"
+                android:inputType="textPersonName|textCapSentences" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/surnameRegistrationInputLayout"
+            style="@style/MaterialLoginInputLayout"
+            android:hint="@string/surname"
+            app:startIconDrawable="@drawable/icon_profile">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_registration_et_surname"
+                style="@style/MaterialLoginInput"
+                android:inputType="textPersonName|textCapSentences" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <LinearLayout
-            style="@style/LoginPackageLinearLayout"
-            android:orientation="vertical">
+            style="@style/wideHorizontalBlock"
+            android:gravity="center">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/phoneRegistrationInputLayout"
-                style="@style/MaterialLoginInputLayout"
-                android:hint="@string/phone"
-                app:startIconDrawable="@drawable/icon_phone_number">
+                android:id="@+id/activity_registration_et_city"
+                style="@style/MaterialLoginSpinnerLayout"
+                app:startIconDrawable="@drawable/icon_city">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/activity_registration_et_phone"
-                    style="@style/MaterialLoginInput"
-                    android:enabled="false"
-                    android:focusable="false"
-                    android:inputType="number"
-                    android:textColor="@color/white50" />
+                <AutoCompleteTextView
+                    android:id="@+id/cityRegistrationSpinner"
+                    style="@style/MaterialLoginSpinner"
+                    android:text="@string/city" />
 
             </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/nameRegistrationInputLayout"
-                style="@style/MaterialLoginInputLayout"
-                android:hint="@string/name"
-                app:startIconDrawable="@drawable/icon_profile">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/activity_registration_et_name"
-                    style="@style/MaterialLoginInput"
-                    android:inputType="textPersonName|textCapSentences" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/surnameRegistrationInputLayout"
-                style="@style/MaterialLoginInputLayout"
-                android:hint="@string/surname"
-                app:startIconDrawable="@drawable/icon_profile">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/activity_registration_et_surname"
-                    style="@style/MaterialLoginInput"
-                    android:inputType="textPersonName|textCapSentences" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                style="@style/wideHorizontalBlock"
-                android:gravity="center">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/activity_registration_et_city"
-                    style="@style/MaterialLoginSpinnerLayout"
-                    app:startIconDrawable="@drawable/icon_city">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/cityRegistrationSpinner"
-                        style="@style/MaterialLoginSpinner"
-                        android:text="@string/city" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        style="@style/wideVerticalBlock"
-        android:layout_marginBottom="@dimen/default_bottom_button_margin"
-        android:gravity="center">
-
-        <ProgressBar
-            android:id="@+id/activity_registration_pb_loading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="@color/white" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/activity_registration_btn_register"
-            style="@style/loginButton"
-            android:text="сохранить данные" />
-    </LinearLayout>
+    <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.ProgressButton
+        android:id="@+id/activity_registration_pbtn_register"
+        style="@style/progressButton"
+        android:text="Сохранить"
+        android:layout_marginBottom="@dimen/default_bottom_margin"
+        android:gravity="bottom" />
 </LinearLayout>

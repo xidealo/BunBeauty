@@ -31,25 +31,27 @@ class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneIntera
     }
 
     fun checkCode(code: String) {
-        viewState.hideViewsOnScreen()
+        viewState.showLoading()
         verifyPhoneInteractor.checkCode(code)
     }
 
     override fun showTooShortCodeError() {
-        viewState.showViewsOnScreen()
+        viewState.hideLoading()
         viewState.showMessage("Слишком короткий код")
     }
 
     override fun showWrongCodeError() {
-        viewState.showViewsOnScreen()
+        viewState.hideLoading()
         viewState.showMessage("Неправильный код")
     }
 
     override fun showServiceConnectionProblem() {
+        viewState.hideLoading()
         viewState.showMessage("Проблемы соединения с сервером")
     }
 
     override fun goToRegistration(phone: String) {
+        viewState.hideLoading()
         viewState.goToRegistration(phone)
     }
 

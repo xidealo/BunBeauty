@@ -11,21 +11,24 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.Aut
 class AuthorizationPresenter(private val authorizationInteractor: IAuthorizationInteractor) :
         MvpPresenter<AuthorizationView>(), AuthorizationPresenterCallback {
 
-    fun defaultAuthorize() {
-        viewState.hideViewsOnScreen()
-        authorizationInteractor.defaultAuthorize(this)
+    fun authorizeByDefault() {
+        viewState.hidePhoneNumberFields()
+        viewState.showLoading()
+        authorizationInteractor.authorizeByDefault(this)
     }
 
-    fun authorize(phone: String) {
-        authorizationInteractor.authorize(phone, this)
+    override fun showDefaultAuthorizationFailed() {
+        viewState.showPhoneNumberFields()
+        viewState.hideLoading()
     }
 
-    override fun showViewOnScreen() {
-        viewState.showViewsOnScreen()
+    fun authorize(code: String, phone: String) {
+        viewState.showLoading()
+        authorizationInteractor.authorize(code, phone, this)
     }
 
     override fun setPhoneError() {
-        viewState.enableButton()
+        viewState.hideLoading()
         viewState.showPhoneError("Некорректный номер телефона")
     }
 
@@ -38,6 +41,7 @@ class AuthorizationPresenter(private val authorizationInteractor: IAuthorization
     }
 
     override fun goToVerifyPhone(phone: String) {
+        viewState.hideLoading()
         viewState.goToVerifyPhone(phone)
     }
 }

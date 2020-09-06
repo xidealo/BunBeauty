@@ -222,8 +222,7 @@ class EditServiceActivity : BaseActivity(), EditServiceView, IChangeablePhotoEle
 
     override fun goToProfile(service: Service) {
         val intent = Intent(this, ProfileActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
     }

@@ -20,49 +20,41 @@ class RegistrationPresenter(private val registrationUserInteractor: IRegistratio
     fun getMyPhoneNumber() = registrationUserInteractor.getMyPhoneNumber()
 
     override fun showSuccessfulRegistration(user: User) {
-        viewState.showSuccessfulRegistration()
         viewState.goToProfile(user)
     }
 
     override fun registrationNameInputError() {
         viewState.hideLoading()
-        viewState.enableRegistrationButton()
         viewState.setNameInputError("Допустимы только буквы и тире")
     }
 
     override fun registrationNameInputErrorEmpty() {
         viewState.hideLoading()
-        viewState.enableRegistrationButton()
         viewState.setNameInputError("Введите своё имя")
     }
 
     override fun registrationNameInputErrorLong() {
         viewState.hideLoading()
-        viewState.enableRegistrationButton()
         viewState.setNameInputError("Слишком длинное имя")
     }
 
     override fun registrationSurnameInputError() {
         viewState.hideLoading()
-        viewState.enableRegistrationButton()
         viewState.setSurnameInputError("Допустимы только буквы и тире")
     }
 
     override fun registrationSurnameInputErrorEmpty() {
         viewState.hideLoading()
-        viewState.enableRegistrationButton()
         viewState.setSurnameInputError("Введите свою фамилию")
     }
 
     override fun registrationSurnameInputErrorLong() {
         viewState.hideLoading()
-        viewState.enableRegistrationButton()
         viewState.setSurnameInputError("Слишком длинная фамилия")
     }
 
     override fun registrationCityInputError() {
         viewState.hideLoading()
-        viewState.enableRegistrationButton()
         viewState.showNoSelectedCity()
     }
 

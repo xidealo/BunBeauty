@@ -24,12 +24,14 @@ class ProgressButton @JvmOverloads constructor(
     private val button = createButton(context)
     private val progressBar = createProgressBar(context)
 
+    private val buttonText = getButtonText(context, attributeSet)
+
     init {
         addView(button)
         addView(progressBar)
 
         hideLoading()
-    }aa
+    }
 
     private fun createButton(context: Context): MaterialButton {
         val button = MaterialButton(ContextThemeWrapper(context, R.style.smallButton))
@@ -59,23 +61,33 @@ class ProgressButton @JvmOverloads constructor(
         return progressBar
     }
 
+    private fun getButtonText(context: Context, attributeSet: AttributeSet?): String {
+        return if (attributeSet != null) {
+            val typedArray =
+                context.obtainStyledAttributes(attributeSet, R.styleable.ProgressButton)
+            val text = typedArray.getString(R.styleable.ProgressButton_android_text) ?: ""
+            typedArray.recycle()
+
+            text
+        } else {
+            ""
+        }
+    }
+
     fun showLoading() {
         button.text = ""
+        button.isEnabled = false
         progressBar.visibility = View.VISIBLE
     }
 
     fun hideLoading() {
-        button.text = getText(context, attributeSet)
+        button.text = buttonText
+        button.isEnabled = true
         progressBar.visibility = View.GONE
     }
 
-    private fun getText(context: Context, attributeSet: AttributeSet?): String {
-        return if (attributeSet != null) {
-            val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.ProgressButton)
-            typedArray.getString(R.styleable.ProgressButton_android_text)!!
-        } else {
-            ""
-        }
+    override fun setOnClickListener(l: OnClickListener?) {
+        button.setOnClickListener(l)
     }
 
     fun getPixels(dip: Float): Int {

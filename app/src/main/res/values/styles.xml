@@ -31,6 +31,8 @@
         <item name="android:background">@color/mainBlue</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
     </style>
 
     <!-- TEXT -->
@@ -177,6 +179,11 @@
         <item name="borderWidth">0dp</item>
         <item name="tint">@color/white</item>
         <item name="elevation">5dp</item>
+    </style>
+
+    <style name="progressButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <!-- BLOCKS -->
