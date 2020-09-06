@@ -13,6 +13,7 @@ class ServiceRepository(
     private val serviceDao: ServiceDao,
     private val serviceFirebase: ServiceFirebase
 ) : BaseRepository(), IServiceRepository {
+
     override fun insert(service: Service, insertServiceCallback: InsertServiceCallback) {
         launch {
             service.id = getIdForNew(service.userId)

@@ -250,7 +250,7 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         if (isButtonSelected(button)) {
             val selectedDayTexts =
                 schedulePresenter.getSelectedDays().map { daysButtons[it].text.toString() }
-            schedulePresenter.removeFromSchedule(selectedDayTexts, button.text.toString())
+            schedulePresenter.deleteFromSchedule(selectedDayTexts, button.text.toString())
         } else {
             fillTimeButton(button)
 

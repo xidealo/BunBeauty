@@ -31,7 +31,15 @@ data class ScheduleWithWorkingTime(
         }
     }
 
-    fun addWorkingTime(day: Int, timeString: String) {
+    fun containsWorkingTime(workingTime: WorkingTime?): Boolean {
+        if (workingTime == null) {
+            return false
+        }
+
+        return workingTimeList.any { it.time == workingTime.time }
+    }
+
+    fun addWorkingTime(day: Int, timeString: String): WorkingTime? {
         val now = DateTime.now()
         val date = if (now.dayOfMonth <= day) {
             DateTime().withDate(now.year, now.monthOfYear, day)
@@ -45,21 +53,40 @@ data class ScheduleWithWorkingTime(
         val timeParts = timeString.split(WorkingTime.TIME_DELIMITER)
         val time = date.withTime(timeParts[0].toInt(), timeParts[1].toInt(), 0, 0).millis
 
-        if (!workingTimeList.any { it.time == time }) {
-            workingTimeList.add(WorkingTime(time = time))
+        return if (!workingTimeList.any { it.time == time }) {
+            val workingTime = WorkingTime(time = time)
+            workingTimeList.add(workingTime)
+
+            workingTime
+        } else {
+            null
         }
     }
 
-    fun removeTime(day: Int, timeString: String) {
+    fun addWorkingTime(workingTime: WorkingTime?) {
+        if (workingTime != null) {
+            workingTimeList.add(workingTime)
+        }
+    }
+
+    fun removeWorkingTime(day: Int, timeString: String): WorkingTime? {
         val timeParts = timeString.split(WorkingTime.TIME_DELIMITER)
         val workingTime = workingTimeList.find {
             it.getDayOfMonth() == day &&
                     it.getHour() == timeParts[0].toInt() &&
                     it.getMinutes() == timeParts[1].toInt()
         }!!
-        if (workingTime.orderId.isEmpty()) {
+        return if (workingTime.orderId.isEmpty()) {
             workingTimeList.remove(workingTime)
+            workingTime
+        } else {
+            null
         }
+    }
+
+    fun removeWorkingTime(workingTime: WorkingTime) {
+        val removingWorkingTime = workingTimeList.find { it.time == workingTime.time }
+        workingTimeList.remove(removingWorkingTime)
     }
 
     fun getAvailableDays(serviceDuration: Float): Set<WorkingDay> {

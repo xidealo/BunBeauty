@@ -1,30 +1,56 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories
 
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.DeleteScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.GetScheduleCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.InsertScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.api.ScheduleFirebase
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IScheduleRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class ScheduleRepository(private val scheduleFirebase: ScheduleFirebase) : IScheduleRepository {
+class ScheduleRepository(private val scheduleFirebase: ScheduleFirebase) : BaseRepository(),
+    IScheduleRepository {
 
     override fun getScheduleByUserId(userId: String, getScheduleCallback: GetScheduleCallback) {
-        scheduleFirebase.getByMasterId(userId, getScheduleCallback)
+        launch {
+            scheduleFirebase.getByMasterId(userId, getScheduleCallback)
+        }
     }
 
-    override fun updateSchedule(
+    override fun insertSchedule(
         scheduleWithWorkingTime: ScheduleWithWorkingTime,
-        updateScheduleCallback: UpdateScheduleCallback
+        insertScheduleCallback: InsertScheduleCallback
     ) {
-        scheduleFirebase.update(scheduleWithWorkingTime)
-        updateScheduleCallback.returnUpdatedCallback(scheduleWithWorkingTime)
+        launch {
+            scheduleFirebase.insert(scheduleWithWorkingTime)
+            withContext(Dispatchers.Main) {
+                insertScheduleCallback.returnCreatedCallback(scheduleWithWorkingTime)
+            }
+        }
+    }
+
+    override fun deleteSchedule(
+        scheduleWithWorkingTime: ScheduleWithWorkingTime,
+        deleteScheduleCallback: DeleteScheduleCallback
+    ) {
+        launch {
+            scheduleFirebase.delete(scheduleWithWorkingTime)
+            withContext(Dispatchers.Main) {
+                deleteScheduleCallback.returnDeletedCallback(scheduleWithWorkingTime)
+            }
+        }
     }
 
     override fun updateScheduleRemoveOrders(
         order: Order,
         updateScheduleCallback: UpdateScheduleCallback
     ) {
-        scheduleFirebase.updateScheduleRemoveOrders(order, updateScheduleCallback)
+        launch {
+            scheduleFirebase.updateScheduleRemoveOrders(order, updateScheduleCallback)
+        }
     }
 }

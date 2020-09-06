@@ -10,9 +10,13 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime.Companion.CLIENT_ID
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime.Companion.ORDER_ID
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime.Companion.TIME
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.BaseRepository
 import com.google.firebase.database.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class ScheduleFirebase {
+class ScheduleFirebase : BaseRepository() {
 
     fun getByMasterId(masterId: String, getScheduleCallback: GetScheduleCallback) {
         val workingTimeReference = FirebaseDatabase.getInstance()
@@ -23,12 +27,15 @@ class ScheduleFirebase {
             override fun onDataChange(workingTimeSnapshot: DataSnapshot) {
                 val workingTimeList = getWorkingTimeFromSnapshot(workingTimeSnapshot)
 
-                getScheduleCallback.returnGottenObject(
-                    ScheduleWithWorkingTime(
-                        schedule = Schedule(masterId = masterId),
-                        workingTimeList = ArrayList(workingTimeList)
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    getScheduleCallback.returnGottenObject(
+                        ScheduleWithWorkingTime(
+                            schedule = Schedule(masterId = masterId),
+                            workingTimeList = ArrayList(workingTimeList)
+                        )
                     )
-                )
+                }
             }
 
             override fun onCancelled(p0: DatabaseError) {}
@@ -50,62 +57,46 @@ class ScheduleFirebase {
         }
     }
 
-
     fun updateScheduleRemoveOrders(
         order: Order,
         updateScheduleCallback: UpdateScheduleCallback
     ) {
-        val scheduleQuery = FirebaseDatabase.getInstance()
+        val scheduleReference = FirebaseDatabase.getInstance()
             .getReference(SCHEDULE)
             .child(order.masterId)
-            .orderByChild(ORDER_ID).equalTo(order.id)
+        val scheduleQuery = scheduleReference.child(order.masterId)
+            .orderByChild(ORDER_ID)
+            .equalTo(order.id)
+
         scheduleQuery.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.childrenCount > 0) {
-                    val workingTimes = getWorkingTimeFromSnapshot(snapshot)
-                    val clearWorkingTimes = mutableListOf<WorkingTime>()
-                    for (time in workingTimes) {
-                        time.orderId = ""
-                        time.clientId = ""
-                        clearWorkingTimes.add(time)
+                    val workingTimeList = getWorkingTimeFromSnapshot(snapshot)
+                    for (workingTime in workingTimeList) {
+                        scheduleReference.child(workingTime.id).child(ORDER_ID).setValue("")
+                        scheduleReference.child(workingTime.id).child(CLIENT_ID).setValue("")
                     }
-                    val schedule = ScheduleWithWorkingTime(
-                        Schedule(masterId = order.masterId),
-                        clearWorkingTimes
-                    )
-                    update(schedule)
-                    updateScheduleCallback.returnUpdatedCallback(schedule)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        updateScheduleCallback.returnUpdatedCallback(
+                            ScheduleWithWorkingTime(workingTimeList = ArrayList(workingTimeList))
+                        )
+                    }
                 }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
+            override fun onCancelled(error: DatabaseError) {}
         })
-
     }
 
-
-    fun update(scheduleWithWorkingTime: ScheduleWithWorkingTime) {
-        val scheduleReference = FirebaseDatabase.getInstance()
-            .getReference(SCHEDULE)
-            .child(scheduleWithWorkingTime.schedule.masterId)
-
-        scheduleReference.removeValue { _, _ ->
-            insert(scheduleWithWorkingTime)
-        }
-    }
-
-    private fun insert(scheduleWithWorkingTime: ScheduleWithWorkingTime) {
+    fun insert(scheduleWithWorkingTime: ScheduleWithWorkingTime) {
         val workingTimeReference = FirebaseDatabase.getInstance()
             .getReference(SCHEDULE)
             .child(scheduleWithWorkingTime.schedule.masterId)
 
         for (workingTime in scheduleWithWorkingTime.workingTimeList) {
-            val timeId = getIdForNew(workingTimeReference)
-            val newTimeReference = workingTimeReference.child(timeId)
+            val workingTimeId = getIdForNew(workingTimeReference)
+            val newTimeReference = workingTimeReference.child(workingTimeId)
             newTimeReference.setValue(buildWorkingTimeMap(workingTime))
         }
     }
@@ -116,6 +107,17 @@ class ScheduleFirebase {
         workingTimeMap[ORDER_ID] = workingTime.orderId
         workingTimeMap[CLIENT_ID] = workingTime.clientId
         return workingTimeMap
+    }
+
+    fun delete(scheduleWithWorkingTime: ScheduleWithWorkingTime) {
+        val workingTimeReference = FirebaseDatabase.getInstance()
+            .getReference(SCHEDULE)
+            .child(scheduleWithWorkingTime.schedule.masterId)
+
+        for (workingTime in scheduleWithWorkingTime.workingTimeList) {
+            val newTimeReference = workingTimeReference.child(workingTime.id)
+            newTimeReference.removeValue()
+        }
     }
 
     private fun getIdForNew(reference: DatabaseReference): String {

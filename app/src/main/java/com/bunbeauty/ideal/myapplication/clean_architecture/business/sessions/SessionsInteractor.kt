@@ -3,10 +3,12 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.sessions.SessionsPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.GetScheduleCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.InsertScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service.Companion.SERVICE
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Session
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingDay
@@ -15,7 +17,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.in
 class SessionsInteractor(
     private val scheduleRepository: IScheduleRepository,
     private val intent: Intent
-) : GetScheduleCallback, UpdateScheduleCallback {
+) : GetScheduleCallback, InsertScheduleCallback {
 
     private lateinit var schedule: ScheduleWithWorkingTime
     private lateinit var sessionsPresenterCallback: SessionsPresenterCallback
@@ -74,15 +76,21 @@ class SessionsInteractor(
     }
 
     fun updateSchedule(order: Order, sessionsPresenterCallback: SessionsPresenterCallback) {
-        val timeList = schedule.workingTimeList.filter {
+        this.sessionsPresenterCallback = sessionsPresenterCallback
+
+        val workingTimeList = schedule.workingTimeList.filter {
             it.time in order.session.startTime until order.session.finishTime
         }
-        for (time in timeList) {
+        for (time in workingTimeList) {
             time.orderId = order.id
             time.clientId = order.clientId
         }
-        scheduleRepository.updateSchedule(schedule, this)
+        val updatedSchedule = ScheduleWithWorkingTime(
+            schedule = Schedule(schedule.schedule.masterId),
+            workingTimeList = ArrayList(workingTimeList)
+        )
+        scheduleRepository.insertSchedule(updatedSchedule, this)
     }
 
-    override fun returnUpdatedCallback(obj: ScheduleWithWorkingTime) {}
+    override fun returnCreatedCallback(obj: ScheduleWithWorkingTime) {}
 }

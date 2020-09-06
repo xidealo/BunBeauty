@@ -1,8 +1,9 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.business.schedule
 
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.schedule.SchedulePresenterCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.DeleteScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.GetScheduleCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.InsertScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime
@@ -11,7 +12,7 @@ import org.joda.time.DateTime
 import org.joda.time.Days
 
 class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
-    GetScheduleCallback, UpdateScheduleCallback {
+    GetScheduleCallback, InsertScheduleCallback, DeleteScheduleCallback {
 
     private lateinit var schedulePresenterCallback: SchedulePresenterCallback
 
@@ -20,6 +21,8 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
     var selectedDays = ArrayList<Int>()
 
     private lateinit var schedule: ScheduleWithWorkingTime
+    private val addedSchedule = ScheduleWithWorkingTime()
+    private val deletedSchedule = ScheduleWithWorkingTime()
 
     fun getSchedule(schedulePresenterCallback: SchedulePresenterCallback) {
         this.schedulePresenterCallback = schedulePresenterCallback
@@ -29,6 +32,8 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
 
     override fun returnGottenObject(schedule: ScheduleWithWorkingTime?) {
         this.schedule = schedule!!
+        addedSchedule.schedule.masterId = schedule.schedule.masterId
+        deletedSchedule.schedule.masterId = schedule.schedule.masterId
 
         schedulePresenterCallback.showSchedule(getDayIndexes(schedule.workingTimeList))
     }
@@ -106,12 +111,18 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         schedulePresenterCallback: SchedulePresenterCallback
     ) {
         for ((i, day) in days.withIndex()) {
-            schedule.addWorkingTime(day, timeString)
+            val workingTime = schedule.addWorkingTime(day, timeString)
+            if (deletedSchedule.containsWorkingTime(workingTime)) {
+                deletedSchedule.removeWorkingTime(workingTime!!)
+            } else {
+                addedSchedule.addWorkingTime(workingTime)
+            }
+
             schedulePresenterCallback.fillDay(selectedDayIndexes[i])
         }
     }
 
-    fun removeFromSchedule(
+    fun deleteFromSchedule(
         days: List<Int>,
         timeString: String,
         schedulePresenterCallback: SchedulePresenterCallback
@@ -123,7 +134,12 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         }
 
         for ((i, day) in days.withIndex()) {
-            schedule.removeTime(day, timeString)
+            val workingTime = schedule.removeWorkingTime(day, timeString)
+            if (addedSchedule.containsWorkingTime(workingTime)) {
+                addedSchedule.removeWorkingTime(workingTime!!)
+            } else {
+                deletedSchedule.addWorkingTime(workingTime)
+            }
 
             if (schedule.getWorkingTimes(day).isEmpty()) {
                 schedulePresenterCallback.clearDay(selectedDayIndexes[i])
@@ -134,11 +150,13 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
     fun saveSchedule(schedulePresenterCallback: SchedulePresenterCallback) {
         this.schedulePresenterCallback = schedulePresenterCallback
 
-        schedule.schedule.masterId = User.getMyId()
-        scheduleRepository.updateSchedule(schedule, this)
+        scheduleRepository.deleteSchedule(deletedSchedule, this)
+        scheduleRepository.insertSchedule(addedSchedule, this)
     }
 
-    override fun returnUpdatedCallback(schedule: ScheduleWithWorkingTime) {
+    override fun returnDeletedCallback(obj: ScheduleWithWorkingTime) {}
+
+    override fun returnCreatedCallback(obj: ScheduleWithWorkingTime) {
         schedulePresenterCallback.showScheduleSaved()
     }
 }

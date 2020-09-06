@@ -61,8 +61,8 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
         viewState.fillDay(dayIndex)
     }
 
-    fun removeFromSchedule(days: List<String>, time: String) {
-        scheduleInteractor.removeFromSchedule(days.map { it.toInt() }, time, this)
+    fun deleteFromSchedule(days: List<String>, time: String) {
+        scheduleInteractor.deleteFromSchedule(days.map { it.toInt() }, time, this)
     }
 
     override fun clearTime(timeString: String) {
