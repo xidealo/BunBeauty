@@ -76,7 +76,7 @@
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/setPremiumPremiumElementBtn"
-            style="@style/loginButton"
+            style="@style/smallButton"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text="Получить премиум"/>
