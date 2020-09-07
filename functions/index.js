@@ -76,11 +76,13 @@ exports.sendChatMessageNotification = functions.database.ref('dialogs/{userId}/{
         return;
     }
         return admin.database().ref("/users/" + companionId).once('value').then(snap => {
-
+            
             const senderName = snap.child("name").val();
+            const senderSurname = snap.child("surname").val();
             const senderPhoto = snap.child("photo link").val();
 
             console.log("senderName: ", senderName);
+            console.log("senderSurname: ", senderSurname);
             console.log("senderPhoto: ", senderPhoto);
 
             //get the token of the user receiving the message
@@ -95,8 +97,10 @@ exports.sendChatMessageNotification = functions.database.ref('dialogs/{userId}/{
                     const payload = {
                         data: {
                             data_type: "chat message",
-                            user_id: ownerId,
+                            my_id: ownerId,
+                            user_id: companionId,
                             name: senderName,
+                            surname: senderSurname,
                             message: message,
                             photo_link: senderPhoto
                         }

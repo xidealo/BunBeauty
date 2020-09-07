@@ -9,6 +9,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.android.ideal.myapplication.R
 
+/**
+ * Not used
+ */
+@Deprecated("Not used")
 class NotificationReviewForUser(
     private val context: Context,
     private val userName: String

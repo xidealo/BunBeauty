@@ -17,7 +17,7 @@ class ProfileOrderElement(
 
     init {
         view.serviceNameProfileOrderElementText.text = WorkWithStringsApi.firstCapitalSymbol(
-            WorkWithStringsApi.cutString(order.serviceName, 26)
+            WorkWithStringsApi.cutStringWithDots(order.serviceName, 26)
         )
         view.durationProfileOrderElementText.text = order.session.toString()
         view.profileOrderElementLayout.setOnClickListener {

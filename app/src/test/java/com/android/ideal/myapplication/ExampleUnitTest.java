@@ -34,7 +34,7 @@ public class ExampleUnitTest {
     //правильное наиминование тестов
     @Test
     public void whenCutStringAAAAAReturnOneAWithThreeDots(){
-        assertEquals(WorkWithStringsApi.cutString("AAAAA",1),"A...");
+        assertEquals(WorkWithStringsApi.cutStringWithDots("AAAAA",1),"A...");
     }
 
 }

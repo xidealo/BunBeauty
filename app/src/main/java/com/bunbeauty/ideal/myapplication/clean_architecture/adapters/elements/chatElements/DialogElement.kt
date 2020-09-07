@@ -32,7 +32,7 @@ class DialogElement(
         showAvatar(dialog.user, view, context)
         view.element_dialog_tv_name.text = "${dialog.user.name} ${dialog.user.surname}"
         view.element_dialog_tv_last_message.text =
-            WorkWithStringsApi.cutString(dialog.lastMessage.message, 23)
+            WorkWithStringsApi.cutStringWithDots(dialog.lastMessage.message, 23)
         view.element_dialog_tv_time.text =
             WorkWithTimeApi.getDateInFormatYMDHMS(Date(dialog.lastMessage.time)).substring(11, 16)
 
@@ -56,16 +56,15 @@ class DialogElement(
     }
 
     private fun goToDialog(dialog: Dialog, context: Context) {
+        val companionDialog = Dialog()
+        companionDialog.id = dialog.user.id
+        companionDialog.ownerId = dialog.user.id
+        companionDialog.user.id = dialog.ownerId
+
         val intent = Intent(context, MessagesActivity::class.java)
         intent.putExtra(Dialog.DIALOG, dialog)
         intent.putExtra(User.USER, dialog.user)
-
-        val myDialog = Dialog()
-        myDialog.ownerId = dialog.user.id
-        myDialog.user.id = dialog.ownerId
-        myDialog.id = dialog.user.id
-
-        intent.putExtra(Dialog.COMPANION_DIALOG, myDialog)
+        intent.putExtra(Dialog.COMPANION_DIALOG, companionDialog)
         context.startActivity(intent)
         (context as Activity).overridePendingTransition(0, 0)
     }

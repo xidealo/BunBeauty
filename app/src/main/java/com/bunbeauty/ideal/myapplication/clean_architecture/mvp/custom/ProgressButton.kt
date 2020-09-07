@@ -17,7 +17,7 @@ import com.google.android.material.button.MaterialButton
 
 class ProgressButton @JvmOverloads constructor(
     context: Context,
-    private val attributeSet: AttributeSet? = null,
+    attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attributeSet, defStyleAttr) {
 

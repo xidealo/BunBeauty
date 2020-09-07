@@ -1,6 +1,7 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.business.notifications
 
 import android.util.Log
+import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -23,7 +24,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 remoteMessage
             )
             else -> Log.d(
-                TAG,
+                Tag.TEST_TAG,
                 "Invalid data type!"
             )
         }
@@ -45,8 +46,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notification =
             NotificationChatMessage(
                 this,
+                remoteMessage.data["my_id"]?: "",
                 remoteMessage.data["user_id"]?: "",
                 remoteMessage.data[User.NAME] ?: "",
+                remoteMessage.data[User.SURNAME] ?: "",
                 remoteMessage.data[Message.MESSAGE] ?: "",
                 remoteMessage.data["photo_link"] ?: ""
             )
@@ -109,7 +112,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     companion object {
-        private const val TAG = "DBInf"
         private const val FOLLOWING = "following"
         private const val ORDER = "order"
         private const val CANCEL = "cancel"

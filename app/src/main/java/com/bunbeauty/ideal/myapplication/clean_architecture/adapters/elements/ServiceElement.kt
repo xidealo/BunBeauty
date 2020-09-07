@@ -14,6 +14,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.firstCapitalSymbol
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.element_service.view.*
 
@@ -40,16 +41,16 @@ class ServiceElement(
 
     private fun setData(view: View, service: Service, user: User, context: Context) {
         if (isMoreFiveInch(context)) {
-            view.element_service_master_name_tv.text = WorkWithStringsApi.cutString(user.name, 9)
+            view.element_service_master_name_tv.text = WorkWithStringsApi.cutStringWithDots(user.name, 9)
             view.element_service_service_name_tv.text =
-                WorkWithStringsApi.cutString(service.name.toUpperCase(), 14)
+                WorkWithStringsApi.cutStringWithDots(service.name.toUpperCase(), 14)
         } else {
             view.element_service_master_name_tv.text =
-                WorkWithStringsApi.doubleCapitalSymbols(WorkWithStringsApi.cutString(user.name, 9))
+                WorkWithStringsApi.doubleCapitalSymbols(WorkWithStringsApi.cutStringWithDots(user.name, 9))
             view.element_service_service_name_tv.text =
-                WorkWithStringsApi.cutString(service.name.toUpperCase(), 18)
+                WorkWithStringsApi.cutStringWithDots(service.name.toUpperCase(), 18)
         }
-        view.element_service_city_tv.text = WorkWithStringsApi.firstCapitalSymbol(user.city)
+        view.element_service_city_tv.text = user.city.firstCapitalSymbol()
         view.element_service_cost_tv.text = "${service.cost} ₽"
         view.element_service_rating_rb.rating = service.rating
 

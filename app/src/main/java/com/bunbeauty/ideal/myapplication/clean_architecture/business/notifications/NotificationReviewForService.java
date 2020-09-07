@@ -9,7 +9,10 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.android.ideal.myapplication.R;
-
+/**
+ * Not used
+ */
+@Deprecated
 public class NotificationReviewForService extends NotificationConstructor {
 
     private Context context;

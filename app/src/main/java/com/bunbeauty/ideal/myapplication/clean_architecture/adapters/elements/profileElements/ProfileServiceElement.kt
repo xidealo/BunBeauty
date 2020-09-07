@@ -16,7 +16,7 @@ class ProfileServiceElement(
 ) {
     init {
         view.element_profile_service_tv_name.text = WorkWithStringsApi.firstCapitalSymbol(
-            WorkWithStringsApi.cutString(service.name, 26)
+            WorkWithStringsApi.cutStringWithDots(service.name, 26)
         )
         view.element_profile_service_rb_rating.rating = service.rating
         view.element_profile_service_mcv.setOnClickListener {

@@ -10,6 +10,10 @@ import com.android.ideal.myapplication.R;
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithStringsApi;
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity;
 
+/**
+ * Not used
+ */
+@Deprecated()
 public class NotificationOrder extends NotificationConstructor {
 
     private static final String TAG = "DBInf";
