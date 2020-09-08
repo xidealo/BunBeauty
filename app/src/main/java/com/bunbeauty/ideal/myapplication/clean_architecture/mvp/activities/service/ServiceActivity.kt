@@ -1,7 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -85,9 +84,9 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
 
     @SuppressLint("SetTextI18n")
     override fun showService(service: Service) {
-        costServiceText.text = service.cost.toString() + "₽"
-        addressServiceText.text = service.address
-        descriptionServiceText.text = service.description
+        activity_service_tv_cost.text = service.cost.toString() + "₽"
+        activity_service_tv_address.text = service.address
+        activity_service_tv_description.text = service.description
         activity_service_tv_duration.text = if (service.duration.toInt() > 0) {
             (service.duration / 1).toInt().toString() +
                     if (service.duration % 1 > 0) {

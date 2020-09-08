@@ -80,17 +80,30 @@ class EditServicePresenter(
         viewState.goToProfile(service)
     }
 
-    override fun nameEditServiceInputError() {
-        viewState.setNameEditServiceInputError("Допустимы только буквы и тире")
+    override fun showNameInputError(error: String) {
+        viewState.showNameInputError(error)
     }
 
-    override fun nameEditServiceInputErrorEmpty() {
-        viewState.setNameEditServiceInputError("Введите своё имя")
+    override fun showDescriptionInputError(error: String) {
+        viewState.showDescriptionInputError(error)
     }
 
-    override fun nameEditServiceInputErrorLong() {
-        viewState.setNameEditServiceInputError("Слишком длинное имя")
+    override fun showCostInputError(error: String) {
+        viewState.showCostInputError(error)
     }
+
+    override fun showCategoryInputError(error: String) {
+        viewState.showError(error)
+    }
+
+    override fun showAddressInputError(error: String) {
+        viewState.showAddressInputError(error)
+    }
+
+    override fun showDurationInputError(error: String) {
+        viewState.showError(error)
+    }
+
 
     override fun saveTags(service: Service) {
         editServiceTagInteractor.saveTags(service)

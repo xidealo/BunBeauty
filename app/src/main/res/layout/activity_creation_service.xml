@@ -16,10 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_panel">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <LinearLayout style="@style/wideVerticalBlock">
 
             <LinearLayout
                 android:id="@+id/activity_creation_service_ll_main"
@@ -112,7 +109,8 @@
                     android:id="@+id/activity_creation_service_fg_category"
                     class="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.CategoryFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/default_margin" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/activity_creation_service_btn_add_photo"
@@ -122,10 +120,7 @@
                     android:text=""
                     android:textSize="20sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                <LinearLayout style="@style/wideHorizontalBlock">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/activity_creation_service_rv_photos"
@@ -147,7 +142,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_creation_service_btn_add_service"
-                style="@style/smallButton"
+                style="@style/largeButton"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/addServices" />
         </LinearLayout>
@@ -155,7 +150,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_creation_service_btn_continue"
-        style="@style/smallButton"
+        style="@style/largeButton"
         android:text="Продолжить"
         app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
         app:layout_constraintLeft_toLeftOf="parent"

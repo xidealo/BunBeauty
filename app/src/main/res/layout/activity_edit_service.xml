@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_edit_service_ll_main"
     style="@style/DefaultTheme"
-    android:id="@+id/editServiceLayout"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.editing.EditServiceActivity">
 
     <include layout="@layout/part_top_panel" />
@@ -29,10 +29,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_panel">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <LinearLayout style="@style/wideVerticalBlock">
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/MaterialInputLayout"
@@ -41,18 +38,6 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/activity_edit_service_et_name"
-                    style="@style/MaterialInput"
-                    android:inputType="textCapSentences" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/MaterialInputLayout"
-                android:hint="Адрес"
-                app:startIconDrawable="@drawable/icon_map_marked_solid">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/activity_edit_service_et_address"
                     style="@style/MaterialInput"
                     android:inputType="textCapSentences" />
 
@@ -70,6 +55,17 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/MaterialInputLayout"
+                android:hint="Адрес"
+                app:startIconDrawable="@drawable/icon_map_marked_solid">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/activity_edit_service_et_address"
+                    style="@style/MaterialInput"
+                    android:inputType="textCapSentences" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/MaterialInputLayout"
@@ -120,7 +116,8 @@
                 android:id="@+id/activity_edit_service_fr_category"
                 class="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.CategoryFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/default_margin" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_edit_service_btn_add_photo"
@@ -145,10 +142,8 @@
 
             <LinearLayout
                 android:id="@+id/activity_edit_service_ll_bottom"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/wideHorizontalBlock"
                 android:gravity="center"
-                android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/bottom_panel">
 
                 <com.google.android.material.button.MaterialButton
@@ -165,8 +160,6 @@
         </LinearLayout>
     </ScrollView>
 
-
     <include layout="@layout/part_bottom_panel" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

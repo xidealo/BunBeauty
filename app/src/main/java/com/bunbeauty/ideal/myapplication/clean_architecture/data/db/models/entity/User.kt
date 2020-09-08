@@ -27,7 +27,11 @@ data class User(
     companion object {
 
         fun getMyId(): String {
-            return FirebaseAuth.getInstance().currentUser!!.uid
+            val curUser = FirebaseAuth.getInstance().currentUser
+            if (curUser != null) {
+                return curUser.uid
+            }
+            return ""
         }
 
         const val USERS = "users"

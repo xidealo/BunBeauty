@@ -81,10 +81,10 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
 
         activity_creation_service_btn_add_service.setOnClickListener {
             creationServicePresenter.addService(
-                activity_creation_service_et_name.text.toString(),
-                activity_creation_service_et_description.text.toString(),
+                activity_creation_service_et_name.text.toString().trim(),
+                activity_creation_service_et_description.text.toString().trim(),
                 activity_creation_service_et_cost.text.toString().toLongOrNull() ?: 0,
-                activity_creation_service_et_address.text.toString(),
+                activity_creation_service_et_address.text.toString().trim(),
                 activity_creation_service_np_hour.value,
                 activity_creation_service_np_minute.value,
                 categoryFragment.getCategory(),

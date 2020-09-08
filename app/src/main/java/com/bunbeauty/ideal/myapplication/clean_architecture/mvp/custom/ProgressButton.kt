@@ -34,10 +34,10 @@ class ProgressButton @JvmOverloads constructor(
     }
 
     private fun createButton(context: Context): MaterialButton {
-        val button = MaterialButton(ContextThemeWrapper(context, R.style.smallButton))
+        val button = MaterialButton(ContextThemeWrapper(context, R.style.largeButton))
 
         button.layoutParams =
-            LayoutParams(resources.getDimensionPixelSize(R.dimen.small_button_width), WRAP_CONTENT)
+            LayoutParams(resources.getDimensionPixelSize(R.dimen.large_button_width), WRAP_CONTENT)
         button.z = 0f
         button.cornerRadius = resources.getDimensionPixelSize(R.dimen.button_corner_radius)
 

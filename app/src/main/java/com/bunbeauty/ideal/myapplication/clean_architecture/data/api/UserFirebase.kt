@@ -176,7 +176,7 @@ class UserFirebase {
         user.surname = userSnapshot.child(User.SURNAME).value as? String ?: ""
         user.city = userSnapshot.child(User.CITY).value as? String ?: ""
         user.phone = userSnapshot.child(User.PHONE).value as? String ?: ""
-        user.photoLink = userSnapshot.child(User.PHOTO_LINK).value as? String ?: ""
+        user.photoLink = userSnapshot.child(User.PHOTO_LINK).value as? String ?: "1"
         user.countOfRates = userSnapshot.child(User.COUNT_OF_RATES).getValue(Long::class.java)
             ?: 0L
         user.rating = userSnapshot.child(User.AVG_RATING).getValue(Float::class.java) ?: 0f

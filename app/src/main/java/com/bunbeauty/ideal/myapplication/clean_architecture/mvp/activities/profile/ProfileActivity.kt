@@ -151,7 +151,7 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
         val height = resources.getDimensionPixelSize(R.dimen.photo_height)
         Picasso.get()
-            .load(photoLink)
+             .load(photoLink)
             .resize(width, height)
             .centerCrop()
             .transform(CircularTransformation())

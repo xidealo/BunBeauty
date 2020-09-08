@@ -28,8 +28,8 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
     fun setCategoryFragment(category: String, tags: List<Tag>) {
         cacheSelectedTags.addAll(tags)
         this.category = category
-        categorySpinner.setText(category, false)
-        showTags((categorySpinner.adapter as ArrayAdapter<String>).getPosition(category))
+        fragment_category_sp_category.setText(category, false)
+        showTags((fragment_category_sp_category.adapter as ArrayAdapter<String>).getPosition(category))
     }
 
     fun getCategory() = category
@@ -51,17 +51,17 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
         val categories = arrayListOf(*resources.getStringArray(R.array.categories))
         setAdapter(
             categories,
-            categorySpinner,
+            fragment_category_sp_category,
             context!!
         )
         setCategorySpinnerListener()
     }
 
     private fun setCategorySpinnerListener() {
-        categorySpinner.onItemClickListener =
+        fragment_category_sp_category.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
                 cacheSelectedTags.clear()
-                category = categorySpinner.text.toString()
+                category = fragment_category_sp_category.text.toString()
                 tagsMaxLayout.removeAllViews()
                 if (position > -1)
                     showTags(position)

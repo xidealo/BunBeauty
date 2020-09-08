@@ -224,7 +224,7 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
     }
 
     override fun showMessage(message: String) {
-        Snackbar.make(editServiceLayout, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(activity_edit_service_ll_main, message, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
     }

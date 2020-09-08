@@ -105,7 +105,7 @@
                                 android:textAppearance="?attr/textAppearanceHeadline6" />
 
                             <TextView
-                                android:id="@+id/costServiceText"
+                                android:id="@+id/activity_service_tv_cost"
                                 style="@style/ServiceBodyText"
                                 android:text="@string/cost" />
                         </LinearLayout>
@@ -123,7 +123,7 @@
                                 android:textAppearance="?attr/textAppearanceHeadline6" />
 
                             <TextView
-                                android:id="@+id/addressServiceText"
+                                android:id="@+id/activity_service_tv_address"
                                 style="@style/ServiceBodyText"
                                 android:text="@string/address" />
                         </LinearLayout>
@@ -141,7 +141,7 @@
                                 android:textAppearance="?attr/textAppearanceHeadline6" />
 
                             <TextView
-                                android:id="@+id/descriptionServiceText"
+                                android:id="@+id/activity_service_tv_description"
                                 style="@style/ServiceBodyText"
                                 android:text="@string/description" />
                         </LinearLayout>

@@ -12,12 +12,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static junit.framework.TestCase.assertTrue;
 
-/**
- * Example local unit main_test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
-
 @RunWith(MockitoJUnitRunner.class)
 public class AddingServiceUnitTests {
 

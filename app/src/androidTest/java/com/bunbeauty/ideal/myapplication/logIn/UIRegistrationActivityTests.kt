@@ -1,63 +1,47 @@
-package com.bunbeauty.ideal.myapplication.logIn;
+package com.bunbeauty.ideal.myapplication.logIn
 
-import androidx.test.espresso.Espresso;
-import androidx.test.rule.ActivityTestRule;
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.android.ideal.myapplication.R
+import org.junit.Test
 
-import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.AuthorizationActivity;
-import com.google.firebase.auth.FirebaseAuth;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
-import static androidx.test.espresso.Espresso.onData;
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static org.hamcrest.CoreMatchers.anything;
-
-public class UIRegistrationActivityTests {
-
-    @Rule
-    public ActivityTestRule<AuthorizationActivity> mActivityRule = new ActivityTestRule<>(
-            AuthorizationActivity.class);
-
-    @Before
-    public void setUp() {
-        FirebaseAuth.getInstance().signOut();
-    }
+class UIRegistrationActivityTests : MainTest() {
 
     @Test
-    public void testRegistration() throws InterruptedException {
-        UIAuthorizationActivityTests uiAuthorizationTests = new UIAuthorizationActivityTests();
-        uiAuthorizationTests.testEnterPhoneAuthorization("9999999999");
-        uiAuthorizationTests.testEnterCodeVerify("123456");
-        //for auth code
-        Thread.sleep(20000);
-        testEnterDataRegistration();
+    @Throws(InterruptedException::class)
+    fun testRegistration() {
+        val uiAuthorizationTests = UIAuthorizationActivityTests()
+        uiAuthorizationTests.testEnterPhoneAuthorization("9999999999")
+        uiAuthorizationTests.testEnterCodeVerify("123456")
+        Thread.sleep(PAUSE)
+        testEnterDataRegistration("TestName", "TestSurname", "Дубна")
+        Thread.sleep(PAUSE)
     }
 
-    void testEnterDataRegistration(){
-        String name = "TestName";
-        String surnameTest = "TestSurname";
+    private fun testEnterDataRegistration(name: String, surname: String, city: String) {
         //set data
-        onView(withId(R.id.activity_registration_et_name)).perform(typeText(name));
-        onView(withId(R.id.activity_registration_et_surname)).perform(typeText(surnameTest));
+        onView(withId(R.id.activity_registration_et_name))
+            .perform(ViewActions.typeText(name))
+        Espresso.closeSoftKeyboard()
+        Thread.sleep(SHORT_PAUSE)
+        onView(withId(R.id.activity_registration_et_surname))
+            .perform(ViewActions.typeText(surname))
+        Thread.sleep(SHORT_PAUSE)
         //close keyboard
-        Espresso.closeSoftKeyboard();
+        Espresso.closeSoftKeyboard()
         //select city in spinner
-        //onView(withId(R.id.citySpinnerRegistrationSpinner)).perform(click());
-        onData(anything()).atPosition(1).perform(click());
-        //click on button
-        //onView(withId(R.id.saveDataRegistrationBtn)).perform(click());
-    }
+        onView(withId(R.id.activity_registration_sp_city)).perform(click())
 
-    @After
-    public void tearDown() {
-        FirebaseAuth.getInstance().signOut();
+        onView(withText(city))
+            .inRoot(RootMatchers.isPlatformPopup())
+            .perform(click())
+        //click on button
+        onView(withId(R.id.activity_registration_pbtn_register)).perform(click());
     }
 
 }

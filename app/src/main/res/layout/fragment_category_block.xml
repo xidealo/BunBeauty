@@ -10,7 +10,7 @@
         app:startIconDrawable="@drawable/icon_file_alt_regular">
 
         <AutoCompleteTextView
-            android:id="@+id/categorySpinner"
+            android:id="@+id/fragment_category_sp_category"
             style="@style/MaterialSpinner" />
 
     </com.google.android.material.textfield.TextInputLayout>

@@ -17,7 +17,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 public class UIBottomPanel {
 
-    @Rule
+  /*  @Rule
     public ActivityTestRule<AuthorizationActivity> mActivityRule = new ActivityTestRule<>(
             AuthorizationActivity.class);
 
@@ -41,20 +41,20 @@ public class UIBottomPanel {
     }
 
     public void goToProfile(){
-        onView(withId(R.id.profileBottomPanelText)).perform(click());
+        //onView(withId(R.id.profileBottomPanelText)).perform(click());
     }
 
     public void goToMainScreen(){
-        onView(withId(R.id.mainScreenBottomPanelText)).perform(click());
+        //onView(withId(R.id.mainScreenBottomPanelText)).perform(click());
     }
 
     public void goToChat(){
-        onView(withId(R.id.chatBottomPanelText)).perform(click());
+        //onView(withId(R.id.chatBottomPanelText)).perform(click());
     }
 
     @After
     public void tearDown() {
         FirebaseAuth.getInstance().signOut();
-    }
+    }*/
 
 }

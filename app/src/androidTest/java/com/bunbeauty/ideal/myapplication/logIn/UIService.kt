@@ -23,13 +23,13 @@ class UIService {
 
     @Test (expected = InterruptedException::class)
     fun transitionToService() {
-        val uiAuthorizationTests = UIAuthorizationActivityTests()
+       /* val uiAuthorizationTests = UIAuthorizationActivityTests()
         uiAuthorizationTests.testEnterPhoneAuthorization("9999999999")
         uiAuthorizationTests.testEnterCodeVerify("123456")
         Thread.sleep(7000)
         val uiAddingTests = UIAddingTests()
         uiAddingTests.addService("TestName", "123456", "Test address", "Test Description")
         val uiBottomPanel = UIBottomPanel()
-        uiBottomPanel.goToProfile()
+        uiBottomPanel.goToProfile()*/
     }
 }

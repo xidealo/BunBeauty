@@ -196,9 +196,35 @@ class EditServiceActivity : BaseActivity(), EditServiceView, IChangeablePhotoEle
     }
 
     override fun showMessage(message: String) {
-        Snackbar.make(editServiceLayout, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(activity_edit_service_ll_main, message, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
+    }
+
+    override fun showNameInputError(error: String) {
+        activity_edit_service_et_name.error = error
+        activity_edit_service_et_name.requestFocus()
+    }
+
+    override fun showDescriptionInputError(error: String) {
+        activity_edit_service_et_description.error = error
+        activity_edit_service_et_description.requestFocus()
+    }
+
+    override fun showCostInputError(error: String) {
+        activity_edit_service_et_cost.error = error
+        activity_edit_service_et_cost.requestFocus()
+    }
+
+    override fun showError(error: String) {
+        Snackbar.make(activity_edit_service_ll_main, error, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.grey))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
+    }
+
+    override fun showAddressInputError(error: String) {
+        activity_edit_service_et_address.error = error
+        activity_edit_service_et_address.requestFocus()
     }
 
     override fun openPhoto(openedPhotoLinkOrUri: String) {

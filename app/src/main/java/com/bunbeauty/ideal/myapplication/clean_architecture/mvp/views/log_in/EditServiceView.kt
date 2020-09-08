@@ -13,5 +13,9 @@ interface EditServiceView:MvpView{
     fun hideLoading()
     fun setNameEditServiceInputError(error:String)
     fun showMessage(message:String)
-
+    fun showNameInputError(error: String)
+    fun showDescriptionInputError(error: String)
+    fun showCostInputError(error: String)
+    fun showError(error: String)
+    fun showAddressInputError(error: String)
 }

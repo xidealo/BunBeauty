@@ -11,13 +11,11 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithStringsApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.iLogIn.IRegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in.RegistrationPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.RegistrationView
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_registration.*
 import javax.inject.Inject
@@ -48,10 +46,10 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
         hideLoading()
         setAdapter(
             arrayListOf(*resources.getStringArray(R.array.cities)),
-            cityRegistrationSpinner,
+            activity_registration_sp_city,
             this
         )
-        (cityRegistrationSpinner.adapter as ArrayAdapter<String>).filter.filter("")
+        (activity_registration_sp_city.adapter as ArrayAdapter<String>).filter.filter("")
 
         activity_registration_pbtn_register.setOnClickListener {
             WorkWithViewApi.hideKeyboard(this)
@@ -60,7 +58,7 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
                 WorkWithStringsApi.firstCapitalSymbol(
                     activity_registration_et_surname.text.toString().trim()
                 ),
-                WorkWithStringsApi.firstCapitalSymbol(cityRegistrationSpinner.text.toString()),
+                WorkWithStringsApi.firstCapitalSymbol(activity_registration_sp_city.text.toString()),
                 activity_registration_et_phone.text.toString()
             )
         }

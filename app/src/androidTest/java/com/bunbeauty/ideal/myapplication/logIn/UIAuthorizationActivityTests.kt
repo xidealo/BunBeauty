@@ -1,74 +1,55 @@
-package com.bunbeauty.ideal.myapplication.logIn;
+package com.bunbeauty.ideal.myapplication.logIn
 
-import androidx.test.espresso.Espresso;
-import androidx.test.rule.ActivityTestRule;
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.android.ideal.myapplication.R
+import org.junit.Test
 
-import com.android.ideal.myapplication.R;
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.AuthorizationActivity;
-import com.google.firebase.auth.FirebaseAuth;
+class UIAuthorizationActivityTests : MainTest() {
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-
-public class UIAuthorizationActivityTests {
-
-    @Rule
-    public ActivityTestRule<AuthorizationActivity> mActivityRule = new ActivityTestRule<>(
-            AuthorizationActivity.class);
-
-    @Before
-    public void setUp() {
-        FirebaseAuth.getInstance().signOut();
+    @Test
+    @Throws(InterruptedException::class)
+    fun testEnterPhone() {
+        testEnterPhoneAuthorization("9999999999")
+        Thread.sleep(PAUSE)
     }
 
-    void testEnterPhoneAuthorization(String phone){
-        //set phone
-        onView(withId(R.id.activity_authorization_et_phone)).perform(typeText(phone));
-        //close keyboard
-        Espresso.closeSoftKeyboard();
-        //click on button
-        onView(withId(R.id.activity_authorization_btn_login)).perform(click());
+    @Test
+    @Throws(InterruptedException::class)
+    fun testVerification() {
+        testEnterPhoneAuthorization("9999999999")
+        testEnterCodeVerify("123456")
+        Thread.sleep(PAUSE)
     }
 
-    void testEnterCodeVerify(String code) throws InterruptedException {
+    @Test
+    @Throws(InterruptedException::class)
+    fun testVerificationWrongCode() {
+        testEnterPhoneAuthorization("9999999999")
+        testEnterCodeVerify("123455")
+        Thread.sleep(PAUSE)
+    }
+
+    fun testEnterCodeVerify(code: String?) {
         //set code
-        onView(withId(R.id.codeVerifyPhoneInput)).perform(typeText(code));
+        onView(withId(R.id.activity_verify_phone_number_et_code)).perform(typeText(code));
         //close keyboard
-        Espresso.closeSoftKeyboard();
-        Thread.sleep(2000);
+        Espresso.closeSoftKeyboard()
+        Thread.sleep(PAUSE)
         //click on button
-        onView(withId(R.id.verifyVerifyBtn)).perform(click());
-    }
-    @Test
-    public void testEnterPhone() throws InterruptedException {
-        testEnterPhoneAuthorization("9999999999");
-        Thread.sleep(2000);
+        onView(withId(R.id.activity_verify_phone_number_pbtn_log_in)).perform(click());
     }
 
-    @Test
-    public void testVerification() throws InterruptedException {
-        testEnterPhoneAuthorization("9999999999");
-        testEnterCodeVerify("123456");
-        Thread.sleep(2000);
-    }
-
-    @Test
-    public void testVerificationWrongCode() throws InterruptedException {
-        testEnterPhoneAuthorization("9999999999");
-        testEnterCodeVerify("123455");
-        Thread.sleep(2000);
-    }
-
-    @After
-    public void tearDown() {
-        FirebaseAuth.getInstance().signOut();
+    fun testEnterPhoneAuthorization(phone: String?) {
+        //set phone
+        onView(withId(R.id.activity_authorization_et_phone)).perform(typeText(phone))
+        //close keyboard
+        Espresso.closeSoftKeyboard()
+        //click on button
+        onView(withId(R.id.activity_authorization_pbtn_log_in)).perform(click())
     }
 
 }

@@ -37,7 +37,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/nameRegistrationInputLayout"
             style="@style/MaterialLoginInputLayout"
             android:hint="@string/name"
             app:startIconDrawable="@drawable/icon_profile">
@@ -50,7 +49,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/surnameRegistrationInputLayout"
             style="@style/MaterialLoginInputLayout"
             android:hint="@string/surname"
             app:startIconDrawable="@drawable/icon_profile">
@@ -72,7 +70,7 @@
                 app:startIconDrawable="@drawable/icon_city">
 
                 <AutoCompleteTextView
-                    android:id="@+id/cityRegistrationSpinner"
+                    android:id="@+id/activity_registration_sp_city"
                     style="@style/MaterialLoginSpinner"
                     android:text="@string/city" />
 

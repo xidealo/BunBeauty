@@ -39,7 +39,6 @@ class CreationServiceServiceServiceInteractor(
             creationServicePresenterCallback.showNameInputError("Введите имя сервиса")
             return false
         }
-
         if (!getIsNameInputCorrect(name)) {
             creationServicePresenterCallback.showNameInputError("Имя сервиса должно содержать только буквы")
             return false

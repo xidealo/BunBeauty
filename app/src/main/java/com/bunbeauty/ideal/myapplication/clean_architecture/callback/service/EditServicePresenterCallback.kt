@@ -5,12 +5,15 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 
 interface EditServicePresenterCallback {
-    fun showEditService(service:Service)
+    fun showEditService(service: Service)
     fun addPhoto(photo: Photo)
     fun goToService(service: Service)
     fun goToProfile(service: Service)
-    fun nameEditServiceInputError()
-    fun nameEditServiceInputErrorEmpty()
-    fun nameEditServiceInputErrorLong()
+    fun showNameInputError(error: String)
+    fun showDescriptionInputError(error: String)
+    fun showCostInputError(error: String)
+    fun showCategoryInputError(error: String)
+    fun showAddressInputError(error: String)
+    fun showDurationInputError(error: String)
     fun saveTags(service: Service)
 }

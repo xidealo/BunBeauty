@@ -6,13 +6,13 @@
     android:orientation="vertical">
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/createServiceBtn"
+        android:id="@+id/fragment_services_btn_add_service"
         style="@style/smallButton"
         android:gravity="center"
         android:text="@string/addServices" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/servicesRecycleView"
+        android:id="@+id/fragment_services_rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none" />

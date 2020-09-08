@@ -19,7 +19,7 @@ class ServicesFragment(private val profileServiceAdapter: ProfileServiceAdapter)
     var createServiceButtonVisibility = View.GONE
         set(value) {
             field = value
-            createServiceBtn?.visibility = value
+            fragment_services_btn_add_service?.visibility = value
         }
 
     override fun onCreateView(
@@ -31,13 +31,13 @@ class ServicesFragment(private val profileServiceAdapter: ProfileServiceAdapter)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        createServiceBtn.visibility = createServiceButtonVisibility
-        createServiceBtn.setOnClickListener {
+        fragment_services_btn_add_service.visibility = createServiceButtonVisibility
+        fragment_services_btn_add_service.setOnClickListener {
             goToCreationService()
         }
 
-        servicesRecycleView.layoutManager = LinearLayoutManager(context)
-        servicesRecycleView.adapter = profileServiceAdapter
+        fragment_services_rv_list.layoutManager = LinearLayoutManager(context)
+        fragment_services_rv_list.adapter = profileServiceAdapter
     }
 
     fun updateServiceList(serviceList: List<Service>) {
