@@ -1,7 +1,8 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.GetScheduleCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleAddOrderCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleRemoveOrderCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule.Companion.SCHEDULE
@@ -57,9 +58,24 @@ class ScheduleFirebase : BaseRepository() {
         }
     }
 
-    fun updateScheduleRemoveOrders(
+    fun updateScheduleAddOrder(
+        schedule: ScheduleWithWorkingTime,
+        updateScheduleAddOrderCallback: UpdateScheduleAddOrderCallback
+    ) {
+        val scheduleReference = FirebaseDatabase.getInstance()
+            .getReference(SCHEDULE)
+            .child(schedule.schedule.masterId)
+        for (workingTime in schedule.workingTimeList) {
+            val workingTimeReference = scheduleReference.child(workingTime.id)
+            workingTimeReference.child(ORDER_ID).setValue(workingTime.orderId)
+            workingTimeReference.child(CLIENT_ID).setValue(workingTime.clientId)
+        }
+        updateScheduleAddOrderCallback.returnUpdatedScheduleAddOrderCallback(schedule)
+    }
+
+    fun updateScheduleRemoveOrder(
         order: Order,
-        updateScheduleCallback: UpdateScheduleCallback
+        updateScheduleRemoveOrderCallback: UpdateScheduleRemoveOrderCallback
     ) {
         val scheduleReference = FirebaseDatabase.getInstance()
             .getReference(SCHEDULE)
@@ -77,11 +93,10 @@ class ScheduleFirebase : BaseRepository() {
                         scheduleReference.child(workingTime.id).child(ORDER_ID).setValue("")
                         scheduleReference.child(workingTime.id).child(CLIENT_ID).setValue("")
                     }
-                    CoroutineScope(Dispatchers.Main).launch {
-                        updateScheduleCallback.returnUpdatedCallback(
-                            ScheduleWithWorkingTime(workingTimeList = ArrayList(workingTimeList))
-                        )
-                    }
+
+                    updateScheduleRemoveOrderCallback.returnUpdatedScheduleRemoveOrderCallback(
+                        ScheduleWithWorkingTime(workingTimeList = ArrayList(workingTimeList))
+                    )
                 }
             }
 

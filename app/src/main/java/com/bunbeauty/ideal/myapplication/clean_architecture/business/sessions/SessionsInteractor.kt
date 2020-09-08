@@ -4,7 +4,7 @@ import android.content.Intent
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.sessions.SessionsPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.GetScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.InsertScheduleCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleAddOrderCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service.Companion.SERVICE
@@ -17,7 +17,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.in
 class SessionsInteractor(
     private val scheduleRepository: IScheduleRepository,
     private val intent: Intent
-) : GetScheduleCallback, InsertScheduleCallback {
+) : GetScheduleCallback, UpdateScheduleAddOrderCallback {
 
     private lateinit var schedule: ScheduleWithWorkingTime
     private lateinit var sessionsPresenterCallback: SessionsPresenterCallback
@@ -86,11 +86,12 @@ class SessionsInteractor(
             time.clientId = order.clientId
         }
         val updatedSchedule = ScheduleWithWorkingTime(
-            schedule = Schedule(schedule.schedule.masterId),
+            schedule = Schedule(masterId = schedule.schedule.masterId),
             workingTimeList = ArrayList(workingTimeList)
         )
-        scheduleRepository.insertSchedule(updatedSchedule, this)
+        scheduleRepository.updateScheduleAddOrder(updatedSchedule, this)
     }
 
-    override fun returnCreatedCallback(obj: ScheduleWithWorkingTime) {}
+    override fun returnUpdatedScheduleAddOrderCallback(schedule: ScheduleWithWorkingTime) {
+    }
 }

@@ -1,9 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.DeleteScheduleCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.GetScheduleCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.InsertScheduleCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.api.ScheduleFirebase
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
@@ -45,12 +42,19 @@ class ScheduleRepository(private val scheduleFirebase: ScheduleFirebase) : BaseR
         }
     }
 
-    override fun updateScheduleRemoveOrders(
-        order: Order,
-        updateScheduleCallback: UpdateScheduleCallback
+    override fun updateScheduleAddOrder(
+        schedule: ScheduleWithWorkingTime,
+        updateScheduleAddOrderCallback: UpdateScheduleAddOrderCallback
     ) {
         launch {
-            scheduleFirebase.updateScheduleRemoveOrders(order, updateScheduleCallback)
+            scheduleFirebase.updateScheduleAddOrder(schedule, updateScheduleAddOrderCallback)
         }
+    }
+
+    override fun updateScheduleRemoveOrder(
+        order: Order,
+        updateScheduleRemoveOrderCallback: UpdateScheduleRemoveOrderCallback
+    ) {
+        scheduleFirebase.updateScheduleRemoveOrder(order, updateScheduleRemoveOrderCallback)
     }
 }
