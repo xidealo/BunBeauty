@@ -71,7 +71,7 @@ class CreationCommentActivity : BaseActivity(), CreationCommentView {
         activity_creation_comment_btn_rate.setOnClickListener {
             creationCommentPresenter.checkMessage(
                 activity_creation_comment_rb_rating.rating,
-                activity_creation_comment_rb_review.text.toString()
+                activity_creation_comment_rb_review.text.toString().trim()
             )
         }
     }

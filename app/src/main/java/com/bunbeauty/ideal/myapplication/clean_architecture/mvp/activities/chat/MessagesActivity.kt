@@ -92,7 +92,7 @@ class MessagesActivity : BaseActivity(), MessagesView {
         activity_messages_rv_messages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (isScrolling && dy < 0 && linearLayoutManager.findFirstVisibleItemPosition() <= 3) {
+                if (isScrolling && dy < 30 && linearLayoutManager.findFirstVisibleItemPosition() <= 3) {
                     Log.d(Tag.TEST_TAG, "Запрос на докачку сообщений")
                     updateData()
                 }

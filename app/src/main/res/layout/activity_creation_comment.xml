@@ -19,9 +19,9 @@
         app:layout_constraintTop_toBottomOf="@+id/top_panel">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:gravity="center"
             android:text="@string/rating"
             android:textAppearance="?attr/textAppearanceHeadline6" />
 
@@ -48,12 +48,11 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_creation_comment_btn_rate"
-        style="@style/smallButton"
+        style="@style/largeButton"
         android:layout_marginBottom="@dimen/default_bottom_margin"
         android:text="@string/rate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

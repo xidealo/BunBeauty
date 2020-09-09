@@ -7,6 +7,8 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ServiceCommentAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.service_comments.ServiceCommentsServiceCommentInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.service_comments.ServiceCommentsServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.service_comments.ServiceCommentsUserInteractor
@@ -18,11 +20,11 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.comments.S
 import kotlinx.android.synthetic.main.activity_service_comments.*
 import javax.inject.Inject
 
-class ServiceCommentsActivity : BaseActivity(), ServiceCommentsView{
+class ServiceCommentsActivity : BaseActivity(), ServiceCommentsView {
 
     @Inject
     lateinit var serviceCommentAdapter: ServiceCommentAdapter
-    //add loading limit
+
     @Inject
     lateinit var serviceCommentsServiceCommentInteractor: ServiceCommentsServiceCommentInteractor
 
@@ -61,11 +63,11 @@ class ServiceCommentsActivity : BaseActivity(), ServiceCommentsView{
     }
 
     override fun showLoading() {
-        activity_servicecomments_pb_loading.visibility = View.VISIBLE
+        activity_servicecomments_pb_loading.visible()
     }
 
     override fun hideLoading() {
-        activity_servicecomments_pb_loading.visibility = View.GONE
+        activity_servicecomments_pb_loading.gone()
     }
 
     override fun updateServiceComments(serviceComment: ServiceComment) {
@@ -73,18 +75,18 @@ class ServiceCommentsActivity : BaseActivity(), ServiceCommentsView{
     }
 
     override fun showServiceComments() {
-        activity_servicecomments_rv_results.visibility = View.VISIBLE
+        activity_servicecomments_rv_results.visible()
     }
 
     override fun hideServiceComments() {
-        activity_servicecomments_rv_results.visibility = View.GONE
+        activity_servicecomments_rv_results.gone()
     }
 
     override fun showEmptyScreen() {
-        activity_servicecomments_tv_empty.visibility = View.VISIBLE
+        activity_servicecomments_tv_empty.visible()
     }
 
     override fun hideEmptyScreen() {
-        activity_servicecomments_tv_empty.visibility = View.GONE
+        activity_servicecomments_tv_empty.gone()
     }
 }

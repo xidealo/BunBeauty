@@ -66,7 +66,7 @@ class UserCommentsActivity : BaseActivity(), UserCommentsView {
             RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (isScrolling && dy > 0 && linearLayoutManager.findFirstVisibleItemPosition() <= loadingLimit - 3) {
+                if (isScrolling && dy > 30 && linearLayoutManager.findLastVisibleItemPosition() <= loadingLimit - 3) {
                     Log.d(Tag.TEST_TAG, "Запрос на докачку сообщений")
                     updateData()
                 }

@@ -33,7 +33,7 @@ class UserCommentFirebase {
             override fun onDataChange(userCommentsSnapshot: DataSnapshot) {
                 val userComments = mutableListOf<UserComment>()
 
-                for (userCommentSnapshot in userCommentsSnapshot.children.reversed()) {
+                for (userCommentSnapshot in userCommentsSnapshot.children) {
                     userComments.add(getUserCommentFromSnapshot(userCommentSnapshot, userId))
                 }
 
