@@ -62,7 +62,7 @@ class DialogsPresenter(
     }
 
     fun removeObservers() {
-        dialogsDialogInteractor.removeReference()
+        //dialogsDialogInteractor.removeObservers()
         dialogsMessageInteractor.removeObservers()
     }
 

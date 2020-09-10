@@ -4,15 +4,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.chatElements.DialogElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.DiffUtilCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 
 class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
 
-    private val dialogList: ArrayList<Dialog> = arrayListOf()
+    private var dialogList = mutableListOf<Dialog>()
 
     fun addItem(dialog: Dialog) {
         val foundDialog = dialogList.find { it.user.id == dialog.user.id }
@@ -25,7 +27,7 @@ class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
             val index = dialogList.indexOf(foundDialog)
             dialogList[index] = dialog
             dialogList.sortByDescending { it.lastMessage.time }
-            notifyDataSetChanged()
+            notifyItemRangeChanged(0, index + 1)
         }
     }
 

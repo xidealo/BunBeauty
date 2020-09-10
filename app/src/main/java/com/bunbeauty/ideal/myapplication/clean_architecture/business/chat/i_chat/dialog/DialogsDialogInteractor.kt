@@ -72,7 +72,7 @@ class DialogsDialogInteractor(private val dialogRepository: IDialogRepository) :
         }
     }
 
-    override fun removeReference() {
+    override fun removeObservers() {
         dialogRepository.removeObservers()
     }
 

@@ -36,6 +36,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 this,
                 remoteMessage.data["user_id"]?: "",
                 remoteMessage.data[User.NAME] ?: "",
+                remoteMessage.data[User.SURNAME] ?: "",
                 remoteMessage.data["photo_link"] ?: ""
 
             )

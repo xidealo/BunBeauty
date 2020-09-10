@@ -14,5 +14,5 @@ interface IDialogsDialogInteractor {
         dialogsPresenterCallback: DialogsPresenterCallback
     )
 
-    fun removeReference()
+    fun removeObservers()
 }

@@ -81,7 +81,7 @@ class MessagesActivity : BaseActivity(), MessagesView {
     private fun init() {
         activity_messages_btn_send.setOnClickListener {
             messagePresenter.sendMessage(activity_messages_et_message.text.toString().trim())
-            activity_messages_et_message.text.clear()
+            activity_messages_et_message.setText("")
         }
         hideEmptyScreen()
         val linearLayoutManager = LinearLayoutManager(this)

@@ -4,7 +4,7 @@ let admin = require('firebase-admin');
 
 admin.initializeApp(functions.config().firebase);
 
-exports.sendFollowingNotification = functions.database.ref('/users/{userId}/subscribers/{subscribeId}').onCreate((snapshot, context) => {
+exports.sendFollowingNotification = functions.database.ref('/subscribers/{userId}/{subscribeId}').onCreate((snapshot, context) => {
 
     //get the userId of the person receiving the notification because we need to get their token
     const receiverId = context.params.userId;
@@ -17,8 +17,10 @@ exports.sendFollowingNotification = functions.database.ref('/users/{userId}/subs
     //query the users node and get the name of the user who sent the message
     return admin.database().ref("/users/" + senderId).once('value').then(snap => {
         const senderName = snap.child("name").val();
+        const senderSurname = snap.child("surname").val();
         const senderPhoto = snap.child("photo link").val();
         console.log("senderName: ", senderName);
+        console.log("senderSurname: ", senderSurname);
         console.log("senderPhoto: ", senderPhoto);
 
         //get the token of the user receiving the message
@@ -35,6 +37,7 @@ exports.sendFollowingNotification = functions.database.ref('/users/{userId}/subs
                         data_type: "following",
                         user_id: senderId,
                         name: senderName,
+                        surname: senderSurname,
                         photo_link: senderPhoto
                     }
                 };

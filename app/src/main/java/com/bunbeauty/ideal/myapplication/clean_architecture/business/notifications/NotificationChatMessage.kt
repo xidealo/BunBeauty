@@ -75,7 +75,7 @@ class NotificationChatMessage(
 
         val notificationManager = NotificationManagerCompat.from(context)
         val notification = builder.build()
-        notification.flags = Notification.DEFAULT_LIGHTS or Notification.FLAG_AUTO_CANCEL
+        notification.flags = Notification.FLAG_AUTO_CANCEL
         notificationManager.notify(notificationId, notification)
     }
 
