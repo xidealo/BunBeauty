@@ -1,5 +1,7 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Ignore
@@ -13,7 +15,8 @@ import java.io.Serializable
         childColumns = ["userId"],
         onDelete = ForeignKey.CASCADE
     )]
-)data class Service(
+)
+data class Service(
     @PrimaryKey
     var id: String = "",
     var userId: String,
@@ -27,11 +30,38 @@ import java.io.Serializable
     var cost: Long,
     var creationDate: Long = 0L,
     var premiumDate: Long = 0L
-) : Serializable {
+) : Parcelable {
     @Ignore
     var tags: ArrayList<Tag> = ArrayList()
 
-    companion object {
+    @Ignore
+    var photos: ArrayList<Photo> = arrayListOf()
+
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readFloat(),
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readFloat(),
+        parcel.readLong(),
+        parcel.readLong(),
+        parcel.readLong(),
+        parcel.readLong()
+    )
+
+    companion object CREATOR : Parcelable.Creator<Service> {
+
+        override fun createFromParcel(parcel: Parcel): Service {
+            return Service(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Service?> {
+            return arrayOfNulls(size)
+        }
+
         const val SERVICES = "services"
         const val SERVICE = "service"
 
@@ -48,4 +78,24 @@ import java.io.Serializable
         const val PREMIUM_DATE = "premium date"
         const val DEFAULT_PREMIUM_DATE = 0L
     }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(userId)
+        parcel.writeString(name)
+        parcel.writeFloat(duration)
+        parcel.writeString(address)
+        parcel.writeString(description)
+        parcel.writeString(category)
+        parcel.writeFloat(rating)
+        parcel.writeLong(countOfRates)
+        parcel.writeLong(cost)
+        parcel.writeLong(creationDate)
+        parcel.writeLong(premiumDate)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
 }

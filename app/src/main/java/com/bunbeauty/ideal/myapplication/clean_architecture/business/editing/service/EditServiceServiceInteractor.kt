@@ -19,7 +19,7 @@ class EditServiceServiceInteractor(
     override fun getGottenService() = gottenService
 
     override fun getService(editServicePresenterCallback: EditServicePresenterCallback) {
-        gottenService = intent.getSerializableExtra(Service.SERVICE) as Service
+        gottenService = intent.getParcelableExtra(Service.SERVICE)!!
         editServicePresenterCallback.showEditService(gottenService)
     }
 
@@ -39,8 +39,7 @@ class EditServiceServiceInteractor(
     }
 
     override fun returnUpdatedCallback(obj: Service) {
-        editServicePresenterCallback.saveTags(obj)
-        editServicePresenterCallback.goToService(gottenService)
+        editServicePresenterCallback.saveTags(gottenService)
     }
 
     override fun delete(
@@ -108,7 +107,6 @@ class EditServiceServiceInteractor(
 
         return true
     }
-
 
     private fun isCategoryCorrect(
         category: String,

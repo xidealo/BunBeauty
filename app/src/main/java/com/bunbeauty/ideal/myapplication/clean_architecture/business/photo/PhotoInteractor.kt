@@ -12,8 +12,8 @@ import com.google.firebase.storage.FirebaseStorage
 class PhotoInteractor(private val photoServiceRepository: IPhotoServiceRepository) :
     IPhotoInteractor, PhotosCallback, DeletePhotoCallback {
 
-    private var photos = mutableListOf<Photo>()
-    private var deletePhotos = mutableListOf<Photo>()
+    private var photos = arrayListOf<Photo>()
+    private var deletePhotos = arrayListOf<Photo>()
 
     private lateinit var iPhotoCallback: IPhotoCallback
 
@@ -47,6 +47,7 @@ class PhotoInteractor(private val photoServiceRepository: IPhotoServiceRepositor
                 addImage(Service.SERVICE_PHOTO, photo)
             }
         }
+        deleteImagesFromService(deletePhotos)
     }
 
     override fun savePhotos(photos: List<Photo>, user: User, iPhotoCallback: IPhotoCallback) {

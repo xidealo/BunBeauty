@@ -3,11 +3,10 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions
 import android.content.Intent
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.sessions.SessionsPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.GetScheduleCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.InsertScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleAddOrderCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service.Companion.SERVICE
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service.CREATOR.SERVICE
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Session
@@ -72,7 +71,7 @@ class SessionsInteractor(
     }
 
     fun getService(): Service {
-        return intent.getSerializableExtra(SERVICE) as Service
+        return intent.getParcelableExtra<Service>(SERVICE) as Service
     }
 
     fun updateSchedule(order: Order, sessionsPresenterCallback: SessionsPresenterCallback) {

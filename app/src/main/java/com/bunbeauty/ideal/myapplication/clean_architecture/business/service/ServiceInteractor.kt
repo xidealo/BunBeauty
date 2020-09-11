@@ -21,7 +21,7 @@ class ServiceInteractor(
         this.servicePresenterCallback = servicePresenterCallback
 
         if (intent.hasExtra(Service.SERVICE)) {
-            returnGottenObject(intent.getSerializableExtra(Service.SERVICE) as Service)
+            returnGottenObject(intent.getParcelableExtra(Service.SERVICE) as? Service)
         } else {
             val masterId = intent.getSerializableExtra(Order.MASTER_ID) as String
             val serviceId = intent.getSerializableExtra(Order.SERVICE_ID) as String
@@ -44,8 +44,8 @@ class ServiceInteractor(
         gottenService = service
         servicePresenterCallback.showService(service)
         servicePresenterCallback.setTitle(service.name)
+        servicePresenterCallback.getServicePhotos(service)
     }
-
 
     override fun iconClick(user: User, servicePresenterCallback: ServicePresenterCallback) {
         if (isMyService(user)) {

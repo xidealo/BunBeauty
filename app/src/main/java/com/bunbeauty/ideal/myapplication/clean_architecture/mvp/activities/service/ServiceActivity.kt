@@ -11,6 +11,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.PhotoAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.photoElement.IPhotoElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.ServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.ServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.ServiceUserInteractor
@@ -69,7 +71,6 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
 
     override fun onResume() {
         super.onResume()
-
         initBottomPanel()
     }
 
@@ -102,9 +103,9 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
     }
 
     override fun showLoading() {
-        loadingServiceProgressBar.visibility = View.VISIBLE
-        mainViewServiceScroll.visibility = View.GONE
-        scheduleServiceBtn.visibility = View.GONE
+        loadingServiceProgressBar.visible()
+        mainViewServiceScroll.gone()
+        scheduleServiceBtn.gone()
     }
 
     override fun setTopPanelTitle(title: String) {
@@ -112,8 +113,8 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
     }
 
     override fun hideLoading() {
-        loadingServiceProgressBar.visibility = View.GONE
-        mainViewServiceScroll.visibility = View.VISIBLE
+        loadingServiceProgressBar.gone()
+        mainViewServiceScroll.visible()
     }
 
     override fun showRating(rating: Float, countOfRates: Long) {
@@ -127,13 +128,13 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
     }
 
     private fun showWithoutRating() {
-        withoutRatingServiceText.visibility = View.VISIBLE
-        ratingServiceLayout.visibility = View.GONE
+        withoutRatingServiceText.visible()
+        ratingServiceLayout.gone()
     }
 
     private fun showRatingBar(rating: Float) {
-        withoutRatingServiceText.visibility = View.GONE
-        ratingServiceLayout.visibility = View.VISIBLE
+        withoutRatingServiceText.gone()
+        ratingServiceLayout.visible()
         ratingServiceRatingBar.rating = rating
         ratingBlockServiceLayout.setOnClickListener {
             goToComments()
@@ -196,7 +197,7 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
         when (requestCode) {
             REQUEST_EDIT_SERVICE -> {
                 showMessage("Услуга изменена")
-                servicePresenter.updateService(data.getSerializableExtra(Service.SERVICE) as Service)
+                servicePresenter.updateService(data.getParcelableExtra<Service>(Service.SERVICE) as Service)
             }
         }
     }

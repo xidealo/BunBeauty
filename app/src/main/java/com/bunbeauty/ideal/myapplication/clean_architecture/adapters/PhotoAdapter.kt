@@ -17,10 +17,10 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
     private var height = 0
 
     fun setData(photos: List<Photo>, iPhotoElement: IPhotoElement, width: Int, height: Int) {
-        this.photos.clear()
         this.width = width
         this.height = height
         this.iPhotoElement = iPhotoElement
+        this.photos.clear()
         this.photos.addAll(photos)
         notifyDataSetChanged()
     }
@@ -38,9 +38,7 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
         serviceViewHolder.bind(photos[i])
     }
 
-    override fun getItemCount(): Int {
-        return photos.size
-    }
+    override fun getItemCount() = photos.size
 
     inner class PhotoViewHolder(private val view: View) :
         RecyclerView.ViewHolder(view) {

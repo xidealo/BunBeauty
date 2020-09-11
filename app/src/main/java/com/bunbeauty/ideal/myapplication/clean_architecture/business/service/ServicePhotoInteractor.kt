@@ -20,7 +20,13 @@ class ServicePhotoInteractor(private val photoServiceRepository: PhotoServiceRep
         servicePresenterCallback: ServicePresenterCallback
     ) {
         this.servicePresenterCallback = servicePresenterCallback
-        photoServiceRepository.getByServiceId(service.id, service.userId, this)
+        if (service.photos.isNotEmpty()) {
+            servicePresenterCallback.showPhotos(service.photos)
+            photoList.clear()
+            photoList.addAll(service.photos)
+            return
+        } else
+            photoServiceRepository.getByServiceId(service.id, service.userId, this)
     }
 
     override fun returnList(photos: List<Photo>) {

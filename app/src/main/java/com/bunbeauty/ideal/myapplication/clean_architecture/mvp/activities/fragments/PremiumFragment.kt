@@ -150,7 +150,7 @@ class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
         ) =
             PremiumFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(Service.SERVICE, service)
+                    putParcelable(Service.SERVICE, service)
                 }
             }
     }

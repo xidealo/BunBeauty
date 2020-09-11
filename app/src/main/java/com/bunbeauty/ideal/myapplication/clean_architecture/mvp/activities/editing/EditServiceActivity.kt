@@ -15,6 +15,8 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ChangeablePhotoAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.CategoryFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.photoElement.IChangeablePhotoElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.editing.service.EditServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.editing.service.EditServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.PhotoInteractor
@@ -166,15 +168,15 @@ class EditServiceActivity : BaseActivity(), EditServiceView, IChangeablePhotoEle
     }
 
     override fun showLoading() {
-        activity_edit_service_pb_loading.visibility = View.VISIBLE
-        activity_edit_service_sv_main.visibility = View.VISIBLE
-        activity_edit_service_btn_save.visibility = View.VISIBLE
+        activity_edit_service_pb_loading.visible()
+        activity_edit_service_sv_main.visible()
+        activity_edit_service_btn_save.visible()
     }
 
     override fun hideLoading() {
-        activity_edit_service_pb_loading.visibility = View.GONE
-        activity_edit_service_sv_main.visibility = View.VISIBLE
-        activity_edit_service_btn_save.visibility = View.VISIBLE
+        activity_edit_service_pb_loading.gone()
+        activity_edit_service_sv_main.visible()
+        activity_edit_service_btn_save.visible()
     }
 
     override fun setNameEditServiceInputError(error: String) {

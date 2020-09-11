@@ -65,9 +65,10 @@ class EditServicePresenter(
         photoInteractor.addPhoto(photo)
     }
 
-    override fun goToService(service: Service) {
+    override fun saveTags(service: Service) {
+        editServiceTagInteractor.saveTags(service)
+        service.photos.addAll(photoInteractor.getPhotosLink())
         photoInteractor.savePhotos(photoInteractor.getPhotosLink(), service, this)
-        photoInteractor.deleteImagesFromService(photoInteractor.getDeletePhotosLink())
         viewState.goToService(service)
     }
 
@@ -102,11 +103,6 @@ class EditServicePresenter(
 
     override fun showDurationInputError(error: String) {
         viewState.showError(error)
-    }
-
-
-    override fun saveTags(service: Service) {
-        editServiceTagInteractor.saveTags(service)
     }
 
     override fun returnPhotos(photos: List<Photo>) {

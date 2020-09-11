@@ -7,6 +7,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 class ServiceCommentsServiceInteractor(private val intent: Intent) :
     IServiceCommentsServiceInteractor {
 
-    override fun getService() = intent.getSerializableExtra(Service.SERVICE) as Service
+    override fun getService() = intent.getParcelableExtra<Service>(Service.SERVICE) as Service
 
 }
