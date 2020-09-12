@@ -52,7 +52,7 @@ class ProfileUserInteractor(
 
     override fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
         if (isMyProfile(user.id, User.getMyId())) {
-            cacheUser = user
+            User.cacheUser = user
             profilePresenterCallback.showMyProfile(user)
             profilePresenterCallback.showUpdatedBottomPanel(R.id.navigation_profile)
             profilePresenterCallback.getOrderList(user.id)
@@ -104,7 +104,4 @@ class ProfileUserInteractor(
         profilePresenterCallback.showCountOfSubscriber(user.subscribersCount)
     }
 
-    companion object {
-        var cacheUser = User()
-    }
 }

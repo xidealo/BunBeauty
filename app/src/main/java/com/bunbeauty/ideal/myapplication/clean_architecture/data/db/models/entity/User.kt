@@ -23,8 +23,9 @@ data class User(
 //добавить время последнего захода?
 //добавить дату регистрации?
 
-
     companion object {
+
+        var cacheUser = User()
 
         fun getMyId(): String {
             val curUser = FirebaseAuth.getInstance().currentUser

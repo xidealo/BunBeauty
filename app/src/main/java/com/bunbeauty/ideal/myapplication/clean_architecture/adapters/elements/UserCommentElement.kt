@@ -41,7 +41,7 @@ class UserCommentElement(
             putExtra(UserComment.USER_COMMENT, userComment)
         }
         context.startActivity(intent)
-        (context as Activity).overridePendingTransition(0, 0)
+        //(context as Activity).overridePendingTransition(0, 0)
     }
 
 }

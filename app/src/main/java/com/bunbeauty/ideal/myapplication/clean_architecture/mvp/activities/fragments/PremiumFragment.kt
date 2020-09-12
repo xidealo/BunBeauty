@@ -142,8 +142,6 @@ class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
 
 
     companion object {
-        private const val TAG = "DBInf"
-
         @JvmStatic
         fun newInstance(
             service: Service

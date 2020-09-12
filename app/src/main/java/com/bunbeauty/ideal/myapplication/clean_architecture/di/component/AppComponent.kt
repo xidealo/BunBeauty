@@ -20,19 +20,20 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profi
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.search_service.MainScreenActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.subscriptions.SubscriptionsActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.profile.OrdersFragment
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.profile.ServicesFragment
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
 @Component(
-    dependencies = [],
     modules = [
         AppModule::class,
         FirebaseModule::class,
         InteractorModule::class,
         RepositoryModule::class,
-        AdapterModule::class
-    ]
+        AdapterModule::class,
+        FragmentModule::class]
 )
 interface AppComponent {
     fun inject(authorizationActivity: AuthorizationActivity)
@@ -40,7 +41,6 @@ interface AppComponent {
     fun inject(registrationActivity: RegistrationActivity)
     fun inject(profileActivity: ProfileActivity)
     fun inject(creationServiceActivity: CreationServiceActivity)
-    fun inject(premiumFragment: PremiumFragment)
     fun inject(mainScreenActivity: MainScreenActivity)
     fun inject(serviceActivity: ServiceActivity)
     fun inject(editProfileActivity: EditProfileActivity)
@@ -54,4 +54,10 @@ interface AppComponent {
     fun inject(creationUserCommentActivity: CreationCommentActivity)
     fun inject(serviceCommentsActivity: ServiceCommentsActivity)
     fun inject(sessionsActivity: SessionsActivity)
+
+    //FRAGMENTS
+    //TODO (own component)
+    fun inject(ordersFragment: OrdersFragment)
+    fun inject(servicesFragment: ServicesFragment)
+    fun inject(premiumFragment: PremiumFragment)
 }

@@ -1,6 +1,8 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.adapters
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,11 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.profileElements.ProfileOrderElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
+import java.io.Serializable
 
-class ProfileOrderAdapter : RecyclerView.Adapter<ProfileOrderAdapter.ProfileOrderViewHolder>() {
+class ProfileOrderAdapter() : RecyclerView.Adapter<ProfileOrderAdapter.ProfileOrderViewHolder>(),
+    Parcelable {
 
     lateinit var context: Context
     private val orderList: MutableList<Order> = ArrayList()
+
+    constructor(parcel: Parcel) : this()
 
     fun updateItems(orderList: List<Order>) {
         val newOrderList = orderList.filter { order ->
@@ -51,6 +57,24 @@ class ProfileOrderAdapter : RecyclerView.Adapter<ProfileOrderAdapter.ProfileOrde
                 context,
                 view
             )
+        }
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    override fun writeToParcel(p0: Parcel?, p1: Int) {}
+
+    companion object CREATOR : Parcelable.Creator<ProfileOrderAdapter> {
+        const val PROFILE_ORDER_ADAPTER = "profile order adapter"
+
+        override fun createFromParcel(parcel: Parcel): ProfileOrderAdapter {
+            return ProfileOrderAdapter(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ProfileOrderAdapter?> {
+            return arrayOfNulls(size)
         }
     }
 }

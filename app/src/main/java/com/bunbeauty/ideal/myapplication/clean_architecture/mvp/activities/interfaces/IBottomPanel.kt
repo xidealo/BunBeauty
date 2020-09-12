@@ -44,13 +44,14 @@ interface IBottomPanel : IPanel, BottomNavigationView.OnNavigationItemSelectedLi
 
     private fun goToProfile() {
         val intent = Intent(panelContext, ProfileActivity::class.java)
-        intent.putExtra(User.USER, ProfileUserInteractor.cacheUser)
+        if (User.cacheUser.name.isNotEmpty())
+            intent.putExtra(User.USER, User.cacheUser)
         startActivity(intent)
     }
 
     fun goToMainScreen() {
         val intent = Intent(panelContext, MainScreenActivity::class.java)
-        intent.putExtra(User.USER, ProfileUserInteractor.cacheUser)
+        intent.putExtra(User.USER, User.cacheUser)
         startActivity(intent)
     }
 

@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -43,7 +42,7 @@ class ServiceCommentElement(
             putExtra(ServiceComment.SERVICE_COMMENT, serviceComment)
         }
         context.startActivity(intent)
-        (context as Activity).overridePendingTransition(0, 0)
+        //(context as Activity).overridePendingTransition(0, 0)
     }
 
 }

@@ -8,10 +8,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileOrderAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileServiceAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import kotlinx.android.synthetic.main.fragment_orders.*
 
-class OrdersFragment(private val profileOrderAdapter: ProfileOrderAdapter) : MvpAppCompatFragment() {
+class OrdersFragment : MvpAppCompatFragment() {
+
+    private var profileOrderAdapter: ProfileOrderAdapter? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            profileOrderAdapter =
+                it.getParcelable<ProfileOrderAdapter>(ProfileOrderAdapter.PROFILE_ORDER_ADAPTER) as ProfileOrderAdapter
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,6 +39,21 @@ class OrdersFragment(private val profileOrderAdapter: ProfileOrderAdapter) : Mvp
     }
 
     fun updateOrderList(orderList: List<Order>) {
-        profileOrderAdapter.updateItems(orderList)
+        profileOrderAdapter?.updateItems(orderList)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(
+            profileOrderAdapter: ProfileOrderAdapter
+        ) =
+            OrdersFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(
+                        ProfileOrderAdapter.PROFILE_ORDER_ADAPTER,
+                        profileOrderAdapter
+                    )
+                }
+            }
     }
 }

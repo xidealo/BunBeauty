@@ -11,10 +11,20 @@ import com.arellomobile.mvp.MvpAppCompatFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileServiceAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.create_service.CreationServiceActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment
 import kotlinx.android.synthetic.main.fragment_services.*
 
-class ServicesFragment(private val profileServiceAdapter: ProfileServiceAdapter) :
-    MvpAppCompatFragment() {
+class ServicesFragment : MvpAppCompatFragment() {
+
+    private var profileServiceAdapter: ProfileServiceAdapter? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            profileServiceAdapter =
+                it.getParcelable<ProfileServiceAdapter>(ProfileServiceAdapter.PROFILE_SERVICE_ADAPTER) as ProfileServiceAdapter
+        }
+    }
 
     var createServiceButtonVisibility = View.GONE
         set(value) {
@@ -41,12 +51,27 @@ class ServicesFragment(private val profileServiceAdapter: ProfileServiceAdapter)
     }
 
     fun updateServiceList(serviceList: List<Service>) {
-        profileServiceAdapter.updateItems(serviceList)
+        profileServiceAdapter?.updateItems(serviceList)
     }
 
     private fun goToCreationService() {
         val intent = Intent(context, CreationServiceActivity::class.java)
         startActivity(intent)
         activity!!.overridePendingTransition(0, 0)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(
+            profileServiceAdapter: ProfileServiceAdapter
+        ) =
+            ServicesFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(
+                        ProfileServiceAdapter.PROFILE_SERVICE_ADAPTER,
+                        profileServiceAdapter
+                    )
+                }
+            }
     }
 }

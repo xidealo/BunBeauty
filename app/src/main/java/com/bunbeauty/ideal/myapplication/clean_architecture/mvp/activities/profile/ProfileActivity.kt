@@ -39,8 +39,11 @@ import javax.inject.Inject
 
 class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedListener {
 
-    private lateinit var ordersFragment: OrdersFragment
-    private lateinit var servicesFragment: ServicesFragment
+    @Inject
+    lateinit var ordersFragment: OrdersFragment
+
+    @Inject
+    lateinit var servicesFragment: ServicesFragment
 
     @Inject
     lateinit var profileServiceAdapter: ProfileServiceAdapter
@@ -118,8 +121,6 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
             openPhoto()
         }
 
-        ordersFragment = OrdersFragment(profileOrderAdapter)
-        servicesFragment = ServicesFragment(profileServiceAdapter)
         activity_profile_vp.adapter = ProfilePagerAdapter(
             supportFragmentManager,
             FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
@@ -127,7 +128,11 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
             servicesFragment
         )
         activity_profile_tl_tab.addOnTabSelectedListener(this)
-        activity_profile_vp.addOnPageChangeListener(TabLayoutOnPageChangeListener(activity_profile_tl_tab))
+        activity_profile_vp.addOnPageChangeListener(
+            TabLayoutOnPageChangeListener(
+                activity_profile_tl_tab
+            )
+        )
     }
 
     private fun openPhoto() {
@@ -151,7 +156,7 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
         val width = resources.getDimensionPixelSize(R.dimen.photo_width)
         val height = resources.getDimensionPixelSize(R.dimen.photo_height)
         Picasso.get()
-             .load(photoLink)
+            .load(photoLink)
             .resize(width, height)
             .centerCrop()
             .transform(CircularTransformation())
