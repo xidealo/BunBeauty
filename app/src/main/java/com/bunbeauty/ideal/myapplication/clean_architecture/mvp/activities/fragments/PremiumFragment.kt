@@ -68,7 +68,7 @@ class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            service = it.getSerializable(Service.SERVICE) as Service
+            service = it.getParcelable(Service.SERVICE)!!
         }
     }
 
@@ -143,9 +143,7 @@ class PremiumFragment : MvpAppCompatFragment(), View.OnClickListener,
 
     companion object {
         @JvmStatic
-        fun newInstance(
-            service: Service
-        ) =
+        fun newInstance(service: Service) =
             PremiumFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(Service.SERVICE, service)

@@ -25,9 +25,9 @@ class SessionsPresenter(
         sessionsInteractor.getSchedule(this)
     }
 
-    override fun showDays(days: Set<WorkingDay>) {
+    override fun showDays(days: List<WorkingDay>) {
         viewState.hideLoading()
-        viewState.showDays(days.toList())
+        viewState.showDays(days)
     }
 
     override fun showNoAvailableSessions() {

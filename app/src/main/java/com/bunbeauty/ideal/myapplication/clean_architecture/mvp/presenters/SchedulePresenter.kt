@@ -18,7 +18,7 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
         viewState.showSchedule(dayIndexes)
     }
 
-    fun getDateString(dayIndex: Int): String {
+    fun getStringDayOfMonth(dayIndex: Int): String {
         return scheduleInteractor.getStringDayOfMonth(dayIndex)
     }
 
@@ -30,6 +30,10 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
         scheduleInteractor.selectedDayIndexes.add(dayIndex)
         scheduleInteractor.selectedDays.add(day.toInt())
         scheduleInteractor.getTime(this)
+    }
+
+    fun hasSomeSelectedDays(): Boolean {
+        return scheduleInteractor.selectedDays.isNotEmpty()
     }
 
     override fun showAccurateTime(accurateTimeSet: Set<String>) {

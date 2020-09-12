@@ -15,6 +15,9 @@ import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.invisible
+import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
@@ -50,7 +53,6 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         setContentView(R.layout.activity_schedule)
 
         init()
-        createDaysButtons()
         createTimeButtons()
 
         initTopPanel("Расписание")
@@ -67,33 +69,10 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
     private fun init() {
         daysScheduleGrid.setOnTouchListener(this)
         timeScheduleGrid.setOnTouchListener(this)
-        timeScheduleLayout.visibility = View.GONE
+        timeScheduleLayout.gone()
         saveScheduleButton.setOnClickListener {
             schedulePresenter.saveSchedule()
         }
-    }
-
-    private fun createDaysButtons() {
-        for (weekIndex in 0 until WEEK_COUNT) {
-            for (weekDayIndex in 0 until WEEK_DAY_COUNT) {
-                val width = getScreenWidth() / WEEK_DAY_COUNT
-                val height = resources.getDimensionPixelSize(R.dimen.schedule_button_height)
-                val text =
-                    schedulePresenter.getDateString(weekIndex * WEEK_DAY_COUNT + weekDayIndex)
-                val button = getConfiguredButton(width, height, text)
-                setButtonEnabled(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex)
-
-                daysButtons.add(button)
-            }
-        }
-
-        for (i in 0 until daysButtons.size) {
-            addViewToContainer(daysButtons[i], daysScheduleGrid)
-        }
-    }
-
-    private fun setButtonEnabled(button: Button, dayIndex: Int) {
-        button.isEnabled = schedulePresenter.isPastDay(dayIndex)
     }
 
     private fun createTimeButtons() {
@@ -120,14 +99,46 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
     }
 
     override fun showSchedule(dayIndexes: Set<Int>) {
-        for (buttonIndex in dayIndexes) {
-            if (buttonIndex in 0 until daysButtons.size) {
-                fillDayButton(daysButtons[buttonIndex])
+        createDaysButtons(dayIndexes)
+    }
+
+    private fun createDaysButtons(selectedDayIndexes: Set<Int>) {
+        for (weekIndex in 0 until WEEK_COUNT) {
+            for (weekDayIndex in 0 until WEEK_DAY_COUNT) {
+                val width = getScreenWidth() / WEEK_DAY_COUNT
+                val height = resources.getDimensionPixelSize(R.dimen.schedule_button_height)
+                val text =
+                    schedulePresenter.getStringDayOfMonth(weekIndex * WEEK_DAY_COUNT + weekDayIndex)
+                val button = getConfiguredButton(width, height, text)
+
+                setButtonEnable(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex)
+                setButtonSelection(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex, selectedDayIndexes)
+
+                daysButtons.add(button)
             }
+        }
+
+        for (i in 0 until daysButtons.size) {
+            addViewToContainer(daysButtons[i], daysScheduleGrid)
         }
     }
 
     @SuppressLint("ClickableViewAccessibility")
+    private fun setButtonEnable(button: Button, dayIndex: Int) {
+        if (schedulePresenter.isPastDay(dayIndex)) {
+            button.invisible()
+            button.isEnabled = false
+        } else {
+            button.setOnTouchListener(this)
+        }
+    }
+
+    private fun setButtonSelection(button: Button, dayIndex: Int, selectedDayIndexes: Set<Int>) {
+        if (selectedDayIndexes.contains(dayIndex)) {
+            fillDayButton(button)
+        }
+    }
+
     private fun getConfiguredButton(width: Int, height: Int, text: String): Button {
         val button = Button(this)
 
@@ -138,7 +149,6 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         setBackground(button)
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
         button.text = text
-        button.setOnTouchListener(this)
 
         return button
     }
@@ -162,9 +172,13 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
+
+        if (schedulePresenter.hasSomeSelectedDays()) {
+            timeScheduleLayout.visible()
+        }
+
         when (motionEvent.action) {
             MotionEvent.ACTION_DOWN -> {
-                timeScheduleLayout.visibility = View.VISIBLE
                 clearPreviousSelection(view.id)
                 if (view.id == R.id.daysScheduleGrid) {
                     schedulePresenter.forgotAllDays()

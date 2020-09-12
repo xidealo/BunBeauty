@@ -5,6 +5,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleRemoveOrderCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule.Companion.GETTING_TIME
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule.Companion.SCHEDULE
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime
@@ -13,9 +14,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime.Companion.TIME
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.BaseRepository
 import com.google.firebase.database.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import org.joda.time.Duration
 
 class ScheduleFirebase : BaseRepository() {
 
@@ -24,19 +23,20 @@ class ScheduleFirebase : BaseRepository() {
             .getReference(SCHEDULE)
             .child(masterId)
 
+        workingTimeReference.child(GETTING_TIME).setValue(ServerValue.TIMESTAMP)
+
         workingTimeReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(workingTimeSnapshot: DataSnapshot) {
                 val workingTimeList = getWorkingTimeFromSnapshot(workingTimeSnapshot)
+                val gettingTime = workingTimeSnapshot.child(GETTING_TIME).value as Long +
+                        Duration.standardHours(3).millis
 
-
-                CoroutineScope(Dispatchers.Main).launch {
-                    getScheduleCallback.returnGottenObject(
-                        ScheduleWithWorkingTime(
-                            schedule = Schedule(masterId = masterId),
-                            workingTimeList = ArrayList(workingTimeList)
-                        )
+                getScheduleCallback.returnGottenObject(
+                    ScheduleWithWorkingTime(
+                        schedule = Schedule(masterId = masterId, gettingTime = gettingTime),
+                        workingTimeList = ArrayList(workingTimeList)
                     )
-                }
+                )
             }
 
             override fun onCancelled(p0: DatabaseError) {}
@@ -44,7 +44,7 @@ class ScheduleFirebase : BaseRepository() {
     }
 
     private fun getWorkingTimeFromSnapshot(workingTimeSnapshot: DataSnapshot): List<WorkingTime> {
-        return workingTimeSnapshot.children.map { snapshot ->
+        return workingTimeSnapshot.children.filter { it.hasChildren() }.map { snapshot ->
             val time = snapshot.child(TIME).value as Long
             val orderId = snapshot.child(ORDER_ID).value as? String ?: ""
             val clientId = snapshot.child(CLIENT_ID).value as? String ?: ""

@@ -40,14 +40,14 @@ data class ScheduleWithWorkingTime(
     }
 
     fun addWorkingTime(day: Int, timeString: String): WorkingTime? {
-        val now = DateTime.now()
-        val date = if (now.dayOfMonth <= day) {
-            DateTime().withDate(now.year, now.monthOfYear, day)
+        val gettingDateTime = DateTime(schedule.gettingTime)
+        val date = if (gettingDateTime.dayOfMonth <= day) {
+            gettingDateTime.withDayOfMonth(day)
         } else {
-            if (now.monthOfYear == 12) {
-                DateTime().withDate(now.year + 1, now.monthOfYear, day)
+            if (gettingDateTime.monthOfYear == 12) {
+                DateTime().withDate(gettingDateTime.year + 1, gettingDateTime.monthOfYear, day)
             } else {
-                DateTime().withDate(now.year, now.monthOfYear + 1, day)
+                DateTime().withDate(gettingDateTime.year, gettingDateTime.monthOfYear + 1, day)
             }
         }
         val timeParts = timeString.split(WorkingTime.TIME_DELIMITER)
@@ -89,7 +89,21 @@ data class ScheduleWithWorkingTime(
         workingTimeList.remove(removingWorkingTime)
     }
 
-    fun getAvailableDays(serviceDuration: Float): Set<WorkingDay> {
+    fun getFutureSchedule(): ScheduleWithWorkingTime {
+        return ScheduleWithWorkingTime(
+            schedule,
+            ArrayList(workingTimeList.filter { it.time > schedule.gettingTime }.sortedBy { it.time })
+        )
+    }
+
+    fun getPastSchedule(): ScheduleWithWorkingTime {
+        return ScheduleWithWorkingTime(
+            schedule,
+            ArrayList(workingTimeList.filter { it.time <= schedule.gettingTime })
+        )
+    }
+
+    fun getAvailableDays(serviceDuration: Float): List<WorkingDay> {
         val availableDays: MutableSet<WorkingDay> = HashSet()
 
         var timeInRaw = 0
@@ -112,7 +126,7 @@ data class ScheduleWithWorkingTime(
             }
         }
 
-        return availableDays
+        return availableDays.sortedBy { it.dayOfMonth }
     }
 
     fun getSessions(serviceDuration: Float, dayOfMonth: Int): List<Session> {

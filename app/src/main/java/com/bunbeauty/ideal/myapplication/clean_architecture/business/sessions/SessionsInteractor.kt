@@ -30,9 +30,8 @@ class SessionsInteractor(
         scheduleRepository.getScheduleByUserId(getService().userId, this)
     }
 
-    override fun returnGottenObject(schedule: ScheduleWithWorkingTime?) {
-        schedule!!.workingTimeList.sortBy { it.time }
-        this.schedule = schedule
+    override fun returnGottenObject(gottenSchedule: ScheduleWithWorkingTime?) {
+        schedule = gottenSchedule!!.getFutureSchedule()
 
         val availableDaySet = schedule.getAvailableDays(getService().duration)
         if (availableDaySet.isEmpty()) {

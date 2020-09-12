@@ -16,13 +16,12 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
 
     private lateinit var schedulePresenterCallback: SchedulePresenterCallback
 
-    private val now = DateTime.now()
     var selectedDayIndexes = ArrayList<Int>()
     var selectedDays = ArrayList<Int>()
 
     private lateinit var schedule: ScheduleWithWorkingTime
+    private lateinit var deletedSchedule: ScheduleWithWorkingTime
     private val addedSchedule = ScheduleWithWorkingTime()
-    private val deletedSchedule = ScheduleWithWorkingTime()
 
     fun getSchedule(schedulePresenterCallback: SchedulePresenterCallback) {
         this.schedulePresenterCallback = schedulePresenterCallback
@@ -30,10 +29,10 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         scheduleRepository.getScheduleByUserId(User.getMyId(), this)
     }
 
-    override fun returnGottenObject(schedule: ScheduleWithWorkingTime?) {
-        this.schedule = schedule!!
-        addedSchedule.schedule.masterId = schedule.schedule.masterId
-        deletedSchedule.schedule.masterId = schedule.schedule.masterId
+    override fun returnGottenObject(gottenSchedule: ScheduleWithWorkingTime?) {
+        schedule = gottenSchedule!!.getFutureSchedule()
+        deletedSchedule = gottenSchedule.getPastSchedule()
+        addedSchedule.schedule.masterId = gottenSchedule.schedule.masterId
 
         schedulePresenterCallback.showSchedule(getDayIndexes(schedule.workingTimeList))
     }
@@ -44,23 +43,24 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         }.toSet()
     }
 
+    fun getDaysBetween(startDate: DateTime, endDate: DateTime): Int {
+        return Days.daysBetween(startDate.toLocalDate(), endDate.toLocalDate()).days
+    }
+
     fun getStringDayOfMonth(dayIndex: Int): String {
         return getLastMondayDate().plusDays(dayIndex).dayOfMonth.toString()
     }
 
     fun getLastMondayDate(): DateTime {
-        val dayOfWeek = DateTime.now().dayOfWeek - 1
-        return now.minusDays(dayOfWeek)
-    }
-
-    fun getDaysBetween(startDate: DateTime, endDate: DateTime): Int {
-        return Days.daysBetween(startDate.toLocalDate(), endDate.toLocalDate()).days
+        val gettingDateTime = DateTime(schedule.schedule.gettingTime)
+        val dayOfWeek = gettingDateTime.dayOfWeek - 1
+        return gettingDateTime.minusDays(dayOfWeek)
     }
 
     fun isPastDay(dayIndex: Int): Boolean {
-        val dayOfWeek = DateTime.now().dayOfWeek - 1
+        val dayOfWeek = DateTime(schedule.schedule.gettingTime).dayOfWeek - 1
 
-        return dayIndex >= dayOfWeek
+        return dayIndex < dayOfWeek
     }
 
     fun getTime(schedulePresenterCallback: SchedulePresenterCallback) {

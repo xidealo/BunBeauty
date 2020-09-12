@@ -45,6 +45,20 @@ class CreationServicePresenter(
         creationServiceServiceInteractor.addService(service, this)
     }
 
+    override fun addPhotos(service: Service) {
+        photoInteractor.savePhotos(photoInteractor.getPhotosLink(), service, this)
+    }
+
+    override fun addTags(service: Service) {
+        creationServiceTagInteractor.addTags(service)
+    }
+
+    override fun showServiceCreated(service: Service) {
+        viewState.hideMainBlock()
+        viewState.showPremiumBlock(service)
+        viewState.showMessage("Услуга успешно создана!")
+    }
+
     fun createPhoto(uri: Uri) {
         val photo = Photo()
         photo.link = uri.toString()
@@ -81,20 +95,6 @@ class CreationServicePresenter(
 
     override fun showDurationInputError(error: String) {
         viewState.showError(error)
-    }
-
-    override fun showServiceCreated(service: Service) {
-        viewState.hideMainBlock()
-        viewState.showPremiumBlock(service)
-        viewState.showMessage("Услуга успешно создана!")
-    }
-
-    override fun addTags(service: Service) {
-        creationServiceTagInteractor.addTags(service)
-    }
-
-    override fun addPhotos(service: Service) {
-        photoInteractor.savePhotos(photoInteractor.getPhotosLink(), service, this)
     }
 
     override fun returnPhotos(photos: List<Photo>) {}
