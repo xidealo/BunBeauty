@@ -196,7 +196,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_service_btn_schedule"
-                style="@style/largeButton"
+                style="@style/mainButton"
                 android:layout_gravity="center"
                 android:text="Расписание"
                 android:visibility="gone" />

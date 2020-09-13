@@ -11,10 +11,11 @@
     <dimen name="search_height">64dp</dimen>
 
     <!-- Schedule activity -->
-    <dimen name="schedule_button_height">36dp</dimen>
+    <dimen name="schedule_time_button_height">42dp</dimen>
     <dimen name="schedule_button_margin">2dp</dimen>
     <dimen name="schedule_button_stroke_width">3dp</dimen>
     <dimen name="schedule_button_corner_radius">5dp</dimen>
+    <dimen name="schedule_button_text_size">8sp</dimen>
 
     <!-- Sessions activity -->
     <dimen name="sessions_button_width">48dp</dimen>

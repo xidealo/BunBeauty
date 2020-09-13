@@ -5,11 +5,9 @@ import android.app.Activity
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
@@ -23,7 +21,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SchedulePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.ScheduleView
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.activity_schedule.*
 import javax.inject.Inject
 
@@ -31,8 +29,8 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
 
     override var panelContext: Activity = this
 
-    private val daysButtons = ArrayList<Button>()
-    private val timeButtons = ArrayList<Button>()
+    private val daysButtons = ArrayList<MaterialButton>()
+    private val timeButtons = ArrayList<MaterialButton>()
 
     private var touchId = 0
 
@@ -79,7 +77,7 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         for (i in 0 until TIME_RAW_COUNT) {
             for (j in 0 until TIME_COLUMN_COUNT) {
                 val width = getScreenWidth() / TIME_COLUMN_COUNT
-                val height = resources.getDimensionPixelSize(R.dimen.schedule_button_height)
+                val height = resources.getDimensionPixelSize(R.dimen.schedule_time_button_height)
                 val text = WorkingTime.getTimeByIndex(i * TIME_COLUMN_COUNT + j)
                 val button = getConfiguredButton(width, height, text)
 
@@ -93,9 +91,7 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
     }
 
     private fun getScreenWidth(): Int {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics.widthPixels
+        return resources.displayMetrics.widthPixels
     }
 
     override fun showSchedule(dayIndexes: Set<Int>) {
@@ -106,13 +102,17 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         for (weekIndex in 0 until WEEK_COUNT) {
             for (weekDayIndex in 0 until WEEK_DAY_COUNT) {
                 val width = getScreenWidth() / WEEK_DAY_COUNT
-                val height = resources.getDimensionPixelSize(R.dimen.schedule_button_height)
+                val height = width
                 val text =
-                    schedulePresenter.getStringDayOfMonth(weekIndex * WEEK_DAY_COUNT + weekDayIndex)
+                    schedulePresenter.getStringDate(weekIndex * WEEK_DAY_COUNT + weekDayIndex)
                 val button = getConfiguredButton(width, height, text)
 
                 setButtonEnable(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex)
-                setButtonSelection(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex, selectedDayIndexes)
+                setButtonSelection(
+                    button,
+                    weekIndex * WEEK_DAY_COUNT + weekDayIndex,
+                    selectedDayIndexes
+                )
 
                 daysButtons.add(button)
             }
@@ -124,7 +124,7 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setButtonEnable(button: Button, dayIndex: Int) {
+    private fun setButtonEnable(button: MaterialButton, dayIndex: Int) {
         if (schedulePresenter.isPastDay(dayIndex)) {
             button.invisible()
             button.isEnabled = false
@@ -133,22 +133,28 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         }
     }
 
-    private fun setButtonSelection(button: Button, dayIndex: Int, selectedDayIndexes: Set<Int>) {
+    private fun setButtonSelection(button: MaterialButton, dayIndex: Int, selectedDayIndexes: Set<Int>) {
         if (selectedDayIndexes.contains(dayIndex)) {
             fillDayButton(button)
         }
     }
 
-    private fun getConfiguredButton(width: Int, height: Int, text: String): Button {
-        val button = Button(this)
+    private fun getConfiguredButton(width: Int, height: Int, text: String): MaterialButton {
+        val button = MaterialButton(this)
 
         val margin = resources.getDimensionPixelSize(R.dimen.schedule_button_margin)
-        val params = LinearLayout.LayoutParams(width - 2 * margin, height)
-        params.setMargins(margin, margin, margin, margin)
+        val params = LinearLayout.LayoutParams(width - 2 * margin, height).apply {
+            setMargins(margin, 0, margin, 0)
+        }
+        button.setPadding(4, 4, 4, 4)
         button.layoutParams = params
-        setBackground(button)
+        button.cornerRadius = 8
+        button.strokeColor = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.mainBlue))
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
         button.text = text
+        button.textSize = 11f
+        button.setTextColor(ContextCompat.getColor(this, R.color.black))
+        clearDayButtonFill(button)
 
         return button
     }
@@ -160,14 +166,15 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         container.addView(view)
     }
 
-    private fun setBackground(button: Button) {
-        val gradientDrawable = GradientDrawable()
+    private fun setBackground(button: MaterialButton) {
+        /*val gradientDrawable = GradientDrawable()
         gradientDrawable.cornerRadius =
             resources.getDimension(R.dimen.schedule_button_corner_radius)
         gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.yellow))
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
 
-        button.background = gradientDrawable
+        button.background = gradientDrawable*/
+        //button.setBackgroundColor()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -259,7 +266,7 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         }
     }
 
-    private fun selectTimeButton(button: Button) {
+    private fun selectTimeButton(button: MaterialButton) {
         button.setTag(R.id.touchIdTag, touchId)
         if (isButtonSelected(button)) {
             val selectedDayTexts =
@@ -286,7 +293,7 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         fillDayButton(daysButtons[dayIndex])
     }
 
-    private fun findTouchedButton(motionEvent: MotionEvent, buttons: List<Button>): Int? {
+    private fun findTouchedButton(motionEvent: MotionEvent, buttons: List<MaterialButton>): Int? {
         for ((index, button) in buttons.withIndex()) {
             if (!isButtonTouched(button, motionEvent)) {
                 continue
@@ -306,57 +313,61 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         return null
     }
 
-    private fun isAlreadyTouched(button: Button): Boolean {
+    private fun isAlreadyTouched(button: MaterialButton): Boolean {
         return button.getTag(R.id.touchIdTag) == touchId
     }
 
-    private fun isButtonSelected(button: Button): Boolean {
+    private fun isButtonSelected(button: MaterialButton): Boolean {
         return button.getTag(R.id.touchedTag) == TOUCHED
     }
 
-    private fun selectButton(button: Button) {
-        val gradientDrawable = button.background as GradientDrawable
+    private fun selectButton(button: MaterialButton) {
+       /* val gradientDrawable = button.background as GradientDrawable
 
         gradientDrawable.cornerRadius =
             resources.getDimension(R.dimen.schedule_button_corner_radius)
-        gradientDrawable.setStroke(
+        *//*gradientDrawable.setStroke(
             resources.getDimensionPixelSize(R.dimen.schedule_button_stroke_width),
             ContextCompat.getColor(this, R.color.mainBlue)
-        )
-        button.background = gradientDrawable
+        )*//*
+        button.background = gradientDrawable*/
+        button.strokeWidth = 3
 
         button.setTag(R.id.touchedTag, TOUCHED)
     }
 
-    private fun clearDayButtonSelection(button: Button) {
-        val gradientDrawable = button.background as GradientDrawable
+    private fun clearDayButtonSelection(button: MaterialButton) {
+        /*val gradientDrawable = button.background as GradientDrawable
 
-        gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.white))
-        button.background = gradientDrawable
+        //gradientDrawable.setStroke(0, ContextCompat.getColor(this, R.color.white))
+        button.background = gradientDrawable*/
+        button.strokeWidth = 0
 
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
     }
 
-    private fun clearDayButtonFill(button: Button) {
-        val gradientDrawable = button.background as GradientDrawable
+    private fun clearDayButtonFill(button: MaterialButton) {
+        /*val gradientDrawable = button.background as GradientDrawable
 
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
-        button.background = gradientDrawable
+        button.background = gradientDrawable*/
+        button.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
 
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
     }
 
-    private fun fillDayButton(button: Button) {
-        val gradientDrawable = button.background as GradientDrawable
+    private fun fillDayButton(button: MaterialButton) {
+        /*val gradientDrawable = button.background as GradientDrawable
 
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.yellow))
-        button.background = gradientDrawable
+        button.background = gradientDrawable*/
+        button.setBackgroundColor(ContextCompat.getColor(this, R.color.yellow))
 
         button.setTag(R.id.touchedTag, TOUCHED)
     }
 
-    private fun fillButtonInHalf(button: Button) {
-        val gradientDrawable = GradientDrawable()
+    private fun fillButtonInHalf(button: MaterialButton) {
+        /*val gradientDrawable = GradientDrawable()
         gradientDrawable.cornerRadius =
             resources.getDimension(R.dimen.schedule_button_corner_radius)
         gradientDrawable.gradientType = GradientDrawable.SWEEP_GRADIENT
@@ -365,34 +376,36 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
             ContextCompat.getColor(this, R.color.white)
         )
         gradientDrawable.setGradientCenter(0f, 0.5f)
-        button.background = gradientDrawable
+        button.background = gradientDrawable*/
 
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
     }
 
-    private fun fillTimeButton(button: Button) {
-        val gradientDrawable = GradientDrawable()
+    private fun fillTimeButton(button: MaterialButton) {
+        /*val gradientDrawable = GradientDrawable()
         gradientDrawable.cornerRadius =
             resources.getDimension(R.dimen.schedule_button_corner_radius)
         gradientDrawable.color =
             ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yellow))
-        button.background = gradientDrawable
+        button.background = gradientDrawable*/
+        button.setBackgroundColor(ContextCompat.getColor(this, R.color.yellow))
 
         button.setTag(R.id.touchedTag, TOUCHED)
     }
 
-    private fun clearTimeButtonFill(button: Button) {
-        val gradientDrawable = GradientDrawable()
+    private fun clearTimeButtonFill(button: MaterialButton) {
+        /*val gradientDrawable = GradientDrawable()
         gradientDrawable.cornerRadius =
             resources.getDimension(R.dimen.schedule_button_corner_radius)
         gradientDrawable.color =
             ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white))
-        button.background = gradientDrawable
+        button.background = gradientDrawable*/
+        button.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
 
         button.setTag(R.id.touchedTag, NOT_TOUCHED)
     }
 
-    private fun isButtonTouched(button: Button, motionEvent: MotionEvent): Boolean {
+    private fun isButtonTouched(button: MaterialButton, motionEvent: MotionEvent): Boolean {
         return button.x < motionEvent.x &&
                 button.x + button.width > motionEvent.x &&
                 button.y < motionEvent.y &&
@@ -400,9 +413,10 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
     }
 
     override fun showMessage(message: String) {
-        Snackbar.make(scheduleLayout, message, Snackbar.LENGTH_LONG)
+        showMessage(message, scheduleLayout)
+        /*Snackbar.make(scheduleLayout, message, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
-            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
+            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()*/
     }
 
     override fun goBack() {
