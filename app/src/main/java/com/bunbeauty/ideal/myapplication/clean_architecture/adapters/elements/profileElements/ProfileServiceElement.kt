@@ -24,8 +24,9 @@ class ProfileServiceElement(
     }
 
     private fun goToService(service: Service, context: Context) {
-        val intent = Intent(context, ServiceActivity::class.java)
-        intent.putExtra(Service.SERVICE, service)
+        val intent = Intent(context, ServiceActivity::class.java).apply {
+            putExtra(Service.SERVICE, service)
+        }
         context.startActivity(intent)
         (context as Activity).overridePendingTransition(0, 0)
     }
