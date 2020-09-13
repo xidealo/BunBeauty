@@ -2,10 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.enti
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.*
 import java.io.Serializable
 
 @Entity(
@@ -29,13 +26,15 @@ data class Service(
     var countOfRates: Long = 0,
     var cost: Long,
     var creationDate: Long = 0L,
-    var premiumDate: Long = 0L
-) : Parcelable {
-    @Ignore
-    var tags: ArrayList<Tag> = ArrayList()
-
-    @Ignore
+    var premiumDate: Long = 0L,
+    @Embedded
+    var tags: ArrayList<Tag> = arrayListOf(),
+    @Embedded
     var photos: ArrayList<Photo> = arrayListOf()
+) : Parcelable {
+/*    @Ignore
+
+    @Ignore*/
 
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -49,8 +48,27 @@ data class Service(
         parcel.readLong(),
         parcel.readLong(),
         parcel.readLong(),
-        parcel.readLong()
+        parcel.readLong(),
+        parcel.readArrayList(Tag::class.java.classLoader) as ArrayList<Tag>,
+        parcel.readArrayList(Photo::class.java.classLoader) as ArrayList<Photo>
     )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(userId)
+        parcel.writeString(name)
+        parcel.writeFloat(duration)
+        parcel.writeString(address)
+        parcel.writeString(description)
+        parcel.writeString(category)
+        parcel.writeFloat(rating)
+        parcel.writeLong(countOfRates)
+        parcel.writeLong(cost)
+        parcel.writeLong(creationDate)
+        parcel.writeLong(premiumDate)
+        parcel.writeList(tags as List<*>?)
+        parcel.writeList(photos as List<*>?)
+    }
 
     companion object CREATOR : Parcelable.Creator<Service> {
 
@@ -79,20 +97,6 @@ data class Service(
         const val DEFAULT_PREMIUM_DATE = 0L
     }
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(userId)
-        parcel.writeString(name)
-        parcel.writeFloat(duration)
-        parcel.writeString(address)
-        parcel.writeString(description)
-        parcel.writeString(category)
-        parcel.writeFloat(rating)
-        parcel.writeLong(countOfRates)
-        parcel.writeLong(cost)
-        parcel.writeLong(creationDate)
-        parcel.writeLong(premiumDate)
-    }
 
     override fun describeContents(): Int {
         return 0
