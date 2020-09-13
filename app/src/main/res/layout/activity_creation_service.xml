@@ -26,7 +26,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/MaterialInputLayout"
-                    android:hint="@string/nameAddServiceTB"
+                    android:hint="@string/title"
                     app:startIconDrawable="@drawable/icon_profile">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -114,7 +114,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/activity_creation_service_btn_add_photo"
-                    style="@style/smallButton"
+                    style="@style/mainButton"
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/font_awesome_solid"
                     android:text=""
@@ -142,15 +142,15 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_creation_service_btn_add_service"
-                style="@style/largeButton"
+                style="@style/mainButton"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/addServices" />
+                android:text="@string/add" />
         </LinearLayout>
     </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_creation_service_btn_continue"
-        style="@style/largeButton"
+        style="@style/mainButton"
         android:text="Продолжить"
         app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
         app:layout_constraintLeft_toLeftOf="parent"

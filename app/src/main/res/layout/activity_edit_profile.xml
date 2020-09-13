@@ -37,7 +37,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_edit_profile_btn_add_photo"
-                style="@style/smallButton"
+                style="@style/mainButton"
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="@font/font_awesome_solid"
                 android:text=""
@@ -122,18 +122,18 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_edit_profile_btn_verify"
-                style="@style/largeButton"
-                android:text="@string/verifyCode" />
+                style="@style/mainButton"
+                android:text="@string/verify_code" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_edit_profile_btn_resend"
                 style="@style/outlineButton"
-                android:text="@string/resendCode" />
+                android:text="@string/resend_code" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_edit_profile_btn_save"
-                style="@style/largeButton"
-                android:text="@string/saveData" />
+                style="@style/mainButton"
+                android:text="@string/save" />
 
         </LinearLayout>
     </ScrollView>

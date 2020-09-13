@@ -61,7 +61,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_session_btn_make_appointment"
-        style="@style/smallButton"
+        style="@style/mainButton"
         android:enabled="false"
         android:text="Записаться"
         android:visibility="gone"

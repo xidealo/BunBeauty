@@ -154,16 +154,8 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="smallButton" parent="baseButton">
-        <item name="android:layout_width">@dimen/small_button_width</item>
-        <item name="android:layout_marginStart">2dp</item>
-        <item name="android:layout_marginEnd">2dp</item>
-        <item name="android:backgroundTint">@color/selector_dark_blue</item>
-        <item name="cornerRadius">@dimen/button_corner_radius</item>
-    </style>
-
-    <style name="largeButton" parent="baseButton">
-        <item name="android:layout_width">@dimen/large_button_width</item>
+    <style name="mainButton" parent="baseButton">
+        <item name="android:layout_width">@dimen/button_width</item>
         <item name="android:layout_marginStart">2dp</item>
         <item name="android:layout_marginEnd">2dp</item>
         <item name="android:backgroundTint">@color/selector_dark_blue</item>
@@ -188,11 +180,6 @@
         <item name="borderWidth">0dp</item>
         <item name="tint">@color/white</item>
         <item name="elevation">5dp</item>
-    </style>
-
-    <style name="progressButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <!-- BLOCKS -->

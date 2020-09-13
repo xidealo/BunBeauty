@@ -193,8 +193,8 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/scheduleServiceBtn"
-                android:visibility="gone"
-                style="@style/largeButton"
+                android:visibility="visible"
+                style="@style/mainButton"
                 android:layout_gravity="center"
                 android:text="Расписание" />
         </LinearLayout>

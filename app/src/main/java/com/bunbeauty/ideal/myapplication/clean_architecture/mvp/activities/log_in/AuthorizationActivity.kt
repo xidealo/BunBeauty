@@ -6,8 +6,6 @@ import android.widget.ArrayAdapter
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.invisible
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.AuthorizationInteractor
@@ -43,7 +41,7 @@ class AuthorizationActivity : BaseActivity(), AuthorizationView, IAdapterSpinner
     }
 
     private fun configViews() {
-        val countryCodes = arrayListOf(*resources.getStringArray(R.array.countryCode))
+        val countryCodes = arrayListOf(*resources.getStringArray(R.array.country_codes))
 
         setAdapter(countryCodes, activity_authorization_sp_code, this)
         activity_authorization_sp_code.setText(countryCodes.first())

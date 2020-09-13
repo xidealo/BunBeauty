@@ -121,7 +121,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_edit_service_btn_add_photo"
-                style="@style/smallButton"
+                style="@style/mainButton"
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="@font/font_awesome_solid"
                 android:text=""
@@ -148,12 +148,12 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/activity_edit_service_btn_delete"
-                    style="@style/smallButton"
+                    style="@style/mainButton"
                     android:text="Удалить" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/activity_edit_service_btn_save"
-                    style="@style/smallButton"
+                    style="@style/mainButton"
                     android:text="Сохранить" />
 
             </LinearLayout>
