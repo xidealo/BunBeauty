@@ -25,6 +25,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.EditProfil
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 import javax.inject.Inject
 
@@ -72,8 +73,10 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
             activity_edit_profile_sp_code,
             this
         )
-        activity_edit_profile_pb_loading.visibility = View.GONE
-        activity_edit_profile_btn_save.setOnClickListener { saveChanges() }
+        activity_edit_profile_btn_save.setOnClickListener {
+            saveChanges()
+            activity_edit_profile_btn_save.showLoading()
+        }
         activity_edit_profile_btn_verify.setOnClickListener {
             editProfilePresenter.verifyCode(activity_edit_profile_et_code.text.toString())
         }
@@ -84,7 +87,11 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
             openPhoto()
         }
         activity_edit_profile_btn_add_photo.setOnClickListener {
-            CropImage.activity().start(this)
+            CropImage.activity()
+                .setAspectRatio(150, 150)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setCropShape(CropImageView.CropShape.OVAL)
+                .start(this)
         }
     }
 
@@ -143,32 +150,28 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
         )
     }
 
-    override fun disableEditProfileEditButton() {
-        activity_edit_profile_btn_save.isEnabled = false
-    }
-
-    override fun enableEditProfileEditButton() {
-        activity_edit_profile_btn_save.isEnabled = true
-    }
-
     override fun showPhoneError(error: String) {
         activity_edit_profile_et_phone.error = error
         activity_edit_profile_et_phone.requestFocus()
+        activity_edit_profile_btn_save.hideLoading()
     }
 
     override fun setNameEditProfileInputError(error: String) {
         activity_edit_profile_et_name.error = error
         activity_edit_profile_et_name.requestFocus()
+        activity_edit_profile_btn_save.hideLoading()
     }
 
     override fun setSurnameEditProfileInputError(error: String) {
         activity_edit_profile_et_surname.error = error
         activity_edit_profile_et_surname.requestFocus()
+        activity_edit_profile_btn_save.hideLoading()
     }
 
     override fun setPhoneEditProfileInputError(error: String) {
         activity_edit_profile_et_phone.error = error
         activity_edit_profile_et_phone.requestFocus()
+        activity_edit_profile_btn_save.hideLoading()
     }
 
     override fun showAvatar(photoLink: String) {
@@ -216,11 +219,6 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
         overridePendingTransition(0, 0)
 
         finish()
-    }
-
-    override fun showLoading() {
-        activity_edit_profile_pb_loading.visibility = View.VISIBLE
-        activity_edit_profile_btn_save.isEnabled = false
     }
 
     override fun showMessage(message: String) {

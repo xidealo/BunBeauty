@@ -130,22 +130,13 @@
                 style="@style/outlineButton"
                 android:text="@string/resend_code" />
 
-            <com.google.android.material.button.MaterialButton
+            <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.ProgressButton
                 android:id="@+id/activity_edit_profile_btn_save"
                 style="@style/mainButton"
                 android:text="@string/save" />
 
         </LinearLayout>
     </ScrollView>
-
-    <ProgressBar
-        android:id="@+id/activity_edit_profile_pb_loading"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <include layout="@layout/part_bottom_panel" />
 

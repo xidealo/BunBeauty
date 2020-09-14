@@ -1,6 +1,6 @@
 <resources>
-    <dimen name="photo_width">125dp</dimen>
-    <dimen name="photo_height">125dp</dimen>
+    <dimen name="photo_width">150dp</dimen>
+    <dimen name="photo_height">150dp</dimen>
 
     <dimen name="photo_avatar_width">48dp</dimen>
     <dimen name="photo_avatar_height">48dp</dimen>

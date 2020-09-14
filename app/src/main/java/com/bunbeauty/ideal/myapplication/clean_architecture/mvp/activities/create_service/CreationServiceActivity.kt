@@ -29,6 +29,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.CreationSe
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.activity_creation_service.*
 import javax.inject.Inject
 
@@ -99,7 +100,9 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
         activity_creation_service_np_minute.displayedValues = arrayOf("0", "30")
 
         activity_creation_service_btn_add_photo.setOnClickListener {
-            CropImage.activity().start(this)
+            CropImage
+                .activity()
+                .start(this)
         }
         activity_creation_service_btn_continue.setOnClickListener {
             goToSchedule()

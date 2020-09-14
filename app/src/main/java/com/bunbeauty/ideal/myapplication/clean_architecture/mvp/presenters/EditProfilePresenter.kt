@@ -55,6 +55,7 @@ class EditProfilePresenter(
         val photo = Photo()
         photo.link = uri.toString()
         photoInteractor.addPhoto(photo)
+        editProfileInteractor.cacheUser.photoLink = uri.toString()
         viewState.showAvatar(photo.link)
     }
 
@@ -65,37 +66,30 @@ class EditProfilePresenter(
     override fun returnPhotos(photos: List<Photo>) {}
 
     override fun nameEditProfileInputError() {
-        viewState.enableEditProfileEditButton()
         viewState.setNameEditProfileInputError("Допустимы только буквы и тире")
     }
 
     override fun nameEditProfileInputErrorEmpty() {
-        viewState.enableEditProfileEditButton()
         viewState.setNameEditProfileInputError("Введите своё имя")
     }
 
     override fun nameEditProfileInputErrorLong() {
-        viewState.enableEditProfileEditButton()
         viewState.setNameEditProfileInputError("Слишком длинное имя")
     }
 
     override fun surnameEditProfileInputError() {
-        viewState.enableEditProfileEditButton()
         viewState.setSurnameEditProfileInputError("Допустимы только буквы и тире")
     }
 
     override fun surnameEditProfileInputErrorEmpty() {
-        viewState.enableEditProfileEditButton()
         viewState.setSurnameEditProfileInputError("Введите свою фамилию")
     }
 
     override fun surnameEditProfileEditErrorLong() {
-        viewState.enableEditProfileEditButton()
         viewState.setSurnameEditProfileInputError("Слишком длинная фамилия")
     }
 
     override fun phoneEditProfileInputError() {
-        viewState.enableEditProfileEditButton()
         viewState.showPhoneError("Некорректный номер телефона")
     }
 
@@ -139,13 +133,9 @@ class EditProfilePresenter(
         photoInteractor.deletePhotosFromStorage(User.USER_PHOTO, photos)
     }
 
-    override fun showLoading() {
-        viewState.showLoading()
-    }
 
     fun signOut() {
         editProfileInteractor.signOut()
     }
-
 
 }

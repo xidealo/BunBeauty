@@ -44,7 +44,6 @@ class EditProfileInteractor(
         ) {
             //что будет если несколько добавить, зарузит несколько фоток?
             if (photos.isNotEmpty()) {
-                editProfilePresenterCallback.showLoading()
                 editProfilePresenterCallback.deletePreviousPhoto(
                     arrayListOf(Photo(id = cacheUser.id, link = cacheUser.photoLink))
                 )

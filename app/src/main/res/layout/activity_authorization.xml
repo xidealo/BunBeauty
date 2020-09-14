@@ -35,9 +35,8 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/MaterialLoginInputLayout"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_marginStart="3dp"
-            android:layout_weight="1"
             android:hint="@string/phone">
 
             <com.google.android.material.textfield.TextInputEditText
