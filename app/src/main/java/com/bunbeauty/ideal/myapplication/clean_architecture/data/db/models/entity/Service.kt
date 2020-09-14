@@ -2,8 +2,13 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.enti
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.room.*
-import java.io.Serializable
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.WorkWithTimeApi
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Entity(
     foreignKeys = [ForeignKey(
@@ -69,6 +74,11 @@ data class Service(
 
     companion object CREATOR : Parcelable.Creator<Service> {
 
+        fun checkPremium(premiumDate: Long): Boolean {
+            val sysDate = Date().time
+            return sysDate <= premiumDate
+        }
+
         override fun createFromParcel(parcel: Parcel): Service {
             return Service(parcel)
         }
@@ -93,7 +103,6 @@ data class Service(
         const val PREMIUM_DATE = "premium date"
         const val DEFAULT_PREMIUM_DATE = 0L
     }
-
 
     override fun describeContents(): Int {
         return 0

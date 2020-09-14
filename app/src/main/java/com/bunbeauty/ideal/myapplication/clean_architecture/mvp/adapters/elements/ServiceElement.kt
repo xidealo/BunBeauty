@@ -21,12 +21,12 @@ import kotlinx.android.synthetic.main.element_service.view.*
 class ServiceElement(
     service: Service,
     user: User,
+    weight: Float,
     view: View,
     context: Context
 ) {
     init {
-        val isPremium = WorkWithTimeApi.checkPremium(service.premiumDate)
-        if (isPremium) {
+        if (weight == 1f) {
             setPremiumColor(view, context)
         } else {
             setDefaultBackground(view, context)
@@ -41,12 +41,18 @@ class ServiceElement(
 
     private fun setData(view: View, service: Service, user: User, context: Context) {
         if (isMoreFiveInch(context)) {
-            view.element_service_master_name_tv.text = WorkWithStringsApi.cutStringWithDots(user.name, 9)
+            view.element_service_master_name_tv.text =
+                WorkWithStringsApi.cutStringWithDots(user.name, 9)
             view.element_service_service_name_tv.text =
                 WorkWithStringsApi.cutStringWithDots(service.name.toUpperCase(), 14)
         } else {
             view.element_service_master_name_tv.text =
-                WorkWithStringsApi.doubleCapitalSymbols(WorkWithStringsApi.cutStringWithDots(user.name, 9))
+                WorkWithStringsApi.doubleCapitalSymbols(
+                    WorkWithStringsApi.cutStringWithDots(
+                        user.name,
+                        9
+                    )
+                )
             view.element_service_service_name_tv.text =
                 WorkWithStringsApi.cutStringWithDots(service.name.toUpperCase(), 18)
         }

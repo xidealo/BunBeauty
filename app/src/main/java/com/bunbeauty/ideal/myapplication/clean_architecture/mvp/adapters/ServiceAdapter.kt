@@ -39,7 +39,11 @@ class ServiceAdapter : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() 
     }
 
     override fun onBindViewHolder(serviceViewHolder: ServiceViewHolder, i: Int) {
-        serviceViewHolder.bind(mainScreenDataList[i].service, mainScreenDataList[i].user)
+        serviceViewHolder.bind(
+            mainScreenDataList[i].service,
+            mainScreenDataList[i].user,
+            mainScreenDataList[i].weight
+        )
     }
 
     override fun getItemCount() = mainScreenDataList.size
@@ -47,8 +51,8 @@ class ServiceAdapter : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() 
     inner class ServiceViewHolder(private val view: View, private val context: Context) :
         RecyclerView.ViewHolder(view) {
 
-        fun bind(service: Service, user: User) {
-            ServiceElement(service, user, view, context)
+        fun bind(service: Service, user: User, weight: Float) {
+            ServiceElement(service, user, weight, view, context)
         }
     }
 

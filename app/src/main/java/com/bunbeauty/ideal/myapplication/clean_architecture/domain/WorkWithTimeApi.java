@@ -73,13 +73,4 @@ public class WorkWithTimeApi {
         formatForDateNow.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
         return formatForDateNow.format(date);
     }
-
-    public static Boolean checkPremium(Long premiumDate) {
-        long premDate = premiumDate;
-        long sysDate = WorkWithTimeApi.getSysdateLong();
-
-        // время вышло
-        // премиумный период
-        return sysDate <= premDate;
-    }
 }

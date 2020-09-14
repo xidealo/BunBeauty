@@ -166,34 +166,34 @@ class MainScreenDataInteractor(
         coefficients[Service.COST] = 0.07f
         coefficients[Service.AVG_RATING] = 0.53f
         coefficients[Service.COUNT_OF_RATES] = 0.15f
+
         //Проверку на премиум вынести, этот метод не должен делать 2 дейсвтия (можно сразу проверять в выборе рандомных премиум сервисов)
-        val isPremium = WorkWithTimeApi.checkPremium(service.premiumDate)
-
-        if (isPremium) {
+        if (Service.checkPremium(service.premiumDate)) {
             cachePremiumMainScreenData.add(0, MainScreenData(1f, user, service))
-        } else {
-            val creationDatePoints = figuringServicePointsApi.figureCreationDatePoints(
-                service.creationDate,
-                coefficients[Service.CREATION_DATE]!!
-            )
-            val costPoints = figuringServicePointsApi.figureCostPoints(
-                (service.cost),
-                maxCost,
-                coefficients[Service.COST]!!
-            )
-            val ratingPoints = figuringServicePointsApi.figureRatingPoints(
-                service.rating,
-                coefficients[Service.AVG_RATING]!!
-            )
-            val countOfRatesPoints = figuringServicePointsApi.figureCountOfRatesPoints(
-                service.countOfRates,
-                maxCountOfRates,
-                coefficients[Service.COUNT_OF_RATES]!!
-            )
-
-            val points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints
-            sortAddition(MainScreenData(points, user, service))
         }
+
+        val creationDatePoints = figuringServicePointsApi.figureCreationDatePoints(
+            service.creationDate,
+            coefficients[Service.CREATION_DATE]!!
+        )
+        val costPoints = figuringServicePointsApi.figureCostPoints(
+            (service.cost),
+            maxCost,
+            coefficients[Service.COST]!!
+        )
+        val ratingPoints = figuringServicePointsApi.figureRatingPoints(
+            service.rating,
+            coefficients[Service.AVG_RATING]!!
+        )
+        val countOfRatesPoints = figuringServicePointsApi.figureCountOfRatesPoints(
+            service.countOfRates,
+            maxCountOfRates,
+            coefficients[Service.COUNT_OF_RATES]!!
+        )
+
+        val points = creationDatePoints + costPoints + ratingPoints + countOfRatesPoints
+        sortAddition(MainScreenData(points, user, service))
+
     }
 
     private fun sortAddition(serviceData: MainScreenData) {
