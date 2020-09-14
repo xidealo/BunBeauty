@@ -10,9 +10,9 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.UserCommentAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.user_comments.UserCommentsUserCommentInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.user_comments.UserCommentsUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.UserCommentAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.user_comments.UserCommentsUserCommentInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.user_comments.UserCommentsUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.UserComment
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity

@@ -5,7 +5,7 @@ import android.os.Bundle
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.creation_comment.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent

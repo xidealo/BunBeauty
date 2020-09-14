@@ -15,10 +15,10 @@ import com.airbnb.paris.extensions.style
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ServiceAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_service.MainScreenDataInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_service.MainScreenServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_service.MainScreenUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ServiceAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenDataInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity

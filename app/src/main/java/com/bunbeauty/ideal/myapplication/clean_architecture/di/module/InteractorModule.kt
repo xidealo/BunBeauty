@@ -1,51 +1,51 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
 import android.content.Intent
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.FiguringServicePointsApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.VerifyPhoneNumberApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.DialogsDialogInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.DialogsMessageInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.dialog.DialogsUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesDialogInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesMessageInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesOrderInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.MessagesScheduleInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.creation_comment.*
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.current_comment.CurrentCommentCommentInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.service_comments.ServiceCommentsServiceCommentInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.service_comments.ServiceCommentsServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.service_comments.ServiceCommentsUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.user_comments.UserCommentsUserCommentInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.user_comments.UserCommentsUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.create_service.CreationServiceServiceServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.create_service.CreationServiceTagInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.editing.profile.EditProfileInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.editing.service.EditServiceServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.editing.service.EditServiceTagInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.fragments.SearchServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.fragments.premium.PremiumElementCodeInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.fragments.premium.PremiumElementServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.AuthorizationInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.RegistrationUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.VerifyPhoneInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.iLogIn.IRegistrationUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.PhotoInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.profile.*
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.profile.iProfile.*
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.schedule.ScheduleInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_service.MainScreenDataInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_service.MainScreenServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_service.MainScreenUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.ServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.ServicePhotoInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.ServiceUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsMessageInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsOrderInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsSubscriberInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsSubscriptionInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.FiguringServicePointsApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.VerifyPhoneNumberApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.dialog.DialogsDialogInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.dialog.DialogsMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.dialog.DialogsUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.message.MessagesDialogInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.message.MessagesMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.message.MessagesOrderInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.message.MessagesUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.message.i_message.MessagesScheduleInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.creation_comment.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.current_comment.CurrentCommentCommentInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.service_comments.ServiceCommentsServiceCommentInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.service_comments.ServiceCommentsServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.service_comments.ServiceCommentsUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.user_comments.UserCommentsUserCommentInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.user_comments.UserCommentsUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.create_service.CreationServiceServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.create_service.CreationServiceTagInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.profile.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.service.EditServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.service.EditServiceTagInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.fragments.SearchServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.premium.PremiumFragmentCodeInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.premium.PremiumFragmentServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.AuthorizationInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.RegistrationUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.VerifyPhoneInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.iLogIn.IRegistrationUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.PhotoInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.profile.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.profile.iProfile.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.schedule.ScheduleInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenDataInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.ServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.ServicePhotoInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.ServiceUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.SessionsInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.SessionsMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.SessionsOrderInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.SubscriptionsSubscriberInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.SubscriptionsSubscriptionInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.SubscriptionsUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IScheduleRepository
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IServiceRepository
@@ -124,14 +124,14 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun providePremiumElementCodeInteractor(codeRepository: CodeRepository) =
-        PremiumElementCodeInteractor(
+        PremiumFragmentCodeInteractor(
             codeRepository
         )
 
     @Provides
     @Singleton
     fun providePremiumElementServiceInteractor(serviceRepository: IServiceRepository) =
-        PremiumElementServiceInteractor(serviceRepository)
+        PremiumFragmentServiceInteractor(serviceRepository)
 
     @Provides
     @Singleton

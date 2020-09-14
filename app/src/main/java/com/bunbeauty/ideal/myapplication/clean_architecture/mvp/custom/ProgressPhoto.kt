@@ -11,8 +11,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 

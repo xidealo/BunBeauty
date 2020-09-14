@@ -11,7 +11,7 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileServiceAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ProfileServiceAdapter
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Test

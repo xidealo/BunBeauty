@@ -2,10 +2,10 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithTimeApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsOrderInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.i_sessions.ISessionsMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.WorkWithTimeApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.SessionsInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.SessionsOrderInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.i_sessions.ISessionsMessageInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.sessions.SessionsPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order

@@ -10,9 +10,9 @@ import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTransformation
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.editing.profile.EditProfileInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.PhotoInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.CircularTransformation
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.profile.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask

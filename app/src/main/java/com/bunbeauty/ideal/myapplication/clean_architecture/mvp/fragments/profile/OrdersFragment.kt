@@ -7,10 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileOrderAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileServiceAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ProfileOrderAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import kotlinx.android.synthetic.main.fragment_orders.*
 
 class OrdersFragment : MvpAppCompatFragment() {

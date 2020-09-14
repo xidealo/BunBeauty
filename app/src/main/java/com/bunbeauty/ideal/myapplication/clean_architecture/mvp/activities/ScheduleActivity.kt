@@ -15,10 +15,10 @@ import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.invisible
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.schedule.ScheduleInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.invisible
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SchedulePresenter

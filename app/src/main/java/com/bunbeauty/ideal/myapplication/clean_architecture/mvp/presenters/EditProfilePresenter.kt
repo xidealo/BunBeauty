@@ -3,9 +3,9 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.editing.profile.EditProfileInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.IPhotoCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.IPhotoInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.profile.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.IPhotoCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.IPhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.profile.EditProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User

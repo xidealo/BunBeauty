@@ -2,7 +2,6 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.subs
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.AbsListView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,12 +10,12 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.SubscriptionAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsSubscriberInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsSubscriptionInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.SubscriptionsUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.SubscriptionAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.SubscriptionsSubscriberInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.SubscriptionsSubscriptionInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.SubscriptionsUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscription
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity

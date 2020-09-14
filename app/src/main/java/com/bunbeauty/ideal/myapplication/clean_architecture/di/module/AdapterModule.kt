@@ -1,6 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

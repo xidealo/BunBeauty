@@ -57,14 +57,14 @@
         <activity android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.SessionsActivity" />
 
         <service
-            android:name="com.bunbeauty.ideal.myapplication.clean_architecture.business.notifications.MyFirebaseInstanceIdService"
+            android:name="com.bunbeauty.ideal.myapplication.clean_architecture.domain.notifications.MyFirebaseInstanceIdService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name="com.bunbeauty.ideal.myapplication.clean_architecture.business.notifications.MyFirebaseMessagingService"
+            android:name="com.bunbeauty.ideal.myapplication.clean_architecture.domain.notifications.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -3,7 +3,6 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.inte
 import android.content.Intent
 import android.view.MenuItem
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.profile.ProfileUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.chat.DialogsActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity

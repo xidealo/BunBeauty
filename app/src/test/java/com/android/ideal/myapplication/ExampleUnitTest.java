@@ -1,7 +1,7 @@
 package com.android.ideal.myapplication;
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithStringsApi;
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithTimeApi;
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.WorkWithStringsApi;
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.WorkWithTimeApi;
 
 import org.junit.Test;
 

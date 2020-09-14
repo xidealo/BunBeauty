@@ -2,7 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.schedule.ScheduleInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.schedule.SchedulePresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.ScheduleView
 

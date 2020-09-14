@@ -3,7 +3,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.profile.iProfile.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.profile.iProfile.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.profile.ProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.ProfileView

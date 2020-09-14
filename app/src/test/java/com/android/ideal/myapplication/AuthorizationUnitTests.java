@@ -2,7 +2,7 @@ package com.android.ideal.myapplication;
 
 import android.content.Intent;
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.AuthorizationInteractor;
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.AuthorizationInteractor;
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.UserRepository;
 
 import org.junit.Test;

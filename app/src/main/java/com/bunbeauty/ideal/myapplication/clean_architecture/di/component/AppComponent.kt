@@ -12,7 +12,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comme
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.create_service.CreationServiceActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.editing.EditProfileActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.editing.EditServiceActivity
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.AuthorizationActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.RegistrationActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.VerifyPhoneNumberActivity

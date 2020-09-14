@@ -1,6 +1,5 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.server_time.ServerTimeCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service.GetServiceCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service.GetServicesCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service.UpdateServiceCallback
