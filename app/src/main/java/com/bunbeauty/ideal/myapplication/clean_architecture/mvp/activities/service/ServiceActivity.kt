@@ -97,7 +97,7 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
 
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.activity_service_ll_premium, PremiumFragment.newInstance(service), "premium")
+            .add(R.id.activity_service_ll_premium,  PremiumFragment.newInstance(service), "premium")
             .commit()
     }
 

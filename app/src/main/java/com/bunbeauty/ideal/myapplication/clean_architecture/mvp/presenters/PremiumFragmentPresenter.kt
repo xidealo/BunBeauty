@@ -22,8 +22,11 @@ class PremiumFragmentPresenter(
         viewState.showError(error)
     }
 
+    override fun showMessage(message: String) {
+        viewState.showMessage(message)
+    }
+
     override fun showPremiumActivated(service: Service) {
-        viewState.showPremiumActivated()
         viewState.setWithPremium(service.premiumDate)
         viewState.hideBottom()
     }
@@ -33,5 +36,9 @@ class PremiumFragmentPresenter(
             premiumFragmentServiceInteractor.service,
             this
         )
+    }
+
+    fun checkPremium(service: Service) {
+        premiumFragmentServiceInteractor.checkPremium(service, this)
     }
 }

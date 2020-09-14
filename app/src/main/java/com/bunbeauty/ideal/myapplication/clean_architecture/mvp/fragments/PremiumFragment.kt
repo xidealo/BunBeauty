@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_premium.*
 import javax.inject.Inject
 
 class PremiumFragment : MvpAppCompatFragment(), PremiumElementFragmentView {
+
     private lateinit var service: Service
 
     @InjectPresenter
@@ -58,6 +59,7 @@ class PremiumFragment : MvpAppCompatFragment(), PremiumElementFragmentView {
         arguments?.let {
             service = it.getParcelable(Service.SERVICE)!!
         }
+        premiumFragmentPresenter.checkPremium(service)
     }
 
     override fun onCreateView(
@@ -84,8 +86,8 @@ class PremiumFragment : MvpAppCompatFragment(), PremiumElementFragmentView {
         fragment_premium_btn_set.hideLoading()
     }
 
-    override fun showPremiumActivated() {
-        Snackbar.make(fragment_premium_ll_header, "Премиум активирован", Snackbar.LENGTH_LONG)
+    override fun showMessage(message: String) {
+        Snackbar.make(fragment_premium_ll_header, message, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(context!!, R.color.mainBlue))
             .setActionTextColor(ContextCompat.getColor(context!!, R.color.white)).show()
     }

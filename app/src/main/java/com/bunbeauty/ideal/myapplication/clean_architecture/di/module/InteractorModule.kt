@@ -23,7 +23,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.create_servic
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.profile.EditProfileInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.service.EditServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.service.EditServiceTagInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.domain.fragments.SearchServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.premium.PremiumFragmentCodeInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.premium.PremiumFragmentServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.AuthorizationInteractor
@@ -164,11 +163,6 @@ class InteractorModule(private val intent: Intent) {
     @Singleton
     fun provideServicePhotoInteractor(photoServiceRepository: PhotoServiceRepository) =
         ServicePhotoInteractor(photoServiceRepository)
-
-    @Provides
-    @Singleton
-    fun provideSearchServiceInteractor(userRepository: UserRepository) =
-        SearchServiceInteractor(userRepository)
 
     @Provides
     @Singleton
