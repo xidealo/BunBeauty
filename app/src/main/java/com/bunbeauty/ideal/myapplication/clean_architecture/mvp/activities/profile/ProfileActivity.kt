@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -313,7 +314,10 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
         intent.putExtra(Dialog.COMPANION_DIALOG, companionDialog)
         intent.putExtra(User.USER, profilePresenter.getCacheOwner())
         startActivity(intent)
-        overridePendingTransition(0, 0)
+        overridePendingTransition(
+            R.anim.anim_slide_in_left,
+            R.anim.anim_slide_out_left
+        )
     }
 
     override fun showSubscribed() {

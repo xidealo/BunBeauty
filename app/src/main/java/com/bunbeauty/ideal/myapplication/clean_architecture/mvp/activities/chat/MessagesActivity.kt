@@ -201,6 +201,14 @@ class MessagesActivity : BaseActivity(), MessagesView {
         overridePendingTransition(0, 0)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(
+            R.anim.anim_slide_in_right,
+            R.anim.anim_slide_out_right
+        )
+    }
+
     companion object {
         const val REQUEST_MESSAGE_USER_REVIEW = 1
     }

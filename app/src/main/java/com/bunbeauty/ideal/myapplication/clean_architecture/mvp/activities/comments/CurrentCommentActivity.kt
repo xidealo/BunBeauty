@@ -74,4 +74,12 @@ class CurrentCommentActivity : BaseActivity(), CurrentCommentView {
         startActivity(intent)
         overridePendingTransition(0, 0)
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(
+            R.anim.anim_slide_in_right,
+            R.anim.anim_slide_out_right
+        )
+    }
 }

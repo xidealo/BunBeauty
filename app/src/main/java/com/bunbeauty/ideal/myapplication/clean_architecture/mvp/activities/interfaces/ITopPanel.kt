@@ -40,7 +40,6 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
         } else {
             panelContext.top_panel.setNavigationOnClickListener {
                 panelContext.onBackPressed()
-                panelContext.overridePendingTransition(0, 0)
             }
         }
     }
