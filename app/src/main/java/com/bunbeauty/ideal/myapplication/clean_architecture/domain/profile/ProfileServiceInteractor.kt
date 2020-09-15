@@ -23,8 +23,8 @@ class ProfileServiceInteractor(private val serviceRepository: IServiceRepository
         serviceRepository.getByUserId(userId, this, true)
     }
 
-    override fun returnList(serviceList: List<Service>) {
-        profilePresenterCallback.showServiceList(serviceList)
+    override fun returnList(objects: List<Service>) {
+        profilePresenterCallback.showServiceList(objects)
     }
 
 }

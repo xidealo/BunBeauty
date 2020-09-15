@@ -15,6 +15,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.profi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.AuthorizationActivity
@@ -186,17 +188,17 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
     }
 
     override fun showCodeInputAndButtons() {
-        activity_edit_profile_til_code.visibility = View.VISIBLE
-        activity_edit_profile_btn_verify.visibility = View.VISIBLE
-        activity_edit_profile_btn_resend.visibility = View.VISIBLE
-        activity_edit_profile_btn_save.visibility = View.GONE
+        activity_edit_profile_til_code.visible()
+        activity_edit_profile_btn_verify.visible()
+        activity_edit_profile_btn_resend.visible()
+        activity_edit_profile_btn_save.gone()
     }
 
     override fun hideCodeInputAndButtons() {
-        activity_edit_profile_til_code.visibility = View.GONE
-        activity_edit_profile_btn_verify.visibility = View.GONE
-        activity_edit_profile_btn_resend.visibility = View.GONE
-        activity_edit_profile_btn_save.visibility = View.VISIBLE
+        activity_edit_profile_til_code.gone()
+        activity_edit_profile_btn_verify.gone()
+        activity_edit_profile_btn_resend.gone()
+        activity_edit_profile_btn_save.visible()
     }
 
     override fun goToProfile(user: User) {

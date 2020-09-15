@@ -62,8 +62,8 @@ class EditProfileInteractor(
         }
     }
 
-    override fun returnUpdatedCallback(user: User) {
-        editProfilePresenterCallback.goToProfile(user)
+    override fun returnUpdatedCallback(obj: User) {
+        editProfilePresenterCallback.goToProfile(obj)
     }
 
     private fun isNameCorrect(
@@ -140,10 +140,10 @@ class EditProfileInteractor(
         userRepository.getByPhoneNumber(phoneNumber, this, true)
     }
 
-    override fun returnGottenObject(element: User?) {
-        if (element == null) return
+    override fun returnGottenObject(obj: User?) {
+        if (obj == null) return
 
-        if (element.name.isEmpty()) {
+        if (obj.name.isEmpty()) {
             verifyPhoneNumberApi.sendVerificationCode(cacheUser.phone, this)
             editProfilePresenterCallback.returnCodeSent()
         } else {

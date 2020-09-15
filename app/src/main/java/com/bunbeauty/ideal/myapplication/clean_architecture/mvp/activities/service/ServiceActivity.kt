@@ -150,6 +150,7 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
 
     override fun showPremium() {
         activity_service_ll_premium.visible()
+
     }
 
     override fun hidePremium() {

@@ -26,7 +26,8 @@ class ServiceUserInteractor(
     }
 
     override fun returnGottenObject(user: User?) {
-        gottenUser = user!!
+        if (user == null) return
+        gottenUser = user
 
         if (isMyService(user)) {
             servicePresenterCallback.createOwnServiceTopPanel()

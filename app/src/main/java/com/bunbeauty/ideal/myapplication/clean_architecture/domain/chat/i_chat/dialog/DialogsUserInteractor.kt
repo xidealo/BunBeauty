@@ -20,9 +20,9 @@ class DialogsUserInteractor(private val userRepository: UserRepository) :
         userRepository.getById(dialog.user.id, this, true)
     }
 
-    override fun returnGottenObject(element: User?) {
-        if (element == null) return
+    override fun returnGottenObject(obj: User?) {
+        if (obj == null) return
 
-        dialogsPresenterCallback.fillDialogs(element)
+        dialogsPresenterCallback.fillDialogs(obj)
     }
 }

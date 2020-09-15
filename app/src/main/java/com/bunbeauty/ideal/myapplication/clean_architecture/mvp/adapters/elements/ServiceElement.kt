@@ -7,16 +7,16 @@ import android.content.res.ColorStateList
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.clean_architecture.domain.CircularTransformation
-import com.bunbeauty.ideal.myapplication.clean_architecture.domain.WorkWithStringsApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.domain.WorkWithTimeApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity
-import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.CircularTransformation
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.cutStringWithDots
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.firstCapitalSymbol
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.element_service.view.*
+import java.util.*
 
 class ServiceElement(
     service: Service,
@@ -42,19 +42,14 @@ class ServiceElement(
     private fun setData(view: View, service: Service, user: User, context: Context) {
         if (isMoreFiveInch(context)) {
             view.element_service_master_name_tv.text =
-                WorkWithStringsApi.cutStringWithDots(user.name, 9)
+                user.name.cutStringWithDots(9)
             view.element_service_service_name_tv.text =
-                WorkWithStringsApi.cutStringWithDots(service.name.toUpperCase(), 14)
+                service.name.cutStringWithDots(14).toUpperCase(Locale.ROOT)
         } else {
             view.element_service_master_name_tv.text =
-                WorkWithStringsApi.doubleCapitalSymbols(
-                    WorkWithStringsApi.cutStringWithDots(
-                        user.name,
-                        9
-                    )
-                )
+                user.name.cutStringWithDots(9).firstCapitalSymbol()
             view.element_service_service_name_tv.text =
-                WorkWithStringsApi.cutStringWithDots(service.name.toUpperCase(), 18)
+                service.name.cutStringWithDots(18).toUpperCase(Locale.ROOT)
         }
         view.element_service_city_tv.text = user.city.firstCapitalSymbol()
         view.element_service_cost_tv.text = "${service.cost} ₽"

@@ -10,7 +10,7 @@ interface ICreationServiceServiceInteractor {
     fun getIsDescriptionLengthLessTwoHundred(description: String): Boolean
     fun getIsCostInputCorrect(cost: String): Boolean
     fun getIsCostLengthLessTen(cost: String): Boolean
-    fun getIsCategoryInputCorrect(city: String): Boolean
+    fun getIsCategoryInputCorrect(category: String): Boolean
     fun getIsAddressInputCorrect(address: String): Boolean
     fun getIsAddressLengthThirty(address: String): Boolean
 

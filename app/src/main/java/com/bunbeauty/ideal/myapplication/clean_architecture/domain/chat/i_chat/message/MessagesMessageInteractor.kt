@@ -84,13 +84,13 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     /**
      * add text message or if it is my message add also commentMessage
      */
-    override fun returnGottenObject(element: Message?) {
-        if (element == null) return
+    override fun returnGottenObject(obj: Message?) {
+        if (obj == null) return
 
-        if (element.type == Message.TEXT_STATUS || element.ownerId == User.getMyId()) {
-            addMessage(element)
+        if (obj.type == Message.TEXT_STATUS || obj.ownerId == User.getMyId()) {
+            addMessage(obj)
         } else {
-            Log.d(Tag.TEST_TAG, "Тип сообщения ${element.type} user id ${element.userId}")
+            Log.d(Tag.TEST_TAG, "Тип сообщения ${obj.type} user id ${obj.userId}")
         }
     }
 

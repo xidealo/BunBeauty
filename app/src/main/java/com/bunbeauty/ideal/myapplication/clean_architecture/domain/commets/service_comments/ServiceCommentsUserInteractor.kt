@@ -20,10 +20,10 @@ class ServiceCommentsUserInteractor(private val userRepository: IUserRepository)
         userRepository.getById(serviceComment.ownerId, this, true)
     }
 
-    override fun returnGottenObject(element: User?) {
-        if (element == null) return
+    override fun returnGottenObject(obj: User?) {
+        if (obj == null) return
 
-        serviceCommentsPresenterCallback.setUserOnServiceComment(element)
+        serviceCommentsPresenterCallback.setUserOnServiceComment(obj)
     }
 
 }

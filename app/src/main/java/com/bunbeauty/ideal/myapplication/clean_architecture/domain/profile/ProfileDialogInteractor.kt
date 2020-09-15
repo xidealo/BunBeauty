@@ -50,8 +50,8 @@ class ProfileDialogInteractor(private val dialogRepository: IDialogRepository) :
         return newDialog
     }
 
-    override fun returnGottenObject(element: Dialog?) {
-        if (element == null) return
+    override fun returnGottenObject(obj: Dialog?) {
+        if (obj == null) return
     }
 
     override fun returnChanged(element: Dialog) {

@@ -34,8 +34,8 @@ class MainScreenServiceInteractor(private val serviceRepository: IServiceReposit
 
             mainScreenPresenterCallback.createMainScreenData(
                 cacheServiceList,
-                cacheServiceList.maxBy { it.cost }!!.cost,
-                cacheServiceList.maxBy { it.countOfRates }!!.countOfRates
+                cacheServiceList.maxByOrNull { it.cost }?.cost ?: 0,
+                cacheServiceList.maxByOrNull { it.countOfRates }?.countOfRates ?: 0
             )
         }
     }

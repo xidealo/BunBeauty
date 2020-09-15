@@ -59,7 +59,7 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
 
     private fun setCategorySpinnerListener() {
         fragment_category_sp_category.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, view, position, id ->
+            AdapterView.OnItemClickListener { _, _, position, _ ->
                 cacheSelectedTags.clear()
                 category = fragment_category_sp_category.text.toString()
                 tagsMaxLayout.removeAllViews()

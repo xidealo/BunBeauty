@@ -41,13 +41,13 @@ class ProfileUserInteractor(
         }
     }
 
-    override fun returnGottenObject(user: User?) {
-        if (user == null) return
+    override fun returnGottenObject(obj: User?) {
+        if (obj == null) return
 
-        owner = user
-        profilePresenterCallback.returnProfileOwner(user)
-        profilePresenterCallback.showCountOfSubscriber(user.subscribersCount)
-        whoseProfile(user, profilePresenterCallback)
+        owner = obj
+        profilePresenterCallback.returnProfileOwner(obj)
+        profilePresenterCallback.showCountOfSubscriber(obj.subscribersCount)
+        whoseProfile(obj, profilePresenterCallback)
     }
 
     override fun whoseProfile(user: User, profilePresenterCallback: ProfilePresenterCallback) {
@@ -99,9 +99,9 @@ class ProfileUserInteractor(
         userRepository.update(user, this)
     }
 
-    override fun returnUpdatedCallback(user: User) {
-        owner = user
-        profilePresenterCallback.showCountOfSubscriber(user.subscribersCount)
+    override fun returnUpdatedCallback(obj: User) {
+        owner = obj
+        profilePresenterCallback.showCountOfSubscriber(obj.subscribersCount)
     }
 
 }

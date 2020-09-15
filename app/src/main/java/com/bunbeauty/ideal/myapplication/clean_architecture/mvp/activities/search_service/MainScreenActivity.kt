@@ -117,7 +117,6 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
             MaterialSearchView.SearchViewListener {
             override fun onSearchViewShown() {
                 //Do some magic
-                val k = 21
             }
 
             override fun onSearchViewClosed() {

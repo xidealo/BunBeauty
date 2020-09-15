@@ -43,13 +43,13 @@ class CreationCommentUserInteractor(
     /**
      * for actual data
      */
-    override fun returnGottenObject(element: User?) {
-        if (element == null) return
+    override fun returnGottenObject(obj: User?) {
+        if (obj == null) return
 
-        element.rating = calculateAvgRating(element, cacheUserComment)
-        element.countOfRates++
-        user = element
-        userRepository.update(element, this)
+        obj.rating = calculateAvgRating(obj, cacheUserComment)
+        obj.countOfRates++
+        user = obj
+        userRepository.update(obj, this)
     }
 
     override fun returnUpdatedCallback(obj: User) {

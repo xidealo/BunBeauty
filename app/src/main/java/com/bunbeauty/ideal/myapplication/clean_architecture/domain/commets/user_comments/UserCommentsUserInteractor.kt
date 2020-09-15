@@ -24,10 +24,10 @@ class UserCommentsUserInteractor(
         userRepository.getById(userComment.ownerId, this, true)
     }
 
-    override fun returnGottenObject(element: User?) {
-        if (element == null) return
+    override fun returnGottenObject(obj: User?) {
+        if (obj == null) return
 
-        userCommentsPresenterCallback.setUserOnUserComment(element)
+        userCommentsPresenterCallback.setUserOnUserComment(obj)
     }
 }
 

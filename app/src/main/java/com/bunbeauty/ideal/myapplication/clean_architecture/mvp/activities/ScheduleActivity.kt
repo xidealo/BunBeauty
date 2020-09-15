@@ -232,9 +232,9 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         schedulePresenter.rememberDay(buttonIndex, button.text.toString())
     }
 
-    override fun showAccurateTime(accurateTime: Set<String>) {
+    override fun showAccurateTime(accurateTimeSet: Set<String>) {
         timeButtons.filter {
-            accurateTime.contains(it.text.toString())
+            accurateTimeSet.contains(it.text.toString())
         }.map {
             it.isEnabled = true
             it.setTag(R.id.touchIdTag, touchId)
@@ -250,9 +250,9 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         }
     }
 
-    override fun showInaccurateTime(inaccurateTime: Set<String>) {
+    override fun showInaccurateTime(inaccurateTimeSet: Set<String>) {
         timeButtons.filter {
-            inaccurateTime.contains(it.text.toString())
+            inaccurateTimeSet.contains(it.text.toString())
         }.map {
             it.isEnabled = true
             fillButtonInHalf(it)

@@ -6,5 +6,5 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 interface IMainScreenServiceInteractor {
     fun getServicesByUserId(user: User, mainScreenPresenterCallback: MainScreenPresenterCallback)
-    fun getCategories(mainScreenData: List<Service>): MutableSet<String>
+    fun getCategories(services: List<Service>): MutableSet<String>
 }

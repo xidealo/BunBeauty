@@ -29,9 +29,9 @@ class ServicePhotoInteractor(private val photoServiceRepository: PhotoServiceRep
             photoServiceRepository.getByServiceId(service.id, service.userId, this)
     }
 
-    override fun returnList(photos: List<Photo>) {
+    override fun returnList(objects: List<Photo>) {
         photoList.clear()
-        photoList.addAll(photos)
-        servicePresenterCallback.showPhotos(photos)
+        photoList.addAll(objects)
+        servicePresenterCallback.showPhotos(objects)
     }
 }

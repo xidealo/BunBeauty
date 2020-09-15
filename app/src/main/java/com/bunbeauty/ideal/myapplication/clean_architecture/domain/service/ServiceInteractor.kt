@@ -30,7 +30,9 @@ class ServiceInteractor(
     }
 
     override fun returnGottenObject(service: Service?) {
-        gottenService = service!!
+        if (service == null) return
+
+        gottenService = service
 
         servicePresenterCallback.showService(service)
         servicePresenterCallback.getServicePhotos(service)

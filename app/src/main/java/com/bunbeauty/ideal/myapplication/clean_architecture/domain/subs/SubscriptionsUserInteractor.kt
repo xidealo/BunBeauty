@@ -45,10 +45,10 @@ class SubscriptionsUserInteractor(
         userRepository.getById(subscription.subscriptionId, this, true)
     }
 
-    override fun returnGottenObject(element: User?) {
-        if (element == null) return
-        cacheUsers.add(element)
-        subscriptionsPresenterCallback.fillSubscription(element)
+    override fun returnGottenObject(obj: User?) {
+        if (obj == null) return
+        cacheUsers.add(obj)
+        subscriptionsPresenterCallback.fillSubscription(obj)
     }
 
     override fun returnUpdatedCallback(obj: User) {

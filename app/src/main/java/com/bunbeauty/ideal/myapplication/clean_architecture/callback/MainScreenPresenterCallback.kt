@@ -8,7 +8,7 @@ import com.google.android.material.chip.Chip
 interface MainScreenPresenterCallback {
     fun showMainScreenData(mainScreenData: ArrayList<MainScreenData>)
     fun showEmptyScreen()
-    fun createCategoryFeed(mainScreenData: List<Service>)
+    fun createCategoryFeed(services: List<Service>)
     fun returnMainScreenData(mainScreenData: ArrayList<MainScreenData>)
     fun showLoading()
     fun showTags()
