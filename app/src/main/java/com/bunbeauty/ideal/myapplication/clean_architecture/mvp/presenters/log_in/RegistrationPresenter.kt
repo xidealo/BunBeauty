@@ -2,7 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.iLogIn.IRegistrationUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.iLogIn.IRegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.logIn.RegistrationPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.RegistrationView

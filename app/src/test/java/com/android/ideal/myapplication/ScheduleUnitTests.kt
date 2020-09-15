@@ -1,6 +1,6 @@
 package com.android.ideal.myapplication
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.schedule.ScheduleInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.ScheduleRepository
 import io.mockk.mockk
 import org.joda.time.DateTime

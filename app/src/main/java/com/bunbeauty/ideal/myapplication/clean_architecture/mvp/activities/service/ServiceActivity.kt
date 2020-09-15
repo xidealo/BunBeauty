@@ -3,19 +3,18 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.serv
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.PhotoAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.photoElement.IPhotoElement
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.ServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.ServicePhotoInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.ServiceUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.PhotoAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.photoElement.IPhotoElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.ServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.ServicePhotoInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.ServiceUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
@@ -24,7 +23,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.SessionsActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.ServiceCommentsActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.editing.EditServiceActivity
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.interfaces.IProfileAvailable
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
@@ -35,8 +34,6 @@ import kotlinx.android.synthetic.main.activity_service.*
 import javax.inject.Inject
 
 class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoElement {
-
-    private lateinit var premiumFragment: PremiumFragment
 
     @Inject
     lateinit var photoAdapter: PhotoAdapter
@@ -97,7 +94,11 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
         }
 
         showRating(service.rating, service.countOfRates)
-        premiumFragment = PremiumFragment.newInstance(service)
+
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.activity_service_ll_premium,  PremiumFragment.newInstance(service), "premium")
+            .commit()
     }
 
     override fun showLoading() {
@@ -147,8 +148,9 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
         initTopPanel(service.name, ButtonTask.GO_TO_PROFILE, user.photoLink)
     }
 
-    override fun showPremium(service: Service) {
+    override fun showPremium() {
         activity_service_ll_premium.visible()
+
     }
 
     override fun hidePremium() {
@@ -164,15 +166,27 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
         )
     }
 
-    override fun showSessionButton() {
-        activity_service_btn_schedule.visibility = View.VISIBLE
+    override fun showPremiumButton() {
+        activity_service_btn_premium.visible()
+        activity_service_btn_premium.setOnClickListener {
+            showPremium()
+            activity_service_btn_premium.gone()
+        }
+    }
+
+    override fun hidePremiumButton() {
+        activity_service_btn_premium.gone()
+    }
+
+    override fun showScheduleButton() {
+        activity_service_btn_schedule.visible()
         activity_service_btn_schedule.setOnClickListener {
             goToSessions()
         }
     }
 
-    override fun hideSessionButton() {
-        activity_service_btn_schedule.visibility = View.GONE
+    override fun hideScheduleButton() {
+        activity_service_btn_schedule.gone()
     }
 
     override fun actionClick() {

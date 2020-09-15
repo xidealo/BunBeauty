@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileServiceAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ProfileServiceAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.create_service.CreationServiceActivity
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment
 import kotlinx.android.synthetic.main.fragment_services.*
 
 class ServicesFragment : MvpAppCompatFragment() {

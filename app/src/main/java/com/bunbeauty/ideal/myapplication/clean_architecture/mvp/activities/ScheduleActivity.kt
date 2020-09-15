@@ -13,10 +13,10 @@ import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.invisible
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.schedule.ScheduleInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.invisible
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.schedule.ScheduleInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SchedulePresenter
@@ -239,9 +239,9 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         schedulePresenter.rememberDay(buttonIndex, button.text.toString())
     }
 
-    override fun showAccurateTime(accurateTime: Set<String>) {
+    override fun showAccurateTime(accurateTimeSet: Set<String>) {
         timeButtons.filter {
-            accurateTime.contains(it.text.toString())
+            accurateTimeSet.contains(it.text.toString())
         }.map {
             it.isEnabled = true
             it.setTag(R.id.touchIdTag, touchId)
@@ -257,9 +257,9 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         }
     }
 
-    override fun showInaccurateTime(inaccurateTime: Set<String>) {
+    override fun showInaccurateTime(inaccurateTimeSet: Set<String>) {
         timeButtons.filter {
-            inaccurateTime.contains(it.text.toString())
+            inaccurateTimeSet.contains(it.text.toString())
         }.map {
             it.isEnabled = true
             fillButtonInHalf(it)

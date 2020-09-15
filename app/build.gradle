@@ -121,6 +121,7 @@ dependencies {
 
     //for styles
     implementation 'com.airbnb.android:paris:1.5.0'
+
 }
 repositories {
     mavenCentral()

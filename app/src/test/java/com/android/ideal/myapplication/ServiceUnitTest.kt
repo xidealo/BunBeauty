@@ -1,7 +1,6 @@
 package com.android.ideal.myapplication
 
 import android.content.Intent
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.ServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.PhotoServiceRepository
 import io.mockk.mockk
 import org.mockito.Mock

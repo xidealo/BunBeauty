@@ -2,7 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities
 
 import android.os.Bundle
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.PhotoPagerAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.PhotoPagerAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_photo_slider.*

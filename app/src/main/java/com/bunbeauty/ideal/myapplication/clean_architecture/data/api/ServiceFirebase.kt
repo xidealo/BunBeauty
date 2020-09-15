@@ -1,8 +1,8 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.api
 
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.server_time.ServerTimeCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service.GetServiceCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service.GetServicesCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.service.UpdateServiceCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Tag
 import com.google.firebase.database.*
@@ -63,9 +63,9 @@ class ServiceFirebase {
 
     fun updatePremium(
         service: Service,
-        durationPremium: Long
+        durationPremium: Long,
+        updateServiceCallback: UpdateServiceCallback
     ) {
-
         FirebaseFunctions.getInstance()
             .getHttpsCallable("getTime")
             .call()
@@ -89,6 +89,8 @@ class ServiceFirebase {
                     items[Service.AVG_RATING] = service.rating
                     items[Service.COUNT_OF_RATES] = service.countOfRates
                     serviceRef.updateChildren(items)
+                    service.premiumDate = timestamp + durationPremium
+                    updateServiceCallback.returnUpdatedCallback(service)
                 }
             }
     }

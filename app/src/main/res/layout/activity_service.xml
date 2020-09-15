@@ -170,13 +170,8 @@
                 <LinearLayout
                     android:id="@+id/activity_service_ll_premium"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <androidx.fragment.app.FragmentContainerView
-                        android:id="@+id/activity_service_f_premium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <!-- Нижняя часть фотографии и кнопка-->
@@ -199,6 +194,13 @@
                 style="@style/mainButton"
                 android:layout_gravity="center"
                 android:text="Расписание"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/activity_service_btn_premium"
+                style="@style/mainButton"
+                android:layout_gravity="center"
+                android:text="Премиум"
                 android:visibility="gone" />
         </LinearLayout>
     </ScrollView>

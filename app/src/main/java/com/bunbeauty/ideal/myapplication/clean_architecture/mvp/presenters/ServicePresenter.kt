@@ -2,9 +2,9 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.i_service.IServicePhotoInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.i_service.IServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.service.i_service.IServiceUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.i_service.IServicePhotoInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.i_service.IServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.i_service.IServiceUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.service.ServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
@@ -47,20 +47,18 @@ class ServicePresenter(
         viewState.createAlienServiceTopPanel(user, serviceInteractor.gottenService)
     }
 
-    override fun showPremium() {
-        viewState.showPremium(serviceInteractor.gottenService)
-    }
-
     fun updateService(service: Service) {
         serviceInteractor.updateService(service, this)
     }
 
-    override fun showSessionButton() {
-        viewState.showSessionButton()
+    override fun showMyService() {
+        viewState.showPremiumButton()
+        viewState.hideScheduleButton()
     }
 
-    override fun hideSessionButton() {
-        viewState.hideSessionButton()
+    override fun showAlienService() {
+        viewState.hidePremiumButton()
+        viewState.showScheduleButton()
     }
 
     override fun setTitle(title: String) {

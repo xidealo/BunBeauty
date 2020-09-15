@@ -107,7 +107,7 @@
 
                 <fragment
                     android:id="@+id/activity_creation_service_fg_category"
-                    class="com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.CategoryFragment"
+                    class="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.CategoryFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/default_margin" />

@@ -12,11 +12,7 @@ interface EditProfileView: MvpView {
     fun setNameEditProfileInputError(error: String)
     fun setSurnameEditProfileInputError(error: String)
     fun setPhoneEditProfileInputError(error: String)
-
-    fun disableEditProfileEditButton()
-    fun enableEditProfileEditButton()
     fun showPhoneError(error:String)
-    fun showLoading()
     fun showCodeInputAndButtons()
     fun hideCodeInputAndButtons()
     fun showMessage(message: String)

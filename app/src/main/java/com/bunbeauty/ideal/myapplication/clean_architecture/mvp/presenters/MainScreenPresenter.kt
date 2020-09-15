@@ -3,9 +3,9 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 import android.view.View
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_service.MainScreenDataInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_service.MainScreenUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.search_service.i_search_service.IMainScreenServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenDataInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.i_search_service.IMainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.MainScreenPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service

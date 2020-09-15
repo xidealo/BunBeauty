@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.DayAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsMessageInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.sessions.SessionsOrderInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.DayAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.SessionsInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.SessionsMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.SessionsOrderInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Session
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingDay
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity

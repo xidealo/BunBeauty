@@ -2,9 +2,9 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.iSubs.ISubscriptionsSubscriberInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.iSubs.ISubscriptionsSubscriptionInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.subs.iSubs.ISubscriptionsUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.iSubs.ISubscriptionsSubscriberInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.iSubs.ISubscriptionsSubscriptionInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.iSubs.ISubscriptionsUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subs.SubscriptionsPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscriber
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Subscription

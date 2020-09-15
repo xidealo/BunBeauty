@@ -1,9 +1,9 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
 import android.app.Application
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.FiguringServicePointsApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.StringApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.VerifyPhoneNumberApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.FiguringServicePointsApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.StringApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.dbInstance.LocalDatabase
 import dagger.Module
 import dagger.Provides

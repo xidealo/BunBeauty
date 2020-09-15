@@ -11,12 +11,12 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.MessageAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesDialogInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesMessageInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesOrderInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.MessagesUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.chat.i_chat.message.i_message.MessagesScheduleInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.MessageAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.message.MessagesDialogInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.message.MessagesMessageInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.message.MessagesOrderInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.message.MessagesUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.message.i_message.MessagesScheduleInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
@@ -199,6 +199,14 @@ class MessagesActivity : BaseActivity(), MessagesView {
             REQUEST_MESSAGE_USER_REVIEW
         )
         overridePendingTransition(0, 0)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(
+            R.anim.anim_slide_in_right,
+            R.anim.anim_slide_out_right
+        )
     }
 
     companion object {

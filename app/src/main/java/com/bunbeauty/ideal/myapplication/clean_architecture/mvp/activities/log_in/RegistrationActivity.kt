@@ -8,8 +8,7 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.WorkWithViewApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.WorkWithStringsApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.log_in.iLogIn.IRegistrationUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.iLogIn.IRegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
@@ -54,11 +53,9 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
         activity_registration_pbtn_register.setOnClickListener {
             WorkWithViewApi.hideKeyboard(this)
             registrationPresenter.registerUser(
-                WorkWithStringsApi.firstCapitalSymbol(activity_registration_et_name.text.toString().trim()),
-                WorkWithStringsApi.firstCapitalSymbol(
-                    activity_registration_et_surname.text.toString().trim()
-                ),
-                WorkWithStringsApi.firstCapitalSymbol(activity_registration_sp_city.text.toString()),
+                activity_registration_et_name.text.toString().trim(),
+                activity_registration_et_surname.text.toString().trim(),
+                activity_registration_sp_city.text.toString(),
                 activity_registration_et_phone.text.toString()
             )
         }

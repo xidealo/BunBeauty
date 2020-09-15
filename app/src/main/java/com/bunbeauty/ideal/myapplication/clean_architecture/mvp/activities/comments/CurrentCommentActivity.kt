@@ -5,7 +5,7 @@ import android.os.Bundle
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.current_comment.CurrentCommentCommentInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.current_comment.CurrentCommentCommentInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.ServiceComment
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.UserComment
@@ -73,5 +73,13 @@ class CurrentCommentActivity : BaseActivity(), CurrentCommentView {
         intent.putExtra(User.USER, currentCommentPresenter.getUserFromComment())
         startActivity(intent)
         overridePendingTransition(0, 0)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(
+            R.anim.anim_slide_in_right,
+            R.anim.anim_slide_out_right
+        )
     }
 }

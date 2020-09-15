@@ -2,8 +2,8 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.comm
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.user_comments.iUserComments.IUserCommentsUserCommentInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.commets.user_comments.iUserComments.IUserCommentsUserInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.user_comments.iUserComments.IUserCommentsUserCommentInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.user_comments.iUserComments.IUserCommentsUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.comments.UserCommentsPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.UserComment

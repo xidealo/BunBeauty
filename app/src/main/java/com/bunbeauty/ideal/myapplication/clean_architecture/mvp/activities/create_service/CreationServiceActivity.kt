@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -11,24 +12,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ChangeablePhotoAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.CategoryFragment
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.elements.photoElement.IChangeablePhotoElement
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.create_service.CreationServiceServiceServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.create_service.CreationServiceTagInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.PhotoInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ChangeablePhotoAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.CategoryFragment
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.photoElement.IChangeablePhotoElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.create_service.CreationServiceServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.create_service.CreationServiceTagInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.ScheduleActivity
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.fragments.PremiumFragment
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.CreationServiceView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.activity_creation_service.*
 import javax.inject.Inject
 
@@ -100,7 +103,9 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
         activity_creation_service_np_minute.displayedValues = arrayOf("0", "30")
 
         activity_creation_service_btn_add_photo.setOnClickListener {
-            CropImage.activity().start(this)
+            CropImage
+                .activity()
+                .start(this)
         }
         activity_creation_service_btn_continue.setOnClickListener {
             goToSchedule()
@@ -120,7 +125,7 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
                 val resultUri: Uri = result.uri
                 creationServicePresenter.createPhoto(resultUri)
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                val error = result.error
+                Log.e(Tag.ERROR_TAG, result.error.printStackTrace().toString())
             }
         }
     }

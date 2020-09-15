@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -8,15 +9,15 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileOrderAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfilePagerAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.adapters.ProfileServiceAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTransformation
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.gone
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.invisible
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.roundSomeSymbols
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.api.visible
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.profile.iProfile.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ProfileOrderAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ProfilePagerAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ProfileServiceAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.CircularTransformation
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.invisible
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.roundSomeSymbols
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.profile.iProfile.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
@@ -313,7 +314,10 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
         intent.putExtra(Dialog.COMPANION_DIALOG, companionDialog)
         intent.putExtra(User.USER, profilePresenter.getCacheOwner())
         startActivity(intent)
-        overridePendingTransition(0, 0)
+        overridePendingTransition(
+            R.anim.anim_slide_in_left,
+            R.anim.anim_slide_out_left
+        )
     }
 
     override fun showSubscribed() {

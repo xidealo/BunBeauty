@@ -3,10 +3,10 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.editing.service.IEditServiceServiceInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.editing.service.IEditServiceTagInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.IPhotoCallback
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.photo.IPhotoInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.service.IEditServiceServiceInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.service.IEditServiceTagInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.IPhotoCallback
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.IPhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.service.EditServicePresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service

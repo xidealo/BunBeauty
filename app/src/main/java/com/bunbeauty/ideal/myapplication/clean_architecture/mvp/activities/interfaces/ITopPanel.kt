@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.clean_architecture.business.CircularTransformation
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.CircularTransformation
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.part_top_panel.*
@@ -40,7 +40,6 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
         } else {
             panelContext.top_panel.setNavigationOnClickListener {
                 panelContext.onBackPressed()
-                panelContext.overridePendingTransition(0, 0)
             }
         }
     }

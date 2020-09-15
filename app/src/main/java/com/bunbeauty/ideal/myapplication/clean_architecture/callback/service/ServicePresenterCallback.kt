@@ -6,7 +6,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 interface ServicePresenterCallback {
     fun showService(service: Service)
-    fun showPremium()
     fun createOwnServiceTopPanel()
     fun createAlienServiceTopPanel(user: User)
     fun showPhotos(photoList: List<Photo>)
@@ -15,6 +14,6 @@ interface ServicePresenterCallback {
     fun getServicePhotos(service: Service)
     fun setTitle(title: String)
     fun checkMaster(userId: String)
-    fun hideSessionButton()
-    fun showSessionButton()
+    fun showMyService()
+    fun showAlienService()
 }
