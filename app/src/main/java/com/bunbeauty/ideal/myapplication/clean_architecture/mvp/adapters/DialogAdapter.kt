@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.chatElements.DialogElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.chatElements.DialogElement
 
 class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
 
@@ -44,7 +44,8 @@ class DialogAdapter : RecyclerView.Adapter<DialogAdapter.DialogViewHolder>() {
     override fun getItemCount() = dialogList.size
 
     inner class DialogViewHolder(private val view: View, private val context: Context) :
-        ViewHolder(view) {
+        RecyclerView.ViewHolder(view) {
+
         fun bind(dialog: Dialog) {
             DialogElement(view, context, dialog)
         }

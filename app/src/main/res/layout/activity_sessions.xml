@@ -3,9 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_session_cl_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/backgroundLightBlue"
+    style="@style/SchedulePage"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.SessionsActivity">
 
     <include layout="@layout/part_top_panel" />
@@ -64,7 +62,6 @@
         style="@style/mainButton"
         android:enabled="false"
         android:text="Записаться"
-        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

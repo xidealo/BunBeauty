@@ -1,12 +1,12 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.search_service
 
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
@@ -15,12 +15,12 @@ import com.airbnb.paris.extensions.style
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ServiceAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.MainScreenData
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ServiceAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.MainScreenPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.MainScreenView
@@ -29,6 +29,8 @@ import com.google.android.material.chip.Chip
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.activity_main_screen.*
 import kotlinx.android.synthetic.main.fragment_category_block.*
+import kotlinx.android.synthetic.main.fragment_tag.*
+import kotlinx.android.synthetic.main.fragment_tag.view.*
 import kotlinx.android.synthetic.main.part_top_panel.*
 import java.util.*
 import javax.inject.Inject
@@ -136,8 +138,6 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
                 mainScreenPresenter.createMainScreenWithCategory(category)
                 enableCategoryButton(view)
             }
-        } else {
-            mainScreenPresenter.createMainScreenWithTag(view as Chip)
         }
     }
 
@@ -148,12 +148,10 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
     override fun actionClick() {}
 
     override fun disableCategoryBtn(button: Button) {
-        button.setTextColor(Color.WHITE)
         button.style(R.style.unselected_button)
     }
 
     override fun enableCategoryButton(button: Button) {
-        button.setTextColor(Color.BLACK)
         button.style(R.style.selected_button)
     }
 
@@ -201,19 +199,16 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
 
     override fun createCategoryFeed(categories: MutableSet<String>) {
         for (i in categories.indices) {
-            categoriesButtonList.add(MaterialButton(this))
-            categoriesButtonList[i].setOnClickListener(this)
-            categoriesButtonList[i].text = categories.toTypedArray()[i]
-            categoriesButtonList[i].style(R.style.unselected_button)
-            categoriesButtonList[i].setTextColor(Color.WHITE)
-            val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            params.setMargins(8, 8, 8, 8)
-            categoriesButtonList[i].layoutParams = params
+            val button = MaterialButton(this)
+            button.setOnClickListener(this)
+            button.text = categories.toTypedArray()[i]
+            button.style(R.style.unselected_button)
+            button.layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+                setMargins(8, 8, 8, 8)
+            }
 
-            activity_main_screen_ll_category.addView(categoriesButtonList[i])
+            activity_main_screen_ll_category.addView(button)
+            categoriesButtonList.add(button)
         }
     }
 
@@ -224,22 +219,18 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
 
         for (tag in tagsArray) {
             val inflater = LayoutInflater.from(this)
-            val view: View = inflater.inflate(R.layout.fragment_tag, tagsMaxLayout, false)
-            view.layoutParams =
-                LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-
-            val tagText = view.findViewById<Chip>(R.id.tagFragmentTagChip)
-            tagText.text = tag
-            tagText.setOnClickListener(this)
-
-            if (selectedTagsArray.contains(tag.toString())) {
-                view.style(R.style.choiceChip)
+            val tagView = inflater.inflate(R.layout.fragment_tag, tagsMaxLayout, false)
+            tagView.layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+            tagView.tagFragmentTagChip.text = tag
+            tagView.tagFragmentTagChip.setOnClickListener {
+                mainScreenPresenter.createMainScreenWithTag(it as Chip)
             }
 
-            activity_main_screen_ll_tags.addView(view)
+            if (selectedTagsArray.contains(tag.toString())) {
+                tagView.style(R.style.choiceChip)
+            }
+
+            activity_main_screen_ll_tags.addView(tagView)
         }
     }
 }

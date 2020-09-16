@@ -15,22 +15,27 @@
         <item name="android:windowBackground">@drawable/screen_loading</item>
     </style>
 
-    <style name="DefaultTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:background">@color/white</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-    </style>
-
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="LogInPage">
-        <item name="colorControlActivated">@color/white</item>
-        <item name="android:background">@color/mainBlue</item>
+    <style name="BasePage" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="DefaultPage" parent="BasePage">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="SchedulePage" parent="BasePage">
+        <item name="android:background">@color/lightBlue</item>
+    </style>
+
+    <style name="LogInPage" parent="BasePage">
+        <item name="colorControlActivated">@color/white</item>
+        <item name="android:background">@color/mainBlue</item>
         <item name="android:gravity">center</item>
         <item name="android:orientation">vertical</item>
     </style>
@@ -50,7 +55,7 @@
 
     <style name="ProfileThinText" parent="ProfileText">
         <item name="fontFamily">@font/roboto_thin</item>
-        <item name="android:textColor">@color/white80</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="ExtraText">
@@ -151,6 +156,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/roboto_black</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
@@ -367,7 +373,7 @@
     </style>
 
     <style name="unselected_button">
-        <item name="android:background">@drawable/item_unselected</item>
+        <item name="backgroundColor">@color/mainBlue</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:backgroundTint">@color/mainBlue</item>
         <item name="android:textSize">10sp</item>

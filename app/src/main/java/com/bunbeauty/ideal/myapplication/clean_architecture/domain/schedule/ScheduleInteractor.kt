@@ -21,7 +21,7 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
     var selectedDays = ArrayList<Int>()
 
     private lateinit var schedule: ScheduleWithWorkingTime
-    private lateinit var deletedSchedule: ScheduleWithWorkingTime
+    private var deletedSchedule: ScheduleWithWorkingTime = ScheduleWithWorkingTime()
     private val addedSchedule = ScheduleWithWorkingTime()
 
     fun getSchedule(schedulePresenterCallback: SchedulePresenterCallback) {
@@ -31,8 +31,8 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
     }
 
     override fun returnGottenObject(gottenSchedule: ScheduleWithWorkingTime?) {
-        schedule = gottenSchedule!!.getFutureSchedule()
-        deletedSchedule = gottenSchedule.getPastSchedule()
+        schedule = gottenSchedule!!.getFutureDaySchedule()
+        deletedSchedule = gottenSchedule.getPastDaySchedule()
         addedSchedule.schedule.masterId = gottenSchedule.schedule.masterId
 
         schedulePresenterCallback.showSchedule(getDayIndexes(schedule.workingTimeList))

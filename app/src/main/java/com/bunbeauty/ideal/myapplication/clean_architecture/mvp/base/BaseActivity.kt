@@ -49,7 +49,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel {
      */
     fun showMessage(message: String, layout: View) {
         val snack = Snackbar.make(layout, message, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(this, R.color.grey))
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue40))
             .setActionTextColor(ContextCompat.getColor(this, R.color.white))
         snack.view.findViewById<TextView>(R.id.snackbar_text).textAlignment =
             View.TEXT_ALIGNMENT_CENTER
