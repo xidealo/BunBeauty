@@ -13,6 +13,10 @@ data class WorkingTime(
     var scheduleId: String = ""
 ) {
 
+    fun getMonth(): Int {
+        return DateTime(time).monthOfYear
+    }
+
     fun getDayOfMonth(): Int {
         return DateTime(time).dayOfMonth
     }

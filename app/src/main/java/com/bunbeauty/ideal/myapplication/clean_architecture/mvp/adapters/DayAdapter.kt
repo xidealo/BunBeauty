@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.DayElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingDay
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.DayElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SessionsPresenter
 
 class DayAdapter(
     private val dayList: List<WorkingDay>,
     private val sessionsPresenter: SessionsPresenter
-) : RecyclerView.Adapter<DayAdapter.DayViewHolder>() {
+) : RecyclerView.Adapter<DayAdapter.DayViewHolder>(), RefreshableAdapterCallback {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayAdapter.DayViewHolder {
         val context = parent.context
@@ -30,24 +30,16 @@ class DayAdapter(
         return dayList.size
     }
 
+    override fun refresh() {
+        notifyDataSetChanged()
+    }
+
     inner class DayViewHolder(private val view: View, private val context: Context) :
         RecyclerView.ViewHolder(view) {
 
-        fun bind(day: WorkingDay, i: Int): DayElement {
-            val dayElement = DayElement(view, context, day)
-            dayElement.setClickListener(View.OnClickListener {
-                dayList.find { it.isSelected && dayList.indexOf(it) != i }?.isSelected = false
-                day.isSelected = !day.isSelected
-
-                if (day.isSelected) {
-                    sessionsPresenter.getSessions(day)
-                } else {
-                    sessionsPresenter.clearSessions()
-                }
-                notifyDataSetChanged()
-            })
-
-            return dayElement
+        fun bind(day: WorkingDay, i: Int) {
+            val dayElement = DayElement(view, day, context)
+            dayElement.setClickListener(dayList, sessionsPresenter, this@DayAdapter)
         }
     }
 }

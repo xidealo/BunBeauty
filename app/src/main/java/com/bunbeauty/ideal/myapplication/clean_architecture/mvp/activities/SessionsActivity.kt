@@ -19,6 +19,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.Sess
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.SessionsOrderInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Session
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingDay
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.invisible
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SessionsPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.SessionsView
@@ -69,14 +71,15 @@ class SessionsActivity : BaseActivity(), SessionsView{
     }
 
     private fun init() {
+        activity_session_btn_make_appointment.invisible()
         activity_session_btn_make_appointment.setOnClickListener {
             sessionsPresenter.makeAppointment()
         }
     }
 
     override fun showDays(days: List<WorkingDay>) {
-        activity_session_sv.visibility = View.VISIBLE
-        activity_session_btn_make_appointment.visibility = View.VISIBLE
+        activity_session_sv.visible()
+        activity_session_btn_make_appointment.visible()
 
         activity_session_rv_days.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
         activity_session_rv_days.adapter = DayAdapter(days, sessionsPresenter)

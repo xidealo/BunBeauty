@@ -5,6 +5,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.GetScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.InsertScheduleCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule.Companion.MONTHS
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingTime
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IScheduleRepository
@@ -20,7 +21,7 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
     var selectedDays = ArrayList<Int>()
 
     private lateinit var schedule: ScheduleWithWorkingTime
-    private lateinit var deletedSchedule: ScheduleWithWorkingTime
+    private var deletedSchedule: ScheduleWithWorkingTime = ScheduleWithWorkingTime()
     private val addedSchedule = ScheduleWithWorkingTime()
 
     fun getSchedule(schedulePresenterCallback: SchedulePresenterCallback) {
@@ -30,8 +31,8 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
     }
 
     override fun returnGottenObject(gottenSchedule: ScheduleWithWorkingTime?) {
-        schedule = gottenSchedule!!.getFutureSchedule()
-        deletedSchedule = gottenSchedule.getPastSchedule()
+        schedule = gottenSchedule!!.getFutureDaySchedule()
+        deletedSchedule = gottenSchedule.getPastDaySchedule()
         addedSchedule.schedule.masterId = gottenSchedule.schedule.masterId
 
         schedulePresenterCallback.showSchedule(getDayIndexes(schedule.workingTimeList))
@@ -47,8 +48,11 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         return Days.daysBetween(startDate.toLocalDate(), endDate.toLocalDate()).days
     }
 
-    fun getStringDayOfMonth(dayIndex: Int): String {
-        return getLastMondayDate().plusDays(dayIndex).dayOfMonth.toString()
+    fun getStringDate(dayIndex: Int): String {
+        val day = getLastMondayDate().plusDays(dayIndex).dayOfMonth.toString()
+        val monthNumber = getLastMondayDate().plusDays(dayIndex).monthOfYear
+
+        return "$day$DAY_MONTH_DELIMITER${MONTHS[monthNumber]}"
     }
 
     fun getLastMondayDate(): DateTime {
@@ -61,6 +65,10 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
         val dayOfWeek = DateTime(schedule.schedule.gettingTime).dayOfWeek - 1
 
         return dayIndex < dayOfWeek
+    }
+
+    fun getDayFromString(dayString: String): Int {
+        return dayString.split(DAY_MONTH_DELIMITER).first().toInt()
     }
 
     fun getTime(schedulePresenterCallback: SchedulePresenterCallback) {
@@ -106,11 +114,12 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
     }
 
     fun addToSchedule(
-        days: List<Int>,
+        days: List<String>,
         timeString: String,
         schedulePresenterCallback: SchedulePresenterCallback
     ) {
-        for ((i, day) in days.withIndex()) {
+        for ((i, dayString) in days.withIndex()) {
+            val day = getDayFromString(dayString)
             val workingTime = schedule.addWorkingTime(day, timeString)
             if (deletedSchedule.containsWorkingTime(workingTime)) {
                 deletedSchedule.removeWorkingTime(workingTime!!)
@@ -123,10 +132,11 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
     }
 
     fun deleteFromSchedule(
-        days: List<Int>,
+        stringDays: List<String>,
         timeString: String,
         schedulePresenterCallback: SchedulePresenterCallback
     ) {
+        val days = stringDays.map { getDayFromString(it) }
         if (schedule.haveSomeOrder(days, timeString)) {
             schedulePresenterCallback.showInaccurateTime(setOf(timeString))
         } else {
@@ -158,5 +168,9 @@ class ScheduleInteractor(private val scheduleRepository: IScheduleRepository) :
 
     override fun returnCreatedCallback(obj: ScheduleWithWorkingTime) {
         schedulePresenterCallback.showScheduleSaved()
+    }
+
+    companion object {
+        const val DAY_MONTH_DELIMITER = "\n"
     }
 }

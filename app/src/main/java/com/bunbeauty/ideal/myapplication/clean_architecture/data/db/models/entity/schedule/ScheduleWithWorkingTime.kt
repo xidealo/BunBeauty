@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.enti
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule.Companion.MONTHS
 import org.joda.time.DateTime
 
 data class ScheduleWithWorkingTime(
@@ -92,14 +93,34 @@ data class ScheduleWithWorkingTime(
     fun getFutureSchedule(): ScheduleWithWorkingTime {
         return ScheduleWithWorkingTime(
             schedule,
-            ArrayList(workingTimeList.filter { it.time > schedule.gettingTime }.sortedBy { it.time })
+            ArrayList(workingTimeList.filter { it.time > schedule.gettingTime }
+                .sortedBy { it.time })
         )
     }
 
-    fun getPastSchedule(): ScheduleWithWorkingTime {
+    fun getFutureDaySchedule(): ScheduleWithWorkingTime {
+        val filteredWorkingTime = workingTimeList.filter {
+            val date = DateTime(it.time)
+            val currentDate = DateTime(schedule.gettingTime)
+            date.year > currentDate.year || date.dayOfYear >= currentDate.dayOfYear
+        }
+
         return ScheduleWithWorkingTime(
             schedule,
-            ArrayList(workingTimeList.filter { it.time <= schedule.gettingTime })
+            ArrayList(filteredWorkingTime.sortedBy { it.time })
+        )
+    }
+
+    fun getPastDaySchedule(): ScheduleWithWorkingTime {
+        val filteredWorkingTime = workingTimeList.filter {
+            val date = DateTime(it.time)
+            val currentDate = DateTime(schedule.gettingTime)
+            date.year <= currentDate.year && date.dayOfYear < currentDate.dayOfYear
+        }
+
+        return ScheduleWithWorkingTime(
+            schedule,
+            ArrayList(filteredWorkingTime.sortedBy { it.time })
         )
     }
 
@@ -122,7 +143,11 @@ data class ScheduleWithWorkingTime(
             previousTime = time
 
             if ((serviceDuration / 0.5f).toInt() == timeInRaw) {
-                availableDays.add(WorkingDay(dayOfMonth = time.getDayOfMonth()))
+                val workingDay = WorkingDay(
+                    dayOfMonth = time.getDayOfMonth(),
+                    month = MONTHS.getValue(time.getMonth())
+                )
+                availableDays.add(workingDay)
             }
         }
 

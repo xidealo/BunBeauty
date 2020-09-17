@@ -2,10 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/scheduleLayout"
-    android:background="@color/backgroundLightBlue"
+    android:id="@+id/activity_schedule_ll_main"
+    style="@style/SchedulePage"
     tools:context="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.ScheduleActivity">
 
     <include
@@ -14,7 +12,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/saveScheduleButton"
+        app:layout_constraintBottom_toTopOf="@+id/activity_schedule_btn_save"
         app:layout_constraintTop_toBottomOf="@+id/top_panel">
 
         <LinearLayout
@@ -23,41 +21,48 @@
             android:orientation="vertical">
 
             <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.CustomGridLayout
-                android:id="@+id/daysScheduleGrid"
+                android:id="@+id/activity_schedule_gl_days"
                 style="@style/horizontalLayout"
                 android:columnCount="7">
 
                 <TextView
+                    android:layout_columnWeight="1"
                     style="@style/weekDayText"
                     android:text="ПН" />
 
                 <TextView
+                    android:layout_columnWeight="1"
                     style="@style/weekDayText"
                     android:text="ВТ" />
 
                 <TextView
+                    android:layout_columnWeight="1"
                     style="@style/weekDayText"
                     android:text="СР" />
 
                 <TextView
+                    android:layout_columnWeight="1"
                     style="@style/weekDayText"
                     android:text="ЧТ" />
 
                 <TextView
+                    android:layout_columnWeight="1"
                     style="@style/weekDayText"
                     android:text="ПТ" />
 
                 <TextView
+                    android:layout_columnWeight="1"
                     style="@style/weekDayText"
                     android:text="СБ" />
 
                 <TextView
+                    android:layout_columnWeight="1"
                     style="@style/weekDayText"
                     android:text="ВС" />
             </com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.CustomGridLayout>
 
             <LinearLayout
-                android:id="@+id/timeScheduleLayout"
+                android:id="@+id/activity_schedule_ll_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -65,10 +70,10 @@
                 <TextView
                     style="@style/wideLabel"
                     android:text="Время"
-                    app:layout_constraintBottom_toTopOf="@+id/saveScheduleButton" />
+                    app:layout_constraintBottom_toTopOf="@+id/activity_schedule_btn_save" />
 
                 <com.bunbeauty.ideal.myapplication.clean_architecture.mvp.custom.CustomGridLayout
-                    android:id="@+id/timeScheduleGrid"
+                    android:id="@+id/activity_schedule_gl_time"
                     style="@style/horizontalLayout"
                     android:columnCount="6" />
             </LinearLayout>
@@ -77,18 +82,21 @@
     </ScrollView>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/saveScheduleButton"
+        android:id="@+id/activity_schedule_btn_save"
         style="@style/mainButton"
-        android:text="Сохранить"
-
+        android:text="@string/save"
         app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!--<TextView
-        style="@style/wideLabel"
-        android:background="@color/grey40"
-        app:layout_constraintBottom_toTopOf="@+id/bottomPanel" />-->
+    <ProgressBar
+        android:id="@+id/activity_schedule_pb_loading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <include
         layout="@layout/part_bottom_panel" />

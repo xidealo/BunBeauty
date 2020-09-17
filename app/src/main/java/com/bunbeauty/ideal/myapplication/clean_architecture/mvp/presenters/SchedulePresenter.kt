@@ -18,8 +18,8 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
         viewState.showSchedule(dayIndexes)
     }
 
-    fun getStringDayOfMonth(dayIndex: Int): String {
-        return scheduleInteractor.getStringDayOfMonth(dayIndex)
+    fun getStringDate(dayIndex: Int): String {
+        return scheduleInteractor.getStringDate(dayIndex)
     }
 
     fun isPastDay(dayIndex: Int): Boolean {
@@ -28,7 +28,7 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
 
     fun rememberDay(dayIndex: Int, day: String) {
         scheduleInteractor.selectedDayIndexes.add(dayIndex)
-        scheduleInteractor.selectedDays.add(day.toInt())
+        scheduleInteractor.selectedDays.add(scheduleInteractor.getDayFromString(day))
         scheduleInteractor.getTime(this)
     }
 
@@ -58,7 +58,7 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
     }
 
     fun addToSchedule(days: List<String>, time: String) {
-        scheduleInteractor.addToSchedule(days.map { it.toInt() }, time, this)
+        scheduleInteractor.addToSchedule(days, time, this)
     }
 
     override fun fillDay(dayIndex: Int) {
@@ -66,7 +66,7 @@ class SchedulePresenter(private val scheduleInteractor: ScheduleInteractor) :
     }
 
     fun deleteFromSchedule(days: List<String>, time: String) {
-        scheduleInteractor.deleteFromSchedule(days.map { it.toInt() }, time, this)
+        scheduleInteractor.deleteFromSchedule(days, time, this)
     }
 
     override fun clearTime(timeString: String) {
