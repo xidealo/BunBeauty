@@ -14,9 +14,15 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     IMessagesMessageInteractor, InsertMessageCallback, MessageCallback, MessagesCallback,
     UpdateMessageCallback, DeleteAllMessageCallback {
 
+    //нужно понять сообщение я получаю или пришло новое
+
     private var cacheMessages = mutableListOf<Message>()
     private lateinit var messagesPresenterCallback: MessagesPresenterCallback
-    override var isSmoothScrollingToPosition = true
+    var isSmoothScrollingToPosition = true
+
+    override fun setIsSmoothScrollingToPosition(isSmoothScrollingToPosition: Boolean) {
+        this.isSmoothScrollingToPosition = isSmoothScrollingToPosition
+    }
 
     override fun getMyMessagesLink() = cacheMessages
 
@@ -53,6 +59,17 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         if (objects.isEmpty()) {
             messagesPresenterCallback.showEmptyScreen()
         }
+
+        for (message in objects) {
+            if (cacheMessages.find { it.id == message.id } == null) {
+                cacheMessages.add(message)
+                messagesPresenterCallback.addItemToStart(message)
+            }
+        }
+
+        if (isSmoothScrollingToPosition)
+            messagesPresenterCallback.moveToStart()
+
     }
 
     override fun updateMessages(
@@ -87,22 +104,22 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     override fun returnGottenObject(obj: Message?) {
         if (obj == null) return
 
-        if (obj.type == Message.TEXT_STATUS || obj.ownerId == User.getMyId()) {
-            addMessage(obj)
-        } else {
-            Log.d(Tag.TEST_TAG, "Тип сообщения ${obj.type} user id ${obj.userId}")
-        }
+        if (cacheMessages.find { it.id == obj.id } == null)
+            if (obj.dialogId == User.getMyId())
+                if (obj.type == Message.TEXT_STATUS || obj.ownerId == User.getMyId()) {
+                    addMessage(obj)
+                    messagesPresenterCallback.moveToStart()
+                    if (obj.ownerId == User.getMyId()) {
+                        messagesPresenterCallback.setUnchecked()
+                    }
+                } else {
+                    Log.d(Tag.TEST_TAG, "Тип сообщения ${obj.type} user id ${obj.userId}")
+                }
     }
 
     private fun addMessage(message: Message) {
-        //only from my dialog
-        if (message.dialogId == User.getMyId()) {
-            cacheMessages.add(message)
-            messagesPresenterCallback.setUnchecked()
-            messagesPresenterCallback.showMessage(message, isSmoothScrollingToPosition)
-        } else {
-            Log.d(Tag.TEST_TAG, "Сообщение из другого диалога $message")
-        }
+        cacheMessages.add(message)
+        messagesPresenterCallback.addItemToBottom(message)
     }
 
     /**
@@ -111,7 +128,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     override fun returnUpdatedCallback(obj: Message) {
         if (cacheMessages.find { it.id == obj.id } == null) {
             cacheMessages.add(obj)
-            messagesPresenterCallback.showMessage(obj, isSmoothScrollingToPosition)
+            messagesPresenterCallback.addItemToBottom(obj)
         }
     }
 

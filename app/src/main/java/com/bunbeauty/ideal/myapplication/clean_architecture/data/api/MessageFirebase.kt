@@ -67,6 +67,7 @@ class MessageFirebase {
         messageCallback: MessageCallback,
         updateMessageCallback: UpdateMessageCallback
     ) {
+        removeObservers()
 
         val messageQuery = FirebaseDatabase.getInstance()
             .getReference(Dialog.DIALOGS)
@@ -75,34 +76,38 @@ class MessageFirebase {
 
         messageQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.childrenCount == 0L) messagesCallback.returnList(emptyList())
+                messagesCallback.returnList(snapshot.children.filter { it.hasChildren() }
+                    .map { messageSnapshot ->
+                        getMessageFromSnapshot(messageSnapshot)
+                    })
+
+                messageQuery.addChildEventListener(object : ChildEventListener {
+                    override fun onCancelled(p0: DatabaseError) {}
+
+                    override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
+
+                    override fun onChildChanged(messageSnapshot: DataSnapshot, p1: String?) {
+                        if (!messageSnapshot.hasChildren()) return
+                        updateMessageCallback.returnUpdatedCallback(
+                            getMessageFromSnapshot(messageSnapshot)
+                        )
+                    }
+
+                    override fun onChildAdded(messageSnapshot: DataSnapshot, previousId: String?) {
+                        if (!messageSnapshot.hasChildren()) return
+                        val addedMessage =
+                            getMessageFromSnapshot(messageSnapshot)
+                        addedMessage.dialogId = dialog.id
+                        addedMessage.userId = dialog.user.id
+                        messageCallback.returnGottenObject(addedMessage)
+                    }
+
+                    override fun onChildRemoved(p0: DataSnapshot) {}
+                })
+
             }
 
             override fun onCancelled(error: DatabaseError) {}
-        })
-
-        messageQuery.addChildEventListener(object : ChildEventListener {
-            override fun onCancelled(p0: DatabaseError) {}
-
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
-
-            override fun onChildChanged(messageSnapshot: DataSnapshot, p1: String?) {
-                if (!messageSnapshot.hasChildren()) return
-                updateMessageCallback.returnUpdatedCallback(
-                    getMessageFromSnapshot(messageSnapshot)
-                )
-            }
-
-            override fun onChildAdded(messageSnapshot: DataSnapshot, previousId: String?) {
-                if (!messageSnapshot.hasChildren()) return
-                val addedMessage =
-                    getMessageFromSnapshot(messageSnapshot)
-                addedMessage.dialogId = dialog.id
-                addedMessage.userId = dialog.user.id
-                messageCallback.returnGottenObject(addedMessage)
-            }
-
-            override fun onChildRemoved(p0: DataSnapshot) {}
         })
     }
 

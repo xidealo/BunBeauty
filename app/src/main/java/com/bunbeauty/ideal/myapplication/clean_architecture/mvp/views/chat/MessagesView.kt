@@ -6,7 +6,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 
 interface MessagesView : MvpView {
-    fun showMessage(message: Message, isSmoothScrollingToPosition: Boolean)
+    fun addItemToBottom(message: Message)
+    fun addItemToStart(message: Message)
     fun updateMessageAdapter(message: Message)
     fun removeMessageAdapter(message: Message)
     fun moveToStart()

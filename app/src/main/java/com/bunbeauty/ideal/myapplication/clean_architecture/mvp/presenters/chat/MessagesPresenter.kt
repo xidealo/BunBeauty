@@ -21,7 +21,7 @@ class MessagesPresenter(
     fun getCompanionUser() = messagesUserInteractor.getCompanionUser(this)
 
     fun setIsSmoothScrollingToPosition(isSmoothScrollingToPosition: Boolean) {
-        messagesMessageInteractor.isSmoothScrollingToPosition = isSmoothScrollingToPosition
+        messagesMessageInteractor.setIsSmoothScrollingToPosition(isSmoothScrollingToPosition)
     }
 
     fun createMessageScreen(loadingLimit: Int) {
@@ -73,12 +73,16 @@ class MessagesPresenter(
         viewState.goToProfile(messagesUserInteractor.getCacheCompanionUser())
     }
 
-    override fun showMoveToStart() {
-        viewState.moveToStart()
+    override fun addItemToBottom(message: Message) {
+        viewState.addItemToBottom(message)
     }
 
-    override fun showMessage(message: Message, isSmoothScrollingToPosition: Boolean) {
-        viewState.showMessage(message, isSmoothScrollingToPosition)
+    override fun addItemToStart(message: Message) {
+        viewState.addItemToStart(message)
+    }
+
+    override fun moveToStart() {
+        viewState.moveToStart()
         viewState.hideLoading()
         viewState.hideEmptyScreen()
     }

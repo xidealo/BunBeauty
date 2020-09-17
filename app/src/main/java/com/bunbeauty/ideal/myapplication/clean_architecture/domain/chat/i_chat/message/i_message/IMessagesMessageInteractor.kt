@@ -6,8 +6,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 
 interface IMessagesMessageInteractor {
 
-    var isSmoothScrollingToPosition: Boolean
-
     fun getMessages(
         dialog: Dialog,
         loadingLimit: Int,
@@ -19,7 +17,7 @@ interface IMessagesMessageInteractor {
         dialog: Dialog,
         messagesPresenterCallback: MessagesPresenterCallback
     )
-
+    fun setIsSmoothScrollingToPosition(isSmoothScrollingToPosition: Boolean)
     fun getMyMessagesLink(): List<Message>
     fun updateMessages(message: Message, messagesPresenterCallback: MessagesPresenterCallback)
     fun sendMessage(message: Message, messagesPresenterCallback: MessagesPresenterCallback)

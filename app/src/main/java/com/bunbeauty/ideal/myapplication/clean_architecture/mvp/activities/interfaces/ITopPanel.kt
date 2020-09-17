@@ -4,6 +4,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.CircularTransformation
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
@@ -17,6 +18,14 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
         configBackIcon()
         configPanel(buttonTask)
         setTitle(title)
+    }
+
+    fun setTopPanelColor(colorId: Int) {
+        panelContext.top_panel.setBackgroundColor(colorId)
+    }
+
+    fun setTopPanelAlpha(alpha: Float) {
+        panelContext.top_panel.alpha = alpha
     }
 
     fun setTitle(title: String) {

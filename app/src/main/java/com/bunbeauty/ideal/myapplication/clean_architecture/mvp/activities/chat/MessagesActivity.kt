@@ -20,6 +20,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.m
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Dialog
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.comments.CreationCommentActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
@@ -92,8 +94,12 @@ class MessagesActivity : BaseActivity(), MessagesView {
         activity_messages_rv_messages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                if (isScrolling && dy < 0)
+                    hideKeyboard()
+
                 if (isScrolling && dy < 30 && linearLayoutManager.findFirstVisibleItemPosition() <= 3) {
                     Log.d(Tag.TEST_TAG, "Запрос на докачку сообщений")
+                    messagePresenter.setIsSmoothScrollingToPosition(false)
                     updateData()
                 }
             }
@@ -109,13 +115,13 @@ class MessagesActivity : BaseActivity(), MessagesView {
             this,
             object : KeyboardVisibilityEventListener {
                 override fun onVisibilityChanged(isOpen: Boolean) {
-                    moveToStart()
+                    if (isOpen)
+                        moveToStart()
                 }
             })
     }
 
     fun updateData() {
-        messagePresenter.setIsSmoothScrollingToPosition(false)
         isScrolling = false
         loadingLimit += 25
         messagePresenter.createMessageScreen(loadingLimit)
@@ -136,10 +142,12 @@ class MessagesActivity : BaseActivity(), MessagesView {
         }
     }
 
-    override fun showMessage(message: Message, isSmoothScrollingToPosition: Boolean) {
-        messageAdapter.addItem(message, isSmoothScrollingToPosition)
-        if (isSmoothScrollingToPosition)
-            moveToStart()
+    override fun addItemToBottom(message: Message) {
+        messageAdapter.addItemToBottom(message)
+    }
+
+    override fun addItemToStart(message: Message) {
+        messageAdapter.addItemToStart(message)
     }
 
     override fun updateMessageAdapter(message: Message) {
@@ -155,11 +163,11 @@ class MessagesActivity : BaseActivity(), MessagesView {
     }
 
     override fun hideLoading() {
-        activity_messages_pb_loading.visibility = View.GONE
+        activity_messages_pb_loading.gone()
     }
 
     override fun showLoading() {
-        activity_messages_pb_loading.visibility = View.VISIBLE
+        activity_messages_pb_loading.visible()
     }
 
     override fun showCompanionUser(fullName: String, photoLink: String) {
@@ -169,11 +177,11 @@ class MessagesActivity : BaseActivity(), MessagesView {
     }
 
     override fun hideEmptyScreen() {
-        activity_messages_tv_empty.visibility = View.GONE
+        activity_messages_tv_empty.gone()
     }
 
     override fun showEmptyScreen() {
-        activity_messages_tv_empty.visibility = View.VISIBLE
+        activity_messages_tv_empty.visible()
     }
 
     override fun goToProfile(user: User) {
