@@ -80,6 +80,11 @@ class MessagesActivity : BaseActivity(), MessagesView {
         messagePresenter.createMessageScreen(loadingLimit)
     }
 
+    override fun onStop() {
+        super.onStop()
+        messagePresenter.removeObservers()
+    }
+
     private fun init() {
         activity_messages_btn_send.setOnClickListener {
             messagePresenter.sendMessage(activity_messages_et_message.text.toString().trim())

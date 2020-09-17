@@ -12,11 +12,14 @@ interface IMessagesMessageInteractor {
         messagesPresenterCallback: MessagesPresenterCallback
     )
 
+    fun removeObservers()
+
     fun cancelOrder(
         message: Message,
         dialog: Dialog,
         messagesPresenterCallback: MessagesPresenterCallback
     )
+
     fun setIsSmoothScrollingToPosition(isSmoothScrollingToPosition: Boolean)
     fun getMyMessagesLink(): List<Message>
     fun updateMessages(message: Message, messagesPresenterCallback: MessagesPresenterCallback)

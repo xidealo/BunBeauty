@@ -20,6 +20,10 @@ class MessagesPresenter(
 
     fun getCompanionUser() = messagesUserInteractor.getCompanionUser(this)
 
+    fun removeObservers() {
+        messagesMessageInteractor.removeObservers()
+    }
+
     fun setIsSmoothScrollingToPosition(isSmoothScrollingToPosition: Boolean) {
         messagesMessageInteractor.setIsSmoothScrollingToPosition(isSmoothScrollingToPosition)
     }

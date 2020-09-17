@@ -35,6 +35,10 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
         messageRepository.getByDialogId(dialog, loadingLimit, this, this, this)
     }
 
+    override fun removeObservers() {
+        messageRepository.removeObservers()
+    }
+
     override fun cancelOrder(
         message: Message,
         dialog: Dialog,

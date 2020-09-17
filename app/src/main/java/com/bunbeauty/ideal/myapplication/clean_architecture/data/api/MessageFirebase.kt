@@ -12,9 +12,13 @@ import com.google.firebase.database.*
 class MessageFirebase {
 
     private val referencesMap = hashMapOf<Query, ValueEventListener>()
+    private val queryChildMap = hashMapOf<Query, ChildEventListener>()
 
     fun removeObservers() {
         referencesMap.forEach {
+            it.key.removeEventListener(it.value)
+        }
+        queryChildMap.forEach {
             it.key.removeEventListener(it.value)
         }
     }
@@ -81,7 +85,7 @@ class MessageFirebase {
                         getMessageFromSnapshot(messageSnapshot)
                     })
 
-                messageQuery.addChildEventListener(object : ChildEventListener {
+                val childEventListener = object : ChildEventListener {
                     override fun onCancelled(p0: DatabaseError) {}
 
                     override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
@@ -103,8 +107,9 @@ class MessageFirebase {
                     }
 
                     override fun onChildRemoved(p0: DataSnapshot) {}
-                })
-
+                }
+                messageQuery.addChildEventListener(childEventListener)
+                queryChildMap[messageQuery] = childEventListener
             }
 
             override fun onCancelled(error: DatabaseError) {}

@@ -62,6 +62,7 @@ class DialogFirebase {
                 }
 
                 dialogsCallback.returnList(dialogs)
+
                 val childEventListener =
                     object : ChildEventListener {
                         override fun onCancelled(p0: DatabaseError) {
