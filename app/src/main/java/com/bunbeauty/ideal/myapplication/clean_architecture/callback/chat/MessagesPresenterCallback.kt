@@ -14,8 +14,8 @@ interface MessagesPresenterCallback {
     fun deleteOrder(message: Message)
     fun updateMessageAdapter(message: Message)
     fun removeMessageAdapter(message: Message)
-    fun setUnchecked()
     fun showEmptyScreen()
     fun updateUncheckedDialog(message: Message)
+    fun updateCheckedDialog()
     fun showCompanionUserInfo(fullName: String, photoLink: String)
 }

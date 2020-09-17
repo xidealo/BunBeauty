@@ -30,7 +30,6 @@ class MessagesPresenter(
             loadingLimit,
             this
         )
-        messagesDialogInteractor.updateCheckedDialog()
     }
 
     fun updateMessage(message: Message) {
@@ -103,10 +102,6 @@ class MessagesPresenter(
         viewState.removeMessageAdapter(message)
     }
 
-    override fun setUnchecked() {
-        messagesDialogInteractor.setUnchecked()
-    }
-
     override fun showEmptyScreen() {
         viewState.showEmptyScreen()
         viewState.hideLoading()
@@ -114,6 +109,10 @@ class MessagesPresenter(
 
     override fun updateUncheckedDialog(message: Message) {
         messagesDialogInteractor.updateUncheckedDialog(message)
+    }
+
+    override fun updateCheckedDialog() {
+        messagesDialogInteractor.updateCheckedDialog()
     }
 
     override fun showCompanionUserInfo(fullName: String, photoLink: String) {

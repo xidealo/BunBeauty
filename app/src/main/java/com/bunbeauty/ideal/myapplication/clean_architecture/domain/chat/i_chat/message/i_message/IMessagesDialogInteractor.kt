@@ -8,5 +8,4 @@ interface IMessagesDialogInteractor {
     fun getCompanionDialog(): Dialog
     fun updateUncheckedDialog(message: Message)
     fun updateCheckedDialog()
-    fun setUnchecked()
 }

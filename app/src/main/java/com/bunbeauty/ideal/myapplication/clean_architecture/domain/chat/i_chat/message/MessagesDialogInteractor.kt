@@ -31,15 +31,10 @@ class MessagesDialogInteractor(
     }
 
     override fun updateCheckedDialog() {
-        if (!cacheDialog.isChecked) {
-            cacheDialog.isChecked = true
-            dialogRepository.update(cacheDialog, this)
-        }
+        cacheDialog.isChecked = true
+        dialogRepository.update(cacheDialog, this)
     }
 
-    override fun setUnchecked() {
-        cacheDialog.isChecked = false
-    }
 
     override fun returnUpdatedCallback(obj: Dialog) {}
 }

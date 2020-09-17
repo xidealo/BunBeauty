@@ -67,8 +67,10 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
             }
         }
 
-        if (isSmoothScrollingToPosition)
+        if (isSmoothScrollingToPosition) {
             messagesPresenterCallback.moveToStart()
+            messagesPresenterCallback.updateCheckedDialog()
+        }
 
     }
 
@@ -109,9 +111,7 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
                 if (obj.type == Message.TEXT_STATUS || obj.ownerId == User.getMyId()) {
                     addMessage(obj)
                     messagesPresenterCallback.moveToStart()
-                    if (obj.ownerId == User.getMyId()) {
-                        messagesPresenterCallback.setUnchecked()
-                    }
+                    messagesPresenterCallback.updateCheckedDialog()
                 } else {
                     Log.d(Tag.TEST_TAG, "Тип сообщения ${obj.type} user id ${obj.userId}")
                 }
