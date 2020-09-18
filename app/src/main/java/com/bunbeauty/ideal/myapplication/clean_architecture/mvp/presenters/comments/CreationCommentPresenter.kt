@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.comments
 
+import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.creation_comment.i_creation_comment.*
@@ -18,11 +19,12 @@ class CreationCommentPresenter(
     private val creationCommentOrderInteractor: ICreationCommentOrderInteractor,
     private val creationCommentMessageInteractor: ICreationCommentMessageInteractor,
     private val creationCommentUserInteractor: ICreationCommentUserInteractor,
-    private val creationCommentServiceInteractor: ICreationCommentServiceInteractor
+    private val creationCommentServiceInteractor: ICreationCommentServiceInteractor,
+    private val intent: Intent
 ) : MvpPresenter<CreationCommentView>(), CreationCommentPresenterCallback {
 
     fun checkMessage(rating: Float, review: String) {
-        creationCommentMessageInteractor.checkMessage(rating, review, this)
+        creationCommentMessageInteractor.checkMessage(intent, rating, review, this)
     }
 
     override fun createUserComment(rating: Float, review: String) {
@@ -32,7 +34,7 @@ class CreationCommentPresenter(
         userComment.ownerId = User.getMyId()
         creationCommentUserCommentInteractor.createUserComment(
             userComment,
-            creationCommentUserInteractor.getUser(),
+            creationCommentUserInteractor.getUser(intent),
             this
         )
     }
@@ -54,7 +56,7 @@ class CreationCommentPresenter(
 
     override fun updateUserRating(userComment: UserComment) {
         creationCommentUserInteractor.updateUser(
-            creationCommentUserInteractor.getUser(),
+            creationCommentUserInteractor.getUser(intent),
             userComment,
             this
         )
@@ -65,15 +67,15 @@ class CreationCommentPresenter(
     }
 
     override fun updateUserCommentMessage(userComment: UserComment) {
-        creationCommentMessageInteractor.updateUserCommentMessage(userComment, this)
+        creationCommentMessageInteractor.updateUserCommentMessage(intent, userComment, this)
     }
 
     override fun updateServiceCommentMessage(serviceComment: ServiceComment) {
-        creationCommentMessageInteractor.updateServiceCommentMessage(serviceComment, this)
+        creationCommentMessageInteractor.updateServiceCommentMessage(intent, serviceComment, this)
     }
 
     override fun showCommentCreated(message: Message) {
-        viewState.showCommentCreated(message, creationCommentUserInteractor.getUser())
+        viewState.showCommentCreated(message, creationCommentUserInteractor.getUser(intent))
     }
 
 }

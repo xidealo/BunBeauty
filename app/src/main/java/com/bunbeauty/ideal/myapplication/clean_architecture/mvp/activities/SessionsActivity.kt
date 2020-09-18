@@ -28,7 +28,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_sessions.*
 import javax.inject.Inject
 
-class SessionsActivity : BaseActivity(), SessionsView{
+class SessionsActivity : BaseActivity(), SessionsView {
 
     private val timeButtonList: MutableList<Button> = ArrayList()
 
@@ -50,7 +50,8 @@ class SessionsActivity : BaseActivity(), SessionsView{
         return SessionsPresenter(
             sessionsInteractor,
             sessionsOrderInteractor,
-            sessionsMessageInteractor
+            sessionsMessageInteractor,
+            intent
         )
     }
 
@@ -131,7 +132,8 @@ class SessionsActivity : BaseActivity(), SessionsView{
 
     private fun setBackground(button: Button) {
         val gradientDrawable = GradientDrawable()
-        gradientDrawable.cornerRadius = resources.getDimension(R.dimen.schedule_button_corner_radius)
+        gradientDrawable.cornerRadius =
+            resources.getDimension(R.dimen.schedule_button_corner_radius)
         gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
 
         button.background = gradientDrawable

@@ -14,6 +14,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.premium.PremiumFragmentCodeInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.premium.PremiumFragmentServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerActivityComponent
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
@@ -42,10 +43,6 @@ class PremiumFragment : MvpAppCompatFragment(), PremiumElementFragmentView {
     internal fun provideElementPresenter(): PremiumFragmentPresenter {
         DaggerAppComponent
             .builder()
-            .appModule(AppModule(activity!!.application))
-            .interactorModule(InteractorModule(activity!!.intent))
-            .repositoryModule(RepositoryModule())
-            .firebaseModule(FirebaseModule())
             .build().inject(this)
 
         return PremiumFragmentPresenter(

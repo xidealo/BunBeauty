@@ -53,7 +53,12 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
     @ProvidePresenter
     fun provideServicePresenter(): ServicePresenter {
         buildDagger().inject(this)
-        return ServicePresenter(serviceInteractor, servicePhotoInteractor, serviceUserInteractor)
+        return ServicePresenter(
+            serviceInteractor,
+            servicePhotoInteractor,
+            serviceUserInteractor,
+            intent
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,7 +102,7 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
 
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.activity_service_ll_premium,  PremiumFragment.newInstance(service), "premium")
+            .add(R.id.activity_service_ll_premium, PremiumFragment.newInstance(service), "premium")
             .commit()
     }
 

@@ -8,19 +8,18 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.DialogRepository
 
 class MessagesDialogInteractor(
-    private val intent: Intent,
     private val dialogRepository: DialogRepository
 ) : IMessagesDialogInteractor, UpdateDialogCallback {
 
     private lateinit var cacheDialog: Dialog
     private lateinit var cacheCompanionDialog: Dialog
 
-    override fun getMyDialog(): Dialog {
+    override fun getMyDialog(intent: Intent): Dialog {
         cacheDialog = intent.getSerializableExtra(Dialog.DIALOG) as Dialog
         return cacheDialog
     }
 
-    override fun getCompanionDialog(): Dialog {
+    override fun getCompanionDialog(intent: Intent): Dialog {
         cacheCompanionDialog = intent.getSerializableExtra(Dialog.COMPANION_DIALOG) as Dialog
         return cacheCompanionDialog
     }

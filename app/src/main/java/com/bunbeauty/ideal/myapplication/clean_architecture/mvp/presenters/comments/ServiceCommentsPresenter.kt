@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.comments
 
+import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.service_comments.iServiceComments.IServiceCommentsServiceCommentInteractor
@@ -17,9 +18,9 @@ class ServiceCommentsPresenter(
     private val serviceCommentsServiceInteractor: IServiceCommentsServiceInteractor
 ) : MvpPresenter<ServiceCommentsView>(), ServiceCommentsPresenterCallback {
 
-    fun createServiceCommentsScreen(loadingLimit: Int) {
+    fun createServiceCommentsScreen(loadingLimit: Int, intent: Intent) {
         serviceCommentsServiceCommentInteractor.createServiceCommentsScreen(
-            serviceCommentsServiceInteractor.getService(),
+            serviceCommentsServiceInteractor.getService(intent),
             loadingLimit,
             this
         )

@@ -1,9 +1,7 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.di.component
 
-import android.app.Application
-import android.content.Intent
-import com.bunbeauty.ideal.myapplication.clean_architecture.App
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.ActivityScope
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.AppScope
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.ScheduleActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.SessionsActivity
@@ -24,47 +22,13 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.searc
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.service.ServiceActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.subscriptions.SubscriptionsActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.PremiumFragment
-import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Singleton
 
-@Singleton
+@ActivityScope
 @Component(
-    modules = [
-        AppModule::class,
-        RepositoryModule::class,
-        InteractorModule::class,
-        FirebaseModule::class,
-        AdapterModule::class
-    ]
+    dependencies = [AppComponent::class],
+    modules = [ActivityModule::class]
 )
-interface AppComponent {
-    fun inject(app: App)
+interface ActivityComponent {
 
-    fun inject(premiumFragment: PremiumFragment)
-    fun inject(authorizationActivity: AuthorizationActivity)
-    fun inject(verifyPhoneNumberActivity: VerifyPhoneNumberActivity)
-    fun inject(registrationActivity: RegistrationActivity)
-    fun inject(profileActivity: ProfileActivity)
-    fun inject(creationServiceActivity: CreationServiceActivity)
-    fun inject(mainScreenActivity: MainScreenActivity)
-    fun inject(serviceActivity: ServiceActivity)
-    fun inject(editProfileActivity: EditProfileActivity)
-    fun inject(scheduleActivity: ScheduleActivity)
-    fun inject(dialogsActivity: DialogsActivity)
-    fun inject(messagesActivity: MessagesActivity)
-    fun inject(subscriptionsActivity: SubscriptionsActivity)
-    fun inject(editServiceActivity: EditServiceActivity)
-    fun inject(userCommentsActivity: UserCommentsActivity)
-    fun inject(currentCommentActivity: CurrentCommentActivity)
-    fun inject(creationUserCommentActivity: CreationCommentActivity)
-    fun inject(serviceCommentsActivity: ServiceCommentsActivity)
-    fun inject(sessionsActivity: SessionsActivity)
-
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(application: Application): Builder
-        fun build(): AppComponent
-    }
 }

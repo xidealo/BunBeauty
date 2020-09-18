@@ -6,21 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
-import com.arellomobile.mvp.MvpAppCompatFragment
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ProfileOrderAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ProfileOrderAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_orders.*
+import javax.inject.Inject
 
-class OrdersFragment : MvpAppCompatFragment() {
-
-    private var profileOrderAdapter: ProfileOrderAdapter? = null
+class OrdersFragment : BaseFragment() {
+    @Inject
+    lateinit var profileOrderAdapter: ProfileOrderAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            profileOrderAdapter =
-                it.getParcelable<ProfileOrderAdapter>(ProfileOrderAdapter.PROFILE_ORDER_ADAPTER) as ProfileOrderAdapter
-        }
+        buildDagger().inject(this)
     }
 
     override fun onCreateView(
@@ -37,21 +35,6 @@ class OrdersFragment : MvpAppCompatFragment() {
     }
 
     fun updateOrderList(orderList: List<Order>) {
-        profileOrderAdapter?.updateItems(orderList)
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(
-            profileOrderAdapter: ProfileOrderAdapter
-        ) =
-            OrdersFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(
-                        ProfileOrderAdapter.PROFILE_ORDER_ADAPTER,
-                        profileOrderAdapter
-                    )
-                }
-            }
+        profileOrderAdapter.updateItems(orderList)
     }
 }

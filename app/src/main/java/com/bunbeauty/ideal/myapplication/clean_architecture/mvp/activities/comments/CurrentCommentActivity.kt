@@ -29,7 +29,8 @@ class CurrentCommentActivity : BaseActivity(), CurrentCommentView {
     internal fun currentCommentPresenter(): CurrentCommentPresenter {
         buildDagger().inject(this)
         return CurrentCommentPresenter(
-            currentCommentCommentInteractor
+            currentCommentCommentInteractor,
+            intent
         )
     }
 

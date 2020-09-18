@@ -11,13 +11,13 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.MessageRepository
 
 class CreationCommentMessageInteractor(
-    private val messageRepository: MessageRepository,
-    private val intent: Intent
+    private val messageRepository: MessageRepository
 ) :
     ICreationCommentMessageInteractor, UpdateMessageCallback {
     private lateinit var creationCommentPresenterCallback: CreationCommentPresenterCallback
 
     override fun checkMessage(
+        intent: Intent,
         rating: Float,
         review: String,
         creationCommentPresenterCallback: CreationCommentPresenterCallback
@@ -31,36 +31,42 @@ class CreationCommentMessageInteractor(
     }
 
     override fun updateUserCommentMessage(
+        intent: Intent,
         userComment: UserComment,
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     ) {
         this.creationCommentPresenterCallback = creationCommentPresenterCallback
         updateMyMessage(
             intent.getSerializableExtra(Dialog.DIALOG) as Dialog,
-            "Я ставлю оценку ${userComment.rating}, потому что ${userComment.review}"
+            "Я ставлю оценку ${userComment.rating}, потому что ${userComment.review}",
+            intent
         )
         updateCompanionMessage(
             intent.getSerializableExtra(Dialog.DIALOG) as Dialog,
-            "Я ставлю оценку ${userComment.rating}, потому что ${userComment.review}"
+            "Я ставлю оценку ${userComment.rating}, потому что ${userComment.review}",
+            intent
         )
     }
 
     override fun updateServiceCommentMessage(
+        intent: Intent,
         serviceComment: ServiceComment,
         creationCommentPresenterCallback: CreationCommentPresenterCallback
     ) {
         this.creationCommentPresenterCallback = creationCommentPresenterCallback
         updateMyMessage(
             intent.getSerializableExtra(Dialog.DIALOG) as Dialog,
-            "Я ставлю оценку услуге ${serviceComment.serviceName} ${serviceComment.rating}, потому что ${serviceComment.review}"
+            "Я ставлю оценку услуге ${serviceComment.serviceName} ${serviceComment.rating}, потому что ${serviceComment.review}",
+            intent
         )
         updateCompanionMessage(
             intent.getSerializableExtra(Dialog.DIALOG) as Dialog,
-            "Я ставлю оценку ${serviceComment.serviceName} ${serviceComment.rating}, потому что ${serviceComment.review}"
+            "Я ставлю оценку ${serviceComment.serviceName} ${serviceComment.rating}, потому что ${serviceComment.review}",
+            intent
         )
     }
 
-    private fun updateMyMessage(dialog: Dialog, messageText: String) {
+    private fun updateMyMessage(dialog: Dialog, messageText: String, intent: Intent) {
         val message = (intent.getSerializableExtra(Message.MESSAGE) as Message).copy()
         message.userId = dialog.user.id
         message.type = Message.TEXT_STATUS
@@ -68,7 +74,7 @@ class CreationCommentMessageInteractor(
         messageRepository.update(message, this)
     }
 
-    private fun updateCompanionMessage(dialog: Dialog, messageText: String) {
+    private fun updateCompanionMessage(dialog: Dialog, messageText: String, intent: Intent) {
         val companionMessage = (intent.getSerializableExtra(Message.MESSAGE) as Message).copy()
         companionMessage.dialogId = dialog.user.id
         companionMessage.userId = dialog.id

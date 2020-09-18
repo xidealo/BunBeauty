@@ -8,14 +8,17 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.UserRepository
 
 class ServiceUserInteractor(
-    private val userRepository: UserRepository,
-    private val intent: Intent
+    private val userRepository: UserRepository
 ) : IServiceUserInteractor, UserCallback {
 
     private lateinit var servicePresenterCallback: ServicePresenterCallback
     private lateinit var gottenUser: User
 
-    override fun checkMaster(userId: String, servicePresenterCallback: ServicePresenterCallback) {
+    override fun checkMaster(
+        intent: Intent,
+        userId: String,
+        servicePresenterCallback: ServicePresenterCallback
+    ) {
         this.servicePresenterCallback = servicePresenterCallback
 
         if (intent.hasExtra(User.USER)) {

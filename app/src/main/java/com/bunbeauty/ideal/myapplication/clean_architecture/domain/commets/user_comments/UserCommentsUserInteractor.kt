@@ -9,11 +9,9 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.UserRepository
 
 class UserCommentsUserInteractor(
-    private val userRepository: UserRepository,
-    private val intent: Intent
-) : IUserCommentsUserInteractor, UserCallback {
+    private val userRepository: UserRepository) : IUserCommentsUserInteractor, UserCallback {
 
-    override fun getCurrentUser() = intent.getSerializableExtra(User.USER) as User
+    override fun getCurrentUser(intent: Intent) = intent.getSerializableExtra(User.USER) as User
     private lateinit var userCommentsPresenterCallback: UserCommentsPresenterCallback
 
     override fun getUsers(

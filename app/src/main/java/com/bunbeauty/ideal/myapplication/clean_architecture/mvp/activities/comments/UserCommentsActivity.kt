@@ -43,7 +43,8 @@ class UserCommentsActivity : BaseActivity(), UserCommentsView {
         buildDagger().inject(this)
         return UserCommentsPresenter(
             userCommentsCommentInteractor,
-            userCommentsUserInteractor
+            userCommentsUserInteractor,
+            intent
         )
     }
 

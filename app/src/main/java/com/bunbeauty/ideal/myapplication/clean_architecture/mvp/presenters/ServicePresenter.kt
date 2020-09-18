@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
+import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.i_service.IServicePhotoInteractor
@@ -15,11 +16,12 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.ServiceVie
 class ServicePresenter(
     private val serviceInteractor: IServiceInteractor,
     private val servicePhotoInteractor: IServicePhotoInteractor,
-    private val serviceUserInteractor: IServiceUserInteractor
+    private val serviceUserInteractor: IServiceUserInteractor,
+    private val intent: Intent
 ) : MvpPresenter<ServiceView>(), ServicePresenterCallback {
 
     fun getService() {
-        serviceInteractor.getService(this)
+        serviceInteractor.getService(intent, this)
     }
 
     override fun showService(service: Service) {
@@ -36,7 +38,7 @@ class ServicePresenter(
     }
 
     override fun checkMaster(userId: String) {
-        serviceUserInteractor.checkMaster(userId, this)
+        serviceUserInteractor.checkMaster(intent, userId, this)
     }
 
     override fun createOwnServiceTopPanel() {

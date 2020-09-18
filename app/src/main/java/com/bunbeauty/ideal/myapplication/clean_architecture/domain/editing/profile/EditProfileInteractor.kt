@@ -16,7 +16,6 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.database.FirebaseDatabase
 
 class EditProfileInteractor(
-    private val intent: Intent,
     private val userRepository: UserRepository,
     private val verifyPhoneNumberApi: VerifyPhoneNumberApi
 ) : UpdateUsersCallback, VerifyPhoneNumberCallback, UserCallback {
@@ -26,7 +25,7 @@ class EditProfileInteractor(
     lateinit var cacheUser: User
     lateinit var cacheWithChangesUser: User
 
-    fun getUser(editProfilePresenterCallback: EditProfilePresenterCallback) {
+    fun getUser(intent: Intent, editProfilePresenterCallback: EditProfilePresenterCallback) {
         cacheUser = intent.getSerializableExtra(User.USER) as User
         editProfilePresenterCallback.showEditProfile(cacheUser)
     }

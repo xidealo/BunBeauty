@@ -14,7 +14,6 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class MainScreenDataInteractor(
-    private val intent: Intent,
     private val figuringServicePointsApi: FiguringServicePointsApi
 ) : IMainScreenDataInteractor {
 
@@ -29,7 +28,10 @@ class MainScreenDataInteractor(
 
     private lateinit var mainScreenPresenterCallback: MainScreenPresenterCallback
 
-    override fun getMainScreenData(mainScreenPresenterCallback: MainScreenPresenterCallback) {
+    override fun getMainScreenData(
+        intent: Intent,
+        mainScreenPresenterCallback: MainScreenPresenterCallback
+    ) {
         this.mainScreenPresenterCallback = mainScreenPresenterCallback
         mainScreenPresenterCallback.showLoading()
         mainScreenPresenterCallback.getUsersByCity((intent.getSerializableExtra(User.USER) as User).city)

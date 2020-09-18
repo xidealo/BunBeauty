@@ -10,19 +10,20 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ProfileServiceAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerFragmentComponent
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.create_service.CreationServiceActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_services.*
+import javax.inject.Inject
 
-class ServicesFragment : MvpAppCompatFragment() {
+class ServicesFragment : BaseFragment() {
 
-    private var profileServiceAdapter: ProfileServiceAdapter? = null
+    @Inject
+    lateinit var profileServiceAdapter: ProfileServiceAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            profileServiceAdapter =
-                it.getParcelable<ProfileServiceAdapter>(ProfileServiceAdapter.PROFILE_SERVICE_ADAPTER) as ProfileServiceAdapter
-        }
+        buildDagger().inject(this)
     }
 
     var createServiceButtonVisibility = View.GONE
@@ -40,6 +41,7 @@ class ServicesFragment : MvpAppCompatFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         fragment_services_btn_add_service.visibility = createServiceButtonVisibility
         fragment_services_btn_add_service.setOnClickListener {
             goToCreationService()
@@ -57,20 +59,5 @@ class ServicesFragment : MvpAppCompatFragment() {
         val intent = Intent(context, CreationServiceActivity::class.java)
         startActivity(intent)
         activity!!.overridePendingTransition(0, 0)
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(
-            profileServiceAdapter: ProfileServiceAdapter
-        ) =
-            ServicesFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(
-                        ProfileServiceAdapter.PROFILE_SERVICE_ADAPTER,
-                        profileServiceAdapter
-                    )
-                }
-            }
     }
 }

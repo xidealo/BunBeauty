@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
+import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.WorkWithTimeApi
@@ -17,12 +18,13 @@ import java.util.*
 class SessionsPresenter(
     private val sessionsInteractor: SessionsInteractor,
     private val sessionsOrderInteractor: SessionsOrderInteractor,
-    private val sessionsMessageInteractor: ISessionsMessageInteractor
+    private val sessionsMessageInteractor: ISessionsMessageInteractor,
+    private val intent: Intent
 ) : MvpPresenter<SessionsView>(), SessionsPresenterCallback {
 
     fun getSchedule() {
         viewState.showLoading()
-        sessionsInteractor.getSchedule(this)
+        sessionsInteractor.getSchedule(intent, this)
     }
 
     override fun showDays(days: List<WorkingDay>) {
@@ -69,7 +71,7 @@ class SessionsPresenter(
     fun makeAppointment() {
         sessionsOrderInteractor.makeAppointment(
             this,
-            sessionsInteractor.getService(),
+            sessionsInteractor.getService(intent),
             sessionsInteractor.selectedSession!!
         )
     }

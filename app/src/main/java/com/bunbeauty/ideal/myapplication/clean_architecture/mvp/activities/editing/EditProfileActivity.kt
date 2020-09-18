@@ -45,7 +45,7 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
     @ProvidePresenter
     internal fun provideEditProfilePresenter(): EditProfilePresenter {
         buildDagger().inject(this)
-        return EditProfilePresenter(editProfileInteractor, photoInteractor)
+        return EditProfilePresenter(editProfileInteractor, photoInteractor, intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

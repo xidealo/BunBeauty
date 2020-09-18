@@ -1,6 +1,8 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.api.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.ActivityScope
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.AppScope
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

@@ -5,7 +5,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.m
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.chat.MessagesPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 
-class MessagesUserInteractor(private val intent: Intent) : IMessagesUserInteractor {
+class MessagesUserInteractor : IMessagesUserInteractor {
     private lateinit var cacheCompanionUser: User
 
     override fun getCacheCompanionUser() = cacheCompanionUser
@@ -14,7 +14,7 @@ class MessagesUserInteractor(private val intent: Intent) : IMessagesUserInteract
         cacheCompanionUser = user
     }
 
-    override fun getCompanionUser(messagesPresenterCallback: MessagesPresenterCallback) {
+    override fun getCompanionUser(intent: Intent, messagesPresenterCallback: MessagesPresenterCallback) {
         cacheCompanionUser = intent.getSerializableExtra(User.USER) as User
         messagesPresenterCallback.showCompanionUserInfo(
             "${cacheCompanionUser.name} ${cacheCompanionUser.surname}",

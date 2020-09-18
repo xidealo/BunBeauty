@@ -12,9 +12,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.in
 import com.google.firebase.iid.FirebaseInstanceId
 
 class ProfileUserInteractor(
-    private val userRepository: IUserRepository,
-    private val intent: Intent
-) : BaseRepository(), IProfileUserInteractor, UserCallback, UpdateUsersCallback {
+    private val userRepository: IUserRepository
+) : IProfileUserInteractor, UserCallback, UpdateUsersCallback {
 
     override var owner: User? = null
 
@@ -26,7 +25,7 @@ class ProfileUserInteractor(
         }
     }
 
-    override fun getProfileOwner(profilePresenterCallback: ProfilePresenterCallback) {
+    override fun getProfileOwner(intent: Intent, profilePresenterCallback: ProfilePresenterCallback) {
         this.profilePresenterCallback = profilePresenterCallback
 
         if (intent.hasExtra(User.USER)) {

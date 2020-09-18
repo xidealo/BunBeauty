@@ -10,14 +10,13 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IServiceRepository
 
 class ServiceInteractor(
-    private val serviceRepository: IServiceRepository,
-    private val intent: Intent
+    private val serviceRepository: IServiceRepository
 ) : IServiceInteractor, GetServiceCallback {
 
     override lateinit var gottenService: Service
     private lateinit var servicePresenterCallback: ServicePresenterCallback
 
-    override fun getService(servicePresenterCallback: ServicePresenterCallback) {
+    override fun getService(intent: Intent, servicePresenterCallback: ServicePresenterCallback) {
         this.servicePresenterCallback = servicePresenterCallback
 
         if (intent.hasExtra(Service.SERVICE)) {

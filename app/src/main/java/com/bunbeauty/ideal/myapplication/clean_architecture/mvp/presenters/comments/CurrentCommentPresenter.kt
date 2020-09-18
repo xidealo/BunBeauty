@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.comments
 
+import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.current_comment.iCurrentComment.ICurrentCommentCommentInteractor
@@ -10,12 +11,13 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.comments.C
 
 @InjectViewState
 class CurrentCommentPresenter(
-    private val currentCommentCommentInteractor: ICurrentCommentCommentInteractor
+    private val currentCommentCommentInteractor: ICurrentCommentCommentInteractor,
+    private val intent: Intent
 ) :
     MvpPresenter<CurrentCommentView>(), CurrentCommentPresenterCallback {
 
     fun createCurrentCommentScreen() {
-        currentCommentCommentInteractor.createCurrentCommentScreen(this)
+        currentCommentCommentInteractor.createCurrentCommentScreen(intent, this)
     }
 
     fun getUserFromComment() = currentCommentCommentInteractor.getUserFromComment()

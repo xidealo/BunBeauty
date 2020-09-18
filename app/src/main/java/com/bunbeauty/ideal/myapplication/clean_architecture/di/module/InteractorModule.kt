@@ -1,6 +1,10 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
-import android.content.Intent
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IScheduleRepository
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IServiceRepository
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.ActivityScope
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.AppScope
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.FiguringServicePointsApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.dialog.DialogsDialogInteractor
@@ -23,13 +27,13 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.create_servic
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.profile.EditProfileInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.service.EditServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.service.EditServiceTagInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.domain.premium.PremiumFragmentCodeInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.domain.premium.PremiumFragmentServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.RegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.VerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.iLogIn.IRegistrationUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.PhotoInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.premium.PremiumFragmentCodeInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.premium.PremiumFragmentServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.profile.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.profile.iProfile.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.schedule.ScheduleInteractor
@@ -45,15 +49,12 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.Sess
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.SubscriptionsSubscriberInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.SubscriptionsSubscriptionInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.SubscriptionsUserInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.*
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IScheduleRepository
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IServiceRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class InteractorModule(private val intent: Intent) {
+class InteractorModule {
 
     @Provides
     @Singleton
@@ -66,17 +67,17 @@ class InteractorModule(private val intent: Intent) {
         userRepository: UserRepository,
         verifyPhoneNumberApi: VerifyPhoneNumberApi
     ) =
-        VerifyPhoneInteractor(userRepository, intent, verifyPhoneNumberApi)
+        VerifyPhoneInteractor(userRepository, verifyPhoneNumberApi)
 
     @Provides
     @Singleton
     fun provideRegistrationInteractor(userRepository: UserRepository): IRegistrationUserInteractor =
-        RegistrationUserInteractor(userRepository, intent)
+        RegistrationUserInteractor(userRepository)
 
     @Provides
     @Singleton
     fun provideProfileUserInteractor(userRepository: UserRepository): IProfileUserInteractor =
-        ProfileUserInteractor(userRepository, intent)
+        ProfileUserInteractor(userRepository)
 
     @Provides
     @Singleton
@@ -147,17 +148,17 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideMainScreenDataInteractor(figuringServicePointsApi: FiguringServicePointsApi) =
-        MainScreenDataInteractor(intent, figuringServicePointsApi)
+        MainScreenDataInteractor(figuringServicePointsApi)
 
     @Provides
     @Singleton
     fun provideServiceServiceInteractor(serviceRepository: IServiceRepository) =
-        ServiceInteractor(serviceRepository, intent)
+        ServiceInteractor(serviceRepository)
 
     @Provides
     @Singleton
     fun provideServiceUserInteractor(userRepository: UserRepository) =
-        ServiceUserInteractor(userRepository, intent)
+        ServiceUserInteractor(userRepository)
 
     @Provides
     @Singleton
@@ -169,7 +170,7 @@ class InteractorModule(private val intent: Intent) {
     fun provideEditProfileInteractor(
         userRepository: UserRepository,
         verifyPhoneNumberApi: VerifyPhoneNumberApi
-    ) = EditProfileInteractor(intent, userRepository, verifyPhoneNumberApi)
+    ) = EditProfileInteractor(userRepository, verifyPhoneNumberApi)
 
     @Provides
     @Singleton
@@ -194,11 +195,11 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideMessagesDialogInteractor(dialogRepository: DialogRepository) =
-        MessagesDialogInteractor(intent, dialogRepository)
+        MessagesDialogInteractor(dialogRepository)
 
     @Provides
     @Singleton
-    fun provideMessagesUserInteractor() = MessagesUserInteractor(intent)
+    fun provideMessagesUserInteractor() = MessagesUserInteractor()
 
     @Provides
     @Singleton
@@ -223,7 +224,7 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideSubscriptionsUserInteractor(userRepository: UserRepository) =
-        SubscriptionsUserInteractor(intent, userRepository)
+        SubscriptionsUserInteractor(userRepository)
 
     @Provides
     @Singleton
@@ -233,7 +234,7 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideEditServiceInteractor(serviceRepository: IServiceRepository) =
-        EditServiceServiceInteractor(intent, serviceRepository)
+        EditServiceServiceInteractor(serviceRepository)
 
     @Provides
     @Singleton
@@ -251,7 +252,7 @@ class InteractorModule(private val intent: Intent) {
     @Singleton
     fun provideUserCommentsUserInteractor(userRepository: UserRepository) =
         UserCommentsUserInteractor(
-            userRepository, intent
+            userRepository
         )
 
     @Provides
@@ -267,9 +268,7 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideCurrentCommentInteractor() =
-        CurrentCommentCommentInteractor(
-            intent
-        )
+        CurrentCommentCommentInteractor()
 
     @Provides
     @Singleton
@@ -279,10 +278,7 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideCreationCommentUserInteractor(userRepository: UserRepository) =
-        CreationCommentUserInteractor(
-            intent,
-            userRepository
-        )
+        CreationCommentUserInteractor(userRepository)
 
     @Provides
     @Singleton
@@ -294,7 +290,7 @@ class InteractorModule(private val intent: Intent) {
     @Provides
     @Singleton
     fun provideCreationCommentMessageInteractor(messageRepository: MessageRepository) =
-        CreationCommentMessageInteractor(messageRepository, intent)
+        CreationCommentMessageInteractor(messageRepository)
 
     @Provides
     @Singleton
@@ -308,12 +304,12 @@ class InteractorModule(private val intent: Intent) {
 
     @Provides
     @Singleton
-    fun provideServiceCommentsServiceInteractor() = ServiceCommentsServiceInteractor(intent)
+    fun provideServiceCommentsServiceInteractor() = ServiceCommentsServiceInteractor()
 
     @Provides
     @Singleton
     fun provideSessionsInteractor(scheduleRepository: IScheduleRepository) =
-        SessionsInteractor(scheduleRepository, intent)
+        SessionsInteractor(scheduleRepository)
 
     @Provides
     @Singleton

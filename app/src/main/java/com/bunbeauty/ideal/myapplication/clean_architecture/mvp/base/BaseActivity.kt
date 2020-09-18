@@ -1,13 +1,18 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base
 
 import android.app.Activity
+import android.app.Application
+import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.App
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.ActivityComponent
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.AppComponent
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerActivityComponent
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
@@ -24,15 +29,12 @@ abstract class BaseActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel {
     override var panelContext: Activity = this
 
     /**
-     * for [DaggerAppComponent]
+     * for [DaggerActivityComponent]
      */
     fun buildDagger(): AppComponent {
         return DaggerAppComponent
             .builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
-            .repositoryModule(RepositoryModule())
+            .application(application)
             .build()
     }
 

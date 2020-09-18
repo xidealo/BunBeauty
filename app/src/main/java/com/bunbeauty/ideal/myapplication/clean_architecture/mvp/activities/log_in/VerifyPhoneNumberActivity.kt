@@ -25,7 +25,7 @@ class VerifyPhoneNumberActivity : BaseActivity(), VerifyPhoneView {
     @ProvidePresenter
     internal fun provideVerifyPhonePresenter(): VerifyPhonePresenter {
         buildDagger().inject(this)
-        return VerifyPhonePresenter(verifyPhoneInteractor)
+        return VerifyPhonePresenter(verifyPhoneInteractor, intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

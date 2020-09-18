@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.chat
 
+import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.message.i_message.*
@@ -15,10 +16,11 @@ class MessagesPresenter(
     private val messagesDialogInteractor: IMessagesDialogInteractor,
     private val messagesUserInteractor: IMessagesUserInteractor,
     private val messagesOrderInteractor: IMessagesOrderInteractor,
-    private val messageScheduleInteractor: IMessageScheduleInteractor
+    private val messageScheduleInteractor: IMessageScheduleInteractor,
+    private val intent: Intent
 ) : MvpPresenter<MessagesView>(), MessagesPresenterCallback {
 
-    fun getCompanionUser() = messagesUserInteractor.getCompanionUser(this)
+    fun getCompanionUser() = messagesUserInteractor.getCompanionUser(intent, this)
 
     fun removeObservers() {
         messagesMessageInteractor.removeObservers()
@@ -30,7 +32,7 @@ class MessagesPresenter(
 
     fun createMessageScreen(loadingLimit: Int) {
         messagesMessageInteractor.getMessages(
-            messagesDialogInteractor.getMyDialog(),
+            messagesDialogInteractor.getMyDialog(intent),
             loadingLimit,
             this
         )
@@ -48,16 +50,16 @@ class MessagesPresenter(
         setIsSmoothScrollingToPosition(true)
 
         val messageId = messagesMessageInteractor.getId(
-            messagesDialogInteractor.getMyDialog().ownerId,
-            messagesDialogInteractor.getMyDialog().id
+            messagesDialogInteractor.getMyDialog(intent).ownerId,
+            messagesDialogInteractor.getMyDialog(intent).id
         )
         //добавление в мой диалог
         val myMessage = Message()
         myMessage.id = messageId
         myMessage.ownerId = User.getMyId()
         myMessage.message = messageText
-        myMessage.dialogId = messagesDialogInteractor.getMyDialog().id
-        myMessage.userId = messagesDialogInteractor.getMyDialog().user.id
+        myMessage.dialogId = messagesDialogInteractor.getMyDialog(intent).id
+        myMessage.userId = messagesDialogInteractor.getMyDialog(intent).user.id
         myMessage.type = Message.TEXT_STATUS
         messagesMessageInteractor.sendMessage(myMessage, this)
 
@@ -66,8 +68,8 @@ class MessagesPresenter(
         companionMessage.id = messageId
         companionMessage.ownerId = User.getMyId()
         companionMessage.message = messageText
-        companionMessage.dialogId = messagesDialogInteractor.getCompanionDialog().id
-        companionMessage.userId = messagesDialogInteractor.getCompanionDialog().user.id
+        companionMessage.dialogId = messagesDialogInteractor.getCompanionDialog(intent).id
+        companionMessage.userId = messagesDialogInteractor.getCompanionDialog(intent).user.id
         companionMessage.type = Message.TEXT_STATUS
         messagesMessageInteractor.sendMessage(companionMessage, this)
     }
@@ -127,7 +129,7 @@ class MessagesPresenter(
         viewState.goToCreationComment(
             messagesUserInteractor.getCacheCompanionUser(),
             message,
-            messagesDialogInteractor.getMyDialog()
+            messagesDialogInteractor.getMyDialog(intent)
         )
     }
 
@@ -139,11 +141,11 @@ class MessagesPresenter(
     fun cancelOrder(message: Message) {
         setIsSmoothScrollingToPosition(false)
         //my order messages
-        messagesMessageInteractor.cancelOrder(message, messagesDialogInteractor.getMyDialog(), this)
+        messagesMessageInteractor.cancelOrder(message, messagesDialogInteractor.getMyDialog(intent), this)
         //companion order messages
         messagesMessageInteractor.cancelOrder(
             message,
-            messagesDialogInteractor.getCompanionDialog(),
+            messagesDialogInteractor.getCompanionDialog(intent),
             this
         )
     }

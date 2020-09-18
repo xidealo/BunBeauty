@@ -9,7 +9,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IServiceRepository
 
 class EditServiceServiceInteractor(
-    private val intent: Intent,
     private val serviceRepository: IServiceRepository
 ) : UpdateServiceCallback, DeleteServiceCallback, IEditServiceServiceInteractor {
 
@@ -18,7 +17,10 @@ class EditServiceServiceInteractor(
 
     override fun getGottenService() = gottenService
 
-    override fun getService(editServicePresenterCallback: EditServicePresenterCallback) {
+    override fun getService(
+        intent: Intent,
+        editServicePresenterCallback: EditServicePresenterCallback
+    ) {
         gottenService = intent.getParcelableExtra(Service.SERVICE)!!
         editServicePresenterCallback.showEditService(gottenService)
     }

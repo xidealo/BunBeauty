@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
+import android.content.Intent
 import android.view.View
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -18,11 +19,12 @@ import com.google.android.material.chip.Chip
 class MainScreenPresenter(
     private val mainScreenUserInteractor: MainScreenUserInteractor,
     private val mainScreenServiceInteractor: IMainScreenServiceInteractor,
-    private val mainScreenDataInteractor: MainScreenDataInteractor
+    private val mainScreenDataInteractor: MainScreenDataInteractor,
+    private val intent: Intent
 ) : MvpPresenter<MainScreenView>(), MainScreenPresenterCallback {
 
     fun createMainScreen() {
-        mainScreenDataInteractor.getMainScreenData(this)
+        mainScreenDataInteractor.getMainScreenData(intent, this)
     }
 
     fun showCurrentMainScreen() {

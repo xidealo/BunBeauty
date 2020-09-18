@@ -60,7 +60,8 @@ class EditServiceActivity : BaseActivity(), EditServiceView, IChangeablePhotoEle
         return EditServicePresenter(
             editServiceServiceInteractor,
             photoInteractor,
-            editServiceTagInteractor
+            editServiceTagInteractor,
+            intent
         )
     }
 

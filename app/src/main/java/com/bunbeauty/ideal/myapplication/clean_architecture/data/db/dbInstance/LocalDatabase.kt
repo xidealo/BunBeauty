@@ -36,27 +36,4 @@ abstract class LocalDatabase : RoomDatabase() {
     abstract fun getPhotoDao(): PhotoDao
     abstract fun getCodeDao(): CodeDao
     abstract fun getDialogDao(): DialogDao
-
-    companion object {
-        @Volatile
-        private var INSTANCE: LocalDatabase? = null
-
-        fun getDatabase(context: Context): LocalDatabase {
-            val tempInstance = INSTANCE
-            if (tempInstance != null) {
-                return tempInstance
-            }
-            synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    LocalDatabase::class.java,
-                    "NoteDatabase"
-                ).fallbackToDestructiveMigration().build()
-                // ^^^ Убрать ^^^
-
-                INSTANCE = instance
-                return instance
-            }
-        }
-    }
 }

@@ -1,5 +1,7 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.ActivityScope
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.AppScope
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.*
 import dagger.Module
 import dagger.Provides
@@ -40,11 +42,4 @@ class AdapterModule {
     @Singleton
     fun provideServiceCommentAdapter() = ServiceCommentAdapter()
 
-    @Provides
-    @Singleton
-    fun provideProfileServiceAdapter() = ProfileServiceAdapter()
-
-    @Provides
-    @Singleton
-    fun provideProfileOrderAdapter() = ProfileOrderAdapter()
 }

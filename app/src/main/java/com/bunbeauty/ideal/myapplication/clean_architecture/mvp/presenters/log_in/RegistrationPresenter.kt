@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in
 
+import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.iLogIn.IRegistrationUserInteractor
@@ -8,7 +9,10 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.RegistrationView
 
 @InjectViewState
-class RegistrationPresenter(private val registrationUserInteractor: IRegistrationUserInteractor) :
+class RegistrationPresenter(
+    private val registrationUserInteractor: IRegistrationUserInteractor,
+    private val intent: Intent
+) :
     MvpPresenter<RegistrationView>(), RegistrationPresenterCallback {
 
     fun registerUser(name: String, surname: String, city: String, phone: String) {
@@ -17,7 +21,7 @@ class RegistrationPresenter(private val registrationUserInteractor: IRegistratio
         registrationUserInteractor.registerUser(user, this)
     }
 
-    fun getMyPhoneNumber() = registrationUserInteractor.getMyPhoneNumber()
+    fun getMyPhoneNumber() = registrationUserInteractor.getMyPhoneNumber(intent)
 
     override fun showSuccessfulRegistration(user: User) {
         viewState.goToProfile(user)

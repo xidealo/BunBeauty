@@ -14,26 +14,29 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IScheduleRepository
 
 class SessionsInteractor(
-    private val scheduleRepository: IScheduleRepository,
-    private val intent: Intent
+    private val scheduleRepository: IScheduleRepository
 ) : GetScheduleCallback, UpdateScheduleAddOrderCallback {
 
     private lateinit var schedule: ScheduleWithWorkingTime
     private lateinit var sessionsPresenterCallback: SessionsPresenterCallback
-
+    lateinit var service: Service
     var selectedSession: Session? = null
     val sessionList: MutableList<Session> = ArrayList()
 
-    fun getSchedule(sessionsPresenterCallback: SessionsPresenterCallback) {
+    fun getSchedule(intent: Intent, sessionsPresenterCallback: SessionsPresenterCallback) {
         this.sessionsPresenterCallback = sessionsPresenterCallback
+        scheduleRepository.getScheduleByUserId(getService(intent).userId, this)
+    }
 
-        scheduleRepository.getScheduleByUserId(getService().userId, this)
+    fun getService(intent: Intent): Service {
+        service = intent.getParcelableExtra<Service>(SERVICE) as Service
+        return service
     }
 
     override fun returnGottenObject(gottenSchedule: ScheduleWithWorkingTime?) {
         schedule = gottenSchedule!!.getFutureSchedule()
 
-        val availableDaySet = schedule.getAvailableDays(getService().duration)
+        val availableDaySet = schedule.getAvailableDays(service.duration)
         if (availableDaySet.isEmpty()) {
             sessionsPresenterCallback.showNoAvailableSessions()
         } else {
@@ -43,7 +46,7 @@ class SessionsInteractor(
 
     fun getSessions(workingDay: WorkingDay): List<Session> {
         sessionList.clear()
-        sessionList.addAll(schedule.getSessions(getService().duration, workingDay.dayOfMonth))
+        sessionList.addAll(schedule.getSessions(service.duration, workingDay.dayOfMonth))
         return sessionList
     }
 
@@ -67,10 +70,6 @@ class SessionsInteractor(
         sessionsPresenterCallback.disableMakeAppointmentButton()
         sessionsPresenterCallback.clearTime(selectedSession!!.getStringStartTime())
         selectedSession = null
-    }
-
-    fun getService(): Service {
-        return intent.getParcelableExtra<Service>(SERVICE) as Service
     }
 
     fun updateSchedule(order: Order, sessionsPresenterCallback: SessionsPresenterCallback) {

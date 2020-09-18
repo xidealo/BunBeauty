@@ -68,7 +68,8 @@ class MessagesActivity : BaseActivity(), MessagesView {
             messagesDialogInteractor,
             messagesUserInteractor,
             messagesOrderInteractor,
-            messagesScheduleInteractor
+            messagesScheduleInteractor,
+            intent
         )
     }
 

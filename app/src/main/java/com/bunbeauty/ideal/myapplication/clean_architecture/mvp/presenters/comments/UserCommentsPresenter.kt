@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.comments
 
+import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.user_comments.iUserComments.IUserCommentsUserCommentInteractor
@@ -12,13 +13,14 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.comments.U
 @InjectViewState
 class UserCommentsPresenter(
     private val userCommentsUserCommentInteractor: IUserCommentsUserCommentInteractor,
-    private val userCommentsUserInteractor: IUserCommentsUserInteractor
+    private val userCommentsUserInteractor: IUserCommentsUserInteractor,
+    private val intent: Intent
 ) :
     MvpPresenter<UserCommentsView>(), UserCommentsPresenterCallback {
 
     fun createUserCommentsScreen(loadingLimit: Int) {
         userCommentsUserCommentInteractor.getUserComments(
-            userCommentsUserInteractor.getCurrentUser(),
+            userCommentsUserInteractor.getCurrentUser(intent),
             loadingLimit,
             this
         )

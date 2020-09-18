@@ -11,12 +11,10 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.profileElements.ProfileServiceElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 
-class ProfileServiceAdapter() :
-    RecyclerView.Adapter<ProfileServiceAdapter.ProfileServiceViewHolder>(), Parcelable {
+class ProfileServiceAdapter :
+    RecyclerView.Adapter<ProfileServiceAdapter.ProfileServiceViewHolder>() {
 
     private val serviceList = mutableListOf<Service>()
-
-    constructor(parcel: Parcel) : this()
 
     fun updateItems(serviceList: List<Service>) {
         val newServiceList = serviceList.filter { service ->
@@ -51,24 +49,6 @@ class ProfileServiceAdapter() :
 
         fun bind(service: Service) {
             ProfileServiceElement(service, context, view)
-        }
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {}
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ProfileServiceAdapter> {
-        const val PROFILE_SERVICE_ADAPTER = "profile service adapter"
-
-        override fun createFromParcel(parcel: Parcel): ProfileServiceAdapter {
-            return ProfileServiceAdapter(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ProfileServiceAdapter?> {
-            return arrayOfNulls(size)
         }
     }
 }

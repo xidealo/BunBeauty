@@ -7,13 +7,14 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.ServiceComment
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.comment.UserComment
 
-class CurrentCommentCommentInteractor(
-    private val intent: Intent
-) : ICurrentCommentCommentInteractor {
+class CurrentCommentCommentInteractor : ICurrentCommentCommentInteractor {
 
     private lateinit var cacheUser: User
 
-    override fun createCurrentCommentScreen(currentCommentPresenterCallback: CurrentCommentPresenterCallback) {
+    override fun createCurrentCommentScreen(
+        intent: Intent,
+        currentCommentPresenterCallback: CurrentCommentPresenterCallback
+    ) {
 
         if (intent.hasExtra(UserComment.USER_COMMENT)) {
             cacheUser = (intent.getSerializableExtra(

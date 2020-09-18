@@ -1,49 +1,80 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
 import android.app.Application
+import android.content.Context
+import androidx.room.Room
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.dbInstance.LocalDatabase
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.ActivityScope
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.AppScope
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.FiguringServicePointsApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.StringApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.VerifyPhoneNumberApi
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.dbInstance.LocalDatabase
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.profile.OrdersFragment
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.profile.ServicesFragment
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class AppModule(private val app: Application) {
-
-    @Provides
-    @Singleton
-    fun provideUserDao() = LocalDatabase.getDatabase(app).getUserDao()
-
-    @Provides
-    @Singleton
-    fun provideServiceDao() = LocalDatabase.getDatabase(app).getServiceDao()
-
-    @Provides
-    @Singleton
-    fun provideTagDao() = LocalDatabase.getDatabase(app).getTagDao()
-
-    @Provides
-    @Singleton
-    fun providePhotoDao() = LocalDatabase.getDatabase(app).getPhotoDao()
-
-    @Provides
-    @Singleton
-    fun provideCodeDao() = LocalDatabase.getDatabase(app).getCodeDao()
-
-    @Provides
-    @Singleton
-    fun provideDialogDao() = LocalDatabase.getDatabase(app).getDialogDao()
+class AppModule {
 
     //APIs
     @Provides
+    @Singleton
     fun provideFigureServicePointsApi() = FiguringServicePointsApi()
 
     @Provides
+    @Singleton
     fun provideVerifyPhoneNumberApi() = VerifyPhoneNumberApi()
 
     @Provides
+    @Singleton
     fun provideStringApi() = StringApi()
 
+    //Fragments
+    @Provides
+    @Singleton
+    fun provideOrdersFragment() = OrdersFragment()
+
+    @Provides
+    @Singleton
+    fun provideServicesFragment() = ServicesFragment()
+
+    @Provides
+    @Singleton
+    fun provideUserDao(localDatabase: LocalDatabase) = localDatabase.getUserDao()
+
+    @Provides
+    @Singleton
+    fun provideServiceDao(localDatabase: LocalDatabase) = localDatabase.getServiceDao()
+
+    @Provides
+    @Singleton
+    fun provideTagDao(localDatabase: LocalDatabase) = localDatabase.getTagDao()
+
+    @Provides
+    @Singleton
+    fun providePhotoDao(localDatabase: LocalDatabase) = localDatabase.getPhotoDao()
+
+    @Provides
+    @Singleton
+    fun provideCodeDao(localDatabase: LocalDatabase) = localDatabase.getCodeDao()
+
+    @Provides
+    @Singleton
+    fun provideDialogDao(localDatabase: LocalDatabase) = localDatabase.getDialogDao()
+
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+        return application
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(context: Context) = Room.databaseBuilder(
+        context,
+        LocalDatabase::class.java,
+        "BunBeautyDatabase"
+    ).fallbackToDestructiveMigration().build()
 }

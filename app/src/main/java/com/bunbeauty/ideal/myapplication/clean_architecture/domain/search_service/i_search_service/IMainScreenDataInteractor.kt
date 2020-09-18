@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.i_search_service
 
+import android.content.Intent
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.MainScreenPresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
@@ -13,7 +14,7 @@ interface IMainScreenDataInteractor {
         maxCountOfRates: Long
     )
 
-    fun getMainScreenData(mainScreenPresenterCallback: MainScreenPresenterCallback)
+    fun getMainScreenData(intent: Intent, mainScreenPresenterCallback: MainScreenPresenterCallback)
 
     fun showCurrentMainScreen(mainScreenPresenterCallback: MainScreenPresenterCallback)
 

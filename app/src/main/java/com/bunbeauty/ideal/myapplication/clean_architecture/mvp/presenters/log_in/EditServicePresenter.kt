@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in
 
+import android.content.Intent
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -17,12 +18,13 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.Edi
 class EditServicePresenter(
     private val editServiceServiceInteractor: IEditServiceServiceInteractor,
     private val photoInteractor: IPhotoInteractor,
-    private val editServiceTagInteractor: IEditServiceTagInteractor
+    private val editServiceTagInteractor: IEditServiceTagInteractor,
+    private val intent: Intent
 ) :
     MvpPresenter<EditServiceView>(), EditServicePresenterCallback, IPhotoCallback {
 
     fun getService() {
-        editServiceServiceInteractor.getService(this)
+        editServiceServiceInteractor.getService(intent, this)
     }
 
     fun saveService(

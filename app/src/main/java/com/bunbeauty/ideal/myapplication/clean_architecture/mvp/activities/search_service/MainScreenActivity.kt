@@ -63,7 +63,8 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
         return MainScreenPresenter(
             mainScreenUserInteractor,
             mainScreenServiceInteractor,
-            mainScreenDataInteractor
+            mainScreenDataInteractor,
+            intent
         )
     }
 

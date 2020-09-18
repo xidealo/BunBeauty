@@ -9,13 +9,11 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.in
 import com.google.firebase.auth.FirebaseAuth
 
 class RegistrationUserInteractor(
-    private val userRepository: IUserRepository,
-    private val intent: Intent
-) : IRegistrationUserInteractor, InsertUsersCallback {
+    private val userRepository: IUserRepository) : IRegistrationUserInteractor, InsertUsersCallback {
 
     private lateinit var registrationPresenterCallback: RegistrationPresenterCallback
 
-    override fun getMyPhoneNumber(): String = intent.getStringExtra(User.PHONE) ?: ""
+    override fun getMyPhoneNumber(intent: Intent): String = intent.getStringExtra(User.PHONE) ?: ""
 
     override fun registerUser(
         user: User,

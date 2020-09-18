@@ -6,6 +6,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IOrderRepository
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IScheduleRepository
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IServiceRepository
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.AppScope
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

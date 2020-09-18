@@ -4,13 +4,21 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.AppComponent
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
 
 class App : Application() {
+
+    lateinit var appComponent: AppComponent
 
     override fun onCreate() {
         super.onCreate()
 
-        createNotificationChannel()
+        appComponent = DaggerAppComponent.builder()
+            .application(this)
+            .build()
+
+        appComponent.inject(this)
     }
 
     private fun createNotificationChannel() {

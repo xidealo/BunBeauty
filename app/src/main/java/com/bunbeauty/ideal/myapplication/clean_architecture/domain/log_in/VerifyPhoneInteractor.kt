@@ -17,13 +17,16 @@ import com.google.firebase.auth.PhoneAuthCredential
 
 class VerifyPhoneInteractor(
     private val userRepository: IUserRepository,
-    private val intent: Intent,
     private val verifyPhoneNumberApi: VerifyPhoneNumberApi
 ) : BaseRepository(), IVerifyPhoneInteractor, UserCallback, VerifyPhoneNumberCallback {
 
     private lateinit var verifyPresenterCallback: VerifyPhonePresenterCallback
+    private var phoneNumber = ""
 
-    override fun getPhoneNumber(): String = intent.getStringExtra(User.PHONE)!!
+    override fun getPhoneNumber(intent: Intent): String {
+        phoneNumber = intent.getStringExtra(User.PHONE) ?: ""
+        return phoneNumber
+    }
 
     override fun sendVerificationCode(
         phoneNumber: String,
@@ -57,7 +60,7 @@ class VerifyPhoneInteractor(
     override fun returnCredential(credential: PhoneAuthCredential) {
         FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                userRepository.getByPhoneNumber(getPhoneNumber(), this, true)
+                userRepository.getByPhoneNumber(phoneNumber, this, true)
             } else {
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {
                     verifyPresenterCallback.showWrongCodeError()
@@ -76,7 +79,7 @@ class VerifyPhoneInteractor(
         if (element == null) return
 
         if (element.name.isEmpty()) {
-            verifyPresenterCallback.goToRegistration(getPhoneNumber())
+            verifyPresenterCallback.goToRegistration(phoneNumber)
         } else {
             verifyPresenterCallback.goToProfile()
         }
@@ -89,7 +92,6 @@ class VerifyPhoneInteractor(
     override fun returnVerifySuccessful(credential: PhoneAuthCredential) {
         userRepository.getByPhoneNumber(getMyPhoneNumber(), this, true)
     }*/
-
 
 
 }

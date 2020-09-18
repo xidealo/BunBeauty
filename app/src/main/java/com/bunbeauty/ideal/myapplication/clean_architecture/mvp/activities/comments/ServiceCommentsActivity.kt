@@ -53,7 +53,7 @@ class ServiceCommentsActivity : BaseActivity(), ServiceCommentsView {
         initTopPanel("Оценки услуги", ButtonTask.NONE)
         initBottomPanel()
         hideEmptyScreen()
-        serviceCommentsPresenter.createServiceCommentsScreen(15)
+        serviceCommentsPresenter.createServiceCommentsScreen(15, intent)
     }
 
     fun init() {

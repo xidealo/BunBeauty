@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
+import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.iSubs.ISubscriptionsSubscriberInteractor
@@ -15,11 +16,12 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.Subscripti
 class SubscriptionsPresenter(
     private val subscriptionsSubscriptionInteractor: ISubscriptionsSubscriptionInteractor,
     private val subscriptionsUserInteractor: ISubscriptionsUserInteractor,
-    private val subscriptionsSubscriberInteractor: ISubscriptionsSubscriberInteractor
+    private val subscriptionsSubscriberInteractor: ISubscriptionsSubscriberInteractor,
+    private val intent: Intent
 ) : MvpPresenter<SubscriptionsView>(), SubscriptionsPresenterCallback {
 
     fun createSubscriptionsScreen(loadingLimit: Int) {
-        subscriptionsUserInteractor.createSubscriptionScreen(loadingLimit, this)
+        subscriptionsUserInteractor.createSubscriptionScreen(intent, loadingLimit, this)
     }
 
     fun deleteSubscription(subscription: Subscription) {

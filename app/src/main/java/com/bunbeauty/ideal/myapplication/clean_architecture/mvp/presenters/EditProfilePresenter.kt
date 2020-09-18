@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
+import android.content.Intent
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -15,12 +16,13 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.EditProfil
 @InjectViewState
 class EditProfilePresenter(
     private val editProfileInteractor: EditProfileInteractor,
-    private val photoInteractor: IPhotoInteractor
+    private val photoInteractor: IPhotoInteractor,
+    private val intent: Intent
 ) :
     MvpPresenter<EditProfileView>(), EditProfilePresenterCallback, IPhotoCallback {
 
     fun getUser() {
-        editProfileInteractor.getUser(this)
+        editProfileInteractor.getUser(intent,this)
     }
 
     fun getCacheOwner() = editProfileInteractor.cacheUser

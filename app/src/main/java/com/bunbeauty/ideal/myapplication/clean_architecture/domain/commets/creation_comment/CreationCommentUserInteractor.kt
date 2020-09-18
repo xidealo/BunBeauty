@@ -13,16 +13,14 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.Us
  * Can happen situation when we get old user data
  * So next update it will set listener on User!
  */
-class CreationCommentUserInteractor(
-    private val intent: Intent,
-    private val userRepository: UserRepository
+class CreationCommentUserInteractor(private val userRepository: UserRepository
 ) : ICreationCommentUserInteractor, UserCallback, UpdateUsersCallback {
 
     private lateinit var creationCommentPresenterCallback: CreationCommentPresenterCallback
     private lateinit var cacheUserComment: UserComment
     private var user: User? = null
 
-    override fun getUser(): User {
+    override fun getUser(intent: Intent): User {
         if (user == null) {
             user = intent.getSerializableExtra(User.USER) as User
         }

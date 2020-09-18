@@ -10,7 +10,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.UserRepository
 
 class SubscriptionsUserInteractor(
-    private val intent: Intent,
     private val userRepository: UserRepository
 ) : ISubscriptionsUserInteractor, UserCallback, UpdateUsersCallback {
 
@@ -30,6 +29,7 @@ class SubscriptionsUserInteractor(
     }
 
     override fun createSubscriptionScreen(
+        intent: Intent,
         loadingLimit: Int,
         subscriptionsPresenterCallback: SubscriptionsPresenterCallback
     ) {

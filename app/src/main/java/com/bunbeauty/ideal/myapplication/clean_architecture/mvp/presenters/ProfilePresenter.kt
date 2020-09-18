@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
+import android.content.Intent
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -15,7 +16,8 @@ class ProfilePresenter(
     private val profileOrderInteractor: IProfileOrderInteractor,
     private val profileDialogInteractor: IProfileDialogInteractor,
     private val profileSubscriptionInteractor: IProfileSubscriptionInteractor,
-    private val profileSubscriberInteractor: IProfileSubscriberInteractor
+    private val profileSubscriberInteractor: IProfileSubscriberInteractor,
+    private val intent: Intent
 ) : MvpPresenter<ProfileView>(), ProfilePresenterCallback {
 
     fun initFCM() {
@@ -29,7 +31,7 @@ class ProfilePresenter(
         viewState.hideScheduleButton()
         viewState.hideDialogsButton()
 
-        profileUserInteractor.getProfileOwner(this)
+        profileUserInteractor.getProfileOwner(intent, this)
     }
 
     override fun returnProfileOwner(user: User) {

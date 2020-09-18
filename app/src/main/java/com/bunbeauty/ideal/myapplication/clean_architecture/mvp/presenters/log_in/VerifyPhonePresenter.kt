@@ -1,5 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in
 
+import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.iLogIn.IVerifyPhoneInteractor
@@ -7,19 +8,25 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.callback.VerifyPhone
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.log_in.VerifyPhoneView
 
 @InjectViewState
-class VerifyPhonePresenter(private val verifyPhoneInteractor: IVerifyPhoneInteractor) :
+class VerifyPhonePresenter(
+    private val verifyPhoneInteractor: IVerifyPhoneInteractor,
+    private val intent: Intent
+) :
     MvpPresenter<VerifyPhoneView>(), VerifyPhonePresenterCallback {
 
     fun getPhoneNumber(): String {
-        return verifyPhoneInteractor.getPhoneNumber()
+        return verifyPhoneInteractor.getPhoneNumber(intent)
     }
 
     fun sendCode() {
-        verifyPhoneInteractor.sendVerificationCode(verifyPhoneInteractor.getPhoneNumber(), this)
+        verifyPhoneInteractor.sendVerificationCode(
+            verifyPhoneInteractor.getPhoneNumber(intent),
+            this
+        )
     }
 
     fun resendCode() {
-        verifyPhoneInteractor.resendVerificationCode(verifyPhoneInteractor.getPhoneNumber())
+        verifyPhoneInteractor.resendVerificationCode(verifyPhoneInteractor.getPhoneNumber(intent))
     }
 
     override fun showTooManyRequestsError() {

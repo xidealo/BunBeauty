@@ -5,13 +5,10 @@ import android.os.Bundle
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.creation_comment.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Message
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerAppComponent
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.commets.creation_comment.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.comments.CreationCommentPresenter
@@ -45,9 +42,6 @@ class CreationCommentActivity : BaseActivity(), CreationCommentView {
     @ProvidePresenter
     internal fun provideProfilePresenter(): CreationCommentPresenter {
         DaggerAppComponent.builder()
-            .appModule(AppModule(application))
-            .firebaseModule(FirebaseModule())
-            .interactorModule(InteractorModule(intent))
             .build()
             .inject(this)
         return CreationCommentPresenter(
@@ -56,7 +50,8 @@ class CreationCommentActivity : BaseActivity(), CreationCommentView {
             creationCommentOrderInteractor,
             creationCommentMessageInteractor,
             creationCommentUserInteractor,
-            creationCommentServiceInteractor
+            creationCommentServiceInteractor,
+            intent
         )
     }
 

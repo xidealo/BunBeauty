@@ -52,7 +52,8 @@ class SubscriptionsActivity : BaseActivity(), SubscriptionsView {
         return SubscriptionsPresenter(
             subscriptionsSubscriptionInteractor,
             subscriptionsUserInteractor,
-            subscriptionsSubscriberInteractor
+            subscriptionsSubscriberInteractor,
+            intent
         )
     }
 

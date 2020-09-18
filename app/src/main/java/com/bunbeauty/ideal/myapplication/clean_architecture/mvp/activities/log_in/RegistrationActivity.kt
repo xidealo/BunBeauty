@@ -30,7 +30,7 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
     @ProvidePresenter
     internal fun provideRegistrationPresenter(): RegistrationPresenter {
         buildDagger().inject(this)
-        return RegistrationPresenter(registrationUserInteractor)
+        return RegistrationPresenter(registrationUserInteractor, intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
