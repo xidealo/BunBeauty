@@ -61,5 +61,4 @@ class AuthorizationInteractor(private val userRepository: IUserRepository) : Bas
     fun isPhoneCorrect(phone: String): Boolean {
         return phone.length == 12
     }
-
 }

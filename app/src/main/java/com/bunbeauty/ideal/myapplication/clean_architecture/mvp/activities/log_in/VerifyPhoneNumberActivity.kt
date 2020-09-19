@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -80,11 +81,9 @@ class VerifyPhoneNumberActivity : BaseActivity(), VerifyPhoneView {
     }
 
     override fun goToProfile() {
-        val intent = Intent(this, ProfileActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
+        val intent = Intent(this, ProfileActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         overridePendingTransition(0, 0)
-        finish()
     }
 }

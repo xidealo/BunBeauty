@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -10,6 +11,8 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.invisible
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.AuthorizationInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.StringApi
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.PhoneTextWatcher
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.intarfaces.IAdapterSpinner
@@ -23,24 +26,27 @@ class AuthorizationActivity : BaseActivity(), AuthorizationView, IAdapterSpinner
     @Inject
     lateinit var authorizationInteractor: AuthorizationInteractor
 
+    @Inject
+    lateinit var stingApi: StringApi
+
     @InjectPresenter
     lateinit var authorizationPresenter: AuthorizationPresenter
 
     @ProvidePresenter
     internal fun provideAuthorizationPresenter(): AuthorizationPresenter {
         buildDagger().inject(this)
-        return AuthorizationPresenter(authorizationInteractor)
+        return AuthorizationPresenter(authorizationInteractor, stingApi)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authorization)
-        configViews()
+        setupUI()
 
         authorizationPresenter.authorizeByDefault()
     }
 
-    private fun configViews() {
+    private fun setupUI() {
         val countryCodes = arrayListOf(*resources.getStringArray(R.array.country_codes))
 
         setAdapter(countryCodes, activity_authorization_sp_code, this)
@@ -53,6 +59,9 @@ class AuthorizationActivity : BaseActivity(), AuthorizationView, IAdapterSpinner
                 activity_authorization_et_phone.text.toString()
             )
         }
+
+        val phoneTextWatcher = PhoneTextWatcher(activity_authorization_et_phone)
+        activity_authorization_et_phone.addTextChangedListener(phoneTextWatcher)
     }
 
     override fun hidePhoneNumberFields() {

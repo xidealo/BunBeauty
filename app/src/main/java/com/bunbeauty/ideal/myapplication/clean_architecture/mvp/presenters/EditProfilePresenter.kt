@@ -10,6 +10,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.IPhotoI
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.profile.EditProfilePresenterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.StringApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.EditProfileView
 
 
@@ -17,6 +18,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.EditProfil
 class EditProfilePresenter(
     private val editProfileInteractor: EditProfileInteractor,
     private val photoInteractor: IPhotoInteractor,
+    private val stringApi: StringApi,
     private val intent: Intent
 ) :
     MvpPresenter<EditProfileView>(), EditProfilePresenterCallback, IPhotoCallback {
@@ -35,12 +37,12 @@ class EditProfilePresenter(
         viewState.goToProfile(user)
     }
 
-    fun saveData(name: String, surname: String, city: String, phone: String) {
+    fun saveData(name: String, surname: String, city: String, code: String, phone: String) {
         val user = editProfileInteractor.cacheUser.copy()
         user.name = name
         user.surname = surname
         user.city = city
-        user.phone = phone
+        user.phone = code + stringApi.getPhoneNumberDigits(phone)
         editProfileInteractor.saveData(user, photoInteractor.getPhotosLink(), this)
     }
 

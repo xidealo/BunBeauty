@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
@@ -15,9 +14,11 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.profi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.StringApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.PhoneTextWatcher
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_in.AuthorizationActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
@@ -40,19 +41,22 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
     lateinit var editProfileInteractor: EditProfileInteractor
 
     @Inject
+    lateinit var stringApi: StringApi
+
+    @Inject
     lateinit var photoInteractor: PhotoInteractor
 
     @ProvidePresenter
     internal fun provideEditProfilePresenter(): EditProfilePresenter {
         buildDagger().inject(this)
-        return EditProfilePresenter(editProfileInteractor, photoInteractor, intent)
+        return EditProfilePresenter(editProfileInteractor, photoInteractor, stringApi, intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
-        configViews()
+        setupUI()
         hideCodeInputAndButtons()
         createPanels()
 
@@ -64,7 +68,7 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
         initBottomPanel()
     }
 
-    private fun configViews() {
+    private fun setupUI() {
         setAdapter(
             arrayListOf(*resources.getStringArray(R.array.cities)),
             activity_edit_profile_sp_city,
@@ -95,6 +99,9 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
                 .setCropShape(CropImageView.CropShape.OVAL)
                 .start(this)
         }
+
+        val phoneTextWatcher = PhoneTextWatcher(activity_edit_profile_et_phone)
+        activity_edit_profile_et_phone.addTextChangedListener(phoneTextWatcher)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -140,15 +147,12 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
     }
 
     private fun saveChanges() {
-        val phoneNumber =
-            activity_edit_profile_sp_code.text.toString() + activity_edit_profile_et_phone.text.toString()
-                .trim()
-
         editProfilePresenter.saveData(
             activity_edit_profile_et_name.text.toString().trim(),
             activity_edit_profile_et_surname.text.toString().trim(),
             activity_edit_profile_sp_city.text.toString(),
-            phoneNumber
+            activity_edit_profile_sp_code.text.toString(),
+            activity_edit_profile_et_phone.text.toString()
         )
     }
 

@@ -90,10 +90,9 @@ class RegistrationActivity : BaseActivity(), RegistrationView, IAdapterSpinner {
     override fun goToProfile(user: User) {
         val intent = Intent(this, ProfileActivity::class.java).apply {
             putExtra(User.USER, user)
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         overridePendingTransition(0, 0)
-        finish()
     }
 }
