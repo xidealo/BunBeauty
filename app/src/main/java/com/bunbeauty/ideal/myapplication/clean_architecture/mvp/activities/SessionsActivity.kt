@@ -1,8 +1,9 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities
 
-import android.graphics.Point
+import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -19,18 +20,20 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.Sess
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.sessions.SessionsOrderInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Session
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingDay
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.invisible
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SessionsPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.SessionsView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_sessions.*
 import javax.inject.Inject
 
 class SessionsActivity : BaseActivity(), SessionsView {
 
-    private val timeButtonList: MutableList<Button> = ArrayList()
+    private val timeButtonList: MutableList<MaterialButton> = ArrayList()
 
     @Inject
     lateinit var sessionsInteractor: SessionsInteractor
@@ -93,50 +96,34 @@ class SessionsActivity : BaseActivity(), SessionsView {
     override fun showTime(sessions: List<Session>) {
         timeButtonList.clear()
 
-        val width = resources.getDimensionPixelSize(R.dimen.sessions_button_width)
-        val height = resources.getDimensionPixelSize(R.dimen.sessions_button_height)
+        val width = resources.displayMetrics.widthPixels / TIME_COUNT_ON_SCREEN
+        val height = resources.getDimensionPixelSize(R.dimen.session_time_button_height)
 
-        activity_session_gl_sessions.columnCount = getColumnCount(width)
+        activity_session_gl_sessions.columnCount = TIME_COUNT_ON_SCREEN
 
         for (session in sessions) {
             val text = session.getStringStartTime()
-            val button = getConfiguredButton(width, height, text)
+            val button = createButton(width, height, text)
 
             timeButtonList.add(button)
             addViewToContainer(button, activity_session_gl_sessions)
         }
     }
 
-    private fun getColumnCount(buttonWidth: Int): Int {
-        val size = Point()
-        windowManager.defaultDisplay.getRealSize(size)
-        val margin = resources.getDimensionPixelSize(R.dimen.sessions_button_margin)
-        return size.x / (buttonWidth + 2 * margin)
-    }
+    @SuppressLint("InflateParams")
+    private fun createButton(width: Int, height: Int, text: String): MaterialButton {
+        val button = LayoutInflater.from(this).inflate(R.layout.element_schedule, null) as MaterialButton
 
-    private fun getConfiguredButton(width: Int, height: Int, text: String): Button {
-        val button = Button(this)
-
-        val params = LinearLayout.LayoutParams(width, height)
-        val margin = resources.getDimensionPixelSize(R.dimen.sessions_button_margin)
-        params.setMargins(margin, margin, margin, margin)
-        button.layoutParams = params
-        setBackground(button)
+        val margin = resources.getDimensionPixelSize(R.dimen.session_time_button_margin)
+        button.layoutParams = LinearLayout.LayoutParams(width - 2 * margin, height).apply {
+            setMargins(margin, 0, margin, 0)
+        }
         button.text = text
         button.setOnClickListener {
             sessionsPresenter.updateTime(text)
         }
 
         return button
-    }
-
-    private fun setBackground(button: Button) {
-        val gradientDrawable = GradientDrawable()
-        gradientDrawable.cornerRadius =
-            resources.getDimension(R.dimen.schedule_button_corner_radius)
-        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.white))
-
-        button.background = gradientDrawable
     }
 
     private fun addViewToContainer(view: View, container: ViewGroup) {
@@ -148,26 +135,16 @@ class SessionsActivity : BaseActivity(), SessionsView {
 
     override fun clearTime(time: String) {
         val unselectedTimeButton = timeButtonList.find { it.text == time }
-        if (unselectedTimeButton != null) {
-            setBackground(unselectedTimeButton)
-        }
+        unselectedTimeButton?.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
     }
 
     override fun selectTime(selectedTime: String) {
-        fillButton(timeButtonList.find { it.text == selectedTime }!!)
-    }
-
-    private fun fillButton(button: Button) {
-        val gradientDrawable = button.background as GradientDrawable
-
-        gradientDrawable.setColor(ContextCompat.getColor(this, R.color.yellow))
-        button.background = gradientDrawable
+        val selectedButton = timeButtonList.find { it.text == selectedTime }
+        selectedButton?.setBackgroundColor(ContextCompat.getColor(this, R.color.yellow))
     }
 
     override fun showMessage(message: String) {
-        Snackbar.make(activity_session_cl_main, message, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
-            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
+        showMessage(message, activity_session_cl_main)
     }
 
     override fun goBack() {
@@ -187,13 +164,17 @@ class SessionsActivity : BaseActivity(), SessionsView {
     }
 
     override fun showLoading() {
-        activity_session_pb.visibility = View.VISIBLE
-        activity_session_sv.visibility = View.GONE
-        activity_session_btn_make_appointment.visibility = View.GONE
-        activity_session_tv_no_available_sessions.visibility = View.GONE
+        activity_session_pb.visible()
+        activity_session_sv.gone()
+        activity_session_btn_make_appointment.gone()
+        activity_session_tv_no_available_sessions.gone()
     }
 
     override fun hideLoading() {
-        activity_session_pb.visibility = View.GONE
+        activity_session_pb.gone()
+    }
+
+    companion object {
+        const val TIME_COUNT_ON_SCREEN = 6
     }
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -79,7 +80,7 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
                 val text = WorkingTime.getTimeByIndex(i * TIME_COLUMN_COUNT + j)
                 val strokeColor =
                     ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yellow))
-                val button = getConfiguredButton(width, height, text, strokeColor)
+                val button = createButton(width, height, text, strokeColor)
 
                 timeButtons.add(button)
             }
@@ -114,7 +115,7 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
                     schedulePresenter.getStringDate(weekIndex * WEEK_DAY_COUNT + weekDayIndex)
                 val strokeColor =
                     ColorStateList.valueOf(ContextCompat.getColor(this, R.color.mainBlue))
-                val button = getConfiguredButton(width, height, text, strokeColor)
+                val button = createButton(width, height, text, strokeColor)
 
                 setButtonEnable(button, weekIndex * WEEK_DAY_COUNT + weekDayIndex)
                 setButtonSelection(
@@ -127,8 +128,8 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
             }
         }
 
-        for (i in 0 until daysButtons.size) {
-            addViewToContainer(daysButtons[i], activity_schedule_gl_days)
+        for (button in daysButtons) {
+            addViewToContainer(button, activity_schedule_gl_days)
         }
     }
 
@@ -152,28 +153,21 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         }
     }
 
-    private fun getConfiguredButton(
+    @SuppressLint("InflateParams")
+    private fun createButton(
         width: Int,
         height: Int,
         text: String,
         strokeColor: ColorStateList
     ): MaterialButton {
-        val button = MaterialButton(this)
+        val button = LayoutInflater.from(this).inflate(R.layout.element_schedule, null) as MaterialButton
 
         val margin = resources.getDimensionPixelSize(R.dimen.schedule_button_margin)
         button.layoutParams = LinearLayout.LayoutParams(width - 2 * margin, height).apply {
             setMargins(margin, 0, margin, 0)
         }
-        button.setPadding(8, 8, 8, 8)
-
-        button.cornerRadius = resources.getDimensionPixelSize(R.dimen.schedule_button_corner_radius)
-        button.background.clearColorFilter()
         button.strokeColor = strokeColor
         button.text = text
-        button.textSize = 11f
-        button.setTextColor(ContextCompat.getColor(this, R.color.black))
-
-        clearDayButtonFill(button)
 
         return button
     }
