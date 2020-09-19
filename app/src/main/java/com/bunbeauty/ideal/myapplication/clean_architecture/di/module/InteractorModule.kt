@@ -4,7 +4,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IScheduleRepository
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IServiceRepository
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.ActivityScope
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.AppScope
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.FiguringServicePointsApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.VerifyPhoneNumberApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.chat.i_chat.dialog.DialogsDialogInteractor
@@ -51,7 +50,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.Subscrip
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.subs.SubscriptionsUserInteractor
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 class InteractorModule {

@@ -38,24 +38,7 @@ class AppModule {
     @Singleton
     fun provideUserDao(localDatabase: LocalDatabase) = localDatabase.getUserDao()
 
-    @Provides
-    @Singleton
-    fun provideServiceDao(localDatabase: LocalDatabase) = localDatabase.getServiceDao()
 
-    @Provides
-    @Singleton
-    fun provideTagDao(localDatabase: LocalDatabase) = localDatabase.getTagDao()
-
-    @Provides
-    @Singleton
-    fun providePhotoDao(localDatabase: LocalDatabase) = localDatabase.getPhotoDao()
-
-    @Provides
-    @Singleton
-    fun provideCodeDao(localDatabase: LocalDatabase) = localDatabase.getCodeDao()
-
-    @Provides
-    @Singleton
-    fun provideDialogDao(localDatabase: LocalDatabase) = localDatabase.getDialogDao()*/
+    */
 
 }

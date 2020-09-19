@@ -1,11 +1,7 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.di.module
 
-import android.app.Application
-import android.content.Context
-import androidx.room.Room
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.dbInstance.LocalDatabase
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.ActivityScope
-import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.AppScope
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.FiguringServicePointsApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.StringApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.VerifyPhoneNumberApi
@@ -13,7 +9,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.profil
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.profile.ServicesFragment
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 class ActivityModule {
@@ -39,4 +34,27 @@ class ActivityModule {
     @ActivityScope
     fun provideStringApi() = StringApi()
 
+    @Provides
+    @ActivityScope
+    fun provideUserDao(localDatabase: LocalDatabase) = localDatabase.getUserDao()
+
+    @Provides
+    @ActivityScope
+    fun provideServiceDao(localDatabase: LocalDatabase) = localDatabase.getServiceDao()
+
+    @Provides
+    @ActivityScope
+    fun provideTagDao(localDatabase: LocalDatabase) = localDatabase.getTagDao()
+
+    @Provides
+    @ActivityScope
+    fun providePhotoDao(localDatabase: LocalDatabase) = localDatabase.getPhotoDao()
+
+    @Provides
+    @ActivityScope
+    fun provideCodeDao(localDatabase: LocalDatabase) = localDatabase.getCodeDao()
+
+    @Provides
+    @ActivityScope
+    fun provideDialogDao(localDatabase: LocalDatabase) = localDatabase.getDialogDao()
 }
