@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/element_schedule_btn"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:layout_margin="@dimen/schedule_button_margin"
+    android:backgroundTint="@color/white"
+    android:padding="@dimen/schedule_button_padding"
+    android:textColor="@color/black"
+    android:textSize="@dimen/schedule_button_text_size"
+    app:cornerRadius="@dimen/schedule_button_corner_radius" />

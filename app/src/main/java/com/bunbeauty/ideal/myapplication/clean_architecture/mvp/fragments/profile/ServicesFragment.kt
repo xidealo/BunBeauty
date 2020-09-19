@@ -52,7 +52,7 @@ class ServicesFragment : BaseFragment() {
     }
 
     fun updateServiceList(serviceList: List<Service>) {
-        profileServiceAdapter?.updateItems(serviceList)
+        profileServiceAdapter.updateItems(serviceList)
     }
 
     private fun goToCreationService() {
