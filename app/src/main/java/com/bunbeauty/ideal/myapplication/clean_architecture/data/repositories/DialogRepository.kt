@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class DialogRepository(
-    private val dialogDao: DialogDao,
     private val dialogFirebase: DialogFirebase
 ) : BaseRepository(), IDialogRepository {
 

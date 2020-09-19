@@ -8,7 +8,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IPhotoServiceRepository
 import kotlinx.coroutines.launch
 
-class PhotoServiceRepository(private val photoDao: PhotoDao, private val photoServiceFirebase: PhotoServiceFirebase) :
+class PhotoServiceRepository(private val photoServiceFirebase: PhotoServiceFirebase) :
     IPhotoServiceRepository, BaseRepository() {
 
     override fun insert(photo: Photo) {

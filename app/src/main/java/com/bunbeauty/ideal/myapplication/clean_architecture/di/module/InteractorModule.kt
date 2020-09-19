@@ -57,12 +57,12 @@ import javax.inject.Singleton
 class InteractorModule {
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideAuthorizationInteractor(userRepository: UserRepository) =
         AuthorizationInteractor(userRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideVerifyPhoneInteractor(
         userRepository: UserRepository,
         verifyPhoneNumberApi: VerifyPhoneNumberApi
@@ -70,254 +70,254 @@ class InteractorModule {
         VerifyPhoneInteractor(userRepository, verifyPhoneNumberApi)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideRegistrationInteractor(userRepository: UserRepository): IRegistrationUserInteractor =
         RegistrationUserInteractor(userRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideProfileUserInteractor(userRepository: UserRepository): IProfileUserInteractor =
         ProfileUserInteractor(userRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideProfileServiceInteractor(serviceRepository: IServiceRepository): IProfileServiceInteractor =
         ProfileServiceInteractor(serviceRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideProfileOrderInteractor(orderRepository: OrderRepository): IProfileOrderInteractor =
         ProfileOrderInteractor(orderRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideProfileDialogInteractor(dialogRepository: DialogRepository): IProfileDialogInteractor =
         ProfileDialogInteractor(dialogRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideProfileSubscriptionInteractor(subscriptionRepository: SubscriptionRepository): IProfileSubscriptionInteractor =
         ProfileSubscriptionInteractor(subscriptionRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideProfileSubscriberInteractor(subscriberRepository: SubscriberRepository): IProfileSubscriberInteractor =
         ProfileSubscriberInteractor(subscriberRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideCreationServiceServiceServiceInteractor(serviceRepository: IServiceRepository) =
         CreationServiceServiceServiceInteractor(serviceRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideCreationServiceServiceTagInteractor(tagRepository: TagRepository) =
         CreationServiceTagInteractor(tagRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideCreationServiceServicePhotoInteractor(photoServiceRepository: PhotoServiceRepository) =
         PhotoInteractor(
             photoServiceRepository
         )
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun providePremiumElementCodeInteractor(codeRepository: CodeRepository) =
         PremiumFragmentCodeInteractor(
             codeRepository
         )
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun providePremiumElementServiceInteractor(serviceRepository: IServiceRepository) =
         PremiumFragmentServiceInteractor(serviceRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideMainScreenUserInteractor(
         userRepository: UserRepository
     ) =
         MainScreenUserInteractor(userRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideMainScreenServiceInteractor(serviceRepository: IServiceRepository) =
         MainScreenServiceInteractor(serviceRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideMainScreenDataInteractor(figuringServicePointsApi: FiguringServicePointsApi) =
         MainScreenDataInteractor(figuringServicePointsApi)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideServiceServiceInteractor(serviceRepository: IServiceRepository) =
         ServiceInteractor(serviceRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideServiceUserInteractor(userRepository: UserRepository) =
         ServiceUserInteractor(userRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideServicePhotoInteractor(photoServiceRepository: PhotoServiceRepository) =
         ServicePhotoInteractor(photoServiceRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideEditProfileInteractor(
         userRepository: UserRepository,
         verifyPhoneNumberApi: VerifyPhoneNumberApi
     ) = EditProfileInteractor(userRepository, verifyPhoneNumberApi)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideDialogsDialogInteractor(dialogRepository: DialogRepository) =
         DialogsDialogInteractor(dialogRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideDialogsUserInteractor(userRepository: UserRepository) =
         DialogsUserInteractor(userRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideDialogsMessageInteractor(messageRepository: MessageRepository) =
         DialogsMessageInteractor(messageRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideMessagesMessageInteractor(messageRepository: MessageRepository) =
         MessagesMessageInteractor(messageRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideMessagesDialogInteractor(dialogRepository: DialogRepository) =
         MessagesDialogInteractor(dialogRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideMessagesUserInteractor() = MessagesUserInteractor()
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideMessagesOrderInteractor(orderRepository: OrderRepository) =
         MessagesOrderInteractor(orderRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideMessagesScheduleInteractor(scheduleRepository: IScheduleRepository) =
         MessagesScheduleInteractor(scheduleRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideScheduleInteractor(scheduleRepository: IScheduleRepository) =
         ScheduleInteractor(scheduleRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideSubscriptionsSubscriptionInteractor(subscriptionRepository: SubscriptionRepository) =
         SubscriptionsSubscriptionInteractor(subscriptionRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideSubscriptionsUserInteractor(userRepository: UserRepository) =
         SubscriptionsUserInteractor(userRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideSubscriptionsSubscriberInteractor(subscriberRepository: SubscriberRepository) =
         SubscriptionsSubscriberInteractor(subscriberRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideEditServiceInteractor(serviceRepository: IServiceRepository) =
         EditServiceServiceInteractor(serviceRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideEditServiceTagInteractor(tagRepository: TagRepository) =
         EditServiceTagInteractor(tagRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideUserCommentsUserCommentInteractor(userCommentRepository: UserCommentRepository) =
         UserCommentsUserCommentInteractor(
             userCommentRepository
         )
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideUserCommentsUserInteractor(userRepository: UserRepository) =
         UserCommentsUserInteractor(
             userRepository
         )
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideServiceCommentsServiceCommentInteractor(serviceCommentRepository: ServiceCommentRepository) =
         ServiceCommentsServiceCommentInteractor(serviceCommentRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideServiceCommentsUserInteractor(userRepository: UserRepository) =
         ServiceCommentsUserInteractor(userRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideCurrentCommentInteractor() =
         CurrentCommentCommentInteractor()
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideCreationCommentUserCommentInteractor(userCommentRepository: UserCommentRepository) =
         CreationCommentUserCommentInteractor(userCommentRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideCreationCommentUserInteractor(userRepository: UserRepository) =
         CreationCommentUserInteractor(userRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideCreationCommentServiceCommentInteractor(serviceCommentRepository: ServiceCommentRepository) =
         CreationCommentServiceCommentInteractor(
             serviceCommentRepository
         )
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideCreationCommentMessageInteractor(messageRepository: MessageRepository) =
         CreationCommentMessageInteractor(messageRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideCreationCommentOrderInteractor(orderRepository: OrderRepository) =
         CreationCommentOrderInteractor(orderRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideCreationCommentServiceInteractor(serviceRepository: IServiceRepository) =
         CreationCommentServiceInteractor(serviceRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideServiceCommentsServiceInteractor() = ServiceCommentsServiceInteractor()
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideSessionsInteractor(scheduleRepository: IScheduleRepository) =
         SessionsInteractor(scheduleRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideSessionsOrderInteractor(orderRepository: OrderRepository) =
         SessionsOrderInteractor(orderRepository)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideSessionsMessageInteractor(messageRepository: MessageRepository) =
         SessionsMessageInteractor(messageRepository)
 

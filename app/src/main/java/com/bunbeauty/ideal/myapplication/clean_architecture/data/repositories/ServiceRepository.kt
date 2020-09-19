@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ServiceRepository(
-    private val serviceDao: ServiceDao,
     private val serviceFirebase: ServiceFirebase
 ) : BaseRepository(), IServiceRepository {
 
@@ -57,9 +56,9 @@ class ServiceRepository(
     //Обратить внимание
     override fun get(getServicesCallback: GetServicesCallback) {
         launch {
-            val services = serviceDao.get()
+            //val services = serviceDao.get()
             withContext(Dispatchers.Main) {
-                getServicesCallback.returnList(services)
+                //getServicesCallback.returnList(services)
             }
         }
     }
@@ -75,7 +74,7 @@ class ServiceRepository(
             serviceFirebase.getById(userId, serviceId, getServiceCallback)
         } else {
             launch {
-                val services = serviceDao.getById(serviceId)
+                //val services = serviceDao.getById(serviceId)
                 withContext(Dispatchers.Main) {
                     //servicesCallback.returnServices(services)
                 }
@@ -92,9 +91,9 @@ class ServiceRepository(
             serviceFirebase.getByUserId(userId, getServicesCallback)
         } else {
             launch {
-                val services = serviceDao.getAllByUserId(userId)
+                //val services = serviceDao.getAllByUserId(userId)
                 withContext(Dispatchers.Main) {
-                    getServicesCallback.returnList(services)
+                    //getServicesCallback.returnList(services)
                 }
             }
         }

@@ -6,6 +6,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IOrderRepository
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IScheduleRepository
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.IServiceRepository
+import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.ActivityScope
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.scope.AppScope
 import dagger.Module
 import dagger.Provides
@@ -14,68 +15,67 @@ import javax.inject.Singleton
 @Module
 class RepositoryModule {
     @Provides
-    @Singleton
-    fun provideUserRepository(userDao: UserDao, userFirebase: UserFirebase) =
-        UserRepository(userDao, userFirebase)
+    @ActivityScope
+    fun provideUserRepository(userFirebase: UserFirebase) =
+        UserRepository(userFirebase)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideServiceRepository(
-        serviceDao: ServiceDao,
         serviceFirebase: ServiceFirebase
-    ): IServiceRepository = ServiceRepository(serviceDao, serviceFirebase)
+    ): IServiceRepository = ServiceRepository(serviceFirebase)
 
     @Provides
-    @Singleton
-    fun provideTagRepository(tagDao: TagDao, tagFirebase: TagFirebase) =
-        TagRepository(tagDao, tagFirebase)
+    @ActivityScope
+    fun provideTagRepository(tagFirebase: TagFirebase) =
+        TagRepository(tagFirebase)
 
     @Provides
-    @Singleton
-    fun providePhotoRepository(photoDao: PhotoDao, photoServiceFirebase: PhotoServiceFirebase) =
-        PhotoServiceRepository(photoDao, photoServiceFirebase)
+    @ActivityScope
+    fun providePhotoRepository(photoServiceFirebase: PhotoServiceFirebase) =
+        PhotoServiceRepository(photoServiceFirebase)
 
     @Provides
-    @Singleton
-    fun provideCodeRepository(codeDao: CodeDao, codeFirebase: CodeFirebase) =
-        CodeRepository(codeDao, codeFirebase)
+    @ActivityScope
+    fun provideCodeRepository(codeFirebase: CodeFirebase) =
+        CodeRepository(codeFirebase)
 
     @Provides
-    @Singleton
-    fun provideDialogRepository(dialogDao: DialogDao, dialogFirebase: DialogFirebase) =
-        DialogRepository(dialogDao, dialogFirebase)
+    @ActivityScope
+    fun provideDialogRepository(dialogFirebase: DialogFirebase) =
+        DialogRepository(dialogFirebase)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideMessageRepository(messageFirebase: MessageFirebase) =
         MessageRepository(messageFirebase)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideOrderRepository(orderFirebase: OrderFirebase) = OrderRepository(orderFirebase)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideSubscriptionRepository(subscriptionFirebase: SubscriptionFirebase) =
         SubscriptionRepository(subscriptionFirebase)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideSubscriberRepository(subscriberFirebase: SubscriberFirebase) =
         SubscriberRepository(subscriberFirebase)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideUserCommentRepository(userCommentFirebase: UserCommentFirebase) =
         UserCommentRepository(userCommentFirebase)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideServiceCommentRepository(serviceCommentFirebase: ServiceCommentFirebase) =
         ServiceCommentRepository(serviceCommentFirebase)
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideScheduleRepository(scheduleFirebase: ScheduleFirebase): IScheduleRepository =
         ScheduleRepository(scheduleFirebase)
 

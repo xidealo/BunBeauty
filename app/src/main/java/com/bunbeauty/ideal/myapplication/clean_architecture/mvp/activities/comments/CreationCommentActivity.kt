@@ -41,9 +41,7 @@ class CreationCommentActivity : BaseActivity(), CreationCommentView {
 
     @ProvidePresenter
     internal fun provideProfilePresenter(): CreationCommentPresenter {
-        DaggerAppComponent.builder()
-            .build()
-            .inject(this)
+        buildDagger().inject(this)
         return CreationCommentPresenter(
             creationCommentUserCommentInteractor,
             creationCommentServiceCommentInteractor,

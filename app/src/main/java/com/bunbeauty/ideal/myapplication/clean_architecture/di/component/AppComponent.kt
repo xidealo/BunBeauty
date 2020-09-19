@@ -31,35 +31,11 @@ import javax.inject.Singleton
 @Singleton
 @Component(
     modules = [
-        AppModule::class,
-        RepositoryModule::class,
-        InteractorModule::class,
-        FirebaseModule::class,
-        AdapterModule::class
+        AppModule::class
     ]
 )
 interface AppComponent {
     fun inject(app: App)
-
-    fun inject(premiumFragment: PremiumFragment)
-    fun inject(authorizationActivity: AuthorizationActivity)
-    fun inject(verifyPhoneNumberActivity: VerifyPhoneNumberActivity)
-    fun inject(registrationActivity: RegistrationActivity)
-    fun inject(profileActivity: ProfileActivity)
-    fun inject(creationServiceActivity: CreationServiceActivity)
-    fun inject(mainScreenActivity: MainScreenActivity)
-    fun inject(serviceActivity: ServiceActivity)
-    fun inject(editProfileActivity: EditProfileActivity)
-    fun inject(scheduleActivity: ScheduleActivity)
-    fun inject(dialogsActivity: DialogsActivity)
-    fun inject(messagesActivity: MessagesActivity)
-    fun inject(subscriptionsActivity: SubscriptionsActivity)
-    fun inject(editServiceActivity: EditServiceActivity)
-    fun inject(userCommentsActivity: UserCommentsActivity)
-    fun inject(currentCommentActivity: CurrentCommentActivity)
-    fun inject(creationUserCommentActivity: CreationCommentActivity)
-    fun inject(serviceCommentsActivity: ServiceCommentsActivity)
-    fun inject(sessionsActivity: SessionsActivity)
 
     @Component.Builder
     interface Builder {

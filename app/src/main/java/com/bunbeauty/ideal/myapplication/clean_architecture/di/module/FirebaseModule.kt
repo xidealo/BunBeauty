@@ -11,54 +11,54 @@ import javax.inject.Singleton
 class FirebaseModule {
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideUserFirebase() = UserFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideServiceFirebase() = ServiceFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideTagFirebase() = TagFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun providePhotoFirebase() = PhotoServiceFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideCodeFirebase() = CodeFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideOrderFirebase() = OrderFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideDialogFirebase() = DialogFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideMessageFirebase() = MessageFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideSubscriptionFirebase() = SubscriptionFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideSubscriberFirebase() = SubscriberFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideUserCommentFirebase() = UserCommentFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideServiceCommentFirebase() = ServiceCommentFirebase()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideScheduleFirebase() = ScheduleFirebase()
 }

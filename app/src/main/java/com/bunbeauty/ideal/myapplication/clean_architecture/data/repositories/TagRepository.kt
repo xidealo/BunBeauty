@@ -10,7 +10,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.in
 import kotlinx.coroutines.launch
 
 class TagRepository(
-    private val tagDao: TagDao,
+    //private val tagDao: TagDao,
     private val tagFirebase: TagFirebase
 ) : ITagRepository, BaseRepository() {
 

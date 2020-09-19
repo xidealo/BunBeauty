@@ -9,7 +9,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.di.component.DaggerA
 
 class App : Application() {
 
-    lateinit var appComponent: AppComponent
+    public lateinit var appComponent: AppComponent
 
     override fun onCreate() {
         super.onCreate()

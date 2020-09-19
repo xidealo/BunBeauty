@@ -10,13 +10,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class UserRepository(
-    private val userDao: UserDao,
+    //private val userDao: UserDao,
     private val userFirebase: UserFirebase
 ) : BaseRepository(), IUserRepository {
 
     override fun insert(user: User, insertUsersCallback: InsertUsersCallback) {
         launch {
-            userDao.insert(user)
+            //userDao.insert(user)
             userFirebase.insert(user)
 
             withContext(Dispatchers.Main) {
@@ -27,7 +27,7 @@ class UserRepository(
 
     override fun delete(user: User, deleteUsersCallback: DeleteUsersCallback) {
         launch {
-            userDao.delete(user)
+            //userDao.delete(user)
             userFirebase.delete(user)
             withContext(Dispatchers.Main) {
                 deleteUsersCallback.returnDeletedCallback(user)
@@ -37,7 +37,7 @@ class UserRepository(
 
     override fun update(user: User, updateUsersCallback: UpdateUsersCallback) {
         launch {
-            userDao.update(user)
+            //userDao.update(user)
             userFirebase.update(user)
             withContext(Dispatchers.Main) {
                 updateUsersCallback.returnUpdatedCallback(user)
@@ -47,9 +47,9 @@ class UserRepository(
 
     override fun get(usersCallback: UsersCallback) {
         launch {
-            val users = userDao.get()
+            //val users = userDao.get()
             withContext(Dispatchers.Main) {
-                usersCallback.returnList(users)
+                //usersCallback.returnList(users)
             }
         }
     }
@@ -63,7 +63,7 @@ class UserRepository(
             userFirebase.getById(id, userCallback)
         } else {
             launch {
-                val users = userDao.getById(id)
+                //val users = userDao.getById(id)
 
                 withContext(Dispatchers.Main) {
                     //userCallback.returnElement(users)
@@ -81,7 +81,7 @@ class UserRepository(
             userFirebase.getByPhoneNumber(phoneNumber, userCallback)
         } else {
             launch {
-                val users = userDao.getByPhoneNumber(phoneNumber)
+                //val users = userDao.getByPhoneNumber(phoneNumber)
                 withContext(Dispatchers.Main) {
                     //isFirstEnter.returnList(users)
                 }
@@ -94,9 +94,9 @@ class UserRepository(
             userFirebase.getByCity(city, usersCallback)
         } else {
             launch {
-                val users = userDao.getByCity(city)
+                //val users = userDao.getByCity(city)
                 withContext(Dispatchers.Main) {
-                    usersCallback.returnList(users)
+                   // usersCallback.returnList(users)
                 }
             }
         }
@@ -112,9 +112,9 @@ class UserRepository(
             userFirebase.getByCityAndUserName(city, userName, usersCallback)
         } else {
             launch {
-                val users = userDao.getByCityAndUserName(city, userName)
+                //val users = userDao.getByCityAndUserName(city, userName)
                 withContext(Dispatchers.Main) {
-                    usersCallback.returnList(users)
+                   // usersCallback.returnList(users)
                 }
             }
         }
@@ -125,9 +125,9 @@ class UserRepository(
             userFirebase.getByName(name, usersCallback)
         } else {
             launch {
-                val users = userDao.getByName(name)
+                //val users = userDao.getByName(name)
                 withContext(Dispatchers.Main) {
-                    usersCallback.returnList(users)
+                   // usersCallback.returnList(users)
                 }
             }
         }
@@ -135,7 +135,7 @@ class UserRepository(
 
     override fun insertInRoom(user: User) {
         launch {
-            userDao.insert(user)
+            //userDao.insert(user)
         }
     }
 }

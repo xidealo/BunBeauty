@@ -17,5 +17,26 @@ import javax.inject.Singleton
 
 @Module
 class ActivityModule {
+    //Fragments
+    @Provides
+    @ActivityScope
+    fun provideOrdersFragment() = OrdersFragment()
+
+    @Provides
+    @ActivityScope
+    fun provideServicesFragment() = ServicesFragment()
+
+    //APIs
+    @Provides
+    @ActivityScope
+    fun provideFigureServicePointsApi() = FiguringServicePointsApi()
+
+    @Provides
+    @ActivityScope
+    fun provideVerifyPhoneNumberApi() = VerifyPhoneNumberApi()
+
+    @Provides
+    @ActivityScope
+    fun provideStringApi() = StringApi()
 
 }

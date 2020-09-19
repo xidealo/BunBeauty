@@ -11,35 +11,35 @@ import javax.inject.Singleton
 class AdapterModule {
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideServiceAdapter() = ServiceAdapter()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideDialogAdapter() = DialogAdapter()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideMessageAdapter() = MessageAdapter()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideSubscriptionAdapter() = SubscriptionAdapter()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun providePhotoAdapter() = PhotoAdapter()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideChangeablePhotoAdapter() = ChangeablePhotoAdapter()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideUserCommentAdapter() = UserCommentAdapter()
 
     @Provides
-    @Singleton
+   @ActivityScope
     fun provideServiceCommentAdapter() = ServiceCommentAdapter()
 
 }

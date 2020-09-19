@@ -9,6 +9,7 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bunbeauty.ideal.myapplication.clean_architecture.App
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.WorkWithTimeApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.premium.PremiumFragmentCodeInteractor
@@ -42,9 +43,10 @@ class PremiumFragment : MvpAppCompatFragment(), PremiumElementFragmentView {
 
     @ProvidePresenter
     internal fun provideElementPresenter(): PremiumFragmentPresenter {
-        DaggerAppComponent
+
+        DaggerActivityComponent
             .builder()
-            .application(activity!!.application)
+            .appComponent((activity!!.application as App).appComponent)
             .build().inject(this)
 
         return PremiumFragmentPresenter(

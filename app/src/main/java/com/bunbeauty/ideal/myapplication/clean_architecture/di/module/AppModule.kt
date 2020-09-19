@@ -18,29 +18,23 @@ import javax.inject.Singleton
 @Module
 class AppModule {
 
-    //APIs
     @Provides
     @Singleton
-    fun provideFigureServicePointsApi() = FiguringServicePointsApi()
+    fun provideContext(application: Application): Context {
+        return application
+    }
 
     @Provides
     @Singleton
-    fun provideVerifyPhoneNumberApi() = VerifyPhoneNumberApi()
+    fun provideDatabase(context: Context) = Room.databaseBuilder(
+        context,
+        LocalDatabase::class.java,
+        "BunBeautyDatabase"
+    ).fallbackToDestructiveMigration().build()
 
-    @Provides
-    @Singleton
-    fun provideStringApi() = StringApi()
 
-    //Fragments
-    @Provides
-    @Singleton
-    fun provideOrdersFragment() = OrdersFragment()
 
-    @Provides
-    @Singleton
-    fun provideServicesFragment() = ServicesFragment()
-
-    @Provides
+  /*  @Provides
     @Singleton
     fun provideUserDao(localDatabase: LocalDatabase) = localDatabase.getUserDao()
 
@@ -62,19 +56,6 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideDialogDao(localDatabase: LocalDatabase) = localDatabase.getDialogDao()
+    fun provideDialogDao(localDatabase: LocalDatabase) = localDatabase.getDialogDao()*/
 
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-        return application
-    }
-
-    @Provides
-    @Singleton
-    fun provideDatabase(context: Context) = Room.databaseBuilder(
-        context,
-        LocalDatabase::class.java,
-        "BunBeautyDatabase"
-    ).fallbackToDestructiveMigration().build()
 }

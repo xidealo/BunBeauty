@@ -31,10 +31,10 @@ abstract class BaseActivity : MvpAppCompatActivity(), ITopPanel, IBottomPanel {
     /**
      * for [DaggerActivityComponent]
      */
-    fun buildDagger(): AppComponent {
-        return DaggerAppComponent
+    fun buildDagger(): ActivityComponent {
+        return DaggerActivityComponent
             .builder()
-            .application(application)
+            .appComponent((application as App).appComponent)
             .build()
     }
 

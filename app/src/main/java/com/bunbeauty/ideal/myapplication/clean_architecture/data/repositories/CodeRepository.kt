@@ -8,7 +8,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.repositories.interface_repositories.ICodeRepository
 import kotlinx.coroutines.launch
 
-class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: CodeFirebase) :
+class CodeRepository(private val codeFirebase: CodeFirebase) :
     BaseRepository(), ICodeRepository, GetCodeCallback, UpdateCodeCallback {
 
     lateinit var codeSubscriber: GetCodeCallback
@@ -39,7 +39,7 @@ class CodeRepository(private val codeDao: CodeDao, private val codeFirebase: Cod
             else -> {
                 codeSubscriber.returnList(objects)
                 launch {
-                    codeDao.insert(objects.first())
+                    //codeDao.insert(objects.first())
                 }
             }
         }
