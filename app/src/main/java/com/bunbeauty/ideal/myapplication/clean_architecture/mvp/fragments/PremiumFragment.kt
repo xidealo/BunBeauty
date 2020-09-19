@@ -20,6 +20,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.AppModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.FirebaseModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.InteractorModule
 import com.bunbeauty.ideal.myapplication.clean_architecture.di.module.RepositoryModule
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.PremiumFragmentPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.fragments.PremiumElementFragmentView
 import com.google.android.material.snackbar.Snackbar
@@ -43,6 +44,7 @@ class PremiumFragment : MvpAppCompatFragment(), PremiumElementFragmentView {
     internal fun provideElementPresenter(): PremiumFragmentPresenter {
         DaggerAppComponent
             .builder()
+            .application(activity!!.application)
             .build().inject(this)
 
         return PremiumFragmentPresenter(
