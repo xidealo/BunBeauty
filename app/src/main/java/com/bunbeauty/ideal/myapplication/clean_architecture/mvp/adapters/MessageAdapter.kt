@@ -48,7 +48,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageViewHolder>() {
         val foundMessage = messageList.find { it.id == message.id }
         if (foundMessage != null) {
             val index = messageList.indexOf(foundMessage)
-            messageList.remove(message)
+            messageList.remove(foundMessage)
             notifyItemRemoved(index)
         }
     }

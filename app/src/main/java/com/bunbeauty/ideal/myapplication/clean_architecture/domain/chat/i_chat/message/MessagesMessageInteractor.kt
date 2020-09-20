@@ -49,12 +49,15 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
     }
 
     override fun returnDeletedList(objects: List<Message>) {
+
         if (objects.isNotEmpty()) {
             messagesPresenterCallback.deleteOrder(objects.first())
 
             for (message in objects) {
-                cacheMessages.remove(message)
-                messagesPresenterCallback.removeMessageAdapter(message)
+                if (message.dialogId == User.getMyId()) {
+                    cacheMessages.remove(message)
+                    messagesPresenterCallback.removeMessageAdapter(message)
+                }
             }
         }
     }
@@ -66,8 +69,12 @@ class MessagesMessageInteractor(private val messageRepository: MessageRepository
 
         for (message in objects) {
             if (cacheMessages.find { it.id == message.id } == null) {
-                cacheMessages.add(message)
-                messagesPresenterCallback.addItemToStart(message)
+                if (message.type == Message.TEXT_STATUS || message.ownerId == User.getMyId()) {
+                    cacheMessages.add(message)
+                    messagesPresenterCallback.addItemToStart(message)
+                } else {
+                    Log.d(Tag.TEST_TAG, "Тип сообщения ${message.type} user id ${message.userId}")
+                }
             }
         }
 
