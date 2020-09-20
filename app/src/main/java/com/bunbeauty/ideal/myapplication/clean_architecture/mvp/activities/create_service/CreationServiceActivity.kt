@@ -151,7 +151,7 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, EditablePho
 
     override fun openPhoto(openedPhotoLinkOrUri: String) {
         val intent = Intent(this, PhotoSliderActivity::class.java).apply {
-            putParcelableArrayListExtra(Photo.PHOTOS, creationServicePresenter.getPhotoLinkList())
+            putParcelableArrayListExtra(Photo.PHOTOS_EXTRA, creationServicePresenter.getPhotoLinkList())
             putExtra(Photo.LINK, openedPhotoLinkOrUri)
         }
         startActivity(intent)

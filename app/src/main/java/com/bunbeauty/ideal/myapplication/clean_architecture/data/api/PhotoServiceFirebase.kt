@@ -19,7 +19,7 @@ class PhotoServiceFirebase {
             .getReference(Service.SERVICES)
             .child(photo.userId)
             .child(photo.serviceId)
-            .child(Photo.PHOTOS)
+            .child(Photo.PHOTOS_EXTRA)
             .child(photo.id)
 
         val items = HashMap<String, Any>()
@@ -33,7 +33,7 @@ class PhotoServiceFirebase {
             .getReference(Service.SERVICES)
             .child(photo.userId)
             .child(photo.serviceId)
-            .child(Photo.PHOTOS)
+            .child(Photo.PHOTOS_EXTRA)
             .child(photo.id)
 
         subscriberRef.removeValue()
@@ -45,7 +45,7 @@ class PhotoServiceFirebase {
             .getReference(Service.SERVICES)
             .child(serviceOwnerId)
             .child(serviceId)
-            .child(Photo.PHOTOS)
+            .child(Photo.PHOTOS_EXTRA)
 
         photosRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(photosSnapshot: DataSnapshot) {
@@ -83,6 +83,6 @@ class PhotoServiceFirebase {
             .getReference(Service.SERVICES)
             .child(userId)
             .child(serviceId)
-            .child(Photo.PHOTOS).push().key!!
+            .child(Photo.PHOTOS_EXTRA).push().key!!
     }
 }

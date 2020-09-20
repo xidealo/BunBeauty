@@ -70,8 +70,7 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
 
         for (tag in tagsArray) {
             val inflater = LayoutInflater.from(context)
-            val view: View = inflater.inflate(R.layout.element_tag, fragment_category_ll_tags, false)
-            view.layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+            val view = inflater.inflate(R.layout.element_tag, fragment_category_ll_tags, false)
 
             val tagChip = view.element_tag_chip
             tagChip.text = tag

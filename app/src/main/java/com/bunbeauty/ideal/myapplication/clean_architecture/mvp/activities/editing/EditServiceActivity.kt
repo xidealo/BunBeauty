@@ -22,6 +22,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.servi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.service.EditServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo.CREATOR.PHOTOS_EXTRA
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
@@ -235,7 +236,7 @@ class EditServiceActivity : BaseActivity(), EditServiceView, EditablePhotoActivi
     override fun openPhoto(openedPhotoLinkOrUri: String) {
         val intent = Intent(this, PhotoSliderActivity::class.java).apply {
             putParcelableArrayListExtra(
-                Photo.PHOTO,
+                PHOTOS_EXTRA,
                 ArrayList(editServicePresenter.getPhotosLink())
             )
             putExtra(Photo.LINK, openedPhotoLinkOrUri)

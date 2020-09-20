@@ -20,6 +20,14 @@
     <string name="address">Адрес</string>
     <string name="description">Описание</string>
 
+    // errors
+    <string name="too_many_requests_error">Лимит привышен. Повторите попытку позже</string>
+    <string name="verification_failed_error">Ошибка. Что-то пошло не так</string>
+    <string name="too_short_code_error">Слишком короткий код</string>
+    <string name="wrong_code_error">Неверный код</string>
+    <string name="server_connection_error">Проблемы соединения с сервером</string>
+    <string name="phone_already_used_error">Проблемы соединения с сервером</string>
+
     //Current comment
     <string name="comment">Комментарий</string>
 

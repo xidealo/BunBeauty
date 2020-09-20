@@ -36,10 +36,9 @@ data class Photo(
 
     companion object CREATOR : Parcelable.Creator<Photo> {
 
-        const val PHOTOS = "photos"
-        const val PHOTO = "photo"
+        const val PHOTOS_EXTRA = "photos"
+        const val PHOTO_EXTRA = "photo"
         const val LINK = "link"
-        const val PHOTO_CALLBACK = "photo callback"
 
         override fun createFromParcel(parcel: Parcel): Photo {
             return Photo(parcel)

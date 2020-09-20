@@ -9,6 +9,7 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.*
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo.CREATOR.PHOTOS_EXTRA
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.CircularTransformation
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.invisible
@@ -131,7 +132,7 @@ class ProfileActivity : BaseActivity(), ProfileView, TabLayout.OnTabSelectedList
     private fun openPhoto() {
         val intent = Intent(this, PhotoSliderActivity::class.java).apply {
             putParcelableArrayListExtra(
-                Photo.PHOTO,
+                PHOTOS_EXTRA,
                 arrayListOf(Photo(link = profilePresenter.getCacheOwner().photoLink))
             )
             putExtra(Photo.LINK, profilePresenter.getCacheOwner().photoLink)

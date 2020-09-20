@@ -21,7 +21,7 @@ class PhotoSliderActivity : BaseActivity() {
         setContentView(R.layout.activity_photo_slider)
 
         initPanel()
-        photosList = intent.getParcelableArrayListExtra(Photo.PHOTOS) ?: ArrayList()
+        photosList = intent.getParcelableArrayListExtra(Photo.PHOTOS_EXTRA) ?: ArrayList()
         val openedPhotoLink = intent.getStringExtra(Photo.LINK) ?: ""
         photoPosition = photosList.indexOf(photosList.find { it.link == openedPhotoLink })
 

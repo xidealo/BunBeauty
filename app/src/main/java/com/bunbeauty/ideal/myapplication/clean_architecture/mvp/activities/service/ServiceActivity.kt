@@ -16,6 +16,7 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.Servi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.ServicePhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.service.ServiceUserInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo.CREATOR.PHOTOS_EXTRA
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
@@ -236,7 +237,7 @@ class ServiceActivity : BaseActivity(), ServiceView, IProfileAvailable, IPhotoEl
 
     override fun openPhoto(openedPhotoLinkOrUri: String) {
         val intent = Intent(this, PhotoSliderActivity::class.java).apply {
-            putParcelableArrayListExtra(Photo.PHOTO, ArrayList(servicePresenter.getPhotosLink()))
+            putParcelableArrayListExtra(PHOTOS_EXTRA, ArrayList(servicePresenter.getPhotosLink()))
             putExtra(Photo.LINK, openedPhotoLinkOrUri)
         }
         startActivity(intent)

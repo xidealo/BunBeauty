@@ -16,6 +16,8 @@ import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.MainScreenData
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenDataInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.search_service.MainScreenUserInteractor
@@ -28,8 +30,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.activity_main_screen.*
-import kotlinx.android.synthetic.main.fragment_category_block.*
 import kotlinx.android.synthetic.main.element_tag.view.*
+import kotlinx.android.synthetic.main.fragment_category_block.*
 import kotlinx.android.synthetic.main.part_top_panel.*
 import java.util.*
 import javax.inject.Inject
@@ -96,7 +98,7 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
     private fun init() {
         categories = ArrayList(listOf(*resources.getStringArray(R.array.categories)))
 
-        activity_main_screen_tv_empty.visibility = View.GONE
+        activity_main_screen_tv_empty.gone()
 
         activity_main_screen_rv_services.layoutManager = LinearLayoutManager(this)
         activity_main_screen_rv_services.adapter = serviceAdapter
@@ -128,16 +130,14 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
     }
 
     override fun onClick(view: View) {
-        if ((view.parent as View).id == R.id.activity_main_screen_ll_category) {
-            val category = (view as Button).text.toString()
-            mainScreenPresenter.disableCategoryButtons(categoriesButtonList)
-            if (mainScreenPresenter.isSelectedCategory(category)) {
-                mainScreenPresenter.showCurrentMainScreen()
-                mainScreenPresenter.setTagsState(activity_main_screen_ll_main_tags.visibility)
-            } else {
-                mainScreenPresenter.createMainScreenWithCategory(category)
-                enableCategoryButton(view)
-            }
+        val category = (view as Button).text.toString()
+        mainScreenPresenter.disableCategoryButtons(categoriesButtonList)
+        if (mainScreenPresenter.isSelectedCategory(category)) {
+            mainScreenPresenter.showCurrentMainScreen()
+            mainScreenPresenter.setTagsState(activity_main_screen_ll_main_tags.visibility)
+        } else {
+            mainScreenPresenter.createMainScreenWithCategory(category)
+            enableCategoryButton(view)
         }
     }
 
@@ -168,13 +168,13 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
     }
 
     override fun showLoading() {
-        activity_main_screen_pb_loading.visibility = View.VISIBLE
-        activity_main_screen_rv_services.visibility = View.GONE
+        activity_main_screen_pb_loading.visible()
+        activity_main_screen_rv_services.gone()
     }
 
     override fun hideLoading() {
-        activity_main_screen_pb_loading.visibility = View.GONE
-        activity_main_screen_rv_services.visibility = View.VISIBLE
+        activity_main_screen_pb_loading.gone()
+        activity_main_screen_rv_services.visible()
     }
 
     override fun showMainScreen(mainScreenData: ArrayList<MainScreenData>) {
@@ -182,7 +182,7 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
     }
 
     override fun hideTags() {
-        activity_main_screen_ll_main_tags.visibility = View.GONE
+        activity_main_screen_ll_main_tags.gone()
     }
 
     override fun clearTags() {
@@ -190,18 +190,18 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
     }
 
     override fun showTags() {
-        activity_main_screen_ll_main_tags.visibility = View.VISIBLE
+        activity_main_screen_ll_main_tags.visible()
     }
 
     override fun showEmptyScreen() {
-        activity_main_screen_tv_empty.visibility = View.VISIBLE
+        activity_main_screen_tv_empty.visible()
     }
 
     override fun createCategoryFeed(categories: MutableSet<String>) {
-        for (i in categories.indices) {
+        for (category in categories) {
             val button = MaterialButton(this)
             button.setOnClickListener(this)
-            button.text = categories.toTypedArray()[i]
+            button.text = category
             button.style(R.style.unselected_button)
             button.layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                 setMargins(8, 8, 8, 8)
@@ -219,18 +219,15 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
 
         for (tag in tagsArray) {
             val inflater = LayoutInflater.from(this)
-            val tagView = inflater.inflate(R.layout.element_tag, fragment_category_ll_tags, false)
-            tagView.layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-            tagView.element_tag_chip.text = tag
-            tagView.element_tag_chip.setOnClickListener {
+            val view = inflater.inflate(R.layout.element_tag, activity_main_screen_ll_tags, false)
+
+            val tagChip = view.element_tag_chip
+            tagChip.text = tag
+            tagChip.setOnClickListener {
                 mainScreenPresenter.createMainScreenWithTag(it as Chip)
             }
 
-            if (selectedTagsArray.contains(tag.toString())) {
-                tagView.style(R.style.choiceChip)
-            }
-
-            activity_main_screen_ll_tags.addView(tagView)
+            activity_main_screen_ll_tags.addView(view)
         }
     }
 }

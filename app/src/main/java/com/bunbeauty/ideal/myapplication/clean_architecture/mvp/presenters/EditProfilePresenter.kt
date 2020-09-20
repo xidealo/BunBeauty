@@ -1,7 +1,9 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.profile.EditProfileInteractor
@@ -19,7 +21,8 @@ class EditProfilePresenter(
     private val editProfileInteractor: EditProfileInteractor,
     private val photoInteractor: IPhotoInteractor,
     private val stringApi: StringApi,
-    private val intent: Intent
+    private val intent: Intent,
+    private val context: Context,
 ) :
     MvpPresenter<EditProfileView>(), EditProfilePresenterCallback, IPhotoCallback {
 
@@ -110,33 +113,33 @@ class EditProfilePresenter(
     }
 
     override fun showTooManyRequestsError() {
-        viewState.showMessage("Лимит привышен. Повторите попытку позже")
+        viewState.showMessage(context.resources.getString(R.string.too_many_requests_error))
     }
 
     override fun showTooShortCodeError() {
-        viewState.showMessage("Код слишком короткий")
+        viewState.showMessage(context.resources.getString(R.string.too_short_code_error))
     }
 
     override fun showVerificationFailed() {
-        viewState.showMessage("Что-то пошло не так")
+        viewState.showMessage(context.resources.getString(R.string.verification_failed_error))
     }
 
     override fun showWrongCodeError() {
-        viewState.showMessage("Неверный код. Попробуйте ещё раз.")
+        viewState.showMessage(context.resources.getString(R.string.wrong_code_error))
     }
 
     override fun showServiceConnectionProblem() {
-        viewState.showMessage("Проблемы соединения с сервером")
+        viewState.showMessage(context.resources.getString(R.string.server_connection_error))
     }
 
     override fun showPhoneAlreadyUsedError() {
-        viewState.showMessage("Данный номер уже используется другим пользователем.")
+        viewState.showMessage(context.resources.getString(R.string.phone_already_used_error))
+        viewState.hideLoading()
     }
 
     override fun deletePreviousPhoto(photos: ArrayList<Photo>) {
         photoInteractor.deletePhotosFromStorage(User.USER_PHOTO, photos)
     }
-
 
     fun signOut() {
         editProfileInteractor.signOut()

@@ -5,18 +5,18 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import androidx.core.content.ContextCompat
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.domain.CircularTransformation
-import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.profile.EditProfileInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo.CREATOR.PHOTOS_EXTRA
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.CircularTransformation
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.StringApi
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.profile.EditProfileInteractor
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.PhotoInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.PhoneTextWatcher
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
@@ -25,7 +25,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivit
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.intarfaces.IAdapterSpinner
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.EditProfilePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.EditProfileView
-import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -49,7 +48,7 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
     @ProvidePresenter
     internal fun provideEditProfilePresenter(): EditProfilePresenter {
         buildDagger().inject(this)
-        return EditProfilePresenter(editProfileInteractor, photoInteractor, stringApi, intent)
+        return EditProfilePresenter(editProfileInteractor, photoInteractor, stringApi, intent, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,7 +120,7 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
     private fun openPhoto() {
         val intent = Intent(this, PhotoSliderActivity::class.java).apply {
             putParcelableArrayListExtra(
-                Photo.PHOTO,
+                PHOTOS_EXTRA,
                 arrayListOf(Photo(link = editProfilePresenter.getCacheOwner().photoLink))
             )
             putExtra(Photo.LINK, editProfilePresenter.getCacheOwner().photoLink)
@@ -212,7 +211,6 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
         finish()
     }
 
-
     override fun actionClick() {
         signOut()
     }
@@ -227,9 +225,11 @@ class EditProfileActivity : BaseActivity(), EditProfileView, IAdapterSpinner {
         finish()
     }
 
+    override fun hideLoading() {
+        activity_edit_profile_btn_save.hideLoading()
+    }
+
     override fun showMessage(message: String) {
-        Snackbar.make(activity_edit_service_ll_main, message, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
-            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
+        super.showMessage(message, activity_edit_service_ll_main)
     }
 }

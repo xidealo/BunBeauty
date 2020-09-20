@@ -2,12 +2,11 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.log_
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.VerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.User
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.log_in.VerifyPhoneInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.profile.ProfileActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.log_in.VerifyPhonePresenter
@@ -26,7 +25,7 @@ class VerifyPhoneNumberActivity : BaseActivity(), VerifyPhoneView {
     @ProvidePresenter
     internal fun provideVerifyPhonePresenter(): VerifyPhonePresenter {
         buildDagger().inject(this)
-        return VerifyPhonePresenter(verifyPhoneInteractor, intent)
+        return VerifyPhonePresenter(verifyPhoneInteractor, intent, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

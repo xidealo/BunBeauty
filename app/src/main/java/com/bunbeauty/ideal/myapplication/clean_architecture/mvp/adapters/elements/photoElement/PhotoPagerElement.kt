@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo.CREATOR.PHOTO_EXTRA
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
@@ -24,7 +25,7 @@ class PhotoPagerElement : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            photo = it.getParcelable(Photo.PHOTO) ?: Photo()
+            photo = it.getParcelable(PHOTO_EXTRA) ?: Photo()
         }
     }
 
@@ -74,7 +75,7 @@ class PhotoPagerElement : Fragment() {
         fun newInstance(photo: Photo) =
             PhotoPagerElement().apply {
                 arguments = Bundle().apply {
-                    putParcelable(Photo.PHOTO, photo)
+                    putParcelable(PHOTO_EXTRA, photo)
                 }
             }
     }

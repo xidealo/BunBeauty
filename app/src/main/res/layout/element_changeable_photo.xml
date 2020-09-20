@@ -17,7 +17,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/element_changeable_photo_btn_delete"
-        style="@style/closeIcon"
+        style="@style/closeIconButton"
         android:layout_gravity="end"
         android:layout_margin="@dimen/default_small_margin"
         android:layout_width="24dp"

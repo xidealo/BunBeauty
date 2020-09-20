@@ -2,6 +2,7 @@ package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elemen
 
 import android.view.View
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.element_changeable_photo.view.*
 
@@ -14,12 +15,14 @@ class ChangeablePhotoElement(
 ) {
 
     init {
+        view.element_changeable_photo_iv_photo.setPadding(0, 0, 0, 0)
         view.element_changeable_photo_iv_photo.setOnClickListener {
             if (photo.link.isNotEmpty()) {
                 changeablePhotoActivityElement.openPhoto(photo.link)
             }
         }
 
+        view.element_changeable_photo_btn_delete.visible()
         view.element_changeable_photo_btn_delete.setOnClickListener {
             changeablePhotoActivityElement.deletePhoto(photo)
         }

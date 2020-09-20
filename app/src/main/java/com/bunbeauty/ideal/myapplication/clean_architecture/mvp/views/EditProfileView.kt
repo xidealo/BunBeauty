@@ -16,4 +16,5 @@ interface EditProfileView: MvpView {
     fun showCodeInputAndButtons()
     fun hideCodeInputAndButtons()
     fun showMessage(message: String)
+    fun hideLoading()
 }
