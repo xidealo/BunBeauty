@@ -68,6 +68,7 @@ class CreationCommentMessageInteractor(
 
     private fun updateMyMessage(dialog: Dialog, messageText: String, intent: Intent) {
         val message = (intent.getSerializableExtra(Message.MESSAGE) as Message).copy()
+        message.dialogId = dialog.id
         message.userId = dialog.user.id
         message.type = Message.TEXT_STATUS
         message.message = messageText
