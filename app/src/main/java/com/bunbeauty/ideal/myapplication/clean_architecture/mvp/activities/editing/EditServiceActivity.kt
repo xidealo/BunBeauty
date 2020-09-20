@@ -15,7 +15,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ChangeablePhotoAdapter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.CategoryFragment
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.photoElement.IChangeablePhotoElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.photoElement.EditablePhotoActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.editing.service.EditServiceServiceInteractor
@@ -35,7 +35,7 @@ import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_edit_service.*
 import javax.inject.Inject
 
-class EditServiceActivity : BaseActivity(), EditServiceView, IChangeablePhotoElement {
+class EditServiceActivity : BaseActivity(), EditServiceView, EditablePhotoActivity {
 
     @Inject
     lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter
@@ -72,13 +72,16 @@ class EditServiceActivity : BaseActivity(), EditServiceView, IChangeablePhotoEle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_service)
-        init()
+        setupUI()
         showLoading()
         editServicePresenter.getService()
         createPanels()
     }
 
-    private fun init() {
+    private fun setupUI() {
+        categoryFragment =
+            supportFragmentManager.findFragmentById(R.id.activity_edit_service_fr_category) as CategoryFragment
+
         activity_edit_service_btn_save.setOnClickListener {
             editServicePresenter.saveService(
                 activity_edit_service_et_name.text.toString().trim(),
@@ -87,8 +90,8 @@ class EditServiceActivity : BaseActivity(), EditServiceView, IChangeablePhotoEle
                 activity_edit_service_et_cost.text.toString().toLongOrNull() ?: 0,
                 activity_edit_service_np_hour.value,
                 activity_edit_service_np_minute.value,
-                categoryFragment.getCategory(),
-                categoryFragment.getSelectedTags()
+                categoryFragment.category,
+                categoryFragment.selectedTagList
             )
         }
 
@@ -98,20 +101,14 @@ class EditServiceActivity : BaseActivity(), EditServiceView, IChangeablePhotoEle
         activity_edit_service_np_minute.maxValue = 1
         activity_edit_service_np_minute.displayedValues = arrayOf("0", "30")
 
-        activity_edit_service_btn_add_photo.setOnClickListener {
-            CropImage.activity().start(this)
-        }
-
         activity_edit_service_btn_delete.setOnClickListener {
             confirmDelete(editServicePresenter.getCacheService())
         }
 
         activity_edit_service_rv_photos.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        changeablePhotoAdapter.editablePhotoActivity = this
         activity_edit_service_rv_photos.adapter = changeablePhotoAdapter
-
-        categoryFragment =
-            supportFragmentManager.findFragmentById(R.id.activity_edit_service_fr_category) as CategoryFragment
     }
 
     override fun showEditService(service: Service) {
@@ -197,6 +194,10 @@ class EditServiceActivity : BaseActivity(), EditServiceView, IChangeablePhotoEle
         dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Нет") { _, _ -> }
         dialog.setIcon(android.R.drawable.ic_dialog_alert)
         dialog.show()
+    }
+
+    override fun addPhoto() {
+        CropImage.activity().start(this)
     }
 
     override fun showMessage(message: String) {

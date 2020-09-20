@@ -1,12 +1,10 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +25,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivit
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SessionsPresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.SessionsView
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_sessions.*
 import javax.inject.Inject
 
@@ -112,7 +109,7 @@ class SessionsActivity : BaseActivity(), SessionsView {
 
     @SuppressLint("InflateParams")
     private fun createButton(width: Int, height: Int, text: String): MaterialButton {
-        val button = LayoutInflater.from(this).inflate(R.layout.element_schedule, null) as MaterialButton
+        val button = LayoutInflater.from(this).inflate(R.layout.element_schedule_button, null) as MaterialButton
 
         val margin = resources.getDimensionPixelSize(R.dimen.session_time_button_margin)
         button.layoutParams = LinearLayout.LayoutParams(width - 2 * margin, height).apply {

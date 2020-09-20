@@ -5,40 +5,34 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ideal.myapplication.R
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.Tag
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ChangeablePhotoAdapter
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.CategoryFragment
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.photoElement.IChangeablePhotoElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.gone
+import com.bunbeauty.ideal.myapplication.clean_architecture.domain.api.visible
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.create_service.CreationServiceServiceServiceInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.create_service.CreationServiceTagInteractor
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.photo.PhotoInteractor
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
 import com.bunbeauty.ideal.myapplication.clean_architecture.enums.ButtonTask
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.PhotoSliderActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.activities.ScheduleActivity
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.PremiumFragment
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.ChangeablePhotoAdapter
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.CategoryFragment
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.photoElement.EditablePhotoActivity
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.base.BaseActivity
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.fragments.PremiumFragment
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.CreationServicePresenter
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.views.CreationServiceView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.theartofdev.edmodo.cropper.CropImage
-import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.activity_creation_service.*
 import javax.inject.Inject
 
-
-class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeablePhotoElement {
-
-    private lateinit var categoryFragment: CategoryFragment
+class CreationServiceActivity : BaseActivity(), CreationServiceView, EditablePhotoActivity {
 
     @Inject
     lateinit var changeablePhotoAdapter: ChangeablePhotoAdapter
@@ -65,11 +59,13 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
         )
     }
 
+    private lateinit var categoryFragment: CategoryFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_creation_service)
 
-        init()
+        setupUI()
         showMainBlock()
     }
 
@@ -78,9 +74,13 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
         initBottomPanel()
     }
 
-    private fun init() {
+    private fun setupUI() {
+        categoryFragment =
+            supportFragmentManager.findFragmentById(R.id.activity_creation_service_fg_category) as CategoryFragment
+
         activity_creation_service_rv_photos.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        changeablePhotoAdapter.editablePhotoActivity = this
         activity_creation_service_rv_photos.adapter = changeablePhotoAdapter
 
         activity_creation_service_btn_add_service.setOnClickListener {
@@ -91,29 +91,26 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
                 activity_creation_service_et_address.text.toString().trim(),
                 activity_creation_service_np_hour.value,
                 activity_creation_service_np_minute.value,
-                categoryFragment.getCategory(),
-                categoryFragment.getSelectedTags()
+                categoryFragment.category,
+                categoryFragment.selectedTagList
             )
         }
+        setupDurationPickers()
+
+        activity_creation_service_btn_continue.setOnClickListener {
+            goToSchedule()
+        }
+
+        initTopPanel("Создание услуги", ButtonTask.NONE)
+    }
+
+    fun setupDurationPickers() {
         activity_creation_service_np_hour.minValue = 0
         activity_creation_service_np_hour.maxValue = 8
         activity_creation_service_np_minute.minValue = 0
         activity_creation_service_np_minute.maxValue = 1
         activity_creation_service_np_minute.value = 1
         activity_creation_service_np_minute.displayedValues = arrayOf("0", "30")
-
-        activity_creation_service_btn_add_photo.setOnClickListener {
-            CropImage
-                .activity()
-                .start(this)
-        }
-        activity_creation_service_btn_continue.setOnClickListener {
-            goToSchedule()
-        }
-
-        initTopPanel("Создание услуги", ButtonTask.NONE)
-        categoryFragment =
-            supportFragmentManager.findFragmentById(R.id.activity_creation_service_fg_category) as CategoryFragment
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -135,7 +132,7 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
             .beginTransaction()
             .add(R.id.activity_creation_service_ll_premium, PremiumFragment.newInstance(service))
             .commit()
-        activity_creation_service_ll_premium.visibility = View.VISIBLE
+        activity_creation_service_ll_premium.visible()
     }
 
     override fun deletePhoto(photo: Photo) {
@@ -148,21 +145,22 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
             }.show()
     }
 
+    override fun addPhoto() {
+        CropImage.activity().start(this)
+    }
+
     override fun openPhoto(openedPhotoLinkOrUri: String) {
         val intent = Intent(this, PhotoSliderActivity::class.java).apply {
-            putParcelableArrayListExtra(
-                Photo.PHOTO,
-                ArrayList(creationServicePresenter.getPhotosLink())
-            )
+            putParcelableArrayListExtra(Photo.PHOTOS, creationServicePresenter.getPhotoLinkList())
             putExtra(Photo.LINK, openedPhotoLinkOrUri)
         }
         startActivity(intent)
         overridePendingTransition(0, 0)
     }
 
-    override fun updatePhotoFeed(photos: List<Photo>) {
+    override fun updatePhotoFeed(photoLinkList: List<Photo>) {
         changeablePhotoAdapter.setData(
-            creationServicePresenter.getPhotosLink(),
+            photoLinkList,
             this,
             resources.getDimensionPixelSize(R.dimen.photo_width),
             resources.getDimensionPixelSize(R.dimen.photo_height)
@@ -170,25 +168,15 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
     }
 
     override fun hideMainBlock() {
-        activity_creation_service_ll_main.visibility = View.GONE
-        activity_creation_service_btn_add_service.visibility = View.GONE
-        activity_creation_service_btn_continue.visibility = View.VISIBLE
+        activity_creation_service_ll_main.gone()
+        activity_creation_service_btn_add_service.gone()
+        activity_creation_service_btn_continue.visible()
     }
 
     override fun showMainBlock() {
-        activity_creation_service_ll_main.visibility = View.VISIBLE
-        activity_creation_service_btn_add_service.visibility = View.VISIBLE
-        activity_creation_service_btn_continue.visibility = View.GONE
-    }
-
-    override fun showMessage(message: String) {
-        Snackbar.make(activity_creation_service_ll_main, message, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(this, R.color.mainBlue))
-            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
-    }
-
-    override fun showMoreTenImages() {
-        Toast.makeText(this, "Должно быть меньше 10 фотографий", Toast.LENGTH_LONG).show()
+        activity_creation_service_ll_main.visible()
+        activity_creation_service_btn_add_service.visible()
+        activity_creation_service_btn_continue.gone()
     }
 
     override fun showNameInputError(error: String) {
@@ -206,15 +194,17 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
         activity_creation_service_et_cost.requestFocus()
     }
 
-    override fun showError(error: String) {
-        Snackbar.make(activity_creation_service_ll_main, error, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(this, R.color.grey))
-            .setActionTextColor(ContextCompat.getColor(this, R.color.white)).show()
+    override fun showCategorySpinnerError(error: String) {
+        categoryFragment.showCategorySpinnerError(error)
     }
 
     override fun showAddressInputError(error: String) {
         activity_creation_service_et_address.error = error
         activity_creation_service_et_address.requestFocus()
+    }
+
+    override fun showMessage(message: String) {
+        super.showMessage(message, activity_creation_service_ll_main)
     }
 
     private fun goToSchedule() {
@@ -223,5 +213,4 @@ class CreationServiceActivity : BaseActivity(), CreationServiceView, IChangeable
         overridePendingTransition(0, 0)
         finish()
     }
-
 }

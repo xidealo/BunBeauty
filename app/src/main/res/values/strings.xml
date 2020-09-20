@@ -4,6 +4,8 @@
 
     <string name="register">Зарегестрироваться</string>
     <string name="add">Добавить</string>
+    <string name="create">Создать</string>
+    <string name="next">Продолжить</string>
 
     //registration
     <string name="name">Имя</string>
@@ -17,7 +19,6 @@
     <string name="premium_description">После успешного ввода кода, ваша услуга получит статус "\"Премиумной услуги"\" на следующие 7 дней</string>
     <string name="address">Адрес</string>
     <string name="description">Описание</string>
-    <string name="duration">Длительность</string>
 
     //Current comment
     <string name="comment">Комментарий</string>
@@ -54,4 +55,6 @@
     // MainScreen
     <string name="search">Поиск</string>
     <string name="no_services_in_your_region">В вашем регионе нет услуг 🤷‍♀️</string>
+    <string name="duration">Длительность</string>
+    <string name="delete">Удалить</string>
 </resources>

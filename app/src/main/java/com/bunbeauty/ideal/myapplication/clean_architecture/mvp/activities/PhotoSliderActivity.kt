@@ -19,22 +19,17 @@ class PhotoSliderActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photo_slider)
+
         initPanel()
-        photosList = intent.getParcelableArrayListExtra(Photo.PHOTO) ?: ArrayList()
+        photosList = intent.getParcelableArrayListExtra(Photo.PHOTOS) ?: ArrayList()
         val openedPhotoLink = intent.getStringExtra(Photo.LINK) ?: ""
         photoPosition = photosList.indexOf(photosList.find { it.link == openedPhotoLink })
 
-        photoPagerAdapter =
-            PhotoPagerAdapter(
-                this
-            )
+        photoPagerAdapter = PhotoPagerAdapter(this)
         activity_photo_slider_vp_photos.adapter = photoPagerAdapter
         photoPagerAdapter.setItems(photosList)
 
-        activity_photo_slider_vp_photos.setCurrentItem(
-            photoPosition,
-            false
-        )
+        activity_photo_slider_vp_photos.setCurrentItem(photoPosition, false)
     }
 
     private fun initPanel() {

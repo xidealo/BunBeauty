@@ -17,7 +17,7 @@ class PhotoInteractor(private val photoServiceRepository: IPhotoServiceRepositor
 
     private lateinit var iPhotoCallback: IPhotoCallback
 
-    override fun getPhotosLink() = photos
+    override fun getPhotoLinkList() = photos
     override fun getDeletePhotosLink() = deletePhotos
 
     override fun addPhoto(photo: Photo) {

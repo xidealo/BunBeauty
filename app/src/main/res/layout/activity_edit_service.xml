@@ -112,49 +112,35 @@
                     android:layout_weight="1" />
             </LinearLayout>
 
-            <fragment
+            <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/activity_edit_service_fr_category"
-                class="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.CategoryFragment"
+                android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.CategoryFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/default_margin" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/activity_edit_service_btn_add_photo"
-                style="@style/mainButton"
-                android:layout_gravity="center_horizontal"
-                android:fontFamily="@font/font_awesome_solid"
-                android:text=""
-                android:textSize="20sp" />
-
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/activity_edit_service_rv_photos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/activity_edit_service_rv_photos"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:scrollbars="none" />
-            </LinearLayout>
+                android:layout_weight="1"
+                android:scrollbars="none" />
 
             <LinearLayout
                 android:id="@+id/activity_edit_service_ll_bottom"
-                style="@style/wideHorizontalBlock"
+                style="@style/wideVerticalBlock"
                 android:gravity="center"
                 app:layout_constraintBottom_toTopOf="@+id/bottom_panel">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/activity_edit_service_btn_delete"
-                    style="@style/mainButton"
-                    android:text="Удалить" />
-
-                <com.google.android.material.button.MaterialButton
                     android:id="@+id/activity_edit_service_btn_save"
                     style="@style/mainButton"
-                    android:text="Сохранить" />
+                    android:text="@string/save" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/activity_edit_service_btn_delete"
+                    style="@style/outlineButton"
+                    android:text="@string/delete" />
 
             </LinearLayout>
         </LinearLayout>

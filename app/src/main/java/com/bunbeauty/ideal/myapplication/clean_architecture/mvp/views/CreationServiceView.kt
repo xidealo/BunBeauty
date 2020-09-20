@@ -9,11 +9,10 @@ interface CreationServiceView : MvpView {
     fun hideMainBlock()
     fun showMainBlock()
     fun showMessage(message: String)
-    fun showMoreTenImages()
-    fun updatePhotoFeed(photos: List<Photo>)
+    fun updatePhotoFeed(photoLinkList: List<Photo>)
     fun showNameInputError(error: String)
     fun showDescriptionInputError(error: String)
     fun showCostInputError(error: String)
-    fun showError(error: String)
+    fun showCategorySpinnerError(error: String)
     fun showAddressInputError(error: String)
 }

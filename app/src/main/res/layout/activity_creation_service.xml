@@ -82,13 +82,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="12dp"
-                        android:src="@drawable/icon_duration" />
+                        android:src="@drawable/icon_duration"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Длительность"
+                        android:text="@string/duration"
                         android:textColor="@color/dark_grey"
                         android:textSize="16sp" />
 
@@ -105,30 +106,19 @@
                         android:layout_weight="1" />
                 </LinearLayout>
 
-                <fragment
+                <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/activity_creation_service_fg_category"
-                    class="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.CategoryFragment"
+                    android:name="com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.CategoryFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/default_margin" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/activity_creation_service_btn_add_photo"
-                    style="@style/mainButton"
-                    android:layout_gravity="center_horizontal"
-                    android:fontFamily="@font/font_awesome_solid"
-                    android:text=""
-                    android:textSize="20sp" />
-
-                <LinearLayout style="@style/wideHorizontalBlock">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/activity_creation_service_rv_photos"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:scrollbars="none" />
-                </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activity_creation_service_rv_photos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/default_margin"
+                    android:scrollbars="none" />
             </LinearLayout>
 
             <LinearLayout
@@ -139,19 +129,18 @@
                 android:gravity="center"
                 android:orientation="vertical" />
 
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_creation_service_btn_add_service"
                 style="@style/mainButton"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/add" />
+                android:text="@string/create" />
         </LinearLayout>
     </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_creation_service_btn_continue"
         style="@style/mainButton"
-        android:text="Продолжить"
+        android:text="@string/next"
         app:layout_constraintBottom_toTopOf="@+id/bottom_panel"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

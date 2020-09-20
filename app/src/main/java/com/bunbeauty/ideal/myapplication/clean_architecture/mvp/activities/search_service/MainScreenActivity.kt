@@ -29,8 +29,7 @@ import com.google.android.material.chip.Chip
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.activity_main_screen.*
 import kotlinx.android.synthetic.main.fragment_category_block.*
-import kotlinx.android.synthetic.main.fragment_tag.*
-import kotlinx.android.synthetic.main.fragment_tag.view.*
+import kotlinx.android.synthetic.main.element_tag.view.*
 import kotlinx.android.synthetic.main.part_top_panel.*
 import java.util.*
 import javax.inject.Inject
@@ -220,10 +219,10 @@ class MainScreenActivity : BaseActivity(), View.OnClickListener, MainScreenView 
 
         for (tag in tagsArray) {
             val inflater = LayoutInflater.from(this)
-            val tagView = inflater.inflate(R.layout.fragment_tag, tagsMaxLayout, false)
+            val tagView = inflater.inflate(R.layout.element_tag, fragment_category_ll_tags, false)
             tagView.layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-            tagView.tagFragmentTagChip.text = tag
-            tagView.tagFragmentTagChip.setOnClickListener {
+            tagView.element_tag_chip.text = tag
+            tagView.element_tag_chip.setOnClickListener {
                 mainScreenPresenter.createMainScreenWithTag(it as Chip)
             }
 

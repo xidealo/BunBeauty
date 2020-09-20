@@ -86,8 +86,7 @@ interface ITopPanel : IPanel, Toolbar.OnMenuItemClickListener {
     }
 
     private fun configActionIcon(iconId: Int) {
-        panelContext.top_panel.menu.findItem(R.id.navigation_action).icon =
-            panelContext.getDrawable(iconId)
+        panelContext.top_panel.menu.findItem(R.id.navigation_action).icon = ContextCompat.getDrawable(panelContext, iconId)
         panelContext.top_panel.setOnMenuItemClickListener(this)
 
         hideImageView()

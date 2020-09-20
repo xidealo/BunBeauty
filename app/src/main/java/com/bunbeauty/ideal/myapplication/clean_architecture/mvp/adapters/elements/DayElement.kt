@@ -8,7 +8,7 @@ import com.android.ideal.myapplication.R
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.WorkingDay
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.RefreshableAdapterCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.presenters.SessionsPresenter
-import kotlinx.android.synthetic.main.element_schedule.view.*
+import kotlinx.android.synthetic.main.element_schedule_button.view.*
 
 class DayElement(private val view: View, private val day: WorkingDay, context: Context) {
 

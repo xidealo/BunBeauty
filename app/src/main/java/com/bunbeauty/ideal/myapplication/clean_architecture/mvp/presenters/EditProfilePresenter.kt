@@ -43,14 +43,14 @@ class EditProfilePresenter(
         user.surname = surname
         user.city = city
         user.phone = code + stringApi.getPhoneNumberDigits(phone)
-        editProfileInteractor.saveData(user, photoInteractor.getPhotosLink(), this)
+        editProfileInteractor.saveData(user, photoInteractor.getPhotoLinkList(), this)
     }
 
     override fun returnCreatedPhotoLink(uri: Uri) {
         editProfileInteractor.cacheWithChangesUser.photoLink = uri.toString()
         editProfileInteractor.saveData(
             editProfileInteractor.cacheWithChangesUser,
-            photoInteractor.getPhotosLink(),
+            photoInteractor.getPhotoLinkList(),
             this
         )
     }

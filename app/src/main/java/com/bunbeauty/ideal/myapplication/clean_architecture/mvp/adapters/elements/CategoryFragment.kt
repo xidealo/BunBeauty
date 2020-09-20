@@ -1,10 +1,12 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
@@ -17,25 +19,14 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.intarfaces.IAdap
 import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.intarfaces.SpinnerSelectable
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_category_block.*
+import kotlinx.android.synthetic.main.element_tag.view.*
 
 class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelectable {
 
-    private val cacheSelectedTags: ArrayList<Tag> = ArrayList()
-    private val cacheUnselectedTags: ArrayList<Tag> = ArrayList()
+    val selectedTagList = ArrayList<Tag>()
+    var category: String = ""
 
-    private var category: String = ""
-
-    fun setCategoryFragment(category: String, tags: List<Tag>) {
-        cacheSelectedTags.addAll(tags)
-        this.category = category
-        fragment_category_sp_category.setText(category, false)
-        showTags((fragment_category_sp_category.adapter as ArrayAdapter<String>).getPosition(category))
-    }
-
-    fun getCategory() = category
-    fun getSelectedTags() = cacheSelectedTags
-    fun getUnselectedTags() = cacheUnselectedTags
-
+    @SuppressLint("InflateParams")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,20 +40,24 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
         savedInstanceState: Bundle?
     ) {
         val categories = arrayListOf(*resources.getStringArray(R.array.categories))
-        setAdapter(
-            categories,
-            fragment_category_sp_category,
-            context!!
-        )
+        setAdapter(categories, fragment_category_sp_category, context!!)
         setCategorySpinnerListener()
+    }
+
+    fun setCategoryFragment(category: String, tags: List<Tag>) {
+        this.category = category
+        selectedTagList.addAll(tags)
+
+        fragment_category_sp_category.setText(category, false)
+        showTags((fragment_category_sp_category.adapter as ArrayAdapter<String>).getPosition(category))
     }
 
     private fun setCategorySpinnerListener() {
         fragment_category_sp_category.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, position, _ ->
-                cacheSelectedTags.clear()
+                selectedTagList.clear()
                 category = fragment_category_sp_category.text.toString()
-                tagsMaxLayout.removeAllViews()
+                fragment_category_ll_tags.removeAllViews()
                 if (position > -1)
                     showTags(position)
             }
@@ -75,44 +70,34 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
 
         for (tag in tagsArray) {
             val inflater = LayoutInflater.from(context)
-            val view: View = inflater.inflate(R.layout.fragment_tag, tagsMaxLayout, false)
-            view.layoutParams =
-                LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
+            val view: View = inflater.inflate(R.layout.element_tag, fragment_category_ll_tags, false)
+            view.layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
 
-            val tagText = view.findViewById<Chip>(R.id.tagFragmentTagChip)
-            tagText.text = tag
-
-            if (cacheSelectedTags.map { it.tag }.contains(tag)) {
-                setPickedTag(tagText)
-            } else {
-                cacheUnselectedTags.add(Tag(userId = User.getMyId(), tag = tag.toString()))
+            val tagChip = view.element_tag_chip
+            tagChip.text = tag
+            if (selectedTagList.any { it.tag == tag }) {
+                selectTag(tagChip)
+            }
+            tagChip.setOnClickListener {
+                tagClick(tagChip)
             }
 
-            tagText.setOnClickListener {
-                tagClick(tagText)
-            }
-
-            tagsMaxLayout.addView(view)
+            fragment_category_ll_tags.addView(view)
         }
     }
 
     private fun tagClick(tagText: Chip) {
         val text = tagText.text.toString()
-        if (cacheSelectedTags.map { it.tag }.contains(text)) {
+        if (selectedTagList.map { it.tag }.contains(text)) {
             setUnpickedTag(tagText)
-            cacheSelectedTags.remove(cacheSelectedTags.find { it.tag == text })
-            cacheUnselectedTags.add(Tag(userId = User.getMyId(), tag = text))
+            selectedTagList.remove(selectedTagList.find { it.tag == text })
         } else {
-            setPickedTag(tagText)
-            cacheSelectedTags.add(Tag(userId = User.getMyId(), tag = text))
-            cacheUnselectedTags.remove(cacheUnselectedTags.find { it.tag == text })
+            selectTag(tagText)
+            selectedTagList.add(Tag(userId = User.getMyId(), tag = text))
         }
     }
 
-    private fun setPickedTag(tagText: Chip) {
+    private fun selectTag(tagText: Chip) {
         tagText.chipBackgroundColor =
             ColorStateList.valueOf(ContextCompat.getColor(context!!, R.color.yellow))
         tagText.setTextColor(ContextCompat.getColor(context!!, R.color.black))
@@ -122,5 +107,9 @@ class CategoryFragment : MvpAppCompatFragment(), IAdapterSpinner, SpinnerSelecta
         tagText.chipBackgroundColor =
             ColorStateList.valueOf(ContextCompat.getColor(context!!, R.color.mainBlue))
         tagText.setTextColor(ContextCompat.getColor(context!!, R.color.white))
+    }
+
+    fun showCategorySpinnerError(error: String) {
+        fragment_category_sp_category.error = error
     }
 }

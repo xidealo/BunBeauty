@@ -160,7 +160,7 @@ class ScheduleActivity : BaseActivity(), ScheduleView, View.OnTouchListener {
         text: String,
         strokeColor: ColorStateList
     ): MaterialButton {
-        val button = LayoutInflater.from(this).inflate(R.layout.element_schedule, null) as MaterialButton
+        val button = LayoutInflater.from(this).inflate(R.layout.element_schedule_button, null) as MaterialButton
 
         val margin = resources.getDimensionPixelSize(R.dimen.schedule_button_margin)
         button.layoutParams = LinearLayout.LayoutParams(width - 2 * margin, height).apply {

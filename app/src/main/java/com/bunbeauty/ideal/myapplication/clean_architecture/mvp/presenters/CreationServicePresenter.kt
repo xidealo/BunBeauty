@@ -46,7 +46,7 @@ class CreationServicePresenter(
     }
 
     override fun addPhotos(service: Service) {
-        photoInteractor.savePhotos(photoInteractor.getPhotosLink(), service, this)
+        photoInteractor.savePhotos(photoInteractor.getPhotoLinkList(), service, this)
     }
 
     override fun addTags(service: Service) {
@@ -63,15 +63,15 @@ class CreationServicePresenter(
         val photo = Photo()
         photo.link = uri.toString()
         photoInteractor.addPhoto(photo)
-        viewState.updatePhotoFeed(photoInteractor.getPhotosLink())
+        viewState.updatePhotoFeed(photoInteractor.getPhotoLinkList())
     }
 
     fun removePhoto(photo: Photo) {
         photoInteractor.removePhoto(photo)
-        viewState.updatePhotoFeed(photoInteractor.getPhotosLink())
+        viewState.updatePhotoFeed(photoInteractor.getPhotoLinkList())
     }
 
-    fun getPhotosLink() = photoInteractor.getPhotosLink()
+    fun getPhotoLinkList() = photoInteractor.getPhotoLinkList()
 
     override fun showNameInputError(error: String) {
         viewState.showNameInputError(error)
@@ -86,7 +86,7 @@ class CreationServicePresenter(
     }
 
     override fun showCategoryInputError(error: String) {
-        viewState.showError(error)
+        viewState.showMessage(error)
     }
 
     override fun showAddressInputError(error: String) {
@@ -94,7 +94,7 @@ class CreationServicePresenter(
     }
 
     override fun showDurationInputError(error: String) {
-        viewState.showError(error)
+        viewState.showMessage(error)
     }
 
     override fun returnPhotos(photos: List<Photo>) {}

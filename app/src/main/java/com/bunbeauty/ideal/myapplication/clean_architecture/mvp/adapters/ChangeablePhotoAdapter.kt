@@ -5,29 +5,30 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ideal.myapplication.R
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.photoElement.IChangeablePhotoElement
-import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.photoElement.ChangeablePhotoElement
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Photo
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.photoElement.AddPhotoElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.photoElement.ChangeablePhotoElement
+import com.bunbeauty.ideal.myapplication.clean_architecture.mvp.adapters.elements.photoElement.EditablePhotoActivity
 
 class ChangeablePhotoAdapter :
     RecyclerView.Adapter<ChangeablePhotoAdapter.ChangeablePhotoViewHolder>() {
 
     private val photos: ArrayList<Photo> = arrayListOf()
-    private lateinit var iChangeablePhotoElement: IChangeablePhotoElement
+    lateinit var editablePhotoActivity: EditablePhotoActivity
     private var width = 0
     private var height = 0
 
     fun setData(
         photos: List<Photo>,
-        iChangeablePhotoElement: IChangeablePhotoElement,
+        changeablePhotoActivityElement: EditablePhotoActivity,
         width: Int,
         height: Int
     ) {
         this.photos.clear()
+        this.photos.addAll(photos)
         this.width = width
         this.height = height
-        this.iChangeablePhotoElement = iChangeablePhotoElement
-        this.photos.addAll(photos)
+        this.editablePhotoActivity = changeablePhotoActivityElement
         notifyDataSetChanged()
     }
 
@@ -40,19 +41,27 @@ class ChangeablePhotoAdapter :
         return ChangeablePhotoViewHolder(view)
     }
 
-    override fun onBindViewHolder(serviceViewHolder: ChangeablePhotoViewHolder, i: Int) {
-        serviceViewHolder.bind(photos[i])
+    override fun onBindViewHolder(changeablePhotoViewHolder: ChangeablePhotoViewHolder, i: Int) {
+        if (i == 0) {
+            changeablePhotoViewHolder.firstBind()
+        } else {
+            changeablePhotoViewHolder.bind(photos[i - 1])
+        }
     }
 
-    override fun getItemCount() = photos.size
+    override fun getItemCount() = photos.size + 1
 
 
     inner class ChangeablePhotoViewHolder(private val view: View) :
         RecyclerView.ViewHolder(view) {
 
+        fun firstBind() {
+            AddPhotoElement(view, editablePhotoActivity)
+        }
+
         fun bind(photo: Photo) {
             ChangeablePhotoElement(
-                iChangeablePhotoElement,
+                editablePhotoActivity,
                 width,
                 height,
                 photo,

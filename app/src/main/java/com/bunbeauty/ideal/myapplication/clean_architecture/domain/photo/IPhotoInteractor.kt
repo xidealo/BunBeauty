@@ -8,7 +8,7 @@ interface IPhotoInteractor {
     fun addPhoto(photo: Photo)
     fun addPhotos(photos: List<Photo>)
     fun removePhoto(photo: Photo)
-    fun getPhotosLink(): ArrayList<Photo>
+    fun getPhotoLinkList(): ArrayList<Photo>
     fun getDeletePhotosLink(): List<Photo>
     fun savePhotos(photos: List<Photo>, service: Service, iPhotoCallback: IPhotoCallback)
     fun savePhotos(photos: List<Photo>, user: User, iPhotoCallback: IPhotoCallback)

@@ -55,7 +55,7 @@ class EditServicePresenter(
 
     fun getCacheService() = editServiceServiceInteractor.getGottenService()
 
-    fun getPhotosLink() = photoInteractor.getPhotosLink()
+    fun getPhotosLink() = photoInteractor.getPhotoLinkList()
 
     override fun showEditService(service: Service) {
         viewState.showEditService(service)
@@ -69,15 +69,15 @@ class EditServicePresenter(
 
     override fun saveTags(service: Service) {
         editServiceTagInteractor.saveTags(service)
-        service.photos.addAll(photoInteractor.getPhotosLink())
-        photoInteractor.savePhotos(photoInteractor.getPhotosLink(), service, this)
+        service.photos.addAll(photoInteractor.getPhotoLinkList())
+        photoInteractor.savePhotos(photoInteractor.getPhotoLinkList(), service, this)
         viewState.goToService(service)
     }
 
     override fun goToProfile(service: Service) {
         photoInteractor.deletePhotosFromStorage(
             Service.SERVICE_PHOTO,
-            photoInteractor.getPhotosLink()
+            photoInteractor.getPhotoLinkList()
         )
         viewState.showMessage("Услуга успешно удалена")
         viewState.goToProfile(service)

@@ -18,7 +18,7 @@ class DayAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayAdapter.DayViewHolder {
         val context = parent.context
         val layoutInflater = LayoutInflater.from(context)
-        val view = layoutInflater.inflate(R.layout.element_schedule, parent, false)
+        val view = layoutInflater.inflate(R.layout.element_schedule_button, parent, false)
         return DayViewHolder(view, context)
     }
 

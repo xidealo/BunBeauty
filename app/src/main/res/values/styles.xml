@@ -168,8 +168,20 @@
         <item name="cornerRadius">@dimen/button_corner_radius</item>
     </style>
 
+    <style name="closeIcon" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="iconPadding">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">6dp</item>
+        <item name="android:paddingRight">6dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="cornerRadius">24dp</item>
+    </style>
+
     <style name="outlineButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">@dimen/button_width</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
         <item name="strokeColor">@color/darkBlue</item>
