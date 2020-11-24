@@ -21,7 +21,8 @@ import kotlin.collections.ArrayList
 )
 @Parcelize
 data class Service(
-
+    @PrimaryKey
+    override var id: String="",
     var userId: String,
     var name: String,
     var duration: Float,
