@@ -6,7 +6,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers
 import com.bunbeauty.ideal.myapplication.clean_architecture.callback.subscribers.schedule.UpdateScheduleAddOrderCallback
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Order
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service
-import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.Service.CREATOR.SERVICE
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Schedule
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.ScheduleWithWorkingTime
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.schedule.Session
@@ -29,7 +28,7 @@ class SessionsInteractor(
     }
 
     fun getService(intent: Intent): Service {
-        service = intent.getParcelableExtra<Service>(SERVICE) as Service
+        service = intent.getParcelableExtra<Service>(Service.SERVICE) as Service
         return service
     }
 

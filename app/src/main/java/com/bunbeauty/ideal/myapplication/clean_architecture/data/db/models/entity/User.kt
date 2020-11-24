@@ -8,7 +8,7 @@ import java.io.Serializable
 @Entity
 data class User(
     @PrimaryKey
-    var id: String = "",
+    override var id: String="",
     var name: String = "",
     var surname: String = "",
     var city: String = "",
@@ -19,7 +19,7 @@ data class User(
     var subscribersCount: Long = 0,
     var subscriptionsCount: Long = 0,
     var registrationDate: Long = 0
-) : Serializable {
+) : Serializable,BaseModel() {
 //добавить время последнего захода?
 //добавить дату регистрации?
 

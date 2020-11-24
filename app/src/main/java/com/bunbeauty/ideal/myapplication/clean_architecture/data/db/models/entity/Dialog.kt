@@ -14,7 +14,7 @@ import java.io.Serializable
 )
 data class Dialog(
     @PrimaryKey
-    var id: String = "", //user Id
+    override var id: String="",
     @ColumnInfo(index = true)
     var ownerId: String = "", // Owner
     var isChecked: Boolean = true, // Read or no
@@ -22,7 +22,7 @@ data class Dialog(
     var user: User = User(), //with who
     @Embedded(prefix = "message_")
     var lastMessage: Message = Message()
-) : Serializable {
+) : Serializable, BaseModel() {
     companion object {
         const val DIALOG = "dialog"
         const val COMPANION_DIALOG = "companion dialog"

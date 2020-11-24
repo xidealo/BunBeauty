@@ -149,7 +149,6 @@ class ServiceFirebase {
 
     private fun getServiceFromSnapshot(serviceSnapshot: DataSnapshot, userId: String): Service {
         val service = Service(
-            id = serviceSnapshot.key!!,
             name = serviceSnapshot.child(Service.NAME).value as? String ?: "",
             address = serviceSnapshot.child(Service.ADDRESS).value as? String ?: "",
             description = serviceSnapshot.child(Service.DESCRIPTION).value as? String ?: "",
@@ -164,6 +163,7 @@ class ServiceFirebase {
             premiumDate = serviceSnapshot.child(Service.PREMIUM_DATE).value as? Long ?: 0,
             userId = userId
         )
+        service.id=serviceSnapshot.key!!
 
         for (tagSnapshot in serviceSnapshot.child(Tag.TAGS).children) {
             service.tags.add(getTagFromSnapshot(tagSnapshot, service.id, userId))

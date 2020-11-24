@@ -7,6 +7,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.bunbeauty.ideal.myapplication.clean_architecture.domain.WorkWithTimeApi
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -18,9 +19,9 @@ import kotlin.collections.ArrayList
         onDelete = ForeignKey.CASCADE
     )]
 )
+@Parcelize
 data class Service(
-    @PrimaryKey
-    var id: String = "",
+
     var userId: String,
     var name: String,
     var duration: Float,
@@ -36,55 +37,13 @@ data class Service(
     var tags: ArrayList<Tag> = arrayListOf(),
     @Embedded
     var photos: ArrayList<Photo> = arrayListOf()
-) : Parcelable {
+) : Parcelable, BaseModel() {
 
-    constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readFloat(),
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readFloat(),
-        parcel.readLong(),
-        parcel.readLong(),
-        parcel.readLong(),
-        parcel.readLong(),
-        parcel.readArrayList(Tag::class.java.classLoader) as ArrayList<Tag>,
-        parcel.readArrayList(Photo::class.java.classLoader) as ArrayList<Photo>
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(userId)
-        parcel.writeString(name)
-        parcel.writeFloat(duration)
-        parcel.writeString(address)
-        parcel.writeString(description)
-        parcel.writeString(category)
-        parcel.writeFloat(rating)
-        parcel.writeLong(countOfRates)
-        parcel.writeLong(cost)
-        parcel.writeLong(creationDate)
-        parcel.writeLong(premiumDate)
-        parcel.writeList(tags as List<*>?)
-        parcel.writeList(photos as List<*>?)
-    }
-
-    companion object CREATOR : Parcelable.Creator<Service> {
+    companion object {
 
         fun checkPremium(premiumDate: Long): Boolean {
             val sysDate = Date().time
             return sysDate <= premiumDate
-        }
-
-        override fun createFromParcel(parcel: Parcel): Service {
-            return Service(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Service?> {
-            return arrayOfNulls(size)
         }
 
         const val SERVICES = "services"

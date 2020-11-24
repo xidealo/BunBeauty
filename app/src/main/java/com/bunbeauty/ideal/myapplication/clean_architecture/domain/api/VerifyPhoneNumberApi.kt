@@ -21,24 +21,24 @@ class VerifyPhoneNumberApi {
     ) {
         this.verifyPhoneNumberCallback = verifyPhoneNumberCallback
 
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+        /*PhoneAuthProvider.getInstance().verifyPhoneNumber(
             phoneNumber,
             60,
             TimeUnit.SECONDS,
             TaskExecutors.MAIN_THREAD,
             verificationCallbacks
-        )
+        )*/
     }
 
     fun resendVerificationCode(phoneNumber: String) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+        /*PhoneAuthProvider.getInstance().verifyPhoneNumber(
             phoneNumber,
             60,
             TimeUnit.SECONDS,
             TaskExecutors.MAIN_THREAD,
             verificationCallbacks,
             resendToken
-        )
+        )*/
     }
 
     fun checkCode(code: String, verifyPhoneNumberCallback: VerifyPhoneNumberCallback) {
