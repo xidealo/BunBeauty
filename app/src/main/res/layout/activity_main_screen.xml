@@ -39,7 +39,6 @@
                             android:layout_gravity="center"
                             android:hint="@string/search"
                             android:textColorHint="@color/grey"
-                            app:layout_constraintTop_toTopOf="@+id/topPanelLayout"
                             app:searchBackIcon="@drawable/icon_back_blue" />
                     </FrameLayout>
                     <!-- Категории -->
@@ -98,7 +97,7 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <ProgressBar
+     <ProgressBar
         android:id="@+id/activity_main_screen_pb_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

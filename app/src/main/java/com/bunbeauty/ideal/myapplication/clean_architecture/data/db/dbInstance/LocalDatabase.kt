@@ -1,8 +1,6 @@
 package com.bunbeauty.ideal.myapplication.clean_architecture.data.db.dbInstance
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.dao.*
 import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entity.*
@@ -29,7 +27,6 @@ import com.bunbeauty.ideal.myapplication.clean_architecture.data.db.models.entit
         UserComment::class], version = 43
 )
 abstract class LocalDatabase : RoomDatabase() {
-
     abstract fun getUserDao(): UserDao
     abstract fun getServiceDao(): ServiceDao
     abstract fun getTagDao(): TagDao

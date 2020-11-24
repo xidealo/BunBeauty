@@ -38,11 +38,13 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(dir: "libs", include: ["*.jar", "*.arr"])
+    //kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.appcompat:appcompat:$rootProject.appcompatVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintlayoutVersion"
     implementation "androidx.legacy:legacy-support-v4:$rootProject.legacySupportVersion"
-    implementation "androidx.core:core:$rootProject.coreVersion"
+    implementation "androidx.core:core-ktx:$rootProject.coreVersion"
 
     implementation "com.google.firebase:firebase-functions:$rootProject.firebaseFunctionVersion"
     implementation "com.google.firebase:firebase-messaging:$rootProject.firebaseMessagingVersion"
@@ -53,12 +55,11 @@ dependencies {
     testImplementation "io.mockk:mockk:$rootProject.mockkVersion"
     androidTestImplementation "androidx.test:runner:$rootProject.runnerVersion"
     androidTestImplementation "androidx.test:rules:$rootProject.rulesVersion"
-    androidTestImplementation "androidx.test.ext:junit:$rootProject.junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$rootProject.junitVersionExt"
 
     //Espresso
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoCoreVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$rootProject.espressoContribVersion"
-
 
     //firebase
     implementation "com.google.firebase:firebase-core:$rootProject.firebaseCoreVersion"
@@ -72,8 +73,6 @@ dependencies {
     api "com.theartofdev.edmodo:android-image-cropper:$rootProject.androidImageCropperVersion"
     //recycler
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerviewVersion"
-    //kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     //dagger 2
     implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
@@ -94,10 +93,8 @@ dependencies {
     //coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.kotlonxCoroutinesAndroid"
 
-    // Required -- JUnit 4 framework
-    testImplementation "junit:junit:$rootProject.junitVersion"
     // Optional -- Robolectric environment
-    testImplementation "androidx.test:core:$rootProject.coreVersion"
+    testImplementation "androidx.test:core:$rootProject.testCoreVersion"
 
     // Optional -- Mockito framework
     testImplementation "org.mockito:mockito-core:$rootProject.mockitoCoreVersion"
